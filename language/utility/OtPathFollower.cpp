@@ -27,7 +27,7 @@ void OtPathFollower::follow(const std::string& p, std::function<void()> cb) {
 
 	// create a new event handle
 	fsEventHandle = new uv_fs_event_t;
-	fsEventHandle->data = (void*) this;
+	fsEventHandle->data = static_cast<void*>(this);
 
 	int status = uv_fs_event_init(uv_default_loop(), fsEventHandle);
 	UV_CHECK_ERROR("uv_fs_event_init", status);

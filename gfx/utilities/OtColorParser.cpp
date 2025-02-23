@@ -349,9 +349,9 @@ glm::vec4 OtColorParser::toVec4(const std::string& css) {
 
 uint32_t OtColorParser::toUint32(const std::string& color) {
 	glm::vec4 c = toVec4(color);
-	int r = c.r * 255.0f;
-	int g = c.g * 255.0f;
-	int b = c.b * 255.0f;
-	int a = c.a * 255.0f;
+	int r = static_cast<int>(c.r * 255.0f);
+	int g = static_cast<int>(c.g * 255.0f);
+	int b = static_cast<int>(c.b * 255.0f);
+	int a = static_cast<int>(c.a * 255.0f);
 	return a << 24 | b << 16 | g << 8 | r;
 }

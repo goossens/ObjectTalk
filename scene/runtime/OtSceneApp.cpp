@@ -81,7 +81,9 @@ void OtSceneApp::renderSplashScreen() {
 			ImGuiWindowFlags_NoBringToFrontOnFocus |
 			ImGuiWindowFlags_NoInputs);
 
-	ImGui::Image((ImTextureID)(intptr_t) logo->getTextureIndex(), ImVec2(logo->getWidth(), logo->getHeight()));
+	ImGui::Image(
+		(ImTextureID)(intptr_t) logo->getTextureIndex(),
+		ImVec2(static_cast<float>(logo->getWidth()), static_cast<float>(logo->getHeight())));
 
 	OtUi::centeredText("Loading scene...");
 	OtUi::centeredText("");
@@ -109,7 +111,7 @@ void OtSceneApp::renderViewPort() {
 
 	// render the scene
 	auto size = ImGui::GetContentRegionAvail();
-	auto textureIndex = render(size.x, size.y);
+	auto textureIndex = render(static_cast<int>(size.x), static_cast<int>(size.y));
 
 	// show it on the screen
 	if (OtGpuHasOriginBottomLeft()) {

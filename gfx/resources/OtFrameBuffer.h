@@ -62,8 +62,8 @@ public:
 	inline bgfx::TextureHandle getDepthTextureHandle() { return depthTexture.getHandle(); }
 
 	// get texture indices
-	inline int getColorTextureIndex() { return colorTexture.getIndex(); }
-	inline int getDepthTextureIndex() { return depthTexture.getIndex(); }
+	inline uint16_t getColorTextureIndex() { return colorTexture.getIndex(); }
+	inline uint16_t getDepthTextureIndex() { return depthTexture.getIndex(); }
 
 	// bind textures
 	void bindColorTexture(OtSampler& sampler, int unit);

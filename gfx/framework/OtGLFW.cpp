@@ -176,7 +176,7 @@ void OtFramework::initGLFW() {
 		if (focused) {
 			double xpos, ypos;
 			glfwGetCursorPos(window, &xpos, &ypos);
-			fw->eventQueue.pushMouseMoveEvent((float) xpos, (float) ypos);
+			fw->eventQueue.pushMouseMoveEvent(static_cast<float>(xpos), static_cast<float>(ypos));
 		}
 	});
 
@@ -191,19 +191,19 @@ void OtFramework::initGLFW() {
 		mods = (action == GLFW_PRESS) ? mods | keysToMods(window) : mods & ~keysToMods(window);
 #endif
 
-		fw->eventQueue.pushMouseButtonEvent(button, action, mods, (float) xpos, (float) ypos);
+		fw->eventQueue.pushMouseButtonEvent(button, action, mods, static_cast<float>(xpos), static_cast<float>(ypos));
 	});
 
 	// setup mouse move callback
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
 		OtFramework* fw = (OtFramework*) glfwGetWindowUserPointer(window);
-		fw->eventQueue.pushMouseMoveEvent((float) xpos, (float) ypos);
+		fw->eventQueue.pushMouseMoveEvent(static_cast<float>(xpos), static_cast<float>(ypos));
 	});
 
 	// setup scroll wheel callback
 	glfwSetScrollCallback(window, [](GLFWwindow* window, double xoffset, double yoffset) {
 		OtFramework* fw = (OtFramework*) glfwGetWindowUserPointer(window);
-		fw->eventQueue.pushMouseWheelEvent((float) xoffset, (float) yoffset);
+		fw->eventQueue.pushMouseWheelEvent(static_cast<float>(xoffset), static_cast<float>(yoffset));
 	});
 
 	// set keyboard callback

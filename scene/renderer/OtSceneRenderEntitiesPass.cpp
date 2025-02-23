@@ -106,7 +106,7 @@ void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtPass
 void OtSceneRenderEntitiesPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) {
 	// visibility flag and target program
 	bool visible = false;
-	OtShaderProgram* program;
+	OtShaderProgram* program = nullptr;
 
 	// get camera frustum and geometry AABB
 	auto& frustum = ctx.camera.frustum;
@@ -181,7 +181,7 @@ void OtSceneRenderEntitiesPass::renderOpaqueGeometry(OtSceneRendererContext& ctx
 void OtSceneRenderEntitiesPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& component) {
 	// visibility flag and target program
 	bool visible = false;
-	OtShaderProgram* program;
+	OtShaderProgram* program = nullptr;
 
 	// get camera frustum and geometry AABB
 	auto& frustum = ctx.camera.frustum;
@@ -268,7 +268,7 @@ void OtSceneRenderEntitiesPass::renderTerrain(OtSceneRendererContext& ctx, OtEnt
 void OtSceneRenderEntitiesPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) {
 	// visibility flag and target program
 	bool visible = false;
-	OtShaderProgram* program;
+	OtShaderProgram* program = nullptr;
 
 	// get camera frustum and geometry AABB
 	auto& frustum = ctx.camera.frustum;

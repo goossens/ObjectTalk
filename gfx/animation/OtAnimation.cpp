@@ -52,7 +52,7 @@ OtObject OtAnimationClass::via(const std::string& easing) {
 //
 
 OtObject OtAnimationClass::during(double seconds) {
-	animator.during((int32_t) (seconds * 1000.0));
+	animator.during(static_cast<int32_t>(seconds * 1000.0));
 	return OtAnimation(this);
 }
 
@@ -102,7 +102,7 @@ OtObject OtAnimationClass::continuous() {
 //
 
 OtObject OtAnimationClass::seek(double percentage) {
-	animator.seek((float) percentage);
+	animator.seek(static_cast<float>(percentage));
 	return OtAnimation(this);
 }
 
@@ -161,7 +161,7 @@ OtObject OtAnimationClass::pause() {
 //
 
 void OtAnimationClass::step(double seconds) {
-	animator.step((int32_t) (seconds * 1000.0));
+	animator.step(static_cast<int32_t>(seconds * 1000.0));
 	running = forever || repeatCounter || animator.progress() < 1.0;
 }
 

@@ -24,8 +24,8 @@
 //
 
 static glm::vec3 getRandomPointOnSphere() {
-	float phi = OtRandom(std::numbers::pi);
-	float theta = OtRandom(std::numbers::pi2);
+	float phi = static_cast<float>(OtRandom(std::numbers::pi));
+	float theta = static_cast<float>(OtRandom(std::numbers::pi2));
 
 	auto x = std::sin(theta) * std::sin(phi);
 	auto y = std::cos(phi);
@@ -41,7 +41,7 @@ static glm::vec3 getRandomPointOnHemisphere() {
 }
 
 static glm::vec3 getRandomPointinCircle() {
-	float angle = OtRandom(std::numbers::pi2);
+	float angle = static_cast<float>(OtRandom(std::numbers::pi2));
 	float radius = OtRandom(1.0f);
 	return glm::vec3(std::cos(angle) * radius, 0.0f, std::sin(angle) * radius);
 }

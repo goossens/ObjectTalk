@@ -21,7 +21,10 @@
 static glm::vec2 getTextureOffset(int index, int rows, int columns) {
 	int row = index / columns;
 	int column = index % columns;
-	return glm::vec2((float) column / (float) columns, (float) row / (float) rows);
+
+	return glm::vec2(
+		static_cast<float>(column) / static_cast<float>(columns),
+		static_cast<float>(row) / static_cast<float>(rows));
 }
 
 
@@ -30,15 +33,11 @@ static glm::vec2 getTextureOffset(int index, int rows, int columns) {
 //
 
 void OtParticles::update(const OtParticleSettings& settings) {
-	// see if this is the first update run
-	bool first = count < 0;
-
 	// update number of particles (if required)
-	if (count != settings.particles) {
-		count = settings.particles;
-		particles.resize(count);
-		index.resize(count);
-		instances.resize(count);
+	if (particles.size() != settings.particles) {
+		particles.resize(settings.particles);
+		index.resize(settings.particles);
+		instances.resize(settings.particles);
 	}
 
 	// re-spawn expired particles and update others
@@ -52,18 +51,22 @@ void OtParticles::update(const OtParticleSettings& settings) {
 	}
 
 	// if this is the first run, distribute remaining life and run simulation
+	auto size = particles.size();
+
 	if (first) {
-		for (size_t i = 0; i < count; i++) {
-			particles[i].remaining = settings.lifeSpanHigh * (float) i / (float) count;
+		first = false;
+
+		for (size_t i = 0; i < size; i++) {
+			particles[i].remaining = settings.lifeSpanHigh * static_cast<float>(i) / static_cast<float>(size);
 		}
 
-		for (size_t i = count >> 1; i < count; i++) {
+		for (size_t i = size >> 1; i < size; i++) {
 			update(settings);
 		}
 	}
 
 	// build index and sort by distance
-	for (size_t i = 0; i < count; i++) {
+	for (size_t i = 0; i < size; i++) {
 		index[i] = {i, glm::length(settings.cameraPosition - particles[i].position)};
 	}
 
@@ -72,7 +75,7 @@ void OtParticles::update(const OtParticleSettings& settings) {
 	});
 
 	// create ordered instance data
-	for (size_t i = 0; i < count; i++) {
+	for (size_t i = 0; i < size; i++) {
 		// determine texture coordinates
 		auto& particle = particles[index[i].idx];
 
@@ -94,7 +97,7 @@ void OtParticles::update(const OtParticleSettings& settings) {
 			uv2,
 			particle.scale,
 			glm::radians(particle.rotation),
-			(float) (settings.atlasRows * 100 + settings.atlasColumns),
+			static_cast<float>(settings.atlasRows * 100 + settings.atlasColumns),
 			blend
 		};
 	}

@@ -18,8 +18,13 @@ list(REMOVE_DUPLICATES SCENE_INCLUDE_DIRS)
 set(SCENE_INCLUDE_DIRS ${SCENE_INCLUDE_DIRS} PARENT_SCOPE)
 
 add_library(scene OBJECT ${SCENE_INCLUDES} ${SCENE_SOURCES})
-target_include_directories(scene PUBLIC ${SCENE_INCLUDE_DIRS})
 
+target_compile_options(scene PRIVATE
+	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Werror -Wall -Wextra>
+	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wpedantic>
+	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4 /WX>)
+
+target_include_directories(scene PUBLIC ${SCENE_INCLUDE_DIRS})
 target_link_libraries(scene PUBLIC json gfx Jolt nodes)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${SCENE_INCLUDES} ${SCENE_SOURCES})

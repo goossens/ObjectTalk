@@ -24,7 +24,7 @@
 
 void OtInstanceDataBuffer::submit(void* data, size_t count, size_t stride) {
 	// sanity check
-	if (bgfx::getAvailInstanceDataBuffer(static_cast<uint32_t>(count), static_cast<uint16_t>(stride) != count)) {
+	if (bgfx::getAvailInstanceDataBuffer(static_cast<uint32_t>(count), static_cast<uint16_t>(stride)) != count) {
 		OtLogFatal("Internal error: insufficient instance data buffer space");
 	}
 

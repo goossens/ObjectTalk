@@ -48,7 +48,7 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 	float cascadeSplits[maxCascades];
 
 	for (auto i = 0; i < maxCascades; i++) {
-		float p = (float) (i + 1) / (float) maxCascades;
+		float p = static_cast<float>(i + 1) / static_cast<float>(maxCascades);
 		float log = minZ * glm::pow(ratio, p);
 		float uniform = minZ + range * p;
 		float d = cascadeSplitLambda * (log - uniform) + uniform;

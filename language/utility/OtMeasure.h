@@ -53,7 +53,7 @@ public:
 	inline float elapsed() {
 		auto now = std::chrono::high_resolution_clock::now();
 		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count();
-		return (float) microseconds / 1000.0f;
+		return static_cast<float>(microseconds) / 1000.0f;
 	}
 
 private:

@@ -34,10 +34,6 @@ public:
 	// link object to ECS
 	void linkToECS(OtScene* scene, OtEntity entity);
 
-	// find entities
-	bool entityExists(const std::string& tag);
-	OtObject getEntity(const std::string& tag);
-
 	// access components
 	bool hasTransformComponent();
 	OtObject getTransformComponent();

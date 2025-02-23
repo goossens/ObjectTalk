@@ -698,7 +698,7 @@ void OtSceneEditor::renderPanel(const std::string& name, bool canAdd, std::funct
 //
 
 static inline void* createID(OtEntity entity, uint32_t key) {
-	return (void*) ((((uint64_t) key) << 32) | (uint64_t) entity);
+	return (void*) (((static_cast<uint64_t>(key)) << 32) | static_cast<uint64_t>(entity));
 }
 
 void OtSceneEditor::renderEntity(OtEntity entity) {

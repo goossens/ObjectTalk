@@ -41,7 +41,7 @@ void OtSceneRendererDebug::render(OtSceneRenderer& renderer) {
 	renderShadowMaps(renderer);
 	renderReflection(renderer);
 	renderOclussion(renderer);
-	renderAssets(renderer);
+	renderAssets();
 	ImGui::End();
 }
 
@@ -165,7 +165,7 @@ void OtSceneRendererDebug::renderOclussion(OtSceneRenderer& renderer) {
 //	OtSceneRendererDebug::renderAssets
 //
 
-void OtSceneRendererDebug::renderAssets(OtSceneRenderer& renderer) {
+void OtSceneRendererDebug::renderAssets() {
 	if (ImGui::CollapsingHeader("Asset Manager")) {
 		ImGuiTableFlags flags =
 			ImGuiTableFlags_Borders |
@@ -208,7 +208,7 @@ void OtSceneRendererDebug::renderAssets(OtSceneRenderer& renderer) {
 
 void OtSceneRendererDebug::renderTexture(const char* title, uint16_t index, int width, int height) {
 	if (ImGui::TreeNode(title)) {
-		int size = ImGui::GetContentRegionAvail().x;
+		auto size = ImGui::GetContentRegionAvail().x;
 		ImGui::Image((ImTextureID)(intptr_t) index, ImVec2(size, size * height / width));
 		ImGui::TreePop();
 	}
@@ -216,7 +216,7 @@ void OtSceneRendererDebug::renderTexture(const char* title, uint16_t index, int 
 
 void OtSceneRendererDebug::renderTexture(const char* title, OtTexture& texture) {
 	if (ImGui::TreeNode(title)) {
-		int size = ImGui::GetContentRegionAvail().x;
+		auto size = ImGui::GetContentRegionAvail().x;
 		int width = texture.getWidth();
 		int height = texture.getHeight();
 		ImGui::Image((ImTextureID)(intptr_t) texture.getIndex(), ImVec2(size, size * height / width));
@@ -237,9 +237,9 @@ void OtSceneRendererDebug::renderCubeMap(const char* title, OtCubeMap& cubemap, 
 			renderCubeMapAsCross(cubemap, debug);
 		}
 
-		int size = ImGui::GetContentRegionAvail().x;
+		auto size = ImGui::GetContentRegionAvail().x;
 		uint16_t index = debug.framebuffer.getColorTexture().getIndex();
-		ImGui::Image((ImTextureID)(intptr_t) index, ImVec2(size, size * 3 / 4));
+		ImGui::Image((ImTextureID)(intptr_t) index, ImVec2(size, size * 3.0f / 4.0f));
 		ImGui::TreePop();
 	}
 }

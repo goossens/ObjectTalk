@@ -86,7 +86,7 @@ void OtCubePrimitive::buildPlane(OtMesh* mesh, int udir, int vdir, float w, floa
 	auto gridX1 = gridX + 1;
 	auto gridY1 = gridY + 1;
 
-	auto offset = (uint32_t) mesh->getVertexCount();
+	auto offset = static_cast<uint32_t>(mesh->getVertexCount());
 
 	for (auto iy = 0; iy < gridY1; iy++) {
 		auto y = iy * segmentHeight - heightHalf;
@@ -97,7 +97,7 @@ void OtCubePrimitive::buildPlane(OtMesh* mesh, int udir, int vdir, float w, floa
 			mesh->addVertex(OtVertex(
 				cb(x * udir, y * vdir, depthHalf),
 				cb(0.0f, 0.0f, (depth > 0.0f) ? 1.0f : -1.0f),
-				glm::vec2((float) ix / gridX, (float) iy / gridY)));
+				glm::vec2(static_cast<float>(ix) / gridX, static_cast<float>(iy) / gridY)));
 		}
 	}
 

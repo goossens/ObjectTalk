@@ -22,10 +22,10 @@
 void OtGridPrimitive::createMesh(OtMesh* mesh) {
 	// add vertices
 	for (auto z = 0; z <= depthSegments; z++) {
-		auto v = (float) z / depthSegments;
+		auto v = static_cast<float>(z) / depthSegments;
 
 		for (auto x = 0; x <= widthSegments; x++) {
-			auto u = (float) x / widthSegments;
+			auto u = static_cast<float>(x) / widthSegments;
 
 			mesh->addVertex(OtVertex(
 				glm::vec3(u - 0.5f, 0.0f, v - 0.5f),

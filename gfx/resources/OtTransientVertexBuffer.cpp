@@ -22,13 +22,13 @@
 
 void OtTransientVertexBuffer::submit(void* data, size_t count, const bgfx::VertexLayout& layout, uint8_t stream) {
 	// sanity check
-	if ((bgfx::getAvailTransientVertexBuffer((uint32_t) count, layout) != count)) {
+	if ((bgfx::getAvailTransientVertexBuffer(static_cast<uint32_t>(count), layout) != count)) {
 		OtLogFatal("Internal error: insufficient transient vertex buffer space");
 	}
 
 	// allocate transient space and fill buffer
 	bgfx::TransientVertexBuffer tvb;
-	bgfx::allocTransientVertexBuffer(&tvb, (uint32_t) count, layout);
+	bgfx::allocTransientVertexBuffer(&tvb, static_cast<uint32_t>(count), layout);
 	std::memcpy(tvb.data, data, tvb.size);
 	bgfx::setVertexBuffer(stream, &tvb);
 }

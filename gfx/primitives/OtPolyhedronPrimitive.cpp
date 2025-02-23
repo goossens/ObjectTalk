@@ -59,13 +59,13 @@ void OtPolyhedronPrimitive::createMesh(OtMesh* mesh) {
 
 		// construct all vertices for this subdivision
 		for (auto i = 0; i <= cols; i++) {
-			auto r1 = (float) i / (float) cols;
+			auto r1 = static_cast<float>(i) / static_cast<float>(cols);
 			auto aj = glm::mix(a, c, r1);
 			auto bj = glm::mix(b, c, r1);
 			auto rows = cols - i;
 
 			for (auto j = 0; j <= rows; j++) {
-				auto r2 = (float) j / (float) rows;
+				auto r2 = static_cast<float>(j) / static_cast<float>(rows);
 				v[i][j] = glm::normalize((j == 0 && i == cols) ? aj : glm::mix(aj, bj, r2));
 			}
 		}

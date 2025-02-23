@@ -36,7 +36,7 @@ bool OtPointLightComponent::renderUI() {
 //	OtPointLightComponent::serialize
 //
 
-nlohmann::json OtPointLightComponent::serialize(std::string* basedir) {
+nlohmann::json OtPointLightComponent::serialize(std::string* /* basedir */) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["offset"] = offset;
@@ -50,7 +50,7 @@ nlohmann::json OtPointLightComponent::serialize(std::string* basedir) {
 //	OtPointLightComponent::deserialize
 //
 
-void OtPointLightComponent::deserialize(nlohmann::json data, std::string* basedir) {
+void OtPointLightComponent::deserialize(nlohmann::json data, std::string* /* basedir */) {
 	offset = data.value("offset", glm::vec3(0.0f));
 	radius = data.value("radius", 1.0f);
 	color = data.value("color", glm::vec3(1.0f));

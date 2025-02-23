@@ -48,12 +48,12 @@ void OtCylinderPrimitive::generateTorso(OtMesh* mesh) {
 
 	// generate each height segment
 	for (auto y = 0; y <= heightSegments; y++) {
-		auto v = (float) y / heightSegments;
+		auto v = static_cast<float>(y) / heightSegments;
 		auto radius = v * (bottomRadius - topRadius) + topRadius;
 
-		// generate each radial segment
+		// generate each radial egment
 		for (auto x = 0; x <= radialSegments; x++) {
-			auto u = (float) x / radialSegments;
+			auto u = static_cast<float>(x) / radialSegments;
 			auto theta = glm::radians(u * thetaLength + thetaStart);
 
 			auto sinTheta = std::sin(theta);
@@ -91,7 +91,7 @@ void OtCylinderPrimitive::generateCap(OtMesh* mesh, bool top) {
 	auto sign = top ? 1 : - 1;
 
 	// add center
-	auto center = (uint32_t) mesh->getVertexCount();
+	auto center = static_cast<uint32_t>(mesh->getVertexCount());
 
 	mesh->addVertex(OtVertex(
 		glm::vec3(0.0f, 0.5f * sign, 0.0f),
@@ -99,10 +99,10 @@ void OtCylinderPrimitive::generateCap(OtMesh* mesh, bool top) {
 		glm::vec2(0.5f, 0.5f)));
 
 	// add outside vertices
-	auto offset = (uint32_t) mesh->getVertexCount();
+	auto offset = static_cast<uint32_t>(mesh->getVertexCount());
 
 	for (auto x = 0; x <= radialSegments; x++) {
-		auto u = (float) x / radialSegments;
+		auto u = static_cast<float>(x) / radialSegments;
 		auto theta = glm::radians(u * thetaLength + thetaStart);
 		auto cosTheta = std::cos(theta);
 		auto sinTheta = std::sin(theta);

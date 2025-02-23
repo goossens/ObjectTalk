@@ -280,6 +280,24 @@ bool OtUi::dragInt(const char* label, int* value, int minv, int maxv) {
 
 
 //
+//	OtUi::dragSizeT
+//
+
+bool OtUi::dragSizeT(const char* label, size_t* value, size_t minv, size_t maxv) {
+	auto intValue = static_cast<int>(*value);
+	auto intMinv = static_cast<int>(minv);
+	auto intMaxv = static_cast<int>(maxv);
+	auto result = dragInt(label, &intValue, intMinv, intMaxv);
+
+	if (result) {
+		*value = static_cast<size_t>(intValue);
+	}
+
+	return result;
+}
+
+
+//
 //	OtUi::dragFloat
 //
 

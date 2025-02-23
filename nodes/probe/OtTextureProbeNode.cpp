@@ -34,7 +34,7 @@ public:
 		auto fieldWidth = 170.0f;
 
 		if (texture.isValid()) {
-			customW = std::min(fieldWidth, (float) texture.getWidth());
+			customW = std::min(fieldWidth, static_cast<float>(texture.getWidth()));
 			customH = customW * texture.getHeight() / texture.getWidth();
 
 		} else {

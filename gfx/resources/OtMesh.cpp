@@ -127,7 +127,7 @@ void OtMesh::load(const std::string& path) {
 	Assimp::Importer importer;
 
 	// determine the import flags
-	uint32_t flags =
+	auto flags =
 		aiProcessPreset_TargetRealtime_Quality |
 		aiProcess_OptimizeMeshes |
 		aiProcess_PreTransformVertices;
@@ -137,7 +137,7 @@ void OtMesh::load(const std::string& path) {
 	}
 
 	// read the file
-	const aiScene* scene = importer.ReadFile(path, flags);
+	const aiScene* scene = importer.ReadFile(path, static_cast<unsigned int>(flags));
 
 	// ensure mesh was loaded correctly
 	if (scene == nullptr) {

@@ -24,16 +24,16 @@ void OtPlanePrimitive::createMesh(OtMesh* mesh) {
 	auto gridX1 = widthSegments + 1;
 	auto gridY1 = heightSegments + 1;
 
-	auto segmentWidth = 1.0f / (float) widthSegments;
-	auto segmentHeight = 1.0f / (float) heightSegments;
+	auto segmentWidth = 1.0f / static_cast<float>(widthSegments);
+	auto segmentHeight = 1.0f / static_cast<float>(heightSegments);
 
 	for (auto iy = 0; iy < gridY1; iy++) {
 		auto y = 0.5f - iy * segmentHeight;
 
 		for (auto ix = 0; ix < gridX1; ix++) {
 			auto x = ix * segmentWidth - 0.5f;
-			auto u = (float) ix / (float) widthSegments;
-			auto v = (float) iy / (float) heightSegments;
+			auto u = static_cast<float>(ix) / static_cast<float>(widthSegments);
+			auto v = static_cast<float>(iy) / static_cast<float>(heightSegments);
 
 			mesh->addVertex(OtVertex(
 				glm::vec3(x, y, 0.0f),

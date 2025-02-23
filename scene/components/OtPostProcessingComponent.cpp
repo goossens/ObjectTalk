@@ -49,7 +49,7 @@ bool OtPostProcessingComponent::renderUI() {
 //	OtPostProcessingComponent::serialize
 //
 
-nlohmann::json OtPostProcessingComponent::serialize(std::string* basedir) {
+nlohmann::json OtPostProcessingComponent::serialize(std::string* /* basedir */) {
 	auto data = nlohmann::json::object();
 	data["fxaa"] = fxaa;
 	data["fog"] = fog;
@@ -68,7 +68,7 @@ nlohmann::json OtPostProcessingComponent::serialize(std::string* basedir) {
 //	OtPostProcessingComponent::deserialize
 //
 
-void OtPostProcessingComponent::deserialize(nlohmann::json data, std::string* basedir) {
+void OtPostProcessingComponent::deserialize(nlohmann::json data, std::string* /* basedir */) {
 	fxaa = data.value("fxaa", false);
 	bloomIntensity = data.value("bloomIntensity", 0.8f);
 	fog = data.value("fog", false);

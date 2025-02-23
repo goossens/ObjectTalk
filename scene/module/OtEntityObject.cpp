@@ -29,35 +29,6 @@ void OtEntityObjectClass::linkToECS(OtScene* s, OtEntity e) {
 
 
 //
-//	OtEntityObjectClass::entityExists
-//
-
-bool OtEntityObjectClass::entityExists(const std::string& tag) {
-	return scene->hasEntity(tag);
-}
-
-
-//
-//	OtEntityObjectClass::getEntity
-//
-
-OtObject OtEntityObjectClass::getEntity(const std::string& tag) {
-	// get the entity
-	auto entity = scene->getEntity(tag);
-
-	// see if this entity has a script component
-	if (scene->hasComponent<OtScriptComponent>(entity)) {
-		// we use the script instance
-		return scene->getComponent<OtScriptComponent>(entity).instance;
-
-	} else {
-		// create a new entity reference
-		return OtEntityObject::create(scene, entity);
-	}
-}
-
-
-//
 //	OtEntityObjectClass::hasTransformComponent
 //
 
@@ -84,9 +55,6 @@ OtType OtEntityObjectClass::getMeta() {
 
 	if (!type) {
 		type = OtType::create<OtEntityObjectClass>("Entity", OtObjectClass::getMeta());
-
-		type->set("entityExists", OtFunction::create(&OtEntityObjectClass::entityExists));
-		type->set("getEntity", OtFunction::create(&OtEntityObjectClass::getEntity));
 
 		type->set("hasTransformComponent", OtFunction::create(&OtEntityObjectClass::hasTransformComponent));
 		type->set("getTransformComponent", OtFunction::create(&OtEntityObjectClass::getTransformComponent));

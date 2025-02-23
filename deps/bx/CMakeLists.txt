@@ -19,6 +19,7 @@ if(WIN32)
 	target_link_libraries(bx PUBLIC psapi)
 	target_include_directories(bx PUBLIC ${bx_SOURCE_DIR}/include/compat/msvc)
 
+	target_compile_options(bx PUBLIC "/wd4324")
 	target_compile_options(bx PUBLIC "/Zc:__cplusplus")
 	target_compile_options(bx PUBLIC "/Zc:preprocessor")
 

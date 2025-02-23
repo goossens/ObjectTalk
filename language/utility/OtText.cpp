@@ -446,7 +446,7 @@ std::string OtText::fromJSON(const std::string text) {
 						if (c + 4 <= text.cend()) {
 							std::string utf8(4, 0);
 
-							auto codepoint = (int32_t) std::strtol(std::string(c, c + 4).c_str(), nullptr, 16);
+							auto codepoint = static_cast<int32_t>(std::strtol(std::string(c, c + 4).c_str(), nullptr, 16));
 							auto end = OtCodePoint::write(utf8.begin(), codepoint);
 
 							o << std::string(utf8.begin(), end);

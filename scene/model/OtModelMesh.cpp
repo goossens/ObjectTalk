@@ -47,7 +47,7 @@ void OtModelMesh::load(const aiMesh* mesh) {
 	bool hasUV = mesh->mNumUVComponents[0] == 2 && mesh->mTextureCoords[0] != nullptr;
 
 	// process all vertices
-	for (auto i = 0; i < mesh->mNumVertices; i++) {
+	for (auto i = 0u; i < mesh->mNumVertices; i++) {
 		// get position
 		glm::vec3 pos = ToVec3(mesh->mVertices[i]);
 
@@ -65,7 +65,7 @@ void OtModelMesh::load(const aiMesh* mesh) {
 	indices.reserve(mesh->mNumFaces * 3);
 
 	// process all triangles
-    for(auto i = 0; i < mesh->mNumFaces; i++) {
+    for(auto i = 0u; i < mesh->mNumFaces; i++) {
 		indices.emplace_back(mesh->mFaces[i].mIndices[0]);
 		indices.emplace_back(mesh->mFaces[i].mIndices[1]);
 		indices.emplace_back(mesh->mFaces[i].mIndices[2]);

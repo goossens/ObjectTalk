@@ -20,7 +20,7 @@
 
 void OtIndexBuffer::set(uint32_t* data, size_t count) {
 	clear();
-	indexBuffer = bgfx::createIndexBuffer(bgfx::copy(data, (uint32_t) (count * sizeof(uint32_t))), BGFX_BUFFER_INDEX32);
+	indexBuffer = bgfx::createIndexBuffer(bgfx::copy(data, static_cast<uint32_t>((count * sizeof(uint32_t)))), BGFX_BUFFER_INDEX32);
 }
 
 

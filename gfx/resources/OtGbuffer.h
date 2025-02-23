@@ -43,11 +43,11 @@ public:
 	inline bgfx::TextureHandle getDepthTextureHandle() { return depthTexture.getHandle(); }
 
 	// get texture indices
-	inline int getAlbedoTextureIndex() { return albedoTexture.getIndex(); }
-	inline int getNormalTextureIndex() { return normalTexture.getIndex(); }
-	inline int getPbrTextureIndex() { return pbrTexture.getIndex(); }
-	inline int getEmissiveTextureIndex() { return emissiveTexture.getIndex(); }
-	inline int getDepthTextureIndex() { return depthTexture.getIndex(); }
+	inline uint16_t getAlbedoTextureIndex() { return albedoTexture.getIndex(); }
+	inline uint16_t getNormalTextureIndex() { return normalTexture.getIndex(); }
+	inline uint16_t getPbrTextureIndex() { return pbrTexture.getIndex(); }
+	inline uint16_t getEmissiveTextureIndex() { return emissiveTexture.getIndex(); }
+	inline uint16_t getDepthTextureIndex() { return depthTexture.getIndex(); }
 
 	// bind textures
 	void bindAlbedoTexture(OtSampler& sampler, int unit);

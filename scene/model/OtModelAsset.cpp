@@ -37,15 +37,18 @@ OtAssetBase::State OtModelAsset::load() {
 	Assimp::Importer importer;
 
 	// determine the import flags
-	uint32_t flags =
+	auto flags =
 		aiProcessPreset_TargetRealtime_Quality |
 		aiProcess_OptimizeMeshes |
 		aiProcess_PreTransformVertices |
-		aiProcess_GenBoundingBoxes |
-		(OtGpuHasOriginBottomLeft() ? 0 : aiProcess_FlipUVs);
+		aiProcess_GenBoundingBoxes;
+
+	if (!OtGpuHasOriginBottomLeft()) {
+		flags |= aiProcess_FlipUVs;
+	}
 
 	// read the model file
-	const aiScene* scene = importer.ReadFile(path, flags);
+	const aiScene* scene = importer.ReadFile(path, static_cast<unsigned int>(flags));
 
 	// ensure model was loaded correctly
 	if (scene == nullptr) {
@@ -62,7 +65,7 @@ OtAssetBase::State OtModelAsset::load() {
 	// load all the meshes
 	meshes.resize(scene->mNumMeshes);
 
-	for (auto i = 0; i < scene->mNumMeshes; i++) {
+	for (auto i = 0u; i < scene->mNumMeshes; i++) {
 		meshes[i].load(scene->mMeshes[i]);
 		aabb.addAABB(meshes[i].getAABB());
 	}
@@ -71,7 +74,7 @@ OtAssetBase::State OtModelAsset::load() {
 	materials.resize(scene->mNumMaterials);
 	auto dir = OtPath::getParent(path);
 
-	for (auto i = 0; i < scene->mNumMaterials; i++) {
+	for (auto i = 0u; i < scene->mNumMaterials; i++) {
 		materials[i].load(scene->mMaterials[i], dir);
 	}
 

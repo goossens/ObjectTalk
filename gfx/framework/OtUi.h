@@ -125,6 +125,7 @@ public:
 
 	// field to edit numbers
 	static bool dragInt(const char* label, int* value, int minv=std::numeric_limits<int>::lowest(), int maxv=std::numeric_limits<int>::max());
+	static bool dragSizeT(const char* label, size_t* value, size_t minv=0, size_t maxv=std::numeric_limits<size_t>::max());
 	static bool dragFloat(const char* label, float* value, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
 
 	// field to edit glm vectors

@@ -38,9 +38,9 @@ public:
 	inline operator bool() override { return value != 0; }
 	inline operator int() override { return (int) value; }
 	inline operator int64_t()  override{ return value; }
-	inline operator size_t() override { return (size_t) value; }
-	inline operator float() override { return (float) value; }
-	inline operator double() override { return (double) value; }
+	inline operator size_t() override { return static_cast<size_t>(value); }
+	inline operator float() override { return static_cast<float>(value); }
+	inline operator double() override { return static_cast<float>(value); }
 	inline operator std::string() override { return std::to_string(value); }
 
 	// debugging support
@@ -84,7 +84,7 @@ public:
 	inline int64_t min(int64_t operand) { return std::min(value, operand); }
 	inline int64_t max(int64_t operand) { return std::max(value, operand); }
 	inline int64_t clamp(int64_t min, int64_t max) { return std::clamp(value, min, max); }
-	inline int64_t random() { return (int64_t) OtRandom(double(value)); };
+	inline int64_t random() { return static_cast<int64_t>(OtRandom(double(value))); };
 
 	// get type definition
 	static OtType getMeta();

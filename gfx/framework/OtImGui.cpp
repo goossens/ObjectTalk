@@ -350,8 +350,8 @@ void OtFramework::renderIMGUI() {
 		bgfx::TransientVertexBuffer tvb;
 		bgfx::TransientIndexBuffer tib;
 
-		uint32_t numVertices = (uint32_t) cmd_list->VtxBuffer.size();
-		uint32_t numIndices = (uint32_t) cmd_list->IdxBuffer.size();
+		uint32_t numVertices = static_cast<uint32_t>(cmd_list->VtxBuffer.size());
+		uint32_t numIndices = static_cast<uint32_t>(cmd_list->IdxBuffer.size());
 
 		if ((bgfx::getAvailTransientVertexBuffer(numVertices, imguiVertexLayout) != numVertices) ||
 			(bgfx::getAvailTransientIndexBuffer(numIndices) != numIndices)) {
@@ -375,8 +375,8 @@ void OtFramework::renderIMGUI() {
 				cmd->UserCallback(cmd_list, cmd);
 
 			} else {
-				const uint16_t xx = (uint16_t) std::max(cmd->ClipRect.x, 0.0f);
-				const uint16_t yy = (uint16_t) std::max(cmd->ClipRect.y, 0.0f);
+				const uint16_t xx = static_cast<uint16_t>(std::max(cmd->ClipRect.x, 0.0f));
+				const uint16_t yy = static_cast<uint16_t>(std::max(cmd->ClipRect.y, 0.0f));
 
 				bgfx::setState(
 					BGFX_STATE_WRITE_RGB |

@@ -131,7 +131,7 @@ OtObject OtFSClass::ls(const std::string& path) {
 
 size_t OtFSClass::filesize(const std::string& path) {
 	try {
-		return (size_t) std::filesystem::file_size(path);
+		return static_cast<size_t>(std::filesystem::file_size(path));
 
 	} catch (std::exception& e) {
 		OtError("Can't get size of file [{}], error: {}", path, e.what());

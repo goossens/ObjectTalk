@@ -212,7 +212,7 @@ private:
 		return jump;
 	}
 
-	inline void emitID(OtID id) { emitNumber((size_t) id); }
+	inline void emitID(OtID id) { emitNumber(static_cast<size_t>(id)); }
 
 	inline void emitNumber(size_t number) {
 		while (number > 0x7f) {
@@ -220,7 +220,7 @@ private:
 			number >>= 7;
 		}
 
-		bytecode.emplace_back((uint8_t) number);
+		bytecode.emplace_back(static_cast<uint8_t>(number));
 	}
 
 	// properties

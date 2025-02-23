@@ -99,7 +99,7 @@ void OtImage::load(const std::string& path, bool powerof2, bool square) {
 		OtError("Can't open image in [{}]", path);
 	}
 
-	auto imageContainer = bimg::imageParse(&allocator, buffer, (uint32_t) filesize);
+	auto imageContainer = bimg::imageParse(&allocator, buffer, static_cast<uint32_t>(filesize));
 	delete [] buffer;
 
 	if (!imageContainer) {

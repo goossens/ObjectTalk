@@ -25,8 +25,8 @@ void OtTorusPrimitive::createMesh(OtMesh* mesh) {
 	// generate vertices
 	for (auto j = 0; j <= radialSegments; j++) {
 		for (auto i = 0; i <= tubularSegments; i++) {
-			auto u = glm::radians(radialStart + (float) j / radialSegments * radialLength);
-			auto v = glm::radians(tubularStart + (float) i / tubularSegments * tubularLength);
+			auto u = glm::radians(radialStart + static_cast<float>(j) / radialSegments * radialLength);
+			auto v = glm::radians(tubularStart + static_cast<float>(i) / tubularSegments * tubularLength);
 
 			auto x = (radius + tubeRadius * std::cos(v)) * std::cos(u);
 			auto y = (radius + tubeRadius * std::cos(v)) * std::sin(u);
@@ -36,7 +36,9 @@ void OtTorusPrimitive::createMesh(OtMesh* mesh) {
 			mesh->addVertex(OtVertex(
 				glm::vec3(x, y, z),
 				glm::normalize(glm::vec3(x, y, z) - glm::vec3(radius * std::cos(u), radius * std::sin(u), 0.0)),
-				glm::vec2((float) i / (float) tubularSegments, (float) j / (float) radialSegments)));
+				glm::vec2(
+					static_cast<float>(i) / static_cast<float>(tubularSegments),
+					static_cast<float>(j) / static_cast<float>(radialSegments))));
 		}
 	}
 

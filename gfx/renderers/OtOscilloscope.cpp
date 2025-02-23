@@ -279,8 +279,8 @@ void OtOscilloscope::render(OtFrameBuffer& framebuffer) {
 				*p++ = 0xff;
 				*p++ = 0xff;
 				*p++ = 0xff;
-				auto distance = std::min(1.0, std::sqrt((double) (x * x + y * y)) / (double) halfBrushSize);
-				*p++ = (uint8_t) (std::clamp(std::pow(16.0, -2.0 * distance), 0.0, 1.0) * 255.0);
+				auto distance = std::min(1.0, std::sqrt(static_cast<double>(x * x + y * y) / static_cast<double>(halfBrushSize)));
+				*p++ = static_cast<uint8_t>(std::clamp(std::pow(16.0, -2.0 * distance), 0.0, 1.0) * 255.0);
 			}
 		}
 
@@ -315,10 +315,10 @@ void OtOscilloscope::render(OtFrameBuffer& framebuffer) {
 
 	// update the vertex buffer
 	if (vertices.size()) {
-		vertexBuffers[currentDrawStep].set(vertices.data(), (uint32_t) vertices.size(), OtVertexPosUvCol2D::getLayout());
+		vertexBuffers[currentDrawStep].set(vertices.data(), static_cast<uint32_t>(vertices.size()), OtVertexPosUvCol2D::getLayout());
 	}
 
-	vertexBufferSizes[currentDrawStep] = (uint32_t) vertices.size();
+	vertexBufferSizes[currentDrawStep] = static_cast<uint32_t>(vertices.size());
 
 	// render all decay steps
 	for (size_t c = 0; c < decaySteps; c++) {
@@ -567,41 +567,41 @@ void OtOscilloscope::endDraw(float lineWidth, uint32_t color) {
 			float a2pa = normalizeAngle(line->a - pline->a);
 
 			if (a2pa < pa2a) {
-				drawFan(line->xr0, line->yr0, pline->a, line->a, line->tl0 + line->tr0, (float) halfBrushSize + (line->tr0 / t * (float) halfBrushSize), 0, color);
+				drawFan(line->xr0, line->yr0, pline->a, line->a, line->tl0 + line->tr0, static_cast<float>(halfBrushSize) + (line->tr0 / t * static_cast<float>(halfBrushSize)), 0, color);
 
 			} else {
-				drawFan(line->xl0, line->yl0, pline->a, line->a, line->tl0 + line->tr0, (float) halfBrushSize - (line->tl0 / t * (float) halfBrushSize), (float) brushSize, color);
+				drawFan(line->xl0, line->yl0, pline->a, line->a, line->tl0 + line->tr0, static_cast<float>(halfBrushSize) - (line->tl0 / t * static_cast<float>(halfBrushSize)), static_cast<float>(brushSize), color);
 			}
 		}
 
-		float tl0 = (float) halfBrushSize - (line->tl0 / t) * (float) halfBrushSize;
-		float tl1 = (float) halfBrushSize - (line->tl1 / t) * (float) halfBrushSize;
+		float tl0 = static_cast<float>(halfBrushSize) - (line->tl0 / t) * static_cast<float>(halfBrushSize);
+		float tl1 = static_cast<float>(halfBrushSize) - (line->tl1 / t) * static_cast<float>(halfBrushSize);
 
-		float tr0 = (float) halfBrushSize + (line->tr0 / t) * (float) halfBrushSize;
-		float tr1 = (float) halfBrushSize + (line->tr1 / t) * (float) halfBrushSize;
+		float tr0 = static_cast<float>(halfBrushSize) + (line->tr0 / t) * static_cast<float>(halfBrushSize);
+		float tr1 = static_cast<float>(halfBrushSize) + (line->tr1 / t) * static_cast<float>(halfBrushSize);
 
-		addVertex(line->xr0, line->yr0, tr0, (float) halfBrushSize, color);
-		addVertex(line->xr1, line->yr1, tr1, (float) halfBrushSize, color);
-		addVertex(line->xl1, line->yl1, tl1, (float) halfBrushSize, color);
-		addVertex(line->xl0, line->yl0, tl0, (float) halfBrushSize, color);
-		addVertex(line->xr0, line->yr0, tr0, (float) halfBrushSize, color);
-		addVertex(line->xl1, line->yl1, tl1, (float) halfBrushSize, color);
+		addVertex(line->xr0, line->yr0, tr0, static_cast<float>(halfBrushSize), color);
+		addVertex(line->xr1, line->yr1, tr1, static_cast<float>(halfBrushSize), color);
+		addVertex(line->xl1, line->yl1, tl1, static_cast<float>(halfBrushSize), color);
+		addVertex(line->xl0, line->yl0, tl0, static_cast<float>(halfBrushSize), color);
+		addVertex(line->xr0, line->yr0, tr0, static_cast<float>(halfBrushSize), color);
+		addVertex(line->xl1, line->yl1, tl1, static_cast<float>(halfBrushSize), color);
 
 		if (!line->has_prev) {
-			addVertex(line->xl0, line->yl0, tl0, (float) halfBrushSize, color);
+			addVertex(line->xl0, line->yl0, tl0, static_cast<float>(halfBrushSize), color);
 			addVertex(line->xlt0, line->ylt0, tl0, 0.0f, color);
-			addVertex(line->xr0, line->yr0, tr0, (float) halfBrushSize, color);
-			addVertex(line->xr0, line->yr0, tr0, (float) halfBrushSize, color);
+			addVertex(line->xr0, line->yr0, tr0, static_cast<float>(halfBrushSize), color);
+			addVertex(line->xr0, line->yr0, tr0, static_cast<float>(halfBrushSize), color);
 			addVertex(line->xlt0, line->ylt0, tl0, 0.0f, color);
 			addVertex(line->xrt0, line->yrt0, tr0, 0.0, color);
 		}
 
 		if (!line->has_next) {
 			addVertex(line->xlt1, line->ylt1, tl1, 0.0f, color);
-			addVertex(line->xl1, line->yl1, tl1, (float) halfBrushSize, color);
-			addVertex(line->xr1, line->yr1, tr1, (float) halfBrushSize, color);
+			addVertex(line->xl1, line->yl1, tl1, static_cast<float>(halfBrushSize), color);
+			addVertex(line->xr1, line->yr1, tr1, static_cast<float>(halfBrushSize), color);
 			addVertex(line->xlt1, line->ylt1, tl1, 0.0f, color);
-			addVertex(line->xr1, line->yr1, tr1, (float) halfBrushSize, color);
+			addVertex(line->xr1, line->yr1, tr1, static_cast<float>(halfBrushSize), color);
 			addVertex(line->xrt1, line->yrt1, tr1, 0.0f, color);
 		}
 	}
@@ -641,8 +641,8 @@ void OtOscilloscope::drawFan(float _cx, float _cy, float _pa, float _a, float _t
 	}
 
 	for (auto i = 1; i <= nsteps; i++) {
-		addVertex(_cx + _t * std::sin(angles[i - 1]), _cy - _t * std::cos(angles[i - 1]), _e, (float) halfBrushSize, color);
-		addVertex(_cx, _cy, _s, (float) halfBrushSize, color);
-		addVertex(_cx + _t * std::sin(angles[i]), _cy - _t * std::cos(angles[i]), _e, (float) halfBrushSize, color);
+		addVertex(_cx + _t * std::sin(angles[i - 1]), _cy - _t * std::cos(angles[i - 1]), _e, static_cast<float>(halfBrushSize), color);
+		addVertex(_cx, _cy, _s, static_cast<float>(halfBrushSize), color);
+		addVertex(_cx + _t * std::sin(angles[i]), _cy - _t * std::cos(angles[i]), _e, static_cast<float>(halfBrushSize), color);
 	}
 }

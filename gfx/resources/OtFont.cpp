@@ -93,7 +93,7 @@ float OtFont::getWidth(const std::string& text, float size) {
 	}
 
 	// scale result
-	return stbtt_ScaleForPixelHeight(&fontdata->font, size) * (float) width;
+	return stbtt_ScaleForPixelHeight(&fontdata->font, size) * static_cast<float>(width);
 }
 
 

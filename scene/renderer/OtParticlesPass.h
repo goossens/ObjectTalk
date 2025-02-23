@@ -79,7 +79,7 @@ public:
 
 			// send out instance data
 			OtInstanceDataBuffer idb;
-			idb.submit(particles.getInstanceData(), particles.getCount(), particles.getInstanceStride());
+			idb.submit(particles.getInstanceData(), particles.size(), particles.getInstanceStride());
 
 			// bind the particle texture atlas
 			submitTextureSampler(particlesSampler, 0, settings.atlas);

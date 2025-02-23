@@ -58,10 +58,10 @@ public:
 
 		// add vertices
 		for (auto vz = 0; vz < depth; vz++) {
-			auto v = (float) vz / (depth - 1);
+			auto v = static_cast<float>(vz) / (depth - 1);
 
 			for (auto vx = 0; vx < width; vx++) {
-				auto u = (float) vx / (width - 1);
+				auto u = static_cast<float>(vx) / (width - 1);
 
 				mesh.addVertex(OtVertex(
 					glm::vec3(u - 0.5f, 0.0f, v - 0.5f),

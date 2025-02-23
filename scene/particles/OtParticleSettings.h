@@ -54,7 +54,7 @@ struct OtParticleSettings {
 	static constexpr size_t shapeTypesCount = sizeof(shapeTypes) / sizeof(*shapeTypes);
 
 	// properties
-	int particles = 1024;
+	size_t particles = 1024;
 	float lifeSpanLow = 1.0f;
 	float lifeSpanHigh = 5.0f;
 	OtAsset<OtTextureAsset> atlas;

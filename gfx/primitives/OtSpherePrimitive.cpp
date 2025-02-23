@@ -38,7 +38,9 @@ void OtSpherePrimitive::createMesh(OtMesh* mesh) {
 			auto x0 = r0 * -std::sin(glm::radians(phi));
 			auto z0 = r0 * -std::cos(glm::radians(phi));
 
-			glm::vec2 uv = glm::vec2((float) seg / (float) thetaSegments, (float) ring / (float) phiSegments);
+			glm::vec2 uv = glm::vec2(
+				static_cast<float>(seg) / static_cast<float>(thetaSegments),
+				static_cast<float>(ring) / static_cast<float>(phiSegments));
 
 			// add vertex
 			mesh->addVertex(OtVertex(

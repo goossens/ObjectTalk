@@ -44,7 +44,7 @@ public:
  	inline OtFrameBuffer& getFrameBuffer(int cascade) { return cascades[cascade].framebuffer; }
 	inline OtTexture getDepthTexture(int cascade) { return cascades[cascade].framebuffer.getDepthTexture(); }
 	inline bgfx::TextureHandle getDepthTextureHandle(int cascade) { return cascades[cascade].framebuffer.getDepthTextureHandle(); }
-	inline int getDepthTextureIndex(int cascade) { return cascades[cascade].framebuffer.getDepthTextureIndex(); }
+	inline uint16_t getDepthTextureIndex(int cascade) { return cascades[cascade].framebuffer.getDepthTextureIndex(); }
 
 	// number of cascades in shadowmap
 	constexpr static int maxCascades = 4;

@@ -138,7 +138,7 @@ bool OtInstances::submit(OtFrustum& frustum, OtAABB& aabb) {
 		}
 
 		// get number of instances and size of instance data
-		uint32_t count = (uint32_t) tmp.size();
+		uint32_t count = static_cast<uint32_t>(tmp.size());
 		uint16_t stride = sizeof(glm::mat4);
 
 		if (count) {

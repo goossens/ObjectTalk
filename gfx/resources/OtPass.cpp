@@ -80,7 +80,7 @@ void OtPass::setClear(bool color, bool depth, const glm::vec4& rgba, float depth
 //
 
 void OtPass::setRectangle(int x, int y, int w, int h) {
-	bgfx::setViewRect(view, (uint16_t) x, (uint16_t) y, (uint16_t) w, (uint16_t) h);
+	bgfx::setViewRect(view, static_cast<uint16_t>(x), static_cast<uint16_t>(y), static_cast<uint16_t>(w), static_cast<uint16_t>(h));
 }
 
 
@@ -140,10 +140,10 @@ void OtPass::submitQuad(int w, int h) {
 	OtTransientVertexBuffer tvb;
 	tvb.submit(vertices, sizeof(vertices) / sizeof(*vertices), OtVertexPosUv::getLayout());
 
-	bgfx::setViewRect(view, 0, 0, (uint16_t) w, (uint16_t) h);
+	bgfx::setViewRect(view, 0, 0, static_cast<uint16_t>(w), static_cast<uint16_t>(h));
 	bgfx::setViewClear(view, BGFX_CLEAR_NONE, BGFX_CLEAR_NONE);
 
-	glm::mat4 projMatrix = glm::ortho(0.0f, (float) w, (float) h, 0.0f);
+	glm::mat4 projMatrix = glm::ortho(0.0f, static_cast<float>(w), static_cast<float>(h), 0.0f);
 	bgfx::setViewTransform(view, nullptr, glm::value_ptr(projMatrix));
 }
 

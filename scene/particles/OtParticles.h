@@ -30,13 +30,12 @@ public:
 	void update(const OtParticleSettings& settings);
 
 	// get particle system information
-	inline int getCount() { return count; }
+	inline size_t size() { return particles.size(); }
 	inline int getInstanceStride() { return sizeof(Instance); }
 	inline void* getInstanceData () { return instances.data(); }
 
 private:
 	// list of particles
-	int count = -1;
 	std::vector<OtParticle> particles;
 
 	// particle index (for sorting)
@@ -60,4 +59,7 @@ private:
 	};
 
 	std::vector<Instance> instances;
+
+	// flag to see if we are running update for the first time
+	bool first = true;
 };

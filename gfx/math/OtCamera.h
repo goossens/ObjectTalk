@@ -45,8 +45,8 @@ public:
 
 		// calculate projection matrix
 		projectionMatrix = OtGpuHasHomogeneousDepth()
-			? glm::perspectiveFovRH_NO(glm::radians(fov), (float) width, (float) height, nearPlane, farPlane)
-			: glm::perspectiveFovRH_ZO(glm::radians(fov), (float) width, (float) height, nearPlane, farPlane);
+			? glm::perspectiveFovRH_NO(glm::radians(fov), static_cast<float>(width), static_cast<float>(height), nearPlane, farPlane)
+			: glm::perspectiveFovRH_ZO(glm::radians(fov), static_cast<float>(width), static_cast<float>(height), nearPlane, farPlane);
 
 		// update camera
 		update();
@@ -60,8 +60,8 @@ public:
 		viewMatrix = glm::lookAt(eye, at, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		projectionMatrix = OtGpuHasHomogeneousDepth()
-			? glm::perspectiveFovRH_NO(glm::radians(fov), (float) width, (float) height, nearPlane, farPlane)
-			: glm::perspectiveFovRH_ZO(glm::radians(fov), (float) width, (float) height, nearPlane, farPlane);
+			? glm::perspectiveFovRH_NO(glm::radians(fov), static_cast<float>(width), static_cast<float>(height), nearPlane, farPlane)
+			: glm::perspectiveFovRH_ZO(glm::radians(fov), static_cast<float>(width), static_cast<float>(height), nearPlane, farPlane);
 
 		// initialize camera
 		update();

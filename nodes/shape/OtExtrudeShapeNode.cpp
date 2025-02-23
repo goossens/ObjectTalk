@@ -93,7 +93,7 @@ public:
 			}
 
 			// create the front and back-facing vertices (interwoven)
-			int offset = (uint32_t) mesh->getVertexCount();
+			int offset = static_cast<uint32_t>(mesh->getVertexCount());
 			int vertexCount = tessGetVertexCount(tess);
 			const TESSreal* verts = tessGetVertices(tess);
 

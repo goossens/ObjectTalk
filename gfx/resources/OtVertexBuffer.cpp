@@ -21,7 +21,7 @@
 void OtVertexBuffer::set(void* data, size_t count, const bgfx::VertexLayout& l) {
 	clear();
 	layout = l;
-	vertexBuffer = bgfx::createVertexBuffer(bgfx::copy(data, layout.getSize((uint32_t) count)), layout);
+	vertexBuffer = bgfx::createVertexBuffer(bgfx::copy(data, layout.getSize(static_cast<uint32_t>(count))), layout);
 }
 
 

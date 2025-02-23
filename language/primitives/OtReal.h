@@ -36,9 +36,9 @@ public:
 	// convertors
 	inline operator bool() override { return value != 0.0; }
 	inline operator int() override { return (int) value; }
-	inline operator int64_t() override { return (int64_t) value; }
-	inline operator size_t() override { return (size_t) value; }
-	inline operator float() override { return (float) value; }
+	inline operator int64_t() override { return static_cast<int64_t>(value); }
+	inline operator size_t() override { return static_cast<size_t>(value); }
+	inline operator float() override { return static_cast<float>(value); }
 	inline operator double() override { return value; }
 	inline operator std::string() override {return std::to_string(value); }
 

@@ -205,7 +205,7 @@ float OtVectorDisplayClass::getTextWidth(const std::string& text, float size) {
 	for (auto& c : text) {
 		if (c >= 32 && c <= 126) {
 			const int8_t* chr = simplex[c - 32];
-			textWidth += (float) chr[1] * factor;
+			textWidth += static_cast<float>(chr[1]) * factor;
 		}
 	}
 

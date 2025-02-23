@@ -18,7 +18,13 @@ list(REMOVE_DUPLICATES GUI_INCLUDE_DIRS)
 set(GUI_INCLUDE_DIRS ${GUI_INCLUDE_DIRS} PARENT_SCOPE)
 
 add_library(gui OBJECT ${GUI_INCLUDES} ${GUI_SOURCES})
-target_include_directories(gui PUBLIC ${GUI_INCLUDE_DIRS})
+
+target_compile_options(gui PRIVATE
+	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Werror -Wall -Wextra>
+	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wpedantic>
+	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4 /WX>)
+
+	target_include_directories(gui PUBLIC ${GUI_INCLUDE_DIRS})
 target_link_libraries(gui PUBLIC language shaders gfx imguieditor)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${GUI_INCLUDES} ${GUI_SOURCES})

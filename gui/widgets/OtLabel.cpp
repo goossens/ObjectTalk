@@ -27,12 +27,15 @@ void OtLabelClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 3:
 			setVerticalAlignment(OtUi::Alignment(parameters[2]->operator int()));
+			[[fallthrough]];
 
 		case 2:
 			setHorizontalAlignment(OtUi::Alignment(parameters[1]->operator int()));
+			[[fallthrough]];
 
 		case 1:
 			setLabel(parameters[0]->operator std::string());
+			[[fallthrough]];
 
 		case 0:
 			break;

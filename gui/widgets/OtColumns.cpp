@@ -28,12 +28,15 @@ void OtColumnsClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 3:
 			setResizable(parameters[2]->operator bool());
+			[[fallthrough]];
 
 		case 2:
 			setBorders(parameters[1]->operator bool());
+			[[fallthrough]];
 
 		case 1:
 			setWidths(parameters[0]);
+			[[fallthrough]];
 
 		case 0:
 			break;
@@ -98,7 +101,7 @@ void OtColumnsClass::render() {
 	// determine total logical width of visible columns
 	float totalLogicalWidth = 0.0f;
 
-	for (auto i = 0; i < visibleColumns; i++) {
+	for (size_t i = 0; i < visibleColumns; i++) {
 		totalLogicalWidth += logicalWidths[i];
 	}
 
@@ -114,14 +117,14 @@ void OtColumnsClass::render() {
 	// determine screen width of each visible column
 	std::vector<float> screenWidths;
 
-	for (auto i = 0; i < visibleColumns; i++) {
+	for (size_t i = 0; i < visibleColumns; i++) {
 		screenWidths.push_back(logicalWidths[i] * ratio);
 	}
 
 	// render columns
-	for (auto i = 0; i < visibleColumns; i++) {
+	for (size_t i = 0; i < visibleColumns; i++) {
 		// ensure unique widget IDs
-		ImGui::PushID(i);
+		ImGui::PushID(static_cast<int>(i));
 
 		// render child widget
 		ImGui::BeginChild("column", ImVec2(screenWidths[i], 0.0f), borders ? ImGuiChildFlags_Borders : ImGuiChildFlags_None);

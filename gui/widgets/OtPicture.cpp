@@ -27,15 +27,19 @@ void OtPictureClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 4:
 			setVerticalAlignment(OtUi::Alignment(parameters[3]->operator int()));
+			[[fallthrough]];
 
 		case 3:
 			setHorizontalAlignment(OtUi::Alignment(parameters[2]->operator int()));
+			[[fallthrough]];
 
 		case 2:
 			setScale(parameters[1]->operator float());
+			[[fallthrough]];
 
 		case 1:
 			setPicture(parameters[0]->operator std::string());
+			[[fallthrough]];
 
 		case 0:
 			break;

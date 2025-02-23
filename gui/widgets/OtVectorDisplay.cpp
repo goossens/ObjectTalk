@@ -31,15 +31,19 @@ void OtVectorDisplayClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 5:
 			setVerticalAlignment(OtUi::Alignment(parameters[4]->operator int()));
+			[[fallthrough]];
 
 		case 4:
 			setHorizontalAlignment(OtUi::Alignment(parameters[3]->operator int()));
+			[[fallthrough]];
 
 		case 3:
 			setScale(parameters[2]->operator float());
+			[[fallthrough]];
 
 		case 2:
 			setSize(parameters[0]->operator int(), parameters[1]->operator int());
+			[[fallthrough]];
 
 		case 0:
 			break;
@@ -55,8 +59,8 @@ void OtVectorDisplayClass::init(size_t count, OtObject* parameters) {
 //
 
 OtObject OtVectorDisplayClass::setSize(int w, int h) {
-	width = w;
-	height = h;
+	width = static_cast<float>(w);
+	height = static_cast<float>(h);
 	return OtWidget(this);
 }
 
@@ -146,7 +150,7 @@ OtObject OtVectorDisplayClass::setColor(const std::string& color) {
 //
 
 OtObject OtVectorDisplayClass::setAlpha(float alpha) {
-	int a = alpha * 255;
+	int a = static_cast<int>(alpha * 255.0f);
 	style.color = (style.color & 0xffffff) | a << 24;
 	return OtWidget(this);
 }
@@ -156,8 +160,8 @@ OtObject OtVectorDisplayClass::setAlpha(float alpha) {
 //	OtVectorDisplayClass::setWidth
 //
 
-OtObject OtVectorDisplayClass::setWidth(float width) {
-	style.width = width;
+OtObject OtVectorDisplayClass::setWidth(float w) {
+	style.width = w;
 	return OtWidget(this);
 }
 
@@ -196,16 +200,16 @@ float OtVectorDisplayClass::getSevenSegmentWidth(const std::string& text, float 
 
 float OtVectorDisplayClass::getTextWidth(const std::string& text, float size) {
 	auto factor = size / 32.0f;
-	float width = 0.0f;
+	float textWidth = 0.0f;
 
 	for (auto& c : text) {
-		if (c >= 32 || c <= 126) {
+		if (c >= 32 && c <= 126) {
 			const int8_t* chr = simplex[c - 32];
-			width += (float) chr[1] * factor;
+			textWidth += (float) chr[1] * factor;
 		}
 	}
 
-	return width * scale;
+	return textWidth * scale;
 }
 
 
@@ -260,8 +264,8 @@ int OtVectorDisplayClass::addCenteredRectangle(float x, float y, float w, float 
 	shape.type = Shape::Type::rectangle;
 	shape.width = style.width;
 	shape.color = style.color;
-	shape.x = x - w / 2.0;
-	shape.y = y - h / 2.0;
+	shape.x = x - w / 2.0f;
+	shape.y = y - h / 2.0f;
 	shape.w = w;
 	shape.h = h;
 	shapes.push_back(shape);
@@ -370,8 +374,8 @@ void OtVectorDisplayClass::updateRectangle(int id, float x, float y, float w, fl
 void OtVectorDisplayClass::updateCenteredRectangle(int id, float x, float y, float w, float h) {
 	for (auto& shape : shapes) {
 		if (shape.id == id) {
-			shape.x = x - w / 2.0;
-			shape.y = y - h / 2.0;
+			shape.x = x - w / 2.0f;
+			shape.y = y - h / 2.0f;
 			shape.w = w;
 			shape.h = h;
 			return;
@@ -463,10 +467,10 @@ void OtVectorDisplayClass::updateTextString(int id, const std::string& text) {
 //	OtVectorDisplayClass::updateWidth
 //
 
-void OtVectorDisplayClass::updateWidth(int id, float width) {
+void OtVectorDisplayClass::updateWidth(int id, float w) {
 	for (auto& shape : shapes) {
 		if (shape.id == id) {
-			shape.width = width;
+			shape.width = w;
 			return;
 		}
 	}
@@ -494,7 +498,7 @@ void OtVectorDisplayClass::updateColor(int id, const std::string& color) {
 void OtVectorDisplayClass::updateAlpha(int id, float alpha) {
 	for (auto& shape : shapes) {
 		if (shape.id == id) {
-			int a = alpha * 255;
+			int a =static_cast<int>(alpha * 255.0f);
 			shape.color = (shape.color & 0xffffff) | a << 24;
 			return;
 		}
@@ -565,8 +569,8 @@ void OtVectorDisplayClass::render() {
 	}
 
 	// calculate size of scope
-	ImVec2 size{width * scale, height * scale};
-	framebuffer.update(size.x, size.y);
+	ImVec2 size(width * scale, height * scale);
+	framebuffer.update(static_cast<int>(size.x), static_cast<int>(size.y));
 
 	// render all shapes
 	for (auto& shape : shapes) {

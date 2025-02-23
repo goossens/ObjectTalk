@@ -9,6 +9,10 @@
 //	Include files
 //
 
+#if _WIN32
+#define _CRT_SECURE_NO_WARNINGS // for localtime
+#endif
+
 #include <ctime>
 
 #include "OtFunction.h"
@@ -21,7 +25,7 @@
 //	Render a 7 segment LED
 //
 
-static void OtLed7(ImDrawList* list, float x, float y, float size, char ch, ImU32 color) {
+static void OtLed7(ImDrawList* list, float x, float y, float size, int ch, ImU32 color) {
 	// get segment pattern
 	int pattern = 0;
 
@@ -67,7 +71,7 @@ static void OtLed7(ImDrawList* list, float x, float y, float size, char ch, ImU3
 	}
 
 	// calculate scaling
-	auto s = size / 100.0;
+	auto s = size / 100.0f;
 
 	// segment A
 	if (pattern & 0b0000001) {
@@ -114,7 +118,7 @@ static void OtLed7(ImDrawList* list, float x, float y, float size, char ch, ImU3
 	// segment E
 	if (pattern & 0b0010000) {
 		list->PathLineTo(ImVec2(x + 0.0f, y + 98.0f * s));
-		list->PathLineTo(ImVec2(x + 0.0f, y + 51.0 * s));
+		list->PathLineTo(ImVec2(x + 0.0f, y + 51.0f * s));
 		list->PathLineTo(ImVec2(x + 4.0f * s, y + 51.0f * s));
 		list->PathLineTo(ImVec2(x + 8.0f * s, y + 55.0f * s));
 		list->PathLineTo(ImVec2(x + 8.0f * s, y + 91.0f * s));
@@ -208,7 +212,7 @@ void OtTronClass::render() {
 
 	// render seconds indicator
 	for (auto c = 0; c < 60; c += 1) {
-		auto angle = c * std::numbers::pi * 2.0f / 60.0f;
+		auto angle = c * static_cast<float>(std::numbers::pi) * 2.0f / 60.0f;
 		auto inner = 240.0f * scale;
 		auto outer = 280.0f * scale;
 
@@ -216,7 +220,7 @@ void OtTronClass::render() {
 			ImVec2(center.x + inner * sin(angle), center.y + inner * -cos(angle)),
 			ImVec2(center.x + outer * sin(angle), center.y + outer * -cos(angle)),
 			(c == now->tm_sec) ? color100 : color20,
-			15 * scale);
+			15.0f * scale);
 	}
 
 	// render hours and minutes
@@ -257,16 +261,16 @@ void OtTronClass::createArcs() {
 
 		} else {
 			// determine end of arc
-			arc.end = arc.start + OtRandom(0.3, std::numbers::pi / 3.0f);
+			arc.end = arc.start + static_cast<float>(OtRandom(0.3, std::numbers::pi / 3.0));
 
 			// ensure arc is still meaningful
-			if (arc.end > std::numbers::pi * 2.0f) {
-				arc.end = std::numbers::pi * 2.0f - 0.1f;
+			if (arc.end > static_cast<float>(std::numbers::pi * 2.0)) {
+				arc.end = static_cast<float>(std::numbers::pi * 2.0) - 0.1f;
 				nextCircle = true;
 			}
 
 			// assign random color to arc
-			arc.color = blend(color20, color100, OtRandom());
+			arc.color = blend(color20, color100, static_cast<float>(OtRandom()));
 
 			// add arc to list
 			arcs.push_back(arc);
@@ -277,7 +281,7 @@ void OtTronClass::createArcs() {
 			// update angles
 			arc.end = 0.0f;
 			arc.width = OtRandom(6.0f, 14.0f);
-			arc.rotation = OtRandom(std::numbers::pi);
+			arc.rotation = static_cast<float>(OtRandom(std::numbers::pi));
 			arc.radius += arc.width + OtRandom(8.0f, 12.0f);
 			arc.clockwise = OtRandom() > 0.5f;
 			nextCircle = false;

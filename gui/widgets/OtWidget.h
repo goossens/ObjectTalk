@@ -41,7 +41,7 @@ public:
 	virtual inline int getMaxChildren() { return 0; }
 
 	// ensure specified widget is allowed as a child
-	virtual inline void validateChild(OtWidget child) {}
+	virtual inline void validateChild(OtWidget /* child */) {}
 
 	// iterate through children
 	inline void each(std::function<void(OtWidget)> callback) {

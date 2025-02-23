@@ -27,17 +27,19 @@ void OtRealSliderClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 5:
 			setCallback(parameters[4]);
+			[[fallthrough]];
 
 		case 4:
-			setValueLimits(
-				parameters[2]-> operator float(),
-				parameters[3]-> operator float());
+			setValueLimits(parameters[2]-> operator float(), parameters[3]-> operator float());
+			[[fallthrough]];
 
 		case 2:
 			setValue(parameters[1]-> operator float());
+			[[fallthrough]];
 
 		case 1:
 			setLabel(parameters[0]->operator std::string());
+			[[fallthrough]];
 
 		case 0:
 			break;

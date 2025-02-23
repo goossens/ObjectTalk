@@ -27,12 +27,15 @@ void OtCheckBoxClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 3:
 			setCallback(parameters[2]);
+			[[fallthrough]];
 
 		case 2:
 			setChecked(parameters[1]-> operator bool());
+			[[fallthrough]];
 
 		case 1:
 			setLabel(parameters[0]->operator std::string());
+			[[fallthrough]];
 
 		case 0:
 			break;

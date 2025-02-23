@@ -29,23 +29,30 @@ void OtFilmStripClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 6:
 			setVerticalAlignment(OtUi::Alignment(parameters[5]->operator int()));
+			[[fallthrough]];
 
 		case 5:
 			setHorizontalAlignment(OtUi::Alignment(parameters[4]->operator int()));
+			[[fallthrough]];
 
 		case 4:
 			setValue(parameters[3]->operator float());
+			[[fallthrough]];
 
 		case 3:
 			if (parameters[2]->operator float()) {
 				setHorizontal();
 			}
 
+			[[fallthrough]];
+
 		case 2:
 			setFrames(parameters[1]->operator int());
+			[[fallthrough]];
 
 		case 1:
 			setFilmStrip(parameters[0]->operator std::string());
+			[[fallthrough]];
 
 		case 0:
 			break;
@@ -74,8 +81,8 @@ void OtFilmStripClass::render() {
 	if (filmstrip.isReady()) {
 		// determine framesize
 		auto& texture = filmstrip->getTexture();
-		float wt = texture.getWidth();
-		float ht = texture.getHeight();
+		float wt = static_cast<float>(texture.getWidth());
+		float ht = static_cast<float>(texture.getHeight());
 		float w = wt / (horizontal ? frames : 1);
 		float h = ht / (!horizontal ? frames : 1);
 

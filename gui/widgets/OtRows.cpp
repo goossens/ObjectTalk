@@ -28,12 +28,15 @@ void OtRowsClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 3:
 			setResizable(parameters[2]->operator bool());
+			[[fallthrough]];
 
 		case 2:
 			setBorders(parameters[1]->operator bool());
+			[[fallthrough]];
 
 		case 1:
 			setHeights(parameters[0]);
+			[[fallthrough]];
 
 		case 0:
 			break;
@@ -98,7 +101,7 @@ void OtRowsClass::render() {
 	// determine total logical height of visible rows
 	float totalLogicalHeight = 0.0f;
 
-	for (auto i = 0; i < visibleRows; i++) {
+	for (size_t i = 0; i < visibleRows; i++) {
 		totalLogicalHeight += logicalHeights[i];
 	}
 
@@ -114,14 +117,14 @@ void OtRowsClass::render() {
 	// determine screen height of each visible Row
 	std::vector<float> screenHeights;
 
-	for (auto i = 0; i < visibleRows; i++) {
+	for (size_t i = 0; i < visibleRows; i++) {
 		screenHeights.push_back(logicalHeights[i] * ratio);
 	}
 
 	// render rows
-	for (auto i = 0; i < visibleRows; i++) {
+	for (size_t i = 0; i < visibleRows; i++) {
 		// ensure unique widget IDs
-		ImGui::PushID(i);
+		ImGui::PushID(static_cast<int>(i));
 
 		// render child widget
 		auto spacing = ImGui::GetStyle().ItemSpacing;

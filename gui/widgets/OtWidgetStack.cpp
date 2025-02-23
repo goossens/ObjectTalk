@@ -26,7 +26,7 @@ void OtWidgetStackClass::render() {
 
 	bool done = false;
 
-	for (auto i = 0; i < children.size() && !done; i++) {
+	for (size_t i = 0; i < children.size() && !done; i++) {
 		if (children[i]->isEnabled()) {
 			renderChild(children[i]);
 			done = true;

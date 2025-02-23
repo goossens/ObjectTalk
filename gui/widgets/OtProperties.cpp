@@ -26,6 +26,7 @@ void OtPropertiesClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 1:
 			setSplit(parameters[0]->operator float());
+			[[fallthrough]];
 
 		case 0:
 			break;

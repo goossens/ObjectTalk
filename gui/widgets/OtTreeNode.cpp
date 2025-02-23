@@ -27,9 +27,11 @@ void OtTreeNodeClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 2:
 			setOpen(parameters[1]->operator bool());
+			[[fallthrough]];
 
 		case 1:
 			setLabel(parameters[0]->operator std::string());
+			[[fallthrough]];
 
 		case 0:
 			break;

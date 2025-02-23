@@ -27,12 +27,15 @@ void OtTextFieldClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 3:
 			setCallback(parameters[2]);
+			[[fallthrough]];
 
 		case 2:
 			setValue(parameters[1]-> operator std::string());
+			[[fallthrough]];
 
 		case 1:
 			setLabel(parameters[0]->operator std::string());
+			[[fallthrough]];
 
 		case 0:
 			break;

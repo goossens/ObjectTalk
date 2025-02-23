@@ -55,7 +55,7 @@ struct OtValue<int64_t> {
 
 template <>
 struct OtValue<size_t> {
-	static inline OtObject encode(size_t value) { return OtInteger::create(value); }
+	static inline OtObject encode(size_t value) { return OtInteger::create(static_cast<int64_t>(value)); }
 	static inline size_t decode(OtObject object) { return object->operator size_t(); }
 };
 

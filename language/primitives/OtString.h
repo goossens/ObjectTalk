@@ -83,7 +83,7 @@ public:
 	inline std::string right(size_t count) { return OtText::right(value, count); }
 	inline std::string mid(size_t start, size_t count) { return OtText::mid(value, start, count); }
 
-	inline size_t find(const std::string& sub) { std::string::size_type p = value.find(sub); return p == std::string::npos ? -1 : (size_t) p; }
+	inline int find(const std::string& sub) { std::string::size_type p = value.find(sub); return (p == std::string::npos) ? -1 : static_cast<int>(p); }
 	inline bool startsWith(const std::string& sub) { return OtText::startsWith(value, sub); }
 	inline bool contains(const std::string& sub) { return OtText::contains(value, sub); }
 

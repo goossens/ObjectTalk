@@ -30,9 +30,11 @@ void OtCanvasStackClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 2:
 			setVerticalAlignment(OtUi::Alignment(parameters[1]->operator int()));
+			[[fallthrough]];
 
 		case 1:
 			setHorizontalAlignment(OtUi::Alignment(parameters[0]->operator int()));
+			[[fallthrough]];
 
 		case 0:
 			break;

@@ -27,6 +27,7 @@ void OtTabClass::init(size_t count, OtObject* parameters) {
 	switch (count) {
 		case 1:
 			setLabel(parameters[0]->operator std::string());
+			[[fallthrough]];
 
 		case 0:
 			break;

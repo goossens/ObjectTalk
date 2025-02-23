@@ -54,7 +54,7 @@ public:
 		return OtWidget(this);
 	}
 
-	inline int getValue() { return value; }
+	inline float getValue() { return value; }
 
 	// render content
 	void render() override;

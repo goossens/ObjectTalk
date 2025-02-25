@@ -119,8 +119,13 @@ void OtNodesWidget::render(OtNodes* n) {
 		focusOnEditor = false;
 	}
 
+	ImGuiChildFlags flags =
+		ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_HorizontalScrollbar |
+		ImGuiWindowFlags_NoNavInputs;
+
 	ImGui::SetNextWindowContentSize(ImVec2(width, height));
-	ImGui::BeginChild("nodes", ImVec2(), ImGuiChildFlags_None, ImGuiWindowFlags_HorizontalScrollbar);
+	ImGui::BeginChild("nodes", ImVec2(), ImGuiChildFlags_None, flags);
 	pinOffset = ImGui::GetStyle().FramePadding.y + ImGui::GetFont()->Ascent - pinRadius + 1.0f;
 	ImDrawList* drawlist = ImGui::GetWindowDrawList();
 	widgetOffset = ImGui::GetCursorScreenPos();
@@ -702,7 +707,14 @@ void OtNodesWidget::handleInteractions() {
 				interactionState = InteractionState::rubberBand;
 			}
 
-		// handle right mouse button events
+		// handle middle mouse button events (panning)
+		} else if (ImGui::IsMouseDown(ImGuiMouseButton_Middle) && ImGui::IsWindowHovered()) {
+			ImVec2 mouseDelta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Middle);
+			ImGui::SetScrollX(ImGui::GetScrollX() - mouseDelta.x);
+			ImGui::SetScrollY(ImGui::GetScrollY() - mouseDelta.y);
+			ImGui::ResetMouseDragDelta(ImGuiMouseButton_Middle);
+
+		// handle right mouse button events (context menu)
 		} else if (ImGui::IsMouseDown(ImGuiMouseButton_Right) && ImGui::IsWindowHovered()) {
 			if (!hoveredPin && !hoveredNode) {
 				contextMenuDone = true;

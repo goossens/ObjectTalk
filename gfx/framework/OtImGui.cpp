@@ -211,6 +211,7 @@ void OtFramework::initIMGUI() {
 		0x1e00, 0x1eff, // latin extended additional
 		0x20a0, 0x21cf, // currency symbols
 		0x2190, 0x21ff, // arrows block
+		0x25a0, 0x25ff, // miscellanious technical
 		0
 	};
 

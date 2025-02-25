@@ -28,35 +28,49 @@
 class OtStderrMultiplexer : OtSingleton<OtStderrMultiplexer> {
 public:
 	// multiplex information over the stderr stream
-	static inline void multiplex(OtLog::Type type, const std::string& message) {
-		std::cerr << '\x02' << '\x00' << static_cast<char>(type) << message << '\x03' << std::flush;
-	}
-
-	static inline void multiplex(OtException& exception) {
-		std::cerr << '\x02' << '\x01' << exception.serialize() << '\x03' << std::flush;
-	}
+	static void multiplex(OtLog::Type type, const std::string& message);
+	static inline void multiplex(const std::string& message) { send(MessageType::debuggerMessage, message); }
+	static inline void multiplex(OtException& exception) { send(MessageType::exceptionMessage, exception.serialize()); }
 
 	// demultiplex stderr stream
 	static inline void demuliplex(
 		std::string input,
 		std::function<void(const std::string& message)> normal,
 		std::function<void(OtLog::Type type, const std::string& message)> log,
-		std::function<void(OtException& e)> except) { instance().demuliplexInput(input, normal, log, except); }
+		std::function<void(const std::string& message)> debugger,
+		std::function<void(OtException& e)> except) {
+
+		instance().demuliplexInput(input, normal, log, debugger, except);
+	}
 
 private:
+	// message types
+	enum class MessageType {
+		logMessage,
+		debuggerMessage,
+		exceptionMessage
+	};
+
 	// buffer to collect multiplexed data
 	std::string buffer;
 	bool inMessage = false;
+
+	// send multiplexed line on stderr
+	static void send(MessageType type, const std::string& message) {
+		std::cerr << '\x02' <<  static_cast<char>(type) << message << '\x03' << std::flush;
+	}
 
 	// demultiplex stderr stream
 	void demuliplexInput(
 		std::string input,
 		std::function<void(const std::string& message)> normal,
 		std::function<void(OtLog::Type type, const std::string& message)> log,
+		std::function<void(const std::string& message)> debugger,
 		std::function<void(OtException& e)> except);
 
 	// process multiplexed data and call callbacks
 	void process(
 		std::function<void(OtLog::Type type, const std::string& message)> log,
+		std::function<void(const std::string& message)> debugger,
 		std::function<void(OtException& e)> except);
 };

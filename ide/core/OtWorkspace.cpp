@@ -169,9 +169,14 @@ void OtWorkspace::onMessage(const std::string& msg) {
 
 void OtWorkspace::onRender()
 {
-	// show the "control bar" and the console if required
-	if (consoleFullScreen) {
-		renderSubProcess();
+	// show the "we're running" UI including kill button, console or debugger
+	if (subprocess.isRunning()) {
+		if (showDebugger) {
+			renderDebugger();
+
+		} else {
+			renderSubProcess();
+		}
 
 	} else {
 		// show splash screen if we have no editors open
@@ -428,7 +433,6 @@ void OtWorkspace::runFile() {
 				console.writeSuccess(fmt::format("\n[{}] terminated normally\n", currentRunnable));
 			}
 
-			consoleFullScreen = false;
 			consoleAsPanel = OtPath::getExtension(currentRunnable) == ".ot";
 		},
 
@@ -445,14 +449,13 @@ void OtWorkspace::runFile() {
 				[this](OtLog::Type type, const std::string& message) {
 					console.writeLog(type, message);
 				},
+				[this](const std::string& message) {
+					console.writeError(message);
+				},
 				[this](OtException& exception) {
 					highlightError(exception);
 				});
 		});
-
-	// show the console
-	consoleFullScreen = true;
-	consoleAsPanel = false;
 }
 
 
@@ -668,7 +671,6 @@ void OtWorkspace::renderTabbedEditors() {
 
 					ImGui::BeginChild("editor", ImVec2(), ImGuiChildFlags_Borders, ImGuiWindowFlags_MenuBar);
 					editor->renderMenuBar(!subprocess.isRunning());
-
 					editor->renderEditor();
 					ImGui::EndChild();
 
@@ -964,7 +966,7 @@ void OtWorkspace::renderConfirmError() {
 //
 
 void OtWorkspace::renderSubProcess() {
-	// create console window
+	// create sub-process window
 	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
 	ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
@@ -977,24 +979,13 @@ void OtWorkspace::renderSubProcess() {
 		ImGuiWindowFlags_NoBringToFrontOnFocus);
 
 	// render the subprocess control bar
+	if (ImGui::Button("\u25a0 Stop", ImVec2(100.0f, 0.0f))) {
+		subprocess.kill(SIGINT);
+	}
+
+	ImGui::SameLine();
 	std::string title = fmt::format("Runnning [{}]...", currentRunnable);
 	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", title.c_str());
-	ImGui::SameLine(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - 150.0f);
-
-	if (subprocess.isRunning()) {
-		if (ImGui::Button("Kill Process", ImVec2(150.0f, 0.0f))) {
-			subprocess.kill(SIGINT);
-		}
-
-	} else {
-		if (ImGui::Button("Close Console", ImVec2(150.0f, 0.0f))) {
-			consoleFullScreen = false;
-		}
-
-		if (ImGui::IsKeyDown(ImGuiMod_Ctrl) && ImGui::IsKeyPressed(ImGuiKey_W, false)) {
-			consoleFullScreen = false;
-		}
-	}
 
 	// render the console
 	console.render();
@@ -1046,7 +1037,7 @@ void OtWorkspace::determinePanelHeights() {
 	editorsMinHeight = available.y * 0.05f;
 	editorsMaxHeight = available.y * 0.9f;
 
-	if (editorsHeight < 0.0) {
+	if (editorsHeight < 0.0f) {
 		editorsHeight =  available.y * 0.75f;
 
 	} else {

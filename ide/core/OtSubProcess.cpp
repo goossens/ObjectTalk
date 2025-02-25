@@ -65,7 +65,7 @@ void OtSubProcess::start(const std::string& path, const std::vector<std::string>
 	options.env = nullptr;
 	options.cwd = nullptr;
 	options.flags = UV_PROCESS_WINDOWS_HIDE_CONSOLE;
-	options.stdio_count = 3;
+	options.stdio_count = static_cast<int>(sizeof(stdio) / sizeof(*stdio));
 	options.stdio = stdio;
 
 	// start process

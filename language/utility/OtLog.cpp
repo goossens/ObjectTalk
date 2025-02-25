@@ -52,7 +52,7 @@ static const char* messageTypes[] = {
 //	GetTimestamp
 //
 
-std::string GetTimestamp() {
+static std::string GetTimestamp() {
 	// get current time
 	auto now = std::chrono::system_clock::now();
 	auto nowTime = std::chrono::system_clock::to_time_t(now);

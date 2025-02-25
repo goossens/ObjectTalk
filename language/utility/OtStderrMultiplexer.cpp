@@ -11,8 +11,23 @@
 
 #include <iostream>
 
+#include "nlohmann/json.hpp"
 #include "OtException.h"
 #include "OtStderrMultiplexer.h"
+
+
+//
+//	OtStderrMultiplexer::multiplex
+//
+
+void OtStderrMultiplexer::multiplex(OtLog::Type type, const std::string& message) {
+	nlohmann::json json = {
+		{"type", type},
+		{"message", message}
+	};
+
+	send(MessageType::logMessage, json.dump());
+}
 
 
 //
@@ -23,6 +38,7 @@ void OtStderrMultiplexer::demuliplexInput(
 	std::string input,
 	std::function<void(const std::string& message)> normal,
 	std::function<void(OtLog::Type type, const std::string& message)> log,
+	std::function<void(const std::string& message)> debugger,
 	std::function<void(OtException& e)> except) {
 
 	// process entire input
@@ -36,7 +52,7 @@ void OtStderrMultiplexer::demuliplexInput(
 				buffer += input.substr(0, etx);
 				input = input.substr(etx + 1);
 				inMessage = false;
-				process(log, except);
+				process(log, debugger, except);
 
 			} else {
 				// add chunk and wait for the end of the message
@@ -59,7 +75,7 @@ void OtStderrMultiplexer::demuliplexInput(
 					// extract the message and process it
 					buffer = input.substr(stx + 1, etx - stx - 1);
 					input = input.substr(etx + 1);
-					process(log, except);
+					process(log, debugger, except);
 
 				} else {
 					// extract the partial message
@@ -83,17 +99,34 @@ void OtStderrMultiplexer::demuliplexInput(
 
 void OtStderrMultiplexer::process(
 	std::function<void(OtLog::Type type, const std::string& message)> log,
+	std::function<void(const std::string& message)> debugger,
 	std::function<void(OtException& e)> except) {
 
-	if (buffer[0] == 0) {
-		// deserialize the log message and report
-		log(static_cast<OtLog::Type>(buffer[1]), buffer.substr(2));
+	MessageType type = static_cast<MessageType>(buffer[0]);
+	auto message = buffer.substr(1);
 
-	} else if (buffer[0] == 1) {
-		// deserialize the exception and report
-		OtException exception;
-		exception.deserialize(buffer.substr(1));
-		except(exception);
+	if (type == MessageType::logMessage) {
+		// deserialize the log message and report (if required)
+		if (log) {
+			auto json = nlohmann::json::parse(message);
+			OtLog::Type type = json.value("type", OtLog::Type::debug);
+			std::string logMessage = json.value("message", "");
+			log(type, logMessage);
+		}
+
+	} else if (type == MessageType::debuggerMessage) {
+		// report (if required)
+		if (debugger) {
+			debugger(message);
+		}
+
+	} else if (type == MessageType::exceptionMessage) {
+		// deserialize the exception and report (if required)
+		if (except) {
+			OtException exception;
+			exception.deserialize(message);
+			except(exception);
+		}
 	}
 
 	buffer.clear();

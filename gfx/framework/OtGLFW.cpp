@@ -276,7 +276,7 @@ void OtFramework::eventsGLFW() {
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 		} else {
-			// Show OS mouse cursor
+			// show OS mouse cursor
 			glfwSetCursor(window, cursors[cursor] ? cursors[cursor] : cursors[ImGuiMouseCursor_Arrow]);
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}

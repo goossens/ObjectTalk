@@ -103,6 +103,7 @@ private:
 	void renderConfirmWarning();
 	void renderConfirmError();
 	void renderSubProcess();
+	void renderDebugger();
 
 	// the logo for the splash screen
 	std::shared_ptr<OtLogo> logo;
@@ -138,15 +139,17 @@ private:
 
 	State state = State::splash;
 
-	// stuff to run things and show the console
+	// stuff to run things and show the debugger/console
 	OtSubProcess subprocess;
 	std::string currentRunnable;
+	bool showDebugger = true;
 
 	OtConsole console;
-	bool consoleFullScreen = false;
 	bool consoleAsPanel = false;
+
+	// workspace layout parameters
+	void determinePanelHeights();
 	float editorsHeight = -1.0f;
 	float editorsMinHeight;
 	float editorsMaxHeight;
-	void determinePanelHeights();
 };

@@ -1,5 +1,5 @@
 ObjectTalk uses a lot of Open Source products without which it would have
-been a lot harder to implement the language and it's components.
+been a lot harder to implement the project.
 
 ![Screenshots](docs/img/screenshots.png)
 

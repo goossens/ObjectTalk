@@ -163,7 +163,7 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	// start a new child window
 	// this must be done before we handle keyboard and mouse interactions to ensure correct ImGui context
 	ImGui::SetNextWindowContentSize(totalSize);
-	ImGui::BeginChild(title, size, border, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNavInputs);
+	ImGui::BeginChild(title, size, border, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNavInputs);
 
 	// handle keyboard and mouse inputs
 	handleKeyboardInputs();

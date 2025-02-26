@@ -23,3 +23,4 @@
 #include "languages/Hlsl.h"
 #include "languages/Json.h"
 #include "languages/Markdown.h"
+#include "languages/Sql.h"

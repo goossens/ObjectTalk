@@ -48,7 +48,7 @@ if __name__ == "__main__":
 	append("Bracketeer.cpp", 12)
 	append("Tables.h", 23)
 	append("CodePoint.cpp", 17)
-	append("Language.cpp", 25)
+	append("Language.cpp", 26)
 
 	append("languages/C.h", 9)
 	append("languages/Cpp.h", 5)
@@ -60,3 +60,4 @@ if __name__ == "__main__":
 	append("languages/Hlsl.h", 5)
 	append("languages/Json.h", 9)
 	append("languages/Markdown.h", 9)
+	append("languages/Sql.h", 5)

@@ -308,6 +308,9 @@ public:
 		// name of the language
 		std::string name;
 
+		// flag to describe if keywords and identifiers are case sensitive (which is the default)
+		bool caseSensitive = true;
+
 		// the character that starts a preprocessor directive (can be 0 if language doesn't have this feature)
 		ImWchar preprocess = 0;
 
@@ -337,6 +340,7 @@ public:
 		ImWchar stringEscape = 0;
 
 		// set of keywords, declarations, identifiers used in the language (can be blank if language doesn't have these features)
+		// if language is not case sensitive, all entries should be in lower case
 		std::unordered_set<std::string> keywords;
 		std::unordered_set<std::string> declarations;
 		std::unordered_set<std::string> identifiers;
@@ -367,6 +371,7 @@ public:
 		static const Language* Hlsl();
 		static const Language* Json();
 		static const Language* Markdown();
+		static const Language* Sql();
 	};
 
 	inline void SetLanguage(const Language* l) { language = l; languageChanged = true; }

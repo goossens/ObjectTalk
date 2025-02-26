@@ -110,8 +110,14 @@ TextEditor::State TextEditor::Colorizer::update(Line& line, const Language* lang
 					color = Color::identifier;
 
 					for (auto i = tokenStart; i < tokenEnd; i++) {
+						ImWchar codepoint = *i;
+
+						if (!language->caseSensitive) {
+							codepoint = CodePoint::toLower(codepoint);
+						}
+
 						char utf8[4];
-						identifier.append(utf8, CodePoint::write(utf8, *i));
+						identifier.append(utf8, CodePoint::write(utf8, codepoint));
 					}
 
 					if (language->keywords.find(identifier) != language->keywords.end()) {

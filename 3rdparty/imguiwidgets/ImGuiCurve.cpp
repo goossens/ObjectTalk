@@ -682,4 +682,4 @@ bool Curve(const char* label, const ImVec2& size, const int maxpoints, ImVec2* p
 	return modified;
 }
 
-}; // namespace ImGui
+};

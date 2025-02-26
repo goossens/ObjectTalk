@@ -1,4 +1,4 @@
-//	TextEditor - A syntax highlighting text editor for ImGui
+//	TextEditor - A syntax highlighting text editor for Dear ImGui.
 //	Copyright (c) 2024-2025 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
@@ -161,7 +161,7 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	}
 
 	// start a new child window
-	// this must be done before we handle keyboard and mouse interactions to ensure correct ImGui context
+	// this must be done before we handle keyboard and mouse interactions to ensure correct Dear ImGui context
 	ImGui::SetNextWindowContentSize(totalSize);
 	ImGui::BeginChild(title, size, border, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNavInputs);
 

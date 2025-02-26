@@ -117,7 +117,7 @@ private:
 	float loopDuration;
 	float cpuTime;
 
-	// support ImGui
+	// support Dear ImGui
 	bgfx::VertexLayout imguiVertexLayout;
 	OtTexture imguiFontTexture;
 	OtSampler imguiFontSampler{"s_imguiFontAtlas"};

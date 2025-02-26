@@ -177,7 +177,7 @@ void OtNodesEditor::handleShortcuts() {
 			}
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_Z, false) && taskManager.canUndo()) {
-			// this is a hack as ImGui's InputText keeps a private copy of its content
+			// this is a hack as Dear ImGui's InputText keeps a private copy of its content
 			// ClearActiveID() takes the possible focus away and allows undo to work
 			// see ImGuiInputTextFlags_NoUndoRedo documentation in imgui.h
 			// so much for immediate mode :-)

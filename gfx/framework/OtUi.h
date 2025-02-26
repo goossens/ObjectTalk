@@ -58,7 +58,7 @@ public:
 	// is mouse in rectangle?
 	static bool isMouseInRect(const ImVec2& topLeft, const ImVec2& bottomRight);
 
-	// split am ImGui label into a label and the ID
+	// split a Dear ImGui label into a label and the ID
 	static void splitLabel(const char* text, std::string& label, std::string& id);
 
 	// render text centered in the current (child) window

@@ -156,11 +156,11 @@ static ImGuiKey toImGuiKey(int key) {
 //
 
 void OtFramework::initIMGUI() {
-	// initialize ImGui library
+	// initialize Dear ImGui library
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 
-	// deactiviate ImGui automatic .ini file handling
+	// deactiviate Dear ImGui automatic .ini file handling
 	ImGuiIO& io = ImGui::GetIO();
 	io.IniFilename = nullptr;
 
@@ -169,7 +169,7 @@ void OtFramework::initIMGUI() {
  	io.BackendPlatformName = "ObjectTalk";
 	io.BackendRendererName = "BGFX/GLFW";
 
-	// connect ImGui to GLFW window
+	// connect Dear ImGui to GLFW window
 	io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
 	io.DeltaTime = 1.0f / 60.0f;
 
@@ -197,7 +197,7 @@ void OtFramework::initIMGUI() {
 		return framework->clipboardText.c_str();
 	};
 
-	// add custom font
+	// add custom fonts
 	ImFontConfig config;
 	config.FontDataOwnedByAtlas = false;
 	config.OversampleH = 1;
@@ -251,7 +251,7 @@ void OtFramework::initIMGUI() {
 //
 
 void OtFramework::frameIMGUI() {
-	// update ImGui state
+	// update Dear ImGui state
 	ImGuiIO& io = ImGui::GetIO();
 	io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
 	io.DeltaTime = loopDuration / 1000.0f;

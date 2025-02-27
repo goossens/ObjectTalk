@@ -28,7 +28,7 @@ public:
 	OtBooleanClass() = default;
 	OtBooleanClass(bool boolean) : value(boolean) {}
 
-	// conversions
+	// conversion operators
 	inline operator bool() override { return value; }
 	inline operator int() override { return value ? 1 : 0; }
 	inline operator int64_t() override { return value ? 1 : 0; }

@@ -80,6 +80,9 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+	// get access to raw object set
+	std::set<OtObject>& raw() { return set; }
+
 private:
 	std::set<OtObject> set;
 };

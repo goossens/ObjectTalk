@@ -91,6 +91,30 @@ void OtSubProcess::start(const std::string& path, const std::vector<std::string>
 
 
 //
+//	OtSubProcess::send
+//
+
+void OtSubProcess::send(const std::string& message) {
+	char* text = (char*) std::malloc(message.size() + 1);
+	std::memcpy(text, message.c_str(), message.size() + 1);
+
+	uv_buf_t buffer = uv_buf_init(text, (unsigned int) message.size());
+	uv_write_t* request = (uv_write_t*) std::malloc(sizeof(uv_write_t));
+	request->data = buffer.base;
+
+	UV_CHECK_ERROR("uv_write", uv_write(
+		request,
+		(uv_stream_t*) &stdinPipe,
+		&buffer,
+		1,
+		[](uv_write_t* request, int /* status */) {
+			free(request->data);
+			free(request);
+		}));
+}
+
+
+//
 //	OtSubProcess::kill
 //
 

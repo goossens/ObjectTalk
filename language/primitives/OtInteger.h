@@ -34,7 +34,7 @@ public:
 	OtIntegerClass() = default;
 	OtIntegerClass(int64_t integer) : value(integer) {}
 
-	// convertors
+	// conversion operators
 	inline operator bool() override { return value != 0; }
 	inline operator int() override { return (int) value; }
 	inline operator int64_t()  override{ return value; }

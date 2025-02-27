@@ -84,6 +84,9 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+	// get access to raw object dictionary
+	std::unordered_map<std::string, OtObject>& raw() { return dict; }
+
 private:
 	std::unordered_map<std::string, OtObject> dict;
 };

@@ -33,7 +33,7 @@ public:
 	OtRealClass() = default;
 	OtRealClass(double real) : value(real) {}
 
-	// convertors
+	// conversion operators
 	inline operator bool() override { return value != 0.0; }
 	inline operator int() override { return (int) value; }
 	inline operator int64_t() override { return static_cast<int64_t>(value); }

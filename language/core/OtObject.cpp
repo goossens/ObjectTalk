@@ -26,15 +26,6 @@ OtObjectClass::~OtObjectClass() {
 
 
 //
-//	OtObjectClass::describe
-//
-
-std::string OtObjectClass::describe() {
-	return type->getName();
-}
-
-
-//
 //	OtObjectClass::has
 //
 

@@ -23,6 +23,10 @@
 
 class OtText {
 public:
+	// load/save text from/to text file
+	static std::string load(const std::string& path);
+	static void save(const std::string& path, const std::string& text);
+
 	// get number of code points in UTF-8 string
 	static size_t len(const std::string& text);
 

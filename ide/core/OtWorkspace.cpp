@@ -167,12 +167,11 @@ void OtWorkspace::onMessage(const std::string& msg) {
 //	OtWorkspace::onRender
 //
 
-void OtWorkspace::onRender()
-{
-	// show the "we're running" UI including kill button, console or debugger
+void OtWorkspace::onRender() {
+	// show the "we're running" UI
 	if (subprocess.isRunning()) {
 		if (showDebugger) {
-			renderDebugger();
+			debugger.render(subprocess, console);
 
 		} else {
 			renderSubProcess();
@@ -185,7 +184,7 @@ void OtWorkspace::onRender()
 			activeEditor = nullptr;
 
 		} else {
-			// render all editors as tabs
+			// render all editors as tabs and/or windows
 			renderEditors();
 		}
 
@@ -235,8 +234,8 @@ void OtWorkspace::onTerminate() {
 bool OtWorkspace::onCanQuit() {
 	// are we currently running something?
 	if (subprocess.isRunning()) {
-		// then we can't quit
-		return false;
+		subprocess.kill(SIGINT);
+		return true;
 
 	// are we showing a dialog box that we shouldn't quit?
 	} else if (state == State::saveFileAs || state == State::confirmClose || state == State::confirmQuit) {
@@ -434,6 +433,7 @@ void OtWorkspace::runFile() {
 			}
 
 			consoleAsPanel = OtPath::getExtension(currentRunnable) == ".ot";
+			showDebugger = false;
 		},
 
 		[this](const std::string& text) {
@@ -450,7 +450,8 @@ void OtWorkspace::runFile() {
 					console.writeLog(type, message);
 				},
 				[this](const std::string& message) {
-					console.writeError(message);
+					debugger.update(message);
+					showDebugger = true;
 				},
 				[this](OtException& exception) {
 					highlightError(exception);
@@ -609,7 +610,7 @@ void OtWorkspace::renderEditors() {
 		determinePanelHeights();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
-		ImGui::BeginChild("Editors", ImVec2(0.0f, editorsHeight));
+		ImGui::BeginChild("Editors", ImVec2(0.0f, contentsHeight));
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, spacing);
 	}
 
@@ -623,7 +624,7 @@ void OtWorkspace::renderEditors() {
 		ImGui::PopStyleVar();
 		ImGui::EndChild();
 		ImGui::PopStyleVar();
-		OtUi::splitterVertical(&editorsHeight, editorsMinHeight, editorsMaxHeight);
+		OtUi::splitterVertical(&contentsHeight, contentsMinHeight, contentsMaxHeight);
 		console.render();
 	}
 
@@ -1033,14 +1034,14 @@ void OtWorkspace::determinePanelHeights() {
 	// get available space in window
 	auto available = ImGui::GetContentRegionAvail();
 
-	// determine editors height
-	editorsMinHeight = available.y * 0.05f;
-	editorsMaxHeight = available.y * 0.9f;
+	// determine contents height
+	contentsMinHeight = available.y * 0.05f;
+	contentsMaxHeight = available.y * 0.9f;
 
-	if (editorsHeight < 0.0f) {
-		editorsHeight =  available.y * 0.75f;
+	if (contentsHeight < 0.0f) {
+		contentsHeight =  available.y * 0.75f;
 
 	} else {
-		editorsHeight = std::clamp(editorsHeight, editorsMinHeight, editorsMaxHeight);
+		contentsHeight = std::clamp(contentsHeight, contentsMinHeight, contentsMaxHeight);
 	}
 }

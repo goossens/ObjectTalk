@@ -33,7 +33,10 @@ public:
 	OtPathObjectClass(const std::filesystem::path& p) : path(p) {}
 
 	// convert to string
-	inline operator std::string() { return path.string(); }
+	inline operator std::string() override { return path.string(); }
+
+	// debugging support
+	inline std::string describe() override { return "\"" + path.string() + "\""; }
 
 	// initialize path
 	void init(size_t count, OtObject* parameters);
@@ -45,8 +48,8 @@ public:
 	inline void replaceExtension(OtObject name) { path.replace_extension(name->operator std::string()); }
 
 	// operators
-	inline bool operator==(OtObject operand) { return path == operand->operator std::string(); }
-	inline bool operator<(OtObject operand) { return path < operand->operator std::string(); }
+	inline bool operator==(OtObject operand) override { return path == operand->operator std::string(); }
+	inline bool operator<(OtObject operand) override { return path < operand->operator std::string(); }
 
 	inline OtObject join(OtObject operand) { return OtPathObject::create(path / operand->operator std::string()); }
 	inline bool equal(OtObject operand) { return path == operand->operator std::string(); }

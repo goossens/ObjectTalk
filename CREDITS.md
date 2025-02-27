@@ -7,6 +7,7 @@ been a lot harder to implement the project.
 
 * [libuv](https://libuv.org) - multi-platform support library with a focus on asynchronous I/O released under the [MIT license](https://opensource.org/licenses/MIT). Its documentation is released uder the [CC BY 4.0 license](https://creativecommons.org/licenses/by/4.0/)
 * [{fmt}](https://github.com/fmtlib/fmt) - open-source formatting library released under the [MIT license](https://opensource.org/licenses/MIT).
+* [JSON for Modern C++](https://github.com/nlohmann/json) - JSON creation/parsing library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [argparse](https://github.com/p-ranav/argparse) - command line argument parser released under the [MIT license](https://opensource.org/licenses/MIT).
 * [llhttp](https://llhttp.org) - HTTP protocol parser released under the [MIT license](https://opensource.org/licenses/MIT).
 * [multipart-parser](https://github.com/francoiscolas/multipart-parser) - HTTP multipart body parser released under the [MIT license](https://opensource.org/licenses/MIT).
@@ -24,7 +25,6 @@ In case User Interface (UI) modules are included, we also use:
 * [PlutoVG](https://github.com/sammycage/plutovg) - standalone 2D vector graphics library in C released under the [MIT license](https://opensource.org/licenses/MIT).
 * [LunaSVG](https://github.com/sammycage/lunasvg) - SVG rendering library designed to be lightweight and portable, offering efficient rendering and manipulation released under the [MIT license](https://opensource.org/licenses/MIT).
 * [EnTT](https://github.com/skypjack/entt) - Entity Component System (ECS) by [Michele Caini](https://github.com/skypjack) released under the [MIT license](https://opensource.org/licenses/MIT).
-* [JSON for Modern C++](https://github.com/nlohmann/json) - JSON creation/parsing library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [BS::thread_pool](https://github.com/bshoshany/thread-pool) - A fast, lightweight, and easy-to-use C++17 thread pool library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [Jolt Physics](https://github.com/jrouwe/JoltPhysics) - A multi core friendly 3D rigid body physics and collision detection library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [Box2D](https://box2d.org) - 2D physics engine released under the [MIT license](https://opensource.org/licenses/MIT).

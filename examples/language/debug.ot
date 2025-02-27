@@ -12,6 +12,17 @@ function outer(argument) {
 	}
 
 	debug();
+	var test = "1";
+	test.attr1 = true;
+	test.attr2 = 3.14;
+	test.attr3 = "word";
+
+	var array = ["zero", 1, 2.0, inner, Object()];
+	array.purpose = "test";
+
+	var dict = {"zero" : false, "one" : 1, "two" : 2.0};
+	var set = Set(true, 60, 202.0, "entry");
+
 	inner();
 	print("outer");
 }

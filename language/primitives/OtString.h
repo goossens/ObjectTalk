@@ -36,7 +36,7 @@ public:
 	OtStringClass(const std::string& string) : value(string) {}
 	OtStringClass(const std::string_view string) : value(string) {}
 
-	// convertors
+	// conversion operators
 	inline operator bool() override { return value == "true"; }
 	inline operator int() override { try { return std::stoi(value, nullptr, 0); } catch(...) { return 0; }}
 	inline operator int64_t() override { try { return std::stol(value, nullptr, 0); } catch(...) { return 0; }}

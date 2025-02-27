@@ -15,6 +15,7 @@
 #include <string>
 
 #include "OtByteCode.h"
+#include "OtDebugState.h"
 #include "OtInternal.h"
 
 
@@ -37,8 +38,18 @@ public:
 	static OtType getMeta();
 
 private:
-	// process a debug command
-	void processCommand();
+	// run debugger over stdio back to IDE
+	void processIDE();
+
+	// run debugger from command line
+	void processCommandLine();
+
+	// flow control
+	bool continueCommand();
+	bool stepOverCommand();
+	bool stepInCommand();
+	bool stepOutCommand();
+	bool isBreaking();
 
 	// get current location information
 	std::string where();
@@ -47,8 +58,16 @@ private:
 	std::string disassemble();
 
 	// get current variables and values
-	std::string variables();
+	std::string getVariables();
 
 	// debugger state
-	size_t stackFrame = 0;
+	enum class State {
+		running,
+		stopped,
+		stepOver,
+		stepIn,
+		stepOut
+	} state = State::running;
+
+	size_t targetStackFrame;
 };

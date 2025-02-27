@@ -33,6 +33,9 @@ public:
 		std::function<void(const std::string& text)> onStdout,
 		std::function<void(const std::string& text)> onStderr);
 
+	// send message to subprocess' stdin
+	void send(const std::string& message);
+
 	// kill a subprocess
 	void kill(int signal);
 

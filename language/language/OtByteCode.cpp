@@ -24,6 +24,30 @@
 #include "OtText.h"
 
 
+
+
+//
+//	describeObject
+//
+
+static inline std::string describeObject(OtObject object) {
+	if (object) {
+		auto type = std::string(OtIdentifier::name(object->getType()->getID()));
+		auto description = object->describe();
+
+		if (description.empty()) {
+			return type;
+
+		} else {
+			return type + ": " + description;
+		}
+
+	} else {
+		return "null";
+	}
+}
+
+
 //
 //	OtByteCodeClass::disassemble
 //
@@ -44,7 +68,7 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case Opcode::push: {
-				buffer << "push" << OtObjectDescribe(constants[getNumber(pc)]);
+				buffer << "push" << describeObject(constants[getNumber(pc)]);
 				break;
 			}
 
@@ -124,7 +148,7 @@ std::string OtByteCodeClass::disassemble() {
 			}
 
 			case Opcode::pushObjectMember: {
-				auto objectName = OtObjectDescribe(constants[getNumber(pc)]);
+				auto objectName = describeObject(constants[getNumber(pc)]);
 				auto memberName = OtIdentifier::name(getID(pc));
 				buffer << "pushObjectMember" << objectName << " " << memberName;
 				break;
@@ -139,7 +163,7 @@ std::string OtByteCodeClass::disassemble() {
 				break;
 
 			case Opcode::assignMember: {
-				auto objectName = OtObjectDescribe(constants[getNumber(pc)]);
+				auto objectName = describeObject(constants[getNumber(pc)]);
 				auto memberName = OtIdentifier::name(getID(pc));
 				buffer << "assignMember" << objectName << " " << memberName;
 				break;
@@ -586,7 +610,7 @@ std::vector<OtSymbol> OtByteCodeClass::getUsedSymbols(size_t pc) {
 	std::unordered_map<size_t, bool> index;
 
 	for (auto& symbol : symbols) {
-		if (pc >= symbol.opcodeStart && pc < symbol.opcodeEnd && index.count(symbol.id) == 0) {
+		if (pc > symbol.opcodeStart && pc <= symbol.opcodeEnd && index.count(symbol.id) == 0) {
 			syms.emplace_back(symbol);
 			index[symbol.id] = true;
 		}
@@ -605,7 +629,7 @@ std::vector<std::string> OtByteCodeClass::getUsedSymbolNames(size_t pc) {
 	std::unordered_map<size_t, bool> index;
 
 	for (auto& symbol : symbols) {
-		if (pc >= symbol.opcodeStart && pc < symbol.opcodeEnd && index.count(symbol.id) == 0) {
+		if (pc > symbol.opcodeStart && pc <= symbol.opcodeEnd && index.count(symbol.id) == 0) {
 			names.emplace_back(OtIdentifier::name(symbol.id));
 			index[symbol.id] = true;
 		}

@@ -81,6 +81,7 @@ public:
 	inline OtObject getFrameItem(size_t frame, size_t slot) { return stack[frames[frames.size() - frame - 1].offset + slot]; }
 	inline void setFrameItem(size_t slot, OtObject object) { stack[frames.back().offset + slot] = object; }
 	inline void setFrameItem(size_t frame, size_t slot, OtObject object) { stack[frames[frames.size() - frame - 1].offset + slot] = object; }
+	inline OtStackFrame& getFrame(size_t frame) { return frames[frame]; }
 	inline OtStackFrame& getFrame() { return frames.back(); }
 	inline void closeFrame() { frames.pop_back(); }
 	inline size_t getFrameCount() { return frames.size(); }

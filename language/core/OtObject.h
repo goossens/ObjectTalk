@@ -66,7 +66,7 @@ public:
 	virtual inline std::string json() { return operator std::string(); }
 
 	// describe object for debugging purposes
-	virtual std::string describe();
+	virtual inline std::string describe() { return ""; }
 
 	// member access
 	virtual bool has(OtID id);
@@ -87,8 +87,8 @@ public:
 	bool hasMembers() { return members != nullptr; }
 
 	// iterate through the members
-	inline void eachMember(std::function<void(OtID, OtObject object)> callback) { members->each(callback); }
-	inline void eachMemberID(std::function<void(OtID)> callback) { members->eachID(callback); }
+	inline void eachMember(std::function<void(OtID, OtObject object)> callback) { if (members) { members->each(callback); } }
+	inline void eachMemberID(std::function<void(OtID)> callback) { if (members) { members->eachID(callback); } }
 
 	// comparison
 	virtual bool operator==(OtObject operand);
@@ -117,25 +117,3 @@ protected:
 	// members
 	OtMembers* members = nullptr;
 };
-
-
-//
-//	OtObjectDescribe
-//
-
-inline std::string OtObjectDescribe(OtObject object) {
-	if (object) {
-		auto type = std::string(OtIdentifier::name(object->getType()->getID()));
-		auto description = object->describe();
-
-		if (type == description) {
-			return type;
-
-		} else {
-			return type + " " + description;
-		}
-
-	} else {
-		return "null";
-	}
-}

@@ -24,6 +24,7 @@
 #include "OtLogo.h"
 
 #include "OtConsole.h"
+#include "OtDebuggerUI.h"
 #include "OtEditor.h"
 #include "OtSubProcess.h"
 
@@ -103,7 +104,6 @@ private:
 	void renderConfirmWarning();
 	void renderConfirmError();
 	void renderSubProcess();
-	void renderDebugger();
 
 	// the logo for the splash screen
 	std::shared_ptr<OtLogo> logo;
@@ -142,14 +142,16 @@ private:
 	// stuff to run things and show the debugger/console
 	OtSubProcess subprocess;
 	std::string currentRunnable;
-	bool showDebugger = true;
 
 	OtConsole console;
+	OtDebuggerUI debugger;
 	bool consoleAsPanel = false;
+	bool showDebugger = false;
 
 	// workspace layout parameters
 	void determinePanelHeights();
-	float editorsHeight = -1.0f;
-	float editorsMinHeight;
-	float editorsMaxHeight;
+	void determinePanelWidths();
+	float contentsHeight = -1.0f;
+	float contentsMinHeight;
+	float contentsMaxHeight;
 };

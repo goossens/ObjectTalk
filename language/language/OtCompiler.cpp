@@ -123,7 +123,7 @@ OtByteCode OtCompiler::compileSource(OtSource src, OtObject object) {
 //
 
 OtByteCode OtCompiler::compileExpression(OtSource src) {
-	// rememember source code
+	// remember source code
 	source = src;
 
 	// load scanner

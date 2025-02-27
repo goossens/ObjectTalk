@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <fstream>
 #include <iomanip>
 #include <string>
 #include <sstream>
@@ -16,6 +17,40 @@
 #include "OtException.h"
 #include "OtCodePoint.h"
 #include "OtText.h"
+
+
+//
+//	OtText::load
+//
+
+std::string OtText::load(const std::string& path) {
+	std::ifstream stream(path);
+
+	if (stream.fail()) {
+		OtError("Can't open file [{}] for reading", path);
+	}
+
+	std::stringstream buffer;
+	buffer << stream.rdbuf();
+	stream.close();
+	return buffer.str();
+}
+
+
+//
+//	OtText::save
+//
+
+void OtText::save(const std::string& path, const std::string& text) {
+	std::ofstream stream(path);
+
+	if (stream.fail()) {
+		OtError("Can't open file [{}] for writing", path);
+	}
+
+	stream << text;
+	stream.close();
+}
 
 
 //

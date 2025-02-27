@@ -210,8 +210,10 @@ void OtFramework::initIMGUI() {
 		0x0180, 0x024f, // latin extended B
 		0x1e00, 0x1eff, // latin extended additional
 		0x20a0, 0x21cf, // currency symbols
-		0x2190, 0x21ff, // arrows block
-		0x25a0, 0x25ff, // miscellanious technical
+		0x2190, 0x21ff, // arrows
+		0x2300, 0x23fa, // miscellanious technical
+		0x25a0, 0x25ff, // geometric shapes
+		0x2700, 0x27ef,	// digbats
 		0
 	};
 
@@ -243,6 +245,16 @@ void OtFramework::initIMGUI() {
 		.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
 		.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
 		.end();
+
+	// tweak default style
+	auto& style = ImGui::GetStyle();
+	style.HoverDelayShort = 0.5f;
+	style.HoverDelayNormal = 1.0f;
+
+	style.HoverFlagsForTooltipMouse =
+		ImGuiHoveredFlags_Stationary |
+		ImGuiHoveredFlags_DelayNormal |
+		ImGuiHoveredFlags_AllowWhenDisabled;
 }
 
 

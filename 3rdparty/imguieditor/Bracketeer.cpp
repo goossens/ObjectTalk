@@ -116,17 +116,17 @@ TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingBrackets(Co
 //	TextEditor::Bracketeer::getEnclosingCurlyBrackets
 //
 
-TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingCurlyBrackets(Coordinate location) {
+TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingCurlyBrackets(Coordinate first, Coordinate last) {
 	iterator brackets = end();
 	bool done = false;
 
 	for (auto i = begin(); !done && i < end(); i++) {
 		// brackets are sorted so no need to go past specified location
-		if (i->isAfter(location)) {
+		if (i->isAfter(first)) {
 			done = true;
 		}
 
-		else if (i->isAround(location) && i->startChar == '{') {
+		else if (i->isAround(first) && i->isAround(last) && i->startChar == '{') {
 			// this could be what we're looking for
 			brackets = i;
 		}
@@ -140,20 +140,21 @@ TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingCurlyBracke
 //	TextEditor::Bracketeer::getInnerCurlyBrackets
 //
 
-TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getInnerCurlyBrackets(Coordinate location) {
-	auto brackets = getEnclosingCurlyBrackets(location);
+TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getInnerCurlyBrackets(Coordinate first, Coordinate last) {
+	iterator brackets = end();
+	auto outer = getEnclosingCurlyBrackets(first, last);
 
-	if (brackets != end()) {
+	if (outer != end()) {
 		bool done = false;
 
-		for (auto next = brackets + 1; next < end() && !done; next++) {
-			 if (next->level == brackets->level + 1 && next->startChar == '{') {
-				brackets = next;
+		for (auto i = outer + 1; i < end() && !done; i++) {
+			if (i->level <= outer->level) {
 				done = true;
 
-			} else if (next->level <= brackets->level) {
+			} else if (i->level == outer->level + 1 && i->startChar == '{' && i->start > first && i->end < last) {
+				brackets = i;
 				done = true;
-			 }
+			}
 		}
 	}
 

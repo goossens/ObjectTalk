@@ -758,13 +758,13 @@ void TextEditor::handleKeyboardInputs() {
 		else if (isOptionalShift && ImGui::IsKeyPressed(ImGuiKey_DownArrow)) { moveDown(1, shift); }
 
 #if __APPLE__
-		else if (isCtrlShift && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { shrinkSelectionsToCurlyBrackets(true); }
-		else if (isCtrlShift && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { growSelectionsToCurlyBrackets(true); }
+		else if (isCtrlShift && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { shrinkSelectionsToCurlyBrackets(); }
+		else if (isCtrlShift && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { growSelectionsToCurlyBrackets(); }
 		else if (isOptionalAltShift && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { moveLeft(shift, alt); }
 		else if (isOptionalAltShift && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { moveRight(shift, alt); }
 #else
-		else if (isShiftAlt && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { shrinkSelectionsToCurlyBrackets(true); }
-		else if (isShiftAlt && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { growSelectionsToCurlyBrackets(true); }
+		else if (isShiftAlt && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { shrinkSelectionsToCurlyBrackets(); }
+		else if (isShiftAlt && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { growSelectionsToCurlyBrackets(); }
 		else if (isOptionalCtrlShift && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { moveLeft(shift, ctrl); }
 		else if (isOptionalCtrlShift && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { moveRight(shift, ctrl); }
 #endif
@@ -939,7 +939,13 @@ void TextEditor::handleMouseInteractions() {
 						auto brackets = bracketeer.getEnclosingBrackets(document.getRight(mouseCoordAbs));
 
 						if (brackets != bracketeer.end()) {
-							cursors.setCursor(brackets->start, document.getRight(brackets->end));
+							if (ImGui::IsKeyDown(ImGuiMod_Shift)) {
+								cursors.setCursor(brackets->start, document.getRight(brackets->end));
+
+							} else {
+								cursors.setCursor(document.getRight(brackets->start), brackets->end);
+							}
+
 							handled = true;
 						}
 
@@ -1084,19 +1090,24 @@ void TextEditor::selectToBrackets(bool includeBrackets) {
 //	TextEditor::growSelectionsToCurlyBrackets
 //
 
-void TextEditor::growSelectionsToCurlyBrackets(bool includeBrackets) {
+void TextEditor::growSelectionsToCurlyBrackets() {
 	if (!showMatchingBrackets) {
 		bracketeer.update(document);
 	}
 
 	for (auto& cursor : cursors) {
-		auto bracket = bracketeer.getEnclosingCurlyBrackets(cursor.getSelectionStart());
+		auto start = cursor.getSelectionStart();
+		auto end = cursor.getSelectionEnd();
+		auto startCodePoint = document.getCodePoint(document.getLeft(start));
+		auto endCodePoint = document.getCodePoint(end);
 
-		if (bracket != bracketeer.end()) {
-			if (includeBrackets) {
-				cursor.update(bracket->start, document.getRight(bracket->end));
+		if (startCodePoint == '{' && endCodePoint == '}') {
+			cursor.update(document.getLeft(start),document.getRight(end));
 
-			} else {
+		} else {
+			auto bracket = bracketeer.getEnclosingCurlyBrackets(start, end);
+
+			if (bracket != bracketeer.end()) {
 				cursor.update(document.getRight(bracket->start), bracket->end);
 			}
 		}
@@ -1108,7 +1119,7 @@ void TextEditor::growSelectionsToCurlyBrackets(bool includeBrackets) {
 //	TextEditor::shrinkSelectionsToCurlyBrackets
 //
 
-void TextEditor::shrinkSelectionsToCurlyBrackets(bool includeBrackets) {
+void TextEditor::shrinkSelectionsToCurlyBrackets() {
 	if (!showMatchingBrackets) {
 		bracketeer.update(document);
 	}
@@ -1116,19 +1127,18 @@ void TextEditor::shrinkSelectionsToCurlyBrackets(bool includeBrackets) {
 	for (auto& cursor : cursors) {
 		if (cursor.hasSelection()){
 			auto start = cursor.getSelectionStart();
+			auto end = cursor.getSelectionEnd();
+			auto startCodePoint = document.getCodePoint(start);
+			auto endCodePoint = document.getCodePoint(document.getLeft(end));
 
-			if (document.getCodePoint(start) == '{') {
-				start = document.getRight(start);
-			}
+			if (startCodePoint == '{' && endCodePoint == '}') {
+				cursor.update(document.getRight(start),document.getLeft(end));
 
-			auto bracket = bracketeer.getInnerCurlyBrackets(start);
+			} else {
+				auto bracket = bracketeer.getInnerCurlyBrackets(start, end);
 
-			if (bracket != bracketeer.end()) {
-				if (includeBrackets) {
+				if (bracket != bracketeer.end()) {
 					cursor.update(bracket->start, document.getRight(bracket->end));
-
-				} else {
-					cursor.update(document.getRight(bracket->start), bracket->end);
 				}
 			}
 		}

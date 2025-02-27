@@ -106,8 +106,8 @@ public:
 	}
 
 	inline void SelectToBrackets(bool includeBrackets=true) { selectToBrackets(includeBrackets); }
-	inline void GrowSelectionsToCurlyBrackets(bool includeBrackets=true) { growSelectionsToCurlyBrackets(includeBrackets); }
-	inline void ShrinkSelectionsToCurlyBrackets(bool includeBrackets=true) { growSelectionsToCurlyBrackets(includeBrackets); }
+	inline void GrowSelectionsToCurlyBrackets() { growSelectionsToCurlyBrackets(); }
+	inline void ShrinkSelectionsToCurlyBrackets() { shrinkSelectionsToCurlyBrackets(); }
 	inline void AddNextOccurrence() { addNextOccurrence(); }
 	inline void SelectAllOccurrences() { selectAllOccurrences(); }
 	inline bool AnyCursorHasSelection() const { return cursors.anyHasSelection(); }
@@ -763,8 +763,8 @@ private:
 
 		// find relevant brackets
 		iterator getEnclosingBrackets(Coordinate location);
-		iterator getEnclosingCurlyBrackets(Coordinate location);
-		iterator getInnerCurlyBrackets(Coordinate location);
+		iterator getEnclosingCurlyBrackets(Coordinate first, Coordinate last);
+		iterator getInnerCurlyBrackets(Coordinate first, Coordinate last);
 
 		// utility functions
 		static inline bool isBracketCandidate(Glyph& glyph) {
@@ -779,6 +779,7 @@ private:
 		static inline bool isBracketCloser(ImWchar ch) { return ch == '}' || ch == ']' || ch == ')'; }
 		static inline ImWchar toBracketCloser(ImWchar ch) { return ch == '{' ? '}' : (ch == '[' ? ']' : (ch == '(' ? ')' : ch)); }
 		static inline ImWchar toBracketOpener(ImWchar ch) { return ch == '}' ? '{' : (ch == ']' ? '[' : (ch == ')' ? '(' : ch)); }
+		static inline bool isMatchingBrackets(ImWchar open, ImWchar close) { return isBracketOpener(open) && close == toBracketCloser(open); }
 	} bracketeer;
 
 	// access the editor's text
@@ -806,8 +807,8 @@ private:
 	void selectLines(int startLine, int endLine);
 	void selectRegion(int startLine, int startColumn, int endLine, int endColumn);
 	void selectToBrackets(bool includeBrackets);
-	void growSelectionsToCurlyBrackets(bool includeBrackets);
-	void shrinkSelectionsToCurlyBrackets(bool includeBrackets);
+	void growSelectionsToCurlyBrackets();
+	void shrinkSelectionsToCurlyBrackets();
 
 	void cut();
 	void copy() const;

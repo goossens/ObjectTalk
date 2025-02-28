@@ -46,8 +46,11 @@ OtObject OtVM::executeByteCode(OtByteCode bytecode, size_t callingParameters) {
 
 	// local variables
 	size_t pc = 0;
-	size_t sp = stack.size();
 	size_t end = bytecode->size();
+
+#if OT_DEBUG
+	size_t sp = stack.size();
+#endif
 
 	// open a new stack frame
 	stack.openFrame(bytecode, callingParameters, &pc);

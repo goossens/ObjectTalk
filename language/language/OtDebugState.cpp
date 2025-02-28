@@ -52,8 +52,7 @@ void OtDebugState::update() {
 
 	for (size_t i = 0; i < stack->getFrameCount(); i++) {
 		auto& stackframe = stack->getFrame(i);
-		auto bytecode = stackframe.bytecode;
-		stackframes.emplace_back(bytecode->getModule(), bytecode->getLineNumber(pc));
+		stackframes.emplace_back(stackframe.bytecode->getModule(), stackframe.bytecode->getLineNumber(pc));
 	}
 }
 
@@ -129,8 +128,8 @@ void OtDebugState::addObject(std::vector<Variable>& list, const std::string_view
 		auto& items = variable.members.emplace_back("_items");
 		auto dict = OtDict(object)->raw();
 
-		for (auto& [name, dictMember] : dict) {
-			addObject(items.members, name, dictMember);
+		for (auto& [memberName, memberObject] : dict) {
+			addObject(items.members, memberName, memberObject);
 		}
 
 	} else if (object->isKindOf("Set")) {
@@ -138,8 +137,8 @@ void OtDebugState::addObject(std::vector<Variable>& list, const std::string_view
 		auto set = OtSet(object)->raw();
 		size_t index = 0;
 
-		for (auto& setMember : set) {
-			addObject(items.members, std::to_string(index++), setMember);
+		for (auto& memberObject : set) {
+			addObject(items.members, std::to_string(index++), memberObject);
 		}
 	}
 }
@@ -174,7 +173,8 @@ nlohmann::json OtDebugState::serializeVariable(Variable& variable) {
 //
 
 void OtDebugState::deserializeVariable(std::vector<Variable>& list, nlohmann::json& json) {
-	auto& variable = list.emplace_back(json["name"], json["type"], json["value"]);
+	std::string name = json["name"];
+	auto& variable = list.emplace_back(name, json["type"], json["value"]);
 
 	if (json.contains("members")) {
 		for (auto& variableData : json["members"]) {

@@ -109,9 +109,9 @@ void OtStderrMultiplexer::process(
 		// deserialize the log message and report (if required)
 		if (log) {
 			auto json = nlohmann::json::parse(message);
-			OtLog::Type type = json.value("type", OtLog::Type::debug);
+			OtLog::Type logType = json.value("type", OtLog::Type::debug);
 			std::string logMessage = json.value("message", "");
-			log(type, logMessage);
+			log(logType, logMessage);
 		}
 
 	} else if (type == MessageType::debuggerMessage) {

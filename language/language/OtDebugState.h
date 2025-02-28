@@ -38,7 +38,6 @@ public:
 	public:
 		// constructor
 		Variable(const std::string& n) : name(n) {}
-		Variable(const std::string& n, const std::string& t, const std::string& v) : name(n), type(t), value(v) {}
 		Variable(const std::string_view& n, const std::string& t, const std::string& v) : name(std::string(n)), type(t), value(v) {}
 
 		// properties

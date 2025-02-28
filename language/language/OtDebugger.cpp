@@ -287,6 +287,8 @@ bool OtDebuggerClass::isBreaking() {
 			return targetStackFrame == OtVM::getStack()->getFrameCount();
 			break;
 	}
+
+	return false;
 }
 
 

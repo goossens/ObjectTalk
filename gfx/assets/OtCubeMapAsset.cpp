@@ -65,7 +65,7 @@ OtAssetBase::State OtCubeMapAsset::load() {
 			return State::loaded;
 		}
 
-	} catch (const OtException& exception) {
+	} catch ([[maybe_unused]] const OtException& exception) {
 		OtLogWarning("Can't load CubeMap [{}]: {}", path, exception.what());
 		return State::invalid;
 	}

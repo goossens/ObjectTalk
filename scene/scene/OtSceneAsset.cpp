@@ -36,7 +36,7 @@ OtAssetBase::State OtSceneAsset::load() {
 		scene->load(path);
 		return State::ready;
 
-	} catch (const OtException& exception) {
+	} catch ([[maybe_unused]] const OtException& exception) {
 		OtLogWarning("Can't load scene [{}]: {}", path, exception.what());
 		return State::invalid;
 	}

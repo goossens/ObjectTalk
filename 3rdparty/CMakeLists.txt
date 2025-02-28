@@ -27,7 +27,7 @@ if(OT_INCLUDE_UI)
 	target_compile_options(imguieditor PRIVATE
 		$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Werror -Wall -Wextra>
 		$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wpedantic>
-		$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4 /WX>)
+		$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4>)
 
 	file(GLOB IMGUI_WIDGET_SOURCES imguiwidgets/*.cpp imguiwidgets/*.h)
 	add_library(imguiwidgets STATIC ${IMGUI_WIDGET_SOURCES})

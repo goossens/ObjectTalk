@@ -25,7 +25,7 @@ OtAssetBase::State OtFontAsset::load() {
 		font.load(path);
 		return State::ready;
 
-	} catch (const OtException& exception) {
+	} catch ([[maybe_unused]] const OtException& exception) {
 		OtLogWarning("Can't load font [{}]: {}", path, exception.what());
 		return State::invalid;
 	}

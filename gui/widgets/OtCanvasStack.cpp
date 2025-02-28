@@ -183,7 +183,10 @@ OtCanvasStackClass::Canvas* OtCanvasStackClass::findCanvas(int id) {
 	}
 
 	OtError("Unknown canvas ID [{}]", id);
+
+#if !_WIN32
 	return nullptr;
+#endif
 }
 
 

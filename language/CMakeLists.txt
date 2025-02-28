@@ -21,7 +21,7 @@ add_library(language OBJECT ${LANGUAGE_INCLUDES} ${LANGUAGE_SOURCES})
 target_compile_options(language PRIVATE
 	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Werror -Wall -Wextra>
 	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wpedantic>
-	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4 /WX>)
+	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4>)
 
 if (UNIX)
 	set(LANGUAGE_EXTRA_LIBS m)

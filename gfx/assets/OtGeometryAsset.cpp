@@ -25,7 +25,7 @@ OtAssetBase::State OtGeometryAsset::load() {
 		geometry.load(path);
 		return State::ready;
 
-	} catch (const OtException& exception) {
+	} catch ([[maybe_unused]] const OtException& exception) {
 		OtLogWarning("Can't load geometry [{}]: {}", path, exception.what());
 		return State::invalid;
 	}

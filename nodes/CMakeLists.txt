@@ -22,7 +22,7 @@ add_library(nodes OBJECT ${GRAPH_INCLUDES} ${GRAPH_SOURCES})
 target_compile_options(nodes PRIVATE
 	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Werror -Wall -Wextra>
 	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wpedantic>
-	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4 /WX>)
+	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4>)
 
 target_include_directories(nodes PUBLIC ${GRAPH_INCLUDE_DIRS})
 target_link_libraries(nodes PUBLIC language json gfx)

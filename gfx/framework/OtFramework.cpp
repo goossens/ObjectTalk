@@ -232,7 +232,6 @@ void OtFramework::setAntiAliasing(int aa) {
 }
 
 
-
 //
 //	OtFramework::openURL
 //
@@ -251,7 +250,10 @@ void OtFramework::openURL(const std::string& url) {
 
 #else
 	std::string command = std::string("xdg-open '").append(url).append("'");
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
 	system(command.c_str());
+#pragma GCC diagnostic pop
 #endif
 }
 

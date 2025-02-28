@@ -52,8 +52,11 @@ size_t OtCodePoint::size(std::string::const_iterator i) {
 
 	} else {
 		OtError("Invalid codepoint in UTF-8 string");
-		return 0;
 	}
+
+#if !_WIN32
+	return 0;
+#endif
 }
 
 

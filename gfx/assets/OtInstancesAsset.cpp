@@ -25,7 +25,7 @@ OtAssetBase::State OtInstancesAsset::load() {
 		instances.load(path);
 		return State::ready;
 
-	} catch (const OtException& exception) {
+	} catch ([[maybe_unused]] const OtException& exception) {
 		OtLogWarning("Can't load instances [{}]: {}", path, exception.what());
 		return State::invalid;
 	}

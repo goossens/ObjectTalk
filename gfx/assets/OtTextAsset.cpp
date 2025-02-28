@@ -35,7 +35,7 @@ OtAssetBase::State OtTextAsset::load() {
 
 		return State::ready;
 
-	} catch (const OtException& exception) {
+	} catch ([[maybe_unused]] const OtException& exception) {
 		OtLogWarning("Can't load text from [{}]: {}", path, exception.what());
 		return State::invalid;
 	}

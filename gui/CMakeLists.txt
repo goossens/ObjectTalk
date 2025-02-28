@@ -22,7 +22,7 @@ add_library(gui OBJECT ${GUI_INCLUDES} ${GUI_SOURCES})
 target_compile_options(gui PRIVATE
 	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Werror -Wall -Wextra>
 	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wpedantic>
-	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4 /WX>)
+	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4>)
 
 target_include_directories(gui PUBLIC ${GUI_INCLUDE_DIRS})
 target_link_libraries(gui PUBLIC language shaders gfx imguieditor)

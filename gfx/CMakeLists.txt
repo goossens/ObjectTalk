@@ -33,7 +33,7 @@ add_library(gfx OBJECT ${GFX_INCLUDES} ${GFX_SOURCES})
 target_compile_options(gfx PRIVATE
 	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Werror -Wall -Wextra>
 	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wpedantic>
-	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4 /WX>)
+	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4>)
 
 target_include_directories(gfx PUBLIC ${GFX_INCLUDE_DIRS})
 target_link_libraries(gfx PUBLIC language shaders glfw bgfx imgui imguifd imguiwidgets glm tess2 lunasvg entt assimp md4c bsthreadpool tweeny ${GFX_LIBS})

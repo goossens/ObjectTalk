@@ -67,12 +67,12 @@ TextEditor::State TextEditor::Colorizer::update(Line& line, const Language* lang
 				glyph += size;
 
 			// are we starting a single quoted string
-			} else if (language->hasSingleQuotedStrings && glyph->codepoint == '\'') {
+			} else if (language->hasSingleQuotedStrings && glyph->codepoint == CodePoint::singleQuote) {
 				state = State::inSingleQuotedString;
 				(glyph++)->color = Color::string;
 
 			// are we starting a double quoted string
-			} else if (language->hasDoubleQuotedStrings && glyph->codepoint == '"') {
+			} else if (language->hasDoubleQuotedStrings && glyph->codepoint == CodePoint::doubleQuote) {
 				state = State::inDoubleQuotedString;
 				(glyph++)->color = Color::string;
 
@@ -212,7 +212,7 @@ TextEditor::State TextEditor::Colorizer::update(Line& line, const Language* lang
 					(glyph++)->color = Color::string;
 				}
 
-			} else if (glyph->codepoint == '\'') {
+			} else if (glyph->codepoint == CodePoint::singleQuote) {
 				(glyph++)->color = Color::string;
 				state = State::inText;
 
@@ -230,7 +230,7 @@ TextEditor::State TextEditor::Colorizer::update(Line& line, const Language* lang
 					(glyph++)->color = Color::string;
 				}
 
-			} else if (glyph->codepoint == '"') {
+			} else if (glyph->codepoint == CodePoint::doubleQuote) {
 				(glyph++)->color = Color::string;
 				state = State::inText;
 

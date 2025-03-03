@@ -935,7 +935,7 @@ void TextEditor::handleMouseInteractions() {
 					bool handled = false;
 
 					// select bracketed section (if required)
-					if (Bracketeer::isBracketOpener(codepoint)) {
+					if (CodePoint::isBracketOpener(codepoint)) {
 						auto brackets = bracketeer.getEnclosingBrackets(document.getRight(mouseCoordAbs));
 
 						if (brackets != bracketeer.end()) {
@@ -949,7 +949,7 @@ void TextEditor::handleMouseInteractions() {
 							handled = true;
 						}
 
-					} else if (Bracketeer::isBracketCloser(codepoint)) {
+					} else if (CodePoint::isBracketCloser(codepoint)) {
 						auto brackets = bracketeer.getEnclosingBrackets(mouseCoordAbs);
 
 						if (brackets != bracketeer.end()) {
@@ -1101,7 +1101,7 @@ void TextEditor::growSelectionsToCurlyBrackets() {
 		auto startCodePoint = document.getCodePoint(document.getLeft(start));
 		auto endCodePoint = document.getCodePoint(end);
 
-		if (startCodePoint == '{' && endCodePoint == '}') {
+		if (startCodePoint == CodePoint::openCurlyBracket && endCodePoint == CodePoint::closeCurlyBracket) {
 			cursor.update(document.getLeft(start),document.getRight(end));
 
 		} else {
@@ -1131,7 +1131,7 @@ void TextEditor::shrinkSelectionsToCurlyBrackets() {
 			auto startCodePoint = document.getCodePoint(start);
 			auto endCodePoint = document.getCodePoint(document.getLeft(end));
 
-			if (startCodePoint == '{' && endCodePoint == '}') {
+			if (startCodePoint == CodePoint::openCurlyBracket && endCodePoint == CodePoint::closeCurlyBracket) {
 				cursor.update(document.getRight(start),document.getLeft(end));
 
 			} else {
@@ -1632,9 +1632,9 @@ void TextEditor::moveTo(Coordinate coordinate, bool select) {
 void TextEditor::handleCharacter(ImWchar character) {
 	auto transaction = startTransaction();
 
-	auto opener = static_cast<char>(character);
-	auto isPaired = !overwrite && completePairedGlyphs && (opener == '{' || opener == '[' || opener == '(' || opener == '"' || opener == '\'');
-	auto closer = opener == '{' ? '}' : (opener == '[' ? ']' : (opener == '(' ? ')' : opener));
+	auto opener = character;
+	auto isPaired = !overwrite && completePairedGlyphs && CodePoint::isPairOpener(opener);
+	auto closer = CodePoint::toPairCloser(opener);
 
 	// ignore input if it was the closing character for a pair that was automatically inserted
 	if (completePairCloser) {
@@ -1654,12 +1654,13 @@ void TextEditor::handleCharacter(ImWchar character) {
 				auto start = cursor->getSelectionStart();
 				auto end = cursor->getSelectionEnd();
 
-				// insert the opening glyph
-				auto end1 = insertText(transaction, end, std::string_view(&closer, 1));
+				// insert the closing glyph
+				char utf8[4];
+				auto end1 = insertText(transaction, end, std::string_view(utf8, CodePoint::write(utf8, closer)));
 				cursors.adjustForInsert(cursor, start, end1);
 
-				// insert the closing glyph
-				auto end2 = insertText(transaction, start, std::string_view(&opener, 1));
+				// insert the opening glyph
+				auto end2 = insertText(transaction, start, std::string_view(utf8, CodePoint::write(utf8, opener)));
 				cursors.adjustForInsert(cursor, start, end2);
 
 				// update old selection
@@ -1669,9 +1670,10 @@ void TextEditor::handleCharacter(ImWchar character) {
 
 	} else if (isPaired) {
 		// insert the requested pair
-		std::string pair(2, 0);
-		pair[0] = opener;
-		pair[1] = closer;
+		char utf8[8];
+		auto size = CodePoint::write(utf8, opener);
+		size += CodePoint::write(utf8 + size, closer);
+		std::string_view pair(utf8, size);
 
 		for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
 			auto start = cursor->getSelectionStart();
@@ -2334,12 +2336,14 @@ void TextEditor::autoIndentAllCursors(std::shared_ptr<Transaction> transaction) 
 		auto newCursorIndex = static_cast<int>(whitespace.size());
 
 		// handle special cases
-		if (previousChar == '[' || previousChar == '{') {
+		if (previousChar == CodePoint::openCurlyBracket || previousChar == CodePoint::openSquareBracket) {
 			// add to an existing block
 			insert += "\t";
 			newCursorIndex++;
 
-			if ((previousChar == '[' && nextChar == ']') || (previousChar == '{' && nextChar == '}')) {
+			if ((previousChar == CodePoint::openCurlyBracket && nextChar == CodePoint::closeCurlyBracket) ||
+				(previousChar == CodePoint::openSquareBracket && nextChar == CodePoint::closeSquareBracket)) {
+
 				// open a new block
 				insert += "\n" + whitespace;
 			}

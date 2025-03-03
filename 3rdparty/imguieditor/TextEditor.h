@@ -395,6 +395,71 @@ public:
 		static bool isUpper(ImWchar codepoint);
 		static ImWchar toUpper(ImWchar codepoint);
 		static ImWchar toLower(ImWchar codepoint);
+
+		static constexpr ImWchar singleQuote = '\'';
+		static constexpr ImWchar doubleQuote = '"';
+		static constexpr ImWchar openCurlyBracket = '{';
+		static constexpr ImWchar closeCurlyBracket = '}';
+		static constexpr ImWchar openSquareBracket = '[';
+		static constexpr ImWchar closeSquareBracket = ']';
+		static constexpr ImWchar openParenthesis = '(';
+		static constexpr ImWchar closeParenthesis = ')';
+
+		static inline bool isPairOpener(ImWchar ch) {
+			return
+				ch == openCurlyBracket ||
+				ch == openSquareBracket ||
+				ch == openParenthesis ||
+				ch == singleQuote ||
+				ch == doubleQuote;
+		}
+
+		static inline bool isPairCloser(ImWchar ch) {
+			return
+				ch == closeCurlyBracket ||
+				ch == closeSquareBracket ||
+				ch == closeParenthesis ||
+				ch == singleQuote ||
+				ch == doubleQuote;
+		}
+
+		static inline ImWchar toPairCloser(ImWchar ch) {
+			return
+				(ch == openCurlyBracket) ? closeCurlyBracket :
+				(ch == openSquareBracket) ? closeSquareBracket :
+				(ch == openParenthesis) ? closeParenthesis:
+				ch;
+		}
+
+		static inline ImWchar toPairOpener(ImWchar ch) {
+			return
+				(ch == closeCurlyBracket) ? openCurlyBracket :
+				(ch == closeSquareBracket) ? openSquareBracket :
+				(ch == closeParenthesis) ? openParenthesis:
+				ch;
+		}
+
+		static inline bool isMatchingPair(ImWchar open, ImWchar close) {
+			return isPairOpener(open) && close == toPairCloser(open);
+		}
+
+		static inline bool isBracketOpener(ImWchar ch) {
+			return
+				ch == openCurlyBracket ||
+				ch == openSquareBracket ||
+				ch == openParenthesis;
+		}
+
+		static inline bool isBracketCloser(ImWchar ch) {
+			return
+				ch == closeCurlyBracket ||
+				ch == closeSquareBracket ||
+				ch == closeParenthesis;
+		}
+
+		static inline bool isMatchingBrackets(ImWchar open, ImWchar close) {
+			return isBracketOpener(open) && close == toPairCloser(open);
+		}
 	};
 
 private:
@@ -774,12 +839,6 @@ private:
 				glyph.color == Color::matchingBracketLevel3 ||
 				glyph.color == Color::matchingBracketError;
 		}
-
-		static inline bool isBracketOpener(ImWchar ch) { return ch == '{' || ch == '[' || ch == '('; }
-		static inline bool isBracketCloser(ImWchar ch) { return ch == '}' || ch == ']' || ch == ')'; }
-		static inline ImWchar toBracketCloser(ImWchar ch) { return ch == '{' ? '}' : (ch == '[' ? ']' : (ch == '(' ? ')' : ch)); }
-		static inline ImWchar toBracketOpener(ImWchar ch) { return ch == '}' ? '{' : (ch == ']' ? '[' : (ch == ')' ? '(' : ch)); }
-		static inline bool isMatchingBrackets(ImWchar open, ImWchar close) { return isBracketOpener(open) && close == toBracketCloser(open); }
 	} bracketeer;
 
 	// access the editor's text

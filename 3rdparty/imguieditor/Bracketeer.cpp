@@ -42,7 +42,7 @@ void TextEditor::Bracketeer::update(Document& document) {
 			auto& glyph = document[line][index];
 
 			// handle a "bracket opener" that is not in a comment, string or preprocessor statement
-			if (isBracketCandidate(glyph) && isBracketOpener(glyph.codepoint)) {
+			if (isBracketCandidate(glyph) && CodePoint::isBracketOpener(glyph.codepoint)) {
 				// start a new level
 				levels.emplace_back(size());
 				emplace_back(glyph.codepoint, Coordinate(line, document.getColumn(line, index)), static_cast<ImWchar>(0), Coordinate::invalid(), level);
@@ -50,13 +50,13 @@ void TextEditor::Bracketeer::update(Document& document) {
 				level++;
 
 			// handle a "bracket closer" that is not in a comment, string or preprocessor statement
-			} else if (isBracketCandidate(glyph) && isBracketCloser(glyph.codepoint)) {
+			} else if (isBracketCandidate(glyph) && CodePoint::isBracketCloser(glyph.codepoint)) {
 				if (levels.size()) {
 					auto& lastBracket = at(levels.back());
 					levels.pop_back();
 					level--;
 
-					if (lastBracket.startChar == toBracketOpener(glyph.codepoint)) {
+					if (lastBracket.startChar == CodePoint::toPairOpener(glyph.codepoint)) {
 						// handle matching bracket
 						glyph.color = bracketColors[level % 3];
 						lastBracket.endChar = glyph.codepoint;
@@ -89,7 +89,7 @@ void TextEditor::Bracketeer::update(Document& document) {
 
 
 //
-//	TextEditor::Bracketeer::getEnclosingCurlyBrackets
+//	TextEditor::Bracketeer::getEnclosingBrackets
 //
 
 TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingBrackets(Coordinate location) {
@@ -126,7 +126,7 @@ TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingCurlyBracke
 			done = true;
 		}
 
-		else if (i->isAround(first) && i->isAround(last) && i->startChar == '{') {
+		else if (i->isAround(first) && i->isAround(last) && i->startChar == CodePoint::openCurlyBracket) {
 			// this could be what we're looking for
 			brackets = i;
 		}
@@ -151,7 +151,12 @@ TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getInnerCurlyBrackets(C
 			if (i->level <= outer->level) {
 				done = true;
 
-			} else if (i->level == outer->level + 1 && i->startChar == '{' && i->start > first && i->end < last) {
+			} else if (
+				i->level == outer->level + 1 &&
+				i->startChar == CodePoint::openCurlyBracket &&
+				i->start > first &&
+				i->end < last) {
+
 				brackets = i;
 				done = true;
 			}

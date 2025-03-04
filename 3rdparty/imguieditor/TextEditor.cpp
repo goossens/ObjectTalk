@@ -2155,15 +2155,25 @@ void TextEditor::filterLines(std::function<std::string(std::string_view)> filter
 
 void TextEditor::tabsToSpaces() {
 	filterLines([this](const std::string_view& input) {
-		auto tabSize = document.getTabSize();
+		auto tabSize = static_cast<size_t>(document.getTabSize());
 		std::string output;
+		auto end = input.end();
+		auto i = input.begin();
+		size_t pos = 0;
 
-		for (auto c : input) {
-			if (c == '\t') {
-				output.append(tabSize - (output.size() % tabSize), ' ');
+		while (i < end) {
+			char utf8[4];
+			ImWchar codepoint;
+			i = CodePoint::read(i, end, &codepoint);
+
+			if (codepoint == '\t') {
+				auto spaces = tabSize - (pos % tabSize);
+				output.append(spaces, ' ');
+				pos += spaces;
 
 			} else {
-				output += c;
+				output.append(utf8, CodePoint::write(utf8, codepoint));
+				pos++;
 			}
 		}
 
@@ -2178,18 +2188,24 @@ void TextEditor::tabsToSpaces() {
 
 void TextEditor::spacesToTabs() {
 	FilterLines([this](const std::string_view& input) {
-		auto tabSize = document.getTabSize();
+		auto tabSize = static_cast<size_t>(document.getTabSize());
 		std::string output;
-		int pos = 0;
-		int spaces = 0;
+		auto end = input.end();
+		auto i = input.begin();
+		size_t pos = 0;
+		size_t spaces = 0;
 
-		for (auto c : input) {
-			if (c == ' ') {
+		while (i < end) {
+			char utf8[4];
+			ImWchar codepoint;
+			i = CodePoint::read(i, end, &codepoint);
+
+			if (codepoint == ' ') {
 				spaces++;
 
 			} else {
 				while (spaces) {
-					int spacesUntilNextTab = tabSize - (pos % tabSize);
+					auto spacesUntilNextTab = tabSize - (pos % tabSize);
 
 					if (spacesUntilNextTab == 1) {
 						output += ' ';
@@ -2201,7 +2217,7 @@ void TextEditor::spacesToTabs() {
 						pos += spacesUntilNextTab;
 						spaces -= spacesUntilNextTab;
 
-					} else if (c != '\t')
+					} else if (codepoint != '\t')
 						while (spaces) {
 							output += ' ';
 							pos++;
@@ -2213,12 +2229,12 @@ void TextEditor::spacesToTabs() {
 					}
 				}
 
-				if (c == '\t') {
+				if (codepoint == '\t') {
 					output += '\t';
 					pos += tabSize - (pos % tabSize);
 
 				} else {
-					output += c;
+					output.append(utf8, CodePoint::write(utf8, codepoint));
 					pos++;
 				}
 			}

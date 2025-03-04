@@ -15,7 +15,7 @@
 #include <algorithm>
 #include <cmath>
 
-#include "OtException.h"
+#include "OtLog.h"
 #include "OtNumbers.h"
 #include "OtPrimitive.h"
 
@@ -60,8 +60,8 @@ public:
 	inline double add(double operand) { return value + operand; }
 	inline double subtract(double operand) { return value - operand; }
 	inline double multiply(double operand) { return value * operand; }
-	inline double divide(double operand) { if (operand == 0.0) OtError("Divide by zero"); return value / operand; }
-	inline double modulo(double operand) { if (operand == 0.0) OtError("Divide by zero"); return std::fmod(value, operand); }
+	inline double divide(double operand) { if (operand == 0.0) OtLogError("Divide by zero"); return value / operand; }
+	inline double modulo(double operand) { if (operand == 0.0) OtLogError("Divide by zero"); return std::fmod(value, operand); }
 	inline double power(double operand) { return std::pow(value, operand); }
 
 	// functions
@@ -89,12 +89,12 @@ public:
 	inline double radians() { return value * std::numbers::pi / 180.0; }
 	inline double degrees() { return value / std::numbers::pi * 180.0; }
 
-	inline double sqrt() { if (value < 0.0) OtError("Sqrt requires number >= zero"); return std::sqrt(value); }
+	inline double sqrt() { if (value < 0.0) OtLogError("Sqrt requires number >= zero"); return std::sqrt(value); }
 	inline double pow(double exp) { return std::pow(value, exp); }
 
-	inline double log() { if (value <= 0.0) OtError("Log requires number > zero"); return std::log(value); }
+	inline double log() { if (value <= 0.0) OtLogError("Log requires number > zero"); return std::log(value); }
 	inline double exp() { return std::exp(value); }
-	inline double log10() { if (value <= 0.0) OtError("Log10 requires number > zero"); return std::log10(value); }
+	inline double log10() { if (value <= 0.0) OtLogError("Log10 requires number > zero"); return std::log10(value); }
 
 	inline double random() { return OtRandom(value); };
 

@@ -20,15 +20,15 @@
 
 #include <uv.h>
 
-#include "OtException.h"
+#include "OtLog.h"
 
 
 //
 //	Error checking
 //
 
-#define UV_CHECK_ERROR(action, status) if (status < 0) OtError("Libuv error in {}: {}", action, uv_strerror((int) status))
-#define UV_CHECK_ERROR2(action, status, details) if (status < 0) OtError("Libuv error in {}: {} [{}]", action, uv_strerror((int) status), details)
+#define UV_CHECK_ERROR(action, status) if (status < 0) OtLogError("Libuv error in {}: {}", action, uv_strerror((int) status))
+#define UV_CHECK_ERROR2(action, status, details) if (status < 0) OtLogError("Libuv error in {}: {} [{}]", action, uv_strerror((int) status), details)
 
 
 //

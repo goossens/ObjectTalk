@@ -75,23 +75,3 @@ private:
 	std::string shortMessage;
 	std::string longMessage;
 };
-
-
-//
-//	OtError
-//
-
-template <typename... ARGS>
-inline void OtError(const char* format, ARGS&& ...args) {
-	if constexpr(sizeof...(ARGS) == 0) {
-		throw OtException(format);
-
-	} else {
-		auto message = fmt::format(format, args...);
-		throw OtException(message);
-	}
-}
-
-inline void OtError(const std::string message) {
-	throw OtException(message);
-}

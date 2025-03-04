@@ -17,7 +17,7 @@
 #include <unordered_map>
 #include <utility>
 
-#include "OtException.h"
+#include "OtLog.h"
 
 
 //
@@ -30,7 +30,7 @@ public:
 	// add a new member to the registry
 	inline void set(const std::string& name, T member) {
 		if (registry.count(name)) {
-			OtError("Member [{}] already in registry", name);
+			OtLogError("Member [{}] already in registry", name);
 		}
 
 		registry[name] = member;
@@ -39,7 +39,7 @@ public:
 	// get member from registry
 	inline T get(const std::string& name) {
 		if (!registry.count(name)) {
-			OtError("Member [{}] not in registry", name);
+			OtLogError("Member [{}] not in registry", name);
 		}
 
 		return registry[name];
@@ -48,7 +48,7 @@ public:
 	// get reference to registry member
 	inline T& at(const std::string& name) {
 		if (!registry.count(name)) {
-			OtError("Member [{}] not in registry", name);
+			OtLogError("Member [{}] not in registry", name);
 		}
 
 		return registry.at(name);

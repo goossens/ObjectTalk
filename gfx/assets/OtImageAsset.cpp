@@ -25,7 +25,7 @@ OtAssetBase::State OtImageAsset::load() {
 		image.load(path);
 		return State::ready;
 
-	} catch (const OtException& exception) {
+	} catch ([[maybe_unused]] const OtException& exception) {
 		OtLogWarning("Can't load image [{}]: {}", path, exception.what());
 		return State::invalid;
 	}

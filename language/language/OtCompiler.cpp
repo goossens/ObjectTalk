@@ -21,9 +21,9 @@
 #include "OtClass.h"
 #include "OtClosure.h"
 #include "OtCompiler.h"
-#include "OtException.h"
 #include "OtIdentifier.h"
 #include "OtInteger.h"
+#include "OtLog.h"
 #include "OtMemberReference.h"
 #include "OtPath.h"
 #include "OtReal.h"
@@ -40,7 +40,7 @@
 OtByteCode OtCompiler::compileFile(const std::string& path) {
 	// sanity check
 	if (!OtPath::exists(path)) {
-		OtError("Can't open file [{}]", path);
+		OtLogError("Can't open file [{}]", path);
 	}
 
 	// load source code and compile into bytecode
@@ -247,7 +247,7 @@ void OtCompiler::declareCapture(OtID id, std::pair<size_t, size_t> item) {
 
 	// sanity check
 	if (scope == scopeStack.rend()) {
-		OtError("Internal error: no function scope on stack");
+		OtLogError("Internal error: no function scope on stack");
 	}
 
 	// add item to list of captured variables (if not already captured)
@@ -356,7 +356,7 @@ void OtCompiler::resolveVariable(OtID id, bool processSymbol) {
 					break;
 
 				default:
-					OtError("Internal Error: Invalid scope type");
+					OtLogError("Internal Error: Invalid scope type");
 			}
 
 			found = true;
@@ -457,7 +457,7 @@ void OtCompiler::function(OtByteCode bytecode, OtID id) {
 void OtCompiler::super(OtByteCode bytecode) {
 	// ensure we are in a class definition
 	if (!classStack.size()) {
-		OtError("Can't use [super] outside of a class definition");
+		OtLogError("Can't use [super] outside of a class definition");
 	}
 
 	// put class reference on stack

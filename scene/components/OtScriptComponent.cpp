@@ -14,9 +14,9 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtException.h"
 #include "OtClass.h"
 #include "OtIdentifier.h"
+#include "OtLog.h"
 #include "OtVM.h"
 
 #include "OtMessageBus.h"
@@ -91,15 +91,15 @@ void OtScriptComponent::process() {
 					hasUpdateMethod = instance->has(updateSymbol);
 
 				} else {
-					OtError("Class [{}] in script [{}] is not derived from [Entity]", className, path);
+					OtLogError("Class [{}] in script [{}] is not derived from [Entity]", className, path);
 				}
 
 			} else {
-				OtError("Object [{}] in script [{}] is not a class", className, path);
+				OtLogError("Object [{}] in script [{}] is not a class", className, path);
 			}
 
 		} else {
-			OtError("Script [{}] does not contain class [{}]", path, className);
+			OtLogError("Script [{}] does not contain class [{}]", path, className);
 		}
 	}
 }

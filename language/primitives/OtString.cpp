@@ -16,6 +16,7 @@
 #include "OtArray.h"
 #include "OtCodePoint.h"
 #include "OtFunction.h"
+#include "OtLog.h"
 #include "OtString.h"
 #include "OtStringReference.h"
 #include "OtStringIterator.h"
@@ -29,7 +30,7 @@
 std::string OtStringClass::getEntry(size_t index) {
 	// sanity check
 	if (index >= len()) {
-		OtError("Invalid index [{}] for string of size [{}]", index, len());
+		OtLogError("Invalid index [{}] for string of size [{}]", index, len());
 	}
 
 	return OtText::get(value, index);
@@ -43,7 +44,7 @@ std::string OtStringClass::getEntry(size_t index) {
 std::string OtStringClass::setEntry(size_t index, const std::string& string) {
 	// sanity check
 	if (index >= len()) {
-		OtError("Invalid index [{}] for string of size [{}]", index, len());
+		OtLogError("Invalid index [{}] for string of size [{}]", index, len());
 	}
 
 	value = OtText::set(value, index, string);
@@ -58,7 +59,7 @@ std::string OtStringClass::setEntry(size_t index, const std::string& string) {
 OtObject OtStringClass::index(size_t index) {
 	// sanity check
 	if (index >= len()) {
-		OtError("Invalid index [{}] for string of size [{}]", index, len());
+		OtLogError("Invalid index [{}] for string of size [{}]", index, len());
 	}
 
 	return OtStringReference::create(OtString(this), index);
@@ -185,7 +186,7 @@ static const char* parseFormat(formatParameters& format, const char* string) {
 }
 
 
-#define SANITY_CHECK() if (index == count) { OtError("Not enough parameters for string.format"); }
+#define SANITY_CHECK() if (index == count) { OtLogError("Not enough parameters for string.format"); }
 
 
 OtObject OtStringClass::format(size_t count, OtObject* objects) {

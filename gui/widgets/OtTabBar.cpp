@@ -22,7 +22,7 @@
 
 void OtTabBarClass::validateChild(OtWidget child) {
 	if (!child->isKindOf("Tab")) {
-		OtLogFatal("A [TabBar] can only have [Tab]s as children, not [{}]", child->getType()->getName());
+		OtLogError("A [TabBar] can only have [Tab]s as children, not [{}]", child->getType()->getName());
 	}
 }
 

@@ -45,7 +45,7 @@ void OtPictureClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtLogFatal("[Picture] constructor expects up to 4 arguments (not {})", count);
+		OtLogError("[Picture] constructor expects up to 4 arguments (not {})", count);
 	}
 }
 
@@ -57,7 +57,7 @@ void OtPictureClass::init(size_t count, OtObject* parameters) {
 void OtPictureClass::render() {
 	// sanity check
 	if (picture.isNull()) {
-		OtLogFatal("[Picture] does not have a texture");
+		OtLogError("[Picture] does not have a texture");
 	}
 
 	// wait until picture is ready

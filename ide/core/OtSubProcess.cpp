@@ -9,7 +9,8 @@
 //	Include files
 //
 
-#include "OtException.h"
+#include "OtLog.h"
+
 #include "OtSubProcess.h"
 
 
@@ -20,7 +21,7 @@
 void OtSubProcess::start(const std::string& path, const std::vector<std::string>& arguments, std::function <void(int64_t status, int signal)> onExit, std::function <void(const std::string& text)> onStdout, std::function <void(const std::string& text)> onStderr) {
 	// sanity check
 	if (running) {
-		OtError("Can't start subprocess [{}] as one is already running", path);
+		OtLogError("Can't start subprocess [{}] as one is already running", path);
 	}
 
 	// remember callbacks
@@ -121,7 +122,7 @@ void OtSubProcess::send(const std::string& message) {
 void OtSubProcess::kill(int signal) {
 	// sanity check
 	if (!running) {
-		OtError("Can't stop subprocess as it's not running");
+		OtLogError("Can't stop subprocess as it's not running");
 	}
 
 	// kill the process

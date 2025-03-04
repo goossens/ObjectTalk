@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-#include "OtException.h"
+#include "OtLog.h"
 #include "OtText.h"
 
 #include "OtColorParser.h"
@@ -315,7 +315,7 @@ static OtRgbColor parse(const std::string& text) {
 		}
 
 	} catch (std::exception& e) {
-		OtError("Invalid color [{}]: {}", text, e.what());
+		OtLogError("Invalid color [{}]: {}", text, e.what());
 	}
 
 	// we never get here but we need to keep the compiler happy

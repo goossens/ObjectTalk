@@ -10,8 +10,8 @@
 //
 
 #include "OtClass.h"
-#include "OtException.h"
 #include "OtFunction.h"
+#include "OtLog.h"
 #include "OtVM.h"
 
 
@@ -41,7 +41,7 @@ OtObject OtClassClass::instantiate(size_t count, OtObject* parameters) {
 		OtVM::callMemberFunction(object, initID, count, parameters);
 
 	} else if (count) {
-		OtError(
+		OtLogError(
 			"Class [{}] is missing [__init__] member function (called with {} parameters)",
 			classType->getName().c_str(),
 			count);
@@ -63,7 +63,7 @@ OtObject OtClassClass::instantiate(size_t count, OtObject* parameters) {
 	}
 
 	auto name = OtIdentifier::name(id);
-	OtError("Unknown member [{}] in superclass of [{}]", name, type->getName());
+	OtLogError("Unknown member [{}] in superclass of [{}]", name, type->getName());
 
 	// we will never get here because of the exception but a return statement keeps the compiler happy
 	return members->get(id);

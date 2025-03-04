@@ -14,7 +14,7 @@
 
 #include "OtByteCode.h"
 #include "OtCompiler.h"
-#include "OtException.h"
+#include "OtLog.h"
 #include "OtModule.h"
 #include "OtPathObject.h"
 #include "OtPath.h"
@@ -57,7 +57,7 @@ void OtModuleClass::load(const std::string& path) {
 
 	// ensure module exists
 	if (fullPath.empty()) {
-		OtError("Can't find module [{}]", path);
+		OtLogError("Can't find module [{}]", path);
 	}
 
 	// load source code
@@ -213,7 +213,7 @@ OtModule OtModuleClass::import(const std::string& name) {
 
 		// ensure module exists
 		if (path.empty()) {
-			OtError("Can't find module [{}]", name);
+			OtLogError("Can't find module [{}]", name);
 		}
 
 		// see if this "external" module is already in the cache

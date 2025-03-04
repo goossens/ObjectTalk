@@ -17,6 +17,7 @@
 
 #include "OtIdentifier.h"
 #include "OtInteger.h"
+#include "OtLog.h"
 #include "OtObject.h"
 #include "OtReal.h"
 #include "OtValue.h"
@@ -126,7 +127,7 @@ struct OtValue<glm::vec2> {
 			return glm::vec2(object->operator float());
 
 		} else {
-			OtError("Expected a [Vec2], [Real] or [Integer], not a [{}]", object->getType()->getName());
+			OtLogError("Expected a [Vec2], [Real] or [Integer], not a [{}]", object->getType()->getName());
 			return glm::vec2();
 		}
 	}

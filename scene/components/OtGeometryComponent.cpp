@@ -11,8 +11,6 @@
 
 #include "nlohmann/json.hpp"
 
-#include "OtException.h"
-
 #include "OtGeometryComponent.h"
 #include "OtUi.h"
 

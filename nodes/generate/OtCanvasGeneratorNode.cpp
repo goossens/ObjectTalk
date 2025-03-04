@@ -14,9 +14,10 @@
 #include "fmt/format.h"
 #include "nlohmann/json.hpp"
 
-#include "OtException.h"
 #include "OtClass.h"
+#include "OtException.h"
 #include "OtIdentifier.h"
+#include "OtLog.h"
 #include "OtMessageBus.h"
 #include "OtVM.h"
 
@@ -131,14 +132,14 @@ public:
 				auto module = script->getModule();
 
 				if (!module->has(rendererID)) {
-					OtError("Script [{}] does not contain class [Renderer]", path);
+					OtLogError("Script [{}] does not contain class [Renderer]", path);
 				}
 
 				auto classObject = module->get(rendererID);
 
 				// ensure it is a class object
 				if (!classObject.isKindOf<OtClassClass>()) {
-					OtError("Object [Renderer] in script [{}] is not a class", path);
+					OtLogError("Object [Renderer] in script [{}] is not a class", path);
 				}
 
 				// create instance of class
@@ -146,12 +147,12 @@ public:
 
 				// ensure the class is derived from Canvas
 				if (!instance.isKindOf<OtCanvasClass>()) {
-					OtError("Class [Renderer] in script [{}] is not derived from [Canvas]", path);
+					OtLogError("Class [Renderer] in script [{}] is not derived from [Canvas]", path);
 				}
 
 				// ensure class has a render method
 				if (!instance->has(renderID)) {
-					OtError("Class [Renderer] in script [{}] does not have a [render] method", path);
+					OtLogError("Class [Renderer] in script [{}] does not have a [render] method", path);
 				}
 
 				hasRenderMethod = true;

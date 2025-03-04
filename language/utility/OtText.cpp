@@ -14,8 +14,8 @@
 #include <string>
 #include <sstream>
 
-#include "OtException.h"
 #include "OtCodePoint.h"
+#include "OtLog.h"
 #include "OtText.h"
 
 
@@ -24,15 +24,22 @@
 //
 
 std::string OtText::load(const std::string& path) {
-	std::ifstream stream(path);
+	std::stringstream buffer;
 
-	if (stream.fail()) {
-		OtError("Can't open file [{}] for reading", path);
+	try {
+		std::ifstream stream(path);
+
+		if (stream.fail()) {
+			OtLogError("Can't open file [{}] for reading", path);
+		}
+
+		buffer << stream.rdbuf();
+		stream.close();
+
+	} catch (std::exception& e) {
+		OtLogError("Can't read from file [{}], error: {}", path, e.what());
 	}
 
-	std::stringstream buffer;
-	buffer << stream.rdbuf();
-	stream.close();
 	return buffer.str();
 }
 
@@ -42,14 +49,19 @@ std::string OtText::load(const std::string& path) {
 //
 
 void OtText::save(const std::string& path, const std::string& text) {
-	std::ofstream stream(path);
+	try {
+			std::ofstream stream(path);
 
-	if (stream.fail()) {
-		OtError("Can't open file [{}] for writing", path);
+		if (stream.fail()) {
+			OtLogError("Can't open file [{}] for writing", path);
+		}
+
+		stream << text;
+		stream.close();
+
+	} catch (std::exception& e) {
+		OtLogError("Can't write to file [{}], error: {}", path, e.what());
 	}
-
-	stream << text;
-	stream.close();
 }
 
 
@@ -488,7 +500,7 @@ std::string OtText::fromJSON(const std::string text) {
 							c += 4;
 
 						} else {
-							OtError("Invalid UTF-8 string in JSON");
+							OtLogError("Invalid UTF-8 string in JSON");
 						}
 
 						break;

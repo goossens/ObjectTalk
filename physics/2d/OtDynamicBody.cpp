@@ -9,8 +9,8 @@
 //	Include files
 //
 
-#include "OtException.h"
 #include "OtFunction.h"
+#include "OtLog.h"
 
 #include "OtDynamicBody.h"
 #include "OtWorld.h"
@@ -23,7 +23,7 @@
 void OtDynamicBodyClass::init(OtObject w) {
 	// sanity check
 	if (!w.isKindOf<OtWorldClass>()) {
-		OtError("Expected a [World], not a [{}]", w->getType()->getName());
+		OtLogError("Expected a [World], not a [{}]", w->getType()->getName());
 	}
 
 	OtWorld world = OtWorld(w);

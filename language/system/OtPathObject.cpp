@@ -11,7 +11,6 @@
 
 #include <string>
 
-#include "OtException.h"
 #include "OtFunction.h"
 #include "OtPathObject.h"
 #include "OtPathIterator.h"

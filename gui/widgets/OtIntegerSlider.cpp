@@ -45,7 +45,7 @@ void OtIntegerSliderClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtLogFatal("[IntegerSlider] constructor expects 0, 1, 2, 4 or 5 arguments (not {})", count);
+		OtLogError("[IntegerSlider] constructor expects 0, 1, 2, 4 or 5 arguments (not {})", count);
 	}
 }
 

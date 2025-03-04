@@ -16,7 +16,6 @@
 #include "assimp/postprocess.h"
 #include "fmt/format.h"
 
-#include "OtException.h"
 #include "OtLog.h"
 
 #include "OtGpu.h"
@@ -141,12 +140,12 @@ void OtMesh::load(const std::string& path) {
 
 	// ensure mesh was loaded correctly
 	if (scene == nullptr) {
-		OtError("Unable to mesh model [{}], error: {}", path, importer.GetErrorString());
+		OtLogError("Unable to mesh model [{}], error: {}", path, importer.GetErrorString());
 	}
 
 	// ensure scene is complete
 	if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
-		OtError("Incomplete mesh [{}]", path);
+		OtLogError("Incomplete mesh [{}]", path);
 	}
 
 	// load all the meshes

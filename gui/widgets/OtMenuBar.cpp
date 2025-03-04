@@ -22,7 +22,7 @@
 
 void OtMenuBarClass::validateChild(OtWidget child) {
 	if (!child->isKindOf("Menu")) {
-		OtLogFatal("A [MenuBar] can only have [Menu]s as children, not [{}]", child->getType()->getName());
+		OtLogError("A [MenuBar] can only have [Menu]s as children, not [{}]", child->getType()->getName());
 	}
 }
 

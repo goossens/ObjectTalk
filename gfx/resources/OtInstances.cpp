@@ -17,7 +17,7 @@
 #include "bgfx/bgfx.h"
 #include "nlohmann/json.hpp"
 
-#include "OtException.h"
+#include "OtLog.h"
 
 #include "OtGlm.h"
 #include "OtInstances.h"
@@ -54,14 +54,14 @@ void OtInstances::load(const std::string &path) {
 		std::ifstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't read from file [{}]", path);
+			OtLogError("Can't read from file [{}]", path);
 		}
 
 		buffer << stream.rdbuf();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't read from file [{}], error: {}", path, e.what());
+		OtLogError("Can't read from file [{}], error: {}", path, e.what());
 	}
 
 	// parse json
@@ -97,14 +97,14 @@ void OtInstances::save(const std::string& path) {
 		std::ofstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't open file [{}] for writing", path);
+			OtLogError("Can't open file [{}] for writing", path);
 		}
 
 		stream << data.dump(1, '\t');
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't write to file [{}], error: {}", path, e.what());
+		OtLogError("Can't write to file [{}], error: {}", path, e.what());
 	}
 }
 

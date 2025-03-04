@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "OtException.h"
+#include "OtLog.h"
 #include "OtObject.h"
 #include "OtType.h"
 
@@ -38,7 +38,7 @@ OtTypeClass::OtTypeClass(OtID i, OtType p, OtTypeAllocator a) {
 
 OtObject OtTypeClass::allocate() {
 	if (!allocator) {
-		OtError("Can't allocate incomplete type [{}]", OtIdentifier::name(typeID));
+		OtLogError("Can't allocate incomplete type [{}]", OtIdentifier::name(typeID));
 	}
 
 	return allocator();

@@ -9,9 +9,9 @@
 //	Include files
 //
 
-#include "OtException.h"
-#include "OtFunction.h"
 #include "OtByteCodeFunction.h"
+#include "OtFunction.h"
+#include "OtLog.h"
 #include "OtVM.h"
 
 
@@ -23,10 +23,10 @@ OtObject OtByteCodeFunctionClass::operator()(size_t count, OtObject* /* paramete
 	// sanity check
 	if (parameterCount != count) {
 		if (parameterCount == 1) {
-			OtError("Function expects [{}] parameter, [{}] given", parameterCount, count);
+			OtLogError("Function expects [{}] parameter, [{}] given", parameterCount, count);
 
 		} else {
-			OtError("Function expects [{}] parameters, [{}] given", parameterCount, count);
+			OtLogError("Function expects [{}] parameters, [{}] given", parameterCount, count);
 		}
 	}
 

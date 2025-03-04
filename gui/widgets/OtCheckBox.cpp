@@ -41,7 +41,7 @@ void OtCheckBoxClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtLogFatal("[CheckBox] constructor expects 3 or less arguments (not {})", count);
+		OtLogError("[CheckBox] constructor expects 3 or less arguments (not {})", count);
 	}
 }
 

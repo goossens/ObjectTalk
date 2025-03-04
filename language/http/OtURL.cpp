@@ -12,8 +12,8 @@
 #include <cctype>
 #include <regex>
 
-#include "OtException.h"
 #include "OtFunction.h"
+#include "OtLog.h"
 #include "OtURL.h"
 
 
@@ -23,7 +23,7 @@
 
 void OtURLClass::init(size_t count, OtObject* parameters) {
 	if (count != 1) {
-		OtError("URL initializer expected 1 parameter not [{}]", count);
+		OtLogError("URL initializer expected 1 parameter not [{}]", count);
 	}
 
 	parse(parameters[0]->operator std::string());
@@ -60,7 +60,7 @@ void OtURLClass::parse(const std::string& urlString) {
 	std::smatch match;
 
 	if (!std::regex_match(url, match, urlRegex)) {
-		OtError("Invalid URL [{}]", url);
+		OtLogError("Invalid URL [{}]", url);
 	}
 
 	scheme = submatch(match, 1);
@@ -81,7 +81,7 @@ void OtURLClass::parse(const std::string& urlString) {
 		std::smatch authorityMatch;
 
 		if (!std::regex_match(authority, authorityMatch, authorityRegex)) {
-			OtError("Invalid URL authority [{}]", authority);
+			OtLogError("Invalid URL authority [{}]", authority);
 		}
 
 		username = submatch(authorityMatch, 1);

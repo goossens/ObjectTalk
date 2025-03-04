@@ -10,9 +10,9 @@
 //
 
 #include "OtDict.h"
-#include "OtException.h"
 #include "OtFunction.h"
 #include "OtHttpRequest.h"
+#include "OtLog.h"
 #include "OtPath.h"
 
 
@@ -176,7 +176,7 @@ void OtHttpRequestClass::onBody(const char* data, size_t length) {
 		auto parsed = multipartparser_execute(&multipartParser, &multipartCallbacks, data, length);
 
 		if (parsed != length) {
-			OtError("Invalid multipart");
+			OtLogError("Invalid multipart");
 		}
 
 	} else {
@@ -290,7 +290,7 @@ void OtHttpRequestClass::onMultipartHeadersComplete() {
 		});
 
 	} else {
-		OtError("Content-Disposition missing in multipart");
+		OtLogError("Content-Disposition missing in multipart");
 	}
 }
 

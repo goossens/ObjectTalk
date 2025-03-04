@@ -18,7 +18,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "OtException.h"
+#include "OtLog.h"
 #include "OtSingleton.h"
 
 #include "OtNode.h"
@@ -99,7 +99,7 @@ public:
 		auto& factory = instance();
 
 		if (factory.constructors.count(name) == 0) {
-			OtError("Unknown node type[{}]", name);
+			OtLogError("Unknown node type[{}]", name);
 		}
 
 		// construct a new instance

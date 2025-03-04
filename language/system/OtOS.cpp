@@ -20,7 +20,6 @@
 
 #include "OtArray.h"
 #include "OtDict.h"
-#include "OtException.h"
 #include "OtFunction.h"
 #include "OtLibuv.h"
 #include "OtOS.h"

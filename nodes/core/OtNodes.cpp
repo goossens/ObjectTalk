@@ -17,8 +17,7 @@
 
 #include "nlohmann/json.hpp"
 
-#include "OtException.h"
-
+#include "OtLog.h"
 #include "OtNodes.h"
 #include "OtNodesPin.h"
 #include "OtNodesUtils.h"
@@ -61,7 +60,7 @@ void OtNodes::load(const std::string& path) {
 		std::ifstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't read from file [{}]", path);
+			OtLogError("Can't read from file [{}]", path);
 		}
 
 		buffer << stream.rdbuf();
@@ -71,7 +70,7 @@ void OtNodes::load(const std::string& path) {
 		loadFromString(buffer.str(), basedir);
 
 	} catch (std::exception& e) {
-		OtError("Can't read from file [{}], error: {}", path, e.what());
+		OtLogError("Can't read from file [{}], error: {}", path, e.what());
 	}
 
 }
@@ -107,10 +106,10 @@ void OtNodes::loadFromString(const std::string& string, std::string& basedir) {
 			uint32_t toId = link["to"];
 
 			if (pinIndex.count(fromId) == 0) {
-				OtError("Invalid 'from' pin ID [{}] in link [{}]", fromId, linkId);
+				OtLogError("Invalid 'from' pin ID [{}] in link [{}]", fromId, linkId);
 
 			} else if (pinIndex.count(toId) == 0) {
-				OtError("Invalid 'to' pin ID [{}] in link [{}]", toId, linkId);
+				OtLogError("Invalid 'to' pin ID [{}] in link [{}]", toId, linkId);
 			}
 
 			createLink(fromId, toId, linkId);
@@ -153,14 +152,14 @@ void OtNodes::save(const std::string& path) {
 		std::ofstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't open file [{}] for writing", path);
+			OtLogError("Can't open file [{}] for writing", path);
 		}
 
 		stream << data.dump(1, '\t');
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't write to file [{}], error: {}", path, e.what());
+		OtLogError("Can't write to file [{}], error: {}", path, e.what());
 	}
 }
 

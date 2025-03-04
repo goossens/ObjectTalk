@@ -50,7 +50,7 @@ void OtDialClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtLogFatal("[Dial] constructor expects up to 4 arguments (not {})", count);
+		OtLogError("[Dial] constructor expects up to 4 arguments (not {})", count);
 	}
 }
 
@@ -62,7 +62,7 @@ void OtDialClass::init(size_t count, OtObject* parameters) {
 void OtDialClass::render() {
 	// sanity check
 	if (background.isNull()) {
-		OtLogFatal("[Dial] does not have a background");
+		OtLogError("[Dial] does not have a background");
 	}
 
 	// wait until background is ready

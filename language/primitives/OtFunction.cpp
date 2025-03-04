@@ -9,8 +9,8 @@
 //	Include files
 //
 
-#include "OtException.h"
 #include "OtFunction.h"
+#include "OtLog.h"
 
 
 //
@@ -21,10 +21,10 @@ OtObject OtFunctionClass::operator()(size_t count, OtObject* parameters) {
 	// sanity check
 	if (parameterCount != SIZE_MAX && count != parameterCount) {
 		if (parameterCount == 1) {
-			OtError("Function expects [1] parameter, [{}] given", count);
+			OtLogError("Function expects [1] parameter, [{}] given", count);
 
 		} else {
-			OtError("Function expects [{}] parameters, [{}] given", parameterCount, count);
+			OtLogError("Function expects [{}] parameters, [{}] given", parameterCount, count);
 		}
 	}
 

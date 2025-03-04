@@ -9,7 +9,7 @@
 
 //
 //	Tables below are automatically generated from the unicode database version 16.0.0
-//	downloaded from http://www.unicode.org/Public/UNIDATA/ on Wednesday, January 22, 2025
+//	downloaded from http://www.unicode.org/Public/UNIDATA/ on Monday, March 03, 2025
 //	using the OtUnicode.py script.
 //
 

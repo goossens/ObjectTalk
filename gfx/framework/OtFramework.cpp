@@ -225,7 +225,7 @@ bool OtFramework::canQuit() {
 
 void OtFramework::setAntiAliasing(int aa) {
 	if (aa < 0 || aa > 4) {
-		OtLogFatal("Anti-aliasing setting must be between 0 and 4");
+		OtLogError("Anti-aliasing setting must be between 0 and 4");
 	}
 
 	antiAliasing = aa;

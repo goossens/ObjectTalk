@@ -16,7 +16,6 @@
 #include "bx/allocator.h"
 #include "nlohmann/json.hpp"
 
-#include "OtException.h"
 #include "OtLog.h"
 
 #include "OtAsset.h"
@@ -132,14 +131,14 @@ void OtCubeMap::loadJSON(const std::string& path) {
 		std::ifstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't read from file [{}]", path);
+			OtLogError("Can't read from file [{}]", path);
 		}
 
 		buffer << stream.rdbuf();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't read from file [{}], error: {}", path, e.what());
+		OtLogError("Can't read from file [{}], error: {}", path, e.what());
 	}
 
 	// parse json
@@ -154,7 +153,7 @@ void OtCubeMap::loadJSON(const std::string& path) {
 	auto posz = OtAssetDeserialize(&data, "posz", &basedir);
 
 	if (negx.empty() || negy.empty() || negz.empty() || posx.empty() || posy.empty() || posz.empty()) {
-		OtError("Incomplete CubeMap specification in [{}]", path);
+		OtLogError("Incomplete CubeMap specification in [{}]", path);
 	}
 
 	// load first side
@@ -184,7 +183,7 @@ void OtCubeMap::loadJSON(const std::string& path) {
 	container = image.getContainer();
 
 	if (container->m_width != static_cast<uint32_t>(size) || container->m_format != imageFormat) {
-		OtError("Cubemap image (negx] does not have same size or format as others");
+		OtLogError("Cubemap image (negx] does not have same size or format as others");
 	}
 
 	mem = bgfx::copy(container->m_data, container->m_size);
@@ -194,7 +193,7 @@ void OtCubeMap::loadJSON(const std::string& path) {
 	container = image.getContainer();
 
 	if (container->m_width != static_cast<uint32_t>(size) || container->m_format != imageFormat) {
-		OtError("Cubemap image (posy] does not have same size or format as others");
+		OtLogError("Cubemap image (posy] does not have same size or format as others");
 	}
 
 	mem = bgfx::copy(container->m_data, container->m_size);
@@ -204,7 +203,7 @@ void OtCubeMap::loadJSON(const std::string& path) {
 	container = image.getContainer();
 
 	if (container->m_width != static_cast<uint32_t>(size) || container->m_format != imageFormat) {
-		OtError("Cubemap image (negy] does not have same size or format as others");
+		OtLogError("Cubemap image (negy] does not have same size or format as others");
 	}
 
 	mem = bgfx::copy(container->m_data, container->m_size);
@@ -214,7 +213,7 @@ void OtCubeMap::loadJSON(const std::string& path) {
 	container = image.getContainer();
 
 	if (container->m_width != static_cast<uint32_t>(size) || container->m_format != imageFormat) {
-		OtError("Cubemap image (posz] does not have same size or format as others");
+		OtLogError("Cubemap image (posz] does not have same size or format as others");
 	}
 
 	mem = bgfx::copy(container->m_data, container->m_size);
@@ -224,7 +223,7 @@ void OtCubeMap::loadJSON(const std::string& path) {
 	container = image.getContainer();
 
 	if (container->m_width != static_cast<uint32_t>(size) || container->m_format != imageFormat) {
-		OtError("Cubemap image (negz] does not have same size or format as others");
+		OtLogError("Cubemap image (negz] does not have same size or format as others");
 	}
 
 	mem = bgfx::copy(container->m_data, container->m_size);
@@ -254,7 +253,7 @@ void OtCubeMap::loadCubemapImage(const std::string& path) {
 			bgfx::copy(container->m_data, container->m_size));
 
 	} else {
-		OtError("Image is not a cubemap");
+		OtLogError("Image is not a cubemap");
 	}
 
 	size = container->m_width;

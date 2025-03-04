@@ -12,8 +12,8 @@
 #include "OtArray.h"
 #include "OtDict.h"
 #include "OtDictReference.h"
-#include "OtException.h"
 #include "OtFunction.h"
+#include "OtLog.h"
 
 
 //
@@ -58,7 +58,7 @@ OtDictClass::operator std::string() {
 
 void OtDictClass::init(size_t count, OtObject* parameters) {
 	if (count %2 != 0) {
-		OtError("Dict constructor expects an even number of parameters not [{}]", count);
+		OtLogError("Dict constructor expects an even number of parameters not [{}]", count);
 	}
 
 	// clear dictionary and add all calling parameters
@@ -144,7 +144,7 @@ OtObject OtDictClass::setEntry(const std::string& index, OtObject object) {
 OtObject OtDictClass::getEntry(const std::string& index) {
 	// sanity check
 	if (dict.find(index) == dict.end()) {
-		OtError("Unkown dictionary member [{}]", index);
+		OtLogError("Unkown dictionary member [{}]", index);
 	}
 
 	// return entry
@@ -167,7 +167,7 @@ OtObject OtDictClass::index(const std::string& index) {
 
 OtObject OtDictClass::add(OtObject value) {
 	if (!value->isKindOf("Dict")) {
-		OtError("The dictionary add operator expects another [Dict] instance, not [{}]", value->getType()->getName());
+		OtLogError("The dictionary add operator expects another [Dict] instance, not [{}]", value->getType()->getName());
 	}
 
 	auto result = OtDict::create();
@@ -205,7 +205,7 @@ OtObject OtDictClass::clone() {
 
 OtObject OtDictClass::merge(OtObject value) {
 	if (!value->isKindOf("Dict")) {
-		OtError("Dictionary merge expects another [Dict] instance, not [{}]", value->getType()->getName());
+		OtLogError("Dictionary merge expects another [Dict] instance, not [{}]", value->getType()->getName());
 	}
 
 	auto result = OtDict::create();
@@ -229,7 +229,7 @@ OtObject OtDictClass::merge(OtObject value) {
 
 void OtDictClass::eraseEntry(const std::string& index) {
 	if (dict.find(index) == dict.end()) {
-		OtError("Unkown dictionary member [{}]", index);
+		OtLogError("Unkown dictionary member [{}]", index);
 	}
 
 	dict.erase(index);

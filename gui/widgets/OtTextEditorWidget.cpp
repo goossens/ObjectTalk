@@ -35,7 +35,7 @@ void OtTextEditorWidgetClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtLogFatal("[TextEditor] constructor expects up to 2 arguments (not {})", count);
+		OtLogError("[TextEditor] constructor expects up to 2 arguments (not {})", count);
 	}
 }
 
@@ -76,7 +76,7 @@ void OtTextEditorWidgetClass::setLanguage(const std::string& text) {
 		editor.SetLanguage(TextEditor::Language::Markdown());
 
 	} else {
-		OtLogFatal("Unknow language[{}],Shoudl be C, C++, C#, AngelScript", "Lua", "Python", "GLSL", "HLSL", "JSON", "Markdown", text);
+		OtLogError("Unknow language[{}],Shoudl be C, C++, C#, AngelScript", "Lua", "Python", "GLSL", "HLSL", "JSON", "Markdown", text);
 	}
 }
 

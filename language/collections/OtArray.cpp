@@ -15,8 +15,8 @@
 #include "OtArray.h"
 #include "OtArrayReference.h"
 #include "OtArrayIterator.h"
-#include "OtException.h"
 #include "OtFunction.h"
+#include "OtLog.h"
 #include "OtVM.h"
 
 
@@ -102,7 +102,7 @@ bool OtArrayClass::operator==(OtObject operand) {
 OtObject OtArrayClass::getEntry(size_t index) {
 	// sanity check
 	if (index >= array.size()) {
-		OtError("invalid index [{}] for array of size [{}]", index, array.size());
+		OtLogError("invalid index [{}] for array of size [{}]", index, array.size());
 	}
 
 	// return entry
@@ -117,7 +117,7 @@ OtObject OtArrayClass::getEntry(size_t index) {
 OtObject OtArrayClass::setEntry(size_t index, OtObject object) {
 	// sanity check
 	if (index >= array.size()) {
-		OtError("invalid index [{}] for array of size [{}]", index, array.size());
+		OtLogError("invalid index [{}] for array of size [{}]", index, array.size());
 	}
 
 	// set entry
@@ -133,7 +133,7 @@ OtObject OtArrayClass::setEntry(size_t index, OtObject object) {
 OtObject OtArrayClass::index(size_t index) {
 	// sanity check
 	if (index >= array.size()) {
-		OtError("invalid index [{}] for array of size [{}]", index, array.size());
+		OtLogError("invalid index [{}] for array of size [{}]", index, array.size());
 	}
 
 	return OtArrayReference::create(OtArray(this), index);
@@ -219,7 +219,7 @@ OtObject OtArrayClass::clone() {
 
 OtObject OtArrayClass::merge(OtObject object) {
 	if (!object->isKindOf("Array")) {
-		OtError("Array merge expects another [Array] instance, not a [{}]", object->getType()->getName());
+		OtLogError("Array merge expects another [Array] instance, not a [{}]", object->getType()->getName());
 	}
 
 	OtArray result = OtArray::create();
@@ -253,7 +253,7 @@ OtObject OtArrayClass::append(OtObject object) {
 OtObject OtArrayClass::insert(size_t index, OtObject object) {
 	// sanity check
 	if (index >= array.size()) {
-		OtError("invalid index [{}] for array of size [{}]", index, array.size());
+		OtLogError("invalid index [{}] for array of size [{}]", index, array.size());
 	}
 
 	array.insert(array.begin() + index, std::move(object));
@@ -268,7 +268,7 @@ OtObject OtArrayClass::insert(size_t index, OtObject object) {
 OtObject OtArrayClass::erase(size_t index) {
 	// sanity check
 	if (index >= array.size()) {
-		OtError("invalid index [{}] for array of size [{}]", index, array.size());
+		OtLogError("invalid index [{}] for array of size [{}]", index, array.size());
 	}
 
 	array.erase(array.begin() + index);
@@ -283,15 +283,15 @@ OtObject OtArrayClass::erase(size_t index) {
 OtObject OtArrayClass::eraseMultiple(size_t index1, size_t index2) {
 	// sanity check
 	if (index1 >= array.size()) {
-		OtError("invalid index [{}] for array of size [{}]", index1, array.size());
+		OtLogError("invalid index [{}] for array of size [{}]", index1, array.size());
 	}
 
 	if (index2 >= array.size()) {
-		OtError("invalid index [{}] for array of size [{}]", index2, array.size());
+		OtLogError("invalid index [{}] for array of size [{}]", index2, array.size());
 	}
 
 	if (index1 > index2) {
-		OtError("Indexes [{} and {}] are in the wrong order", index1, index2);
+		OtLogError("Indexes [{} and {}] are in the wrong order", index1, index2);
 	}
 
 	array.erase(array.begin() + index1, array.begin() + index2);

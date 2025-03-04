@@ -14,7 +14,7 @@
 
 #include "nlohmann/json.hpp"
 
-#include "OtException.h"
+#include "OtLog.h"
 #include "OtPath.h"
 
 #include "OtScene.h"
@@ -32,14 +32,14 @@ void OtScene::load(const std::string& path) {
 		std::ifstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't read from file [{}]", path);
+			OtLogError("Can't read from file [{}]", path);
 		}
 
 		buffer << stream.rdbuf();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't read from file [{}], error: {}", path, e.what());
+		OtLogError("Can't read from file [{}], error: {}", path, e.what());
 	}
 
 	// clear scene
@@ -97,14 +97,14 @@ void OtScene::save(const std::string& path) {
 		std::ofstream stream(path.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't open file [{}] for writing", path);
+			OtLogError("Can't open file [{}] for writing", path);
 		}
 
 		stream << data.dump(1, '\t');
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't write to file [{}], error: {}", path, e.what());
+		OtLogError("Can't write to file [{}], error: {}", path, e.what());
 	}
 }
 

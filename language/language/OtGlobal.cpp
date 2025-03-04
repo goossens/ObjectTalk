@@ -11,7 +11,7 @@
 
 #include <iostream>
 
-#include "OtException.h"
+#include "OtLog.h"
 #include "OtNumbers.h"
 
 #include "OtGlobal.h"
@@ -108,7 +108,7 @@ OtGlobalClass::OtGlobalClass() {
 
 void OtGlobalClass::doAssert(bool condition) {
 	if (!condition) {
-		OtError("Assertion error");
+		OtLogError("Assertion error");
 	}
 }
 
@@ -156,17 +156,17 @@ OtObject OtGlobalClass::range(size_t count, OtObject* parameters) {
 		increment = parameters[2]->operator int64_t();
 
 	} else {
-		OtError("Range function requires 1, 2 or 3 parameters, not {}", count);
+		OtLogError("Range function requires 1, 2 or 3 parameters, not {}", count);
 	}
 
 	if (increment == 0) {
-		OtError("You can't create a range with an increment of 0");
+		OtLogError("You can't create a range with an increment of 0");
 
 	} else if (to > from && increment < 0) {
-		OtError("Forward ranges must have positive increments");
+		OtLogError("Forward ranges must have positive increments");
 
 	} else if (from > to && increment > 0) {
-		OtError("Reverse ranges must have negative increments");
+		OtLogError("Reverse ranges must have negative increments");
 	}
 
 	return OtRangeIterator::create(from, to, increment);

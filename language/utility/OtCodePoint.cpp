@@ -14,7 +14,7 @@
 //
 
 #include "OtCodePoint.h"
-#include "OtException.h"
+#include "OtLog.h"
 #include "OtUnicode.h"
 
 
@@ -49,14 +49,10 @@ size_t OtCodePoint::size(std::string::const_iterator i) {
 
 	} else if ((uch(*i) & 0xF8) == 0xF0) {
 		return 4;
-
-	} else {
-		OtError("Invalid codepoint in UTF-8 string");
 	}
 
-#if !_WIN32
+	OtLogError("Invalid codepoint in UTF-8 string");
 	return 0;
-#endif
 }
 
 

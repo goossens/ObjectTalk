@@ -17,7 +17,6 @@
 
 #include "fmt/format.h"
 
-#include "OtException.h"
 #include "OtSingleton.h"
 
 

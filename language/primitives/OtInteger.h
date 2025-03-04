@@ -16,7 +16,7 @@
 #include <cmath>
 #include <string>
 
-#include "OtException.h"
+#include "OtLog.h"
 #include "OtNumbers.h"
 #include "OtPrimitive.h"
 
@@ -61,8 +61,8 @@ public:
 	inline int64_t add(int64_t operand) { return value + operand; }
 	inline int64_t subtract(int64_t operand) { return value - operand; }
 	inline int64_t multiply(int64_t operand) { return value * operand; }
-	inline int64_t divide(int64_t operand) { if (operand == 0) OtError("Divide by zero"); return value / operand; }
-	inline int64_t modulo(int64_t operand) { if (operand == 0) OtError("Divide by zero"); return value % operand; }
+	inline int64_t divide(int64_t operand) { if (operand == 0) OtLogError("Divide by zero"); return value / operand; }
+	inline int64_t modulo(int64_t operand) { if (operand == 0) OtLogError("Divide by zero"); return value % operand; }
 	inline int64_t power(int64_t operand) { return static_cast<int64_t>(std::pow(value, operand)); }
 
 	inline int64_t increment() { return value + 1; }

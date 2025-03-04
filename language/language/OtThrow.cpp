@@ -9,8 +9,8 @@
 //	Include files
 //
 
-#include "OtException.h"
 #include "OtFunction.h"
+#include "OtLog.h"
 #include "OtThrow.h"
 
 
@@ -19,7 +19,7 @@
 //
 
 void OtThrowClass::call(const std::string& error) {
-	OtError(error);
+	OtLogError(error);
 }
 
 

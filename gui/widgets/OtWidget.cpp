@@ -28,13 +28,13 @@ OtObject OtWidgetClass::add(OtObject object) {
 
 	if (maxChildren >= 0) {
 		if (int(children.size()) == maxChildren) {
-			OtLogFatal("Too many children for [{}], max [{}]", getType()->getName(), maxChildren);
+			OtLogError("Too many children for [{}], max [{}]", getType()->getName(), maxChildren);
 		}
 	}
 
 	// ensure object is of the right class
 	if (!object->isKindOf("Widget")) {
-		OtLogFatal("Can't have a [{}] as a child of a [{}]", object->getType()->getName(), getType()->getName());
+		OtLogError("Can't have a [{}] as a child of a [{}]", object->getType()->getName(), getType()->getName());
 	}
 
 	// cast the object to a widget

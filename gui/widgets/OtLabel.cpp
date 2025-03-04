@@ -41,7 +41,7 @@ void OtLabelClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtLogFatal("[Label] constructor expects up to 3 arguments (not {})", count);
+		OtLogError("[Label] constructor expects up to 3 arguments (not {})", count);
 	}
 }
 

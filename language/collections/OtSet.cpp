@@ -14,6 +14,7 @@
 #include <utility>
 
 #include "OtFunction.h"
+#include "OtLog.h"
 #include "OtSet.h"
 #include "OtSetIterator.h"
 
@@ -174,7 +175,7 @@ OtObject OtSetClass::clone() {
 
 OtObject OtSetClass::merge(OtObject object) {
 	if (!object->isKindOf("Set")) {
-		OtError("Set merge expects another [Set] instance, not a [{}]", object->getType()->getName());
+		OtLogError("Set merge expects another [Set] instance, not a [{}]", object->getType()->getName());
 	}
 
 	OtSet result = OtSet::create();
@@ -232,7 +233,7 @@ OtObject OtSetClass::intersectWith(OtObject object) {
 	OtSet op = object;
 
 	if (!op) {
-		OtError("Set intersect method expects another [Set] instance, not a [{}]", object->getType()->getName());
+		OtLogError("Set intersect method expects another [Set] instance, not a [{}]", object->getType()->getName());
 	}
 
 	OtSet result = OtSet::create();
@@ -255,7 +256,7 @@ OtObject OtSetClass::diffFrom(OtObject object) {
 	OtSet op = object;
 
 	if (!op) {
-		OtError("Set difference expects another [Set] instance, not a [{}]", object->getType()->getName());
+		OtLogError("Set difference expects another [Set] instance, not a [{}]", object->getType()->getName());
 	}
 
 	OtSet result = OtSet::create();
@@ -282,7 +283,7 @@ OtObject OtSetClass::diffFrom(OtObject object) {
 
 OtObject OtSetClass::unionWith(OtObject object) {
 	if (!object->isKindOf("Set")) {
-		OtError("Set union expects another [Set] instance, not a [{}]", object->getType()->getName());
+		OtLogError("Set union expects another [Set] instance, not a [{}]", object->getType()->getName());
 	}
 
 	OtSet result = OtSet::create();
@@ -309,7 +310,7 @@ OtObject OtSetClass::subtractFrom(OtObject object) {
 	OtSet op = object;
 
 	if (!op) {
-		OtError("Set subtract expects another [Set] instance, not a [{}]", object->getType()->getName());
+		OtLogError("Set subtract expects another [Set] instance, not a [{}]", object->getType()->getName());
 	}
 
 	OtSet result = OtSet::create();

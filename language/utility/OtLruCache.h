@@ -15,7 +15,7 @@
 #include <list>
 #include <unordered_map>
 
-#include "OtException.h"
+#include "OtLog.h"
 
 
 //
@@ -85,7 +85,7 @@ public:
 		auto pos = index.find(key);
 
 		if (pos == index.end()) {
-			OtError("Invalid key for cache");
+			OtLogError("Invalid key for cache");
 		}
 
 		items.splice(items.begin(), items, pos->second);

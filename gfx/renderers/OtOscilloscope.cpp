@@ -424,7 +424,7 @@ static inline float normalizeAngle(float angle) {
 
 void OtOscilloscope::endDraw(float lineWidth, uint32_t color) {
 	if (points.size() < 2) {
-		OtLogFatal("Invalid number of points in VectorDisplay draw action");
+		OtLogFatal("Internal error: invalid number of points in VectorDisplay draw action");
 	}
 
 	// build a list of lines from the list of points

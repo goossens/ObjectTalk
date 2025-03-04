@@ -15,8 +15,6 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtException.h"
-
 #include "OtMessageBus.h"
 #include "OtUi.h"
 

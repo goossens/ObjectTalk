@@ -11,9 +11,9 @@
 
 #include <cstring>
 
-#include "OtException.h"
 #include "OtFunction.h"
 #include "OtHttpResponse.h"
+#include "OtLog.h"
 #include "OtMimeTypes.h"
 #include "OtPath.h"
 
@@ -129,7 +129,7 @@ OtObject OtHttpResponseClass::setStatus(int s) {
 
 OtObject OtHttpResponseClass::setHeader(const std::string& name, const std::string& value) {
 	if (responseState != ResponseState::start) {
-		OtError("HttpResponse can't send headers after body transmission has started");
+		OtLogError("HttpResponse can't send headers after body transmission has started");
 	}
 
 	headers.emplace(name, value);

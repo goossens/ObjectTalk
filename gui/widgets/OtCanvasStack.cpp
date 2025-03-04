@@ -13,7 +13,7 @@
 
 #include "imgui.h"
 
-#include "OtException.h"
+#include "OtLog.h"
 #include "OtVM.h"
 
 #include "OtPass.h"
@@ -40,7 +40,7 @@ void OtCanvasStackClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtLogFatal("[Board] constructor expects 0, 1 or 2 arguments (not {})", count);
+			OtLogError("[Board] constructor expects 0, 1 or 2 arguments (not {})", count);
 	}
 }
 
@@ -52,11 +52,11 @@ void OtCanvasStackClass::init(size_t count, OtObject* parameters) {
 int OtCanvasStackClass::addCanvas(OtObject canvas) {
 	// sanity check
 	if (!canvas.isKindOf<OtCanvasClass>()) {
-		OtError("Object is not derived from [Canvas]");
+		OtLogError("Object is not derived from [Canvas]");
 	}
 
 	if (!canvas->hasByName("render")) {
-		OtError("Object does not have a [render] method");
+		OtLogError("Object does not have a [render] method");
 	}
 
 	int id = layerID++;
@@ -182,7 +182,7 @@ OtCanvasStackClass::Canvas* OtCanvasStackClass::findCanvas(int id) {
 		}
 	}
 
-	OtError("Unknown canvas ID [{}]", id);
+	OtLogError("Unknown canvas ID [{}]", id);
 
 #if !_WIN32
 	return nullptr;

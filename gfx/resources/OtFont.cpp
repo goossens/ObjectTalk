@@ -13,6 +13,7 @@
 
 #include "OtAssert.h"
 #include "OtCodePoint.h"
+#include "OtLog.h"
 
 #include "OtFont.h"
 #include "OtPath.h"
@@ -37,7 +38,7 @@ void OtFont::load(const std::string& path) {
 
 	// load font file into memory
 	if (!OtPath::exists(path) || !OtPath::isRegularFile(path)) {
-		OtError("Can't open font in [{}]", path);
+		OtLogError("Can't open font in [{}]", path);
 	}
 
 	auto filesize = OtPath::getFileSize(path);
@@ -47,13 +48,13 @@ void OtFont::load(const std::string& path) {
 
 	if (!stream) {
 		fontdata.reset();
-		OtError("Can't open font in [{}]", path);
+		OtLogError("Can't open font in [{}]", path);
 	}
 
 	// prepare font
 	if (!stbtt_InitFont(&fontdata->font, fontdata->bytes.data(), 0)) {
 		fontdata.reset();
-		OtError("Can't process font [{}]", path);
+		OtLogError("Can't process font [{}]", path);
 	}
 }
 

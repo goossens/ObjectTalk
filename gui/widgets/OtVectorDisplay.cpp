@@ -49,7 +49,7 @@ void OtVectorDisplayClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtLogFatal("[VectorDisplay] constructor expects 0, 2, 3, 4 or 5 arguments (not {})", count);
+		OtLogError("[VectorDisplay] constructor expects 0, 2, 3, 4 or 5 arguments (not {})", count);
 	}
 }
 

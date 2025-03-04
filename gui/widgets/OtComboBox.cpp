@@ -46,7 +46,7 @@ void OtComboBoxClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtLogFatal("[ComboBox] constructor expects up to 4 arguments (not {})", count);
+		OtLogError("[ComboBox] constructor expects up to 4 arguments (not {})", count);
 	}
 }
 

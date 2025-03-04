@@ -9,8 +9,8 @@
 //	Include files
 //
 
-#include "OtException.h"
 #include "OtFunction.h"
+#include "OtLog.h"
 
 #include "OtVec3.h"
 
@@ -30,7 +30,7 @@ void OtVec3Class::init(size_t count, OtObject* parameters) {
 		value = glm::vec3(parameters[0]->operator float());
 
 	} else if (count != 0) {
-		OtError("[Vec3] constructor expects 0, 1 or 3 arguments (not {})", count);
+		OtLogError("[Vec3] constructor expects 0, 1 or 3 arguments (not {})", count);
 	}
 }
 

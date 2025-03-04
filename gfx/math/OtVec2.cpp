@@ -9,8 +9,8 @@
 //	Include files
 //
 
-#include "OtException.h"
 #include "OtFunction.h"
+#include "OtLog.h"
 #include "OtReal.h"
 
 #include "OtVec2.h"
@@ -28,7 +28,7 @@ void OtVec2Class::init(size_t count, OtObject* parameters) {
 		value = glm::vec2(parameters[0]->operator float());
 
 	} else if (count != 0) {
-		OtError("[Vec2] constructor expects 0, 1 or 2 arguments (not {})", count);
+		OtLogError("[Vec2] constructor expects 0, 1 or 2 arguments (not {})", count);
 	}
 }
 

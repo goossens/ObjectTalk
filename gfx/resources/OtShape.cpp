@@ -16,7 +16,7 @@
 
 #include "fmt/core.h"
 
-#include "OtException.h"
+#include "OtLog.h"
 
 #include "OtShape.h"
 
@@ -35,7 +35,7 @@ void OtShape::load(const std::string& filepath) {
 		plutovg_path_parse(path, buffer.str().c_str(), -1);
 
 	} catch (std::exception& e) {
-		OtError("Can't read from file [{}], error: {}", filepath, e.what());
+		OtLogError("Can't read from file [{}], error: {}", filepath, e.what());
 	}
 }
 
@@ -77,7 +77,7 @@ void OtShape::save(const std::string& filepath) {
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't write to file [{}], error: {}", filepath, e.what());
+		OtLogError("Can't write to file [{}], error: {}", filepath, e.what());
 	}
 }
 

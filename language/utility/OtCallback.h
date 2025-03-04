@@ -14,8 +14,9 @@
 
 #include "OtByteCodeFunction.h"
 #include "OtClosure.h"
-#include "OtException.h"
 #include "OtFunction.h"
+#include "OtFunction.h"
+#include "OtLog.h"
 
 
 //
@@ -28,24 +29,24 @@ inline void OtCallbackValidate(OtObject& callback, size_t pars) {
 		auto parameters = OtFunction(callback)->getParameterCount();
 
 		if (parameters != pars) {
-			OtError("Callback must accept {} parameters, not {}", pars, parameters);
+			OtLogError("Callback must accept {} parameters, not {}", pars, parameters);
 		}
 
 	} else if (callback->isKindOf("ByteCodeFunction")) {
 		auto parameters = OtByteCodeFunction(callback)->getParameterCount();
 
 		if (parameters != pars) {
-			OtError("Callback must accept {} parameters, not {}", pars, parameters);
+			OtLogError("Callback must accept {} parameters, not {}", pars, parameters);
 		}
 
 	} else if (callback->isKindOf("Closure")) {
 		auto parameters = OtClosure(callback)->getParameterCount();
 
 		if (parameters != pars) {
-			OtError("Callback must accept {} parameters, not {}", pars, parameters);
+			OtLogError("Callback must accept {} parameters, not {}", pars, parameters);
 		}
 
 	} else {
-		OtError("Expected a [Function], not a [{}]", callback->getType()->getName());
+		OtLogError("Expected a [Function], not a [{}]", callback->getType()->getName());
 	}
 }

@@ -18,7 +18,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "OtException.h"
+#include "OtLog.h"
 
 
 //
@@ -46,7 +46,7 @@ public:
 	// create a new instance by name
 	inline std::shared_ptr<B> create(std::string_view name) {
 		if (!exists(name)) {
-			OtError("Internal error: factory can't create instance of type [{}]", name);
+			OtLogError("Internal error: factory can't create instance of type [{}]", name);
 		}
 
 		return map.find(name)->second();

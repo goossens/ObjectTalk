@@ -58,7 +58,7 @@ void OtFilmStripClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtLogFatal("[FilmStrip] constructor expects up to 5 arguments (not {})", count);
+		OtLogError("[FilmStrip] constructor expects up to 5 arguments (not {})", count);
 	}
 }
 
@@ -70,11 +70,11 @@ void OtFilmStripClass::init(size_t count, OtObject* parameters) {
 void OtFilmStripClass::render() {
 	// sanity check
 	if (filmstrip.isNull()) {
-		OtLogFatal("[FilmStrip] does not have the filmstrip");
+		OtLogError("[FilmStrip] does not have the filmstrip");
 	}
 
 	if (!frames) {
-		OtLogFatal("[FilmStrip] does not have frame count");
+		OtLogError("[FilmStrip] does not have frame count");
 	}
 
 	// wait until texture is ready

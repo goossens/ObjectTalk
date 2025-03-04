@@ -21,7 +21,7 @@ add_library(ide OBJECT ${IDE_INCLUDES} ${IDE_SOURCES})
 target_compile_options(ide PRIVATE
 	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Werror -Wall -Wextra>
 	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wpedantic>
-	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4>)
+	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4 /WX>)
 
 target_include_directories(ide PUBLIC ${IDE_INCLUDE_DIRS})
 target_link_libraries(ide PUBLIC language gfx nodes scene imguieditor imguizmo)

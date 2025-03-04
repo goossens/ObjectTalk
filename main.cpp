@@ -15,6 +15,7 @@
 #include <argparse/argparse.hpp>
 
 #include "OtConfig.h"
+#include "OtException.h"
 #include "OtLibuv.h"
 #include "OtPath.h"
 #include "OtStderrMultiplexer.h"

@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "OtException.h"
-
 #include "OtImage.h"
 #include "OtFrameworkAtExit.h"
 #include "OtTexture.h"

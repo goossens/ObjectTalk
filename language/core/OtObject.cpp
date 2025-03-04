@@ -9,10 +9,10 @@
 //	Include files
 //
 
-#include "OtException.h"
 #include "OtClass.h"
 #include "OtFunction.h"
 #include "OtIdentifier.h"
+#include "OtLog.h"
 #include "OtObject.h"
 
 
@@ -75,7 +75,7 @@ OtObject OtObjectClass::get(OtID id) {
 
 	std::string memberName(OtIdentifier::name(id));
 	std::string className(OtIdentifier::name(type->getID()));
-	OtError("Unknown member [{}] in instance of class [{}]", memberName, className);
+	OtLogError("Unknown member [{}] in instance of class [{}]", memberName, className);
 
 	// we will never get here because of the exception but a return statement keeps the compiler happy
 	return members->get(id);
@@ -92,7 +92,7 @@ void OtObjectClass::unset(OtID id) {
 
 	} else {
 		auto name = OtIdentifier::name(id);
-		OtError("Unknown member [%.*s] in instance of class [{}]", name.size(), name.data(), OtIdentifier::name(type->getID()));
+		OtLogError("Unknown member [%.*s] in instance of class [{}]", name.size(), name.data(), OtIdentifier::name(type->getID()));
 	}
 }
 
@@ -144,7 +144,7 @@ static bool isvowel(char ch) {
 void OtObjectClass::expectKindOf(const std::string& className) {
 	// ensure object is of the right kind
 	if (!isKindOf(className)) {
-		OtError("Expected {} [{}] instance, not a [{}]",
+		OtLogError("Expected {} [{}] instance, not a [{}]",
 			isvowel(className[0]) ? "an" : "a",
 			className.c_str(),
 			OtIdentifier::name(getType()->getID()));

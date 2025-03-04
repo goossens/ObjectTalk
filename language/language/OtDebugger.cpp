@@ -21,8 +21,8 @@
 #include "OtArray.h"
 #include "OtConfig.h"
 #include "OtDebugger.h"
-#include "OtException.h"
 #include "OtFunction.h"
+#include "OtLog.h"
 #include "OtStderrMultiplexer.h"
 #include "OtString.h"
 #include "OtText.h"
@@ -35,7 +35,7 @@
 
 void OtDebuggerClass::debug(size_t count, OtObject* parameters) {
 	if (count > 1) {
-		OtError("Debug function requires 0 or 1 parameters, not {}", count);
+		OtLogError("Debug function requires 0 or 1 parameters, not {}", count);
 	}
 
 	if (count == 0 || parameters[0]->operator bool()) {

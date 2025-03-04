@@ -16,6 +16,7 @@
 #include "OtCompiler.h"
 #include "OtFunction.h"
 #include "OtIO.h"
+#include "OtLog.h"
 #include "OtSource.h"
 #include "OtString.h"
 #include "OtVM.h"
@@ -32,14 +33,14 @@ OtObject OtIOClass::readJSON(const std::string& name) {
 		std::ifstream stream(name.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't read from file [{}]", name);
+			OtLogError("Can't read from file [{}]", name);
 		}
 
 		buffer << stream.rdbuf();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't read from file [{}], error: {}", name, e.what());
+		OtLogError("Can't read from file [{}], error: {}", name, e.what());
 	}
 
 	OtCompiler compiler;
@@ -59,14 +60,14 @@ void OtIOClass::writeJSON(const std::string& name, OtObject object) {
 		std::ofstream stream(name.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't write to file [{}]", name);
+			OtLogError("Can't write to file [{}]", name);
 		}
 
 		stream << object->json();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't write to file [{}], error: {}", name, e.what());
+		OtLogError("Can't write to file [{}], error: {}", name, e.what());
 	}
 }
 
@@ -82,14 +83,14 @@ OtObject OtIOClass::readText(const std::string& name) {
 		std::ifstream stream(name.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't read from file [{}]", name);
+			OtLogError("Can't read from file [{}]", name);
 		}
 
 		buffer << stream.rdbuf();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't read from file [{}], error: {}", name, e.what());
+		OtLogError("Can't read from file [{}], error: {}", name, e.what());
 	}
 
 	return OtString::create(buffer.str());
@@ -105,14 +106,14 @@ void OtIOClass::writeText(const std::string& name, OtObject object) {
 		std::ofstream stream(name.c_str());
 
 		if (stream.fail()) {
-			OtError("Can't write to file [{}]", name);
+			OtLogError("Can't write to file [{}]", name);
 		}
 
 		stream << object->operator std::string();
 		stream.close();
 
 	} catch (std::exception& e) {
-		OtError("Can't write to file [{}], error: {}", name, e.what());
+		OtLogError("Can't write to file [{}], error: {}", name, e.what());
 	}
 }
 

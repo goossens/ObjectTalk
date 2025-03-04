@@ -18,7 +18,6 @@
 #include "bimg/encode.h"
 
 #include "OtAssert.h"
-#include "OtException.h"
 #include "OtLog.h"
 #include "OtNumbers.h"
 
@@ -71,7 +70,7 @@ void OtImage::update(int width, int height, int format) {
 			false);
 
 		if (!imageContainer) {
-			OtLogFatal("Function [bimg::imageAlloc] failed");
+			OtLogFatal("Internal error: function [bimg::imageAlloc] failed");
 		}
 
 		assignImageContainer(imageContainer);
@@ -86,7 +85,7 @@ void OtImage::update(int width, int height, int format) {
 void OtImage::load(const std::string& path, bool powerof2, bool square) {
 	// get image data
 	if (!OtPath::exists(path) || !OtPath::isRegularFile(path)) {
-		OtError("Can't open image in [{}]", path);
+		OtLogError("Can't open image in [{}]", path);
 	}
 
 	auto filesize = OtPath::getFileSize(path);
@@ -96,31 +95,31 @@ void OtImage::load(const std::string& path, bool powerof2, bool square) {
 
 	if (!file) {
 		delete [] buffer;
-		OtError("Can't open image in [{}]", path);
+		OtLogError("Can't open image in [{}]", path);
 	}
 
 	auto imageContainer = bimg::imageParse(&allocator, buffer, static_cast<uint32_t>(filesize));
 	delete [] buffer;
 
 	if (!imageContainer) {
-		OtLogFatal("Function [bimg::imageParse] failed");
+		OtLogFatal("Internal error: function [bimg::imageParse] failed");
 	}
 
 	if (!imageContainer) {
-		OtError("Can't process image in [{}]", path);
+		OtLogError("Can't process image in [{}]", path);
 	}
 
 	// validate sides are power of 2 (if required)
 	if (powerof2 && !(bx::isPowerOf2(imageContainer->m_width))) {
 		int width = imageContainer->m_width;
 		bimg::imageFree(imageContainer);
-		OtError("Image width {} is not a power of 2", width);
+		OtLogError("Image width {} is not a power of 2", width);
 	}
 
 	if (powerof2 && !(bx::isPowerOf2(imageContainer->m_height))) {
 		int height = imageContainer->m_height;
 		bimg::imageFree(imageContainer);
-		OtError("Image height {} is not a power of 2", height);
+		OtLogError("Image height {} is not a power of 2", height);
 	}
 
 	// validate squareness (if required)
@@ -128,7 +127,7 @@ void OtImage::load(const std::string& path, bool powerof2, bool square) {
 		int width = imageContainer->m_width;
 		int height = imageContainer->m_height;
 		bimg::imageFree(imageContainer);
-		OtError("Image must be square not {} by {}", width, height);
+		OtLogError("Image must be square not {} by {}", width, height);
 	}
 
 	assignImageContainer(imageContainer);
@@ -141,7 +140,7 @@ void OtImage::load(const std::string& path, bool powerof2, bool square) {
 
 static bimg::ImageContainer* convertImage(bimg::ImageContainer& input, bimg::TextureFormat::Enum format) {
 	if (!bimg::imageConvert(format, input.m_format)) {
-		OtLogFatal("Can't convert image from [{}] to [{}]", bimg::getName(input.m_format), bimg::getName(format));
+		OtLogFatal("Internal error: can't convert image from [{}] to [{}]", bimg::getName(input.m_format), bimg::getName(format));
 	}
 
 	return bimg::imageConvert(&allocator, format, input);
@@ -188,7 +187,7 @@ void OtImage::loadFromFileInMemory(void* data, uint32_t size) {
 
 	// check for errors
 	if (!imageContainer) {
-		OtError("Internal error: can't process in-memory image");
+		OtLogError("Internal error: can't process in-memory image");
 	}
 
 	assignImageContainer(imageContainer);
@@ -217,7 +216,7 @@ static void writeToPNG(const std::string& path, const bimg::ImageContainer& imag
 		if (!err.isOk()) {
 			auto msg = err.getMessage();
 			auto message = std::string(msg.getCPtr(), msg.getLength());
-			OtError("Can't write PNG to file at [{}], error: {}", path, message);
+			OtLogError("Can't write PNG to file at [{}], error: {}", path, message);
 		}
 
 		bx::close(&writer);;
@@ -225,7 +224,7 @@ static void writeToPNG(const std::string& path, const bimg::ImageContainer& imag
 	} else {
 		auto msg = err.getMessage();
 		auto message = std::string(msg.getCPtr(), msg.getLength());
-		OtError("Can't open PNG file at [{}] for write, error: {}", path, message);
+		OtLogError("Can't open PNG file at [{}] for write, error: {}", path, message);
 	}
 }
 
@@ -276,7 +275,7 @@ static void writeToDDS(const std::string& path, bimg::ImageContainer& image) {
 		if (!err.isOk()) {
 			auto msg = err.getMessage();
 			auto message = std::string(msg.getCPtr(), msg.getLength());
-			OtError("Can't write DDS to file at [{}], error: {}", path, message);
+			OtLogError("Can't write DDS to file at [{}], error: {}", path, message);
 		}
 
 		bx::close(&writer);;
@@ -284,7 +283,7 @@ static void writeToDDS(const std::string& path, bimg::ImageContainer& image) {
 	} else {
 		auto msg = err.getMessage();
 		auto message = std::string(msg.getCPtr(), msg.getLength());
-		OtError("Can't open DDS file at [{}] for write, error: {}", path, message);
+		OtLogError("Can't open DDS file at [{}] for write, error: {}", path, message);
 	}
 }
 

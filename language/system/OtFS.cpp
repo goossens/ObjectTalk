@@ -15,10 +15,10 @@
 #include <random>
 
 #include "OtArray.h"
-#include "OtException.h"
 #include "OtFunction.h"
 #include "OtFS.h"
 #include "OtLibuv.h"
+#include "OtLog.h"
 #include "OtPathObject.h"
 
 
@@ -81,7 +81,7 @@ OtObject OtFSClass::getcwd() {
 		return OtPathObject::create(std::filesystem::canonical(std::filesystem::current_path()));
 
 	} catch (std::exception& e) {
-		OtError("Can't get current directory, error: {}", e.what());
+		OtLogError("Can't get current directory, error: {}", e.what());
 	}
 
 	return nullptr;
@@ -97,7 +97,7 @@ void OtFSClass::chdir(const std::string& path) {
 		std::filesystem::current_path(path);
 
 	} catch (std::exception& e) {
-		OtError("Can't set current directory to [{}], error: {}", path, e.what());
+		OtLogError("Can't set current directory to [{}], error: {}", path, e.what());
 	}
 }
 
@@ -118,7 +118,7 @@ OtObject OtFSClass::ls(const std::string& path) {
 		return content;
 
 	} catch (std::exception& e) {
-		OtError("Can't list directory [{}], error: {}", path, e.what());
+		OtLogError("Can't list directory [{}], error: {}", path, e.what());
 	}
 
 	return nullptr;
@@ -134,7 +134,7 @@ size_t OtFSClass::filesize(const std::string& path) {
 		return static_cast<size_t>(std::filesystem::file_size(path));
 
 	} catch (std::exception& e) {
-		OtError("Can't get size of file [{}], error: {}", path, e.what());
+		OtLogError("Can't get size of file [{}], error: {}", path, e.what());
 	}
 
 	return 0;
@@ -162,7 +162,7 @@ void OtFSClass::touch(const std::string& path) {
 		file.open(path, std::ofstream::out);
 
 		if ((file.rdstate() & std::ofstream::failbit) != 0) {
-			OtError("Can't touch file [{}]", path);
+			OtLogError("Can't touch file [{}]", path);
 		}
 
 		file.close();
@@ -180,7 +180,7 @@ void OtFSClass::cp(const std::string& from, const std::string& to) {
 		std::filesystem::copy(from, to, std::filesystem::copy_options::recursive);
 
 	} catch (std::exception& e) {
-		OtError("Can't copy file [{}] to [{}], error: {}", from, to, e.what());
+		OtLogError("Can't copy file [{}] to [{}], error: {}", from, to, e.what());
 	}
 }
 
@@ -194,7 +194,7 @@ void OtFSClass::mv(const std::string& from, const std::string& to) {
 		std::filesystem::rename(from, to);
 
 	} catch (std::exception& e) {
-		OtError("Can't move file [{}] to [{}], error: {}", from, to, e.what());
+		OtLogError("Can't move file [{}] to [{}], error: {}", from, to, e.what());
 	}
 }
 
@@ -208,7 +208,7 @@ void OtFSClass::ln(const std::string& from, const std::string& to) {
 		std::filesystem::create_hard_link(from, to);
 
 	} catch (std::exception& e) {
-		OtError("Can't link file [{}] to [{}], error: {}", from, to, e.what());
+		OtLogError("Can't link file [{}] to [{}], error: {}", from, to, e.what());
 	}
 }
 
@@ -222,7 +222,7 @@ void OtFSClass::lns(const std::string& from, const std::string& to) {
 		std::filesystem::create_symlink(from, to);
 
 	} catch (std::exception& e) {
-		OtError("Can't symbolically link file [{}] to [{}], error: {}", from, to, e.what());
+		OtLogError("Can't symbolically link file [{}] to [{}], error: {}", from, to, e.what());
 	}
 }
 
@@ -236,7 +236,7 @@ void OtFSClass::resize(const std::string& path, size_t size) {
 		std::filesystem::resize_file(path, size);
 
 	} catch (std::exception& e) {
-		OtError("Can't resize file [{}], error: {}", path, e.what());
+		OtLogError("Can't resize file [{}], error: {}", path, e.what());
 	}
 }
 
@@ -247,7 +247,7 @@ void OtFSClass::resize(const std::string& path, size_t size) {
 
 void OtFSClass::rm(const std::string& path) {
 	if (!std::filesystem::remove(path)) {
-		OtError("Can't remove [{}]", path);
+		OtLogError("Can't remove [{}]", path);
 	}
 }
 
@@ -258,7 +258,7 @@ void OtFSClass::rm(const std::string& path) {
 
 void OtFSClass::mkdir(const std::string& path) {
 	if (!std::filesystem::create_directory(path)) {
-		OtError("Can't create directory [{}]", path);
+		OtLogError("Can't create directory [{}]", path);
 	}
 }
 
@@ -269,7 +269,7 @@ void OtFSClass::mkdir(const std::string& path) {
 
 void OtFSClass::mkdirs(const std::string& path) {
 	if (!std::filesystem::create_directories(path)) {
-		OtError("Can't create directories [{}]", path);
+		OtLogError("Can't create directories [{}]", path);
 	}
 }
 
@@ -307,7 +307,7 @@ OtObject OtFSClass::mktmpdir() {
 
 void OtFSClass::rmdir(const std::string& path) {
 	if (!std::filesystem::remove(path)) {
-		OtError("Can't remove directory [{}]", path);
+		OtLogError("Can't remove directory [{}]", path);
 	}
 }
 
@@ -318,7 +318,7 @@ void OtFSClass::rmdir(const std::string& path) {
 
 void OtFSClass::rmdirs(const std::string& path) {
 	if (!std::filesystem::remove_all(path)) {
-		OtError("Can't remove directory [{}]", path);
+		OtLogError("Can't remove directory [{}]", path);
 	}
 }
 
@@ -333,7 +333,7 @@ size_t OtFSClass::capacity(const std::string& path) {
 		return space.capacity;
 
 	} catch (std::exception& e) {
-		OtError("Can't get capacity for [{}], error: {}", path, e.what());
+		OtLogError("Can't get capacity for [{}], error: {}", path, e.what());
 	}
 
 	return 0;
@@ -350,7 +350,7 @@ size_t OtFSClass::free(const std::string& path) {
 		return space.free;
 
 	} catch (std::exception& e) {
-		OtError("Can't get free space for [{}], error: {}", path, e.what());
+		OtLogError("Can't get free space for [{}], error: {}", path, e.what());
 	}
 
 	return 0;
@@ -367,7 +367,7 @@ size_t OtFSClass::available(const std::string& path) {
 		return space.available;
 
 	} catch (std::exception& e) {
-		OtError("Can't get available space for [{}], error: {}", path, e.what());
+		OtLogError("Can't get available space for [{}], error: {}", path, e.what());
 	}
 
 	return 0;

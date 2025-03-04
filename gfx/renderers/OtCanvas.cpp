@@ -111,7 +111,7 @@ int OtCanvasClass::loadFont(const std::string& path) {
 	auto id =  nvgCreateFont(context, OtPath::getStem(path).c_str(), path.c_str());
 
 	if (id < 0) {
-		OtError("Can't load font at [{}]", path);
+		OtLogError("Can't load font at [{}]", path);
 	}
 
 	return id;
@@ -361,6 +361,6 @@ void OtCanvasClass::drawImageStub(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-			OtLogFatal("[drawImage expects 3, 5, or 9 arguments (not {})", count);
+			OtLogError("[drawImage expects 3, 5, or 9 arguments (not {})", count);
 	}
 }

@@ -14,7 +14,7 @@
 
 #include <unordered_map>
 
-#include "OtException.h"
+#include "OtLog.h"
 
 
 //
@@ -57,7 +57,7 @@ public:
 		auto pos = entries.find(key);
 
 		if (pos == entries.end()) {
-			OtError("Invalid key for cache");
+			OtLogError("Invalid key for cache");
 		}
 
 		pos->second.ttl = 0.0f;

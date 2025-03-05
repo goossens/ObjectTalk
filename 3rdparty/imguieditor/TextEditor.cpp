@@ -69,7 +69,7 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	}
 
 	// get current position and total/visible editor size
-	auto pos = ImGui::GetCursorPos();
+	auto pos = ImGui::GetCursorScreenPos();
 	auto totalSize = ImVec2(textOffset + document.getMaxColumn() * glyphSize.x + cursorWidth, document.size() * glyphSize.y);
 	auto visibleSize = ImGui::GetContentRegionAvail();
 
@@ -145,10 +145,6 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 		scrollToLineNumber = -1;
 	}
 
-	// set style
-	ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::ColorConvertU32ToFloat4(palette.get(Color::background)));
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
-
 	// ensure editor has focus (if required)
 	if (focusOnEditor) {
 		ImGui::SetNextWindowFocus();
@@ -163,6 +159,8 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	// start a new child window
 	// this must be done before we handle keyboard and mouse interactions to ensure correct Dear ImGui context
 	ImGui::SetNextWindowContentSize(totalSize);
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
+	ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::ColorConvertU32ToFloat4(palette.get(Color::background)));
 	ImGui::BeginChild(title, size, border, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNavInputs);
 
 	// handle keyboard and mouse inputs
@@ -225,12 +223,12 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 		ImGui::EndPopup();
 	}
 
-	ImGui::EndChild();
-	ImGui::PopStyleVar();
-	ImGui::PopStyleColor();
-
 	// render find/replace popup
-	renderFindReplace(pos, visibleSize);
+	renderFindReplace(pos, visibleSize.x - verticalScrollBarSize);
+
+	ImGui::EndChild();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleVar();
 }
 
 
@@ -586,13 +584,14 @@ static bool inputString(const char* label, std::string* value, ImGuiInputTextFla
 //	TextEditor::renderFindReplace
 //
 
-void TextEditor::renderFindReplace(ImVec2 pos, ImVec2 contentSize) {
+void TextEditor::renderFindReplace(ImVec2 pos, float width) {
 	// render find/replace window (if required)
 	if (findReplaceVisible) {
 		// save current screen position
 		auto currentScreenPosition = ImGui::GetCursorScreenPos();
 
 		// calculate sizes
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6.0f, 4.0f));
 		auto& style = ImGui::GetStyle();
 		auto fieldWidth = 250.0f;
 
@@ -620,11 +619,13 @@ void TextEditor::renderFindReplace(ImVec2 pos, ImVec2 contentSize) {
 			optionWidth * 3.0f + style.ItemSpacing.x * 2.0f;
 
 		// create window
-		ImGui::SetCursorPos(ImVec2(
-			pos.x + contentSize.x - windowWidth - style.ScrollbarSize - style.ItemSpacing.x,
+		ImGui::SetNextWindowPos(ImVec2(
+			pos.x + width - windowWidth - style.ItemSpacing.x,
 			pos.y + style.ItemSpacing.y * 2.0f));
 
+		ImGui::SetNextWindowSize(ImVec2(windowWidth, windowHeight));
 		ImGui::SetNextWindowBgAlpha(0.6f);
+
 		ImGui::BeginChild("find-replace", ImVec2(windowWidth, windowHeight), ImGuiChildFlags_Borders);
 		ImGui::SetNextItemWidth(fieldWidth);
 
@@ -714,6 +715,7 @@ void TextEditor::renderFindReplace(ImVec2 pos, ImVec2 contentSize) {
 		}
 
 		ImGui::EndChild();
+		ImGui::PopStyleVar();
 		ImGui::SetCursorScreenPos(currentScreenPosition);
 	}
 }

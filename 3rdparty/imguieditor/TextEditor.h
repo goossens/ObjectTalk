@@ -854,7 +854,7 @@ private:
 	void renderMargin();
 	void renderLineNumbers();
 	void renderDecorations();
-	void renderFindReplace(ImVec2 pos, ImVec2 available);
+	void renderFindReplace(ImVec2 pos, float width);
 
 	// keyboard and mouse interactions
 	void handleKeyboardInputs();

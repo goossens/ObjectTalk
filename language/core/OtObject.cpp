@@ -78,7 +78,7 @@ OtObject OtObjectClass::get(OtID id) {
 	OtLogError("Unknown member [{}] in instance of class [{}]", memberName, className);
 
 	// we will never get here because of the exception but a return statement keeps the compiler happy
-	return members->get(id);
+	return nullptr;
 }
 
 

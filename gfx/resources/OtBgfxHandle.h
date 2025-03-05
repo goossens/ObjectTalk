@@ -51,10 +51,11 @@ private:
 		Handle() = default;
 		inline Handle(Ts h) { handle = h; }
 		Handle(const Handle&) = delete; // no copy constructor
-		Handle& operator=(const Handle&) = delete; // no copy assignment
 		Handle(Handle&&) = default;
-		Handle& operator=(Handle&&) = default;
 		inline ~Handle() { clear(); }
+
+		Handle& operator=(const Handle&) = delete; // no copy assignment
+		Handle& operator=(Handle&&) = default;
 
 		// clear the handle
 		inline void clear() {

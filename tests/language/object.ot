@@ -35,6 +35,9 @@ a.dosomething = function(this) {
 assert(a.flag == true);
 assert(a.dosomething() == "I did it");
 
+assert(String.has("flag2") == false);
+assert(String.has("dosomething") == false);
+
 String.flag2 = true;
 
 String.dosomething = function(this) {
@@ -46,5 +49,11 @@ assert(b.flag2 == true);
 assert(a.dosomething() == "I did it");
 assert(b.dosomething() == "I did it");
 
+assert(String.has("flag2") == true);
+assert(String.has("dosomething") == true);
+
 String.unset("flag2");
 String.unset("dosomething");
+
+assert(String.has("flag2") == false);
+assert(String.has("dosomething") == false);

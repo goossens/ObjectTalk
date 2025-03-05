@@ -39,8 +39,14 @@ using OtObject = OtObjectPointer<OtObjectClass>;
 
 class OtObjectClass {
 public:
-	// destructor
+	// constructors/destructor (rule of 6)
+	OtObjectClass() = default;
+	OtObjectClass(const OtObjectClass&) = delete;
+	OtObjectClass(OtObjectClass&&) = delete;
 	virtual ~OtObjectClass();
+
+	OtObjectClass& operator=(const OtObjectClass&) = delete;
+	OtObjectClass& operator=(OtObjectClass&&) = delete;
 
 	// type access
 	inline void setType(OtType t) { type = t; }

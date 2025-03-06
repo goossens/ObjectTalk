@@ -73,6 +73,7 @@ public:
 	inline void move(size_t count) { stack[sp - count - 1] = stack[sp - 1]; sp -= count; }
 	inline size_t size() { return sp; }
 	inline OtObject* getSP(size_t offset) { return stack + sp - offset; }
+	inline OtObject* raw() { return stack; }
 	inline OtObject top() { return stack[sp - 1]; }
 
 	// frame access functions

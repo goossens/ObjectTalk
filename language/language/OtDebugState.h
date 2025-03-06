@@ -47,29 +47,24 @@ public:
 		std::vector<Variable> members;
 	};
 
-	class StackFrame {
+	class Frame {
 	public:
 		// constructor
-		StackFrame(const std::string& m, size_t l) : module(m), line(l) {}
+		Frame(const std::string& m, size_t l) : module(m), line(l) {}
 
 		// properties
 		std::string module;
 		size_t line;
+		std::vector<Variable> variables;
 	};
 
-	std::string module;
-	size_t line;
-	std::vector<Variable> variables;
-	std::vector<StackFrame> stackframes;
+	std::vector<Frame> frames;
 
 private:
 	// add objects as variable
 	void addObject(std::vector<Variable>& list, const std::string_view& name, OtObject object);
 
-	// (de)serialize variables and stack frames
+	// (de)serialize variables
 	nlohmann::json serializeVariable(Variable& variable);
 	void deserializeVariable(std::vector<Variable>& list, nlohmann::json& json);
-
-	nlohmann::json serializeStackFrame(StackFrame& stackframe);
-	void deserializeStackFrame(std::vector<StackFrame>& list, nlohmann::json& json);
 };

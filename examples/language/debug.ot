@@ -7,15 +7,20 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 function outer(argument) {
-	function inner() {
-		print("inner");
-	}
-
-	debug();
 	var test = "1";
 	test.attr1 = true;
 	test.attr2 = 3.14;
-	test.attr3 = "word";
+	test.attr3 = "inner";
+
+	function inner() {
+		function moreInner() {
+			print("moreInner");
+		}
+
+		print(test.attr3);
+		moreInner();
+		print(test.attr1);
+	}
 
 	var array = ["zero", 1, 2.0, inner, Object()];
 	array.purpose = "test";
@@ -23,6 +28,7 @@ function outer(argument) {
 	var dict = {"zero" : false, "one" : 1, "two" : 2.0};
 	var set = Set(true, 60, 202.0, "entry");
 
+	debug();
 	inner();
 	print("outer");
 }

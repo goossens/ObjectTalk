@@ -41,9 +41,10 @@ private:
 	void renderVariable(OtDebugState::Variable& variable);
 
 	// properties
+	OtDebugState debugState;
+	OtDebugState::Frame* stackFrame;
 	std::string currentDebuggable;
 	size_t currentLine = 0;
-	OtDebugState debugState;
 	TextEditor sourceCode;
 
 	// debugger layout parameters

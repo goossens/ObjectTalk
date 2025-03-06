@@ -25,6 +25,7 @@
 
 void OtDebuggerUI::update(const std::string& message) {
 	debugState.deserialize(message);
+	stackFrame = &debugState.frames.back();
 }
 
 
@@ -132,8 +133,8 @@ void OtDebuggerUI::renderControlBar(OtSubProcess& subprocess) {
 
 void OtDebuggerUI::renderSourceCode() {
 	// reload source (if required)
-	if (currentDebuggable != debugState.module) {
-		currentDebuggable = debugState.module;
+	if (currentDebuggable != stackFrame->module) {
+		currentDebuggable = stackFrame->module;
 		sourceCode.SetReadOnlyEnabled(true);
 		sourceCode.SetLanguage(OtObjectTalkLanguage::getDefinition());
 		sourceCode.SetText(OtText::load(currentDebuggable));
@@ -144,11 +145,11 @@ void OtDebuggerUI::renderSourceCode() {
 			renderDecorations(decorator);
 		});
 
-		currentLine = debugState.line;
+		currentLine = stackFrame->line;
 		sourceCode.ScrollToLine(static_cast<int>(currentLine - 1), TextEditor::Scroll::alignMiddle);
 
-	} else if ( currentLine != debugState.line) {
-		currentLine = debugState.line;
+	} else if ( currentLine != stackFrame->line) {
+		currentLine = stackFrame->line;
 		sourceCode.ScrollToLine(static_cast<int>(currentLine - 1), TextEditor::Scroll::alignMiddle);
 	}
 
@@ -164,7 +165,7 @@ void OtDebuggerUI::renderSourceCode() {
 //
 
 void OtDebuggerUI::renderDecorations(TextEditor::Decorator& decorator) {
-	std::string decoration = (static_cast<size_t>(decorator.line) == debugState.line - 1) ? u8" \u25b7" : "  ";
+	std::string decoration = (static_cast<size_t>(decorator.line) == stackFrame->line - 1) ? u8" \u25b7" : "  ";
 	ImGui::TextUnformatted(decoration.c_str());
 }
 
@@ -191,8 +192,33 @@ void OtDebuggerUI::renderVariables() {
 		ImGui::TableSetupColumn("Value", columnFlags, 4.0f);
 		ImGui::TableHeadersRow();
 
-		for (auto& variable : debugState.variables) {
-			renderVariable(variable);
+		size_t currentFrame = debugState.frames.size() - 1;
+		size_t i = 0;
+
+		for (auto& frame : debugState.frames) {
+			std::string label = fmt::format("{}: {}", frame.module, frame.line);
+
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn();
+
+			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_LabelSpanAllColumns;
+
+			if (i++ == currentFrame) {
+				flags |= ImGuiTreeNodeFlags_DefaultOpen;
+			}
+
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 1.0f, 1.0f, 1.0f));
+			auto open = ImGui::TreeNodeEx(label.c_str(), flags);
+			ImGui::PopStyleColor();
+
+			if (open) {
+				for (auto& variable : frame.variables) {
+					renderVariable(variable);
+				}
+
+				ImGui::TreePop();
+			}
+
 		}
 
 		ImGui::EndTable();

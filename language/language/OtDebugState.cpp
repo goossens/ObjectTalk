@@ -15,6 +15,7 @@
 #include "OtDict.h"
 #include "OtDebugState.h"
 #include "OtSet.h"
+#include "OtText.h"
 #include "OtVM.h"
 
 
@@ -23,36 +24,44 @@
 //
 
 void OtDebugState::update() {
-	auto bytecode = OtVM::getByteCode();
-	auto pc = OtVM::getPC();
 	auto stack = OtVM::getStack();
-
-	module = bytecode->getModule();
-	line = bytecode->getLineNumber(pc);
-
-	variables.clear();
-	auto symbols = bytecode->getUsedSymbols(pc);
-
-	for (auto& symbol : symbols) {
-		auto name = OtIdentifier::name(symbol.id);
-
-		switch (symbol.type) {
-			case OtSymbol::Type::heap:
-			addObject(variables, name, symbol.object->get(symbol.id));
-				break;
-
-			case OtSymbol::Type::stack:
-			addObject(variables, name, OtVM::getStack()->getFrameItem(symbol.slot));
-				break;
-
-			case OtSymbol::Type::capture:
-				break;
-		}
-	}
-
-	for (size_t i = 0; i < stack->getFrameCount(); i++) {
+	auto stackFrameCount = stack->getFrameCount();
+	// process all stackframes
+	for (size_t i = 0; i < stackFrameCount; i++) {
 		auto& stackframe = stack->getFrame(i);
-		stackframes.emplace_back(stackframe.bytecode->getModule(), stackframe.bytecode->getLineNumber(pc));
+		auto bytecode = stackframe.bytecode;
+		auto pc = *stackframe.pc;
+		auto sp = OtVM::getStack()->raw();
+		auto& frame = frames.emplace_back(bytecode->getModule(), bytecode->getLineNumber(pc));
+
+		// process all variables in stackframe
+		auto symbols = bytecode->getUsedSymbols(pc);
+
+		for (auto& symbol : symbols) {
+			auto name = OtIdentifier::name(symbol.id);
+
+			switch (symbol.type) {
+				case OtSymbol::Type::heap:
+				addObject(frame.variables, name, symbol.object->get(symbol.id));
+					break;
+
+				case OtSymbol::Type::stack:
+				addObject(frame.variables, name, sp[stackframe.offset + symbol.slot]);
+					break;
+
+				case OtSymbol::Type::capture:
+					if (i == stackFrameCount - 1) {
+						addObject(frame.variables, name, stack->getClosure()->get(symbol.id));
+					}
+
+					break;
+			}
+		}
+
+		// sort the variables
+		std::sort(frame.variables.begin(), frame.variables.end(), [](const Variable& a, const Variable& b) {
+			return OtText::caseCmp(a.name, b.name) < 0;
+		});
 	}
 }
 
@@ -62,23 +71,23 @@ void OtDebugState::update() {
 //
 
 std::string OtDebugState::serialize() {
-	auto variableList = nlohmann::json::array();
-	auto stackFrameList = nlohmann::json::array();
+	auto frameList = nlohmann::json::array();
 
-	for (auto& variable : variables) {
-		variableList.push_back(serializeVariable(variable));
+	for (auto& frame : frames) {
+		auto variableList = nlohmann::json::array();
+
+		for (auto& variable : frame.variables) {
+			variableList.push_back(serializeVariable(variable));
+		}
+
+		auto data = nlohmann::json::object();
+		data["module"] = frame.module;
+		data["line"] = frame.line;
+		data["variables"] = variableList;
+		frameList.push_back(data);
 	}
 
-	for (auto& stackframe : stackframes) {
-		stackFrameList.push_back(serializeStackFrame(stackframe));
-	}
-
-	auto data = nlohmann::json::object();
-	data["module"] = module;
-	data["line"] = line;
-	data["variables"] = variableList;
-	data["stackframes"] = stackFrameList;
-	return data.dump();
+	return frameList.dump();
 }
 
 
@@ -87,17 +96,15 @@ std::string OtDebugState::serialize() {
 //
 
 void OtDebugState::deserialize(const std::string& string) {
+	frames.clear();
 	auto data = nlohmann::json::parse(string);
-	module = data.value("module", "unknown");
-	line = data.value("line", 0);
-	variables.clear();
 
-	for (auto& variableData : data["variables"]) {
-		deserializeVariable(variables, variableData);
-	}
+	for (auto& frameData : data) {
+		auto& frame = frames.emplace_back(frameData["module"], frameData["line"]);
 
-	for (auto& stackFrameData : data["stackframes"]) {
-		deserializeStackFrame(stackframes, stackFrameData);
+		for (auto& variableData : frameData["variables"]) {
+			deserializeVariable(frame.variables, variableData);
+		}
 	}
 }
 
@@ -181,25 +188,4 @@ void OtDebugState::deserializeVariable(std::vector<Variable>& list, nlohmann::js
 			deserializeVariable(variable.members, variableData);
 		}
 	}
-}
-
-
-//
-//	OtDebugState::serializeStackFrame
-//
-
-nlohmann::json OtDebugState::serializeStackFrame(StackFrame& stackframe) {
-	auto data = nlohmann::json::object();
-	data["module"] = stackframe.module;
-	data["line"] = stackframe.line;
-	return data;
-}
-
-
-//
-//	OtDebugState::deserializeStackFrame
-//
-
-void OtDebugState::deserializeStackFrame(std::vector<StackFrame>& list, nlohmann::json& json) {
-	list.emplace_back(json["module"], json["line"]);
 }

@@ -40,18 +40,25 @@ void OtDebuggerClass::debug(size_t count, OtObject* parameters) {
 
 	if (count == 0 || parameters[0]->operator bool()) {
 		// activate statement hook in VM
-		OtVM::setStatementHook([this]() {
-			if (isBreaking()) {
-				if (OtConfig::inSubprocessMode()) {
-					processIDE();
-
-				} else {
-					processCommandLine();
-				}
-			}
-		});
-
+		OtVM::setStatementHook(std::bind(&OtDebuggerClass::debugHook, this));
 		state = State::stopped;
+		debugHook();
+	}
+}
+
+
+//
+//	OtDebuggerClass::debugHook
+//
+
+void OtDebuggerClass::debugHook() {
+	if (isBreaking()) {
+		if (OtConfig::inSubprocessMode()) {
+			processIDE();
+
+		} else {
+			processCommandLine();
+		}
 	}
 }
 
@@ -110,6 +117,7 @@ OtObject OtDebuggerClass::getVariableNames() {
 		array->append(OtString::create(name));
 	}
 
+	array->sort();
 	return array;
 }
 
@@ -300,8 +308,9 @@ std::string OtDebuggerClass::where() {
 	auto bytecode = OtVM::getByteCode();
 
 	return fmt::format(
-		"Module: {}\n{}\n",
+		"Module: {}, PC: {}\n{}\n",
 		bytecode->getModule(),
+		OtVM::getPC(),
 		bytecode->getStatementSourceCode(OtVM::getPC()));
 }
 
@@ -345,6 +354,11 @@ std::string OtDebuggerClass::getVariables() {
 
 		variables.emplace_back(name, value);
 	}
+
+	// sort the variables
+	std::sort(variables.begin(), variables.end(), [](const std::pair<std::string, OtObject>& a, const std::pair<std::string, OtObject>& b) {
+		return OtText::caseCmp(a.first, b.first) < 0;
+	});
 
 	// determine longest strings
 	size_t longestName = 8;

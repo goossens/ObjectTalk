@@ -624,7 +624,7 @@ void TextEditor::renderFindReplace(ImVec2 pos, float width) {
 			pos.y + style.ItemSpacing.y * 2.0f));
 
 		ImGui::SetNextWindowSize(ImVec2(windowWidth, windowHeight));
-		ImGui::SetNextWindowBgAlpha(0.6f);
+		ImGui::SetNextWindowBgAlpha(0.75f);
 
 		ImGui::BeginChild("find-replace", ImVec2(windowWidth, windowHeight), ImGuiChildFlags_Borders);
 		ImGui::SetNextItemWidth(fieldWidth);

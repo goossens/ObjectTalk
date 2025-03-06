@@ -38,6 +38,9 @@ public:
 	static OtType getMeta();
 
 private:
+	// run the debug hook
+	void debugHook();
+
 	// run debugger over stdio back to IDE
 	void processIDE();
 

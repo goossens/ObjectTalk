@@ -324,7 +324,7 @@ void OtCompiler::resolveVariable(OtID id, bool processSymbol) {
 					// variable is object member
 					bytecode->push(OtMemberReference::create(i->object, id));
 
-					// process symbol if (required)
+					// process symbol (if required)
 					if (processSymbol && !scope.symbolIndex.count(id)) {
 						scope.symbols.emplace_back(id, i->object, statementStart);
 					}

@@ -11,12 +11,11 @@
 
 #include <algorithm>
 #include <cmath>
-#include <fstream>
-#include <sstream>
 
 #include "fmt/core.h"
 
 #include "OtLog.h"
+#include "OtText.h"
 
 #include "OtShape.h"
 
@@ -26,16 +25,11 @@
 //
 
 void OtShape::load(const std::string& filepath) {
-	try {
-		// load source code
-		std::ifstream stream(filepath.c_str());
-		std::stringstream buffer;
-		buffer << stream.rdbuf();
-		stream.close();
-		plutovg_path_parse(path, buffer.str().c_str(), -1);
+	std::string text;
+	OtText::load(filepath, text);
 
-	} catch (std::exception& e) {
-		OtLogError("Can't read from file [{}], error: {}", filepath, e.what());
+	if (!plutovg_path_parse(path, text.c_str(), -1)) {
+		OtLogError("Can't parse SVG path in {}", filepath);
 	}
 }
 
@@ -47,38 +41,45 @@ void OtShape::load(const std::string& filepath) {
 void OtShape::save(const std::string& filepath) {
 	std::string text;
 
+	struct Context {
+		std::string* output;
+		bool empty;
+	};
+
+	Context context{&text, true};
+
 	// see if we have any paths
 	plutovg_path_traverse(path, [](void* closure, plutovg_path_command_t command, const plutovg_point_t* points, int /* npoints */) {
-		std::string* output = (std::string*) closure;
+		Context* ctx = (Context*) closure;
 
 		switch (command) {
 			case PLUTOVG_PATH_COMMAND_MOVE_TO:
-				output->append(fmt::format("M {} {}\n", points[0].x, points[0].y));
+				ctx->output->append(fmt::format("M {} {}\n", points[0].x, points[0].y));
+				ctx->empty = false;
 				break;
 
 			case PLUTOVG_PATH_COMMAND_LINE_TO:
-				output->append(fmt::format("L {} {}\n", points[0].x, points[0].y));
+				ctx->output->append(fmt::format("L {} {}\n", points[0].x, points[0].y));
+				ctx->empty = false;
 				break;
 
 			case PLUTOVG_PATH_COMMAND_CUBIC_TO:
-				output->append(fmt::format("C {} {} {} {} {} {}\n", points[0].x, points[0].y, points[1].x, points[1].y, points[2].x, points[2].y));
+				ctx->output->append(fmt::format("C {} {} {} {} {} {}\n", points[0].x, points[0].y, points[1].x, points[1].y, points[2].x, points[2].y));
+				ctx->empty = false;
 				break;
 
 			case PLUTOVG_PATH_COMMAND_CLOSE:
-				output->append("Z\n");
+				if (!ctx->empty) {
+					ctx->output->append("Z\n");
+				}
+
+				ctx->empty = true;
 				break;
 		}
-	}, &text);
+	}, &context);
 
 	// write shape to file
-	try {
-		std::ofstream stream(filepath.c_str());
-		stream << text;
-		stream.close();
-
-	} catch (std::exception& e) {
-		OtLogError("Can't write to file [{}], error: {}", filepath, e.what());
-	}
+	OtText::save(filepath, text);
 }
 
 

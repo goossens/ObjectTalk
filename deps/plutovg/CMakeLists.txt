@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Populate(plutovg QUIET GIT_REPOSITORY "https://github.com/sammycage/plutovg" GIT_TAG "v0.0.12")
+FetchContent_Populate(plutovg QUIET GIT_REPOSITORY "https://github.com/sammycage/plutovg" GIT_TAG "v0.0.13")
 
 file(GLOB PLUTOVG_SOURCES
 	${plutovg_SOURCE_DIR}/include/*.h

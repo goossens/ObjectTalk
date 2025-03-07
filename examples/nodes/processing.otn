@@ -1,0 +1,159 @@
+{
+	"links": [
+		{
+			"from": 1886489510,
+			"id": 159012308,
+			"to": 3782775616
+		},
+		{
+			"from": 1886489510,
+			"id": 3682233707,
+			"to": 2693285391
+		},
+		{
+			"from": 2502043779,
+			"id": 3784394429,
+			"to": 1364980421
+		},
+		{
+			"from": 625470862,
+			"id": 512992881,
+			"to": 2930462204
+		},
+		{
+			"from": 1886489510,
+			"id": 1968675631,
+			"to": 2549685188
+		}
+	],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 614324898,
+			"inputs": [
+				{
+					"id": 1406677871,
+					"name": "Width",
+					"type": "int",
+					"value": 256
+				},
+				{
+					"id": 2266602348,
+					"name": "Height",
+					"type": "int",
+					"value": 256
+				}
+			],
+			"outputs": [
+				{
+					"id": 1886489510,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"title": "ColorWheel Generator",
+			"type": "ColorWheel Generator",
+			"x": 66.0,
+			"y": 180.0
+		},
+		{
+			"id": 4009726485,
+			"inputs": [
+				{
+					"id": 3782775616,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"outputs": [],
+			"title": "Texture Probe",
+			"type": "Texture Probe",
+			"x": 426.0,
+			"y": 9.0
+		},
+		{
+			"id": 889005929,
+			"inputs": [
+				{
+					"id": 2549685188,
+					"name": "Input",
+					"type": "texture"
+				},
+				{
+					"id": 2435622726,
+					"name": "Size",
+					"type": "int",
+					"value": 20
+				}
+			],
+			"outputs": [
+				{
+					"id": 625470862,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "Texture Pixelator",
+			"type": "Texture Pixelator",
+			"x": 443.0,
+			"y": 283.0
+		},
+		{
+			"id": 3452803865,
+			"inputs": [
+				{
+					"id": 2930462204,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"outputs": [],
+			"title": "Texture Probe",
+			"type": "Texture Probe",
+			"x": 984.0,
+			"y": 107.0
+		},
+		{
+			"id": 600873588,
+			"inputs": [
+				{
+					"id": 2693285391,
+					"name": "Input",
+					"type": "texture"
+				},
+				{
+					"id": 3543495058,
+					"name": "Levels",
+					"type": "int",
+					"value": 8
+				}
+			],
+			"outputs": [
+				{
+					"id": 2502043779,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "Texture Posterizer",
+			"type": "Texture Posterizer",
+			"x": 439.0,
+			"y": 446.0
+		},
+		{
+			"id": 154659593,
+			"inputs": [
+				{
+					"id": 1364980421,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"outputs": [],
+			"title": "Texture Probe",
+			"type": "Texture Probe",
+			"x": 982.0,
+			"y": 395.0
+		}
+	]
+}

@@ -9,9 +9,6 @@
 //	Include files
 //
 
-#include <fstream>
-#include <iostream>
-#include <sstream>
 #include <vector>
 
 #include "fmt/format.h"
@@ -29,6 +26,7 @@
 #include "OtReal.h"
 #include "OtStackReference.h"
 #include "OtString.h"
+#include "OtText.h"
 #include "OtThrow.h"
 #include "OtVM.h"
 
@@ -44,12 +42,9 @@ OtByteCode OtCompiler::compileFile(const std::string& path) {
 	}
 
 	// load source code and compile into bytecode
-	std::ifstream stream(path);
-	std::stringstream buffer;
-	buffer << stream.rdbuf();
-	stream.close();
-
-	return compileSource(OtSourceClass::create(path, buffer.str()), nullptr);
+	std::string text;
+	OtText::load(path, text);
+	return compileSource(OtSourceClass::create(path, text), nullptr);
 }
 
 

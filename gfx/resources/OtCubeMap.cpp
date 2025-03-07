@@ -9,10 +9,6 @@
 //	Include files
 //
 
-#include <exception>
-#include <fstream>
-#include <sstream>
-
 #include "bx/allocator.h"
 #include "nlohmann/json.hpp"
 
@@ -24,6 +20,7 @@
 #include "OtImage.h"
 #include "OtPass.h"
 #include "OtPath.h"
+#include "OtText.h"
 #include "OtVertex.h"
 
 
@@ -124,26 +121,12 @@ void OtCubeMap::load(const std::string& path) {
 //
 
 void OtCubeMap::loadJSON(const std::string& path) {
-	// load cubemap definition from file
-	std::stringstream buffer;
-
-	try {
-		std::ifstream stream(path.c_str());
-
-		if (stream.fail()) {
-			OtLogError("Can't read from file [{}]", path);
-		}
-
-		buffer << stream.rdbuf();
-		stream.close();
-
-	} catch (std::exception& e) {
-		OtLogError("Can't read from file [{}], error: {}", path, e.what());
-	}
-
 	// parse json
+	std::string text;
+	OtText::load(path, text);
+
 	auto basedir = OtPath::getParent(path);
-	auto data = nlohmann::json::parse(buffer.str());
+	auto data = nlohmann::json::parse(text);
 
 	auto negx = OtAssetDeserialize(&data, "negx", &basedir);
 	auto negy = OtAssetDeserialize(&data, "negy", &basedir);

@@ -10,10 +10,7 @@
 //
 
 #include <algorithm>
-#include <fstream>
-#include <random>
 #include <set>
-#include <sstream>
 
 #include "nlohmann/json.hpp"
 
@@ -22,6 +19,7 @@
 #include "OtNodesPin.h"
 #include "OtNodesUtils.h"
 #include "OtPath.h"
+#include "OtText.h"
 
 
 //
@@ -54,25 +52,8 @@ void OtNodes::clear() {
 
 void OtNodes::load(const std::string& path) {
 	// load scene from file
-	std::stringstream buffer;
-
-	try {
-		std::ifstream stream(path.c_str());
-
-		if (stream.fail()) {
-			OtLogError("Can't read from file [{}]", path);
-		}
-
-		buffer << stream.rdbuf();
-		stream.close();
-
-		auto basedir = OtPath::getParent(path);
-		loadFromString(buffer.str(), basedir);
-
-	} catch (std::exception& e) {
-		OtLogError("Can't read from file [{}], error: {}", path, e.what());
-	}
-
+	auto basedir = OtPath::getParent(path);
+	loadFromString(OtText::load(path), basedir);
 }
 
 
@@ -148,19 +129,7 @@ void OtNodes::save(const std::string& path) {
 	data["links"] = linksJSON;
 
 	// write nodes to file
-	try {
-		std::ofstream stream(path.c_str());
-
-		if (stream.fail()) {
-			OtLogError("Can't open file [{}] for writing", path);
-		}
-
-		stream << data.dump(1, '\t');
-		stream.close();
-
-	} catch (std::exception& e) {
-		OtLogError("Can't write to file [{}], error: {}", path, e.what());
-	}
+	OtText::save(path, data.dump(1, '\t'));
 }
 
 

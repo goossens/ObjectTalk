@@ -9,9 +9,6 @@
 //	Include files
 //
 
-#include <fstream>
-#include <sstream>
-
 #include "OtByteCode.h"
 #include "OtCompiler.h"
 #include "OtLog.h"
@@ -61,13 +58,11 @@ void OtModuleClass::load(const std::string& path) {
 	}
 
 	// load source code
-	std::ifstream stream(fullPath.c_str());
-	std::stringstream buffer;
-	buffer << stream.rdbuf();
-	stream.close();
+	std::string text;
+	OtText::load(fullPath, text);
 
 	// compile and run module code
-	load(fullPath, buffer.str());
+	load(fullPath, text);
 }
 
 

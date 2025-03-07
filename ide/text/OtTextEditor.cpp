@@ -10,12 +10,12 @@
 //
 
 #include <algorithm>
-#include <fstream>
 #include <map>
 
 #include "imgui.h"
 
-#include "OtCodePoint.h"
+#include "OtText.h"
+
 #include "OtUi.h"
 
 #include "OtTextEditor.h"
@@ -35,16 +35,8 @@ void OtTextEditor::clear() {
 //
 
 void OtTextEditor::load() {
-	std::ifstream stream(path.c_str());
 	std::string text;
-
-	stream.seekg(0, std::ios::end);
-	text.reserve(stream.tellg());
-	stream.seekg(0, std::ios::beg);
-
-	text.assign((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
-	stream.close();
-
+	OtText::load(path, text);
 	editor.SetText(text);
 	version = editor.GetUndoIndex();
 }
@@ -59,10 +51,7 @@ void OtTextEditor::save() {
 	editor.StripTrailingWhitespaces();
 
 	// save to file and baseline version (we still can undo back to before save but "dirty" tracking works)
-	std::ofstream stream(path.c_str());
-	stream << editor.GetText();
-	stream.close();
-	version = editor.GetUndoIndex();
+	OtText::save(path, editor.GetText());
 }
 
 
@@ -130,61 +119,6 @@ void OtTextEditor::renderMenus() {
 		if (ImGui::MenuItem("Find All", "^" OT_UI_SHORTCUT "G", nullptr, editor.HasFindString())) { editor.FindAll(); }
 		ImGui::Separator();
 		ImGui::EndMenu();
-	}
-}
-
-
-#include <random>
-
-static const char* demo[] = {
-	"#!/usr/local/bin/ot\n",
-	"\n",
-	"//	ObjectTalk Scripting Language\n",
-	"//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.\n",
-	"//\n",
-	"//	This work is licensed under the terms of the MIT license.\n",
-	"//	For a copy, see <https://opensource.org/licenses/MIT>\n",
-	"\n",
-	"var classMembers = members(Array(function() {}).getClass());\n",
-	"classMembers.sort();\n",
-	"\n",
-	"print(\"**Member Functions**\");\n",
-	"print();\n",
-	"print(\"| Function | Description |\");\n",
-	"print(\"| ------ | ----------- |\");\n",
-	"\n",
-	"for member in classMembers {\n",
-	"	if member.startsWith(\"__\") {\n",
-	"		member = \"\\_\\_\" + member.right(member.len() - 2);\n",
-	"	}\n",
-	"\n",
-	"	print(\"| \", member, \"() | |\");\n",
-	"}\n"
-};
-
-static std::string randomDemo() {
-	static std::random_device rd;
-	static std::mt19937 gen(rd());
-	std::uniform_int_distribution<> distrib(0, sizeof(demo) / sizeof(*demo) - 1);
-	std::string result;
-
-	for (auto i = 0; i < 100; i++) {
-		result += demo[distrib(gen)];
-	}
-
-	return result;
-}
-
-
-//
-//	OtTextEditor::handleShortcuts
-//
-
-void OtTextEditor::handleShortcuts() {
-	if (ImGui::IsKeyDown(ImGuiMod_Ctrl) && ImGui::IsKeyPressed(ImGuiKey_P)) {
-		editor.SetText(randomDemo());
-		editor.SetCursor(55, 0);
-		editor.ScrollToLine(50, TextEditor::Scroll::alignTop);
 	}
 }
 

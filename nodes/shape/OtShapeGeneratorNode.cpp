@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include <fstream>
-
 #include "fmt/format.h"
 #include "nlohmann/json.hpp"
 
@@ -19,6 +17,7 @@
 #include "OtIdentifier.h"
 #include "OtLog.h"
 #include "OtMessageBus.h"
+#include "OtText.h"
 #include "OtVM.h"
 
 #include "OtShapeObject.h"
@@ -60,9 +59,7 @@ public:
 
 		bool changed = script.renderUI("##script", [](const std::string& path) {
 			// create a new script file
-			std::ofstream stream(path);
-			stream << scriptTemplate;
-			stream.close();
+			OtText::save(path, scriptTemplate);
 		});
 
 		// do some state management if we have a new script specification

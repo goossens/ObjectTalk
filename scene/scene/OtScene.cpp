@@ -9,13 +9,11 @@
 //	Include files
 //
 
-#include <fstream>
-#include <sstream>
-
 #include "nlohmann/json.hpp"
 
 #include "OtLog.h"
 #include "OtPath.h"
+#include "OtText.h"
 
 #include "OtScene.h"
 
@@ -26,29 +24,16 @@
 
 void OtScene::load(const std::string& path) {
 	// load scene from file
-	std::stringstream buffer;
-
-	try {
-		std::ifstream stream(path.c_str());
-
-		if (stream.fail()) {
-			OtLogError("Can't read from file [{}]", path);
-		}
-
-		buffer << stream.rdbuf();
-		stream.close();
-
-	} catch (std::exception& e) {
-		OtLogError("Can't read from file [{}], error: {}", path, e.what());
-	}
+	std::string text;
+	OtText::load(path, text);
 
 	// clear scene
 	clear();
 
 	// treat an empty file as a blank scene
-	if (buffer.str().size()) {
+	if (text.size()) {
 		// parse json
-		auto data = nlohmann::json::parse(buffer.str());
+		auto data = nlohmann::json::parse(text);
 
 		// extract metadata
 		if (data.contains("metadata")) {
@@ -92,20 +77,8 @@ void OtScene::save(const std::string& path) {
 	// write post processing settings
 	data["processing"] = postProcessing.serialize(&basedir);
 
-	try {
-		// write scene to file
-		std::ofstream stream(path.c_str());
-
-		if (stream.fail()) {
-			OtLogError("Can't open file [{}] for writing", path);
-		}
-
-		stream << data.dump(1, '\t');
-		stream.close();
-
-	} catch (std::exception& e) {
-		OtLogError("Can't write to file [{}], error: {}", path, e.what());
-	}
+	// write scene to file
+	OtText::save(path, data.dump(1, '\t'));
 }
 
 

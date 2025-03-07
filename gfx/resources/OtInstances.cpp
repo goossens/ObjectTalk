@@ -11,13 +11,12 @@
 
 #include <cstdint>
 #include <cstring>
-#include <fstream>
-#include <sstream>
 
 #include "bgfx/bgfx.h"
 #include "nlohmann/json.hpp"
 
 #include "OtLog.h"
+#include "OtText.h"
 
 #include "OtGlm.h"
 #include "OtInstances.h"
@@ -46,26 +45,11 @@ void OtInstances::clear() {
 //	OtInstances::load
 //
 
-void OtInstances::load(const std::string &path) {
+void OtInstances::load(const std::string& path) {
 	// load instances from file
-	std::stringstream buffer;
-
-	try {
-		std::ifstream stream(path.c_str());
-
-		if (stream.fail()) {
-			OtLogError("Can't read from file [{}]", path);
-		}
-
-		buffer << stream.rdbuf();
-		stream.close();
-
-	} catch (std::exception& e) {
-		OtLogError("Can't read from file [{}], error: {}", path, e.what());
-	}
-
-	// parse json
-	auto data = nlohmann::json::parse(buffer.str());
+	std::string text;
+	OtText::load(path, text);
+	auto data = nlohmann::json::parse(text);
 
 	// clear list and add instances
 	instances = std::make_shared<std::vector<glm::mat4>>();
@@ -86,6 +70,7 @@ void OtInstances::load(const std::string &path) {
 //
 
 void OtInstances::save(const std::string& path) {
+	// create json
 	auto data = nlohmann::json::array();
 
 	for (auto& instance : *instances) {
@@ -93,19 +78,7 @@ void OtInstances::save(const std::string& path) {
 	}
 
 	// write instances to file
-	try {
-		std::ofstream stream(path.c_str());
-
-		if (stream.fail()) {
-			OtLogError("Can't open file [{}] for writing", path);
-		}
-
-		stream << data.dump(1, '\t');
-		stream.close();
-
-	} catch (std::exception& e) {
-		OtLogError("Can't write to file [{}], error: {}", path, e.what());
-	}
+	OtText::save(path, data.dump(1, '\t'));
 }
 
 

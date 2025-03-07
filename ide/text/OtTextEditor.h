@@ -30,7 +30,6 @@ public:
 
 	// render the parts
 	void renderMenus() override;
-	void handleShortcuts() override;
 	void renderEditor() override;
 
 protected:

@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include <fstream>
-
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
@@ -20,6 +18,8 @@
 #include "OtVM.h"
 
 #include "OtMessageBus.h"
+#include "OtText.h"
+
 #include "OtUi.h"
 
 #include "OtPath.h"
@@ -51,13 +51,9 @@ class $ : scene.Entity {\n\
 bool OtScriptComponent::renderUI() {
 	return script.renderUI("Path##ScriptPath", [](const std::string& path) {
 		// create a new script file
-		std::ofstream stream(path);
-
 		std::string script{scriptTemplate};
 		script.replace(script.find("$"), 1, OtPath::getStem(path));
-
-		stream << script;
-		stream.close();
+		OtText::save(path, script);
 	});
 }
 

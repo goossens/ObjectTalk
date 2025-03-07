@@ -9,9 +9,6 @@
 //	Include files
 //
 
-#include <fstream>
-#include <sstream>
-
 #include "OtByteCode.h"
 #include "OtCompiler.h"
 #include "OtFunction.h"
@@ -19,6 +16,7 @@
 #include "OtLog.h"
 #include "OtSource.h"
 #include "OtString.h"
+#include "OtText.h"
 #include "OtVM.h"
 
 
@@ -27,24 +25,11 @@
 //
 
 OtObject OtIOClass::readJSON(const std::string& name) {
-	std::stringstream buffer;
-
-	try {
-		std::ifstream stream(name.c_str());
-
-		if (stream.fail()) {
-			OtLogError("Can't read from file [{}]", name);
-		}
-
-		buffer << stream.rdbuf();
-		stream.close();
-
-	} catch (std::exception& e) {
-		OtLogError("Can't read from file [{}], error: {}", name, e.what());
-	}
+	std::string text;
+	OtText::load(name, text);
 
 	OtCompiler compiler;
-	OtSource source = OtSourceClass::create(name, buffer.str());
+	OtSource source = OtSourceClass::create(name, text);
 	OtByteCode bytecode = compiler.compileExpression(source);
 
 	return OtVM::execute(bytecode);
@@ -56,19 +41,7 @@ OtObject OtIOClass::readJSON(const std::string& name) {
 //
 
 void OtIOClass::writeJSON(const std::string& name, OtObject object) {
-	try {
-		std::ofstream stream(name.c_str());
-
-		if (stream.fail()) {
-			OtLogError("Can't write to file [{}]", name);
-		}
-
-		stream << object->json();
-		stream.close();
-
-	} catch (std::exception& e) {
-		OtLogError("Can't write to file [{}], error: {}", name, e.what());
-	}
+	OtText::save(name, object->json());
 }
 
 
@@ -77,23 +50,9 @@ void OtIOClass::writeJSON(const std::string& name, OtObject object) {
 //
 
 OtObject OtIOClass::readText(const std::string& name) {
-	std::stringstream buffer;
-
-	try {
-		std::ifstream stream(name.c_str());
-
-		if (stream.fail()) {
-			OtLogError("Can't read from file [{}]", name);
-		}
-
-		buffer << stream.rdbuf();
-		stream.close();
-
-	} catch (std::exception& e) {
-		OtLogError("Can't read from file [{}], error: {}", name, e.what());
-	}
-
-	return OtString::create(buffer.str());
+	std::string text;
+	OtText::load(name, text);
+	return OtString::create(text);
 }
 
 
@@ -102,19 +61,7 @@ OtObject OtIOClass::readText(const std::string& name) {
 //
 
 void OtIOClass::writeText(const std::string& name, OtObject object) {
-	try {
-		std::ofstream stream(name.c_str());
-
-		if (stream.fail()) {
-			OtLogError("Can't write to file [{}]", name);
-		}
-
-		stream << object->operator std::string();
-		stream.close();
-
-	} catch (std::exception& e) {
-		OtLogError("Can't write to file [{}], error: {}", name, e.what());
-	}
+	OtText::save(name, object->operator std::string());
 }
 
 

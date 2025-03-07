@@ -10,12 +10,13 @@
 //
 
 #include <algorithm>
-#include <fstream>
 
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
 #include "OtMessageBus.h"
+#include "OtText.h"
+
 #include "OtUi.h"
 
 #include "OtNodesComponent.h"
@@ -87,9 +88,7 @@ OtNodesComponent::~OtNodesComponent() {
 bool OtNodesComponent::renderUI() {
 	bool changed = asset.renderUI("Path##NodesPath", [](const std::string& path) {
 		// create a new nodes file
-		std::ofstream stream(path);
-		stream << flowTemplate;
-		stream.close();
+		OtText::save(path, flowTemplate);
 	});
 
 	// show all input nodes (if required)

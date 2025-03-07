@@ -12,7 +12,6 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
-#include <sstream>
 
 #include "OtCodePoint.h"
 #include "OtLog.h"
@@ -24,23 +23,30 @@
 //
 
 std::string OtText::load(const std::string& path) {
-	std::stringstream buffer;
+	std::string text;
+	load(path, text);
+	return text;
+}
 
+void OtText::load(const std::string& path, std::string& text) {
 	try {
-		std::ifstream stream(path);
+		// try to load the text
+		std::ifstream stream(path.c_str());
 
 		if (stream.fail()) {
 			OtLogError("Can't open file [{}] for reading", path);
 		}
 
-		buffer << stream.rdbuf();
+		stream.seekg(0, std::ios::end);
+		text.reserve(stream.tellg());
+		stream.seekg(0, std::ios::beg);
+
+		text.assign((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
 		stream.close();
 
 	} catch (std::exception& e) {
 		OtLogError("Can't read from file [{}], error: {}", path, e.what());
 	}
-
-	return buffer.str();
 }
 
 
@@ -50,7 +56,7 @@ std::string OtText::load(const std::string& path) {
 
 void OtText::save(const std::string& path, const std::string& text) {
 	try {
-			std::ofstream stream(path);
+		std::ofstream stream(path);
 
 		if (stream.fail()) {
 			OtLogError("Can't open file [{}] for writing", path);

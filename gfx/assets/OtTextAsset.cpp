@@ -9,10 +9,10 @@
 //	Include files
 //
 
-#include <fstream>
 
 #include "OtException.h"
 #include "OtLog.h"
+#include "OtText.h"
 
 #include "OtTextAsset.h"
 
@@ -24,15 +24,7 @@
 OtAssetBase::State OtTextAsset::load() {
 	try {
 		// try to load the text
-		std::ifstream stream(path.c_str());
-
-		stream.seekg(0, std::ios::end);
-		text.reserve(stream.tellg());
-		stream.seekg(0, std::ios::beg);
-
-		text.assign((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
-		stream.close();
-
+		OtText::load(path, text);
 		return State::ready;
 
 	} catch ([[maybe_unused]] const OtException& exception) {

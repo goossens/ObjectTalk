@@ -198,14 +198,15 @@
 		"camera": {
 			"far": 100.0,
 			"fov": 60.0,
-			"near": 0.10000000149011612,
-			"pitch": -20.0,
+			"near": 0.009999999776482582,
+			"pitch": -24.603736877441406,
 			"position": [
 				0.0,
 				2.0,
 				5.0
 			],
-			"yaw": 0.0
+			"speed": 3.0,
+			"yaw": 0.7755398750305176
 		},
 		"gizmo": {
 			"enabled": false,
@@ -235,6 +236,7 @@
 		],
 		"fogDensity": 0.10000000149011612,
 		"fxaa": false,
-		"godrays": false
+		"godrays": false,
+		"tonemap": 3
 	}
 }

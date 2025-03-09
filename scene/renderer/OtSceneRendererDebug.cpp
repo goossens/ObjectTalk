@@ -104,7 +104,7 @@ void OtSceneRendererDebug::renderShadowMaps(OtSceneRenderer& renderer) {
 		if (renderer.csm.isValid()) {
 			auto size = renderer.csm.getSize();
 
-			for (auto i = 0; i < OtCascadedShadowMap::maxCascades; i++) {
+			for (size_t i = 0; i < OtCascadedShadowMap::maxCascades; i++) {
 				auto title = fmt::format("Cascade {}", i + 1);
 				renderTexture(title.c_str(), renderer.csm.getDepthTextureIndex(i), size, size);
 			}

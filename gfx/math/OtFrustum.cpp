@@ -31,12 +31,12 @@ OtFrustum::OtFrustum() {
 OtFrustum::OtFrustum(const glm::mat4& matrix) {
 	// determine planes
 	glm::mat4 m = glm::transpose(matrix);
-	planes[0] = OtPlane(m[3] + m[0]);
-	planes[1] = OtPlane(m[3] - m[0]);
-	planes[2] = OtPlane(m[3] + m[1]);
-	planes[3] = OtPlane(m[3] - m[1]);
-	planes[4] = OtPlane(OtGpuHasHomogeneousDepth() ? m[3] + m[2] : m[2]);
-	planes[5] = OtPlane(m[3] - m[2]);
+	planes[leftPlane] = OtPlane(m[3] + m[0]);
+	planes[rightPlane] = OtPlane(m[3] - m[0]);
+	planes[bottomPlane] = OtPlane(m[3] + m[1]);
+	planes[topPlane] = OtPlane(m[3] - m[1]);
+	planes[nearPlane] = OtPlane(OtGpuHasHomogeneousDepth() ? m[3] + m[2] : m[2]);
+	planes[farPlane] = OtPlane(m[3] - m[2]);
 
 	// normalize planes
 	for (auto& plane : planes) {
@@ -47,15 +47,15 @@ OtFrustum::OtFrustum(const glm::mat4& matrix) {
 	glm::mat4 inverse = glm::inverse(matrix);
 	float n = OtGpuHasHomogeneousDepth() ? -1.0f : 0.0f;
 
-	corners[0] = OtGlmMul(inverse, glm::vec4(-1.0f, -1.0f, n, 1.0f));
-	corners[1] = OtGlmMul(inverse, glm::vec4(-1.0f, 1.0f, n, 1.0f));
-	corners[2] = OtGlmMul(inverse, glm::vec4(1.0f, 1.0f, n, 1.0f));
-	corners[3] = OtGlmMul(inverse, glm::vec4(1.0f, -1.0f, n, 1.0f));
+	corners[nearBottomLeft] = OtGlmMul(inverse, glm::vec4(-1.0f, -1.0f, n, 1.0f));
+	corners[nearTopLeft] = OtGlmMul(inverse, glm::vec4(-1.0f, 1.0f, n, 1.0f));
+	corners[nearTopRight] = OtGlmMul(inverse, glm::vec4(1.0f, 1.0f, n, 1.0f));
+	corners[nearBottomRight] = OtGlmMul(inverse, glm::vec4(1.0f, -1.0f, n, 1.0f));
 
-	corners[4] = OtGlmMul(inverse, glm::vec4(-1.0f, -1.0f, 1.0f, 1.0f));
-	corners[5] = OtGlmMul(inverse, glm::vec4(-1.0f, 1.0f, 1.0f, 1.0f));
-	corners[6] = OtGlmMul(inverse, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	corners[7] = OtGlmMul(inverse, glm::vec4(1.0f, -1.0f, 1.0f, 1.0f));
+	corners[farBottomLeft] = OtGlmMul(inverse, glm::vec4(-1.0f, -1.0f, 1.0f, 1.0f));
+	corners[farTopLeft] = OtGlmMul(inverse, glm::vec4(-1.0f, 1.0f, 1.0f, 1.0f));
+	corners[farTopRight] = OtGlmMul(inverse, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	corners[farBottomRight] = OtGlmMul(inverse, glm::vec4(1.0f, -1.0f, 1.0f, 1.0f));
 }
 
 
@@ -87,14 +87,14 @@ bool OtFrustum::isVisibleAABB(const OtAABB& aabb) {
 	for (auto& plane : planes) {
 		glm::vec4 g = plane.getVec4();
 
-		if ((glm::dot(g, glm::vec4(minp.x, minp.y, minp.z, 1.0f)) < 0.0) &&
-			(glm::dot(g, glm::vec4(maxp.x, minp.y, minp.z, 1.0f)) < 0.0) &&
-			(glm::dot(g, glm::vec4(minp.x, maxp.y, minp.z, 1.0f)) < 0.0) &&
-			(glm::dot(g, glm::vec4(maxp.x, maxp.y, minp.z, 1.0f)) < 0.0) &&
-			(glm::dot(g, glm::vec4(minp.x, minp.y, maxp.z, 1.0f)) < 0.0) &&
-			(glm::dot(g, glm::vec4(maxp.x, minp.y, maxp.z, 1.0f)) < 0.0) &&
-			(glm::dot(g, glm::vec4(minp.x, maxp.y, maxp.z, 1.0f)) < 0.0) &&
-			(glm::dot(g, glm::vec4(maxp.x, maxp.y, maxp.z, 1.0f)) < 0.0)) {
+		if ((glm::dot(g, glm::vec4(minp.x, minp.y, minp.z, 1.0f)) < 0.0f) &&
+			(glm::dot(g, glm::vec4(maxp.x, minp.y, minp.z, 1.0f)) < 0.0f) &&
+			(glm::dot(g, glm::vec4(minp.x, maxp.y, minp.z, 1.0f)) < 0.0f) &&
+			(glm::dot(g, glm::vec4(maxp.x, maxp.y, minp.z, 1.0f)) < 0.0f) &&
+			(glm::dot(g, glm::vec4(minp.x, minp.y, maxp.z, 1.0f)) < 0.0f) &&
+			(glm::dot(g, glm::vec4(maxp.x, minp.y, maxp.z, 1.0f)) < 0.0f) &&
+			(glm::dot(g, glm::vec4(minp.x, maxp.y, maxp.z, 1.0f)) < 0.0f) &&
+			(glm::dot(g, glm::vec4(maxp.x, maxp.y, maxp.z, 1.0f)) < 0.0f)) {
 
 			// Not visible - all returned negative
 			return false;

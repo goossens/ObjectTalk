@@ -26,27 +26,25 @@
 
 class OtFrustum {
 public:
-	enum class Plane {
-		leftPlane,
-		rightPlane,
-		bottomPlane,
-		topPlane,
-		nearPlane,
-		farPlane,
-		count
-	};
+	// indices for planes and corners
+	static constexpr size_t leftPlane = 0;
+	static constexpr size_t rightPlane = 1;
+	static constexpr size_t bottomPlane = 2;
+	static constexpr size_t topPlane = 3;
+	static constexpr size_t nearPlane = 4;
+	static constexpr size_t farPlane = 5;
+	static constexpr size_t planeCount = 6;
 
-	enum class Corner{
-		nearBottomLeft = 0,
-		nearTopLeft,
-		nearTopRight,
-		nearBottomRight,
-		farBottomLeft,
-		farTopLeft,
-		farTopRight,
-		farBottomRight,
-		count
-	};
+	static constexpr size_t nearBottomLeft = 0;
+	static constexpr size_t nearTopLeft = 1;
+	static constexpr size_t nearTopRight = 2;
+	static constexpr size_t nearBottomRight = 3;
+
+	static constexpr size_t farBottomLeft = 4;
+	static constexpr size_t farTopLeft = 5;
+	static constexpr size_t farTopRight = 6;
+	static constexpr size_t farBottomRight = 7;
+	static constexpr size_t cornerCount = 8;
 
 	// constructors
 	OtFrustum();
@@ -65,10 +63,10 @@ public:
 	glm::vec3 getCenter();
 
 	// get specified corner
-	inline glm::vec3 getCorner(Corner corner) const { return corners[static_cast<size_t>(corner)]; }
+	inline glm::vec3 getCorner(size_t corner) const { return corners[corner]; }
 
 	// get specified plane
-	inline OtPlane getPlane(Plane plane) const { return planes[static_cast<size_t>(plane)]; }
+	inline OtPlane getPlane(size_t plane) const { return planes[plane]; }
 
 	// get AABB (Axis-Alligned bounding box)
 	OtAABB getAABB();
@@ -78,6 +76,6 @@ public:
 	void debugPoints();
 
 private:
-	std::array<OtPlane, static_cast<size_t>(Plane::count)> planes;
-	std::array<glm::vec3, static_cast<size_t>(Corner::count)> corners;
+	std::array<OtPlane, planeCount> planes;
+	std::array<glm::vec3, cornerCount> corners;
 };

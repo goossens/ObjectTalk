@@ -39,15 +39,16 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 	// the following is based on https://ahbejarano.gitbook.io/lwjglgamedev/chapter-17
 
 	// calculate the best cascade splits
+	// based on https://developer.nvidia.com/gpugems/GPUGems3/gpugems3_ch10.html
 	float minZ, maxZ;
 	camera.getNearFar(minZ, maxZ);
 	float range = maxZ - minZ;
 	float ratio = maxZ / minZ;
 
-	float cascadeSplitLambda = 0.95f;
+	static constexpr float cascadeSplitLambda = 0.95f;
 	float cascadeSplits[maxCascades];
 
-	for (auto i = 0; i < maxCascades; i++) {
+	for (size_t i = 0; i < maxCascades; i++) {
 		float p = static_cast<float>(i + 1) / static_cast<float>(maxCascades);
 		float log = minZ * glm::pow(ratio, p);
 		float uniform = minZ + range * p;
@@ -55,7 +56,7 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 		cascadeSplits[i] = (d - minZ) / range;
 	}
 
-	// determine furstum corners
+	// determine frustum corners
 	glm::mat4 invViewProj = glm::inverse(camera.viewProjectionMatrix);
 	float n = OtGpuHasHomogeneousDepth() ? -1.0f : 0.0f;
 
@@ -82,10 +83,10 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 	// calculate orthographic projection matrix for each cascade
 	float lastSplitDist = 0.0f;
 
-	for (auto cascade = 0; cascade < maxCascades; cascade++) {
+	for (size_t cascade = 0; cascade < maxCascades; cascade++) {
 		float splitDist = cascadeSplits[cascade];
 
-		// determine casecade corners
+		// determine cascade corners (in world space)
 		glm::vec4 cascadeCorners[8];
 
 		for (auto i = 0; i < 4; i++) {
@@ -94,17 +95,17 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 			cascadeCorners[i] = frustumCorners[i] + (dist * lastSplitDist);
 		}
 
-		// determine AABB for cascade
+		// determine AABB for cascade (in world space)
 		cascades[cascade].aabb.clear();
 
 		for (auto& cascadeCorner : cascadeCorners) {
 			cascades[cascade].aabb.addPoint(cascadeCorner);
 		}
 
-		// get cascade center
+		// get cascade center (in world space)
 		glm::vec3 cascadeCenter = glm::vec3(0.0f);
 
-		for (glm::vec4& cascadeCorner : cascadeCorners) {
+		for (auto& cascadeCorner : cascadeCorners) {
 			cascadeCenter += glm::vec3(cascadeCorner);
 		}
 
@@ -113,7 +114,7 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 		// determine sphere that encloses cascade
 		float radius = 0.0f;
 
-		for (glm::vec4& cascadeCorner : cascadeCorners) {
+		for (auto& cascadeCorner : cascadeCorners) {
 			float distance = glm::length(glm::vec3(cascadeCorner) - cascadeCenter);
 			radius = glm::max(radius, distance);
 		}

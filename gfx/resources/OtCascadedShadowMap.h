@@ -47,7 +47,7 @@ public:
 	inline uint16_t getDepthTextureIndex(int cascade) { return cascades[cascade].framebuffer.getDepthTextureIndex(); }
 
 	// number of cascades in shadowmap
-	constexpr static int maxCascades = 4;
+	constexpr static size_t maxCascades = 4;
 
 private:
 	// cascade details

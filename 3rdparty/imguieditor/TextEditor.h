@@ -78,7 +78,6 @@ public:
 	inline bool IsEmpty() const { return document.size() == 1 && document[0].size() == 0; }
 	inline int GetLineCount() const { return document.lineCount(); }
 
-
 	// render the text editor in a Dear ImGui context
 	inline void Render(const char* title, const ImVec2& size=ImVec2(), bool border=false) { render(title, size, border); }
 
@@ -641,7 +640,7 @@ private:
 		State state = State::inText;
 
 		// marker reference (0 means no marker for this line)
-		size_t marker;
+		size_t marker = 0;
 
 		// width of this line (in visible columns)
 		int maxColumn = 0;

@@ -31,6 +31,7 @@ void TextEditor::setText(const std::string_view &text) {
 	transactions.reset();
 	bracketeer.reset();
 	cursors.clearAll();
+	clearMarkers();
 	makeCursorVisible();
 }
 

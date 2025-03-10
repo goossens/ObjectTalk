@@ -179,15 +179,17 @@ public:
 		int line; // zero-based
 		float width;
 		float height;
+		ImVec2 glyphSize;
 	};
 
+	// positive width is number of pixels, negative with is number of glyphs
 	inline void SetLineDecorator(float width, std::function<void(Decorator& decorator)> callback) {
 		decoratorWidth = width;
 		decoratorCallback = callback;
 	}
 
 	inline void ClearLineDecorator() { SetLineDecorator(0.0f, nullptr); }
-	inline bool HasLineDecorator() const { return decoratorWidth > 0.0f && decoratorCallback != nullptr; }
+	inline bool HasLineDecorator() const { return decoratorWidth != 0.0f && decoratorCallback != nullptr; }
 
 	// setup context menu callbacks (these are called when a user right clicks line numbers or somewhere in the text)
 	// the editor sets up the popup menus, the callback has to populate them
@@ -260,16 +262,16 @@ public:
 
 	// a single colored character (a glyph)
 	class Glyph {
-		public:
-			// constructors
-			Glyph() = default;
-			Glyph(ImWchar cp) : codepoint(cp) {}
-			Glyph(ImWchar cp, Color col) : codepoint(cp), color(col) {}
+	public:
+		// constructors
+		Glyph() = default;
+		Glyph(ImWchar cp) : codepoint(cp) {}
+		Glyph(ImWchar cp, Color col) : codepoint(cp), color(col) {}
 
-			// properties
-			ImWchar codepoint = 0;
-			Color color = Color::text;
-		};
+		// properties
+		ImWchar codepoint = 0;
+		Color color = Color::text;
+	};
 
 	// iterator used in language specific tokenizers
 	class Iterator {
@@ -461,7 +463,7 @@ public:
 		}
 	};
 
-private:
+protected:
 	//
 	// below is the private API
 	// private members (function and variables) start with a lowercase character
@@ -661,6 +663,7 @@ private:
 
 		// manipulate document text (strings should be UTF-8 encoded)
 		void setText(const std::string_view& text);
+		void setText(const std::vector<std::string_view>& text);
 		Coordinate insertText(Coordinate start, const std::string_view& text);
 		void deleteText(Coordinate start, Coordinate end);
 
@@ -701,6 +704,7 @@ private:
 
 		// see if document was updated this frame (can only be called once)
 		inline bool isUpdated() { auto result = updated; updated = false; return result; }
+		inline void resetUpdated() { updated = false; }
 
 		// utility functions
 		bool isWholeWord(Coordinate start, Coordinate end) const;

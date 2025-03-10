@@ -44,6 +44,41 @@ void TextEditor::Document::setText(const std::string_view& text) {
 
 
 //
+//	TextEditor::Document::setText
+//
+
+void TextEditor::Document::setText(const std::vector<std::string_view>& text) {
+	// reset document
+	clear();
+	updated = true;
+
+	if (text.size()) {
+		// process input UTF-8 and generate lines of glyphs
+		for (auto& line : text) {
+			emplace_back();
+			auto i = line.begin();
+			auto end = line.end();
+
+			while (i < end) {
+				ImWchar character;
+				i = CodePoint::read(i, end, &character);
+
+				if (character != '\r') {
+					back().emplace_back(Glyph(character, Color::text));
+				}
+			}
+		}
+
+	} else {
+		emplace_back();
+	}
+
+	// update maximum column counts
+	updateMaximumColumn(0, lineCount() - 1);
+}
+
+
+//
 //	TextEditor::Document::insertText
 //
 

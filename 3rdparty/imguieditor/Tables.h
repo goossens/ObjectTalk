@@ -7,9 +7,12 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
+#pragma once
+
+
 //
 //	Tables below are automatically generated from the unicode database version 16.0.0
-//	downloaded from http://www.unicode.org/Public/UNIDATA/ on Wednesday, January 22, 2025
+//	downloaded from http://www.unicode.org/Public/UNIDATA/ on Sunday, March 09, 2025
 //	using the Tables.py script.
 //
 

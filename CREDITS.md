@@ -30,6 +30,7 @@ In case User Interface (UI) modules are included, we also use:
 * [Box2D](https://box2d.org) - 2D physics engine released under the [MIT license](https://opensource.org/licenses/MIT).
 * [tweeny](https://github.com/mobius3/tweeny) - animation library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [assimp](https://github.com/assimp/assimp) - to import 3D models released under a [custom license](https://github.com/assimp/assimp/blob/master/LICENSE) based on the [3-clause BSD-License license](https://opensource.org/licenses/BSD-3-Clause).
+* [dtl](https://github.com/cubicdaiya/dtl) - a difference template library by [Tatsuhiko Kubo (cubicdaiya)](https://github.com/cubicdaiya) released under the [BSD License](https://opensource.org/license/bsd-3-clause).
 
 ## Algorithms
 

@@ -46,7 +46,7 @@ if __name__ == "__main__":
 	append("Transactions.cpp", 12)
 	append("Colorizer.cpp", 12)
 	append("Bracketeer.cpp", 12)
-	append("Tables.h", 23)
+	append("Tables.h", 26)
 	append("CodePoint.cpp", 17)
 	append("Language.cpp", 26)
 
@@ -61,3 +61,7 @@ if __name__ == "__main__":
 	append("languages/Json.h", 9)
 	append("languages/Markdown.h", 9)
 	append("languages/Sql.h", 5)
+
+	shutil.copyfile("dtl.h", destination + "dtl.h")
+	shutil.copyfile("TextDiff.h", destination + "TextDiff.h")
+	shutil.copyfile("TextDiff.cpp", destination + "TextDiff.cpp")

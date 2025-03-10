@@ -65,6 +65,9 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	if (decoratorWidth > 0.0f) {
 		textOffset = decorationOffset + decoratorWidth + decorationMargin * glyphSize.x;
 
+	} else if (decoratorWidth < 0.0f) {
+		textOffset = decorationOffset + (-decoratorWidth + decorationMargin) * glyphSize.x;
+
 	} else {
 		textOffset = decorationOffset + textMargin * glyphSize.x;
 	}
@@ -472,7 +475,7 @@ void TextEditor::renderCursors() {
 //
 
 void TextEditor::renderMargin() {
-	if ((decoratorWidth > 0.0f && decoratorCallback) || showLineNumbers) {
+	if ((decoratorWidth != 0.0f && decoratorCallback) || showLineNumbers) {
 		// erase background in case we are scrolling horizontally
 		if (ImGui::GetScrollX() > 0.0f) {
 			ImGui::GetWindowDrawList()->AddRectFilled(
@@ -510,10 +513,11 @@ void TextEditor::renderLineNumbers() {
 //
 
 void TextEditor::renderDecorations() {
-	if (decoratorWidth > 0.0f && decoratorCallback) {
+	if (decoratorWidth != 0.0f && decoratorCallback) {
 		auto cursorScreenPos = ImGui::GetCursorScreenPos();
 		auto position = ImVec2(ImGui::GetWindowPos().x + decorationOffset, cursorScreenPos.y + glyphSize.y * firstVisibleLine);
-		Decorator decorator{0, decoratorWidth, glyphSize.y};
+		auto widthInPixels = (decoratorWidth < 0.0f) ? -decoratorWidth * glyphSize.x: decoratorWidth;
+		Decorator decorator{0, widthInPixels, glyphSize.y, glyphSize};
 
 		for (int i = firstVisibleLine; i <= lastVisibleLine; i++) {
 			decorator.line = i;

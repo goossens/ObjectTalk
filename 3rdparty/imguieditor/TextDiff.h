@@ -76,8 +76,8 @@ private:
 	std::vector<LineInfo> lineInfo;
 
 	// colors
-	ImU32 addedColor = IM_COL32(0, 128, 32, 100);
-	ImU32 deletedColor = IM_COL32(128, 0, 32, 100);
+	ImU32 addedColor = IM_COL32(0, 150, 32, 128);
+	ImU32 deletedColor = IM_COL32(180, 0, 32, 128);
 
 	// split string into lines
 	void splitLines(std::vector<std::string_view>& result, const std::string_view& text);

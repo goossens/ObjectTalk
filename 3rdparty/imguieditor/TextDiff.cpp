@@ -119,6 +119,8 @@ void TextDiff::splitLines(std::vector<std::string_view>& result, const std::stri
 
 void TextDiff::createCombinedView() {
 	document.clear();
+	cursors.clearAll();
+	clearMarkers();
 
 	for (size_t i = 0; i < lineInfo.size(); i++) {
 		auto& line = lineInfo[i];
@@ -139,8 +141,6 @@ void TextDiff::createCombinedView() {
 				break;
 		}
 	}
-
-	document.resetUpdated();
 }
 
 

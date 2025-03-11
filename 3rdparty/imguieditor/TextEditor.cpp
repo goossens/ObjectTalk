@@ -17,6 +17,7 @@
 #endif
 
 #include "imgui.h"
+#include "imgui_internal.h"
 
 #include "TextEditor.h"
 
@@ -216,6 +217,7 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	renderMargin();
 	renderLineNumbers();
 	renderDecorations();
+	renderScrollbarMiniMap();
 
 	if (ImGui::BeginPopup("LineNumberContextMenu")) {
 		lineNumberContextMenuCallback(contextMenuLine);
@@ -529,6 +531,58 @@ void TextEditor::renderDecorations() {
 		}
 
 		ImGui::SetCursorScreenPos(cursorScreenPos);
+	}
+}
+
+
+//
+//	TextEditor::renderScrollbarMiniMap
+//
+
+void TextEditor::renderScrollbarMiniMap() {
+	// based on https://github.com/ocornut/imgui/issues/3114
+	if (showScrollbarMiniMap) {
+		auto window = ImGui::GetCurrentWindow();
+
+		if (window->ScrollbarY) {
+			auto drawList = ImGui::GetWindowDrawList();
+			auto rect = ImGui::GetWindowScrollbarRect(window, ImGuiAxis_Y);
+			auto lineHeight = std::max(rect.GetHeight() / static_cast<float>(document.size()), 1.0f);
+			auto offset = (rect.Max.x - rect.Min.x) * 0.3f;
+			auto left = rect.Min.x + offset;
+			auto right = rect.Max.x - offset;
+
+			drawList->PushClipRect(rect.Min, rect.Max, false);
+
+			// render cursor locations
+			for (auto& cursor : cursors) {
+				auto begin = cursor.getSelectionStart();
+				auto end = cursor.getSelectionEnd();
+
+				auto ly1 = std::round(rect.Min.y + begin.line * lineHeight);
+				auto ly2 = std::round(rect.Min.y + (end.line + 1) * lineHeight);
+
+				drawList->AddRectFilled(ImVec2(left, ly1), ImVec2(right, ly2), palette.get(Color::selection));
+			}
+
+			// render marker locations
+			if (markers.size()) {
+				for (size_t line = 0; line < document.size(); line++) {
+					if (document[line].marker) {
+						auto color = markers[document[line].marker - 1].textColor;
+
+						if (!color) {
+							color = markers[document[line].marker - 1].lineNumberColor;
+						}
+
+						auto ly = std::round(rect.Min.y + line * lineHeight);
+						drawList->AddRectFilled(ImVec2(left, ly), ImVec2(right, ly + lineHeight), color);
+					}
+				}
+			}
+
+			drawList->PopClipRect();
+		}
 	}
 }
 

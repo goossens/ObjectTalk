@@ -27,6 +27,7 @@
 
 void OtTextEditor::clear() {
 	editor.SetText("");
+	originalText = "";
 }
 
 
@@ -38,6 +39,7 @@ void OtTextEditor::load() {
 	std::string text;
 	OtText::load(path, text);
 	editor.SetText(text);
+	originalText = text;
 	version = editor.GetUndoIndex();
 }
 
@@ -52,8 +54,8 @@ void OtTextEditor::save() {
 
 	// save to file and baseline version (we still can undo back to before save but "dirty" tracking works)
 	OtText::save(path, editor.GetText());
+	version = editor.GetUndoIndex();
 }
-
 
 //
 //	OtTextEditor::renderMenus
@@ -77,6 +79,10 @@ void OtTextEditor::renderMenus() {
 		if (ImGui::MenuItem("Tabs To Spaces")) { editor.TabsToSpaces(); }
 		if (ImGui::MenuItem("Spaces To Tabs")) { editor.SpacesToTabs(); }
 		if (ImGui::MenuItem("Strip Trailing Whitespaces")) { editor.StripTrailingWhitespaces(); }
+
+		ImGui::Separator();
+		if (ImGui::MenuItem("Show Diff", " " OT_UI_SHORTCUT "I")) { showDiff(); }
+
 		ImGui::EndMenu();
 	}
 
@@ -124,6 +130,17 @@ void OtTextEditor::renderMenus() {
 
 
 //
+//	OtTextEditor::handleShortcuts
+//
+
+void OtTextEditor::handleShortcuts() {
+	if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
+		if (ImGui::IsKeyPressed(ImGuiKey_I)) { showDiff(); }
+	}
+}
+
+
+//
 //	OtTextEditor::renderEditor
 //
 
@@ -132,4 +149,32 @@ void OtTextEditor::renderEditor() {
 	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[static_cast<size_t>(OtUi::Font::editor)]);
 	editor.Render("TextEditor");
 	ImGui::PopFont();
+
+	auto viewport = ImGui::GetMainViewport();
+	ImVec2 center = viewport->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+	if (ImGui::BeginPopupModal("Changes since Opening File##diff", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+		diff.Render("diff", viewport->Size * 0.8f, true);
+		ImGui::Separator();
+
+		static constexpr float buttonWidth = 80.0f;
+		ImGui::Indent(ImGui::GetContentRegionAvail().x - buttonWidth);
+
+		if (ImGui::Button("OK", ImVec2(buttonWidth, 0.0f)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
+}
+
+
+//
+//	OtTextEditor::showDiff
+//
+
+void OtTextEditor::showDiff() {
+	diff.SetText(originalText, editor.GetText());
+	ImGui::OpenPopup("Changes since Opening File##diff");
 }

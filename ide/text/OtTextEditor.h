@@ -15,6 +15,7 @@
 #include <string>
 
 #include "TextEditor.h"
+#include "TextDiff.h"
 
 #include "OtEditor.h"
 
@@ -30,6 +31,7 @@ public:
 
 	// render the parts
 	void renderMenus() override;
+	void handleShortcuts() override;
 	void renderEditor() override;
 
 protected:
@@ -38,8 +40,12 @@ protected:
 	void load() override;
 	void save() override;
 
+	void showDiff();
+
 	// visual text editor
 	TextEditor editor;
+	TextDiff diff;
+	std::string originalText;
 
 	// properties
 	size_t version = 0;

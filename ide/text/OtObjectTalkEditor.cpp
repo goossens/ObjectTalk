@@ -20,6 +20,7 @@
 
 OtObjectTalkEditor::OtObjectTalkEditor() {
 	editor.SetLanguage(OtObjectTalkLanguage::getDefinition());
+	diff.SetLanguage(OtObjectTalkLanguage::getDefinition());
 }
 
 

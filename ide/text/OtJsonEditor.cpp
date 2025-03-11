@@ -18,4 +18,5 @@
 
 OtJsonEditor::OtJsonEditor() {
 	editor.SetLanguage(TextEditor::Language::Json());
+	diff.SetLanguage(TextEditor::Language::Json());
 }

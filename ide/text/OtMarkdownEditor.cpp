@@ -19,4 +19,5 @@
 OtMarkdownEditor::OtMarkdownEditor() {
 	editor.SetLanguage(TextEditor::Language::Markdown());
 	editor.SetShowMatchingBrackets(false);
+	diff.SetLanguage(TextEditor::Language::Markdown());
 }

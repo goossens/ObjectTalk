@@ -75,8 +75,11 @@ void OtTextEditorWidgetClass::setLanguage(const std::string& text) {
 	} else if (text == "Markdown") {
 		editor.SetLanguage(TextEditor::Language::Markdown());
 
+	} else if (text == "SQL") {
+		editor.SetLanguage(TextEditor::Language::Sql());
+
 	} else {
-		OtLogError("Unknow language[{}],Shoudl be C, C++, C#, AngelScript", "Lua", "Python", "GLSL", "HLSL", "JSON", "Markdown", text);
+		OtLogError("Unknown language [{}], should be C, C++, C#, AngelScript, Lua, Python, GLSL, HLSL, JSON, Markdown or SQL", text);
 	}
 }
 
@@ -115,6 +118,8 @@ OtType OtTextEditorWidgetClass::getMeta() {
 		type->set("isShowWhitespacesEnabled", OtFunction::create(&OtTextEditorWidgetClass::isShowWhitespacesEnabled));
 		type->set("setShowLineNumbersEnabled", OtFunction::create(&OtTextEditorWidgetClass::setShowLineNumbersEnabled));
 		type->set("isShowLineNumbersEnabled", OtFunction::create(&OtTextEditorWidgetClass::isShowLineNumbersEnabled));
+		type->set("setShowScrollbarMiniMapEnabled", OtFunction::create(&OtTextEditorWidgetClass::setShowScrollbarMiniMapEnabled));
+		type->set("isShowScrollbarMiniMapEnabled", OtFunction::create(&OtTextEditorWidgetClass::isShowScrollbarMiniMapEnabled));
 		type->set("setShowMatchingBrackets", OtFunction::create(&OtTextEditorWidgetClass::setShowMatchingBrackets));
 		type->set("isShowingMatchingBrackets", OtFunction::create(&OtTextEditorWidgetClass::isShowingMatchingBrackets));
 		type->set("setCompletePairedGlyphs", OtFunction::create(&OtTextEditorWidgetClass::setCompletePairedGlyphs));

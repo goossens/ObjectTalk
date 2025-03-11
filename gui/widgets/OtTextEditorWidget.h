@@ -44,6 +44,8 @@ public:
 	inline bool isShowWhitespacesEnabled() { return editor.IsShowWhitespacesEnabled(); }
 	inline void setShowLineNumbersEnabled(bool value) { editor.SetShowLineNumbersEnabled(value); }
 	inline bool isShowLineNumbersEnabled() { return editor.IsShowLineNumbersEnabled(); }
+	inline void setShowScrollbarMiniMapEnabled(bool value) { editor.SetShowScrollbarMiniMapEnabled(value); }
+	inline bool isShowScrollbarMiniMapEnabled() { return editor.IsShowScrollbarMiniMapEnabled(); }
 	inline void setShowMatchingBrackets(bool value) { editor.SetShowMatchingBrackets(value); }
 	inline bool isShowingMatchingBrackets() { return editor.IsShowingMatchingBrackets(); }
 	inline void setCompletePairedGlyphs(bool value) { editor.SetCompletePairedGlyphs(value);  }

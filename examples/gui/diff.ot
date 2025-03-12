@@ -120,7 +120,9 @@ int main(int, char**) {
 
 class MyApp : gui.App {
 	function setup(this) {
-		this.add(gui.TextDiff(leftText, rightText, "C++"));
+		var diff = gui.TextDiff(leftText, rightText, "C++");
+		diff.setSideBySideMode(true);
+		this.add(diff);
 	}
 }
 

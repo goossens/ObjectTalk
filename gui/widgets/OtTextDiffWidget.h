@@ -41,6 +41,9 @@ public:
 	inline void setShowScrollbarMiniMapEnabled(bool value) { diff.SetShowScrollbarMiniMapEnabled(value); }
 	inline bool isShowScrollbarMiniMapEnabled() { return diff.IsShowScrollbarMiniMapEnabled(); }
 
+	inline void setSideBySideMode(float value) { diff.SetSideBySideMode(value); }
+	inline float getSideBySideMode() { return diff.GetSideBySideMode(); }
+
 	void setLanguage(const std::string& text);
 	inline std::string getLanguage() { return diff.GetLanguageName(); }
 

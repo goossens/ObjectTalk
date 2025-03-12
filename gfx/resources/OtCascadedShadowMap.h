@@ -39,12 +39,12 @@ public:
 	inline int getSize() { return cascades[0].framebuffer.getWidth(); }
 
 	// get cascade specific information
-	inline float getDistance(int cascade) { return cascades[cascade].distance; }
-	inline OtCamera& getCamera(int cascade) { return cascades[cascade].camera; }
- 	inline OtFrameBuffer& getFrameBuffer(int cascade) { return cascades[cascade].framebuffer; }
-	inline OtTexture getDepthTexture(int cascade) { return cascades[cascade].framebuffer.getDepthTexture(); }
-	inline bgfx::TextureHandle getDepthTextureHandle(int cascade) { return cascades[cascade].framebuffer.getDepthTextureHandle(); }
-	inline uint16_t getDepthTextureIndex(int cascade) { return cascades[cascade].framebuffer.getDepthTextureIndex(); }
+	inline float getDistance(size_t cascade) { return cascades[cascade].distance; }
+	inline OtCamera& getCamera(size_t cascade) { return cascades[cascade].camera; }
+ 	inline OtFrameBuffer& getFrameBuffer(size_t cascade) { return cascades[cascade].framebuffer; }
+	inline OtTexture getDepthTexture(size_t cascade) { return cascades[cascade].framebuffer.getDepthTexture(); }
+	inline bgfx::TextureHandle getDepthTextureHandle(size_t cascade) { return cascades[cascade].framebuffer.getDepthTextureHandle(); }
+	inline uint16_t getDepthTextureIndex(size_t cascade) { return cascades[cascade].framebuffer.getDepthTextureIndex(); }
 
 	// number of cascades in shadowmap
 	constexpr static size_t maxCascades = 4;

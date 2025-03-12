@@ -76,21 +76,8 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	// get current position and total/visible editor size
 	auto pos = ImGui::GetCursorScreenPos();
 	auto totalSize = ImVec2(textOffset + document.getMaxColumn() * glyphSize.x + cursorWidth, document.size() * glyphSize.y);
-	auto visibleSize = ImGui::GetContentRegionAvail();
-
-	if (size.x > 0.0f) {
-		visibleSize.x = std::min(visibleSize.x, size.x);
-
-	} else if (size.x < 0.0f) {
-		visibleSize.x = std::max(visibleSize.x + size.x, 0.0f);
-	}
-
-	if (size.y > 0.0f) {
-		visibleSize.y = std::min(visibleSize.y, size.y);
-
-	} else if (size.y < 0.0f) {
-		visibleSize.y = std::max(visibleSize.y + size.y, 0.0f);
-	}
+	auto region = ImGui::GetContentRegionAvail();
+	auto visibleSize = ImGui::CalcItemSize(size, region.x, region.y);
 
 	// see if we have scrollbars
 	float scrollbarSize = ImGui::GetStyle().ScrollbarSize;
@@ -150,15 +137,15 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 		scrollToLineNumber = -1;
 	}
 
+	// set scroll (if required)
+	if (scrollX >= 0.0f || scrollY >= 0.0f) {
+		ImGui::SetNextWindowScroll(ImVec2(scrollX, scrollY));
+	}
+
 	// ensure editor has focus (if required)
 	if (focusOnEditor) {
 		ImGui::SetNextWindowFocus();
 		focusOnEditor = false;
-	}
-
-	// set scroll (if required)
-	if (scrollX >= 0.0f || scrollY >= 0.0f) {
-		ImGui::SetNextWindowScroll(ImVec2(scrollX, scrollY));
 	}
 
 	// start a new child window
@@ -930,7 +917,7 @@ void TextEditor::handleMouseInteractions() {
 			static_cast<int>(std::floor(mousePos.y / glyphSize.y)),
 			static_cast<int>(std::floor((mousePos.x - textOffset) / glyphSize.x))));
 
-				// show text cursor if required
+		// show text cursor if required
 		if (ImGui::IsWindowFocused() && overText) {
 			ImGui::SetMouseCursor(ImGuiMouseCursor_TextInput);
 		}

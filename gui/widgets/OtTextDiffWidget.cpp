@@ -115,6 +115,9 @@ OtType OtTextDiffWidgetClass::getMeta() {
 		type->set("setShowScrollbarMiniMapEnabled", OtFunction::create(&OtTextDiffWidgetClass::setShowScrollbarMiniMapEnabled));
 		type->set("isShowScrollbarMiniMapEnabled", OtFunction::create(&OtTextDiffWidgetClass::isShowScrollbarMiniMapEnabled));
 
+		type->set("setSideBySideMode", OtFunction::create(&OtTextDiffWidgetClass::setSideBySideMode));
+		type->set("getSideBySideMode", OtFunction::create(&OtTextDiffWidgetClass::getSideBySideMode));
+
 		type->set("setLanguage", OtFunction::create(&OtTextDiffWidgetClass::setLanguage));
 		type->set("getLanguage", OtFunction::create(&OtTextDiffWidgetClass::getLanguage));
 

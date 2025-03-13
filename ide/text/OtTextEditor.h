@@ -26,6 +26,9 @@
 
 class OtTextEditor : public OtEditor {
 public:
+	// constructor
+	OtTextEditor();
+
 	// get editor status
 	inline bool isDirty() override { return editor.GetUndoIndex() != version; }
 

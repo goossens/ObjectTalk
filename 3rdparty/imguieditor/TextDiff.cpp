@@ -470,6 +470,44 @@ void TextDiff::renderSideBySideTextScrollbars() {
 
 		if (ImGui::IsWindowHovered()) {
 			textScroll = std::clamp(textScroll - ImGui::GetIO().MouseWheelH * ImGui::GetFontSize(), 0.0f, maxColumsWidth - visibleColumnsWidth);
+
+			if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) {
+				textScroll = std::max(textScroll - glyphSize.x, 0.0f);
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
+				textScroll = std::min(textScroll + glyphSize.x, maxColumsWidth - visibleColumnsWidth);
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_Home)) {
+				textScroll = 0.0f;
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_End)) {
+				textScroll = maxColumsWidth - visibleColumnsWidth;
+			}
+		}
+	}
+
+	if (ImGui::IsWindowHovered()) {
+		if (ImGui::IsKeyPressed(ImGuiKey_UpArrow)) {
+			if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
+				ImGui::SetScrollY(0.0f);
+
+			} else {
+				ImGui::SetScrollY(std::max(ImGui::GetScrollY() - glyphSize.y, 0.0f));
+			}
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_DownArrow)) {
+			if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
+				ImGui::SetScrollY(ImGui::GetScrollMaxY());
+
+			} else {
+				ImGui::SetScrollY(std::min(ImGui::GetScrollY() + glyphSize.y, ImGui::GetScrollMaxY()));
+			}
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_PageUp)) {
+			ImGui::SetScrollY(std::max(ImGui::GetScrollY() - (visibleLines - 2) * glyphSize.y, 0.0f));
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_PageDown)) {
+			ImGui::SetScrollY(std::min(ImGui::GetScrollY() + (visibleLines - 2) * glyphSize.y, ImGui::GetScrollMaxY()));
 		}
 	}
 }

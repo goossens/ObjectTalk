@@ -26,6 +26,8 @@
 #include <stdlib.h>
 #endif
 
+#include "bgfx/platform.h"
+
 #include "OtConfig.h"
 #include "OtException.h"
 #include "OtFunction.h"
@@ -85,6 +87,7 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 	// 1. the main thread handles the rendering and window events (as required by most operating systems)
 	// 2. the second thread runs the application logic as well as the asynchronous libuv events
 	running = true;
+	initRenderThreadBGFX();
 
 	// start the second thread
 	std::thread thread([this]() {
@@ -94,11 +97,13 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 
 	// main loop to handle window events
 	while (runningGLFW()) {
+		renderBGFX();
 		eventsGLFW();
 	}
 
 	// wait for second thread to finish
 	running = false;
+	endRenderThreadBGFX();
 	thread.join();
 }
 
@@ -110,7 +115,7 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 void OtFramework::runThread2() {
 	try {
 		// initialize graphics libraries
-		initBGFX();
+		initApiThreadBGFX();
 		initIMGUI();
 
 		// start the asset manager
@@ -129,8 +134,8 @@ void OtFramework::runThread2() {
 		// run this thread until we are told to stop
 		while (running) {
 			// start new frame
-			frameBGFX();
-			frameIMGUI();
+			startFrameBGFX();
+			startFrameIMGUI();
 
 			// time measurement
 			OtMeasureStopWatch stopwatch;
@@ -161,8 +166,8 @@ void OtFramework::runThread2() {
 			}
 
 			// put results on screen
-			renderIMGUI();
-			renderBGFX();
+			endFenderIMGUI();
+			endFrameBGFX();
 		}
 
 		// tell app we're done
@@ -185,7 +190,7 @@ void OtFramework::runThread2() {
 
 		// terminate libraries
 		endIMGUI();
-		endBGFX();
+		endApiThreadBGFX();
 
 	} catch (OtException& e) {
 		// send exception back to IDE (if required)

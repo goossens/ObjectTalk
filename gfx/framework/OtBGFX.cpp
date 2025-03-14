@@ -13,6 +13,7 @@
 #include <cstring>
 #include <string>
 
+#include "bgfx/platform.h"
 #include "bx/timer.h"
 #include "imgui.h"
 
@@ -63,10 +64,19 @@ static BgfxCallback callbacks;
 
 
 //
-//	OtFramework::initBGFX
+//	OtFramework::initRenderThreadBGFX()
 //
 
-void OtFramework::initBGFX() {
+void OtFramework::initRenderThreadBGFX() {
+	bgfx::renderFrame();
+}
+
+
+//
+//	OtFramework::initApiThreadBGFX
+//
+
+void OtFramework::initApiThreadBGFX() {
 	// initialize bgfx
 	bgfx::Init init;
 
@@ -132,10 +142,10 @@ void OtFramework::initBGFX() {
 
 
 //
-//	OtFramework::frameBGFX
+//	OtFramework::startFrameBGFX
 //
 
-void OtFramework::frameBGFX() {
+void OtFramework::startFrameBGFX() {
 	// get time since epoch
 	loopTime = bx::getHPCounter();
 
@@ -216,10 +226,10 @@ void OtFramework::renderProfiler() {
 
 
 //
-//	OtFramework::renderBGFX
+//	OtFramework::endFrameBGFX
 //
 
-void OtFramework::renderBGFX() {
+void OtFramework::endFrameBGFX() {
 	// render BGFX frame
 	auto frame = bgfx::frame();
 
@@ -229,10 +239,29 @@ void OtFramework::renderBGFX() {
 
 
 //
-//	OtFramework::endBGFX
+//	OtFramework::renderBGFX
 //
 
-void OtFramework::endBGFX() {
+void OtFramework::renderBGFX() {
+	bgfx::renderFrame();
+}
+
+
+//
+//	OtFramework::endApiThreadBGFX
+//
+
+void OtFramework::endApiThreadBGFX() {
 	// shutdown BGFX
 	bgfx::shutdown();
+}
+
+
+//
+//	OtFramework::endRenderThreadBGFX
+//
+
+void OtFramework::endRenderThreadBGFX() {
+	while (bgfx::renderFrame() != bgfx::RenderFrame::NoContext) {
+	}
 }

@@ -259,10 +259,10 @@ void OtFramework::initIMGUI() {
 
 
 //
-//	OtFramework::frameIMGUI
+//	OtFramework::startFrameIMGUI
 //
 
-void OtFramework::frameIMGUI() {
+void OtFramework::startFrameIMGUI() {
 	// update Dear ImGui state
 	ImGuiIO& io = ImGui::GetIO();
 	io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
@@ -331,10 +331,10 @@ void OtFramework::frameIMGUI() {
 
 
 //
-//	OtFramework::renderIMGUI
+//	OtFramework::endFenderIMGUI
 //
 
-void OtFramework::renderIMGUI() {
+void OtFramework::endFenderIMGUI() {
 	// render UI to command lists
 	ImGui::Render();
 	ImDrawData* drawData = ImGui::GetDrawData();

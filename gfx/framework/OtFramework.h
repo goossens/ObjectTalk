@@ -91,14 +91,17 @@ private:
 	void stopGLFW();
 	void endGLFW();
 
-	void initBGFX();
-	void frameBGFX();
+	void initRenderThreadBGFX();
+	void initApiThreadBGFX();
+	void startFrameBGFX();
+	void endFrameBGFX();
 	void renderBGFX();
-	void endBGFX();
+	void endApiThreadBGFX();
+	void endRenderThreadBGFX();
 
 	void initIMGUI();
-	void frameIMGUI();
-	void renderIMGUI();
+	void startFrameIMGUI();
+	void endFenderIMGUI();
 	void endIMGUI();
 
 	// files to open on startup

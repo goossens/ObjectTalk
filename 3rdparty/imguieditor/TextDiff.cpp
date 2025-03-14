@@ -176,18 +176,21 @@ void TextDiff::createCombinedView() {
 
 void TextDiff::decorateLine(TextEditor::Decorator& decorator) {
 	auto& line = lineInfo[decorator.line];
+	auto lineLeft = static_cast<int>(line.leftLine + 1);
+	auto lineRight = static_cast<int>(line.rightLine + 1);
+	auto color = ImGui::ColorConvertU32ToFloat4(palette.get(Color::lineNumber));
 
 	switch(line.status) {
 		case LineStatus::common:
-			ImGui::Text(" %*ld %*ld  ", leftLineNumberDigits, line.leftLine + 1, rightLineNumberDigits, line.rightLine + 1);
+			ImGui::TextColored(color, " %*d %*d  ", leftLineNumberDigits, lineLeft, rightLineNumberDigits, lineRight);
 			break;
 
 		case LineStatus::added:
-			ImGui::Text(" %*s %*ld +", leftLineNumberDigits, "", rightLineNumberDigits, line.rightLine + 1);
+			ImGui::TextColored(color, " %*s %*d +", leftLineNumberDigits, "", rightLineNumberDigits, lineRight);
 			break;
 
 		case LineStatus::deleted:
-			ImGui::Text(" %*ld %*s -", leftLineNumberDigits, line.leftLine + 1, rightLineNumberDigits, "");
+			ImGui::TextColored(color, " %*d %*s -", leftLineNumberDigits, lineLeft, rightLineNumberDigits, "");
 			break;
 	}
 }
@@ -288,17 +291,19 @@ void TextDiff::renderSideBySideBackground() {
 
 	for (auto i = firstVisibleLine; i <= lastVisibleLine; i++) {
 		auto& line = lineInfo[i];
+		auto lineLeft = static_cast<int>(line.leftLine + 1);
+		auto lineRight = static_cast<int>(line.rightLine + 1);
 
 		switch(line.status) {
 			case LineStatus::common:
-				snprintf(buffer, sizeof(buffer), " %*d", leftLineNumberDigits, static_cast<int>(line.leftLine + 1));
+				snprintf(buffer, sizeof(buffer), " %*d", leftLineNumberDigits, lineLeft);
 				drawList->AddText(ImVec2(leftLineNumberPos, y), palette.get(Color::lineNumber), buffer);
-				snprintf(buffer, sizeof(buffer), " %*d", rightLineNumberDigits, static_cast<int>(line.rightLine + 1));
+				snprintf(buffer, sizeof(buffer), " %*d", rightLineNumberDigits, lineRight);
 				drawList->AddText(ImVec2(rightLineNumberPos, y), palette.get(Color::lineNumber), buffer);
 				break;
 
 			case LineStatus::added:
-				snprintf(buffer, sizeof(buffer), " %*d +", rightLineNumberDigits, static_cast<int>(line.rightLine + 1));
+				snprintf(buffer, sizeof(buffer), " %*d +", rightLineNumberDigits, lineRight);
 				drawList->AddText(ImVec2(rightLineNumberPos, y), palette.get(Color::lineNumber), buffer);
 
 				drawList->AddRectFilled(
@@ -309,7 +314,7 @@ void TextDiff::renderSideBySideBackground() {
 				break;
 
 			case LineStatus::deleted:
-				snprintf(buffer, sizeof(buffer), " %*d -", leftLineNumberDigits, static_cast<int>(line.leftLine + 1));
+				snprintf(buffer, sizeof(buffer), " %*d -", leftLineNumberDigits, lineLeft);
 				drawList->AddText(ImVec2(leftLineNumberPos, y), palette.get(Color::lineNumber), buffer);
 
 				drawList->AddRectFilled(

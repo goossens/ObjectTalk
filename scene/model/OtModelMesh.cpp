@@ -79,9 +79,8 @@ void OtModelMesh::load(const aiMesh* mesh) {
 	aabb.addPoint(ToVec3(mesh->mAABB.mMin));
 	aabb.addPoint(ToVec3(mesh->mAABB.mMax));
 
-	// update buffers
-	vertexBuffer.set(vertices.data(), vertices.size(), OtVertex::getLayout());
-	indexBuffer.set(indices.data(), indices.size());
+	// update buffers during next submission
+	update = true;
 }
 
 
@@ -90,6 +89,12 @@ void OtModelMesh::load(const aiMesh* mesh) {
 //
 
 void OtModelMesh::submitTriangles() {
+	if (update) {
+		vertexBuffer.set(vertices.data(), vertices.size(), OtVertex::getLayout());
+		indexBuffer.set(indices.data(), indices.size());
+		update = true;
+	}
+
 	vertexBuffer.submit();
 	indexBuffer.submit();
 }

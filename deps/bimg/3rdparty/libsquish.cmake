@@ -12,4 +12,4 @@ file(GLOB SQUISH_SOURCES
 add_library(squish STATIC ${SQUISH_SOURCES})
 target_include_directories(squish PUBLIC ${bimg_SOURCE_DIR}/3rdparty)
 
-set_target_properties(squish PROPERTIES FOLDER "deps/bimg-3rdparty")
+set_target_properties(squish PROPERTIES FOLDER "deps/bimg")

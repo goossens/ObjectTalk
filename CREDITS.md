@@ -15,7 +15,7 @@ been a lot harder to implement the project.
 
 In case User Interface (UI) modules are included, we also use:
 
-* [GLFW](https://www.glfw.org) - multi-platform library for desktop application development released under the [zlib license](https://opensource.org/licenses/Zlib).
+* [SDL3](https://github.com/libsdl-org/SDL) - cross-platform library designed to make it easy to write multi-media software released under the [zlib license](https://opensource.org/licenses/Zlib).
 * [bgfx](https://github.com/bkaradzic/bgfx) - cross-platform, graphics API agnostic rendering library. It's dependencies [bimg](https://github.com/bkaradzic/bimg) and [bx](https://github.com/bkaradzic/bx) are also used. All are released under the [BSD 2-Clause "Simplified" License](https://opensource.org/licenses/BSD-2-Clause)
 * [Dear ImGui](https://github.com/ocornut/imgui) - graphical user interface library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) - file selection dialog for Dear ImGui released under the [MIT license](https://opensource.org/licenses/MIT).

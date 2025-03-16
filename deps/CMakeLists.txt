@@ -13,7 +13,7 @@ add_subdirectory(json)
 
 if(OT_INCLUDE_UI)
 	add_subdirectory(bsthreadpool)
-	add_subdirectory(glfw)
+	add_subdirectory(sdl)
 	add_subdirectory(bx)
 	add_subdirectory(bimg)
 	add_subdirectory(bgfx)

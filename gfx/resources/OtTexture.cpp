@@ -15,15 +15,6 @@
 
 
 //
-//	OtTexture::OtTexture
-//
-
-OtTexture::OtTexture(const std::string& path) {
-	loadFromFile(path);
-}
-
-
-//
 //	OtTexture::clear
 //
 
@@ -147,10 +138,40 @@ void OtTexture::loadFromImage(OtImage& image) {
 //	OtTexture::loadFromFile
 //
 
-void OtTexture::loadFromFile(const std::string& path) {
-	// get the image
-	OtImage image(path);
-	loadFromImage(image);
+void OtTexture::loadFromFile(const std::string& path, bool async) {
+	if (async) {
+		asyncImage = std::make_shared<OtImage>(path);
+
+		// schedule a task to upload image to texture
+		// we can't do that here as loading is done in a seperate thread
+		// the callback below will be called in the main thread
+		asyncHandle = new uv_async_t;
+		asyncHandle->data = this;
+
+		auto status = uv_async_init(uv_default_loop(), asyncHandle, [](uv_async_t* handle){
+			// run the HDR to cubemap conversion
+			auto texture = (OtTexture*) handle->data;
+			texture->loadFromImage(*texture->asyncImage);
+			texture->asyncImage = nullptr;
+
+			// cleanup
+			uv_close((uv_handle_t*) texture->asyncHandle, [](uv_handle_t* handle) {
+				auto texture = (OtTexture*) handle->data;
+				delete (uv_fs_event_t*) handle;
+				texture->asyncHandle = nullptr;
+			});
+		});
+
+		UV_CHECK_ERROR("uv_async_init", status);
+
+		status = uv_async_send(asyncHandle);
+		UV_CHECK_ERROR("uv_async_send", status);
+
+	} else {
+		// get the image
+		OtImage image(path);
+		loadFromImage(image);
+	}
 }
 
 

@@ -135,28 +135,19 @@ int main(int argc, char* argv[]) {
 					// handle a scene file
 					OtFramework framework;
 					OtSceneApp app{file};
-					framework.initialize();
 					framework.run(&app);
-					framework.terminate();
 
 				} else {
 					// handle other file types
 					OtFramework framework;
-					framework.initialize();
-
-					// open in IDE
 					OtWorkspace workspace;
 					workspace.openFile(file, OtEditor::VisualState::inTab);
 					framework.run(&workspace);
-					framework.terminate();
 				}
 
 		} else if (files.size() > 1) {
 			// handle case of multiple files on the command line
 			OtFramework framework;
-			framework.initialize();
-
-			// open each file in the IDE
 			OtWorkspace workspace;
 
 			for (auto& file : files) {
@@ -164,67 +155,12 @@ int main(int argc, char* argv[]) {
 			}
 
 			framework.run(&workspace);
-			framework.terminate();
 
 		} else {
 			// handle case of no files specified on command line
 			OtFramework framework;
-			framework.initialize();
-
-			// see if we have any files passed by the Finder (this only applies to MacOS)
-			for (auto& filename : OtFramework::getStartupFiles()) {
-				files.emplace_back(filename);
-			}
-
-			// do we have any files now?
-			if (files.size()) {
-				// yes, relaunch and specify files on command line
-				char** args = new char* [files.size() + 2];
-
-				// create argument array
-				auto executable = OtPath::getExecutable();
-				args[0] = (char*) executable.c_str();
-				int i = 1;
-
-				for (auto& file : files) {
-					args[i++] = (char*) file.c_str();
-				}
-
-				args[i] = nullptr;
-
-				// setup process options
-				uv_process_t subprocess;
-
-				uv_stdio_container_t stdio[3];
-				stdio[0].flags = UV_IGNORE;
-				stdio[1].flags = UV_IGNORE;
-				stdio[2].flags = UV_IGNORE;
-
-				uv_process_options_t options;
-				memset(&options, 0, sizeof(options));
-				options.file = args[0];
-				options.args = args;
-				options.flags = UV_PROCESS_DETACHED | UV_PROCESS_WINDOWS_HIDE_CONSOLE;
-				options.stdio_count = 3;
-				options.stdio = stdio;
-
-				// start process
-				auto status = uv_spawn(uv_default_loop(), &subprocess, &options);
-
-				if (status) {
-					delete [] args;
-					UV_CHECK_ERROR2("uv_spawn", status, executable.c_str());
-				}
-
-				uv_unref((uv_handle_t*) &subprocess);
-				delete [] args;
-
-			} else {
-				OtWorkspace workspace;
-				framework.run(&workspace);
-			}
-
-			framework.terminate();
+			OtWorkspace workspace;
+			framework.run(&workspace);
 		}
 
 #else

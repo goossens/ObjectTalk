@@ -12,20 +12,14 @@
 //	Include files
 //
 
-#include <array>
+#include <chrono>
 #include <string>
-#include <vector>
 
-#define GLFW_INCLUDE_NONE
-#include "GLFW/glfw3.h"
+#include "SDL3/SDL.h"
 #include "bgfx/bgfx.h"
-#include "bimg/bimg.h"
-#include "bgfx/embedded_shader.h"
 #include "imgui.h"
 
-#include "OtClipboard.h"
 #include "OtFrameworkApp.h"
-#include "OtFrameworkEvents.h"
 #include "OtSampler.h"
 #include "OtShaderProgram.h"
 #include "OtTexture.h"
@@ -37,12 +31,6 @@
 
 class OtFramework {
 public:
-	// initialize UI framework
-	void initialize();
-
-	// terminate UI framework
-	void terminate();
-
 	// run the UI framework
 	void run(OtFrameworkApp* app);
 
@@ -58,65 +46,48 @@ public:
 	// open specified URL in browser
 	static void openURL(const std::string& url);
 
-	// get list of file to open on startup
-	inline static std::vector<std::string>& getStartupFiles() { return filesToOpen; }
-
-#if __APPLE__
-	// add file to open at startup
-	static void addStartupFile(const char* filename);
-#endif
-
 private:
 #if __APPLE__
-	// put the right app name in the menu
-	void fixMenuLabels();
+	// put the right app name in the menu and adjust windows menu
+	void fixMenus();
 
 	// create a Metal layer in the native window
-	// this is required since we are running in a multithreaded configuration
-	// BGFX would create the metal layer automatically but in the wrong thread
-	// MacOS only allows certain API calls from the main thread
 	void createMetalLayer();
 #endif
-
-	// the second thread runs the application logic as well as the asynchronous libuv events
-	void runThread2();
 
 	// render a debugging profiler
 	void renderProfiler();
 
 	// initialize, run and terminate libraries
-	void initGLFW();
-	bool runningGLFW();
-	void eventsGLFW();
-	void stopGLFW();
-	void endGLFW();
+	void initSDL();
+	void eventsSDL();
+	void bridgeSDL();
+	void endSDL();
 
-	void initRenderThreadBGFX();
-	void initApiThreadBGFX();
+	void initBGFX();
 	void startFrameBGFX();
 	void endFrameBGFX();
-	void renderBGFX();
-	void endApiThreadBGFX();
-	void endRenderThreadBGFX();
+	void endBGFX();
 
 	void initIMGUI();
+	void eventIMGUI(SDL_Event& event);
 	void startFrameIMGUI();
-	void endFenderIMGUI();
+	void endFrameIMGUI();
 	void endIMGUI();
 
-	// files to open on startup
-	static std::vector<std::string> filesToOpen;
-
 	// main window
-	GLFWwindow* window;
-	void* nativeDisplayHandle;
+	SDL_Window* window;
+	void* nativeWindowHandle;
 	void* nativeDisplayType = nullptr;
 	int width;
 	int height;
 
+	// Input Method Editor (IME) support
+	SDL_Window* imeWindow = nullptr;
+
 	// time tracking
-	int64_t lastTime;
-	int64_t loopTime;
+	std::chrono::time_point<std::chrono::high_resolution_clock> lastTime;
+	std::chrono::time_point<std::chrono::high_resolution_clock> loopTime;
 	float loopDuration;
 	float cpuTime;
 
@@ -127,9 +98,11 @@ private:
 	OtShaderProgram imguiShaderProgram{"OtImGuiVS", "OtImGuiFS"};
 
 	// cursors
-	GLFWcursor* cursors[ImGuiMouseCursor_COUNT];
-	ImGuiMouseCursor cursor;
-	bool setCursor = false;
+	SDL_Cursor* cursors[ImGuiMouseCursor_COUNT];
+	ImGuiMouseCursor lastCursor = ImGuiMouseCursor_None;
+
+	// clipboard
+	std::string clipboardText;
 
 	// anti-aliasing setting
 	int antiAliasing = 0;
@@ -141,24 +114,6 @@ private:
 
 	// are we running?
 	bool running;
-
-	// bridges between threads
-	OtFwEventQueue eventQueue;
-	OtClipboard clipboard;
-	std::string clipboardText;
-
-#if __APPLE__
-	// for right/middle click simulation (using ctrl-click)
-	bool inRightClick = false;
-	bool inMiddleClick = false;
-#endif
-
-	// track gamepad status
-	struct Gamepad {
-		int buttons[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-	};
-
-	std::array<Gamepad, 4> gamepads;
 
 	// our app
 	OtFrameworkApp* app;

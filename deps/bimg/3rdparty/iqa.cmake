@@ -11,4 +11,4 @@ file( GLOB IQA_SOURCES
 add_library(iqa STATIC ${IQA_SOURCES})
 target_include_directories(iqa PUBLIC ${bimg_SOURCE_DIR}/3rdparty/iqa/include)
 
-set_target_properties(iqa PROPERTIES FOLDER "deps/bimg-3rdparty")
+set_target_properties(iqa PROPERTIES FOLDER "deps/bimg")

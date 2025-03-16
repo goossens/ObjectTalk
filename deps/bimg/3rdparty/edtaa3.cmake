@@ -11,4 +11,4 @@ file(GLOB EDTAA3_SOURCES
 add_library(edtaa3 STATIC ${EDTAA3_SOURCES})
 target_include_directories(edtaa3 PUBLIC ${bimg_SOURCE_DIR}/3rdparty>)
 
-set_target_properties(edtaa3 PROPERTIES FOLDER "deps/bimg-3rdparty")
+set_target_properties(edtaa3 PROPERTIES FOLDER "deps/bimg")

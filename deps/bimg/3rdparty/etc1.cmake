@@ -11,4 +11,4 @@ file(GLOB ETC1_SOURCES
 add_library(etc1 STATIC ${ETC1_SOURCES})
 target_include_directories(etc1 PUBLIC ${bimg_SOURCE_DIR}/3rdparty)
 
-set_target_properties(etc1 PROPERTIES FOLDER "deps/bimg-3rdparty")
+set_target_properties(etc1 PROPERTIES FOLDER "deps/bimg")

@@ -101,17 +101,17 @@ void OtCubeMap::create(int s, bool m, int l, int f, uint64_t flags) {
 //	OtCubeMap::load
 //
 
-void OtCubeMap::load(const std::string& path) {
+void OtCubeMap::load(const std::string& path, bool async) {
 	auto ext = OtPath::getExtension(path);
 
 	if (ext == ".cubemap") {
-		loadJSON(path);
+		loadJSON(path, async);
 
 	} else if (ext == ".hdr") {
-		loadHdrImage(path);
+		loadHdrImage(path, async);
 
 	} else {
-		loadCubemapImage(path);
+		loadCubemapImage(path, async);
 	}
 }
 
@@ -120,7 +120,7 @@ void OtCubeMap::load(const std::string& path) {
 //	OtCubeMap::loadJSON
 //
 
-void OtCubeMap::loadJSON(const std::string& path) {
+void OtCubeMap::loadJSON(const std::string& path, bool async) {
 	// parse json
 	std::string text;
 	OtText::load(path, text);
@@ -140,78 +140,77 @@ void OtCubeMap::loadJSON(const std::string& path) {
 	}
 
 	// load first side
-	OtImage image;
-	image.load(posx, true, true);
-	bimg::ImageContainer* container = image.getContainer();
+	tmpImages[0] = std::make_shared<OtImage>(posx, true, true);
+	bimg::ImageContainer* container = tmpImages[0]->getContainer();
 	size = static_cast<int>(container->m_width);
 	bimg::TextureFormat::Enum imageFormat = container->m_format;
 	mip = false;
 	layers = 1;
 	format = bgfx::TextureFormat::Enum(imageFormat);
 
-	// create a new cubemap
-	cubemap = bgfx::createTextureCube(
-		static_cast<uint16_t>(size),
-		false,
-		1,
-		bgfx::TextureFormat::Enum(imageFormat),
-		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE);
-
-	// store first side
-	const bgfx::Memory* mem = bgfx::copy(container->m_data, container->m_size);
-	bgfx::updateTextureCube(cubemap.getHandle(), 0, 0, 0, 0, 0, static_cast<uint16_t>(size), static_cast<uint16_t>(size), mem);
-
-	// load and store other sides
-	image.load(negx, true, true);
-	container = image.getContainer();
+	// load other sides
+	tmpImages[1] = std::make_shared<OtImage>(negx, true, true);
+	container = tmpImages[1]->getContainer();
 
 	if (container->m_width != static_cast<uint32_t>(size) || container->m_format != imageFormat) {
 		OtLogError("Cubemap image (negx] does not have same size or format as others");
 	}
 
-	mem = bgfx::copy(container->m_data, container->m_size);
-	bgfx::updateTextureCube(cubemap.getHandle(), 0, 1, 0, 0, 0, static_cast<uint16_t>(size), static_cast<uint16_t>(size), mem);
-
-	image.load(posy, true, true);
-	container = image.getContainer();
+	tmpImages[2] = std::make_shared<OtImage>(posy, true, true);
+	container = tmpImages[2]->getContainer();
 
 	if (container->m_width != static_cast<uint32_t>(size) || container->m_format != imageFormat) {
 		OtLogError("Cubemap image (posy] does not have same size or format as others");
 	}
 
-	mem = bgfx::copy(container->m_data, container->m_size);
-	bgfx::updateTextureCube(cubemap.getHandle(), 0, 2, 0, 0, 0, static_cast<uint16_t>(size), static_cast<uint16_t>(size), mem);
-
-	image.load(negy, true, true);
-	container = image.getContainer();
+	tmpImages[3] = std::make_shared<OtImage>(negy, true, true);
+	container = tmpImages[3]->getContainer();
 
 	if (container->m_width != static_cast<uint32_t>(size) || container->m_format != imageFormat) {
 		OtLogError("Cubemap image (negy] does not have same size or format as others");
 	}
 
-	mem = bgfx::copy(container->m_data, container->m_size);
-	bgfx::updateTextureCube(cubemap.getHandle(), 0, 3, 0, 0, 0, static_cast<uint16_t>(size), static_cast<uint16_t>(size), mem);
-
-	image.load(posz, true, true);
-	container = image.getContainer();
+	tmpImages[4] = std::make_shared<OtImage>(posz, true, true);
+	container = tmpImages[4]->getContainer();
 
 	if (container->m_width != static_cast<uint32_t>(size) || container->m_format != imageFormat) {
 		OtLogError("Cubemap image (posz] does not have same size or format as others");
 	}
 
-	mem = bgfx::copy(container->m_data, container->m_size);
-	bgfx::updateTextureCube(cubemap.getHandle(), 0, 4, 0, 0, 0, static_cast<uint16_t>(size), static_cast<uint16_t>(size), mem);
-
-	image.load(negz, true, true);
-	container = image.getContainer();
+	tmpImages[5] = std::make_shared<OtImage>(negz, true, true);
+	container = tmpImages[5]->getContainer();
 
 	if (container->m_width != static_cast<uint32_t>(size) || container->m_format != imageFormat) {
 		OtLogError("Cubemap image (negz] does not have same size or format as others");
 	}
 
-	mem = bgfx::copy(container->m_data, container->m_size);
-	bgfx::updateTextureCube(cubemap.getHandle(), 0, 5, 0, 0, 0, static_cast<uint16_t>(size), static_cast<uint16_t>(size), mem);
-	version++;
+	if (async) {
+		// schedule a task to upload images to texture
+		// we can't do that here as loading is done in a seperate thread
+		// the callback below will be called in the main thread
+		asyncHandle = new uv_async_t;
+		asyncHandle->data = this;
+
+		auto status = uv_async_init(uv_default_loop(), asyncHandle, [](uv_async_t* handle){
+			auto cubemap = (OtCubeMap*) handle->data;
+			cubemap->createCubemapFromSides();
+
+			// cleanup
+			uv_close((uv_handle_t*) cubemap->asyncHandle, [](uv_handle_t* handle) {
+				auto cubemap = (OtCubeMap*) handle->data;
+				delete (uv_fs_event_t*) handle;
+				cubemap->asyncHandle = nullptr;
+			});
+		});
+
+		UV_CHECK_ERROR("uv_async_init", status);
+
+		status = uv_async_send(asyncHandle);
+		UV_CHECK_ERROR("uv_async_send", status);
+
+	} else {
+		createCubemapFromSides();
+	}
 }
 
 
@@ -219,31 +218,42 @@ void OtCubeMap::loadJSON(const std::string& path) {
 //	OtCubeMap::loadCubemapImage
 //
 
-void OtCubeMap::loadCubemapImage(const std::string& path) {
-	// load image
-	OtImage image;
-	image.load(path, true, true);
-	bimg::ImageContainer* container = image.getContainer();
+void OtCubeMap::loadCubemapImage(const std::string& path, bool async) {
+	tmpImages[0] = std::make_shared<OtImage>(path);
+	bimg::ImageContainer* container = tmpImages[0]->getContainer();
 
 	// is this a real cubemap?
-	if (container->m_cubeMap) {
-		cubemap = bgfx::createTextureCube(
-			static_cast<uint16_t>(container->m_width),
-			false,
-			1,
-			bgfx::TextureFormat::Enum(container->m_format),
-			BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
-			bgfx::copy(container->m_data, container->m_size));
-
-	} else {
+	if (!container->m_cubeMap) {
 		OtLogError("Image is not a cubemap");
 	}
 
-	size = container->m_width;
-	mip = container->m_numMips > 0;
-	layers = container->m_numLayers;
-	format = bgfx::TextureFormat::Enum(container->m_format);
-	version++;
+	if (async) {
+		// schedule a task to upload image to texture
+		// we can't do that here as loading is done in a seperate thread
+		// the callback below will be called in the main thread
+		asyncHandle = new uv_async_t;
+		asyncHandle->data = this;
+
+		auto status = uv_async_init(uv_default_loop(), asyncHandle, [](uv_async_t* handle){
+			auto cubemap = (OtCubeMap*) handle->data;
+			cubemap->createCubemapFromImage();
+
+			// cleanup
+			uv_close((uv_handle_t*) cubemap->asyncHandle, [](uv_handle_t* handle) {
+				auto cubemap = (OtCubeMap*) handle->data;
+				delete (uv_fs_event_t*) handle;
+				cubemap->asyncHandle = nullptr;
+			});
+		});
+
+		UV_CHECK_ERROR("uv_async_init", status);
+
+		status = uv_async_send(asyncHandle);
+		UV_CHECK_ERROR("uv_async_send", status);
+
+	} else {
+		createCubemapFromImage();
+	}
 }
 
 
@@ -251,13 +261,122 @@ void OtCubeMap::loadCubemapImage(const std::string& path) {
 //	OtCubeMap::loadHdrImage
 //
 
-void OtCubeMap::loadHdrImage(const std::string& path) {
+void OtCubeMap::loadHdrImage(const std::string& path, bool async) {
 	// load image
-	OtImage image;
-	image.load(path);
-	bimg::ImageContainer* container = image.getContainer();
+	tmpImages[0] = std::make_shared<OtImage>(path);
 
+	if (async) {
+		// schedule a task to upload and convert image to texture
+		// we can't do that here as loading is done in a seperate thread
+		// the callback below will be called in the main thread
+		asyncHandle = new uv_async_t;
+		asyncHandle->data = this;
+
+		auto status = uv_async_init(uv_default_loop(), asyncHandle, [](uv_async_t* handle){
+			auto cubemap = (OtCubeMap*) handle->data;
+			cubemap->createCubemapFromHDR();
+
+			// cleanup
+			uv_close((uv_handle_t*) cubemap->asyncHandle, [](uv_handle_t* handle) {
+				auto cubemap = (OtCubeMap*) handle->data;
+				delete (uv_fs_event_t*) handle;
+				cubemap->asyncHandle = nullptr;
+				cubemap->tmpTexture.clear();
+
+				for (auto& framebuffer : cubemap->framebuffers) {
+					framebuffer.clear();
+				}
+			});
+		});
+
+		UV_CHECK_ERROR("uv_async_init", status);
+
+		status = uv_async_send(asyncHandle);
+		UV_CHECK_ERROR("uv_async_send", status);
+
+	} else {
+		createCubemapFromHDR();
+	}
+}
+
+
+//
+//	OtCubeMap::createCubemapFromSides
+//
+
+void OtCubeMap::createCubemapFromSides() {
+	// create a new cubemap
+	cubemap = bgfx::createTextureCube(
+		static_cast<uint16_t>(size),
+		false,
+		1,
+		bgfx::TextureFormat::Enum(format),
+		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE);
+
+	// store sides
+	bimg::ImageContainer* container = tmpImages[0]->getContainer();
+	const bgfx::Memory* mem = bgfx::copy(container->m_data, container->m_size);
+	bgfx::updateTextureCube(cubemap.getHandle(), 0, 0, 0, 0, 0, static_cast<uint16_t>(size), static_cast<uint16_t>(size), mem);
+
+	container = tmpImages[1]->getContainer();
+	mem = bgfx::copy(container->m_data, container->m_size);
+	bgfx::updateTextureCube(cubemap.getHandle(), 0, 1, 0, 0, 0, static_cast<uint16_t>(size), static_cast<uint16_t>(size), mem);
+
+	container = tmpImages[2]->getContainer();
+	mem = bgfx::copy(container->m_data, container->m_size);
+	bgfx::updateTextureCube(cubemap.getHandle(), 0, 2, 0, 0, 0, static_cast<uint16_t>(size), static_cast<uint16_t>(size), mem);
+
+	container = tmpImages[3]->getContainer();
+	mem = bgfx::copy(container->m_data, container->m_size);
+	bgfx::updateTextureCube(cubemap.getHandle(), 0, 3, 0, 0, 0, static_cast<uint16_t>(size), static_cast<uint16_t>(size), mem);
+
+	container = tmpImages[4]->getContainer();
+	mem = bgfx::copy(container->m_data, container->m_size);
+	bgfx::updateTextureCube(cubemap.getHandle(), 0, 4, 0, 0, 0, static_cast<uint16_t>(size), static_cast<uint16_t>(size), mem);
+
+	container = tmpImages[5]->getContainer();
+	mem = bgfx::copy(container->m_data, container->m_size);
+	bgfx::updateTextureCube(cubemap.getHandle(), 0, 5, 0, 0, 0, static_cast<uint16_t>(size), static_cast<uint16_t>(size), mem);
+	version++;
+
+	for (auto& image : tmpImages) {
+		image = nullptr;
+	}
+}
+
+
+//
+//	OtCubeMap::createCubemapFromImage
+//
+
+void OtCubeMap::createCubemapFromImage() {
+	bimg::ImageContainer* container = tmpImages[0]->getContainer();
+	size = container->m_width;
+	mip = container->m_numMips > 0;
+	layers = container->m_numLayers;
+	format = bgfx::TextureFormat::Enum(container->m_format);
+
+	cubemap = bgfx::createTextureCube(
+		static_cast<uint16_t>(container->m_width),
+		false,
+		1,
+		bgfx::TextureFormat::Enum(container->m_format),
+		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
+		bgfx::copy(container->m_data, container->m_size));
+
+	tmpImages[0] = nullptr;
+	version++;
+}
+
+
+//
+//	OtCubeMap::createCubemapFromHDR
+//
+
+void OtCubeMap::createCubemapFromHDR() {
 	// create a temporary texture
+	bimg::ImageContainer* container = tmpImages[0]->getContainer();
+
 	tmpTexture = bgfx::createTexture2D(
 		uint16_t(container->m_width),
 		uint16_t(container->m_height),
@@ -267,42 +386,6 @@ void OtCubeMap::loadHdrImage(const std::string& path) {
 		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
 		bgfx::copy(container->m_data, container->m_size));
 
-	// schedule a task to convert an equirectangular HDR image to a cubemap
-	// we can't do that here as loading is done asynchronously in a seperate thread
-	// the callback below will be called in the main rendering thread
-	hdrConversionHandle = new uv_async_t;
-	hdrConversionHandle->data = this;
-
-	auto status = uv_async_init(uv_default_loop(), hdrConversionHandle, [](uv_async_t* handle){
-		// run the HDR to cubemap conversion
-		auto cubemap = (OtCubeMap*) handle->data;
-		cubemap->renderCubemap();
-
-		// cleanup
-		uv_close((uv_handle_t*) cubemap->hdrConversionHandle, [](uv_handle_t* handle) {
-			auto cubemap = (OtCubeMap*) handle->data;
-			delete (uv_fs_event_t*) handle;
-			cubemap->hdrConversionHandle = nullptr;
-			cubemap->tmpTexture.clear();
-
-			for (auto& framebuffer : cubemap->framebuffers) {
-				framebuffer.clear();
-			}
-		});
-	});
-
-	UV_CHECK_ERROR("uv_async_init", status);
-
-	status = uv_async_send(hdrConversionHandle);
-	UV_CHECK_ERROR("uv_async_send", status);
-}
-
-
-//
-//	OtCubeMap::renderCubemap
-//
-
-void OtCubeMap::renderCubemap() {
 	// create a unity cube
 	if (bgfx::getAvailTransientVertexBuffer(cubeVertexCount, OtVertexPos::getLayout()) != cubeVertexCount) {
 		OtLogFatal("Internal error: insufficient transient buffer space");

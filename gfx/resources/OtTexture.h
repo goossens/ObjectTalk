@@ -13,7 +13,10 @@
 //
 
 #include <cstdint>
+#include <memory>
 #include <string>
+
+#include "OtLibuv.h"
 
 #include "OtBgfxHandle.h"
 #include "OtImage.h"
@@ -61,7 +64,6 @@ public:
 	OtTexture() = default;
 	OtTexture(int w, int h, int f, uint64_t flgs = linearSampling | repeatSampling) { create(w, h, f, flgs); }
 	OtTexture(OtBgfxHandle<bgfx::TextureHandle> t, int w, int h, int f) : texture(t), width(w), height(h), format(f) {}
-	OtTexture(const std::string& path);
 
 	// clear the resources
 	void clear();
@@ -76,7 +78,7 @@ public:
 	void loadFromImage(OtImage& image);
 
 	// load from file
-	void loadFromFile(const std::string& path);
+	void loadFromFile(const std::string& path, bool async=false);
 
 	// load from memory
 	void loadFromMemory(int width, int height, int format, void* pixels);
@@ -141,4 +143,8 @@ private:
 	int height = 1;
 	int format = noTexture;
 	int version = 0;
+
+	// support for async loading
+	std::shared_ptr<OtImage> asyncImage;
+	uv_async_t* asyncHandle = nullptr;
 };

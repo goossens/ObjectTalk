@@ -27,127 +27,152 @@
 //	Keyboard decoder ring
 //
 
-static ImGuiKey toImGuiKey(int key) {
-	switch (key) {
-		case GLFW_KEY_TAB: return ImGuiKey_Tab;
-		case GLFW_KEY_LEFT: return ImGuiKey_LeftArrow;
-		case GLFW_KEY_RIGHT: return ImGuiKey_RightArrow;
-		case GLFW_KEY_UP: return ImGuiKey_UpArrow;
-		case GLFW_KEY_DOWN: return ImGuiKey_DownArrow;
-		case GLFW_KEY_PAGE_UP: return ImGuiKey_PageUp;
-		case GLFW_KEY_PAGE_DOWN: return ImGuiKey_PageDown;
-		case GLFW_KEY_HOME: return ImGuiKey_Home;
-		case GLFW_KEY_END: return ImGuiKey_End;
-		case GLFW_KEY_INSERT: return ImGuiKey_Insert;
-		case GLFW_KEY_DELETE: return ImGuiKey_Delete;
-		case GLFW_KEY_BACKSPACE: return ImGuiKey_Backspace;
-		case GLFW_KEY_SPACE: return ImGuiKey_Space;
-		case GLFW_KEY_ENTER: return ImGuiKey_Enter;
-		case GLFW_KEY_ESCAPE: return ImGuiKey_Escape;
-		case GLFW_KEY_APOSTROPHE: return ImGuiKey_Apostrophe;
-		case GLFW_KEY_COMMA: return ImGuiKey_Comma;
-		case GLFW_KEY_MINUS: return ImGuiKey_Minus;
-		case GLFW_KEY_PERIOD: return ImGuiKey_Period;
-		case GLFW_KEY_SLASH: return ImGuiKey_Slash;
-		case GLFW_KEY_SEMICOLON: return ImGuiKey_Semicolon;
-		case GLFW_KEY_EQUAL: return ImGuiKey_Equal;
-		case GLFW_KEY_LEFT_BRACKET: return ImGuiKey_LeftBracket;
-		case GLFW_KEY_BACKSLASH: return ImGuiKey_Backslash;
-		case GLFW_KEY_RIGHT_BRACKET: return ImGuiKey_RightBracket;
-		case GLFW_KEY_GRAVE_ACCENT: return ImGuiKey_GraveAccent;
-		case GLFW_KEY_CAPS_LOCK: return ImGuiKey_CapsLock;
-		case GLFW_KEY_SCROLL_LOCK: return ImGuiKey_ScrollLock;
-		case GLFW_KEY_NUM_LOCK: return ImGuiKey_NumLock;
-		case GLFW_KEY_PRINT_SCREEN: return ImGuiKey_PrintScreen;
-		case GLFW_KEY_PAUSE: return ImGuiKey_Pause;
-		case GLFW_KEY_KP_0: return ImGuiKey_Keypad0;
-		case GLFW_KEY_KP_1: return ImGuiKey_Keypad1;
-		case GLFW_KEY_KP_2: return ImGuiKey_Keypad2;
-		case GLFW_KEY_KP_3: return ImGuiKey_Keypad3;
-		case GLFW_KEY_KP_4: return ImGuiKey_Keypad4;
-		case GLFW_KEY_KP_5: return ImGuiKey_Keypad5;
-		case GLFW_KEY_KP_6: return ImGuiKey_Keypad6;
-		case GLFW_KEY_KP_7: return ImGuiKey_Keypad7;
-		case GLFW_KEY_KP_8: return ImGuiKey_Keypad8;
-		case GLFW_KEY_KP_9: return ImGuiKey_Keypad9;
-		case GLFW_KEY_KP_DECIMAL: return ImGuiKey_KeypadDecimal;
-		case GLFW_KEY_KP_DIVIDE: return ImGuiKey_KeypadDivide;
-		case GLFW_KEY_KP_MULTIPLY: return ImGuiKey_KeypadMultiply;
-		case GLFW_KEY_KP_SUBTRACT: return ImGuiKey_KeypadSubtract;
-		case GLFW_KEY_KP_ADD: return ImGuiKey_KeypadAdd;
-		case GLFW_KEY_KP_ENTER: return ImGuiKey_KeypadEnter;
-		case GLFW_KEY_KP_EQUAL: return ImGuiKey_KeypadEqual;
-		case GLFW_KEY_LEFT_SHIFT: return ImGuiKey_LeftShift;
-		case GLFW_KEY_LEFT_CONTROL: return ImGuiKey_LeftCtrl;
-		case GLFW_KEY_LEFT_ALT: return ImGuiKey_LeftAlt;
-		case GLFW_KEY_LEFT_SUPER: return ImGuiKey_LeftSuper;
-		case GLFW_KEY_RIGHT_SHIFT: return ImGuiKey_RightShift;
-		case GLFW_KEY_RIGHT_CONTROL: return ImGuiKey_RightCtrl;
-		case GLFW_KEY_RIGHT_ALT: return ImGuiKey_RightAlt;
-		case GLFW_KEY_RIGHT_SUPER: return ImGuiKey_RightSuper;
-		case GLFW_KEY_MENU: return ImGuiKey_Menu;
-		case GLFW_KEY_0: return ImGuiKey_0;
-		case GLFW_KEY_1: return ImGuiKey_1;
-		case GLFW_KEY_2: return ImGuiKey_2;
-		case GLFW_KEY_3: return ImGuiKey_3;
-		case GLFW_KEY_4: return ImGuiKey_4;
-		case GLFW_KEY_5: return ImGuiKey_5;
-		case GLFW_KEY_6: return ImGuiKey_6;
-		case GLFW_KEY_7: return ImGuiKey_7;
-		case GLFW_KEY_8: return ImGuiKey_8;
-		case GLFW_KEY_9: return ImGuiKey_9;
-		case GLFW_KEY_A: return ImGuiKey_A;
-		case GLFW_KEY_B: return ImGuiKey_B;
-		case GLFW_KEY_C: return ImGuiKey_C;
-		case GLFW_KEY_D: return ImGuiKey_D;
-		case GLFW_KEY_E: return ImGuiKey_E;
-		case GLFW_KEY_F: return ImGuiKey_F;
-		case GLFW_KEY_G: return ImGuiKey_G;
-		case GLFW_KEY_H: return ImGuiKey_H;
-		case GLFW_KEY_I: return ImGuiKey_I;
-		case GLFW_KEY_J: return ImGuiKey_J;
-		case GLFW_KEY_K: return ImGuiKey_K;
-		case GLFW_KEY_L: return ImGuiKey_L;
-		case GLFW_KEY_M: return ImGuiKey_M;
-		case GLFW_KEY_N: return ImGuiKey_N;
-		case GLFW_KEY_O: return ImGuiKey_O;
-		case GLFW_KEY_P: return ImGuiKey_P;
-		case GLFW_KEY_Q: return ImGuiKey_Q;
-		case GLFW_KEY_R: return ImGuiKey_R;
-		case GLFW_KEY_S: return ImGuiKey_S;
-		case GLFW_KEY_T: return ImGuiKey_T;
-		case GLFW_KEY_U: return ImGuiKey_U;
-		case GLFW_KEY_V: return ImGuiKey_V;
-		case GLFW_KEY_W: return ImGuiKey_W;
-		case GLFW_KEY_X: return ImGuiKey_X;
-		case GLFW_KEY_Y: return ImGuiKey_Y;
-		case GLFW_KEY_Z: return ImGuiKey_Z;
-		case GLFW_KEY_F1: return ImGuiKey_F1;
-		case GLFW_KEY_F2: return ImGuiKey_F2;
-		case GLFW_KEY_F3: return ImGuiKey_F3;
-		case GLFW_KEY_F4: return ImGuiKey_F4;
-		case GLFW_KEY_F5: return ImGuiKey_F5;
-		case GLFW_KEY_F6: return ImGuiKey_F6;
-		case GLFW_KEY_F7: return ImGuiKey_F7;
-		case GLFW_KEY_F8: return ImGuiKey_F8;
-		case GLFW_KEY_F9: return ImGuiKey_F9;
-		case GLFW_KEY_F10: return ImGuiKey_F10;
-		case GLFW_KEY_F11: return ImGuiKey_F11;
-		case GLFW_KEY_F12: return ImGuiKey_F12;
-		case GLFW_KEY_F13: return ImGuiKey_F13;
-		case GLFW_KEY_F14: return ImGuiKey_F14;
-		case GLFW_KEY_F15: return ImGuiKey_F15;
-		case GLFW_KEY_F16: return ImGuiKey_F16;
-		case GLFW_KEY_F17: return ImGuiKey_F17;
-		case GLFW_KEY_F18: return ImGuiKey_F18;
-		case GLFW_KEY_F19: return ImGuiKey_F19;
-		case GLFW_KEY_F20: return ImGuiKey_F20;
-		case GLFW_KEY_F21: return ImGuiKey_F21;
-		case GLFW_KEY_F22: return ImGuiKey_F22;
-		case GLFW_KEY_F23: return ImGuiKey_F23;
-		case GLFW_KEY_F24: return ImGuiKey_F24;
-		default: return ImGuiKey_None;
+static ImGuiKey toImGuiKey(SDL_Keycode keycode, SDL_Scancode scancode) {
+	// keypad doesn't have individual key values in SDL3
+	switch (scancode) {
+		case SDL_SCANCODE_KP_0: return ImGuiKey_Keypad0;
+		case SDL_SCANCODE_KP_1: return ImGuiKey_Keypad1;
+		case SDL_SCANCODE_KP_2: return ImGuiKey_Keypad2;
+		case SDL_SCANCODE_KP_3: return ImGuiKey_Keypad3;
+		case SDL_SCANCODE_KP_4: return ImGuiKey_Keypad4;
+		case SDL_SCANCODE_KP_5: return ImGuiKey_Keypad5;
+		case SDL_SCANCODE_KP_6: return ImGuiKey_Keypad6;
+		case SDL_SCANCODE_KP_7: return ImGuiKey_Keypad7;
+		case SDL_SCANCODE_KP_8: return ImGuiKey_Keypad8;
+		case SDL_SCANCODE_KP_9: return ImGuiKey_Keypad9;
+		case SDL_SCANCODE_KP_PERIOD: return ImGuiKey_KeypadDecimal;
+		case SDL_SCANCODE_KP_DIVIDE: return ImGuiKey_KeypadDivide;
+		case SDL_SCANCODE_KP_MULTIPLY: return ImGuiKey_KeypadMultiply;
+		case SDL_SCANCODE_KP_MINUS: return ImGuiKey_KeypadSubtract;
+		case SDL_SCANCODE_KP_PLUS: return ImGuiKey_KeypadAdd;
+		case SDL_SCANCODE_KP_ENTER: return ImGuiKey_KeypadEnter;
+		case SDL_SCANCODE_KP_EQUALS: return ImGuiKey_KeypadEqual;
+		default: break;
 	}
+
+	switch (keycode) {
+		case SDLK_TAB: return ImGuiKey_Tab;
+		case SDLK_LEFT: return ImGuiKey_LeftArrow;
+		case SDLK_RIGHT: return ImGuiKey_RightArrow;
+		case SDLK_UP: return ImGuiKey_UpArrow;
+		case SDLK_DOWN: return ImGuiKey_DownArrow;
+		case SDLK_PAGEUP: return ImGuiKey_PageUp;
+		case SDLK_PAGEDOWN: return ImGuiKey_PageDown;
+		case SDLK_HOME: return ImGuiKey_Home;
+		case SDLK_END: return ImGuiKey_End;
+		case SDLK_INSERT: return ImGuiKey_Insert;
+		case SDLK_DELETE: return ImGuiKey_Delete;
+		case SDLK_BACKSPACE: return ImGuiKey_Backspace;
+		case SDLK_SPACE: return ImGuiKey_Space;
+		case SDLK_RETURN: return ImGuiKey_Enter;
+		case SDLK_ESCAPE: return ImGuiKey_Escape;
+		//case SDLK_APOSTROPHE: return ImGuiKey_Apostrophe;
+		case SDLK_COMMA: return ImGuiKey_Comma;
+		//case SDLK_MINUS: return ImGuiKey_Minus;
+		case SDLK_PERIOD: return ImGuiKey_Period;
+		//case SDLK_SLASH: return ImGuiKey_Slash;
+		case SDLK_SEMICOLON: return ImGuiKey_Semicolon;
+		//case SDLK_EQUALS: return ImGuiKey_Equal;
+		//case SDLK_LEFTBRACKET: return ImGuiKey_LeftBracket;
+		//case SDLK_BACKSLASH: return ImGuiKey_Backslash;
+		//case SDLK_RIGHTBRACKET: return ImGuiKey_RightBracket;
+		//case SDLK_GRAVE: return ImGuiKey_GraveAccent;
+		case SDLK_CAPSLOCK: return ImGuiKey_CapsLock;
+		case SDLK_SCROLLLOCK: return ImGuiKey_ScrollLock;
+		case SDLK_NUMLOCKCLEAR: return ImGuiKey_NumLock;
+		case SDLK_PRINTSCREEN: return ImGuiKey_PrintScreen;
+		case SDLK_PAUSE: return ImGuiKey_Pause;
+		case SDLK_LCTRL: return ImGuiKey_LeftCtrl;
+		case SDLK_LSHIFT: return ImGuiKey_LeftShift;
+		case SDLK_LALT: return ImGuiKey_LeftAlt;
+		case SDLK_LGUI: return ImGuiKey_LeftSuper;
+		case SDLK_RCTRL: return ImGuiKey_RightCtrl;
+		case SDLK_RSHIFT: return ImGuiKey_RightShift;
+		case SDLK_RALT: return ImGuiKey_RightAlt;
+		case SDLK_RGUI: return ImGuiKey_RightSuper;
+		case SDLK_APPLICATION: return ImGuiKey_Menu;
+		case SDLK_0: return ImGuiKey_0;
+		case SDLK_1: return ImGuiKey_1;
+		case SDLK_2: return ImGuiKey_2;
+		case SDLK_3: return ImGuiKey_3;
+		case SDLK_4: return ImGuiKey_4;
+		case SDLK_5: return ImGuiKey_5;
+		case SDLK_6: return ImGuiKey_6;
+		case SDLK_7: return ImGuiKey_7;
+		case SDLK_8: return ImGuiKey_8;
+		case SDLK_9: return ImGuiKey_9;
+		case SDLK_A: return ImGuiKey_A;
+		case SDLK_B: return ImGuiKey_B;
+		case SDLK_C: return ImGuiKey_C;
+		case SDLK_D: return ImGuiKey_D;
+		case SDLK_E: return ImGuiKey_E;
+		case SDLK_F: return ImGuiKey_F;
+		case SDLK_G: return ImGuiKey_G;
+		case SDLK_H: return ImGuiKey_H;
+		case SDLK_I: return ImGuiKey_I;
+		case SDLK_J: return ImGuiKey_J;
+		case SDLK_K: return ImGuiKey_K;
+		case SDLK_L: return ImGuiKey_L;
+		case SDLK_M: return ImGuiKey_M;
+		case SDLK_N: return ImGuiKey_N;
+		case SDLK_O: return ImGuiKey_O;
+		case SDLK_P: return ImGuiKey_P;
+		case SDLK_Q: return ImGuiKey_Q;
+		case SDLK_R: return ImGuiKey_R;
+		case SDLK_S: return ImGuiKey_S;
+		case SDLK_T: return ImGuiKey_T;
+		case SDLK_U: return ImGuiKey_U;
+		case SDLK_V: return ImGuiKey_V;
+		case SDLK_W: return ImGuiKey_W;
+		case SDLK_X: return ImGuiKey_X;
+		case SDLK_Y: return ImGuiKey_Y;
+		case SDLK_Z: return ImGuiKey_Z;
+		case SDLK_F1: return ImGuiKey_F1;
+		case SDLK_F2: return ImGuiKey_F2;
+		case SDLK_F3: return ImGuiKey_F3;
+		case SDLK_F4: return ImGuiKey_F4;
+		case SDLK_F5: return ImGuiKey_F5;
+		case SDLK_F6: return ImGuiKey_F6;
+		case SDLK_F7: return ImGuiKey_F7;
+		case SDLK_F8: return ImGuiKey_F8;
+		case SDLK_F9: return ImGuiKey_F9;
+		case SDLK_F10: return ImGuiKey_F10;
+		case SDLK_F11: return ImGuiKey_F11;
+		case SDLK_F12: return ImGuiKey_F12;
+		case SDLK_F13: return ImGuiKey_F13;
+		case SDLK_F14: return ImGuiKey_F14;
+		case SDLK_F15: return ImGuiKey_F15;
+		case SDLK_F16: return ImGuiKey_F16;
+		case SDLK_F17: return ImGuiKey_F17;
+		case SDLK_F18: return ImGuiKey_F18;
+		case SDLK_F19: return ImGuiKey_F19;
+		case SDLK_F20: return ImGuiKey_F20;
+		case SDLK_F21: return ImGuiKey_F21;
+		case SDLK_F22: return ImGuiKey_F22;
+		case SDLK_F23: return ImGuiKey_F23;
+		case SDLK_F24: return ImGuiKey_F24;
+		case SDLK_AC_BACK: return ImGuiKey_AppBack;
+		case SDLK_AC_FORWARD: return ImGuiKey_AppForward;
+		default: break;
+	}
+
+	// Fallback to scancode
+	switch (scancode) {
+		case SDL_SCANCODE_GRAVE: return ImGuiKey_GraveAccent;
+		case SDL_SCANCODE_MINUS: return ImGuiKey_Minus;
+		case SDL_SCANCODE_EQUALS: return ImGuiKey_Equal;
+		case SDL_SCANCODE_LEFTBRACKET: return ImGuiKey_LeftBracket;
+		case SDL_SCANCODE_RIGHTBRACKET: return ImGuiKey_RightBracket;
+		case SDL_SCANCODE_BACKSLASH: return ImGuiKey_Backslash;
+		case SDL_SCANCODE_SEMICOLON: return ImGuiKey_Semicolon;
+		case SDL_SCANCODE_APOSTROPHE: return ImGuiKey_Apostrophe;
+		case SDL_SCANCODE_COMMA: return ImGuiKey_Comma;
+		case SDL_SCANCODE_PERIOD: return ImGuiKey_Period;
+		case SDL_SCANCODE_SLASH: return ImGuiKey_Slash;
+		default: break;
+	}
+
+	return ImGuiKey_None;
 }
 
 
@@ -167,9 +192,9 @@ void OtFramework::initIMGUI() {
 	// setup backend metadata
  	io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
  	io.BackendPlatformName = "ObjectTalk";
-	io.BackendRendererName = "BGFX/GLFW";
+	io.BackendRendererName = "SDL3/BGFX";
 
-	// connect Dear ImGui to GLFW window
+	// connect Dear ImGui to SDL3 window
 	io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
 	io.DeltaTime = 1.0f / 60.0f;
 
@@ -177,24 +202,42 @@ void OtFramework::initIMGUI() {
 	io.ConfigWindowsMoveFromTitleBarOnly = true;
 
 	// setup main viewport
-	ImGui::GetMainViewport()->PlatformHandleRaw = nativeDisplayHandle;
+	ImGui::GetMainViewport()->PlatformHandleRaw = nativeWindowHandle;
 
 	// setup clipboard functions
 	ImGuiPlatformIO& pio = ImGui::GetPlatformIO();
 	pio.Platform_ClipboardUserData = this;
+	pio.Platform_ImeUserData = this;
 
 	pio.Platform_SetClipboardTextFn = [](ImGuiContext* /* ctx */, const char* text) {
-		OtFramework* framework = (OtFramework*) ImGui::GetPlatformIO().Platform_ClipboardUserData;
-		framework->clipboard.set(text);
+		SDL_SetClipboardText(text);
 	};
 
 	pio.Platform_GetClipboardTextFn = [](ImGuiContext* /* ctx */) {
 		OtFramework* framework = (OtFramework*) ImGui::GetPlatformIO().Platform_ClipboardUserData;
-		auto callback = glfwSetErrorCallback(nullptr);
-		auto clipboard =framework->clipboard.get();
-		framework->clipboardText = clipboard ? clipboard : "";
-		glfwSetErrorCallback(callback);
+		framework->clipboardText = SDL_GetClipboardText();
 		return framework->clipboardText.c_str();
+	};
+
+	pio.Platform_SetImeDataFn = [](ImGuiContext* /* ctx */, ImGuiViewport* /* viewport */, ImGuiPlatformImeData* data) {
+		OtFramework* framework = (OtFramework*) ImGui::GetPlatformIO().Platform_ImeUserData;
+
+		if ((!data->WantVisible || framework->imeWindow != framework->window) && framework->imeWindow != nullptr) {
+			SDL_StopTextInput(framework->window);
+			framework->imeWindow = nullptr;
+		}
+
+		if (data->WantVisible) {
+			SDL_Rect rect;
+			rect.x = static_cast<int>(data->InputPos.x);
+			rect.y = static_cast<int>(data->InputPos.y);
+			rect.w = 1;
+			rect.h = static_cast<int>(data->InputLineHeight);
+
+			SDL_SetTextInputArea(framework->window, &rect, 0);
+			SDL_StartTextInput(framework->window);
+			framework->imeWindow = framework->window;
+		}
 	};
 
 	// add custom fonts
@@ -259,6 +302,87 @@ void OtFramework::initIMGUI() {
 
 
 //
+//	OtFramework::eventIMGUI
+//
+
+void OtFramework::eventIMGUI(SDL_Event& event) {
+	ImGuiIO& io = ImGui::GetIO();
+
+	switch (event.type) {
+		case SDL_EVENT_MOUSE_MOTION: {
+			io.AddMouseSourceEvent(event.wheel.which == SDL_TOUCH_MOUSEID ? ImGuiMouseSource_TouchScreen : ImGuiMouseSource_Mouse);
+			io.AddMousePosEvent(static_cast<float>(event.motion.x), static_cast<float>(event.motion.y));
+		break;
+		}
+
+		case SDL_EVENT_MOUSE_WHEEL: {
+			io.AddMouseSourceEvent(event.wheel.which == SDL_TOUCH_MOUSEID ? ImGuiMouseSource_TouchScreen : ImGuiMouseSource_Mouse);
+			io.AddMouseWheelEvent(static_cast<float>(-event.wheel.x), static_cast<float>(event.wheel.y));
+		break;
+		}
+
+		case SDL_EVENT_MOUSE_BUTTON_DOWN:
+		case SDL_EVENT_MOUSE_BUTTON_UP: {
+			int button = -1;
+			if (event.button.button == SDL_BUTTON_LEFT) { button = 0; }
+			if (event.button.button == SDL_BUTTON_RIGHT) { button = 1; }
+			if (event.button.button == SDL_BUTTON_MIDDLE) { button = 2; }
+			if (event.button.button == SDL_BUTTON_X1) { button = 3; }
+			if (event.button.button == SDL_BUTTON_X2) { button = 4; }
+
+			if (button != -1) {
+				io.AddMouseSourceEvent(event.button.which == SDL_TOUCH_MOUSEID ? ImGuiMouseSource_TouchScreen : ImGuiMouseSource_Mouse);
+				io.AddMouseButtonEvent(button, event.type == SDL_EVENT_MOUSE_BUTTON_DOWN);
+			}
+
+			break;
+		}
+
+		case SDL_EVENT_TEXT_INPUT:
+			io.AddInputCharactersUTF8(event.text.text);
+			break;
+
+		case SDL_EVENT_KEY_DOWN:
+		case SDL_EVENT_KEY_UP: {
+			if (event.key.key == SDLK_F16 && event.type == SDL_EVENT_KEY_DOWN) {
+				profiler = !profiler;
+
+			} else if (event.key.key == SDLK_F17 && event.type == SDL_EVENT_KEY_DOWN) {
+				metrics = !metrics;
+
+			} else if (event.key.key == SDLK_F18 && event.type == SDL_EVENT_KEY_DOWN) {
+				demo = !demo;
+
+#if __APPLE__
+			} else if ((event.key.mod & SDL_KMOD_GUI) && event.key.key == SDLK_Q && event.type == SDL_EVENT_KEY_DOWN) {
+#else
+			} else if ((event.key.mod & SDL_KMOD_CTRL) && event.key.key == SDLK_Q && event.type == SDL_EVENT_KEY_DOWN) {
+#endif
+
+				if (canQuit()) {
+					stop();
+				}
+
+			} else {
+				io.AddKeyEvent(ImGuiMod_Ctrl, (event.key.mod & SDL_KMOD_CTRL) != 0);
+				io.AddKeyEvent(ImGuiMod_Shift, (event.key.mod & SDL_KMOD_SHIFT) != 0);
+				io.AddKeyEvent(ImGuiMod_Alt, (event.key.mod & SDL_KMOD_ALT) != 0);
+				io.AddKeyEvent(ImGuiMod_Super, (event.key.mod & SDL_KMOD_GUI) != 0);
+				io.AddKeyEvent(toImGuiKey(event.key.key, event.key.scancode), event.type == SDL_EVENT_KEY_DOWN);
+			}
+
+			break;
+		}
+
+		case SDL_EVENT_WINDOW_FOCUS_GAINED:
+		case SDL_EVENT_WINDOW_FOCUS_LOST:
+			io.AddFocusEvent(event.type == SDL_EVENT_WINDOW_FOCUS_GAINED);
+			break;
+	}
+}
+
+
+//
 //	OtFramework::startFrameIMGUI
 //
 
@@ -268,52 +392,23 @@ void OtFramework::startFrameIMGUI() {
 	io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
 	io.DeltaTime = loopDuration / 1000.0f;
 
-	while (!eventQueue.empty()) {
-		auto event = eventQueue.pop();
+	// update cursor
+	if (!(io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange)) {
+		ImGuiMouseCursor cursor = ImGui::GetMouseCursor();
 
-		switch (event.type) {
-			case OtFwEvent::Type::mouseButton:
-				io.AddKeyEvent(ImGuiMod_Ctrl, (event.mouseButton.mods & GLFW_MOD_CONTROL) != 0);
-				io.AddKeyEvent(ImGuiMod_Shift, (event.mouseButton.mods & GLFW_MOD_SHIFT) != 0);
-				io.AddKeyEvent(ImGuiMod_Alt, (event.mouseButton.mods & GLFW_MOD_ALT) != 0);
-				io.AddKeyEvent(ImGuiMod_Super, (event.mouseButton.mods & GLFW_MOD_SUPER) != 0);
-				io.AddMouseButtonEvent(event.mouseButton.button, event.mouseButton.action == GLFW_PRESS);
-				break;
-
-			case OtFwEvent::Type::mouseMove:
-				io.AddMousePosEvent(event.mouseMove.x, event.mouseMove.y);
-				break;
-
-			case OtFwEvent::Type::mouseWheel:
-				io.AddMouseWheelEvent(event.mouseWheel.xOffset, event.mouseWheel.yOffset);
-				break;
-
-			case OtFwEvent::Type::keyboard:
-				io.AddKeyEvent(ImGuiMod_Ctrl, (event.keyboard.mods & GLFW_MOD_CONTROL) != 0);
-				io.AddKeyEvent(ImGuiMod_Shift, (event.keyboard.mods & GLFW_MOD_SHIFT) != 0);
-				io.AddKeyEvent(ImGuiMod_Alt, (event.keyboard.mods & GLFW_MOD_ALT) != 0);
-				io.AddKeyEvent(ImGuiMod_Super, (event.keyboard.mods & GLFW_MOD_SUPER) != 0);
-				io.AddKeyEvent(toImGuiKey(event.keyboard.key), (event.keyboard.action != GLFW_RELEASE));
-				break;
-
-			case OtFwEvent::Type::character:
-				io.AddInputCharacter(event.character.codepoint);
-				break;
-
-			default:
-				break;
-		}
-	}
-
-	// handle cursor which is actually set in main thread because that's where the window manager runs
-	setCursor = !(io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) && glfwGetInputMode(window, GLFW_CURSOR) != GLFW_CURSOR_DISABLED;
-
-	if (setCursor) {
-		if (io.MouseDrawCursor) {
-			cursor = ImGuiMouseCursor_None;
+		if (io.MouseDrawCursor || cursor == ImGuiMouseCursor_None) {
+			// hide OS mouse cursor if Dear ImGui is drawing it or if it wants no cursor
+			SDL_HideCursor();
 
 		} else {
-			cursor = ImGui::GetMouseCursor();
+			// update cursor if required
+			if (cursor != lastCursor) {
+				lastCursor = cursors[cursor] ? cursor : ImGuiMouseCursor_Arrow;
+				SDL_SetCursor(cursors[lastCursor]);
+			}
+
+			// Show OS mouse cursor
+			SDL_ShowCursor();
 		}
 	}
 
@@ -331,10 +426,10 @@ void OtFramework::startFrameIMGUI() {
 
 
 //
-//	OtFramework::endFenderIMGUI
+//	OtFramework::endFrameIMGUI
 //
 
-void OtFramework::endFenderIMGUI() {
+void OtFramework::endFrameIMGUI() {
 	// render UI to command lists
 	ImGui::Render();
 	ImDrawData* drawData = ImGui::GetDrawData();

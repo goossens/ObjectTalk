@@ -55,5 +55,6 @@ private:
 	// buffers for rendering
 	OtVertexBuffer vertexBuffer;
 	OtIndexBuffer indexBuffer;
+	bool update = false;
 };
 

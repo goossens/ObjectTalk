@@ -12,4 +12,4 @@ add_library(etc2 STATIC ${ETC2_SOURCES})
 target_include_directories(etc2 PUBLIC ${bimg_SOURCE_DIR}/3rdparty)
 target_link_libraries(etc2 PUBLIC bx)
 
-set_target_properties(etc2 PROPERTIES FOLDER "deps/bimg-3rdparty")
+set_target_properties(etc2 PROPERTIES FOLDER "deps/bimg")

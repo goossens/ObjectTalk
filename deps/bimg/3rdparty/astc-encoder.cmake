@@ -14,4 +14,4 @@ list(REMOVE_ITEM ASTC_ENCODER_SOURCES ${bimg_SOURCE_DIR}/3rdparty/astc-encoder/s
 add_library(astc-encoder STATIC ${ASTC_ENCODER_SOURCES})
 target_include_directories(astc-encoder PUBLIC ${bimg_SOURCE_DIR}/3rdparty/astc-encoder/include)
 
-set_target_properties(astc-encoder PROPERTIES FOLDER "deps/bimg-3rdparty")
+set_target_properties(astc-encoder PROPERTIES FOLDER "deps/bimg")

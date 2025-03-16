@@ -14,6 +14,7 @@
 
 #include <cstdint>
 #include <cmath>
+#include <memory>
 #include <string>
 
 #include "OtLibuv.h"
@@ -34,7 +35,7 @@ public:
 	void create(int size, bool mip, int layers, int format, uint64_t flags);
 
 	// load cubemap from the specified file
-	void load(const std::string& path);
+	void load(const std::string& path, bool async=false);
 
 	// clear the resources
 	inline void clear() { cubemap.clear(); }
@@ -80,18 +81,23 @@ private:
 	int format;
 	int version = 0;
 
-	// temporary handles (in case we dynamically create a cubemap)
-	uv_async_t* hdrConversionHandle = nullptr;
+	// temporary variable for async loading from files
+	uv_async_t* asyncHandle = nullptr;
+
+	std::shared_ptr<OtImage> tmpImages[6];
+
 	OtBgfxHandle<bgfx::TextureHandle> tmpTexture;
 	OtBgfxHandle<bgfx::FrameBufferHandle> framebuffers[6];
 	OtSampler remapSampler{"s_equirectangularMap"};
 	OtShaderProgram reprojectShader{"OtHdrReprojectVS", "OtHdrReprojectFS"};
 
 	// specific cubemap loaders
-	void loadJSON(const std::string& path);
-	void loadCubemapImage(const std::string& path);
-	void loadHdrImage(const std::string& path);
+	void loadJSON(const std::string& path, bool async);
+	void loadCubemapImage(const std::string& path, bool async);
+	void loadHdrImage(const std::string& path, bool async);
 
-	// render the cubemap from an HDR image
-	void renderCubemap();
+	// local support functions
+	void createCubemapFromSides();
+	void createCubemapFromImage();
+	void createCubemapFromHDR();
 };

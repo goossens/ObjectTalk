@@ -11,4 +11,4 @@ file(GLOB_RECURSE TINYEXR_SOURCES
 add_library(tinyexr STATIC ${TINYEXR_SOURCES})
 target_include_directories(tinyexr PUBLIC ${bimg_SOURCE_DIR}/3rdparty ${bimg_SOURCE_DIR}/3rdparty/tinyexr/deps/miniz)
 
-set_target_properties(tinyexr PROPERTIES FOLDER "deps/bimg-3rdparty")
+set_target_properties(tinyexr PROPERTIES FOLDER "deps/bimg")

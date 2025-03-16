@@ -34,9 +34,7 @@
 #include "OtLibuv.h"
 #include "OtLog.h"
 #include "OtMeasure.h"
-#include "OtModule.h"
 #include "OtStderrMultiplexer.h"
-#include "OtVM.h"
 
 #include "OtAnimator.h"
 #include "OtAssetManager.h"
@@ -50,29 +48,8 @@
 //	Globals
 //
 
-std::vector<std::string> OtFramework::filesToOpen;
 static std::vector<std::function<void()>> oneTimers;
 static std::mutex oneTimersLock;
-
-
-//
-//	OtFramework::initialize
-//
-
-void OtFramework::initialize() {
-	// initialize window library
-	initGLFW();
-}
-
-
-//
-//	OtFramework::terminate
-//
-
-void OtFramework::terminate() {
-	// close window library
-	endGLFW();
-}
 
 
 //
@@ -80,127 +57,87 @@ void OtFramework::terminate() {
 //
 
 void OtFramework::run(OtFrameworkApp* targetApp) {
-	// remember the app
+	// save the app reference
 	app = targetApp;
 
-	// the framework runs in two threads:
-	// 1. the main thread handles the rendering and window events (as required by most operating systems)
-	// 2. the second thread runs the application logic as well as the asynchronous libuv events
-	running = true;
-	initRenderThreadBGFX();
+	// initialize graphics libraries
+	initSDL();
+	initBGFX();
+	initIMGUI();
 
-	// start the second thread
-	std::thread thread([this]() {
-		this->runThread2();
-		return 0;
+	// start the asset manager
+	OtAssetManager::start();
+
+	// listen for stop events on the message bus
+	OtMessageBus::listen([this](const std::string& message) {
+		if (message == "stop") {
+			stop();
+		}
 	});
 
-	// main loop to handle window events
-	while (runningGLFW()) {
-		renderBGFX();
-		eventsGLFW();
-	}
+	// let app perform its own setup
+	app->onSetup();
 
-	// wait for second thread to finish
-	running = false;
-	endRenderThreadBGFX();
-	thread.join();
-}
+	// run app until we are told to stop
+	running = true;
 
+	while (running) {
+		// process all OS events
+		eventsSDL();
 
-//
-//	OtFramework::runThread2
-//
+		// start new frame
+		startFrameBGFX();
+		startFrameIMGUI();
 
-void OtFramework::runThread2() {
-	try {
-		// initialize graphics libraries
-		initApiThreadBGFX();
-		initIMGUI();
+		// time measurement
+		OtMeasureStopWatch stopwatch;
 
-		// start the asset manager
-		OtAssetManager::start();
+		// process all messages on the bus
+		OtMessageBus::process();
 
-		// listen for stop events on the message bus
-		OtMessageBus::listen([this](const std::string& message) {
-			if (message == "stop") {
-				stop();
-			}
-		});
+		// run all animations
+		OtAnimator::update();
 
-		// let app perform its own setup
-		app->onSetup();
+		// reset view ID
+		OtPassReset();
 
-		// run this thread until we are told to stop
-		while (running) {
-			// start new frame
-			startFrameBGFX();
-			startFrameIMGUI();
+		// handle libuv events
+		// this is done at this point so asyncronous callbacks
+		// can take part in the rendering process and use the GPU
+		uv_run(uv_default_loop(), UV_RUN_NOWAIT);
 
-			// time measurement
-			OtMeasureStopWatch stopwatch;
+		// let app render a frame
+		app->onRender();
 
-			// process all messages on the bus
-			OtMessageBus::process();
+		// calculate CPU time
+		cpuTime = stopwatch.elapsed();
 
-			// run all animations
-			OtAnimator::update();
-
-			// reset view ID
-			OtPassReset();
-
-			// handle libuv events
-			// this is done at this point so that asyncronous callbacks
-			// can take part in the rendering process and use the GPU
-			uv_run(uv_default_loop(), UV_RUN_NOWAIT);
-
-			// let app render a frame
-			app->onRender();
-
-			// calculate CPU time
-			cpuTime = stopwatch.elapsed();
-
-			// show profiler (if required)
-			if (profiler) {
-				renderProfiler();
-			}
-
-			// put results on screen
-			endFenderIMGUI();
-			endFrameBGFX();
+		// show profiler (if required)
+		if (profiler) {
+			renderProfiler();
 		}
 
-		// tell app we're done
-		app->onTerminate();
-
-
-		// clear all language releated singletons that might cache objects
-		// this is to ensure any UI resources stored in those objects are released now
-		OtVM::clear();
-		OtModuleClass::clear();
-
-		// clear the message bus
-		OtMessageBus::clear();
-
-		// call exit callbacks
-		OtFrameworkAtExit::run();
-
-		// stop the asset manager
-		OtAssetManager::stop();
-
-		// terminate libraries
-		endIMGUI();
-		endApiThreadBGFX();
-
-	} catch (OtException& e) {
-		// send exception back to IDE (if required)
-		if (OtConfig::inSubprocessMode()) {
-			OtStderrMultiplexer::multiplex(e);
-		}
-
-		// output human readable text and exit program
-		OtLogFatal("Error: {}", e.what());
+		// put results on screen
+		endFrameIMGUI();
+		endFrameBGFX();
 	}
+
+	// tell app we're done
+	app->onTerminate();
+
+	// clear the message bus
+	OtMessageBus::clear();
+
+	// call exit callbacks
+	OtFrameworkAtExit::run();
+
+	// stop the asset manager
+	OtAssetManager::stop();
+
+	// terminate libraries
+	endIMGUI();
+	endBGFX();
+	endSDL();
 }
 
 
@@ -209,8 +146,7 @@ void OtFramework::runThread2() {
 //
 
 void OtFramework::stop() {
-	// stopping the framework is realized by closing the app's window
-	stopGLFW();
+	running = false;
 }
 
 

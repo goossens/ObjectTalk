@@ -21,8 +21,8 @@
 
 OtAssetBase::State OtCubeMapAsset::load() {
 	try {
-		// try to load the cubemap
-		cubemap.load(path);
+		// try to load the cubemap asynchronously
+		cubemap.load(path, true);
 
 		// see if the cubemap needs postprocessing (in which case it's not ready yet)
 		if (cubemap.isValid()) {
@@ -39,6 +39,7 @@ OtAssetBase::State OtCubeMapAsset::load() {
 				// is post-processing done?
 				if (asset->cubemap.isValid()) {
 					// yes, it is
+					asset->state = State::ready;
 					asset->notify();
 
 					// cleanup

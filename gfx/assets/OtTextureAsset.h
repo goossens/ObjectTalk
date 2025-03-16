@@ -40,4 +40,7 @@ protected:
 private:
 	// the actual texture
 	OtTexture texture;
+
+	// async event handler
+	uv_async_t* asyncHandle = nullptr;
 };

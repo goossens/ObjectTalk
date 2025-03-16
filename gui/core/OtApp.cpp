@@ -85,9 +85,7 @@ void OtAppClass::onTerminate() {
 
 void OtAppClass::run() {
 	OtFramework framework;
-	framework.initialize();
 	framework.run(this);
-	framework.terminate();
 }
 
 

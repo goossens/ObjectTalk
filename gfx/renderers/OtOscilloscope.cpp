@@ -279,7 +279,7 @@ void OtOscilloscope::render(OtFrameBuffer& framebuffer) {
 				*p++ = 0xff;
 				*p++ = 0xff;
 				*p++ = 0xff;
-				auto distance = std::min(1.0, std::sqrt(static_cast<double>(x * x + y * y) / static_cast<double>(halfBrushSize)));
+				auto distance = std::min(1.0, std::sqrt(static_cast<double>(x * x + y * y)) / static_cast<double>(halfBrushSize));
 				*p++ = static_cast<uint8_t>(std::clamp(std::pow(16.0, -2.0 * distance), 0.0, 1.0) * 255.0);
 			}
 		}

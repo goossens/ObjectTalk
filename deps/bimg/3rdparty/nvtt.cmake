@@ -21,4 +21,4 @@ add_library(nvtt STATIC ${NVTT_SOURCES})
 target_include_directories(nvtt PUBLIC ${bimg_SOURCE_DIR}/3rdparty ${bimg_SOURCE_DIR}/3rdparty/nvtt)
 target_link_libraries(nvtt PUBLIC bx)
 
-set_target_properties(nvtt PROPERTIES FOLDER "deps/bimg-3rdparty")
+set_target_properties(nvtt PROPERTIES FOLDER "deps/bimg")

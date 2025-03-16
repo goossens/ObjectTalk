@@ -14,7 +14,6 @@
 #include <string>
 
 #include "bgfx/platform.h"
-#include "bx/timer.h"
 #include "imgui.h"
 
 #include "OtException.h"
@@ -64,19 +63,10 @@ static BgfxCallback callbacks;
 
 
 //
-//	OtFramework::initRenderThreadBGFX()
+//	OtFramework::initBGFX
 //
 
-void OtFramework::initRenderThreadBGFX() {
-	bgfx::renderFrame();
-}
-
-
-//
-//	OtFramework::initApiThreadBGFX
-//
-
-void OtFramework::initApiThreadBGFX() {
+void OtFramework::initBGFX() {
 	// initialize bgfx
 	bgfx::Init init;
 
@@ -86,9 +76,6 @@ void OtFramework::initApiThreadBGFX() {
 #elif OT_GPU_DIRECT3D
 	init.type = bgfx::RendererType::Direct3D11;
 
-#elif OT_GPU_OPENGL
-	init.type = bgfx::RendererType::OpenGL;
-
 #elif OT_GPU_VULKAN
 	init.type = bgfx::RendererType::Vulkan;
 
@@ -96,7 +83,7 @@ void OtFramework::initApiThreadBGFX() {
 	OtLogFatal("No renderer API detected in OtGpu.h");
 #endif
 
-	init.platformData.nwh = nativeDisplayHandle;
+	init.platformData.nwh = nativeWindowHandle;
 	init.platformData.ndt = nativeDisplayType;
 	init.resolution.width = width;
 	init.resolution.height = height;
@@ -107,10 +94,6 @@ void OtFramework::initApiThreadBGFX() {
 
 	// ensure this platform has the right capabilities
 	const bgfx::Caps* caps = bgfx::getCaps();
-
-	if (!(caps->supported & BGFX_CAPS_RENDERER_MULTITHREADED)) {
-		OtLogFatal("Your system/graphics card does not support multithreading");
-	}
 
 	if (!(caps->supported & BGFX_CAPS_INDEX32)) {
 		OtLogFatal("Your system/graphics card does not support 32 bit vertex indexing");
@@ -135,9 +118,6 @@ void OtFramework::initApiThreadBGFX() {
 	if (!(caps->supported & BGFX_CAPS_COMPUTE)) {
 		OtLogFatal("Your system/graphics card does not support compute shaders");
 	}
-
-	// initialize time management
-	lastTime = bx::getHPCounter();
 }
 
 
@@ -146,12 +126,12 @@ void OtFramework::initApiThreadBGFX() {
 //
 
 void OtFramework::startFrameBGFX() {
-	// get time since epoch
-	loopTime = bx::getHPCounter();
-
 	// calculate loop speed
+	loopTime = std::chrono::high_resolution_clock::now();
+
 	if (loopTime >= lastTime) {
-		loopDuration = static_cast<float>(static_cast<double>(loopTime - lastTime) / static_cast<double>(bx::getHPFrequency()) * 1000.0);
+		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(loopTime - lastTime).count();
+		loopDuration = static_cast<float>(microseconds) / 1000.0f;
 
 	} else {
 		loopDuration = 1.0f / 60.0f * 1000.0f;
@@ -204,8 +184,6 @@ void OtFramework::renderProfiler() {
 	ImGui::Text("Framerate:"); ImGui::SameLine(labelWith); ImGui::Text("%.1f", 1000.0f / loopDuration);
 	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.2f", std::abs(cpuTime - static_cast<float>(stats->waitSubmit) * toMsCpu));
 	ImGui::Text("GPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.2f", static_cast<float>((stats->gpuTimeEnd - stats->gpuTimeBegin)) * toMsGpu);
-	ImGui::Text("Wait render [ms]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", static_cast<float>(stats->waitRender) * toMsCpu);
-	ImGui::Text("Wait submit [ms]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.1f", static_cast<float>(stats->waitSubmit) * toMsCpu);
 	ImGui::Text("Backbuffer width:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->width);
 	ImGui::Text("Backbuffer height:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->height);
 	ImGui::Text("Anti-aliasing:"); ImGui::SameLine(labelWith); ImGui::Text("%d", antiAliasing);
@@ -239,29 +217,10 @@ void OtFramework::endFrameBGFX() {
 
 
 //
-//	OtFramework::renderBGFX
+//	OtFramework::endBGFX
 //
 
-void OtFramework::renderBGFX() {
-	bgfx::renderFrame();
-}
-
-
-//
-//	OtFramework::endApiThreadBGFX
-//
-
-void OtFramework::endApiThreadBGFX() {
+void OtFramework::endBGFX() {
 	// shutdown BGFX
 	bgfx::shutdown();
-}
-
-
-//
-//	OtFramework::endRenderThreadBGFX
-//
-
-void OtFramework::endRenderThreadBGFX() {
-	while (bgfx::renderFrame() != bgfx::RenderFrame::NoContext) {
-	}
 }

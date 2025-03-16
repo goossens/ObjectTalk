@@ -11,4 +11,4 @@ file(GLOB PVRTC_SOURCES
 add_library( pvrtc STATIC ${PVRTC_SOURCES})
 target_include_directories(pvrtc PUBLIC ${bimg_SOURCE_DIR}/3rdparty)
 
-set_target_properties(pvrtc PROPERTIES FOLDER "deps/bimg-3rdparty")
+set_target_properties(pvrtc PROPERTIES FOLDER "deps/bimg")

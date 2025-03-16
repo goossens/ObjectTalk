@@ -151,7 +151,7 @@
             <p>
               ObjectTalk currently runs on MacOS, Linux and Windows. In general,
               the main development platform is MacOS and typically the latest
-              version is used. For Linux, Ubuntu 22.04 is used and on Billy
+              version is used. For Linux, Ubuntu 24.04 is used and on Billy
               boxes, Windows 11. The Github continuous integration tasks also
               use the latest versions of these operating systems. For those that
               use other Linux distributions, it is likely that ObjectTalk will
@@ -249,7 +249,7 @@
               only be compiled in when the host operating system provided the
               required GUI libraries. The foundation of this framework is
               provided by a number of open source cross-platform libraries.
-              <a href="https://www.glfw.org">GLFW</a>
+              <a href="https://github.com/libsdl-org/SDL">SDL3</a>
               is used as an system independent abstraction for windows and
               user/system interactions.
               <a href="https://github.com/bkaradzic/bgfx">BGFX</a> is used as a
@@ -271,46 +271,134 @@
               approach was implemented.
             </p>
             <p>
-              Today, the framework uses an Entity Component System (ECS) as an
-              architectural pattern to represent user interfaces, 2D (game)
-              boards and 3D (game) scenes. The Integrated Development
-              Environment (IDE), which is explained later, provides editors to
-              manipulates ECS objects. By doing this, the ObjectTalk language is
-              no longer used to construct visual objects but it is used for
-              runtime logic and interaction. For those old enough to remember
-              the Model-View-Controller architectural pattern, the model is
-              expressed in the ECS, the view is provided internally by the
-              ObjectTalk ecosystem and the controller is written in ObjectTalk.
+              Today, the framework uses a variety of technics. A purely
+              ObjectTalk driven approach is still available to implement simple
+              GUIs or 2D games. For 3D scenes, an Entity Component System (ECS)
+              as an architectural pattern to represent the elements of the
+              scene. The IDE provides a visual editor for ECS data which is easy
+              to use. To make 3D scenes scriptable, a basic ObjetcTalk scripting
+              component is available.
             </p>
-            <p><strong>GUI Widgets</strong></p>
+            <p><strong>GUI Framework</strong></p>
             <p>
               ObjectTalk has a rich set of platform independent widgets that can
-              be used to create user interfaces and apps.
+              be used to create user interfaces and apps. In the included
+              examples, the gui, arcade and pacman folders contain sample
+              scripts to showcase the power of this framework.
             </p>
-            <p><strong>2D Boards</strong></p>
+            <p><strong>Nodes Engine</strong></p>
             <p>
-              ObjectTalk has a rich set of 2D components that can be used to
-              create 2D billboards or board games.
+              Many years ago, I developed a graphical node-based editor to
+              configure computer I/O systems complete with stream processing and
+              protocol conversion. This worked really well and it allowed
+              non-programmers to assist during development, maintenance and
+              operations. Once I played with Blender's nodes for geometry and
+              shaders, I thought it was a good idea to also add nodes to
+              ObjectTalk. Please keep in mind though that becoming a Blender
+              clone is not one of the ambitions of this project.
+            </p>
+            <p>
+              Each node really feels like an object instance and drawing
+              connections between them is akin to visual programming. Today, in
+              ObjectTalk, the IDE has an node editor that allows you to setup
+              nodes and connect them into a graph. These graphs are
+              automatically reevaluated when values change. The examples folder
+              contains image processing chains and nodes are used in the scene
+              examples to process images or create geometry. ObjectTalk already
+              has over 50 nodes already and many will follow depending on my
+              needs.
             </p>
             <p><strong>3D Scenes</strong></p>
             <p>
-              ObjectTalk has a rich set of 3D components that can be used to
-              create pretty 3D environments or games. Modern graphics techniques
-              like Physically Based rendering (PBR), deferred and forward
-              rendering, High Dynamic Range (HDR) pipelines, Screen-Space
-              Ambient Occlusion (SSAO), and post-processing filter like bloom,
-              depth-of-field, lens flare, gamma correction and brightness are
-              all available.
+              As mentioned above, 3D scenes are based on an Entity Component
+              System (ECS) that allows you to define entities (objects in the
+              real world) and associate a variety of components with them that
+              offer functionality.
+            </p>
+            <p>
+              The 3D scene ECS also has nodes and script components to make the
+              whole thing more dynamic. In the examples folder, you'll find
+              automatically spinning cubes based on timers and an earth rotating
+              based on mouse movements. Both of these a driven by script
+              components. The jungle and island examples use nodes to
+              procedurally create terrain and asset instances.
+            </p>
+            <p>
+              To round it all out, modern engine features like deferred
+              rendering, Physically Based Rendering (PBR), particle systems,
+              Image Based Lighting (IBL), Cascaded Shadow Maps (CSMs) and post
+              processing with fog, Bloom, God Rays, Fast Approximate
+              Anti-Aliasing (FXAA) and Tone Mapping are also available.
             </p>
             <p><strong>Integrated Development Environment (IDE)</strong></p>
             <p>
               To top it all off, ObjectTalk comes with its own IDE to edit
-              ObjectTalk scripts, GUIs, boards and scenes. The IDE runs in a
-              single window (with tabs) and has full undo/redo/cut/copy/paste
-              capabilities for all content types. From the IDE, script, GUIs,
-              boards and scenes can be validated and run. Errors are highlighted
-              inline making it easy and fast to finish a project.
+              ObjectTalk scripts, scenes and nodes. The IDE runs in a single
+              window (with tabs) and has full undo/redo/cut/copy/paste
+              capabilities for all content types. From the IDE, script, scenes
+              and nodes can be validated and run. Errors are highlighted inline
+              making it easy and fast to finish a project. It includes the
+              following editors:
             </p>
+            <ul>
+              <li>
+                <p><strong>ObjectTalk script editor</strong></p>
+                <ul>
+                  <li>
+                    This editor provides a powerful syntax highlighting
+                    capability modeled after a subset of Visual Studio Code.
+                  </li>
+                  <li>
+                    The editor has full undo capabilities and works with UTF-8
+                    encoded text.
+                  </li>
+                  <li>
+                    The editor can launch ObjectTalk scripts and has a console
+                    for output and highlighting for errors.
+                  </li>
+                  <li>A visual debugger is also available.</li>
+                </ul>
+              </li>
+              <li>
+                <p><strong>Node editor</strong></p>
+                <ul>
+                  <li>This editor allows the creation of node graphs.</li>
+                  <li>The editor has full undo capabilities.</li>
+                  <li>
+                    The editor automatically evaluates graphs so it can be used
+                    for realtime visual programming (e.g. image processing or
+                    asset generation).
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <p><strong>Scene editor</strong></p>
+                <ul>
+                  <li>
+                    This editor allows the creation and configuration of
+                    entities and components.
+                  </li>
+                  <li>
+                    Entities are stored in trees making it easy to create entity
+                    hierarchies.
+                  </li>
+                  <li>The editor has full undo capabilities.</li>
+                  <li>
+                    Scenes can be run directly from the IDE to ensures node and
+                    script components function properly.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <p><strong>Miscellaneous editors</strong></p>
+                <ul>
+                  <li>
+                    The IDE is also capable of editing pure text, JSON and
+                    Markdown files (complete with syntax highlighting).
+                  </li>
+                </ul>
+              </li>
+            </ul>
           </div>
           <div id="runtime">
             <h1 class="pb-2">Runtime Architecture</h1>
@@ -342,7 +430,7 @@
             <p>
               In graphics mode, the starting point can be a script or a JSON
               file that contains all the information detailing the structure and
-              capabilities of a board, scene or node-based processing. The JSON
+              capabilities of a GUI, scene or node-based processing. The JSON
               file can refer to external assets such as images, sprites or
               models and can also refer to ObjectTalk scripts that act as
               controllers in the created graphical world.
@@ -350,27 +438,20 @@
             <p>
               The required JSON file can be constructed by hand but this is not
               recommended. The provided IDE has dedicated editors for all the
-              graphical Entity Component System (ECS) JSON files.
+              graphical Entity Component System (ECS) and node-based JSON files.
             </p>
             <p>
               In graphical mode a number of threads are used to run the
               application which might be slightly different based on host
               operating system. The main thread will be used as the windowing
               and rendering thread. This thread interacts with the native
-              windows system and communicates with the GPU. It might be more
-              intuitive to make this a secondary thread but most operating
-              systems require that these tasks are execute from the primary or
-              startup thread.
+              windows system and communicates with the GPU. it is also used to
+              run the application, do most of the CPU work and run the event
+              loop. The ObjectTalk callbacks will also run in this thread.
             </p>
             <p>
-              A second thread will therefore be used to run the application, do
-              most of the CPU work and run the event loop. The ObjectTalk
-              callbacks will also run in this thread.
-            </p>
-            <p>
-              The graphical framework automatically and transparently connects
-              the main (graphical) thread with the application or scripts
-              thread.
+              Additional worker threads might be spawned to do things like asset
+              loading or heavier computations.
             </p>
             <p><strong>Integrate Development Environment (IDE) Mode</strong></p>
             <p><img src="img/ide-mode.png" alt="IDE Mode" /></p>
@@ -380,8 +461,8 @@
               graphics mode. When the IDE runs a script or graphics application,
               a subprocess is spawned in the applicable mode. Bi-directional
               Inter Process Communication (IPC) is setup to allow the IDE to
-              communicate with the ObjectTalk script, GUI, board, scene or
-              node-based apps.
+              communicate with the ObjectTalk script, GUI, scene or node-based
+              apps. This is how the visual debugger is implemented.
             </p>
           </div>
         </div>

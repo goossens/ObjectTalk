@@ -34,9 +34,8 @@ public:
 	// component name
 	static constexpr char const* name = "Sky";
 
-	// get the direction to and from the sun
+	// get the direction to the sun
 	glm::vec3 getDirectionToSun();
-	glm::vec3 getLightDirection();
 
 	// location of the sun
 	float elevation = 25.0f;	// in degrees from XZ plane (positive is up)

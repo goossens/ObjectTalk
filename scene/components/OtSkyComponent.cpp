@@ -88,12 +88,3 @@ glm::vec3 OtSkyComponent::getDirectionToSun() {
 		std::sin(elevationRad),
 		std::cos(elevationRad) * -std::cos(azimuthRad)));
 }
-
-
-//
-//	OtSkyComponent::getLightDirection
-//
-
-glm::vec3 OtSkyComponent::getLightDirection() {
-	return -getDirectionToSun();
-}

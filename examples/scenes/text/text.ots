@@ -44,32 +44,16 @@
 					"uuid": 2146993424
 				},
 				{
-					"component": "Transform",
-					"rotation": [
-						0.0,
-						0.0,
-						0.0
-					],
-					"scale": [
-						1.0,
-						1.0,
-						1.0
-					],
-					"translation": [
-						-17.799999237060547,
-						0.41999998688697815,
-						22.200000762939453
-					]
-				},
-				{
 					"ambient": 0.05000000074505806,
+					"azimuth": 210.0,
 					"castShadow": false,
 					"color": [
 						0.6460176706314087,
 						0.5516876578330994,
 						0.5516876578330994
 					],
-					"component": "Directional Light"
+					"component": "Directional Light",
+					"elevation": 20.0
 				}
 			]
 		},
@@ -136,7 +120,7 @@
 					"path": "assets/text.otn",
 					"settings": {
 						"1210579916": {
-							"value": 3.0
+							"value": 3.4000000953674316
 						},
 						"1509100340": {
 							"value": 12.0

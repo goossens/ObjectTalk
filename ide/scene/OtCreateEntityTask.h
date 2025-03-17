@@ -28,7 +28,6 @@ public:
 		empty,
 		camera,
 		directionalLight,
-		pointLight,
 		model,
 		geometry,
 		sky,
@@ -93,10 +92,6 @@ private:
 
 			case Type::directionalLight:
 				scene->addComponent<OtDirectionalLightComponent>(entity);
-				scene->addComponent<OtTransformComponent>(entity);
-				break;
-
-			case Type::pointLight:
 				break;
 
 			case Type::model:

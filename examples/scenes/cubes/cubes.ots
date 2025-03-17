@@ -44,32 +44,16 @@
 					"uuid": 536276296
 				},
 				{
-					"component": "Transform",
-					"rotation": [
-						0.0,
-						0.0,
-						0.0
-					],
-					"scale": [
-						1.0,
-						1.0,
-						1.0
-					],
-					"translation": [
-						5.0,
-						3.0,
-						5.0
-					]
-				},
-				{
 					"ambient": 0.04899999871850014,
+					"azimuth": 160.0,
 					"castShadow": false,
 					"color": [
 						1.0,
 						1.0,
 						1.0
 					],
-					"component": "Directional Light"
+					"component": "Directional Light",
+					"elevation": 30.0
 				}
 			]
 		},
@@ -323,6 +307,7 @@
 		],
 		"fogDensity": 0.10000000149011612,
 		"fxaa": true,
-		"godrays": false
+		"godrays": false,
+		"tonemap": 3
 	}
 }

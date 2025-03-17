@@ -48,32 +48,16 @@
 					"uuid": 4124851624
 				},
 				{
-					"component": "Transform",
-					"rotation": [
-						0.0,
-						-0.0,
-						0.0
-					],
-					"scale": [
-						0.9900000095367432,
-						0.9900000095367432,
-						0.9900000095367432
-					],
-					"translation": [
-						3.0,
-						3.0,
-						3.0
-					]
-				},
-				{
 					"ambient": 0.10700000077486038,
+					"azimuth": 180.0,
 					"castShadow": false,
 					"color": [
 						1.0,
 						1.0,
 						1.0
 					],
-					"component": "Directional Light"
+					"component": "Directional Light",
+					"elevation": 10.0
 				}
 			]
 		},
@@ -305,13 +289,14 @@
 			"far": 50.0,
 			"fov": 60.0,
 			"near": 0.10000000149011612,
-			"pitch": -22.83466911315918,
+			"pitch": -22.836986541748047,
 			"position": [
 				0.0,
 				1.282647967338562,
 				3.0290920734405518
 			],
-			"yaw": 0.0
+			"speed": 3.0,
+			"yaw": -5.1575798988342285
 		},
 		"gizmo": {
 			"enabled": false,
@@ -341,6 +326,7 @@
 		],
 		"fogDensity": 0.10000000149011612,
 		"fxaa": false,
-		"godrays": false
+		"godrays": false,
+		"tonemap": 3
 	}
 }

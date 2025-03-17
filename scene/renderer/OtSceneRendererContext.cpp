@@ -44,13 +44,12 @@ void OtSceneRendererContext::initialize() {
 			iblEntity = entity;
 		}
 
-		// process directional lights
-		if (scene->hasComponent<OtDirectionalLightComponent>(entity) && scene->hasComponent<OtTransformComponent>(entity)) {
+		// process directional light
+		if (scene->hasComponent<OtDirectionalLightComponent>(entity)) {
 			auto& light = scene->getComponent<OtDirectionalLightComponent>(entity);
-			auto& transform = scene->getComponent<OtTransformComponent>(entity);
 
 			hasDirectionalLighting = true;
-			directionalLightDirection = glm::normalize(transform.getTransform()[3]);
+			directionalLightDirection = light.getDirectionToLight();;
 			directionalLightColor = light.color;
 			directionalLightAmbient = light.ambient;
 			renderDirectionalLight = true;
@@ -62,7 +61,7 @@ void OtSceneRendererContext::initialize() {
 			auto& sky = scene->getComponent<OtSkyComponent>(entity);
 
 			hasDirectionalLighting = true;
-			directionalLightDirection = glm::normalize(sky.getDirectionToSun());
+			directionalLightDirection = sky.getDirectionToSun();
 			directionalLightColor = glm::vec3(0.2f + std::clamp(sky.elevation / 10.0f, 0.0f, 0.8f));
 			directionalLightAmbient = std::clamp((sky.elevation + 6.0f) / 200.0f, 0.0f, 0.2f);
 			renderDirectionalLight = false;

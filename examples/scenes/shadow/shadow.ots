@@ -44,32 +44,16 @@
 					"uuid": 232087389
 				},
 				{
-					"component": "Transform",
-					"rotation": [
-						0.0,
-						0.0,
-						0.0
-					],
-					"scale": [
-						1.0,
-						1.0,
-						1.0
-					],
-					"translation": [
-						3.700000047683716,
-						4.5,
-						2.4000000953674316
-					]
-				},
-				{
 					"ambient": 0.05000000074505806,
+					"azimuth": 67.0,
 					"castShadow": true,
 					"color": [
 						1.0,
 						1.0,
 						1.0
 					],
-					"component": "Directional Light"
+					"component": "Directional Light",
+					"elevation": 63.099998474121094
 				}
 			]
 		},

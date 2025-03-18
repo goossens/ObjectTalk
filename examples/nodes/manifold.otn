@@ -1,0 +1,120 @@
+{
+	"links": [],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 2796377670,
+			"inputs": [
+				{
+					"id": 2501608985,
+					"name": "Width",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 3395798594,
+					"name": "Height",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 2266092105,
+					"name": "Depth",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 2773139980,
+					"name": "Center",
+					"type": "bool",
+					"value": false
+				}
+			],
+			"outputs": [
+				{
+					"id": 4199234642,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"title": "Cube Manifold",
+			"type": "Cube Manifold",
+			"x": 74.0,
+			"y": 69.0
+		},
+		{
+			"id": 860841340,
+			"inputs": [
+				{
+					"id": 1371567545,
+					"name": "Height",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 2813997730,
+					"name": "Top Radius",
+					"type": "float",
+					"value": 0.5
+				},
+				{
+					"id": 1545882542,
+					"name": "Bottom Radius",
+					"type": "float",
+					"value": 0.5
+				},
+				{
+					"id": 996482093,
+					"name": "Segments",
+					"type": "int",
+					"value": 32
+				},
+				{
+					"id": 168070081,
+					"name": "Center",
+					"type": "bool",
+					"value": false
+				}
+			],
+			"outputs": [
+				{
+					"id": 1043941645,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"title": "Cylinder Manifold",
+			"type": "Cylinder Manifold",
+			"x": 74.0,
+			"y": 429.0
+		},
+		{
+			"id": 1428306405,
+			"inputs": [
+				{
+					"id": 1054675271,
+					"name": "Radius",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 521255553,
+					"name": "Segments",
+					"type": "int",
+					"value": 32
+				}
+			],
+			"outputs": [
+				{
+					"id": 504030413,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"title": "Sphere Manifold",
+			"type": "Sphere Manifold",
+			"x": 74.0,
+			"y": 273.0
+		}
+	]
+}

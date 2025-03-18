@@ -54,6 +54,10 @@ target_link_libraries(ot language argparse)
 if(OT_INCLUDE_UI)
 	target_compile_definitions(ot PRIVATE OT_INCLUDE_UI)
 	target_link_libraries(ot shaders gfx gui nodes scene physics ide)
+
+	if(APPLE)
+		target_link_options(ot PRIVATE LINKER:-no_warn_duplicate_libraries)
+	endif()
 endif()
 
 add_custom_command(TARGET ot POST_BUILD COMMAND $<$<CONFIG:release>:${CMAKE_STRIP}> ARGS ${CMAKE_BINARY_DIR}/Release/ot)

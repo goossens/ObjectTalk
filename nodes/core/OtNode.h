@@ -63,6 +63,7 @@ public:
 		transform,
 		shape,
 		geometry,
+		manifold,
 		virtualize,
 		save,
 		probe
@@ -78,6 +79,7 @@ public:
 		"Transform",
 		"Shape",
 		"Geometry",
+		"Manifold",
 		"Virtualize",
 		"Save",
 		"Probe"

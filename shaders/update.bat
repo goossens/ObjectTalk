@@ -77,6 +77,8 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f picking\OtPickingTransparentFS.glsl -o generated\picking\OtPickingTransparentFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtPickingTransparentFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f pointlights\OtPointLightsVS.glsl -o generated\pointlights\OtPointLightsVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtPointLightsVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f pointlights\OtPointLightsFS.glsl -o generated\pointlights\OtPointLightsFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtPointLightsFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f preview\OtPreviewVS.glsl -o generated\preview\OtPreviewVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtPreviewVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f preview\OtPreviewFS.glsl -o generated\preview\OtPreviewFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtPreviewFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow\OtShadowInstancingVS.glsl -o generated\shadow\OtShadowInstancingVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtShadowInstancingVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow\OtShadowVS.glsl -o generated\shadow\OtShadowVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtShadowVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f shadow\OtShadowOpaqueFS.glsl -o generated\shadow\OtShadowOpaqueFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtShadowOpaqueFS_dx11

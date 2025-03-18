@@ -49,7 +49,7 @@ void OtSceneRendererContext::initialize() {
 			auto& light = scene->getComponent<OtDirectionalLightComponent>(entity);
 
 			hasDirectionalLighting = true;
-			directionalLightDirection = light.getDirectionToLight();;
+			directionalLightDirection = light.getDirectionToLight();
 			directionalLightColor = light.color;
 			directionalLightAmbient = light.ambient;
 			renderDirectionalLight = true;

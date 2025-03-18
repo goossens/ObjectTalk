@@ -224,6 +224,12 @@
 #include "generated/pointlights/OtPointLightsFS_mtl.h"
 #include "generated/pointlights/OtPointLightsFS_spv.h"
 #include "generated/pointlights/OtPointLightsFS_dx11.h"
+#include "generated/preview/OtPreviewVS_mtl.h"
+#include "generated/preview/OtPreviewVS_spv.h"
+#include "generated/preview/OtPreviewVS_dx11.h"
+#include "generated/preview/OtPreviewFS_mtl.h"
+#include "generated/preview/OtPreviewFS_spv.h"
+#include "generated/preview/OtPreviewFS_dx11.h"
 #include "generated/shadow/OtShadowInstancingVS_mtl.h"
 #include "generated/shadow/OtShadowInstancingVS_spv.h"
 #include "generated/shadow/OtShadowInstancingVS_dx11.h"
@@ -407,6 +413,10 @@ static const uint8_t OtPointLightsVS_glsl[1] = {0};
 static const uint8_t OtPointLightsVS_essl[1] = {0};
 static const uint8_t OtPointLightsFS_glsl[1] = {0};
 static const uint8_t OtPointLightsFS_essl[1] = {0};
+static const uint8_t OtPreviewVS_glsl[1] = {0};
+static const uint8_t OtPreviewVS_essl[1] = {0};
+static const uint8_t OtPreviewFS_glsl[1] = {0};
+static const uint8_t OtPreviewFS_essl[1] = {0};
 static const uint8_t OtShadowInstancingVS_glsl[1] = {0};
 static const uint8_t OtShadowInstancingVS_essl[1] = {0};
 static const uint8_t OtShadowVS_glsl[1] = {0};
@@ -504,6 +514,8 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtPickingTransparentFS),
 	BGFX_EMBEDDED_SHADER(OtPointLightsVS),
 	BGFX_EMBEDDED_SHADER(OtPointLightsFS),
+	BGFX_EMBEDDED_SHADER(OtPreviewVS),
+	BGFX_EMBEDDED_SHADER(OtPreviewFS),
 	BGFX_EMBEDDED_SHADER(OtShadowInstancingVS),
 	BGFX_EMBEDDED_SHADER(OtShadowVS),
 	BGFX_EMBEDDED_SHADER(OtShadowOpaqueFS),

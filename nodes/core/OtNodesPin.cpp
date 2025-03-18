@@ -185,4 +185,5 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtImage& /* value */) { retur
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtTexture& /* value */) { return nullptr; }
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtShape& /* value */) { return nullptr; }
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtGeometry& /* value */) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtManifold& /* value */) { return nullptr; }
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtInstances& /* value */) { return nullptr; }

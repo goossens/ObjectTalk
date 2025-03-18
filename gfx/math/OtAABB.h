@@ -47,6 +47,9 @@ public:
 	inline glm::vec3& getMin() { return minp; }
 	inline glm::vec3& getMax() { return maxp; }
 
+	inline glm::vec3 getCenter() { return (minp + maxp) / 2.0f; }
+	inline float getRadius() { return glm::length(minp - getCenter()); }
+
 	// transform bounding box
 	OtAABB transform(const glm::mat4& matrix);
 

@@ -51,6 +51,7 @@ public:
 	// type access
 	inline void setType(OtType t) { type = t; }
 	inline OtType getType() { return type; }
+	inline std::string getTypeName() { return type->getName(); }
 
 	// see if object "is kind of"
 	inline bool isKindOf(const std::string& className) { return type->isKindOf(className); }

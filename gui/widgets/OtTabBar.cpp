@@ -13,6 +13,7 @@
 
 #include "OtLog.h"
 
+#include "OtTab.h"
 #include "OtTabBar.h"
 
 
@@ -21,8 +22,8 @@
 //
 
 void OtTabBarClass::validateChild(OtWidget child) {
-	if (!child->isKindOf("Tab")) {
-		OtLogError("A [TabBar] can only have [Tab]s as children, not [{}]", child->getType()->getName());
+	if (!child.isKindOf<OtTabClass>()) {
+		OtLogError("A [TabBar] can only have [Tab]s as children, not [{}]", child.getTypeName());
 	}
 }
 

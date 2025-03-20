@@ -35,7 +35,7 @@ public:
 	OtMemberReferenceClass(OtObject o, OtID m) : object(o), member(m) {}
 
 	// debugging support
-	inline std::string describe() override { return object->getType()->getName() + " " + std::string(OtIdentifier::name(member)); }
+	inline std::string describe() override { return object.getTypeName() + " " + std::string(OtIdentifier::name(member)); }
 
 	// (de)reference functions
 	inline OtObject deref() { return resolveMember(object, member); }

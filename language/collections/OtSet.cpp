@@ -174,8 +174,8 @@ OtObject OtSetClass::clone() {
 //
 
 OtObject OtSetClass::merge(OtObject object) {
-	if (!object->isKindOf("Set")) {
-		OtLogError("Set merge expects another [Set] instance, not a [{}]", object->getType()->getName());
+	if (!object.isKindOf<OtSetClass>()) {
+		OtLogError("Set merge expects another [Set] instance, not a [{}]", object.getTypeName());
 	}
 
 	OtSet result = OtSet::create();
@@ -233,7 +233,7 @@ OtObject OtSetClass::intersectWith(OtObject object) {
 	OtSet op = object;
 
 	if (!op) {
-		OtLogError("Set intersect method expects another [Set] instance, not a [{}]", object->getType()->getName());
+		OtLogError("Set intersect method expects another [Set] instance, not a [{}]", object.getTypeName());
 	}
 
 	OtSet result = OtSet::create();
@@ -256,7 +256,7 @@ OtObject OtSetClass::diffFrom(OtObject object) {
 	OtSet op = object;
 
 	if (!op) {
-		OtLogError("Set difference expects another [Set] instance, not a [{}]", object->getType()->getName());
+		OtLogError("Set difference expects another [Set] instance, not a [{}]", object.getTypeName());
 	}
 
 	OtSet result = OtSet::create();
@@ -282,8 +282,8 @@ OtObject OtSetClass::diffFrom(OtObject object) {
 //
 
 OtObject OtSetClass::unionWith(OtObject object) {
-	if (!object->isKindOf("Set")) {
-		OtLogError("Set union expects another [Set] instance, not a [{}]", object->getType()->getName());
+	if (!object.isKindOf<OtSetClass>()) {
+		OtLogError("Set union expects another [Set] instance, not a [{}]", object.getTypeName());
 	}
 
 	OtSet result = OtSet::create();
@@ -310,7 +310,7 @@ OtObject OtSetClass::subtractFrom(OtObject object) {
 	OtSet op = object;
 
 	if (!op) {
-		OtLogError("Set subtract expects another [Set] instance, not a [{}]", object->getType()->getName());
+		OtLogError("Set subtract expects another [Set] instance, not a [{}]", object.getTypeName());
 	}
 
 	OtSet result = OtSet::create();

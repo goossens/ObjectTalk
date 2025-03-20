@@ -114,7 +114,7 @@ void OtDebugState::deserialize(const std::string& string) {
 //
 
 void OtDebugState::addObject(std::vector<Variable>& list, const std::string_view& name, OtObject object) {
-	auto& variable = list.emplace_back(name, object->getType()->getName(), object->describe());
+	auto& variable = list.emplace_back(name, object.getTypeName(), object->describe());
 
 	if (object->hasMembers()) {
 		object->eachMember([this, &variable](OtID id, OtObject memberObject) {
@@ -122,7 +122,7 @@ void OtDebugState::addObject(std::vector<Variable>& list, const std::string_view
 		});
 	}
 
-	if (object->isKindOf("Array")) {
+	if (object.isKindOf<OtArrayClass>()) {
 		auto& items = variable.members.emplace_back("_items");
 		auto array = OtArray(object)->raw();
 		size_t index = 0;
@@ -131,7 +131,7 @@ void OtDebugState::addObject(std::vector<Variable>& list, const std::string_view
 			addObject(items.members, std::to_string(index++), arrayMember);
 		}
 
-	} else if (object->isKindOf("Dict")) {
+	} else if (object.isKindOf<OtDictClass>()) {
 		auto& items = variable.members.emplace_back("_items");
 		auto dict = OtDict(object)->raw();
 
@@ -139,7 +139,7 @@ void OtDebugState::addObject(std::vector<Variable>& list, const std::string_view
 			addObject(items.members, memberName, memberObject);
 		}
 
-	} else if (object->isKindOf("Set")) {
+	} else if (object.isKindOf<OtSetClass>()) {
 		auto& items = variable.members.emplace_back("_items");
 		auto set = OtSet(object)->raw();
 		size_t index = 0;

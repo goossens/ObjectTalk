@@ -353,16 +353,6 @@ void OtFramework::eventIMGUI(SDL_Event& event) {
 			} else if (event.key.key == SDLK_F18 && event.type == SDL_EVENT_KEY_DOWN) {
 				demo = !demo;
 
-#if __APPLE__
-			} else if ((event.key.mod & SDL_KMOD_GUI) && event.key.key == SDLK_Q && event.type == SDL_EVENT_KEY_DOWN) {
-#else
-			} else if ((event.key.mod & SDL_KMOD_CTRL) && event.key.key == SDLK_Q && event.type == SDL_EVENT_KEY_DOWN) {
-#endif
-
-				if (canQuit()) {
-					stop();
-				}
-
 			} else {
 				io.AddKeyEvent(ImGuiMod_Ctrl, (event.key.mod & SDL_KMOD_CTRL) != 0);
 				io.AddKeyEvent(ImGuiMod_Shift, (event.key.mod & SDL_KMOD_SHIFT) != 0);

@@ -23,7 +23,7 @@
 void OtStaticBodyClass::init(OtObject w) {
 	// sanity check
 	if (!w.isKindOf<OtWorldClass>()) {
-		OtLogError("Expected a [World], not a [{}]", w->getType()->getName());
+		OtLogError("Expected a [World], not a [{}]", w.getTypeName());
 	}
 
 	OtWorld world = OtWorld(w);

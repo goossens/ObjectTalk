@@ -14,6 +14,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <string>
 #include <type_traits>
 #include <utility>
 
@@ -149,6 +150,9 @@ public:
 
 	// less than operator
 	inline bool operator<(const OtObjectPointer<T>& ref) const { return ptr < ref.ptr; }
+
+	// get type name
+	inline std::string getTypeName() { return ptr ? ptr->getType()->getName() : ""; }
 
 	// get reference count
 	inline uint64_t getReferenceCount() { return ptr ? ptr->referenceCount : 0; }

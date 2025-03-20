@@ -24,7 +24,6 @@
 #include "OtIntegerSlider.h"
 #include "OtLabel.h"
 #include "OtMarkdownWidget.h"
-#include "OtMenuBar.h"
 #include "OtPanel.h"
 #include "OtPicture.h"
 #include "OtProperties.h"
@@ -57,7 +56,6 @@ static OtModuleRegistration registration{"gui", [](OtModule module) {
 	module->set("IntegerSlider", OtClass::create(OtIntegerSliderClass::getMeta()));
 	module->set("Label", OtClass::create(OtLabelClass::getMeta()));
 	module->set("Markdown", OtClass::create(OtMarkdownWidgetClass::getMeta()));
-	module->set("MenuBar", OtClass::create(OtMenuBarClass::getMeta()));
 	module->set("Panel", OtClass::create(OtPanelClass::getMeta()));
 	module->set("Picture", OtClass::create(OtPictureClass::getMeta()));
 	module->set("Properties", OtClass::create(OtPropertiesClass::getMeta()));

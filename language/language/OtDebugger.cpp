@@ -369,7 +369,7 @@ std::string OtDebuggerClass::getVariables() {
 	}
 
 	for (auto& variable : variables) {
-		longestClassName = std::max(longestClassName, variable.second->getType()->getName().size());
+		longestClassName = std::max(longestClassName, variable.second.getTypeName().size());
 	}
 
 	// format output
@@ -377,7 +377,7 @@ std::string OtDebuggerClass::getVariables() {
 
 	for (auto& variable : variables) {
 		auto variableName = OtText::pad(variable.first, longestName + 2);
-		auto classType = variable.second->getType()->getName();
+		auto classType = variable.second.getTypeName();
 		auto className = OtText::pad(classType, longestClassName + 2);
 		auto description = variable.second->describe();
 

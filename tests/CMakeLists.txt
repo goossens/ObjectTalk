@@ -7,7 +7,7 @@
 file(GLOB_RECURSE OT_TESTS "*.ot")
 
 foreach(TEST ${OT_TESTS})
-	add_test(NAME ${TEST} COMMAND ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/ot ${TEST})
+	add_test(NAME ${TEST} COMMAND ot ${TEST})
 endforeach()
 
 add_custom_target(tests SOURCES ${OT_TESTS})

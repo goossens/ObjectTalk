@@ -188,9 +188,26 @@ void OtFramework::eventsSDL() {
 				break;
 
 			case SDL_EVENT_WINDOW_RESIZED:
-					width = event.window.data1;
-					height = event.window.data2;
-					break;
+				width = event.window.data1;
+				height = event.window.data2;
+				break;
+
+			case SDL_EVENT_KEY_DOWN: {
+#if __APPLE__
+				static SDL_Keymod modifier = SDL_KMOD_GUI;
+#else
+				static SDL_Keymod modifier = SDL_KMOD_CTRL;
+#endif
+
+				if ((event.key.mod & modifier) && event.key.key == SDLK_Q) {
+
+					if (canQuit()) {
+						stop();
+					}
+				}
+
+				break;
+			}
 		}
 
 		eventIMGUI(event);

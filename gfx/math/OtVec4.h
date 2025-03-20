@@ -134,7 +134,7 @@ struct OtValue<glm::vec4> {
 			return glm::vec4(object->operator float());
 
 		} else {
-			OtLogError("Expected a [Vec4], [Real] or [Integer], not a [{}]", object->getType()->getName());
+			OtLogError("Expected a [Vec4], [Real] or [Integer], not a [{}]", object.getTypeName());
 			return glm::vec4();
 		}
 	}

@@ -9,43 +9,42 @@
 //	Include files
 //
 
-#include <algorithm>
-
 #include "OtManifold.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtSphereManifoldNode
+//	OtUnionManifoldsNode
 //
 
-class OtSphereManifoldNode : public OtNodeClass {
+class OtUnionManifoldsNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Radius", radius);
-		addInputPin("Segments", segments);
-		addOutputPin("Manifold", manifold);
+		addInputPin("A", a);
+		addInputPin("B", b);
+		addOutputPin("Result", result);
 	}
 
 	// create the manifold
 	void onExecute() override {
-		radius = std::max(radius, 0.00000001f);
-		segments = std::max(segments, 3);
-		manifold.sphere(radius, segments);
+		if (a.isValid() && b.isValid()) {
+			result.unionManifolds(a, b);
+
+		} else {
+			result.clear();
+		}
 	}
 
-	static constexpr const char* nodeName = "Sphere Manifold";
+	static constexpr const char* nodeName = "Union Manifolds";
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::manifold;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
-	// properties
-	float radius = 1.0f;
-	int segments = 32;
-
-	OtManifold manifold;
+	OtManifold a;
+	OtManifold b;
+	OtManifold result;
 };
 
-static OtNodesFactoryRegister<OtSphereManifoldNode> registration;
+static OtNodesFactoryRegister<OtUnionManifoldsNode> registration;

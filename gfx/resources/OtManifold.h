@@ -60,6 +60,17 @@ o 'int', possible loss of data [Z:\ObjectTalk\build\vs\gfx\gfx.vcxproj]
 //	You can combined or subtract solid shapes, transform them, extrude them from 2d paths or slice 3D
 //	models back into 2D paths.
 //
+//	Another difference between Manifolds and Geometries is their coordinate system. In ObjectTalk,
+//	a classic right-handed coordinate system is used where the positive X-axis points to the right,
+//	the positive Y-axis points up, and the positive Z-axis points out of the screen towards the viewer.
+//	This is called a right-handed Y-up coordinate system. CAD programs and therefore Manifolds use a
+//	left-handed Z-up cooridinate system where the positive X-axis points to the right, the positive
+//	Y-axis points away, and the positive Z-axis points up.
+//
+//	So when creating a Manifold, it must be done in the left-handed Z-up cooridinate system. When converting
+//	to a Mesh or Geometry, this class automativally converts the vertex coordinates to the right-handed
+//	Y-up coordinate system.
+//
 //	In ObjectTalk, Manifolds are used in Nodes to interactively create models that can be rendered.
 //
 
@@ -72,13 +83,24 @@ o 'int', possible loss of data [Z:\ObjectTalk\build\vs\gfx\gfx.vcxproj]
 class OtManifold {
 public:
 	// constructors
-	OtManifold();
+	OtManifold() {}
 	OtManifold(const manifold::Manifold& m);
+
+	// clear the manifold
+	void clear();
+
+	// see if anifold is valid
+	bool isValid() { return manifold != nullptr && !manifold->IsEmpty(); }
 
 	// create primitives
 	void cube(float width, float height, float depth, bool center);
 	void cylinder(float height, float bottomRadius, float topRadius, int segments, bool center);
 	void sphere(float radius, int segments);
+
+	// combine manifolds
+	void unionManifolds(const OtManifold& a, const OtManifold& b);
+	void differenceManifolds(const OtManifold& a, const OtManifold& b);
+	void intersectManifolds(const OtManifold& a, const OtManifold& b);
 
 	// create a mesh
 	void createMesh(OtMesh& mesh);

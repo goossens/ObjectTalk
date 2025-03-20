@@ -11,9 +11,6 @@
 
 #include <algorithm>
 
-#include "imgui.h"
-#include "nlohmann/json.hpp"
-
 #include "OtManifold.h"
 
 #include "OtNodesFactory.h"

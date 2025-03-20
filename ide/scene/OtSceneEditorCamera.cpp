@@ -23,14 +23,6 @@
 
 
 //
-//	Constants
-//
-
-static constexpr float maxRotationPerSecond = 10.0f;
-static constexpr float maxZoomPerSecond = 10.0f;
-
-
-//
 //	OtSceneEditorCamera::update
 //
 

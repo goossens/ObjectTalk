@@ -18,17 +18,18 @@ uniform vec4 u_preview[4];
 // main function
 void main() {
 	// ambient
-	float ambientStrength = 0.1;
+	float ambientStrength = 0.3;
 	vec3 ambient = ambientStrength * u_lightColor;
 
 	// diffuse
+	float diffuseStrength = 0.8;
 	vec3 norm = normalize(v_normal);
 	vec3 lightDir = normalize(u_lightPos - v_position);
 	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = diff * u_lightColor;
+	vec3 diffuse = diffuseStrength * diff * u_lightColor;
 
 	// specular
-	float specularStrength = 0.5;
+	float specularStrength = 0.54;
 	vec3 viewDir = normalize(u_viewPos - v_position);
 	vec3 reflectDir = reflect(-lightDir, norm);
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);

@@ -1,5 +1,41 @@
 {
-	"links": [],
+	"links": [
+		{
+			"from": 1043941645,
+			"id": 2977608882,
+			"to": 563324433
+		},
+		{
+			"from": 4199234642,
+			"id": 2126217525,
+			"to": 3009259456
+		},
+		{
+			"from": 504030413,
+			"id": 89811019,
+			"to": 139345585
+		},
+		{
+			"from": 3099626467,
+			"id": 1082286702,
+			"to": 1201578438
+		},
+		{
+			"from": 4199234642,
+			"id": 3254880158,
+			"to": 78221710
+		},
+		{
+			"from": 504030413,
+			"id": 3746026837,
+			"to": 1507525971
+		},
+		{
+			"from": 694146000,
+			"id": 2962108657,
+			"to": 4069816819
+		}
+	],
 	"metadata": {},
 	"nodes": [
 		{
@@ -27,7 +63,7 @@
 					"id": 2773139980,
 					"name": "Center",
 					"type": "bool",
-					"value": false
+					"value": true
 				}
 			],
 			"outputs": [
@@ -55,7 +91,7 @@
 					"id": 2813997730,
 					"name": "Top Radius",
 					"type": "float",
-					"value": 0.5
+					"value": 0.25
 				},
 				{
 					"id": 1545882542,
@@ -67,7 +103,7 @@
 					"id": 996482093,
 					"name": "Segments",
 					"type": "int",
-					"value": 32
+					"value": 128
 				},
 				{
 					"id": 168070081,
@@ -95,13 +131,13 @@
 					"id": 1054675271,
 					"name": "Radius",
 					"type": "float",
-					"value": 1.0
+					"value": 0.5699999928474426
 				},
 				{
 					"id": 521255553,
 					"name": "Segments",
 					"type": "int",
-					"value": 32
+					"value": 64
 				}
 			],
 			"outputs": [
@@ -115,6 +151,103 @@
 			"type": "Sphere Manifold",
 			"x": 74.0,
 			"y": 273.0
+		},
+		{
+			"id": 3306652105,
+			"inputs": [
+				{
+					"id": 563324433,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"outputs": [],
+			"title": "Manifold Probe",
+			"type": "Manifold Probe",
+			"x": 989.0,
+			"y": 466.0
+		},
+		{
+			"id": 2736846761,
+			"inputs": [
+				{
+					"id": 3009259456,
+					"name": "A",
+					"type": "manifold"
+				},
+				{
+					"id": 139345585,
+					"name": "B",
+					"type": "manifold"
+				}
+			],
+			"outputs": [
+				{
+					"id": 3099626467,
+					"name": "Result",
+					"type": "manifold"
+				}
+			],
+			"title": "Manifold Difference",
+			"type": "Manifold Difference",
+			"x": 366.0,
+			"y": 118.0
+		},
+		{
+			"id": 245059582,
+			"inputs": [
+				{
+					"id": 1201578438,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"outputs": [],
+			"title": "Manifold Probe",
+			"type": "Manifold Probe",
+			"x": 664.0,
+			"y": 13.0
+		},
+		{
+			"id": 3622050429,
+			"inputs": [
+				{
+					"id": 78221710,
+					"name": "A",
+					"type": "manifold"
+				},
+				{
+					"id": 1507525971,
+					"name": "B",
+					"type": "manifold"
+				}
+			],
+			"outputs": [
+				{
+					"id": 694146000,
+					"name": "Result",
+					"type": "manifold"
+				}
+			],
+			"title": "Union Manifolds",
+			"type": "Union Manifolds",
+			"x": 375.0,
+			"y": 265.0
+		},
+		{
+			"id": 879112846,
+			"inputs": [
+				{
+					"id": 4069816819,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"outputs": [],
+			"title": "Manifold Probe",
+			"type": "Manifold Probe",
+			"x": 663.0,
+			"y": 275.0
 		}
 	]
 }

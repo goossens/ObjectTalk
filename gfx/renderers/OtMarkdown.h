@@ -29,7 +29,7 @@ public:
 	OtMarkdown();
 	~OtMarkdown();
 
-	// render the specified markdown
+	// render the specified markdown as an ImGui widget
 	void render(const std::string& markdown);
 
 private:

@@ -30,6 +30,7 @@ In case User Interface (UI) modules are included, we also use:
 * [Box2D](https://box2d.org) - 2D physics engine released under the [MIT license](https://opensource.org/licenses/MIT).
 * [tweeny](https://github.com/mobius3/tweeny) - animation library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [assimp](https://github.com/assimp/assimp) - to import 3D models released under a [custom license](https://github.com/assimp/assimp/blob/master/LICENSE) based on the [3-clause BSD-License license](https://opensource.org/licenses/BSD-3-Clause).
+* [Manifold](https://github.com/elalish/manifold) - a geometry library dedicated to creating and operating on manifold triangle meshes released under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 * [dtl](https://github.com/cubicdaiya/dtl) - a difference template library by [Tatsuhiko Kubo (cubicdaiya)](https://github.com/cubicdaiya) released under the [BSD License](https://opensource.org/license/bsd-3-clause).
 
 ## Algorithms
@@ -54,7 +55,7 @@ released under the [GNU General Public License, version 2](https://www.gnu.org/l
 
 * [CMake](https://cmake.org) - cross-platform family of tools designed to build, test and package software released under the [OSI-approved BSD 3-clause License](https://gitlab.kitware.com/cmake/cmake/raw/master/Copyright.txt).
 * [re2c](https://github.com/skvadrik/re2c) - a free and open-source lexer generator for C/C++, Go and Rust released under a public domain license.
-* [Gunther Rademacher](https://github.com/GuntherRademacher) - a ["RailRoad Diagram Generator"](https://github.com/GuntherRademacher/rr) which is used in the documentation to visualize the ObjectTalk grammar. The tool is released under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+* [Gunther Rademacher](https://github.com/GuntherRademacher) - a ["RailRoad Diagram Generator"](https://github.com/GuntherRademacher/rr) which is used in the documentation to visualize the ObjectTalk grammar. The tool is released under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
 ## Documentation
 

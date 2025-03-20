@@ -65,6 +65,10 @@ private:
 	float farPlane = 100.0f;
 	float speed = 3.0f;
 
+	// constants
+	static constexpr float maxRotationPerSecond = 10.0f;
+	static constexpr float maxZoomPerSecond = 10.0f;
+
 	// work properties
 	glm::vec3 forward;
 	glm::vec3 right;

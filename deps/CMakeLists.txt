@@ -7,9 +7,9 @@
 include(FetchContent)
 
 function(process package)
-	message(STATUS "=========================")
-	message(STATUS "Building ${package}")
-	message(STATUS "=========================")
+	message(STATUS "===========================")
+	message(STATUS "Configuring ${package}")
+	message(STATUS "===========================")
 	add_subdirectory(${package})
 endfunction()
 

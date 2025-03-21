@@ -12,9 +12,7 @@
 #include "OtClass.h"
 #include "OtModule.h"
 
-#include "OtVec2.h"
-#include "OtVec3.h"
-#include "OtVec4.h"
+#include "OtMathModule.h"
 
 
 //

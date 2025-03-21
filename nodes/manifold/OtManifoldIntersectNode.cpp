@@ -15,10 +15,10 @@
 
 
 //
-//	OtDiffrenceManifoldsNode
+//	OtManifoldIntersectNode
 //
 
-class OtDiffrenceManifoldsNode : public OtNodeClass {
+class OtManifoldIntersectNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
@@ -30,14 +30,14 @@ public:
 	// create the manifold
 	void onExecute() override {
 		if (a.isValid() && b.isValid()) {
-			result.differenceManifolds(a, b);
+			result = a.intersectManifolds(b);
 
 		} else {
 			result.clear();
 		}
 	}
 
-	static constexpr const char* nodeName = "Manifold Difference";
+	static constexpr const char* nodeName = "Manifold Intersect";
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::manifold;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
@@ -47,4 +47,4 @@ protected:
 	OtManifold result;
 };
 
-static OtNodesFactoryRegister<OtDiffrenceManifoldsNode> registration;
+static OtNodesFactoryRegister<OtManifoldIntersectNode> registration;

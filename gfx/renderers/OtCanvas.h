@@ -16,9 +16,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "glm/glm.hpp"
 #include "nanovg.h"
-
-#include "OtObject.h"
 
 #include "OtColorParser.h"
 #include "OtFrameBuffer.h"
@@ -28,19 +27,16 @@
 //	OtCanvas
 //
 
-class OtCanvasClass;
-using OtCanvas = OtObjectPointer<OtCanvasClass>;
-
-class OtCanvasClass : public OtObjectClass {
+class OtCanvas {
 public:
 	// constructor/destructor
-	OtCanvasClass();
-	~OtCanvasClass();
+	OtCanvas();
+	~OtCanvas();
 
 	// manipulate composite operation
 	inline void compositeOperation(int operation) { nvgGlobalCompositeOperation(context, operation); }
-	inline void compositeBlendFunc(int /* operation */, int sfactor, int dfactor) { nvgGlobalCompositeBlendFunc(context, sfactor, dfactor); }
-	inline void compositeBlendFuncSeparate(int /* operation */, int srcRGB, int dstRGB, int srcAlpha, int dstAlpha) { nvgGlobalCompositeBlendFuncSeparate(context, srcRGB, dstRGB, srcAlpha, dstAlpha); }
+	inline void compositeBlendFunc(int sfactor, int dfactor) { nvgGlobalCompositeBlendFunc(context, sfactor, dfactor); }
+	inline void compositeBlendFuncSeparate(int srcRGB, int dstRGB, int srcAlpha, int dstAlpha) { nvgGlobalCompositeBlendFuncSeparate(context, srcRGB, dstRGB, srcAlpha, dstAlpha); }
 
 	// manipulate rendering state
 	inline void save() { nvgSave(context); }
@@ -113,8 +109,8 @@ public:
 	inline float text(float x, float y, const std::string& s) { return nvgText(context, x, y, s.c_str(), nullptr); }
 	inline void textBox(float x, float y, float w, const std::string& s) { nvgTextBox(context, x, y, w, s.c_str(), nullptr); }
 
-	OtObject textSize(const std::string& string);
-	OtObject textBoxSize(const std::string& string, float w);
+	glm::vec2 textSize(const std::string& string);
+	glm::vec2 textBoxSize(const std::string& string, float w);
 
 	inline float getWidth() { return width; }
 	inline float getHeight() { return height; }
@@ -131,9 +127,6 @@ public:
 	// render canvas to framebuffer
 	void render(OtFrameBuffer& framebuffer, float scale, std::function<void()> renderer);
 
-	// get type definition
-	static OtType getMeta();
-
 private:
 	// properties
 	NVGcontext* context;
@@ -148,6 +141,4 @@ private:
 	// helper functions
 	int addPaint(const NVGpaint& paint);
 	int paintID = 1;
-
-	void drawImageStub(size_t count, OtObject* parameters);
 };

@@ -72,9 +72,8 @@ void OtManifold::sphere(float radius, int segments) {
 //	OtManifold::unionManifolds
 //
 
-void OtManifold::unionManifolds(const OtManifold& a, const OtManifold& b) {
-	manifold = std::make_shared<manifold::Manifold>(*a.manifold + *b.manifold);
-	incrementVersion();
+OtManifold OtManifold::unionManifolds(OtManifold& other) {
+	return OtManifold(*manifold + *other.manifold);
 }
 
 
@@ -82,9 +81,8 @@ void OtManifold::unionManifolds(const OtManifold& a, const OtManifold& b) {
 //	OtManifold::differenceManifolds
 //
 
-void OtManifold::differenceManifolds(const OtManifold& a, const OtManifold& b) {
-	manifold = std::make_shared<manifold::Manifold>(*a.manifold - *b.manifold);
-	incrementVersion();
+OtManifold OtManifold::differenceManifolds(OtManifold& other) {
+	return OtManifold(*manifold - *other.manifold);
 }
 
 
@@ -92,9 +90,44 @@ void OtManifold::differenceManifolds(const OtManifold& a, const OtManifold& b) {
 //	OtManifold::intersectManifolds
 //
 
-void OtManifold::intersectManifolds(const OtManifold& a, const OtManifold& b) {
-	manifold = std::make_shared<manifold::Manifold>(*a.manifold ^ *b.manifold);
-	incrementVersion();
+OtManifold OtManifold::intersectManifolds(OtManifold& other) {
+	return OtManifold(*manifold ^ *other.manifold);
+}
+
+
+//
+//	OtManifold::translate
+//
+
+OtManifold OtManifold::translate(float x, float y, float z) {
+	return OtManifold(manifold->Translate(manifold::vec3(x, y, z)));
+}
+
+
+//
+//	OtManifold::rotate
+//
+
+OtManifold OtManifold::rotate(float x, float y, float z) {
+	return OtManifold(manifold->Rotate(x, y, z));
+}
+
+
+//
+//	OtManifold::scale
+//
+
+OtManifold OtManifold::scale(float x, float y, float z) {
+	return OtManifold(manifold->Scale(manifold::vec3(x, y, z)));
+}
+
+
+//
+//	OtManifold::mirror
+//
+
+OtManifold OtManifold::mirror(float x, float y, float z) {
+	return OtManifold(manifold->Mirror(manifold::vec3(x, y, z)));
 }
 
 

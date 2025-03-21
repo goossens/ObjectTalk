@@ -20,7 +20,7 @@
 #include "OtText.h"
 #include "OtVM.h"
 
-#include "OtCanvas.h"
+#include "OtCanvasModule.h"
 #include "OtColor.h"
 #include "OtScriptAsset.h"
 
@@ -35,8 +35,8 @@
 static const char* scriptTemplate = "\
 var canvas = import(\"canvas\");\n\
 \n\
-class Renderer : canvas.Canvas {\n\
-	function render(this) {\n\
+class Generator : canvas.Canvas {\n\
+	function generate(this) {\n\
 	}\n\
 }\n\
 ";
@@ -97,12 +97,12 @@ public:
 	inline void onGenerate(OtFrameBuffer& output) override {
 		if (script.isReady() && instance && hasRenderMethod) {
 			// get access to the canvas
-			auto canvas = OtCanvas(instance);
+			auto& canvas = OtCanvasObject(instance)->getCanvas();
 
 			// render the canvas by calling the script
 			try {
-				canvas->render(output, 1.0f, [this]() {
-					OtVM::callMemberFunction(instance, renderID);
+				canvas.render(output, 1.0f, [this]() {
+					OtVM::callMemberFunction(instance, generateID);
 				});
 
 				error.clear();
@@ -117,7 +117,7 @@ public:
 		}
 	}
 
-	// gets called when canvas script is specified or changed
+	// gets called when script is specified or changed
 	inline void onScriptChange() {
 		instance = nullptr;
 		hasRenderMethod = false;
@@ -128,15 +128,15 @@ public:
 				auto path = script.getPath();
 				auto module = script->getModule();
 
-				if (!module->has(rendererID)) {
-					OtLogError("Script [{}] does not contain class [Renderer]", path);
+				if (!module->has(generatorID)) {
+					OtLogError("Script [{}] does not contain class [Generator]", path);
 				}
 
-				auto classObject = module->get(rendererID);
+				auto classObject = module->get(generatorID);
 
 				// ensure it is a class object
 				if (!classObject.isKindOf<OtClassClass>()) {
-					OtLogError("Object [Renderer] in script [{}] is not a class", path);
+					OtLogError("Object [Generator] in script [{}] is not a class", path);
 				}
 
 				// create instance of class
@@ -144,12 +144,12 @@ public:
 
 				// ensure the class is derived from Canvas
 				if (!instance.isKindOf<OtCanvasClass>()) {
-					OtLogError("Class [Renderer] in script [{}] is not derived from [Canvas]", path);
+					OtLogError("Class [Generator] in script [{}] is not derived from [Canvas]", path);
 				}
 
 				// ensure class has a render method
-				if (!instance->has(renderID)) {
-					OtLogError("Class [Renderer] in script [{}] does not have a [render] method", path);
+				if (!instance->has(generateID)) {
+					OtLogError("Class [Generator] in script [{}] does not have a [generate] method", path);
 				}
 
 				hasRenderMethod = true;
@@ -180,8 +180,8 @@ protected:
 	OtAsset<OtScriptAsset> script;
 	OtObject instance;
 
-	OtID renderID = OtIdentifier::create("render");
-	OtID rendererID = OtIdentifier::create("Renderer");
+	OtID generateID = OtIdentifier::create("generate");
+	OtID generatorID = OtIdentifier::create("Generator");
 	bool hasRenderMethod = false;
 };
 

@@ -20,8 +20,8 @@
 #include "OtText.h"
 #include "OtVM.h"
 
-#include "OtShapeModule.h"
 #include "OtScriptAsset.h"
+#include "OtManifoldModule.h"
 
 #include "OtNodesFactory.h"
 
@@ -31,24 +31,25 @@
 //
 
 static const char* scriptTemplate = "\
-var shape = import(\"shape\");\n\
+var manifold = import(\"manifold\");\n\
 \n\
-class Generator : shape.Shape {\n\
+class Generator : Object {\n\
 	function generate(this) {\n\
+		return manifold.Manifold();\n\
 	}\n\
 }\n\
 ";
 
 
 //
-//	OtShapeGeneratorNode
+//	OtManifoldGeneratorNode
 //
 
-class OtShapeGeneratorNode : public OtNodeClass {
+class OtManifoldGeneratorNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addOutputPin("Shape", shape);
+		addOutputPin("Manifold", manifold);
 		script.onChange([&]() { onScriptChange(); });
 	}
 
@@ -88,14 +89,17 @@ public:
 		script = OtAssetDeserialize(data, "path", basedir);
 	}
 
-	// execute the node by generating a new version of the shape
+	// execute the node by generating a new version of the manifold
 	inline void onExecute() override {
 		if (script.isReady() && instance && hasRenderMethod) {
 			try {
-				OtVM::callMemberFunction(instance, GenerateID);
-				shape = OtShapeFromObject(instance);
-				shape.close();
-				shape.setVersion(version++);
+				auto result = OtVM::callMemberFunction(instance, GenerateID);
+
+				if (!OtManifoldValidateObject(result)) {
+					OtLogError("[generate] method returned a [{}], not a [Manifold]", result.getTypeName());
+				}
+
+				manifold = OtManifoldFromObject(result);
 				error.clear();
 
 			} catch (OtException& e) {
@@ -103,8 +107,8 @@ public:
 			}
 
 		} else {
-			// no script available so we clear the shape
-			shape.clear();
+			// no script available so we clear the manifold
+			manifold.clear();
 		}
 	}
 
@@ -133,11 +137,6 @@ public:
 				// create instance of class
 				instance = OtClass(classObject)->instantiate();
 
-				// ensure the class is derived from Shape
-				if (!OtShapeValidateObject(instance)) {
-					OtLogError("Class [Generator] in script [{}] is not derived from [Shape]", path);
-				}
-
 				// ensure class has a render method
 				if (!instance->has(GenerateID)) {
 					OtLogError("Class [Generator] in script [{}] does not have a [generate] method", path);
@@ -163,14 +162,14 @@ public:
 		}
 	}
 
-	static constexpr const char* nodeName = "Shape Generator";
-	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::shape;
+	static constexpr const char* nodeName = "Manifold Generator";
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::manifold;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
 	OtAsset<OtScriptAsset> script;
 	OtObject instance;
-	OtShape shape;
+	OtManifold manifold;
 	int version = 1;
 
 	OtID GenerateID = OtIdentifier::create("generate");
@@ -178,4 +177,4 @@ protected:
 	bool hasRenderMethod = false;
 };
 
-static OtNodesFactoryRegister<OtShapeGeneratorNode> registration;
+static OtNodesFactoryRegister<OtManifoldGeneratorNode> registration;

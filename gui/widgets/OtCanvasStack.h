@@ -16,7 +16,7 @@
 
 #include "OtCallback.h"
 
-#include "OtCanvas.h"
+#include "OtCanvasModule.h"
 #include "OtFrameBuffer.h"
 #include "OtSampler.h"
 #include "OtShaderProgram.h"

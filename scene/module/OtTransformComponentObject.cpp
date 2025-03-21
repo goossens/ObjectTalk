@@ -11,7 +11,7 @@
 
 #include "OtFunction.h"
 
-#include "OtVec3.h"
+#include "OtMathModule.h"
 
 #include "OtTransformComponentObject.h"
 

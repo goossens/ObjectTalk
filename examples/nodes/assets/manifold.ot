@@ -1,0 +1,7 @@
+var manifold = import("manifold");
+
+class Generator : Object {
+	function generate(this) {
+		return manifold.cube(1, 1, 1, true);
+	}
+}

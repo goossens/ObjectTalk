@@ -6,13 +6,13 @@
 
 var canvas = import("canvas");
 
-class Renderer : canvas.Canvas {
+class Generator : canvas.Canvas {
 	function __init__(this) {
 		this.logo = this.loadImage(__DIR__.join("logo.png"), 0);
 		this.font = this.loadFont(__DIR__.join("roboto.ttf"));
 	}
 
-	function render(this) {
+	function generate(this) {
 		this.beginPath();
 		this.roundedRect(120, 120, 200, 200, 10);
 		this.fillColor("#ffc0ff");

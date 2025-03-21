@@ -16,8 +16,6 @@
 #include "OtReal.h"
 
 #include "OtGlm.h"
-#include "OtVec3.h"
-#include "OtVec4.h"
 
 #include "OtMaterial.h"
 

@@ -1,11 +1,6 @@
 {
 	"links": [
 		{
-			"from": 1043941645,
-			"id": 2977608882,
-			"to": 563324433
-		},
-		{
 			"from": 4199234642,
 			"id": 2126217525,
 			"to": 3009259456
@@ -34,6 +29,11 @@
 			"from": 694146000,
 			"id": 2962108657,
 			"to": 4069816819
+		},
+		{
+			"from": 1043941645,
+			"id": 2977608882,
+			"to": 563324433
 		}
 	],
 	"metadata": {},
@@ -151,6 +151,22 @@
 			"type": "Sphere Manifold",
 			"x": 74.0,
 			"y": 273.0
+		},
+		{
+			"id": 2401398816,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 4026487469,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"path": "assets/manifold.ot",
+			"title": "Manifold Generator",
+			"type": "Manifold Generator",
+			"x": 348.0,
+			"y": 620.0
 		},
 		{
 			"id": 3306652105,

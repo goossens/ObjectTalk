@@ -83,7 +83,7 @@ o 'int', possible loss of data [Z:\ObjectTalk\build\vs\gfx\gfx.vcxproj]
 class OtManifold {
 public:
 	// constructors
-	OtManifold() {}
+	OtManifold() = default;
 	OtManifold(const manifold::Manifold& m);
 
 	// clear the manifold
@@ -98,9 +98,15 @@ public:
 	void sphere(float radius, int segments);
 
 	// combine manifolds
-	void unionManifolds(const OtManifold& a, const OtManifold& b);
-	void differenceManifolds(const OtManifold& a, const OtManifold& b);
-	void intersectManifolds(const OtManifold& a, const OtManifold& b);
+	OtManifold unionManifolds(OtManifold& other);
+	OtManifold differenceManifolds(OtManifold& other);
+	OtManifold intersectManifolds(OtManifold& other);
+
+	// transform manifold
+	OtManifold translate(float x, float y, float z);
+	OtManifold rotate(float x, float y, float z);
+	OtManifold scale(float x, float y, float z);
+	OtManifold mirror(float x, float y, float z);
 
 	// create a mesh
 	void createMesh(OtMesh& mesh);

@@ -1,6 +1,6 @@
 var shape = import("shape");
 
-class Renderer : shape.Shape {
+class Generator : shape.Shape {
 	function render(this) {
 		this.moveTo(25, 25);
 		this.bezierCurveTo(25, 25, 20, 50, 0, 50);

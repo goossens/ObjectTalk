@@ -15,7 +15,7 @@
 #include "OtInteger.h"
 #include "OtModule.h"
 
-#include "OtCanvas.h"
+#include "OtCanvasModule.h"
 
 
 //

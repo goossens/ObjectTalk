@@ -9,12 +9,11 @@
 //	Include files
 //
 
-#include "imgui.h"
-
 #include "OtClass.h"
 #include "OtModule.h"
 
-#include "OtShapeObject.h"
+#include "OtShape.h"
+#include "OtShapeModule.h"
 
 
 //

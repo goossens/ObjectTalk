@@ -15,10 +15,10 @@
 
 
 //
-//	OtUnionManifoldsNode
+//	OtManifoldUnionNode
 //
 
-class OtUnionManifoldsNode : public OtNodeClass {
+class OtManifoldUnionNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
@@ -30,7 +30,7 @@ public:
 	// create the manifold
 	void onExecute() override {
 		if (a.isValid() && b.isValid()) {
-			result.unionManifolds(a, b);
+			result = a.unionManifolds(b);
 
 		} else {
 			result.clear();
@@ -47,4 +47,4 @@ protected:
 	OtManifold result;
 };
 
-static OtNodesFactoryRegister<OtUnionManifoldsNode> registration;
+static OtNodesFactoryRegister<OtManifoldUnionNode> registration;

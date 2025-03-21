@@ -84,7 +84,7 @@ void OtCanvasStackClass::deleteCanvas(int id) {
 //
 
 void OtCanvasStackClass::enableCanvas(int id) {
-	OtCanvas(findCanvas(id)->canvas)->enable();
+	OtCanvasObject(findCanvas(id)->canvas)->enable();
 }
 
 
@@ -93,7 +93,7 @@ void OtCanvasStackClass::enableCanvas(int id) {
 //
 
 void OtCanvasStackClass::disableCanvas(int id) {
-	OtCanvas(findCanvas(id)->canvas)->disable();
+	OtCanvasObject(findCanvas(id)->canvas)->disable();
 }
 
 
@@ -102,7 +102,7 @@ void OtCanvasStackClass::disableCanvas(int id) {
 //
 
 void OtCanvasStackClass::rerenderCanvas(int id) {
-	OtCanvas(findCanvas(id)->canvas)->requestRerender();
+	OtCanvasObject(findCanvas(id)->canvas)->requestRerender();
 }
 
 
@@ -121,18 +121,18 @@ void OtCanvasStackClass::render() {
 	bool dirty = false;
 
 	for (auto& canvas : canvases) {
-		auto cvs = OtCanvas(canvas.canvas);
+		auto& cvs = OtCanvasObject(canvas.canvas)->getCanvas();
 
-		if (sizeChanged || cvs->needsRerender()) {
+		if (sizeChanged || cvs.needsRerender()) {
 			// update framebuffer size (if required)
 			canvas.framebuffer.update(w, h);
 
 			// render the canvas
-			cvs->render(canvas.framebuffer, scale, [&]() {
+			cvs.render(canvas.framebuffer, scale, [&]() {
 				OtVM::callMemberFunction(canvas.canvas, "render");
 			});
 
-			cvs->markClean();
+			cvs.markClean();
 			dirty = true;
 		}
 	}
@@ -148,7 +148,7 @@ void OtCanvasStackClass::render() {
 		clearPass.touch();
 
 		for (auto& canvas : canvases) {
-			if (OtCanvas(canvas.canvas)->isEnabled()) {
+			if (OtCanvasObject(canvas.canvas)->isEnabled()) {
 				OtPass overlayPass;
 				overlayPass.setFrameBuffer(framebuffer);
 				overlayPass.setRectangle(0, 0, w, h);

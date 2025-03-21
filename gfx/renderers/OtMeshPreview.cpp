@@ -19,6 +19,7 @@
 
 #include "OtCamera.h"
 #include "OtMeshPreview.h"
+#include "OtPass.h"
 
 
 //
@@ -102,7 +103,7 @@ void OtMeshPreview::render(OtMesh& mesh) {
 	pass.runShaderProgram(program);
 
 	// show the mesh
-	ImGui::Image((ImTextureID)(intptr_t) framebuffer.getColorTextureIndex(), ImVec2(width, height));
+	ImGui::Image((ImTextureID)(intptr_t) framebuffer.getColorTextureIndex(), ImVec2(static_cast<float>(width), static_cast<float>(height)));
 
 	// process left-mouse drag events (if required)
 	if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {

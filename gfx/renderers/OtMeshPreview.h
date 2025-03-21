@@ -16,7 +16,6 @@
 
 #include "OtFrameBuffer.h"
 #include "OtMesh.h"
-#include "OtPass.h"
 #include "OtShaderProgram.h"
 #include "OtUniformVec4.h"
 
@@ -53,7 +52,6 @@ private:
 	static constexpr float maxRotationPerSecond = 20.0f;
 
 	// rendering variables
-	OtPass pass;
 	OtUniformVec4 uniform = OtUniformVec4("u_preview", 4);
 	OtShaderProgram program = OtShaderProgram("OtPreviewVS", "OtPreviewFS");
 	OtFrameBuffer framebuffer{OtTexture::rgba8Texture, OtTexture::d24s8Texture};

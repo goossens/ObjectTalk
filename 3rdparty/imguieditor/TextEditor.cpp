@@ -206,6 +206,7 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	renderLineNumbers();
 	renderDecorations();
 	renderScrollbarMiniMap();
+	renderPanningIndicator();
 
 	if (ImGui::BeginPopup("LineNumberContextMenu")) {
 		lineNumberContextMenuCallback(contextMenuLine);
@@ -577,6 +578,49 @@ void TextEditor::renderScrollbarMiniMap() {
 
 
 //
+//	TextEditor::renderPanningIndicator
+//
+
+void TextEditor::renderPanningIndicator() {
+	if (panning && showPanningIndicator) {
+		auto drawList = ImGui::GetWindowDrawList();
+		auto center =ImGui::GetWindowPos() + ImGui::GetWindowSize() / 2.0f;
+		static constexpr int alpha = 160;
+		drawList->AddCircleFilled(center, 20.0f, IM_COL32(255, 255, 255, alpha));
+		drawList->AddCircle(center, 5.0f, IM_COL32(0, 0, 0, alpha), 0, 2.0f);
+
+		drawList->AddTriangle(
+			ImVec2(center.x - 15.0f, center.y),
+			ImVec2(center.x - 8.0f, center.y - 4.0f),
+			ImVec2(center.x - 8.0f, center.y + 4.0f),
+			IM_COL32(0, 0, 0, alpha),
+			2.0f);
+
+		drawList->AddTriangle(
+			ImVec2(center.x + 15.0f, center.y),
+			ImVec2(center.x + 8.0f, center.y - 4.0f),
+			ImVec2(center.x + 8.0f, center.y + 4.0f),
+			IM_COL32(0, 0, 0, alpha),
+			2.0f);
+
+		drawList->AddTriangle(
+			ImVec2(center.x, center.y - 15.0f),
+			ImVec2(center.x - 4.0f, center.y - 8.0f),
+			ImVec2(center.x + 4.0f, center.y - 8.0f),
+			IM_COL32(0, 0, 0, alpha),
+			2.0f);
+
+		drawList->AddTriangle(
+			ImVec2(center.x, center.y + 15.0f),
+			ImVec2(center.x - 4.0f, center.y + 8.0f),
+			ImVec2(center.x + 4.0f, center.y + 8.0f),
+			IM_COL32(0, 0, 0, alpha),
+			2.0f);
+	}
+}
+
+
+//
 //	latchButton
 //
 
@@ -903,11 +947,38 @@ void TextEditor::handleKeyboardInputs() {
 //
 
 void TextEditor::handleMouseInteractions() {
+	// pan with dragging middle mouse button (panning mode is only entered when middle mouse button is clicked inside editor window)
+	panning &= ImGui::IsMouseDown(ImGuiMouseButton_Middle);
+
+	if (panning && ImGui::IsMouseDragging(ImGuiMouseButton_Middle)) {
+		auto windowSize = ImGui::GetWindowSize();
+		auto absoluteMousePos = ImGui::GetMousePos() - ImGui::GetWindowPos();
+		auto mouseDelta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Middle) * (inversePanning ? -1.0f : 1.0f);
+		float dragFactor = ImGui::GetIO().DeltaTime * 30.0f * (inversePanning ? -1.0f : 1.0f);
+
+		if (absoluteMousePos.x < 0.0f) {
+			mouseDelta.x = absoluteMousePos.x * dragFactor;
+
+		} else if (absoluteMousePos.x > windowSize.x) {
+			mouseDelta.x = (absoluteMousePos.x - windowSize.x) * dragFactor;
+		}
+
+		if (absoluteMousePos.y < 0.0f) {
+			mouseDelta.y = absoluteMousePos.y * dragFactor;
+
+		} else if (absoluteMousePos.y > windowSize.y) {
+			mouseDelta.y = (absoluteMousePos.y - windowSize.y) * dragFactor;
+		}
+
+		ImGui::SetScrollX(ImGui::GetScrollX() - mouseDelta.x);
+		ImGui::SetScrollY(ImGui::GetScrollY() - mouseDelta.y);
+		ImGui::ResetMouseDragDelta(ImGuiMouseButton_Middle);
+
 	// ignore interactions when the editor is not hovered
-	if (ImGui::IsWindowHovered()) {
+	} else if (ImGui::IsWindowHovered()) {
 		auto io = ImGui::GetIO();
-		ImVec2 mousePos = ImGui::GetMousePos() - ImGui::GetCursorScreenPos();
-		ImVec2 absoluteMousePos = ImGui::GetMousePos() - ImGui::GetWindowPos();
+		auto mousePos = ImGui::GetMousePos() - ImGui::GetCursorScreenPos();
+		auto absoluteMousePos = ImGui::GetMousePos() - ImGui::GetWindowPos();
 		bool overLineNumbers = showLineNumbers && absoluteMousePos.x > lineNumberLeftOffset && absoluteMousePos.x < lineNumberRightOffset;
 		bool overText = mousePos.x - ImGui::GetScrollX() > textOffset;
 
@@ -940,12 +1011,9 @@ void TextEditor::handleMouseInteractions() {
 
 			makeCursorVisible();
 
-		} else if (ImGui::IsMouseDragging(ImGuiMouseButton_Middle) && overText) {
-			// pan with dragging middle mouse button
-			ImVec2 mouseDelta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Middle);
-			ImGui::SetScrollX(ImGui::GetScrollX() - mouseDelta.x);
-			ImGui::SetScrollY(ImGui::GetScrollY() - mouseDelta.y);
-			ImGui::ResetMouseDragDelta(ImGuiMouseButton_Middle);
+		} else if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle)) {
+			// start panning mode on middle mouse click
+			panning = true;
 
 		} else if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
 			// handle right clicks by setting up context menu (if required)
@@ -959,7 +1027,7 @@ void TextEditor::handleMouseInteractions() {
 				ImGui::OpenPopup("TextContextMenu");
 			}
 
-		} else {
+		} else if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
 			// handle left mouse button actions
 			auto click = ImGui::IsMouseClicked(ImGuiMouseButton_Left);
 			auto doubleClick = ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left);

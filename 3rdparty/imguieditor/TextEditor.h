@@ -54,6 +54,10 @@ public:
 	inline bool IsShowLineNumbersEnabled() const { return showLineNumbers; }
 	inline void SetShowScrollbarMiniMapEnabled(bool value) { showScrollbarMiniMap = value; }
 	inline bool IsShowScrollbarMiniMapEnabled() const { return showScrollbarMiniMap; }
+	inline void SetInversePanningEnabled(bool value) { inversePanning = value; }
+	inline bool IsInversePanningEnabled() const { return inversePanning; }
+	inline void SetShowPanningIndicatorEnabled(bool value) { showPanningIndicator = value; }
+	inline bool IsShowPanningIndicatorEnabled() const { return showPanningIndicator; }
 	inline void SetShowMatchingBrackets(bool value) { showMatchingBrackets = value; showMatchingBracketsChanged = true; }
 	inline bool IsShowingMatchingBrackets() const { return showMatchingBrackets; }
 	inline void SetCompletePairedGlyphs(bool value) { completePairedGlyphs = value; }
@@ -860,6 +864,7 @@ protected:
 	void renderLineNumbers();
 	void renderDecorations();
 	void renderScrollbarMiniMap();
+	void renderPanningIndicator();
 	void renderFindReplace(ImVec2 pos, float width);
 
 	// keyboard and mouse interactions
@@ -1025,6 +1030,9 @@ protected:
 	float lastClickTime = -1.0f;
 	ImWchar completePairCloser = 0;
 	Coordinate completePairLocation;
+	bool panning = false;
+	bool inversePanning = false;
+	bool showPanningIndicator = true;
 
 	// color palette support
 	void updatePalette();

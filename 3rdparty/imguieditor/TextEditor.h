@@ -54,16 +54,17 @@ public:
 	inline bool IsShowLineNumbersEnabled() const { return showLineNumbers; }
 	inline void SetShowScrollbarMiniMapEnabled(bool value) { showScrollbarMiniMap = value; }
 	inline bool IsShowScrollbarMiniMapEnabled() const { return showScrollbarMiniMap; }
-	inline void SetInversePanningEnabled(bool value) { inversePanning = value; }
-	inline bool IsInversePanningEnabled() const { return inversePanning; }
-	inline void SetShowPanningIndicatorEnabled(bool value) { showPanningIndicator = value; }
-	inline bool IsShowPanningIndicatorEnabled() const { return showPanningIndicator; }
+	inline void SetShowPanScrollIndicatorEnabled(bool value) { showPanScrollIndicator = value; }
+	inline bool IsShowPanScrollIndicatorEnabled() const { return showPanScrollIndicator; }
 	inline void SetShowMatchingBrackets(bool value) { showMatchingBrackets = value; showMatchingBracketsChanged = true; }
 	inline bool IsShowingMatchingBrackets() const { return showMatchingBrackets; }
 	inline void SetCompletePairedGlyphs(bool value) { completePairedGlyphs = value; }
 	inline bool IsCompletingPairedGlyphs() const { return completePairedGlyphs; }
 	inline void SetOverwriteEnabled(bool value) { overwrite = value; }
 	inline bool IsOverwriteEnabled() const { return overwrite; }
+	inline void SetMiddleMousePanMode() { panMode = true; }
+	inline void SetMiddleMouseScrollMode() { panMode = false; }
+	inline bool IsMiddleMousePanMode() const { return panMode; }
 
 	// access text (using UTF-8 encoded strings)
 	// (see note below on cursor and scroll manipulation after setting new text)
@@ -864,7 +865,7 @@ protected:
 	void renderLineNumbers();
 	void renderDecorations();
 	void renderScrollbarMiniMap();
-	void renderPanningIndicator();
+	void renderPanScrollIndicator();
 	void renderFindReplace(ImVec2 pos, float width);
 
 	// keyboard and mouse interactions
@@ -993,6 +994,8 @@ protected:
 	int visibleColumns;
 	int firstVisibleColumn;
 	int lastVisibleColumn;
+	float verticalScrollBarSize;
+	float horizontalScrollBarSize;
 	float cursorAnimationTimer = 0.0f;
 	bool ensureCursorIsVisible = false;
 	int scrollToLineNumber = -1;
@@ -1030,9 +1033,11 @@ protected:
 	float lastClickTime = -1.0f;
 	ImWchar completePairCloser = 0;
 	Coordinate completePairLocation;
+	bool panMode = true;
 	bool panning = false;
-	bool inversePanning = false;
-	bool showPanningIndicator = true;
+	bool scrolling = false;
+	ImVec2 scrollStart;
+	bool showPanScrollIndicator = true;
 
 	// color palette support
 	void updatePalette();

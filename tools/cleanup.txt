@@ -4,7 +4,7 @@ Regular expressions to check code
 
 Missing inline statements
 -------------------------
-grep ') {' ot/*/*.h | grep -v "inline"
+grep -R --include '*.h' ') {' directory | grep -v "inline"
 
 
 Wrong pointer/reference alignment

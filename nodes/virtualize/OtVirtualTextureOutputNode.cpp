@@ -30,7 +30,7 @@ public:
 	}
 
 	// synchronize the asset with the incoming texture
-	void onExecute() override {
+	inline void onExecute() override {
 		if (!asset.isNull()) {
 			asset->clearTexture();
 		}

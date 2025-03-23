@@ -48,11 +48,11 @@ public:
 	}
 
 	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
 		(*data)["value"] = value;
 	}
 
-	void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
 		value = data->value("value", glm::vec3(0.0f));
 	}
 

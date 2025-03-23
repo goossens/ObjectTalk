@@ -28,7 +28,7 @@ public:
 	}
 
 	// create grid and apply heightmap
-	void onExecute() override {
+	inline void onExecute() override {
 		// do we have a valid input
 		if (image.isValid()) {
 			// recreate mesh if required

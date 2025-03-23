@@ -8,22 +8,13 @@
 #pragma once
 
 
-/*
-#pragma warning(disable:4244)
-Z:\ObjectTalk\build\vs\deps\manifold\manifold-src\include\manifold/common.h(547,15): warning C4244: 'initializing': conversion from 'double' t
-o 'int', possible loss of data [Z:\ObjectTalk\build\vs\gfx\gfx.vcxproj]
-Z:\ObjectTalk\build\vs\deps\manifold\manifold-src\include\manifold/common.h(548,15): warning C4244: 'initializing': conversion from 'double' t
-o 'int', possible loss of data [Z:\ObjectTalk\build\vs\gfx\gfx.vcxproj]
-Z:\ObjectTalk\build\vs\deps\manifold\manifold-src\include\manifold/common.h(549,14): warning C4244: 'initializing': conversion from 'double' t
-o 'int', possible loss of data [Z:\ObjectTalk\build\vs\gfx\gfx.vcxproj]
-*/
-
-
 //
 //	Include files
 //
 
 #include <memory>
+
+#include "glm/glm.hpp"
 
 #if defined __clang__
 #pragma clang diagnostic push
@@ -107,6 +98,11 @@ public:
 	OtManifold rotate(float x, float y, float z);
 	OtManifold scale(float x, float y, float z);
 	OtManifold mirror(float x, float y, float z);
+
+	inline OtManifold translate(glm::vec3 xyz) { return translate(xyz.x, xyz.y, xyz.z); }
+	inline OtManifold rotate(glm::vec3 xyz) { return rotate(xyz.x, xyz.y, xyz.z); }
+	inline OtManifold scale(glm::vec3 xyz) { return scale(xyz.x, xyz.y, xyz.z); }
+	inline OtManifold mirror(glm::vec3 xyz) { return mirror(xyz.x, xyz.y, xyz.z); }
 
 	// create a mesh
 	void createMesh(OtMesh& mesh);

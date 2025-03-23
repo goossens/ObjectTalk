@@ -31,7 +31,7 @@ public:
 	}
 
 	// render custom fields
-	void customRendering(float itemWidth) override {
+	inline void customRendering(float itemWidth) override {
 		ImGui::SetNextItemWidth(itemWidth);
 		auto old = serialize().dump();
 
@@ -43,25 +43,25 @@ public:
 		}
 	}
 
-	float getCustomRenderingWidth() override {
+	inline float getCustomRenderingWidth() override {
 		return 140.0f;
 	}
 
-	float getCustomRenderingHeight() override {
+	inline float getCustomRenderingHeight() override {
 		return ImGui::GetFrameHeightWithSpacing();
 	}
 
 	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
 		(*data)["operator"] = op;
 	}
 
-	void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
 		op = data->value("operator", Operator::equal);
 	}
 
 	// compare values
-	void onExecute() override {
+	inline void onExecute() override {
 		switch (op) {
 			case Operator::equal: result = (a == b); break;
 			case Operator::notEqual: result = (a != b); break;

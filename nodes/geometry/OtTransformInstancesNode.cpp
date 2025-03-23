@@ -34,7 +34,7 @@ public:
 	}
 
 	// apply transformation to geometry
-	void onExecute() override {
+	inline void onExecute() override {
 		// clear the output
 		output.clear();
 

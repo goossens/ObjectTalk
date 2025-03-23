@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Declare(tess2 GIT_REPOSITORY "https://github.com/memononen/libtess2")
+FetchContent_Declare(tess2 GIT_REPOSITORY "https://github.com/memononen/libtess2" GIT_TAG "4a80b56")
 FetchContent_MakeAvailable(tess2)
 
 file(GLOB TESS2_SOURCES

@@ -30,7 +30,7 @@ public:
 	}
 
 	// process the varying context (called for each iteration)
-	void processVaryingContext(OtNodeVaryingContext& context) override {
+	inline void processVaryingContext(OtNodeVaryingContext& context) override {
 		if (context.hasVertex) {
 			u = context.vertex.uv.x;
 			v = context.vertex.uv.y;

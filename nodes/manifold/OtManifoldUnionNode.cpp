@@ -28,7 +28,7 @@ public:
 	}
 
 	// create the manifold
-	void onExecute() override {
+	inline void onExecute() override {
 		if (a.isValid() && b.isValid()) {
 			result = a.unionManifolds(b);
 
@@ -37,7 +37,7 @@ public:
 		}
 	}
 
-	static constexpr const char* nodeName = "Union Manifolds";
+	static constexpr const char* nodeName = "Manifold Union";
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::manifold;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 

@@ -33,7 +33,7 @@ public:
 	}
 
 	// convert text to a 2D shape
-	void onExecute() override {
+	inline void onExecute() override {
 		shape.clear();
 
 		if (font.isValid() && text.size() && size != 0.0f) {

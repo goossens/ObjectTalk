@@ -30,7 +30,7 @@ public:
 	}
 
 	// run filter
-	void onFilter(OtTexture& input, OtFrameBuffer& output) override {
+	inline void onFilter(OtTexture& input, OtFrameBuffer& output) override {
 		csb.setContrast(contrast);
 		csb.setSaturation(saturation);
 		csb.setBrightness(brightness);

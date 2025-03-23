@@ -57,13 +57,3 @@ void OtFramework::createMetalLayer() {
 	// store metal layer for use in BGFX
 	nativeWindowHandle = (void*) metalLayer;
 }
-
-
-//
-//	OtFramework::openURL
-//
-
-void OtFramework::openURL(const std::string& url) {
-	NSString* msg = [NSString stringWithCString:url.c_str() encoding:NSUTF8StringEncoding];
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:msg]];
-}

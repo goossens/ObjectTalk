@@ -27,7 +27,7 @@ public:
 	}
 
 	// combine values
-	void onExecute() override {
+	inline void onExecute() override {
 		if (image.isValid()) {
 			gray = image.sampleValueGray(u, v);
 

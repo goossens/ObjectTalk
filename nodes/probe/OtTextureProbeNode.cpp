@@ -30,7 +30,7 @@ public:
 	}
 
 	// nothing to do on execute but we'll use it to determine texture size
-	void onExecute() override {
+	inline void onExecute() override {
 		auto fieldWidth = 170.0f;
 
 		if (texture.isValid()) {
@@ -46,7 +46,7 @@ public:
 	}
 
 	// render custom fields
-	void customRendering(float itemWidth) override {
+	inline void customRendering(float itemWidth) override {
 		if (texture.isValid()) {
 			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (itemWidth - customW) / 2.0f);
 			ImGui::Image((ImTextureID)(intptr_t) texture.getIndex(), ImVec2(customW, customH));
@@ -67,11 +67,11 @@ public:
 		}
 	}
 
-	float getCustomRenderingWidth() override {
+	inline float getCustomRenderingWidth() override {
 		return customW;
 	}
 
-	float getCustomRenderingHeight() override {
+	inline float getCustomRenderingHeight() override {
 		return customH;
 	}
 

@@ -30,7 +30,7 @@ public:
 	}
 
 	// combine values
-	void onExecute() override {
+	inline void onExecute() override {
 		value = glm::vec4(x, y, z, w);
 	}
 

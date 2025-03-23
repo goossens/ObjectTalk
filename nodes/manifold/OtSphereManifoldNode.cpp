@@ -30,7 +30,7 @@ public:
 	}
 
 	// create the manifold
-	void onExecute() override {
+	inline void onExecute() override {
 		radius = std::max(radius, 0.00000001f);
 		segments = std::max(segments, 3);
 		manifold.sphere(radius, segments);

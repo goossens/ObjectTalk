@@ -34,7 +34,7 @@ public:
 	inline virtual int getOutputFormat() { return OtTexture::noTexture; }
 
 	// run the filter
-	void onExecute() override {
+	inline void onExecute() override {
 		// do we have a valid input
 		if (inputTexture.isValid()) {
 			// determine output texture format for framebuffer

@@ -32,7 +32,7 @@ public:
 	}
 
 	// synchronize the asset with the incoming shape
-	void onExecute() override {
+	inline void onExecute() override {
 		if (!asset.isNull()) {
 			asset->clearShape();
 		}

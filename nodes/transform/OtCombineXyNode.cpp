@@ -28,7 +28,7 @@ public:
 	}
 
 	// combine values
-	void onExecute() override {
+	inline void onExecute() override {
 		value = glm::vec2(x, y);
 	}
 

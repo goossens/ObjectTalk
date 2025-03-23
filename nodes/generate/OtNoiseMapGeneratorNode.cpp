@@ -39,7 +39,7 @@ public:
 	}
 
 	// render custom fields
-	void customRendering(float itemWidth) override {
+	inline void customRendering(float itemWidth) override {
 		ImGui::SetNextItemWidth(itemWidth);
 		auto old = serialize().dump();
 
@@ -51,25 +51,25 @@ public:
 		}
 	}
 
-	float getCustomRenderingWidth() override {
+	inline float getCustomRenderingWidth() override {
 		return 180.0f;
 	}
 
-	float getCustomRenderingHeight() override {
+	inline float getCustomRenderingHeight() override {
 		return ImGui::GetFrameHeightWithSpacing();
 	}
 
 	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
 		(*data)["noiseType"] = noiseType;
 	}
 
-	void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
 		noiseType = data->value("noiseType", OtFbm::NoiseType::simplex);
 	}
 
 	// running the noise generator
-	void onExecute() override {
+	inline void onExecute() override {
 		// ensure framebuffer has right size
 		framebuffer.update(width, height);
 

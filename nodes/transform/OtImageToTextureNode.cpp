@@ -28,7 +28,7 @@ public:
 	}
 
 	// when the input changes, we write the image to the GPUs texture
-	void onExecute() override {
+	inline void onExecute() override {
 		if (image.isValid()) {
 			texture.loadFromImage(image);
 

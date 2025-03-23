@@ -28,7 +28,7 @@ public:
 	}
 
 	// run filter
-	void onFilter(OtTexture& input, OtFrameBuffer& output) override {
+	inline void onFilter(OtTexture& input, OtFrameBuffer& output) override {
 		pixelator.setSize(size);
 		pixelator.render(input, output);
 	}

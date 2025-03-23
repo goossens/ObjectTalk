@@ -171,31 +171,3 @@ void OtFramework::setAntiAliasing(int aa) {
 
 	antiAliasing = aa;
 }
-
-
-//
-//	OtFramework::openURL
-//
-
-#if __APPLE__
-	// MacOS version is in OtMacos.mm as it requires Objective-C
-
-#else
-void OtFramework::openURL(const std::string& url) {
-#if _WIN32
-	int size = static_cast<int>(url.size()) + 1;
-	WCHAR *temp = new WCHAR[size];
-	MultiByteToWideChar(CP_UTF8, 0, url.c_str(), size, temp, size);
-	ShellExecuteW(NULL, L"open", temp, NULL, NULL, SW_SHOWNORMAL);
-	delete[] temp;
-
-#else
-	std::string command = std::string("xdg-open '").append(url).append("'");
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-result"
-	system(command.c_str());
-#pragma GCC diagnostic pop
-#endif
-}
-
-#endif

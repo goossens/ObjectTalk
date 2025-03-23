@@ -29,7 +29,7 @@ public:
 	}
 
 	// process the varying context (called for each iteration)
-	void processVaryingContext(OtNodeVaryingContext& context) override {
+	inline void processVaryingContext(OtNodeVaryingContext& context) override {
 		index = static_cast<int>(context.index);
 	}
 

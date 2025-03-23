@@ -30,7 +30,7 @@ public:
 	}
 
 	// combine values
-	void onExecute() override {
+	inline void onExecute() override {
 		if (image.isValid()) {
 			auto sample = image.sampleValueRgba(u, v);
 			r = sample.r;

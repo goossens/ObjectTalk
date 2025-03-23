@@ -26,7 +26,7 @@
 class OtIslandizerNode : public OtTextureFilterNode {
 public:
 	// render custom fields
-	void customRendering(float itemWidth) override {
+	inline void customRendering(float itemWidth) override {
 		auto old = serialize().dump();
 		ImGui::SetNextItemWidth(itemWidth);
 
@@ -38,25 +38,25 @@ public:
 		}
 	}
 
-	float getCustomRenderingWidth() override {
+	inline float getCustomRenderingWidth() override {
 		return 200.0f;
 	}
 
-	float getCustomRenderingHeight() override {
+	inline float getCustomRenderingHeight() override {
 		return ImGui::GetFrameHeightWithSpacing();
 	}
 
 	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
 		(*data)["distance"] = distance;
 	}
 
-	void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
 		distance = data->value("distance", OtIslandizer::DistanceFunction::squareBump);
 	}
 
 	// run filter
-	void onFilter(OtTexture& input, OtFrameBuffer& output) override {
+	inline void onFilter(OtTexture& input, OtFrameBuffer& output) override {
 		islandizer.setDistanceFunction(distance);
 		islandizer.render(input, output);
 	}

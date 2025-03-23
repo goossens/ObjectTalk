@@ -38,7 +38,7 @@ public:
 	}
 
 	// create instance for each geometry vertex
-	void onExecute() override {
+	inline void onExecute() override {
 		// reset list of instances
 		instances.clear();
 

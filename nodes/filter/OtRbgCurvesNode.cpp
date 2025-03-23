@@ -38,7 +38,7 @@ public:
 	}
 
 	// render custom fields
-	void customRendering(float itemWidth) override {
+	inline void customRendering(float itemWidth) override {
 		bool changed = false;
 		auto old = serialize().dump();
 
@@ -75,28 +75,28 @@ public:
 		}
 	}
 
-	float getCustomRenderingWidth() override {
+	inline float getCustomRenderingWidth() override {
 		return 200.0f;
 	}
 
-	float getCustomRenderingHeight() override {
+	inline float getCustomRenderingHeight() override {
 		return ImGui::GetFrameHeightWithSpacing() + 200.0f + ImGui::GetStyle().ItemSpacing.y;
 	}
 
 	// (de)serialize node
-	void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
 
 		(*data)["curve"] = curve;
 		(*data)["lut"] = lut;
 	}
 
-	void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
 		curve = data->value("curve", OtRgbCurve::Curve::rgb);
 		lut = data->value("lut", std::array<ImVec2, curvePoints>{ImVec2(ImGui::CurveTerminator, 0.0f)});
 	}
 
 	// run filter
-	void onFilter(OtTexture& input, OtFrameBuffer& output) override {
+	inline void onFilter(OtTexture& input, OtFrameBuffer& output) override {
 		// update lookup table
 		uint8_t lutValues[256];
 

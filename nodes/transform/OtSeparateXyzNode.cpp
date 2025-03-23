@@ -29,7 +29,7 @@ public:
 	}
 
 	// separate values
-	void onExecute() override {
+	inline void onExecute() override {
 		x = value.x;
 		y = value.y;
 		z = value.z;

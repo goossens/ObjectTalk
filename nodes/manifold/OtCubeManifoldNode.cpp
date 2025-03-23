@@ -32,7 +32,7 @@ public:
 	}
 
 	// create the manifold
-	void onExecute() override {
+	inline void onExecute() override {
 		width = std::max(width, 0.0f);
 		height = std::max(height, 0.0f);
 		depth = std::max(depth, 0.0f);

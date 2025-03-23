@@ -10,19 +10,17 @@
 //
 
 #include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtx/quaternion.hpp"
 
-#include "OtShape.h"
+#include "OtManifold.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtShapeTransformNode
+//	OtManifoldTransformNode
 //
 
-class OtShapeTransformNode : public OtNodeClass {
+class OtManifoldTransformNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
@@ -33,29 +31,28 @@ public:
 		addOutputPin("Output", output);
 	}
 
-	// apply transformation to shape
+	// create the manifold
 	inline void onExecute() override {
-		// do we have a valid input
 		if (input.isValid()) {
-			// clone the shape and transform it
-			output.cloneFrom(input);
-			output.transform(translate.x, translate.y, rotate, scale.x, scale.y);
+			auto temp = input.scale(scale);
+			temp = temp.rotate(rotate);
+			output = temp.translate(translate);
 
 		} else {
 			output.clear();
 		}
 	}
 
-	static constexpr const char* nodeName = "Shape Transform";
-	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::shape;
+	static constexpr const char* nodeName = "Manifold Transform";
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::manifold;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
-	OtShape input;
-	OtShape output;
-	glm::vec2 translate{0.0f};
-	float rotate{0};
-	glm::vec2 scale{1.0f};
+	OtManifold input;
+	OtManifold output;
+	glm::vec3 translate{0.0f};
+	glm::vec3 rotate{0.0f};
+	glm::vec3 scale{1.0f};
 };
 
-static OtNodesFactoryRegister<OtShapeTransformNode> registration;
+static OtNodesFactoryRegister<OtManifoldTransformNode> registration;

@@ -23,23 +23,13 @@
 
 
 //
-//	OtMeshPreview::setSize
-//
-
-void OtMeshPreview::setSize(int w, int h) {
-	if (w != width || h != height) {
-		framebuffer.update(static_cast<int>(w), static_cast<int>(h));
-		width = w;
-		height = h;
-	}
-}
-
-
-//
 //	OtMeshPreview::render
 //
 
-void OtMeshPreview::render(OtMesh& mesh) {
+void OtMeshPreview::render(int width, int height, OtMesh& mesh, Context& context) {
+	// update framebuffer
+	framebuffer.update(width, height);
+
 	// determine mesh information
 	auto aabb = mesh.getAABB();
 	auto size = aabb.getSize();
@@ -47,14 +37,14 @@ void OtMeshPreview::render(OtMesh& mesh) {
 	auto scale = 0.8f / std::max(std::max(size.x, size.y), size.z);
 
 	auto model =
-		glm::toMat4(glm::quat(glm::radians(glm::vec3(elevation, azimuth, 0.0f)))) *
+		glm::toMat4(glm::quat(glm::radians(glm::vec3(context.elevation, context.azimuth, 0.0f)))) *
 		glm::scale(glm::mat4(1.0f), glm::vec3(scale)) *
 		glm::translate(glm::mat4(1.0f), -center);
 
 	// create a camera
 	OtCamera camera(
-		framebuffer.getWidth(),
-		framebuffer.getHeight(),
+		width,
+		height,
 		0.05f, 3.0f,
 		60.0f,
 		glm::vec3(0.0f, 0.0f, 1.5f),
@@ -63,7 +53,7 @@ void OtMeshPreview::render(OtMesh& mesh) {
 	// setup the pass
 	OtPass pass;
 	pass.setClear(true, true);
-	pass.setRectangle(0, 0, framebuffer.getWidth(), framebuffer.getHeight());
+	pass.setRectangle(0, 0, width, height);
 	pass.setFrameBuffer(framebuffer);
 	pass.setTransform(camera.viewMatrix, camera.projectionMatrix);
 	pass.touch();
@@ -71,12 +61,12 @@ void OtMeshPreview::render(OtMesh& mesh) {
 	// set the uniforms
 	uniform.setValue(0, 0.0f, 0.0f, 0.8f, 0.0f);
 	uniform.setValue(1, 1.0f, 1.0f, 2.0f, 0.0f);
-	uniform.setValue(2, meshColor, 0.0f);
-	uniform.setValue(3, lightColor, 0.0f);
+	uniform.setValue(2, context.meshColor, 0.0f);
+	uniform.setValue(3, context.lightColor, 0.0f);
 	uniform.submit();
 
 	// submit the mesh
-	if (wireframe) {
+	if (context.wireframe) {
 		mesh.submitLines();
 
 	} else {
@@ -84,7 +74,7 @@ void OtMeshPreview::render(OtMesh& mesh) {
 	}
 
 	// render the mesh
-	if (wireframe) {
+	if (context.wireframe) {
 		program.setState(
 			OtStateWriteRgb |
 			OtStateWriteZ |
@@ -103,7 +93,9 @@ void OtMeshPreview::render(OtMesh& mesh) {
 	pass.runShaderProgram(program);
 
 	// show the mesh
-	ImGui::Image((ImTextureID)(intptr_t) framebuffer.getColorTextureIndex(), ImVec2(static_cast<float>(width), static_cast<float>(height)));
+	ImGui::Image(
+		(ImTextureID)(intptr_t) framebuffer.getColorTextureIndex(),
+		ImVec2(static_cast<float>(width), static_cast<float>(height)));
 
 	// process left-mouse drag events (if required)
 	if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
@@ -114,20 +106,20 @@ void OtMeshPreview::render(OtMesh& mesh) {
 		ImVec2 drag = ImGui::GetMouseDragDelta();
 
 		if (drag.x != 0.0f || drag.y != 0.0f) {
-			elevation += drag.y * maxRotationPerSecond * delta / 2.0f;
-			azimuth += drag.x * maxRotationPerSecond * delta;
+			context.elevation += drag.y * maxRotationPerSecond * delta / 2.0f;
+			context.azimuth += drag.x * maxRotationPerSecond * delta;
 			ImGui::ResetMouseDragDelta();
 		}
 	}
 
 	// ensure all properties are in range
-	elevation = std::clamp(elevation, -89.9f, 89.9f);
+	context.elevation = std::clamp(context.elevation, -89.9f, 89.9f);
 
-	if (azimuth < -360.0f) {
-		azimuth += 360.0f;
+	if (context.azimuth < -360.0f) {
+		context.azimuth += 360.0f;
 	}
 
-	if (azimuth > 360.0f) {
-		azimuth -= 360.0f;
+	if (context.azimuth > 360.0f) {
+		context.azimuth -= 360.0f;
 	}
 }

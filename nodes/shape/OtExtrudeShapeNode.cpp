@@ -39,7 +39,7 @@ public:
 	}
 
 	// extrude a 2D shape
-	void onExecute() override {
+	inline void onExecute() override {
 		if (shape.isValid()) {
 			// create a tesselator
 			TESStesselator* tess = tessNewTess(NULL);

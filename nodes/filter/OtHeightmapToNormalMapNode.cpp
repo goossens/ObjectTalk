@@ -25,7 +25,7 @@ public:
 	inline int getOutputFormat() override { return OtTexture::rgba8Texture; }
 
 	// run filter
-	void onFilter(OtTexture& input, OtFrameBuffer& output) override {
+	inline void onFilter(OtTexture& input, OtFrameBuffer& output) override {
 		mapper.render(input, output);
 	}
 

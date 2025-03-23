@@ -26,28 +26,20 @@
 
 class OtMeshPreview {
 public:
-	// set preview size
-	void setSize(int width, int height);
-
-	// access camera angles
-	inline void setAzimuth(float a) { azimuth = a; }
-	inline void setElivation(float e) { elevation = e; }
-	inline float getAzimuth() { return azimuth; }
-	inline float getElevation() { return elevation; }
+	// rendering context
+	class Context {
+	public:
+		float azimuth = 0.0f;
+		float elevation = 0.0f;
+		glm::vec3 meshColor{1.0f, 0.85f, 0.0f};
+		glm::vec3 lightColor{1.0f};
+		bool wireframe = false;
+	};
 
 	// render mesh as an ImGui widget
-	void render(OtMesh& mesh);
+	void render(int width, int height, OtMesh& mesh, Context& context);
 
 private:
-	// properties
-	int width = 0;
-	int height = 0;
-	float azimuth = 0.0f;
-	float elevation = 0.0f;
-	glm::vec3 meshColor{1.0f, 0.85f, 0.0f};
-	glm::vec3 lightColor{1.0f};
-	bool wireframe = false;
-
 	// constants
 	static constexpr float maxRotationPerSecond = 20.0f;
 

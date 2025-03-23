@@ -35,7 +35,7 @@ public:
 	}
 
 	// convert image to texture and determine size
-	void onExecute() override {
+	inline void onExecute() override {
 		if (shape.isValid()) {
 			if (outline) {
 				shape.renderStroke(image, color, 2.0f);

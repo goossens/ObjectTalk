@@ -56,7 +56,7 @@ public:
 	static inline OtType create(OtID id);
 
 private:
-	OtTypeClass* type;
+	OtTypeClass* type = nullptr;
 	static std::list<OtTypeClass> types;
 };
 

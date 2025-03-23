@@ -32,7 +32,7 @@ public:
 	}
 
 	// apply transformation to shape
-	void onExecute() override {
+	inline void onExecute() override {
 		output.cloneFrom(a);
 		output.mergeWith(b);
 	}

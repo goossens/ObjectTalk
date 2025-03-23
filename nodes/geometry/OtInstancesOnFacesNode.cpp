@@ -44,7 +44,7 @@ public:
 	}
 
 	// randomly create instances on geometry faces
-	void onExecute() override {
+	inline void onExecute() override {
 		// reset list of instances
 		instances.clear();
 

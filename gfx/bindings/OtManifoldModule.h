@@ -45,7 +45,7 @@ public:
 	static inline OtObject cylinder(float height, float bottomRadius, float topRadius, int segments, bool center) {
 		OtManifold result;
 		result.cylinder(height, bottomRadius, topRadius, segments, center);
-		return OtManifoldClass(result);
+		return OtManifoldObject::create(result);
 	}
 
 	static inline OtObject sphere(float radius, int segments) {

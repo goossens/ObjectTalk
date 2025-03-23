@@ -40,7 +40,7 @@ public:
 	}
 
 	// when the input changes, we read back the texture into a CPU buffer
-	void onExecute() override {
+	inline void onExecute() override {
 		if (texture.isValid()) {
 			buffer.readback(texture);
 

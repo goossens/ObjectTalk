@@ -229,3 +229,12 @@ void OtFramework::endSDL() {
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 }
+
+
+//
+//	OtFramework::openURL
+//
+
+void OtFramework::openURL(const std::string& url) {
+	SDL_OpenURL(url.c_str());
+}

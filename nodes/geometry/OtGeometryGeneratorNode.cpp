@@ -31,7 +31,7 @@ public:
 	}
 
 	// render custom fields
-	void customRendering(float itemWidth) override {
+	inline void customRendering(float itemWidth) override {
 		// render button
 		auto geometryType = primitive->getTypeName();
 
@@ -78,11 +78,11 @@ public:
 		}
 	}
 
-	float getCustomRenderingWidth() override {
+	inline float getCustomRenderingWidth() override {
 		return 150.0f;
 	}
 
-	float getCustomRenderingHeight() override {
+	inline float getCustomRenderingHeight() override {
 		return ImGui::GetFrameHeightWithSpacing();
 	}
 
@@ -101,7 +101,7 @@ public:
 	}
 
 	// create the geometry
-	void onExecute() override {
+	inline void onExecute() override {
 		geometry.setMesh(primitive->createMesh());
 	}
 

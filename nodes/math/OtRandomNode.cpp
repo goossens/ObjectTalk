@@ -33,12 +33,12 @@ public:
 	}
 
 	// process the varying context (called for each iteration)
-	void processVaryingContext(OtNodeVaryingContext& context) override {
+	inline void processVaryingContext(OtNodeVaryingContext& context) override {
 		id = context.index;
 	}
 
 	// generate random number
-	void onExecute() override {
+	inline void onExecute() override {
 		if (seed == 0) {
 			seed = 1;
 		}

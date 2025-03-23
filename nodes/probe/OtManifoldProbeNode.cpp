@@ -12,6 +12,9 @@
 #include <algorithm>
 
 #include "imgui.h"
+#include "nlohmann/json.hpp"
+
+#include "OtGlm.h"
 
 #include "OtManifold.h"
 #include "OtMesh.h"
@@ -32,7 +35,7 @@ public:
 	}
 
 	// convert manifold to mesh
-	void onExecute() override {
+	inline void onExecute() override {
 		if (manifold.isValid()) {
 			manifold.createMesh(mesh);
 
@@ -49,22 +52,18 @@ public:
 	}
 
 	// render custom fields
-	void customRendering(float itemWidth) override {
+	inline void customRendering(float itemWidth) override {
 		if (manifold.isValid()) {
 			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (itemWidth - size) / 2.0f);
-			preview.setSize(static_cast<int>(size), static_cast<int>(size));
-			preview.render(mesh);
+			preview.render(static_cast<int>(size), static_cast<int>(size), mesh, context);
 
 			if (ImGui::IsItemClicked(ImGuiPopupFlags_MouseButtonLeft) && ImGui::IsMouseDoubleClicked(ImGuiPopupFlags_MouseButtonLeft)) {
 				ImGui::OpenPopup("Manifold Popup");
-				popupPreview.setAzimuth(preview.getAzimuth());
-				popupPreview.setElivation(preview.getElevation());
 			}
 
 			if (ImGui::BeginPopup("Manifold Popup", ImGuiWindowFlags_NoMove)) {
 				auto popupSize = ImGui::GetMainViewport()->WorkSize.y * 0.75f;
-				popupPreview.setSize(static_cast<int>(popupSize), static_cast<int>(popupSize));
-				popupPreview.render(mesh);
+				popupPreview.render(static_cast<int>(popupSize), static_cast<int>(popupSize), mesh, context);
 				ImGui::EndPopup();
 			}
 
@@ -73,12 +72,28 @@ public:
 		}
 	}
 
-	float getCustomRenderingWidth() override {
+	inline float getCustomRenderingWidth() override {
 		return customW;
 	}
 
-	float getCustomRenderingHeight() override {
+	inline float getCustomRenderingHeight() override {
 		return customH;
+	}
+
+	inline void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
+		(*data)["azimuth"] = context.azimuth;
+		(*data)["elevation"] = context.elevation;
+		(*data)["meshColor"] = context.meshColor;
+		(*data)["lightColor"] = context.lightColor;
+		(*data)["wireframe"] = context.wireframe;
+	}
+
+	inline void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
+		context.azimuth = data->value("azimuth", 0.0f);
+		context.elevation = data->value("elevation", 0.0f);
+		context.meshColor = data->value("meshColor", glm::vec3{1.0f, 0.85f, 0.0f});
+		context.lightColor = data->value("lightColor", glm::vec3{1.0f});
+		context.wireframe = data->value("wireframe", false);
 	}
 
 	static constexpr const char* nodeName = "Manifold Probe";
@@ -92,6 +107,7 @@ protected:
 
 	OtMeshPreview preview;
 	OtMeshPreview popupPreview;
+	OtMeshPreview::Context context;
 
 	float customW;
 	float customH;

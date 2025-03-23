@@ -29,7 +29,7 @@ public:
 	}
 
 	// run filter
-	void onFilter(OtTexture& input, OtFrameBuffer& output) override {
+	inline void onFilter(OtTexture& input, OtFrameBuffer& output) override {
 		if (overlayTexture.isValid()) {
 			alphaOver.setOverlay(overlayTexture);
 			alphaOver.render(input, output);

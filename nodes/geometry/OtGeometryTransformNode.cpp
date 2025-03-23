@@ -34,7 +34,7 @@ public:
 	}
 
 	// apply transformation to geometry
-	void onExecute() override {
+	inline void onExecute() override {
 		// do we have a valid input
 		if (input.isValid()) {
 			// clone the mesh

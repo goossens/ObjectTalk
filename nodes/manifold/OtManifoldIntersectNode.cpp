@@ -28,7 +28,7 @@ public:
 	}
 
 	// create the manifold
-	void onExecute() override {
+	inline void onExecute() override {
 		if (a.isValid() && b.isValid()) {
 			result = a.intersectManifolds(b);
 

@@ -114,7 +114,7 @@ void TextDiff::Render(const char* title, const ImVec2& size, bool border) {
 			updated = false;
 		}
 
-		// render combind view as a normal read-only text editor
+		// render combined view as a normal read-only text editor
 		TextEditor::render(title, size, border);
 	}
 }

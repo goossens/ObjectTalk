@@ -32,10 +32,6 @@ using OtCanvasObject = OtObjectPointer<OtCanvasClass>;
 
 class OtCanvasClass : public OtObjectClass {
 public:
-	// constructors
-	OtCanvasClass() = default;
-	OtCanvasClass(const OtCanvas& c) : canvas(c) {}
-
 	// manipulate composite operation
 	inline void compositeOperation(int operation) { canvas.compositeOperation(operation); }
 	inline void compositeBlendFunc(int sfactor, int dfactor) { canvas.compositeBlendFunc(sfactor, dfactor); }
@@ -166,99 +162,16 @@ public:
 	inline OtCanvas& getCanvas() { return canvas; }
 
 	// get type definition
-	static inline OtType getMeta() {
-		static OtType type = nullptr;
+	static OtType getMeta();
 
-		if (!type) {
-			type = OtType::create<OtCanvasClass>("Canvas", OtObjectClass::getMeta());
-
-			type->set("compositeOperation", OtFunction::create(&OtCanvasClass::compositeOperation));
-			type->set("compositeBlendFunc", OtFunction::create(&OtCanvasClass::compositeBlendFunc));
-			type->set("compositeBlendFuncSeparate", OtFunction::create(&OtCanvasClass::compositeBlendFuncSeparate));
-
-			type->set("save", OtFunction::create(&OtCanvasClass::save));
-			type->set("restore", OtFunction::create(&OtCanvasClass::restore));
-			type->set("reset", OtFunction::create(&OtCanvasClass::reset));
-
-			type->set("loadImage", OtFunction::create(&OtCanvasClass::loadImage));
-			type->set("deleteImage", OtFunction::create(&OtCanvasClass::deleteImage));
-			type->set("getImageWidth", OtFunction::create(&OtCanvasClass::getImageWidth));
-			type->set("getImageHeight", OtFunction::create(&OtCanvasClass::getImageHeight));
-
-			type->set("createLinearGradient", OtFunction::create(&OtCanvasClass::createLinearGradient));
-			type->set("createBoxGradient", OtFunction::create(&OtCanvasClass::createBoxGradient));
-			type->set("createRadialGradient", OtFunction::create(&OtCanvasClass::createRadialGradient));
-			type->set("createTexturePattern", OtFunction::create(&OtCanvasClass::createTexturePattern));
-			type->set("deletePaint", OtFunction::create(&OtCanvasClass::deletePaint));
-
-			type->set("loadFont", OtFunction::create(&OtCanvasClass::loadFont));
-
-			type->set("antiAlias", OtFunction::create(&OtCanvasClass::antiAlias));
-			type->set("strokeColor", OtFunction::create(&OtCanvasClass::strokeColor));
-			type->set("strokePaint", OtFunction::create(&OtCanvasClass::strokePaint));
-			type->set("fillColor", OtFunction::create(&OtCanvasClass::fillColor));
-			type->set("fillPaint", OtFunction::create(&OtCanvasClass::fillPaint));
-			type->set("miterLimit", OtFunction::create(&OtCanvasClass::miterLimit));
-			type->set("strokeWidth", OtFunction::create(&OtCanvasClass::strokeWidth));
-			type->set("lineCap", OtFunction::create(&OtCanvasClass::lineCap));
-			type->set("lineJoin", OtFunction::create(&OtCanvasClass::lineJoin));
-			type->set("globalAlpha", OtFunction::create(&OtCanvasClass::globalAlpha));
-
-			type->set("translate", OtFunction::create(&OtCanvasClass::translate));
-			type->set("rotate", OtFunction::create(&OtCanvasClass::rotate));
-			type->set("scale", OtFunction::create(&OtCanvasClass::scale));
-			type->set("skewX", OtFunction::create(&OtCanvasClass::skewX));
-			type->set("skewY", OtFunction::create(&OtCanvasClass::skewY));
-			type->set("resetTransform", OtFunction::create(&OtCanvasClass::resetTransform));
-
-			type->set("beginPath", OtFunction::create(&OtCanvasClass::beginPath));
-			type->set("moveTo", OtFunction::create(&OtCanvasClass::moveTo));
-			type->set("lineTo", OtFunction::create(&OtCanvasClass::lineTo));
-			type->set("bezierCurveTo", OtFunction::create(&OtCanvasClass::bezierCurveTo));
-			type->set("quadraticCurveTo", OtFunction::create(&OtCanvasClass::quadraticCurveTo));
-			type->set("arcTo", OtFunction::create(&OtCanvasClass::arcTo));
-			type->set("closePath", OtFunction::create(&OtCanvasClass::closePath));
-			type->set("pathWinding", OtFunction::create(&OtCanvasClass::pathWinding));
-
-			type->set("arc", OtFunction::create(&OtCanvasClass::arc));
-			type->set("rect", OtFunction::create(&OtCanvasClass::rect));
-			type->set("roundedRect", OtFunction::create(&OtCanvasClass::roundedRect));
-			type->set("ellipse", OtFunction::create(&OtCanvasClass::ellipse));
-			type->set("circle", OtFunction::create(&OtCanvasClass::circle));
-
-			type->set("stroke", OtFunction::create(&OtCanvasClass::stroke));
-			type->set("fill", OtFunction::create(&OtCanvasClass::fill));
-
-			type->set("drawImage", OtFunction::create(&OtCanvasClass::drawImage));
-
-			type->set("fontFace", OtFunction::create(&OtCanvasClass::fontFace));
-			type->set("fontSize", OtFunction::create(&OtCanvasClass::fontSize));
-			type->set("fontBlur", OtFunction::create(&OtCanvasClass::fontBlur));
-			type->set("fontLetterSpacing", OtFunction::create(&OtCanvasClass::fontLetterSpacing));
-			type->set("fontLineHeight", OtFunction::create(&OtCanvasClass::fontLineHeight));
-			type->set("fontAlign", OtFunction::create(&OtCanvasClass::fontAlign));
-			type->set("text", OtFunction::create(&OtCanvasClass::text));
-			type->set("textBox", OtFunction::create(&OtCanvasClass::textBox));
-
-			type->set("textSize", OtFunction::create(&OtCanvasClass::textSize));
-			type->set("textBoxSize", OtFunction::create(&OtCanvasClass::textBoxSize));
-
-			type->set("getWidth", OtFunction::create(&OtCanvasClass::getWidth));
-			type->set("getHeight", OtFunction::create(&OtCanvasClass::getHeight));
-
-			type->set("enable", OtFunction::create(&OtCanvasClass::enable));
-			type->set("disable", OtFunction::create(&OtCanvasClass::disable));
-			type->set("isEnabled", OtFunction::create(&OtCanvasClass::isEnabled));
-
-			type->set("requestRerender", OtFunction::create(&OtCanvasClass::requestRerender));
-			type->set("markClean", OtFunction::create(&OtCanvasClass::markClean));
-			type->set("needsRerender", OtFunction::create(&OtCanvasClass::needsRerender));
-		}
-
-		return type;
-	}
+protected:
+	// constructors
+	friend class OtObjectPointer<OtCanvasClass>;
+	OtCanvasClass() = default;
+	OtCanvasClass(const OtCanvas& c) : canvas(c) {}
 
 private:
+	// data
 	OtCanvas canvas;
 };
 
@@ -270,7 +183,7 @@ private:
 template <>
 struct OtValue<OtCanvas> {
 	static inline OtObject encode(OtCanvas canvas) {
-		return OtCanvasClass(canvas);
+		return OtCanvasObject::create(canvas);
 	}
 
 	static inline OtCanvas decode(OtObject object) {

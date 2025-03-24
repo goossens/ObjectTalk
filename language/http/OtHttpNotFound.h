@@ -25,9 +25,6 @@ using OtHttpNotFound = OtObjectPointer<OtHttpNotFoundClass>;
 
 class OtHttpNotFoundClass : public OtInternalClass {
 public:
-	OtHttpNotFoundClass() = default;
-	OtHttpNotFoundClass(OtHttpResponse s) : res(s) {}
-
 	// execute not found
 	void call() {
 		// nobody wanted the request so it must be a case of "Resource Not Found"
@@ -46,6 +43,12 @@ public:
 
 		return type;
 	}
+
+protected:
+	// constructors
+	friend class OtObjectPointer<OtHttpNotFoundClass>;
+	OtHttpNotFoundClass() = default;
+	OtHttpNotFoundClass(OtHttpResponse s) : res(s) {}
 
 private:
 	OtHttpResponse res;

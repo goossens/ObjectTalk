@@ -24,12 +24,14 @@ using OtThrow = OtObjectPointer<OtThrowClass>;
 
 class OtThrowClass : public OtInternalClass {
 public:
-	// constructor
-	OtThrowClass() = default;
-
 	// throw the exception
 	void call(const std::string& error);
 
 	// get type definition
 	static OtType getMeta();
+
+protected:
+	// constructor
+	friend class OtObjectPointer<OtThrowClass>;
+	OtThrowClass() = default;
 };

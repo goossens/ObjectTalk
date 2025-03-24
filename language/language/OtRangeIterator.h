@@ -25,10 +25,6 @@ using OtRangeIterator = OtObjectPointer<OtRangeIteratorClass>;
 
 class OtRangeIteratorClass : public OtIteratorClass {
 public:
-	// constructors
-	OtRangeIteratorClass() = default;
-	OtRangeIteratorClass(int64_t f, int64_t t, int64_t i) : from(f), to(t), increment(i), index(f) {}
-
 	// start iterator
 	inline OtObject iterate() { return OtRangeIterator(this); }
 
@@ -45,7 +41,14 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructors
+	friend class OtObjectPointer<OtRangeIteratorClass>;
+	OtRangeIteratorClass() = default;
+	OtRangeIteratorClass(int64_t f, int64_t t, int64_t i) : from(f), to(t), increment(i), index(f) {}
+
 private:
+	// data
 	int64_t from;
 	int64_t to;
 	int64_t increment;

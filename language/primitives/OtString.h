@@ -30,12 +30,6 @@ class OtStringClass : public OtPrimitiveClass {
 	friend class OtStringIteratorClass;
 
 public:
-	// constructors
-	OtStringClass() = default;
-	OtStringClass(const char* string) : value(string) {}
-	OtStringClass(const std::string& string) : value(string) {}
-	OtStringClass(const std::string_view string) : value(string) {}
-
 	// conversion operators
 	inline operator bool() override { return value == "true"; }
 	inline operator int() override { try { return std::stoi(value, nullptr, 0); } catch(...) { return 0; }}
@@ -105,6 +99,15 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructors
+	friend class OtObjectPointer<OtStringClass>;
+	OtStringClass() = default;
+	OtStringClass(const char* string) : value(string) {}
+	OtStringClass(const std::string& string) : value(string) {}
+	OtStringClass(const std::string_view string) : value(string) {}
+
 private:
+	// data
 	std::string value = "";
 };

@@ -56,6 +56,11 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtTextFieldClass>;
+	OtTextFieldClass() = default;
+
 private:
 	std::string label;
 	std::string value;

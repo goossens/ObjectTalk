@@ -40,4 +40,9 @@ public:
 
 	// get type definition
 	static OtType getMeta();
+
+protected:
+	// constructor
+	friend class OtObjectPointer<OtIOClass>;
+	OtIOClass() = default;
 };

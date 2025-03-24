@@ -26,4 +26,9 @@ class OtIteratorClass : public OtInternalClass {
 public:
 	// get type definition
 	static OtType getMeta();
+
+protected:
+	// constructor
+	friend class OtObjectPointer<OtIteratorClass>;
+	OtIteratorClass() = default;
 };

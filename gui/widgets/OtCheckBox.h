@@ -56,6 +56,11 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtCheckBoxClass>;
+	OtCheckBoxClass() = default;
+
 private:
 	std::string label;
 	bool checked = false;

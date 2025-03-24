@@ -27,10 +27,6 @@ using OtHttpNext = OtObjectPointer<OtHttpNextClass>;
 
 class OtHttpNextClass : public OtInternalClass {
 public:
-	OtHttpNextClass() = default;
-	OtHttpNextClass(OtHttpRouterClass* r, size_t i, OtHttpRequest q, OtHttpResponse s, OtObject n)
-		: router(r), index(i), req(q), res(s), next(n) {}
-
 	// execute next
 	void call() {
 		router->runHandler(index, req, res, next);
@@ -47,6 +43,13 @@ public:
 
 		return type;
 	}
+
+protected:
+	// constructors
+	friend class OtObjectPointer<OtHttpNextClass>;
+	OtHttpNextClass() = default;
+	OtHttpNextClass(OtHttpRouterClass* r, size_t i, OtHttpRequest q, OtHttpResponse s, OtObject n)
+		: router(r), index(i), req(q), res(s), next(n) {}
 
 private:
 	OtHttpRouterClass* router;

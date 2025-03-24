@@ -26,10 +26,6 @@ using OtTransformComponentObject = OtObjectPointer<OtTransformComponentObjectCla
 
 class OtTransformComponentObjectClass : public OtObjectClass {
 public:
-	// constructor
-	OtTransformComponentObjectClass() = default;
-	OtTransformComponentObjectClass(OtTransformComponent* component) : transform(component) {}
-
 	// access transform parts
 	inline void setTranslation(glm::vec3 translation) { transform->translation = translation; }
 	inline void setRotation(glm::vec3 rotation) { transform->rotation = rotation; }
@@ -41,6 +37,12 @@ public:
 
 	// get type definition
 	static OtType getMeta();
+
+protected:
+	// constructor
+	friend class OtObjectPointer<OtTransformComponentObjectClass>;
+	OtTransformComponentObjectClass() = default;
+	OtTransformComponentObjectClass(OtTransformComponent* component) : transform(component) {}
 
 private:
 	// connection to component

@@ -26,4 +26,9 @@ class OtCollectionClass : public OtObjectClass {
 public:
 	// get type definition
 	static OtType getMeta();
+
+protected:
+	// constructor
+	friend class OtObjectPointer<OtCollectionClass>;
+	OtCollectionClass() = default;
 };

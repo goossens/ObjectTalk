@@ -27,10 +27,6 @@ using OtArrayIterator = OtObjectPointer<OtArrayIteratorClass>;
 
 class OtArrayIteratorClass : public OtIteratorClass {
 public:
-	// constructors
-	OtArrayIteratorClass() = default;
-	OtArrayIteratorClass(OtArray a) : array(a) {}
-
 	// iteration operations
 	inline bool end() { return index == array->size(); }
 	inline OtObject next() { return array->getEntry(index++); }
@@ -38,7 +34,14 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructors
+	friend class OtObjectPointer<OtArrayIteratorClass>;
+	OtArrayIteratorClass() = default;
+	OtArrayIteratorClass(OtArray a) : array(a) {}
+
 private:
+	// data
 	OtArray array;
 	size_t index {0};
 };

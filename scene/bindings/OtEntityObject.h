@@ -27,10 +27,6 @@ using OtEntityObject = OtObjectPointer<OtEntityObjectClass>;
 
 class OtEntityObjectClass : public OtObjectClass {
 public:
-	// constructors
-	OtEntityObjectClass() = default;
-	OtEntityObjectClass(OtScene* s, OtEntity e) : scene(s), entity(e) {}
-
 	// link object to ECS
 	void linkToECS(OtScene* scene, OtEntity entity);
 
@@ -40,6 +36,12 @@ public:
 
 	// get type definition
 	static OtType getMeta();
+
+protected:
+	// constructors
+	friend class OtObjectPointer<OtEntityObjectClass>;
+	OtEntityObjectClass() = default;
+	OtEntityObjectClass(OtScene* s, OtEntity e) : scene(s), entity(e) {}
 
 private:
 	// connection to ECS

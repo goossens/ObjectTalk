@@ -95,6 +95,11 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtDialClass>;
+	OtDialClass() = default;
+
 private:
 	// properties
 	OtAsset<OtTextureAsset> background;

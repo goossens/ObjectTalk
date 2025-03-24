@@ -28,26 +28,6 @@ using OtFunction = OtObjectPointer<OtFunctionClass>;
 
 class OtFunctionClass : public OtPrimitiveClass {
 public:
-	// constructors
-	OtFunctionClass() = default;
-
-	inline OtFunctionClass(void (*function)(size_t, OtObject*)) {
-		caller = [function](size_t count, OtObject* parameters) {
-			function(count, parameters);
-			return nullptr;
-		};
-
-		parameterCount = SIZE_MAX;
-	}
-
-	inline OtFunctionClass(OtObject (*function)(size_t, OtObject*)) {
-		caller = [function](size_t count, OtObject* parameters) {
-			return function(count, parameters);
-		};
-
-		parameterCount = SIZE_MAX;
-	}
-
 	template <typename Args, std::size_t... I>
 	static inline auto functionArgs(OtObject* parameters, std::index_sequence<I...>) {
 		return std::make_tuple(OtValue<std::tuple_element_t<I, Args>>::decode(parameters[I])...);
@@ -191,6 +171,29 @@ public:
 	static OtType getMeta();
 
 protected:
+	// constructors
+	friend class OtObjectPointer<OtFunctionClass>;
+	OtFunctionClass() = default;
+
+	inline OtFunctionClass(void (*function)(size_t, OtObject*)) {
+		caller = [function](size_t count, OtObject* parameters) {
+			function(count, parameters);
+			return nullptr;
+		};
+
+		parameterCount = SIZE_MAX;
+	}
+
+	inline OtFunctionClass(OtObject (*function)(size_t, OtObject*)) {
+		caller = [function](size_t count, OtObject* parameters) {
+			return function(count, parameters);
+		};
+
+		parameterCount = SIZE_MAX;
+	}
+
+private:
+	// data
 	std::function<OtObject(size_t, OtObject*)> caller;
 	size_t parameterCount = 0;
 };

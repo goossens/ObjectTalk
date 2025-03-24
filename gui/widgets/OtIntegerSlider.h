@@ -62,6 +62,11 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtIntegerSliderClass>;
+	OtIntegerSliderClass() = default;
+
 private:
 	std::string label;
 	int value = 0;

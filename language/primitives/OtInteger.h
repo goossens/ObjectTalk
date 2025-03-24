@@ -30,10 +30,6 @@ using OtInteger = OtObjectPointer<OtIntegerClass>;
 
 class OtIntegerClass : public OtPrimitiveClass {
 public:
-	// constructors
-	OtIntegerClass() = default;
-	OtIntegerClass(int64_t integer) : value(integer) {}
-
 	// conversion operators
 	inline operator bool() override { return value != 0; }
 	inline operator int() override { return (int) value; }
@@ -89,6 +85,13 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructors
+	friend class OtObjectPointer<OtIntegerClass>;
+	OtIntegerClass() = default;
+	OtIntegerClass(int64_t integer) : value(integer) {}
+
 private:
+	// data
 	int64_t value = 0;
 };

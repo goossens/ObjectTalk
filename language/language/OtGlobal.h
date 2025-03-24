@@ -26,11 +26,13 @@ using OtGlobal = OtObjectPointer<OtGlobalClass>;
 
 class OtGlobalClass : public OtInternalClass {
 public:
-	// constructor (create a default ObjectTalk scope)
-	OtGlobalClass();
-
 	// get type definition
 	static OtType getMeta();
+
+protected:
+	// constructor (create a default ObjectTalk scope)
+	friend class OtObjectPointer<OtGlobalClass>;
+	OtGlobalClass();
 
 private:
 	// check assertion

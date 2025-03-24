@@ -28,14 +28,6 @@ using OtStringIterator = OtObjectPointer<OtStringIteratorClass>;
 
 class OtStringIteratorClass : public OtIteratorClass {
 public:
-	// constructors
-	OtStringIteratorClass() = default;
-
-	inline OtStringIteratorClass(OtString string) {
-		pos = string->value.cbegin();
-		last = string->value.cend();
-	}
-
 	// iteration operations
 	inline bool end() {
 		return pos == last;
@@ -51,7 +43,18 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructors
+	friend class OtObjectPointer<OtStringIteratorClass>;
+	OtStringIteratorClass() = default;
+
+	inline OtStringIteratorClass(OtString string) {
+		pos = string->value.cbegin();
+		last = string->value.cend();
+	}
+
 private:
+	// data
 	std::string::const_iterator pos;
 	std::string::const_iterator last;
 };

@@ -26,4 +26,9 @@ class OtStreamClass : public OtObjectClass {
 public:
 	// get type definition
 	static OtType getMeta();
+
+protected:
+	// constructor
+	friend class OtObjectPointer<OtStreamClass>;
+	OtStreamClass() = default;
 };

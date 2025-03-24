@@ -27,10 +27,6 @@ using OtArray = OtObjectPointer<OtArrayClass>;
 
 class OtArrayClass : public OtCollectionClass {
 public:
-	// constructors
-	OtArrayClass() = default;
-	OtArrayClass(size_t count, OtObject* objects);
-
 	// convert array to string
 	operator std::string() override;
 
@@ -109,6 +105,13 @@ public:
 	// get access to raw object array
 	std::vector<OtObject>& raw() { return array; }
 
+protected:
+	// constructors
+	friend class OtObjectPointer<OtArrayClass>;
+	OtArrayClass() = default;
+	OtArrayClass(size_t count, OtObject* objects);
+
 private:
+	// data
 	std::vector<OtObject> array;
 };

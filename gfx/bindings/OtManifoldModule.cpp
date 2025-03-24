@@ -20,6 +20,31 @@
 
 
 //
+//	OtManifoldClass::getMeta
+//
+
+OtType OtManifoldClass::getMeta() {
+	static OtType type = nullptr;
+
+	if (!type) {
+		type = OtType::create<OtManifoldClass>("Manifold", OtObjectClass::getMeta());
+		type->set("clear", OtFunction::create(&OtManifoldClass::clear));
+
+		type->set("union", OtFunction::create(&OtManifoldClass::unionManifolds));
+		type->set("difference", OtFunction::create(&OtManifoldClass::differenceManifolds));
+		type->set("intersect", OtFunction::create(&OtManifoldClass::intersectManifolds));
+
+		type->set("translate", OtFunction::create(&OtManifoldClass::translate));
+		type->set("rotate", OtFunction::create(&OtManifoldClass::rotate));
+		type->set("scale", OtFunction::create(&OtManifoldClass::scale));
+		type->set("mirror", OtFunction::create(&OtManifoldClass::mirror));
+	}
+
+	return type;
+}
+
+
+//
 //	Module registration
 //
 

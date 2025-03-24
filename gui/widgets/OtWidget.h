@@ -69,6 +69,11 @@ public:
 	static OtType getMeta();
 
 protected:
+	// constructor
+	friend class OtObjectPointer<OtWidgetClass>;
+	OtWidgetClass() = default;
+
+protected:
 	// parent widget
 	OtWidgetClass* parent = nullptr;
 

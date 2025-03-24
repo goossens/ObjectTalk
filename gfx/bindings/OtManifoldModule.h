@@ -28,10 +28,6 @@ using OtManifoldObject = OtObjectPointer<OtManifoldClass>;
 
 class OtManifoldClass : public OtObjectClass {
 public:
-	// constructors
-	OtManifoldClass() = default;
-	OtManifoldClass(const OtManifold& m) : manifold(m) {}
-
 	// clear the manifold
 	inline void clear() { manifold.clear(); }
 
@@ -69,27 +65,16 @@ public:
 	inline OtManifold& getManifold() { return manifold; }
 
 	// get type definition
-	static inline OtType getMeta() {
-		static OtType type = nullptr;
+	static OtType getMeta();
 
-		if (!type) {
-			type = OtType::create<OtManifoldClass>("Manifold", OtObjectClass::getMeta());
-			type->set("clear", OtFunction::create(&OtManifoldClass::clear));
-
-			type->set("union", OtFunction::create(&OtManifoldClass::unionManifolds));
-			type->set("difference", OtFunction::create(&OtManifoldClass::differenceManifolds));
-			type->set("intersect", OtFunction::create(&OtManifoldClass::intersectManifolds));
-
-			type->set("translate", OtFunction::create(&OtManifoldClass::translate));
-			type->set("rotate", OtFunction::create(&OtManifoldClass::rotate));
-			type->set("scale", OtFunction::create(&OtManifoldClass::scale));
-			type->set("mirror", OtFunction::create(&OtManifoldClass::mirror));
-		}
-
-		return type;
-	}
+protected:
+	// constructors
+	friend class OtObjectPointer<OtManifoldClass>;
+	OtManifoldClass() = default;
+	OtManifoldClass(const OtManifold& m) : manifold(m) {}
 
 private:
+	// data
 	OtManifold manifold;
 };
 
@@ -101,7 +86,7 @@ private:
 template <>
 struct OtValue<OtManifold> {
 	static inline OtObject encode(OtManifold manifold) {
-		return OtManifoldClass(manifold);
+		return OtManifoldObject::create(manifold);
 	}
 
 	static inline OtManifold decode(OtObject object) {

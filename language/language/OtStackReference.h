@@ -27,10 +27,6 @@ using OtStackReference = OtObjectPointer<OtStackReferenceClass>;
 
 class OtStackReferenceClass : public OtReferenceClass {
 public:
-	// constructors
-	OtStackReferenceClass() = default;
-	OtStackReferenceClass(OtID i, size_t s) : id(i), slot(s) {}
-
 	// debugging support
 	inline std::string describe() override {
 		std::string name(OtIdentifier::name(id));
@@ -48,7 +44,14 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructors
+	friend class OtObjectPointer<OtStackReferenceClass>;
+	OtStackReferenceClass() = default;
+	OtStackReferenceClass(OtID i, size_t s) : id(i), slot(s) {}
+
 private:
+	// data
 	OtID id;
 	size_t slot;
 };

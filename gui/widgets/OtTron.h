@@ -34,6 +34,11 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtTronClass>;
+	OtTronClass() = default;
+
 private:
 	// create a new set of arcs
 	void createArcs();

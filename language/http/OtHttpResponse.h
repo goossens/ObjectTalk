@@ -67,7 +67,13 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtHttpResponseClass>;
+	OtHttpResponseClass() = default;
+
 private:
+	// properties
 	enum ResponseState {
 		start,
 		headersSent,

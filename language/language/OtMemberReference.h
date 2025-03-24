@@ -30,10 +30,6 @@ using OtMemberReference = OtObjectPointer<OtMemberReferenceClass>;
 
 class OtMemberReferenceClass : public OtReferenceClass {
 public:
-	// constructors
-	OtMemberReferenceClass() = default;
-	OtMemberReferenceClass(OtObject o, OtID m) : object(o), member(m) {}
-
 	// debugging support
 	inline std::string describe() override { return object.getTypeName() + " " + std::string(OtIdentifier::name(member)); }
 
@@ -67,7 +63,14 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructors
+	friend class OtObjectPointer<OtMemberReferenceClass>;
+	OtMemberReferenceClass() = default;
+	OtMemberReferenceClass(OtObject o, OtID m) : object(o), member(m) {}
+
 private:
+	// data
 	OtObject object;
 	OtID member;
 };

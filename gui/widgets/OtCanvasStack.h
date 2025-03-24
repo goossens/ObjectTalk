@@ -55,6 +55,11 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtCanvasStackClass>;
+	OtCanvasStackClass() = default;
+
 private:
 	// properties
 	float width = 100.0f;

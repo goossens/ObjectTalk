@@ -37,6 +37,11 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtDebuggerClass>;
+	OtDebuggerClass() = default;
+
 private:
 	// run the debug hook
 	void debugHook();

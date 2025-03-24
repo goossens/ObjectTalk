@@ -101,6 +101,11 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtVectorDisplayClass>;
+	OtVectorDisplayClass() = default;
+
 private:
 	// properties
 	float width = 0.0f;

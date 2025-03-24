@@ -27,10 +27,6 @@ using OtDictReference = OtObjectPointer<OtDictReferenceClass>;
 
 class OtDictReferenceClass : public OtReferenceClass {
 public:
-	// constructors
-	OtDictReferenceClass() = default;
-	OtDictReferenceClass(OtDict d, const std::string& i) : dict(d), index(i) {}
-
 	// debugging support
 	inline std::string describe() override { return "[\"" + index + "\"]"; }
 
@@ -41,7 +37,14 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructors
+	friend class OtObjectPointer<OtDictReferenceClass>;
+	OtDictReferenceClass() = default;
+	OtDictReferenceClass(OtDict d, const std::string& i) : dict(d), index(i) {}
+
 private:
+	// data
 	OtDict dict;
 	std::string index;
 };

@@ -28,10 +28,6 @@ class OtSetClass : public OtCollectionClass {
 	friend class OtSetIteratorClass;
 
 public:
-	// constructors
-	OtSetClass() = default;
-	OtSetClass(OtObject* objects, size_t count);
-
 	// convert set to string
 	operator std::string() override;
 
@@ -83,6 +79,13 @@ public:
 	// get access to raw object set
 	std::set<OtObject>& raw() { return set; }
 
+protected:
+	// constructors
+	friend class OtObjectPointer<OtSetClass>;
+	OtSetClass() = default;
+	OtSetClass(OtObject* objects, size_t count);
+
 private:
+	// data
 	std::set<OtObject> set;
 };

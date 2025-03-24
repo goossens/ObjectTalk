@@ -28,10 +28,6 @@ using OtShapeObject = OtObjectPointer<OtShapeClass>;
 
 class OtShapeClass : public OtObjectClass {
 public:
-	// constructors
-	OtShapeClass() = default;
-	OtShapeClass(const OtShape& s) : shape(s) {}
-
 	// clear the shape
 	inline void clear() { shape.clear(); }
 
@@ -64,36 +60,16 @@ public:
 	inline OtShape& getShape() { return shape; }
 
 	// get type definition
-	static inline OtType getMeta() {
-		static OtType type = nullptr;
+	static OtType getMeta();
 
-		if (!type) {
-			type = OtType::create<OtShapeClass>("Shape", OtObjectClass::getMeta());
-
-			type->set("moveTo", OtFunction::create(&OtShapeClass::moveTo));
-			type->set("lineTo", OtFunction::create(&OtShapeClass::lineTo));
-			type->set("bezierCurveTo", OtFunction::create(&OtShapeClass::bezierCurveTo));
-			type->set("quadraticCurveTo", OtFunction::create(&OtShapeClass::quadraticCurveTo));
-			type->set("arcTo", OtFunction::create(&OtShapeClass::arcTo));
-			type->set("close", OtFunction::create(&OtShapeClass::close));
-
-			type->set("rect", OtFunction::create(&OtShapeClass::rect));
-			type->set("roundedRect", OtFunction::create(&OtShapeClass::roundedRect));
-			type->set("circle", OtFunction::create(&OtShapeClass::circle));
-			type->set("ellipse", OtFunction::create(&OtShapeClass::ellipse));
-			type->set("arc", OtFunction::create(&OtShapeClass::arc));
-
-			type->set("transform", OtFunction::create(&OtShapeClass::transform));
-			type->set("translate", OtFunction::create(&OtShapeClass::translate));
-			type->set("rotate", OtFunction::create(&OtShapeClass::rotate));
-			type->set("scale", OtFunction::create(&OtShapeClass::scale));
-			type->set("shear", OtFunction::create(&OtShapeClass::shear));
-		}
-
-		return type;
-	}
+protected:
+	// constructors
+	friend class OtObjectPointer<OtShapeClass>;
+	OtShapeClass() = default;
+	OtShapeClass(const OtShape& s) : shape(s) {}
 
 private:
+	// data
 	OtShape shape;
 };
 
@@ -105,7 +81,7 @@ private:
 template <>
 struct OtValue<OtShape> {
 	static inline OtObject encode(OtShape shape) {
-		return OtShapeClass(shape);
+		return OtShapeObject::create(shape);
 	}
 
 	static inline OtShape decode(OtObject object) {

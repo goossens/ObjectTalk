@@ -24,4 +24,5 @@ OtType OtPrimitiveClass::getMeta() {
 	}
 
 	return type;
+
 }

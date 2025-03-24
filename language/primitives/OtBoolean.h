@@ -24,10 +24,6 @@ using OtBoolean = OtObjectPointer<OtBooleanClass>;
 
 class OtBooleanClass : public OtPrimitiveClass {
 public:
-	// constructors
-	OtBooleanClass() = default;
-	OtBooleanClass(bool boolean) : value(boolean) {}
-
 	// conversion operators
 	inline operator bool() override { return value; }
 	inline operator int() override { return value ? 1 : 0; }
@@ -60,6 +56,13 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructors
+	friend class OtObjectPointer<OtBooleanClass>;
+	OtBooleanClass() = default;
+	OtBooleanClass(bool boolean) : value(boolean) {}
+
 private:
+	// data
 	bool value = false;
 };

@@ -59,6 +59,11 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtComboBoxClass>;
+	OtComboBoxClass() = default;
+
 private:
 	std::string label;
 	std::string value;

@@ -26,4 +26,9 @@ class OtReferenceClass : public OtInternalClass {
 public:
 	// get type definition
 	static OtType getMeta();
+
+protected:
+	// constructor
+	friend class OtObjectPointer<OtReferenceClass>;
+	OtReferenceClass() = default;
 };

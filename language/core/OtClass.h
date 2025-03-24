@@ -22,13 +22,11 @@
 //	OtClass
 //
 
+class OtClassClass;
+using OtClass = OtObjectPointer<OtClassClass>;
+
 class OtClassClass : public OtInternalClass {
 public:
-	// constructors
-	OtClassClass() = default;
-	OtClassClass(OtType t) : classType(t) {}
-	OtClassClass(OtID id) { classType = OtType::create(id); }
-
 	// debugging support
 	inline std::string describe() override { return classType->getName(); }
 
@@ -60,5 +58,12 @@ public:
 	static OtType getMeta();
 
 protected:
+	// constructors
+	friend class OtObjectPointer<OtClassClass>;
+	OtClassClass() = default;
+	OtClassClass(OtType t) : classType(t) {}
+	OtClassClass(OtID id) { classType = OtType::create(id); }
+
+	// data
 	OtType classType;
 };

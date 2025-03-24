@@ -32,9 +32,6 @@ using OtHttpSession = OtObjectPointer<OtHttpSessionClass>;
 
 class OtHttpSessionClass : public OtHttpClass {
 public:
-	// constructor
-	OtHttpSessionClass(uv_stream_t* stream, OtHttpRouter router);
-
 	// close session
 	void close();
 
@@ -50,6 +47,11 @@ public:
 	static OtType getMeta();
 
 private:
+	// constructor
+	friend class OtObjectPointer<OtHttpSessionClass>;
+	OtHttpSessionClass(uv_stream_t* stream, OtHttpRouter router);
+
+	// properties
 	bool active = false;
 	uint64_t lastRequest;
 

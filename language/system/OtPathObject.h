@@ -26,12 +26,6 @@ using OtPathObject = OtObjectPointer<OtPathObjectClass>;
 
 class OtPathObjectClass : public OtSystemClass {
 public:
-	// constructors
-	OtPathObjectClass() = default;
-	OtPathObjectClass(const char* p) : path(p) {}
-	OtPathObjectClass(const std::string& p) : path(p) {}
-	OtPathObjectClass(const std::filesystem::path& p) : path(p) {}
-
 	// convert to string
 	inline operator std::string() override { return path.string(); }
 
@@ -90,6 +84,14 @@ public:
 
 	// get type definition
 	static OtType getMeta();
+
+protected:
+	// constructors
+	friend class OtObjectPointer<OtPathObjectClass>;
+	OtPathObjectClass() = default;
+	OtPathObjectClass(const char* p) : path(p) {}
+	OtPathObjectClass(const std::string& p) : path(p) {}
+	OtPathObjectClass(const std::filesystem::path& p) : path(p) {}
 
 private:
 	friend class OtPathIteratorClass;

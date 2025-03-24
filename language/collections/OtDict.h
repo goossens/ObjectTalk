@@ -28,10 +28,6 @@ using OtDict = OtObjectPointer<OtDictClass>;
 
 class OtDictClass : public OtCollectionClass {
 public:
-	// constructors
-	OtDictClass() = default;
-	OtDictClass(size_t count, OtObject* objects);
-
 	// convert dictionary to string
 	operator std::string() override;
 
@@ -87,6 +83,13 @@ public:
 	// get access to raw object dictionary
 	std::unordered_map<std::string, OtObject>& raw() { return dict; }
 
+protected:
+	// constructors
+	friend class OtObjectPointer<OtDictClass>;
+	OtDictClass() = default;
+	OtDictClass(size_t count, OtObject* objects);
+
 private:
+	// data
 	std::unordered_map<std::string, OtObject> dict;
 };

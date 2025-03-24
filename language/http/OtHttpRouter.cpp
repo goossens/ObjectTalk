@@ -23,7 +23,7 @@
 //	OtHttpMethodHandler
 //
 
-class OtHttpMethodHandler : public OtHttpRouterClass::OtHandler {
+class OtHttpMethodHandler : public OtHttpRouterClass::Handler {
 public:
 	OtHttpMethodHandler(const std::string& m, const std::string& p, OtObject cb) : method(m), path(p), callback(cb) {
 		// sanity check
@@ -125,7 +125,7 @@ private:
 //	OtStaticHandler
 //
 
-class OtStaticHandler : public OtHttpRouterClass::OtHandler {
+class OtStaticHandler : public OtHttpRouterClass::Handler {
 public:
 	OtStaticHandler(const std::string& p, const std::string& f) : serverPath(p), fsPath(f) {}
 

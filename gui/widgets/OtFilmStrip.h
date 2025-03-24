@@ -84,6 +84,11 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtFilmStripClass>;
+	OtFilmStripClass() = default;
+
 private:
 	// properties
 	OtAsset<OtTextureAsset> filmstrip;

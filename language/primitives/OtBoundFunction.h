@@ -25,10 +25,6 @@ using OtBoundFunction = OtObjectPointer<OtBoundFunctionClass>;
 
 class OtBoundFunctionClass : public OtInternalClass {
 public:
-	// constructor
-	OtBoundFunctionClass() = default;
-	OtBoundFunctionClass(OtObject o, OtObject f) : object(o), function(f) {}
-
 	// debugging support
 	inline std::string describe() override { return object.getTypeName() + " " + "function"; }
 
@@ -38,7 +34,14 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtBoundFunctionClass>;
+	OtBoundFunctionClass() = default;
+	OtBoundFunctionClass(OtObject o, OtObject f) : object(o), function(f) {}
+
 private:
+	// data
 	OtObject object;
 	OtObject function;
 };

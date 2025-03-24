@@ -29,10 +29,6 @@ using OtURL = OtObjectPointer<OtURLClass>;
 class OtURLClass : public OtHttpClass
 {
 public:
-	// constructors
-	OtURLClass() = default;
-	OtURLClass(const std::string& path) { parse(path); }
-
 	// initialize URL
 	void init(size_t count, OtObject* parameters);
 
@@ -75,7 +71,14 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructors
+	friend class OtObjectPointer<OtURLClass>;
+	OtURLClass() = default;
+	OtURLClass(const std::string& path) { parse(path); }
+
 private:
+	// properties
 	std::string url;
 	std::string scheme;
 	std::string authority;

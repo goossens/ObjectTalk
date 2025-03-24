@@ -41,6 +41,11 @@ public:
 	// add a path to search for modules
 	static void addPath(const std::string& path);
 
+protected:
+	// constructor
+	OtModuleClass() = default;
+	friend class OtObjectPointer<OtModuleClass>;
+
 private:
 	// clear the internal cache
 	friend class OtFramework;

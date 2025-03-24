@@ -27,6 +27,20 @@ using OtHttpTimer = OtObjectPointer<OtHttpTimerClass>;
 
 class OtHttpTimerClass : public OtInternalClass {
 public:
+	// get type definition
+	static OtType getMeta() {
+		static OtType type;
+
+		if (!type) {
+			type = OtType::create<OtHttpTimerClass>("HttpTimer", OtInternalClass::getMeta());
+		}
+
+		return type;
+	}
+
+protected:
+	// constructor
+	friend class OtObjectPointer<OtHttpTimerClass>;
 	OtHttpTimerClass() = default;
 	OtHttpTimerClass(int64_t wait, int64_t repeat, OtObject cb) : callback(cb) {
 		// sanity check
@@ -41,18 +55,8 @@ public:
 		}, wait, repeat);
 	}
 
-	// get type definition
-	static OtType getMeta() {
-		static OtType type;
-
-		if (!type) {
-			type = OtType::create<OtHttpTimerClass>("HttpTimer", OtInternalClass::getMeta());
-		}
-
-		return type;
-	}
-
 private:
+	// properties
 	uv_timer_t uv_timer;
 	OtObject callback;
 };

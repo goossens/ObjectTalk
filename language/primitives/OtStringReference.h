@@ -27,10 +27,6 @@ using OtStringReference = OtObjectPointer<OtStringReferenceClass>;
 
 class OtStringReferenceClass : public OtReferenceClass {
 public:
-	// constructors
-	OtStringReferenceClass() = default;
-	OtStringReferenceClass(OtString s, size_t i) : string(s), index(i) {}
-
 	// debugging support
 	inline std::string describe() override {
 		return "[" + std::to_string(index) + "]";
@@ -50,7 +46,14 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructors
+	friend class OtObjectPointer<OtStringReferenceClass>;
+	OtStringReferenceClass() = default;
+	OtStringReferenceClass(OtString s, size_t i) : string(s), index(i) {}
+
 private:
+	// data
 	OtString string;
 	size_t index;
 };

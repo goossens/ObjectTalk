@@ -26,4 +26,9 @@ class OtPrimitiveClass : public OtObjectClass {
 public:
 	// get type definition
 	static OtType getMeta();
+
+protected:
+	// constructor
+	friend class OtObjectPointer<OtPrimitiveClass>;
+	OtPrimitiveClass() = default;
 };

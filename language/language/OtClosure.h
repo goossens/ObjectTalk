@@ -30,10 +30,6 @@ using OtClosure = OtObjectPointer<OtClosureClass>;
 
 class OtClosureClass : public OtInternalClass {
 public:
-	// constructor
-	OtClosureClass() = default;
-	OtClosureClass(OtByteCodeFunction f, const std::unordered_map<OtID, std::pair<size_t, size_t>>& c) : function(f), captures(c) {}
-
 	// capture required variables in returned clone
 	OtObject capture();
 
@@ -46,7 +42,14 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtClosureClass>;
+	OtClosureClass() = default;
+	OtClosureClass(OtByteCodeFunction f, const std::unordered_map<OtID, std::pair<size_t, size_t>>& c) : function(f), captures(c) {}
+
 private:
+	// data
 	OtByteCodeFunction function;
 	std::unordered_map<OtID, std::pair<size_t, size_t>> captures;
 };

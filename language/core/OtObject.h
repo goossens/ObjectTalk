@@ -39,15 +39,6 @@ using OtObject = OtObjectPointer<OtObjectClass>;
 
 class OtObjectClass {
 public:
-	// constructors/destructor (rule of 6)
-	OtObjectClass() = default;
-	OtObjectClass(const OtObjectClass&) = delete;
-	OtObjectClass(OtObjectClass&&) = delete;
-	virtual ~OtObjectClass();
-
-	OtObjectClass& operator=(const OtObjectClass&) = delete;
-	OtObjectClass& operator=(OtObjectClass&&) = delete;
-
 	// type access
 	inline void setType(OtType t) { type = t; }
 	inline OtType getType() { return type; }
@@ -114,6 +105,19 @@ public:
 	static OtType getMeta();
 
 protected:
+	// constructors/destructor (rule of 6)
+	friend class OtObjectPointer<OtObjectClass>;
+	OtObjectClass() = default;
+	OtObjectClass(const OtObjectClass&) = delete;
+	OtObjectClass(OtObjectClass&&) = delete;
+	virtual ~OtObjectClass();
+
+	OtObjectClass& operator=(const OtObjectClass&) = delete;
+	OtObjectClass& operator=(OtObjectClass&&) = delete;
+
+private:
+	friend class OtClassClass;
+
 	// object type
 	OtType type;
 

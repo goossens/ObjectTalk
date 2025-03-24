@@ -28,10 +28,6 @@ class OtHttpRouterClass;
 using OtHttpRouter = OtObjectPointer<OtHttpRouterClass>;
 
 class OtHttpRouterClass : public OtHttpClass {
-	friend class OtHttpNextClass;
-	friend class OtHttpMethodHandler;
-	friend class OtStaticHandler;
-
 public:
 	// add handlers
 	OtObject useHandler(OtObject callback);
@@ -51,14 +47,24 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtHttpRouterClass>;
+	OtHttpRouterClass() = default;
+
 private:
-	class OtHandler {
+	// request handlers
+	friend class OtHttpNextClass;
+	friend class OtHttpMethodHandler;
+	friend class OtStaticHandler;
+
+	class Handler {
 	public:
 		// constructor
-		OtHandler() = default;
+		Handler() = default;
 
 		// destructor
-		virtual ~OtHandler() {}
+		virtual ~Handler() {}
 
 		// run as a the handler
 		virtual void run(OtHttpRequest /* req */, OtHttpResponse /* res */, OtObject /* next */) {}
@@ -68,5 +74,5 @@ private:
 	OtObject addHandler(const std::string& method, const std::string& path, OtObject callback);
 	void runHandler(const size_t index, OtHttpRequest req, OtHttpResponse res, OtObject next);
 
-	std::vector<std::shared_ptr<OtHandler>> handlers;
+	std::vector<std::shared_ptr<Handler>> handlers;
 };

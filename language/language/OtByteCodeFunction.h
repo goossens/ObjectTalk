@@ -26,10 +26,6 @@ using OtByteCodeFunction = OtObjectPointer<OtByteCodeFunctionClass>;
 
 class OtByteCodeFunctionClass : public OtInternalClass {
 public:
-	// constructor
-	OtByteCodeFunctionClass() = default;
-	OtByteCodeFunctionClass(OtByteCode c, size_t p) : bytecode(c), parameterCount(p) {}
-
 	// debugging support
 	inline std::string describe() override { return std::string(OtIdentifier::name(bytecode->getID())); }
 
@@ -42,7 +38,14 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtByteCodeFunctionClass>;
+	OtByteCodeFunctionClass() = default;
+	OtByteCodeFunctionClass(OtByteCode c, size_t p) : bytecode(c), parameterCount(p) {}
+
 private:
+	// data
 	OtByteCode bytecode;
 	size_t parameterCount;
 };

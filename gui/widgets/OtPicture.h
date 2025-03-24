@@ -59,6 +59,11 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtPictureClass>;
+	OtPictureClass() = default;
+
 private:
 	// properties
 	OtAsset<OtTextureAsset> picture;

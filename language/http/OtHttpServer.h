@@ -28,10 +28,6 @@ using OtHttpServer = OtObjectPointer<OtHttpServerClass>;
 
 class OtHttpServerClass : public OtHttpClass {
 public:
-	// constructor/destructor
-	OtHttpServerClass();
-	~OtHttpServerClass();
-
 	// initialize server
 	void init(OtObject object);
 
@@ -47,7 +43,14 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor/destructor
+	friend class OtObjectPointer<OtHttpServerClass>;
+	OtHttpServerClass();
+	~OtHttpServerClass();
+
 private:
+	// properties
 	uv_tcp_t uv_server;
 	uv_timer_t uv_watchdog;
 

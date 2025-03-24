@@ -30,9 +30,6 @@ using OtHttpRequest = OtObjectPointer<OtHttpRequestClass>;
 
 class OtHttpRequestClass : public OtHttpClass {
 public:
-	// constructor
-	OtHttpRequestClass();
-
 	// clear all request fields
 	void clear();
 
@@ -85,7 +82,13 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtHttpRequestClass>;
+	OtHttpRequestClass();
+
 private:
+	// properties
 	std::string method;
 	std::string url;
 	std::string path;

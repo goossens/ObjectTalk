@@ -25,10 +25,6 @@ using OtCaptureReference = OtObjectPointer<OtCaptureReferenceClass>;
 
 class OtCaptureReferenceClass : public OtReferenceClass {
 public:
-	// constructors
-	OtCaptureReferenceClass() = default;
-	OtCaptureReferenceClass(OtID m) :  member(m) {}
-
 	// debugging support
 	inline std::string describe() override { return std::string(OtIdentifier::name(member)); }
 
@@ -39,6 +35,13 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructors
+	friend class OtObjectPointer<OtCaptureReferenceClass>;
+	OtCaptureReferenceClass() = default;
+	OtCaptureReferenceClass(OtID m) :  member(m) {}
+
 private:
+	// data
 	OtID member;
 };

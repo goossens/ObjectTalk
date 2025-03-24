@@ -51,6 +51,11 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtTreeNodeClass>;
+	OtTreeNodeClass() = default;
+
 private:
 	std::string label;
 	bool openFlag = true;

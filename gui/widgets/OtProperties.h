@@ -42,6 +42,11 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructor
+	friend class OtObjectPointer<OtPropertiesClass>;
+	OtPropertiesClass() = default;
+
 private:
 	// propertoes
 	float split = 0.5f;

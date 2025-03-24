@@ -27,10 +27,6 @@ using OtSetIterator = OtObjectPointer<OtSetIteratorClass>;
 
 class OtSetIteratorClass : public OtIteratorClass {
 public:
-	// constructors
-	OtSetIteratorClass() = default;
-	inline OtSetIteratorClass(OtSet s) : set(s) { iterator = set->set.begin(); }
-
 	// iteration operations
 	inline bool end() { return iterator == set->set.end(); }
 	inline OtObject next() { return *iterator++; }
@@ -38,7 +34,14 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructors
+	friend class OtObjectPointer<OtSetIteratorClass>;
+	OtSetIteratorClass() = default;
+	inline OtSetIteratorClass(OtSet s) : set(s) { iterator = set->set.begin(); }
+
 private:
+	// data
 	OtSet set;
 	std::set<OtObject>::iterator iterator;
 };

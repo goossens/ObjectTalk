@@ -29,10 +29,6 @@ using OtReal = OtObjectPointer<OtRealClass>;
 
 class OtRealClass : public OtPrimitiveClass {
 public:
-	// constructors
-	OtRealClass() = default;
-	OtRealClass(double real) : value(real) {}
-
 	// conversion operators
 	inline operator bool() override { return value != 0.0; }
 	inline operator int() override { return (int) value; }
@@ -103,6 +99,13 @@ public:
 	// get type definition
 	static OtType getMeta();
 
+protected:
+	// constructors
+	friend class OtObjectPointer<OtRealClass>;
+	OtRealClass() = default;
+	OtRealClass(double real) : value(real) {}
+
 private:
+	// data
 	double value = 0.0;
 };

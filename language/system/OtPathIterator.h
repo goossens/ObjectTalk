@@ -27,14 +27,17 @@ using OtPathIterator = OtObjectPointer<OtPathIteratorClass>;
 
 class OtPathIteratorClass : public OtIteratorClass {
 public:
-	OtPathIteratorClass() = default;
-	inline OtPathIteratorClass(OtPathObject p) { path = p; iterator = p->path.begin(); last = p->path.end(); }
-
 	inline bool end() { return iterator == last; }
 	inline OtObject next() { return OtPathObject::create(*(iterator++)); }
 
 	// get type definition
 	static OtType getMeta();
+
+protected:
+	// constructor
+	friend class OtObjectPointer<OtPathIteratorClass>;
+	OtPathIteratorClass() = default;
+	inline OtPathIteratorClass(OtPathObject p) { path = p; iterator = p->path.begin(); last = p->path.end(); }
 
 private:
 	OtPathObject path;

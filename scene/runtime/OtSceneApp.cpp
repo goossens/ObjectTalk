@@ -99,7 +99,7 @@ void OtSceneApp::renderSplashScreen() {
 void OtSceneApp::renderViewPort() {
 	// create the window
 	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
-	ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+	ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 
 	ImGui::Begin(

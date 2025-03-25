@@ -214,7 +214,7 @@ bool OtAssetSelector::renderUI(Info& info) {
 	}
 
 	// show file selector (if required)
-	ImVec2 maxSize = ImGui::GetIO().DisplaySize;
+	ImVec2 maxSize = ImGui::GetMainViewport()->Size;
 	ImVec2 minSize = ImVec2(maxSize.x * 0.5f, maxSize.y * 0.5f);
 
 	if (dialog->Display(dialogID.c_str(), ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {

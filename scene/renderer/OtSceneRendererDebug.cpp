@@ -31,7 +31,7 @@
 
 void OtSceneRendererDebug::render(OtSceneRenderer& renderer) {
 	// render the debug window
-	auto size = ImGui::GetIO().DisplaySize;
+	auto size = ImGui::GetMainViewport()->Size;
 	ImGui::SetNextWindowPos(ImVec2(size.x / 10.0f, size.y / 10.0f), ImGuiCond_Once);
 	ImGui::SetNextWindowSize(ImVec2(size.x * 0.3f, size.y * 0.7f), ImGuiCond_Once);
 

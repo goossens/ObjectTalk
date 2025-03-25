@@ -36,7 +36,7 @@ void OtDebuggerUI::update(const std::string& message) {
 void OtDebuggerUI::render(OtSubProcess& subprocess, OtConsole& console) {
 	// create debugger window
 	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
-	ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+	ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 
 	ImGui::Begin(

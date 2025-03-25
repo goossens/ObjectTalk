@@ -595,7 +595,7 @@ void OtWorkspace::renderEditors() {
 
 	// create workspace window
 	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
-	ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+	ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 
 	ImGui::Begin(
@@ -718,7 +718,7 @@ void OtWorkspace::renderWindowedEditors() {
 			float offset = (count - 2) * 40.0f;
 			count = (count + 1) % 5;
 
-			auto size = ImGui::GetIO().DisplaySize;
+			auto size = ImGui::GetMainViewport()->Size;
 			ImGui::SetNextWindowPos(ImVec2(size.x / 6.0f + offset, size.y / 6.0f + offset), ImGuiCond_Once);
 			ImGui::SetNextWindowSize(ImVec2(size.x * 0.6f, size.y * 0.6f), ImGuiCond_Once);
 
@@ -750,7 +750,7 @@ void OtWorkspace::renderWindowedEditors() {
 void OtWorkspace::renderNewFileType() {
 	ImGui::OpenPopup("New File...");
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+	ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
 	if (ImGui::BeginPopupModal("New File...", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 		ImGui::Spacing();
@@ -786,9 +786,12 @@ void OtWorkspace::renderNewFileType() {
 
 void OtWorkspace::renderFileOpen() {
 	// handle file open dialog
-	ImVec2 maxSize = ImGui::GetIO().DisplaySize;
-	ImVec2 minSize = ImVec2(maxSize.x * 0.5f, maxSize.y * 0.5f);
+	ImVec2 maxSize = ImGui::GetMainViewport()->Size;
+	ImVec2 minSize = maxSize * 0.5f;
 	auto dialog = ImGuiFileDialog::Instance();
+
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
 	if (dialog->Display("workspace-open", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		// open selected file if required
@@ -818,9 +821,12 @@ void OtWorkspace::renderFileOpen() {
 
 void OtWorkspace::renderSaveAs() {
 	// handle saveas dialog
-	ImVec2 maxSize = ImGui::GetIO().DisplaySize;
-	ImVec2 minSize = ImVec2(maxSize.x * 0.5f, maxSize.y * 0.5f);
+	ImVec2 maxSize = ImGui::GetMainViewport()->Size;
+	ImVec2 minSize = maxSize * 0.5f;
 	auto dialog = ImGuiFileDialog::Instance();
+
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
 	if (dialog->Display("workspace-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 		// open selected file if required
@@ -849,7 +855,7 @@ void OtWorkspace::renderSaveAs() {
 void OtWorkspace::renderConfirmClose() {
 	ImGui::OpenPopup("Delete?");
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+	ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
 	if (ImGui::BeginPopupModal("Delete?", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 		ImGui::Text("This file has changed!\nDo you really want to delete it?\n\n");
@@ -883,7 +889,7 @@ void OtWorkspace::renderConfirmClose() {
 void OtWorkspace::renderConfirmQuit() {
 	ImGui::OpenPopup("Quit Application?");
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+	ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
 	if (ImGui::BeginPopupModal("Quit Application?", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 		ImGui::Text("You have unsaved files!\nDo you really want to quit?\n\n");
@@ -917,14 +923,14 @@ void OtWorkspace::renderConfirmQuit() {
 void OtWorkspace::renderConfirmWarning() {
 	ImGui::OpenPopup("Warning");
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+	ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
 	if (ImGui::BeginPopupModal("Warning", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 		ImGui::Text("%s\n", message.c_str());
 		ImGui::Separator();
 
 		static constexpr float buttonWidth = 80.0f;
-		ImGui::SameLine(0.0f, ImGui::GetContentRegionAvail().x);
+		ImGui::SameLine(0.0f, ImGui::GetContentRegionAvail().x - buttonWidth);
 
 		if (ImGui::Button("OK", ImVec2(buttonWidth, 0.0f)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
 			state = editors.size() ? State::edit : State::splash;
@@ -943,14 +949,14 @@ void OtWorkspace::renderConfirmWarning() {
 void OtWorkspace::renderConfirmError() {
 	ImGui::OpenPopup("Error");
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+	ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
 	if (ImGui::BeginPopupModal("Error", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 		ImGui::Text("%s\n", message.c_str());
 		ImGui::Separator();
 
 		static constexpr float buttonWidth = 80.0f;
-		ImGui::SameLine(0.0f, ImGui::GetContentRegionAvail().x);
+		ImGui::SameLine(0.0f, ImGui::GetContentRegionAvail().x - buttonWidth);
 
 		if (ImGui::Button("OK", ImVec2(buttonWidth, 0.0f)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
 			state = editors.size() ? State::edit : State::splash;
@@ -969,7 +975,7 @@ void OtWorkspace::renderConfirmError() {
 void OtWorkspace::renderSubProcess() {
 	// create sub-process window
 	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
-	ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+	ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 
 	ImGui::Begin(

@@ -194,10 +194,6 @@ void OtFramework::initIMGUI() {
  	io.BackendPlatformName = "ObjectTalk";
 	io.BackendRendererName = "SDL3/BGFX";
 
-	// connect Dear ImGui to SDL3 window
-	io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
-	io.DeltaTime = 1.0f / 60.0f;
-
 	// windows can only be dragged using the title bar
 	io.ConfigWindowsMoveFromTitleBarOnly = true;
 
@@ -379,8 +375,22 @@ void OtFramework::eventIMGUI(SDL_Event& event) {
 void OtFramework::startFrameIMGUI() {
 	// update Dear ImGui state
 	ImGuiIO& io = ImGui::GetIO();
-	io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
 	io.DeltaTime = loopDuration / 1000.0f;
+
+	int w, h;
+	int displayW, displayH;
+	SDL_GetWindowSize(window, &w, &h);
+	SDL_GetWindowSizeInPixels(window, &displayW, &displayH);
+
+	if (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED) {
+		w = h = 0;
+	}
+
+	io.DisplaySize = ImVec2(static_cast<float>(w), static_cast<float>(h));
+
+	if (w > 0 && h > 0) {
+		io.DisplayFramebufferScale = ImVec2((float)displayW / w, (float)displayH / h);
+	}
 
 	// update cursor
 	if (!(io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange)) {
@@ -404,14 +414,6 @@ void OtFramework::startFrameIMGUI() {
 
 	// start a new frame
 	ImGui::NewFrame();
-
-	if (metrics) {
-		ImGui::ShowMetricsWindow();
-	}
-
-	if (demo) {
-		ImGui::ShowDemoWindow();
-	}
 }
 
 
@@ -420,36 +422,44 @@ void OtFramework::startFrameIMGUI() {
 //
 
 void OtFramework::endFrameIMGUI() {
+	// render debug windows (if required)
+	if (metrics) {
+		ImGui::ShowMetricsWindow();
+	}
+
+	if (demo) {
+		ImGui::ShowDemoWindow();
+	}
+
 	// render UI to command lists
 	ImGui::Render();
 	ImDrawData* drawData = ImGui::GetDrawData();
 
-	// Avoid rendering when minimized, scale coordinates for retina displays
-	// (screen coordinates != framebuffer coordinates)
-	ImGuiIO& io = ImGui::GetIO();
-	int fb_width = static_cast<int>(io.DisplaySize.x * io.DisplayFramebufferScale.x);
-	int fb_height = static_cast<int>(io.DisplaySize.y * io.DisplayFramebufferScale.y);
+	// avoid rendering when minimized
+	int w, h;
+	SDL_GetWindowSizeInPixels(window, &w, &h);
 
-	if (fb_width == 0 || fb_height == 0) {
+	if (w == 0 || h == 0) {
 		return;
 	}
 
-	drawData->ScaleClipRects(io.DisplayFramebufferScale);
+	// scale coordinates for retina displays (screen size != framebuffer size)
+	drawData->ScaleClipRects(ImGui::GetIO().DisplayFramebufferScale);
 
 	// setup orthographic projection matrix
-	glm::mat4 matrix = glm::ortho(0.0f, io.DisplaySize.x, io.DisplaySize.y, 0.0f);
+	glm::mat4 matrix = glm::ortho(0.0f, static_cast<float>(w), static_cast<float>(h), 0.0f);
 	bgfx::setViewTransform(255, nullptr, glm::value_ptr(matrix));
-	bgfx::setViewRect(255, 0, 0, static_cast<uint16_t>(fb_width), static_cast<uint16_t>(fb_height));
+	bgfx::setViewRect(255, 0, 0, static_cast<uint16_t>(w), static_cast<uint16_t>(h));
 
 	// Render command lists
 	for (int n = 0; n < drawData->CmdListsCount; n++) {
-		const ImDrawList* cmd_list = drawData->CmdLists[n];
+		const ImDrawList* cmdList = drawData->CmdLists[n];
 
 		bgfx::TransientVertexBuffer tvb;
 		bgfx::TransientIndexBuffer tib;
 
-		uint32_t numVertices = static_cast<uint32_t>(cmd_list->VtxBuffer.size());
-		uint32_t numIndices = static_cast<uint32_t>(cmd_list->IdxBuffer.size());
+		uint32_t numVertices = static_cast<uint32_t>(cmdList->VtxBuffer.size());
+		uint32_t numIndices = static_cast<uint32_t>(cmdList->IdxBuffer.size());
 
 		if ((bgfx::getAvailTransientVertexBuffer(numVertices, imguiVertexLayout) != numVertices) ||
 			(bgfx::getAvailTransientIndexBuffer(numIndices) != numIndices)) {
@@ -461,16 +471,16 @@ void OtFramework::endFrameIMGUI() {
 		bgfx::allocTransientIndexBuffer(&tib, numIndices);
 
 		ImDrawVert* verts = (ImDrawVert*) tvb.data;
-		memcpy(verts, cmd_list->VtxBuffer.begin(), numVertices * sizeof(ImDrawVert));
+		memcpy(verts, cmdList->VtxBuffer.begin(), numVertices * sizeof(ImDrawVert));
 
 		ImDrawIdx* indices = (ImDrawIdx*) tib.data;
-		memcpy(indices, cmd_list->IdxBuffer.begin(), numIndices * sizeof(ImDrawIdx));
+		memcpy(indices, cmdList->IdxBuffer.begin(), numIndices * sizeof(ImDrawIdx));
 
-		for (auto i = 0; i < cmd_list->CmdBuffer.Size; i++) {
-			const ImDrawCmd* cmd = &cmd_list->CmdBuffer[i];
+		for (auto i = 0; i < cmdList->CmdBuffer.Size; i++) {
+			const ImDrawCmd* cmd = &cmdList->CmdBuffer[i];
 
 			if (cmd->UserCallback) {
-				cmd->UserCallback(cmd_list, cmd);
+				cmd->UserCallback(cmdList, cmd);
 
 			} else {
 				const uint16_t xx = static_cast<uint16_t>(std::max(cmd->ClipRect.x, 0.0f));
@@ -479,7 +489,6 @@ void OtFramework::endFrameIMGUI() {
 				bgfx::setState(
 					BGFX_STATE_WRITE_RGB |
 					BGFX_STATE_WRITE_A |
-					BGFX_STATE_MSAA |
 					BGFX_STATE_BLEND_ALPHA);
 
 				bgfx::setScissor(

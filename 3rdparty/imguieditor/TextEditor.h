@@ -40,7 +40,13 @@ public:
 	//
 
 	// access editor options
-	inline void SetTabSize(int value) { document.setTabSize(std::max(1, std::min(8, value))); }
+	inline void SetTabSize(int value) {
+		// this must be called before text is loaded/edited
+		if (document.isEmpty() && transactions.empty()) {
+			document.setTabSize(std::max(1, std::min(8, value)));
+		}
+	}
+
 	inline int GetTabSize() const { return document.getTabSize(); }
 	inline void SetLineSpacing(float value) { lineSpacing = std::max(1.0f, std::min(2.0f, value)); }
 	inline float GetLineSpacing() const { return lineSpacing; }
@@ -82,7 +88,9 @@ public:
 			document.normalizeCoordinate(Coordinate(endLine, endColumn)));
 	}
 
-	inline bool IsEmpty() const { return document.size() == 1 && document[0].size() == 0; }
+	inline void ClearText() { SetText(""); }
+
+	inline bool IsEmpty() const { return document.isEmpty(); }
 	inline int GetLineCount() const { return document.lineCount(); }
 
 	// render the text editor in a Dear ImGui context
@@ -392,7 +400,7 @@ public:
 	public:
 		static std::string_view::const_iterator skipBOM(std::string_view::const_iterator i, std::string_view::const_iterator end);
 		static std::string_view::const_iterator read(std::string_view::const_iterator i, std::string_view::const_iterator end, ImWchar* codepoint);
-		static size_t write(char* i, ImWchar codepoint); // must point to buffer of 4 character (returns number of characters written)
+		static size_t write(char* i, ImWchar codepoint); // must point to buffer of 4 characters (returns number of characters written)
 		static bool isLetter(ImWchar codepoint);
 		static bool isNumber(ImWchar codepoint);
 		static bool isWord(ImWchar codepoint);
@@ -680,6 +688,9 @@ protected:
 		std::string getSectionText(Coordinate start, Coordinate end) const;
 		ImWchar getCodePoint(Coordinate location);
 
+		// see if document is empty
+		inline bool isEmpty() const { return size() == 1 && at(0).size() == 0; }
+
 		// get number of lines (as an int)
 		inline int lineCount() const { return static_cast<int>(size()); }
 
@@ -853,6 +864,7 @@ protected:
 
 	// access the editor's text
 	void setText(const std::string_view& text);
+	void clearText();
 
 	// render (parts of) the text editor
 	void render(const char* title, const ImVec2& size, bool border);

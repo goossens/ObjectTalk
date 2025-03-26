@@ -14,6 +14,7 @@
 #include "imgui.h"
 
 #include "OtTexture.h"
+#include "OtUi.h"
 
 #include "OtNodesFactory.h"
 
@@ -48,10 +49,10 @@ public:
 	// render custom fields
 	inline void customRendering(float itemWidth) override {
 		if (texture.isValid()) {
-			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (itemWidth - customW) / 2.0f);
+			OtUi::hSpacer((itemWidth - customW) / 2.0f);
 			ImGui::Image((ImTextureID)(intptr_t) texture.getIndex(), ImVec2(customW, customH));
 
-			if (ImGui::IsItemClicked(ImGuiPopupFlags_MouseButtonLeft) && ImGui::IsMouseDoubleClicked(ImGuiPopupFlags_MouseButtonLeft)) {
+			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiPopupFlags_MouseButtonLeft)) {
 				ImGui::OpenPopup("Texture Popup");
 			}
 

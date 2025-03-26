@@ -12,8 +12,9 @@
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
 
-#include "OtImage.h"
 #include "OtPath.h"
+
+#include "OtImage.h"
 
 #include "OtNodesFactory.h"
 
@@ -27,7 +28,7 @@ public:
 	// configure node
 	inline void configure() override {
 		addInputPin("Input", image)->addCustomRenderer([&](float width) {
-			// render button to save image if image is valid
+			// render button to save image if valid
 			if (!image.isValid()) {
 				ImGui::BeginDisabled();
 			}
@@ -48,7 +49,7 @@ public:
 			}
 
 			// handle saveas dialog
-			ImVec2 maxSize = ImGui::GetIO().DisplaySize;
+			ImVec2 maxSize = ImGui::GetMainViewport()->Size;
 			ImVec2 minSize = ImVec2(maxSize.x * 0.5f, maxSize.y * 0.5f);
 
 			if (ImGuiFileDialog::Instance()->Display("image-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {

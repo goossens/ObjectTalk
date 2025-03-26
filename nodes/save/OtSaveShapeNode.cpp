@@ -12,8 +12,9 @@
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
 
-#include "OtPath.h"
 #include "OtShape.h"
+
+#include "OtPath.h"
 
 #include "OtNodesFactory.h"
 
@@ -27,7 +28,7 @@ public:
 	// configure node
 	inline void configure() override {
 		addInputPin("Input", shape)->addCustomRenderer([&](float width) {
-			// render button to save shape if it is valid
+			// render button to save shape if valid
 			if (!shape.isValid()) {
 				ImGui::BeginDisabled();
 			}
@@ -48,7 +49,7 @@ public:
 			}
 
 			// handle saveas dialog
-			ImVec2 maxSize = ImGui::GetIO().DisplaySize;
+			ImVec2 maxSize = ImGui::GetMainViewport()->Size;
 			ImVec2 minSize = ImVec2(maxSize.x * 0.5f, maxSize.y * 0.5f);
 
 			if (ImGuiFileDialog::Instance()->Display("shape-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {

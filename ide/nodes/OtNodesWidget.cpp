@@ -86,15 +86,6 @@ static constexpr float linkThickness = 1.5f;
 
 
 //
-//	Helper functions
-//
-
-static inline void inset(float x) {
-	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + x);
-}
-
-
-//
 //	OtNodesWidget::render
 //
 
@@ -383,7 +374,7 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 	// render title
 	ImGui::SetCursorScreenPos(topLeft + ImVec2(horizontalPadding, topPadding));
 	ImGui::BeginGroup();
-	inset(((node->w - horizontalPadding * 2.0f) - ImGui::CalcTextSize(node->title.c_str()).x) / 2.0f);
+	OtUi::hSpacer(((node->w - horizontalPadding * 2.0f) - ImGui::CalcTextSize(node->title.c_str()).x) / 2.0f);
 	ImGui::AlignTextToFramePadding();
 	ImGui::TextUnformatted(renamingNode == node->id ? "" : node->title.c_str());
 
@@ -486,7 +477,7 @@ void OtNodesWidget::renderPin(ImDrawList* drawlist, OtNodesPin& pin, float x, fl
 	} else {
 		// right align labels for output pins
 		if (pin->isOutput()) {
-			inset(w - ImGui::CalcTextSize(pin->name).x - horizontalPadding * 2.0f);
+			OtUi::hSpacer(w - ImGui::CalcTextSize(pin->name).x - horizontalPadding * 2.0f);
 		}
 
 		// render label

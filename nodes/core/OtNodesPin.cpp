@@ -12,6 +12,7 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtGlm.h"
 #include "OtUi.h"
 
 #include "OtNode.h"
@@ -60,13 +61,13 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(bool& value) {
 	return new OtNodesPinInputConfig{
 		[&](nlohmann::json* data) { (*data)["value"] = value; },
 		[&](nlohmann::json* data) { if (data->contains("value")) { value = (*data)["value"]; } },
-		[]() { return 30.0f; },
+		[]() { return ImGui::GetFrameHeight() * 1.55f; },
 
 		[&](OtNodesPin pin, float width) {
 			auto node = pin->node;
 			auto old = node->serialize().dump();
 			ImGui::PushID(&value);
-			ImGui::SetNextItemWidth(width);
+			OtUi::hSpacer(width - ImGui::GetFrameHeight() * 1.55f);
 
 			if (OtUi::toggleButton("##value", &value)) {
 				node->oldState = old;
@@ -76,7 +77,8 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(bool& value) {
 			}
 
 			ImGui::PopID();
-		}};
+		}
+	};
 }
 
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(int& value) {
@@ -99,7 +101,8 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(int& value) {
 			}
 
 			ImGui::PopID();
-		}};
+		}
+	};
 }
 
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(float& value) {
@@ -122,7 +125,8 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(float& value) {
 			}
 
 			ImGui::PopID();
-		}};
+		}
+	};
 }
 
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(std::string& value) {
@@ -146,7 +150,8 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(std::string& value) {
 			}
 
 			ImGui::PopID();
-		}};
+		}
+	};
 }
 
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtColor& value) {
@@ -174,12 +179,88 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtColor& value) {
 			}
 
 			ImGui::PopID();
-		}};
+		}
+	};
 }
 
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec2& /* value */) { return nullptr; }
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec3& /* value */) { return nullptr; }
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec4& /* value */) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec2& value) {
+	return new OtNodesPinInputConfig{
+		[&](nlohmann::json* data) { (*data)["value"] = value; },
+		[&](nlohmann::json* data) { if (data->contains("value")) { value = (*data)["value"]; } },
+		[]() { return 120.0f; },
+
+		[&](OtNodesPin pin, float width) {
+			auto vec = value;
+			ImGui::PushID(&value);
+			OtUi::hSpacer(width - 120.0f);
+			ImGui::SetNextItemWidth(120.0f);
+
+			if (OtUi::editVec2("##value", &vec)) {
+				auto node = pin->node;
+				node->oldState = node->serialize().dump();
+				value = vec;
+				node->newState = node->serialize().dump();
+				node->needsEvaluating = true;
+				node->needsSaving = true;
+			}
+
+			ImGui::PopID();
+		}
+	};
+}
+
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec3& value) {
+	return new OtNodesPinInputConfig{
+		[&](nlohmann::json* data) { (*data)["value"] = value; },
+		[&](nlohmann::json* data) { if (data->contains("value")) { value = (*data)["value"]; } },
+		[]() { return 180.0f; },
+
+		[&](OtNodesPin pin, float width) {
+			auto vec = value;
+			ImGui::PushID(&value);
+			OtUi::hSpacer(width - 180.0f);
+			ImGui::SetNextItemWidth(180.0f);
+
+			if (OtUi::editVec3("##value", &vec)) {
+				auto node = pin->node;
+				node->oldState = node->serialize().dump();
+				value = vec;
+				node->newState = node->serialize().dump();
+				node->needsEvaluating = true;
+				node->needsSaving = true;
+			}
+
+			ImGui::PopID();
+		}
+	};
+}
+
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec4& value) {
+	return new OtNodesPinInputConfig{
+		[&](nlohmann::json* data) { (*data)["value"] = value; },
+		[&](nlohmann::json* data) { if (data->contains("value")) { value = (*data)["value"]; } },
+		[]() { return 240.0f; },
+
+		[&](OtNodesPin pin, float width) {
+			auto vec = value;
+			ImGui::PushID(&value);
+			OtUi::hSpacer(width - 240.0f);
+			ImGui::SetNextItemWidth(240.0f);
+
+			if (OtUi::editVec4("##value", &vec)) {
+				auto node = pin->node;
+				node->oldState = node->serialize().dump();
+				value = vec;
+				node->newState = node->serialize().dump();
+				node->needsEvaluating = true;
+				node->needsSaving = true;
+			}
+
+			ImGui::PopID();
+		}
+	};
+}
+
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtFont& /* value */) { return nullptr; }
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtImage& /* value */) { return nullptr; }
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtTexture& /* value */) { return nullptr; }

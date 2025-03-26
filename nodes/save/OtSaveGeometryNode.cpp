@@ -12,8 +12,9 @@
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
 
-#include "OtGeometryAsset.h"
 #include "OtPath.h"
+
+#include "OtGeometry.h"
 
 #include "OtNodesFactory.h"
 
@@ -40,7 +41,7 @@ public:
 						ImGuiFileDialogFlags_DontShowHiddenFiles |
 						ImGuiFileDialogFlags_ConfirmOverwrite;
 
-				ImGuiFileDialog::Instance()->OpenDialog("geometry-saveas", "Save Image as...", ".obj", config);
+				ImGuiFileDialog::Instance()->OpenDialog("geometry-saveas", "Save Geometry as...", ".obj", config);
 			}
 
 			if (!geometry.isValid()) {
@@ -48,7 +49,7 @@ public:
 			}
 
 			// handle saveas dialog
-			ImVec2 maxSize = ImGui::GetIO().DisplaySize;
+			ImVec2 maxSize = ImGui::GetMainViewport()->Size;
 			ImVec2 minSize = ImVec2(maxSize.x * 0.5f, maxSize.y * 0.5f);
 
 			if (ImGuiFileDialog::Instance()->Display("geometry-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {

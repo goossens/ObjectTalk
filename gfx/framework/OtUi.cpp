@@ -85,6 +85,15 @@ void OtUi::splitLabel(const char* text, std::string& label, std::string& id) {
 
 
 //
+//	OtUi::hSpacer
+//
+
+void OtUi::hSpacer(float width) {
+	ImGui::SetCursorScreenPos(ImGui::GetCursorScreenPos() + ImVec2(width, 0.0f));
+}
+
+
+//
 //	OtUi::centeredText
 //
 

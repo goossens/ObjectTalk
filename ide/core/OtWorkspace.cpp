@@ -309,9 +309,10 @@ void OtWorkspace::openFile() {
 	config.path = OtPath::getCWD();
 	config.countSelectionMax = 1;
 
-	config.flags = ImGuiFileDialogFlags_Modal |
-			ImGuiFileDialogFlags_DontShowHiddenFiles |
-			ImGuiFileDialogFlags_ReadOnlyFileNameField;
+	config.flags =
+		ImGuiFileDialogFlags_Modal |
+		ImGuiFileDialogFlags_DontShowHiddenFiles |
+		ImGuiFileDialogFlags_ReadOnlyFileNameField;
 
 	ImGuiFileDialog::Instance()->OpenDialog("workspace-open", "Select File to Open...", ".*", config);
 	state = State::openFile;
@@ -370,9 +371,10 @@ void OtWorkspace::saveAsFile() {
 	config.path = OtPath::getCWD();
 	config.countSelectionMax = 1;
 
-	config.flags = ImGuiFileDialogFlags_Modal |
-			ImGuiFileDialogFlags_DontShowHiddenFiles |
-			ImGuiFileDialogFlags_ConfirmOverwrite;
+	config.flags =
+		ImGuiFileDialogFlags_Modal |
+		ImGuiFileDialogFlags_DontShowHiddenFiles |
+		ImGuiFileDialogFlags_ConfirmOverwrite;
 
 	ImGuiFileDialog::Instance()->OpenDialog(
 		"workspace-saveas",

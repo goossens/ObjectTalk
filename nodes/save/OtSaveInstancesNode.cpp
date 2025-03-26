@@ -12,8 +12,9 @@
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
 
-#include "OtInstances.h"
 #include "OtPath.h"
+
+#include "OtInstances.h"
 
 #include "OtNodesFactory.h"
 
@@ -27,7 +28,7 @@ public:
 	// configure node
 	inline void configure() override {
 		addInputPin("Input", instances)->addCustomRenderer([&](float width) {
-			// render button to save instances if instances are valid
+			// render button to save instances if valid
 			if (!instances.isValid()) {
 				ImGui::BeginDisabled();
 			}
@@ -48,7 +49,7 @@ public:
 			}
 
 			// handle saveas dialog
-			ImVec2 maxSize = ImGui::GetIO().DisplaySize;
+			ImVec2 maxSize = ImGui::GetMainViewport()->Size;
 			ImVec2 minSize = ImVec2(maxSize.x * 0.5f, maxSize.y * 0.5f);
 
 			if (ImGuiFileDialog::Instance()->Display("instances-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {

@@ -170,8 +170,6 @@ void OtTextEditor::renderEditor() {
 		diff.Render("diff", viewport->Size * 0.8f, true);
 
 		ImGui::Separator();
-		static constexpr float buttonWidth = 80.0f;
-		auto buttonOffset = ImGui::GetContentRegionAvail().x - buttonWidth;
 		bool sideBySide = diff.GetSideBySideMode();
 
 		if (ImGui::Checkbox("Show side-by-side", &sideBySide)) {
@@ -179,7 +177,8 @@ void OtTextEditor::renderEditor() {
 		}
 
 		ImGui::SameLine();
-		ImGui::Indent(buttonOffset);
+		static constexpr float buttonWidth = 80.0f;
+		OtUi::hSpacer(ImGui::GetContentRegionAvail().x - buttonWidth);
 
 		if (ImGui::Button("OK", ImVec2(buttonWidth, 0.0f)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
 			ImGui::CloseCurrentPopup();

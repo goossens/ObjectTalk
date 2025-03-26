@@ -15,6 +15,7 @@
 #include "nlohmann/json.hpp"
 
 #include "OtGlm.h"
+#include "OtUi.h"
 
 #include "OtManifold.h"
 #include "OtMesh.h"
@@ -54,10 +55,19 @@ public:
 	// render custom fields
 	inline void customRendering(float itemWidth) override {
 		if (manifold.isValid()) {
-			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (itemWidth - size) / 2.0f);
+			OtUi::hSpacer((itemWidth - customW) / 2.0f);
 			preview.render(static_cast<int>(size), static_cast<int>(size), mesh, context);
 
-			if (ImGui::IsItemClicked(ImGuiPopupFlags_MouseButtonLeft) && ImGui::IsMouseDoubleClicked(ImGuiPopupFlags_MouseButtonLeft)) {
+			if (ImGui::BeginPopupContextItem("Manifold Context")) {
+				OtUi::header("Settings");
+				ImGui::Spacing();
+				OtUi::toggleButton("Wireframe", &context.wireframe);
+				ImGui::ColorEdit3("Light Color", glm::value_ptr(context.lightColor));
+				ImGui::ColorEdit3("Mesh Color", glm::value_ptr(context.meshColor));
+				ImGui::EndPopup();
+			}
+
+			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiPopupFlags_MouseButtonLeft)) {
 				ImGui::OpenPopup("Manifold Popup");
 			}
 

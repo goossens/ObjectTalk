@@ -139,8 +139,7 @@ void OtMarkdown::liBlock(const MD_BLOCK_LI_DETAIL* /* detail */, bool enter) {
 
 		} else {
 			if (info.delimiter == '*') {
-				float cx = ImGui::GetCursorPosX() - ImGui::GetStyle().FramePadding.x * 2;
-				ImGui::SetCursorPosX(cx);
+				ImGui::SetCursorPosX(ImGui::GetCursorPosX() - ImGui::GetStyle().FramePadding.x * 2);
 				ImGui::Bullet();
 
 			} else {

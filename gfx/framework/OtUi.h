@@ -61,6 +61,9 @@ public:
 	// split a Dear ImGui label into a label and the ID
 	static void splitLabel(const char* text, std::string& label, std::string& id);
 
+	// add horizontal spacing
+	static void hSpacer(float width);
+
 	// render text centered in the current (child) window
 	static void centeredText(const char* text);
 

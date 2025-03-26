@@ -7,22 +7,52 @@
 FetchContent_Declare(bimg GIT_REPOSITORY "https://github.com/bkaradzic/bimg")
 FetchContent_MakeAvailable(bimg)
 
-include(3rdparty/astc-encoder.cmake)
-include(3rdparty/edtaa3.cmake)
-include(3rdparty/etc1.cmake)
-include(3rdparty/etc2.cmake)
-include(3rdparty/iqa.cmake)
-include(3rdparty/libsquish.cmake)
-include(3rdparty/nvtt.cmake)
-include(3rdparty/pvrtc.cmake)
-include(3rdparty/tinyexr.cmake)
-
 file(GLOB BIMG_SOURCES
 	${bimg_SOURCE_DIR}/src/*.cpp
-	${bimg_SOURCE_DIR}/include/bimg/*.h)
+	${bimg_SOURCE_DIR}/include/bimg/*.h
+	${bimg_SOURCE_DIR}/3rdparty/astc-encoder/source/*.cpp
+	${bimg_SOURCE_DIR}/3rdparty/astc-encoder/source/*.h
+	${bimg_SOURCE_DIR}/3rdparty/astc-encoder/include/*.h
+	${bimg_SOURCE_DIR}/3rdparty/edtaa3/*.cpp
+	${bimg_SOURCE_DIR}/3rdparty/edtaa3/*.h
+	${bimg_SOURCE_DIR}/3rdparty/etc1/*.cpp
+	${bimg_SOURCE_DIR}/3rdparty/etc1/*.h
+	${bimg_SOURCE_DIR}/3rdparty/etc2/*.cpp
+	${bimg_SOURCE_DIR}/3rdparty/etc2/*.h
+	${bimg_SOURCE_DIR}/3rdparty/iqa/source/*.c
+	${bimg_SOURCE_DIR}/3rdparty/iqa/include/*.h
+	${bimg_SOURCE_DIR}/3rdparty/libsquish/*.cpp
+	${bimg_SOURCE_DIR}/3rdparty/libsquish/*.h
+	${bimg_SOURCE_DIR}/3rdparty/libsquish/*.inl
+	${bimg_SOURCE_DIR}/3rdparty/nvtt/bc6h/*.cpp
+	${bimg_SOURCE_DIR}/3rdparty/nvtt/bc6h/*.h
+	${bimg_SOURCE_DIR}/3rdparty/nvtt/bc7/*.cpp
+	${bimg_SOURCE_DIR}/3rdparty/nvtt/bc7/*.h
+	${bimg_SOURCE_DIR}/3rdparty/nvtt/nvcore/*.h
+	${bimg_SOURCE_DIR}/3rdparty/nvtt/nvcore/*.inl
+	${bimg_SOURCE_DIR}/3rdparty/nvtt/nvmath/*.cpp
+	${bimg_SOURCE_DIR}/3rdparty/nvtt/nvmath/*.h
+	${bimg_SOURCE_DIR}/3rdparty/nvtt/*.cpp
+	${bimg_SOURCE_DIR}/3rdparty/nvtt/*.h
+	${bimg_SOURCE_DIR}/3rdparty/pvrtc/*.cpp
+	${bimg_SOURCE_DIR}/3rdparty/pvrtc/*.h
+	${bimg_SOURCE_DIR}/3rdparty/tinyexr/*.c
+	${bimg_SOURCE_DIR}/3rdparty/tinyexr/*.h
+	${bimg_SOURCE_DIR}/3rdparty/tinyexr/deps/miniz/*.c
+	${bimg_SOURCE_DIR}/3rdparty/tinyexr/deps/miniz/*.h)
+
+list(REMOVE_ITEM BIMG_SOURCES ${bimg_SOURCE_DIR}/3rdparty/astc-encoder/source/astcenc_diagnostic_trace.cpp)
 
 add_library(bimg STATIC ${BIMG_SOURCES})
-target_include_directories(bimg PUBLIC ${bimg_SOURCE_DIR}/include ${bimg_SOURCE_DIR}/3rdparty)
-target_link_libraries(bimg PUBLIC bx PRIVATE astc-encoder edtaa3 etc1 etc2 iqa squish nvtt pvrtc tinyexr)
+
+target_include_directories(bimg PUBLIC
+	${bimg_SOURCE_DIR}/include
+	${bimg_SOURCE_DIR}/3rdparty
+	${bimg_SOURCE_DIR}/3rdparty/astc-encoder/include
+	${bimg_SOURCE_DIR}/3rdparty/iqa/include
+	${bimg_SOURCE_DIR}/3rdparty/nvtt
+	${bimg_SOURCE_DIR}/3rdparty/tinyexr/deps/miniz)
+
+target_link_libraries(bimg PUBLIC bx)
 
 set_target_properties(bimg PROPERTIES FOLDER "deps")

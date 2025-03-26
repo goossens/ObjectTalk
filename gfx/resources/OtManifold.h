@@ -13,6 +13,7 @@
 //
 
 #include <memory>
+#include <string>
 
 #include "glm/glm.hpp"
 
@@ -82,6 +83,10 @@ public:
 
 	// see if anifold is valid
 	bool isValid() { return manifold != nullptr && !manifold->IsEmpty(); }
+
+	// manifold I/O
+	void load(const std::string& filepath);
+	void save(const std::string& filepath);
 
 	// create primitives
 	void cube(float width, float height, float depth, bool center);

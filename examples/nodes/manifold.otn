@@ -46,24 +46,19 @@
 			"to": 563324433
 		},
 		{
-			"from": 1327991844,
-			"id": 2391554686,
-			"to": 2891006079
-		},
-		{
 			"from": 2944394539,
 			"id": 3911897091,
 			"to": 4142766422
 		},
 		{
-			"from": 3279865336,
-			"id": 883131226,
-			"to": 3567120135
-		},
-		{
 			"from": 1127951203,
 			"id": 3993217114,
 			"to": 2582601684
+		},
+		{
+			"from": 4026487469,
+			"id": 3051358240,
+			"to": 3611879913
 		}
 	],
 	"metadata": {},
@@ -199,40 +194,6 @@
 			"y": 165.0
 		},
 		{
-			"id": 1971570196,
-			"inputs": [
-				{
-					"id": 539752711,
-					"name": "X",
-					"type": "float",
-					"value": 90.0
-				},
-				{
-					"id": 2686259310,
-					"name": "Y",
-					"type": "float",
-					"value": 0.0
-				},
-				{
-					"id": 2606353033,
-					"name": "Z",
-					"type": "float",
-					"value": 0.0
-				}
-			],
-			"outputs": [
-				{
-					"id": 1327991844,
-					"name": "Value",
-					"type": "vector3"
-				}
-			],
-			"title": "Combine XYZ",
-			"type": "Combine XYZ",
-			"x": 355.0,
-			"y": 679.0
-		},
-		{
 			"id": 3151400214,
 			"inputs": [
 				{
@@ -279,40 +240,6 @@
 			"y": 543.0
 		},
 		{
-			"id": 1632195009,
-			"inputs": [
-				{
-					"id": 2143918170,
-					"name": "X",
-					"type": "float",
-					"value": 0.0
-				},
-				{
-					"id": 927210545,
-					"name": "Y",
-					"type": "float",
-					"value": 0.0
-				},
-				{
-					"id": 1081590469,
-					"name": "Z",
-					"type": "float",
-					"value": 0.30000001192092896
-				}
-			],
-			"outputs": [
-				{
-					"id": 3279865336,
-					"name": "Value",
-					"type": "vector3"
-				}
-			],
-			"title": "Combine XYZ",
-			"type": "Combine XYZ",
-			"x": 229.0,
-			"y": 625.0
-		},
-		{
 			"id": 4285713672,
 			"inputs": [
 				{
@@ -323,17 +250,32 @@
 				{
 					"id": 3567120135,
 					"name": "Translate",
-					"type": "vector3"
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.30000001192092896
+					]
 				},
 				{
 					"id": 2891006079,
 					"name": "Rotate",
-					"type": "vector3"
+					"type": "vector3",
+					"value": [
+						90.0,
+						0.0,
+						0.0
+					]
 				},
 				{
 					"id": 226246800,
 					"name": "Scale",
-					"type": "vector3"
+					"type": "vector3",
+					"value": [
+						1.0,
+						1.0,
+						1.0
+					]
 				}
 			],
 			"outputs": [
@@ -345,8 +287,8 @@
 			],
 			"title": "Manifold Transform",
 			"type": "Manifold Transform",
-			"x": 517.0,
-			"y": 594.0
+			"x": 266.0,
+			"y": 518.0
 		},
 		{
 			"id": 1155901222,
@@ -371,8 +313,8 @@
 			],
 			"title": "Manifold Difference",
 			"type": "Manifold Difference",
-			"x": 787.0,
-			"y": 534.0
+			"x": 727.0,
+			"y": 468.0
 		},
 		{
 			"azimuth": 18.994422912597656,
@@ -535,8 +477,23 @@
 			"title": "Manifold Probe",
 			"type": "Manifold Probe",
 			"wireframe": false,
-			"x": 1094.0,
-			"y": 123.0
+			"x": 1090.0,
+			"y": 57.0
+		},
+		{
+			"id": 1957370161,
+			"inputs": [
+				{
+					"id": 3611879913,
+					"name": "Input",
+					"type": "manifold"
+				}
+			],
+			"outputs": [],
+			"title": "Save Manifold To File",
+			"type": "Save Manifold To File",
+			"x": 1090.0,
+			"y": 349.0
 		}
 	]
 }

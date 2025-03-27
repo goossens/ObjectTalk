@@ -17,6 +17,7 @@
 
 #include "OtManifold.h"
 #include "OtManifoldModule.h"
+#include "OtShapeModule.h"
 
 
 //
@@ -30,6 +31,9 @@ OtType OtManifoldClass::getMeta() {
 		type = OtType::create<OtManifoldClass>("Manifold", OtObjectClass::getMeta());
 		type->set("clear", OtFunction::create(&OtManifoldClass::clear));
 
+		type->set("load", OtFunction::create(&OtManifoldClass::load));
+		type->set("save", OtFunction::create(&OtManifoldClass::save));
+
 		type->set("union", OtFunction::create(&OtManifoldClass::unionManifolds));
 		type->set("difference", OtFunction::create(&OtManifoldClass::differenceManifolds));
 		type->set("intersect", OtFunction::create(&OtManifoldClass::intersectManifolds));
@@ -38,7 +42,10 @@ OtType OtManifoldClass::getMeta() {
 		type->set("rotate", OtFunction::create(&OtManifoldClass::rotate));
 		type->set("scale", OtFunction::create(&OtManifoldClass::scale));
 		type->set("mirror", OtFunction::create(&OtManifoldClass::mirror));
-	}
+
+		type->set("getVertexCount", OtFunction::create(&OtManifoldClass::getVertexCount));
+		type->set("getTriangleCount", OtFunction::create(&OtManifoldClass::getTriangleCount));
+		}
 
 	return type;
 }
@@ -56,4 +63,6 @@ static OtModuleRegistration registration{"manifold", [](OtModule module) {
 	module->set("cube", OtFunction::create(OtManifoldClass::cube));
 	module->set("cylinder", OtFunction::create(OtManifoldClass::cylinder));
 	module->set("sphere", OtFunction::create(OtManifoldClass::sphere));
+	module->set("extrude", OtFunction::create(OtManifoldClass::extrude));
+	module->set("revolve", OtFunction::create(OtManifoldClass::revolve));
 }};

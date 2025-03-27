@@ -38,6 +38,7 @@
 #endif
 
 #include "OtMesh.h"
+#include "OtShape.h"
 
 
 //
@@ -98,6 +99,10 @@ public:
 	OtManifold differenceManifolds(OtManifold& other);
 	OtManifold intersectManifolds(OtManifold& other);
 
+	// 2D to 3D and visa versa
+	void extrude(OtShape& shape, float height, int segments, float twistDegrees, float scaleTop, float tolerance);
+	void revolve(OtShape& shape, int segments, float revolveDegrees, float tolerance);
+
 	// transform manifold
 	OtManifold translate(float x, float y, float z);
 	OtManifold rotate(float x, float y, float z);
@@ -108,6 +113,10 @@ public:
 	inline OtManifold rotate(glm::vec3 xyz) { return rotate(xyz.x, xyz.y, xyz.z); }
 	inline OtManifold scale(glm::vec3 xyz) { return scale(xyz.x, xyz.y, xyz.z); }
 	inline OtManifold mirror(glm::vec3 xyz) { return mirror(xyz.x, xyz.y, xyz.z); }
+
+	// get manifold information
+	inline int getVertexCount() { return manifold ? static_cast<int>(manifold->NumVert()) : 0; }
+	inline int getTriangleCount() { return manifold ? static_cast<int>(manifold->NumTri()) : 0; }
 
 	// create a mesh
 	void createMesh(OtMesh& mesh);

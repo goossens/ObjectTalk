@@ -31,6 +31,10 @@ public:
 	// clear the manifold
 	inline void clear() { manifold.clear(); }
 
+	// shape I/O
+	inline void save(const std::string& filepath) { manifold.save(filepath); }
+	inline void load(const std::string& filepath) { manifold.load(filepath); }
+
 	// generators
 	static inline OtObject cube(float width, float height, float depth, bool center) {
 		OtManifold result;
@@ -50,6 +54,18 @@ public:
 		return OtManifoldObject::create(result);
 	}
 
+	static inline OtObject extrude(OtShape shape, float height, int divisions, float twistDegrees, float scaleTop, float tolerance) {
+		OtManifold result;
+		result.extrude(shape, height, divisions, twistDegrees, scaleTop, tolerance);
+		return OtManifoldObject::create(result);
+	}
+
+	static inline OtObject revolve(OtShape shape, int segments, float revolveDegrees, float tolerance) {
+		OtManifold result;
+		result.revolve(shape, segments, revolveDegrees, tolerance);
+		return OtManifoldObject::create(result);
+	}
+
 	// combine manifolds
 	inline OtObject unionManifolds(OtManifold other) { return OtManifoldObject::create(manifold.unionManifolds(other)); }
 	inline OtObject differenceManifolds(OtManifold other) { return OtManifoldObject::create(manifold.differenceManifolds(other)); }
@@ -60,6 +76,10 @@ public:
 	inline OtObject rotate(float x, float y, float z) { return OtManifoldObject::create(manifold.rotate(x, y, z)); }
 	inline OtObject scale(float x, float y, float z) { return OtManifoldObject::create(manifold.scale(x, y, z)); }
 	inline OtObject mirror(float x, float y, float z) { return OtManifoldObject::create(manifold.mirror(x, y, z)); }
+
+	// get manifold information
+	inline int getVertexCount() { return manifold.getVertexCount(); }
+	inline int getTriangleCount() { return manifold.getTriangleCount(); }
 
 	// access raw manifold
 	inline OtManifold& getManifold() { return manifold; }

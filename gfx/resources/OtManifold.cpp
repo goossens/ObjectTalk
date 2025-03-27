@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <vector>
+
 #include "assimp/Exporter.hpp"
 #include "assimp/Importer.hpp"
 #include "assimp/material.h"
@@ -269,6 +271,71 @@ OtManifold OtManifold::differenceManifolds(OtManifold& other) {
 
 OtManifold OtManifold::intersectManifolds(OtManifold& other) {
 	return OtManifold(*manifold ^ *other.manifold);
+}
+
+
+//
+//	ShapeToPolygons
+//
+
+static void ShapeToPolygons(manifold::Polygons& polygons, OtShape& shape, float tolerance) {
+	// get the shape's path segments
+	std::vector<glm::vec2> points;
+	std::vector<size_t> sizes;
+	shape.getSegments(points, sizes, tolerance);
+
+	// convert shape to polygons
+	size_t start = 0;
+
+	for (auto size : sizes) {
+		auto& polygon = polygons.emplace_back();
+
+		for (auto j = start; j < start + size - 1; j++) {
+			polygon.emplace_back(points[j].x, points[j].y);
+		}
+
+		start += size;
+	}
+}
+
+
+//
+//	OtManifold::extrude
+//
+
+void OtManifold::extrude(OtShape& shape, float height, int divisions, float twistDegrees, float scaleTop, float tolerance) {
+	// convert shape to polygons
+	manifold::Polygons polygons;
+	ShapeToPolygons(polygons, shape, tolerance);
+
+	// extrude and create manifold
+	manifold = std::make_shared<manifold::Manifold>(manifold::Manifold::Extrude(
+		polygons,
+		height,
+		divisions,
+		twistDegrees,
+		manifold::vec2(scaleTop, scaleTop)).CalculateNormals(0));
+
+	incrementVersion();
+}
+
+
+//
+//	OtManifold::revolve
+//
+
+void OtManifold::revolve(OtShape& shape, int segments, float revolveDegrees, float tolerance) {
+	// convert shape to polygons
+	manifold::Polygons polygons;
+	ShapeToPolygons(polygons, shape, tolerance);
+
+	// extrude and create manifold
+	manifold = std::make_shared<manifold::Manifold>(manifold::Manifold::Revolve(
+		polygons,
+		segments,
+		revolveDegrees).CalculateNormals(0));
+
+	incrementVersion();
 }
 
 

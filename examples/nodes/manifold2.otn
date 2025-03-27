@@ -1,0 +1,239 @@
+{
+	"links": [
+		{
+			"from": 2606370201,
+			"id": 463544192,
+			"to": 560030445
+		},
+		{
+			"from": 3786279039,
+			"id": 3182377446,
+			"to": 3632735772
+		},
+		{
+			"from": 2606370201,
+			"id": 2640292311,
+			"to": 633734161
+		},
+		{
+			"from": 3421954315,
+			"id": 3819306776,
+			"to": 2015196263
+		},
+		{
+			"from": 76158874,
+			"id": 3815704092,
+			"to": 3959511377
+		}
+	],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 784583217,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2606370201,
+					"name": "Shape",
+					"type": "shape"
+				}
+			],
+			"path": "assets/heart.ot",
+			"title": "Shape Generator",
+			"type": "Shape Generator",
+			"x": 14.0,
+			"y": 91.0
+		},
+		{
+			"id": 1941503081,
+			"inputs": [
+				{
+					"id": 560030445,
+					"name": "Shape",
+					"type": "shape"
+				},
+				{
+					"id": 776344514,
+					"name": "Height",
+					"type": "float",
+					"value": 50.0
+				},
+				{
+					"id": 2411116646,
+					"name": "Divisions",
+					"type": "int",
+					"value": 0
+				},
+				{
+					"id": 1149956011,
+					"name": "Twist Degrees",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 1200861338,
+					"name": "Scale Top",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 3144325134,
+					"name": "Tolerance",
+					"type": "float",
+					"value": 0.25
+				}
+			],
+			"outputs": [
+				{
+					"id": 3786279039,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"title": "Manifold Extrude",
+			"type": "Manifold Extrude",
+			"x": 313.0,
+			"y": 67.0
+		},
+		{
+			"azimuth": -321.0569152832031,
+			"elevation": 46.87705993652344,
+			"id": 336700527,
+			"inputs": [
+				{
+					"id": 3632735772,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"lightColor": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"meshColor": [
+				1.0,
+				0.8500000238418579,
+				0.0
+			],
+			"outputs": [],
+			"title": "Manifold Probe",
+			"type": "Manifold Probe",
+			"wireframe": false,
+			"x": 848.0,
+			"y": 12.0
+		},
+		{
+			"id": 3898536446,
+			"inputs": [
+				{
+					"id": 633734161,
+					"name": "Input",
+					"type": "shape"
+				},
+				{
+					"id": 3966524208,
+					"name": "Translate",
+					"type": "vector2",
+					"value": [
+						53.599998474121094,
+						0.0
+					]
+				},
+				{
+					"id": 3500501799,
+					"name": "Rotate",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 1183178304,
+					"name": "Scale",
+					"type": "vector2",
+					"value": [
+						1.0,
+						1.0
+					]
+				}
+			],
+			"outputs": [
+				{
+					"id": 3421954315,
+					"name": "Output",
+					"type": "shape"
+				}
+			],
+			"title": "Shape Transform",
+			"type": "Shape Transform",
+			"x": 299.0,
+			"y": 375.0
+		},
+		{
+			"id": 705348556,
+			"inputs": [
+				{
+					"id": 2015196263,
+					"name": "Shape",
+					"type": "shape"
+				},
+				{
+					"id": 2787236969,
+					"name": "Segments",
+					"type": "int",
+					"value": 30
+				},
+				{
+					"id": 3203848851,
+					"name": "revolveDegrees",
+					"type": "float",
+					"value": 180.0
+				},
+				{
+					"id": 727462346,
+					"name": "Tolerance",
+					"type": "float",
+					"value": 0.5
+				}
+			],
+			"outputs": [
+				{
+					"id": 76158874,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"title": "Manifold Revolve",
+			"type": "Manifold Revolve",
+			"x": 566.0,
+			"y": 350.0
+		},
+		{
+			"azimuth": 1.670677900314331,
+			"elevation": 30.766000747680664,
+			"id": 820811792,
+			"inputs": [
+				{
+					"id": 3959511377,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"lightColor": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"meshColor": [
+				1.0,
+				0.8500000238418579,
+				0.0
+			],
+			"outputs": [],
+			"title": "Manifold Probe",
+			"type": "Manifold Probe",
+			"wireframe": false,
+			"x": 848.0,
+			"y": 274.0
+		}
+	]
+}

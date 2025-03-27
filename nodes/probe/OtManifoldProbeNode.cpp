@@ -59,11 +59,17 @@ public:
 			preview.render(static_cast<int>(size), static_cast<int>(size), mesh, context);
 
 			if (ImGui::BeginPopupContextItem("Manifold Context")) {
-				OtUi::header("Settings");
+				OtUi::header("Settings:");
 				ImGui::Spacing();
 				OtUi::toggleButton("Wireframe", &context.wireframe);
 				ImGui::ColorEdit3("Light Color", glm::value_ptr(context.lightColor));
 				ImGui::ColorEdit3("Mesh Color", glm::value_ptr(context.meshColor));
+
+				ImGui::TextUnformatted("");
+				OtUi::header("Statistics:");
+				OtUi::readonlyInt("Vertices", manifold.getVertexCount());
+				OtUi::readonlyInt("Triangles", manifold.getTriangleCount());
+				ImGui::Spacing();
 				ImGui::EndPopup();
 			}
 

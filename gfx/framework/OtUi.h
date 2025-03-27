@@ -104,8 +104,9 @@ public:
 		return changed;
 	}
 
-	// readonly text field
+	// readonly fields
 	static void readonlyText(const char* label, std::string* value);
+	static void readonlyInt(const char* label, int value);
 
 	// field based on a std::string
 	static inline bool inputString(const char* label, std::string* value, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None) {

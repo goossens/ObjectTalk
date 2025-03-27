@@ -34,6 +34,13 @@
 
 
 //
+//	OtNodesEditor::clipboard
+//
+
+std::string OtNodesEditor::clipboard;
+
+
+//
 //	OtNodesEditor::clear
 //
 
@@ -123,7 +130,6 @@ void OtNodesEditor::renderMenus() {
 	// get status
 	bool selected = nodes.hasSelected();
 	bool multipleSelected = nodes.hasMultipleSelected();
-	bool clipable = clipboard.size() > 0;
 
 	if (ImGui::BeginMenu("Edit")) {
 		if (ImGui::MenuItem("Undo", OT_UI_SHORTCUT "Z", nullptr, taskManager.canUndo())) { taskManager.undo(); }
@@ -136,7 +142,7 @@ void OtNodesEditor::renderMenus() {
 		ImGui::Separator();
 		if (ImGui::MenuItem("Cut", OT_UI_SHORTCUT "X", nullptr, selected)) { cutSelectedNodes(); }
 		if (ImGui::MenuItem("Copy", OT_UI_SHORTCUT "C", nullptr, selected)) { copySelectedNodes(); }
-		if (ImGui::MenuItem("Paste", OT_UI_SHORTCUT "V", nullptr, selected && clipable)) { pasteSelectedNodes(); }
+		if (ImGui::MenuItem("Paste", OT_UI_SHORTCUT "V", nullptr, clipboard.size() > 0)) { pasteSelectedNodes(); }
 		if (ImGui::MenuItem("Delete", "Del", nullptr, selected)) { deleteSelectedNodes(); }
 		if (ImGui::MenuItem("Duplicate", OT_UI_SHORTCUT "D", nullptr, selected)) { duplicateSelectedNodes(); }
 		ImGui::EndMenu();
@@ -168,7 +174,6 @@ void OtNodesEditor::renderMenus() {
 void OtNodesEditor::handleShortcuts() {
 	// get status
 	bool selected = nodes.hasSelected();
-	bool clipable = clipboard.size() > 0;
 
 	if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
 		if (ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsKeyPressed(ImGuiKey_Z, false)) {
@@ -190,7 +195,7 @@ void OtNodesEditor::handleShortcuts() {
 		} else if (ImGui::IsKeyPressed(ImGuiKey_C, false) && selected) {
 			copySelectedNodes();
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && selected && clipable) {
+		} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && clipboard.size() > 0) {
 			pasteSelectedNodes();
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {

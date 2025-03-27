@@ -67,5 +67,5 @@ private:
 	std::shared_ptr<OtEditorTask> nextTask = nullptr;
 
 	// to handle cut/copy/paste
-	std::string clipboard;
+	static std::string clipboard;
 };

@@ -43,6 +43,13 @@
 
 
 //
+//	OtNodesEditor::clipboard
+//
+
+std::string OtSceneEditor::clipboard;
+
+
+//
 //	OtSceneEditor::initialize
 //
 
@@ -181,7 +188,6 @@ void OtSceneEditor::setSceneCamera(int cameraNumber) {
 void OtSceneEditor::renderMenus() {
 	// get status
 	bool selected = scene.isValidEntity(selectedEntity);
-	bool clipable = clipboard.size() > 0;
 
 	if (ImGui::BeginMenu("Edit")) {
 		if (ImGui::MenuItem("Undo", OT_UI_SHORTCUT "Z", nullptr, taskManager.canUndo())) { taskManager.undo(); }
@@ -194,7 +200,7 @@ void OtSceneEditor::renderMenus() {
 		ImGui::Separator();
 		if (ImGui::MenuItem("Cut", OT_UI_SHORTCUT "X", nullptr, selected)) { cutEntity(); }
 		if (ImGui::MenuItem("Copy", OT_UI_SHORTCUT "C", nullptr, selected)) { copyEntity(); }
-		if (ImGui::MenuItem("Paste", OT_UI_SHORTCUT "V", nullptr, selected && clipable)) { pasteEntity(); }
+		if (ImGui::MenuItem("Paste", OT_UI_SHORTCUT "V", nullptr, clipboard.size() > 0)) { pasteEntity(); }
 		if (ImGui::MenuItem("Duplicate", OT_UI_SHORTCUT "D", nullptr, selected)) { duplicateEntity(); }
 		ImGui::EndMenu();
 	}
@@ -307,7 +313,6 @@ void OtSceneEditor::renderMenus() {
 void OtSceneEditor::handleShortcuts() {
 	// get status
 	bool selected = scene.isValidEntity(selectedEntity);
-	bool clipable = clipboard.size() > 0;
 
 	// handle menu shortcuts
 	if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
@@ -330,7 +335,7 @@ void OtSceneEditor::handleShortcuts() {
 		} else if (ImGui::IsKeyPressed(ImGuiKey_C, false) && selected) {
 			copyEntity();
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && selected && clipable) {
+		} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && clipboard.size() > 0) {
 			pasteEntity();
 
 		} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {
@@ -375,6 +380,9 @@ void OtSceneEditor::handleShortcuts() {
 		} else if (ImGui::IsKeyPressed(ImGuiKey_9, false)) {
 			setSceneCamera(9);
 		}
+
+	} else if ((ImGui::IsKeyPressed(ImGuiKey_Backspace, false) || ImGui::IsKeyPressed(ImGuiKey_Delete, false)) && selected) {
+		deleteEntity();
 	}
 
 	if (ImGui::IsKeyPressed(ImGuiKey_F19, false)) {
@@ -1013,6 +1021,15 @@ void OtSceneEditor::pasteEntity() {
 
 void OtSceneEditor::duplicateEntity() {
 	nextTask = std::make_shared<OtDuplicateEntityTask>(&scene, selectedEntity);
+}
+
+
+//
+//	OtSceneEditor::deleteEntity
+//
+
+void OtSceneEditor::deleteEntity() {
+	nextTask = std::make_shared<OtDeleteEntityTask>(&scene, selectedEntity);
 }
 
 

@@ -49,6 +49,7 @@ public:
 	void copyEntity();
 	void pasteEntity();
 	void duplicateEntity();
+	void deleteEntity();
 
 private:
 	// file access functions
@@ -122,7 +123,7 @@ private:
 	std::shared_ptr<OtEditorTask> nextTask = nullptr;
 
 	// to handle cut/copy/paste
-	std::string clipboard;
+	static std::string clipboard;
 
 	// work variables
 	float panelWidth = -1.0f;

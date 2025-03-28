@@ -16,6 +16,7 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtException.h"
 #include "OtLog.h"
 #include "OtNumbers.h"
 
@@ -472,7 +473,13 @@ void OtNodesWidget::renderPin(ImDrawList* drawlist, OtNodesPin& pin, float x, fl
 
 	// see if we have a custom renderer
 	if (pin->hasRenderer) {
-		pin->render(w - horizontalPadding * 2.0f);
+		try {
+			pin->node->error.clear();
+			pin->render(w - horizontalPadding * 2.0f);
+
+		} catch (OtException& e) {
+			pin->node->error = e.getShortErrorMessage();
+		}
 
 	} else {
 		// right align labels for output pins

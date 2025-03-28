@@ -13,6 +13,8 @@
 
 #include "nlohmann/json.hpp"
 
+#include "OtException.h"
+
 #include "OtNode.h"
 
 
@@ -126,6 +128,12 @@ void OtNodeClass::evaluateVariableInputs(OtNodeVaryingContext& context, bool top
 	});
 
 	if (!toplevel) {
-		onExecute();
+		try {
+			error.clear();
+			onExecute();
+
+		} catch (OtException& e) {
+			error = e.getShortErrorMessage();
+		}
 	}
 }

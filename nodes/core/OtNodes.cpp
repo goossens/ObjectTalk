@@ -14,6 +14,7 @@
 
 #include "nlohmann/json.hpp"
 
+#include "OtException.h"
 #include "OtLog.h"
 #include "OtNodes.h"
 #include "OtNodesPin.h"
@@ -740,8 +741,14 @@ void OtNodes::evaluate() {
 		});
 
 		if (node->needsEvaluating) {
-			node->onExecute();
-		};
+			try {
+				node->error.clear();
+				node->onExecute();
+
+			} catch (OtException& e) {
+				node->error = e.getShortErrorMessage();
+			}
+		}
 	}
 
 	// reset all nodes

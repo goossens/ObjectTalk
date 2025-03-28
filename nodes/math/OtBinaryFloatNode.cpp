@@ -68,7 +68,7 @@ public:
 			case Operator::add: result = a + b; break;
 			case Operator::subtract: result = a - b; break;
 			case Operator::multiply: result = a * b; break;
-			case Operator::divide: result =  a / (b == 0.0f ? 0.000001f : b); break;
+			case Operator::divide: result =  a / b; break;
 			case Operator::modulo: result = std::fmod(a, b); break;
 			case Operator::remainder: result = std::remainder(a, b); break;
 			case Operator::pow: result = std::pow(a, b); break;

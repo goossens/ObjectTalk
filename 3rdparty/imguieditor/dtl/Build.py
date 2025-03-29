@@ -12,10 +12,16 @@ import os, re
 #	append
 #
 
-def append(output, filename):
+def append(output, filename, skip):
 	with open(filename, "r") as input:
+		count = 0
+
 		for line in input:
-			output.write(line)
+			if count < skip:
+				count += 1
+
+			else:
+				output.write(line)
 
 
 #
@@ -32,7 +38,7 @@ if __name__ == "__main__":
 			for line in input:
 				if line.startswith("#include"):
 					match = pattern.search(line)
-					append(output, match[1])
+					append(output, match[1], 36)
 
 				else:
 					output.write(line)

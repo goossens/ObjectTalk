@@ -36,42 +36,6 @@
 #ifndef DTL_H
 #define DTL_H
 
-/**
-   dtl -- Diff Template Library
-   
-   In short, Diff Template Library is distributed under so called "BSD license",
-   
-   Copyright (c) 2015 Tatsuhiko Kubo <cubicdaiya@gmail.com>
-   All rights reserved.
-   
-   Redistribution and use in source and binary forms, with or without modification,
-   are permitted provided that the following conditions are met:
-   
-   * Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
-   
-   * Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-   
-   * Neither the name of the authors nor the names of its contributors
-   may be used to endorse or promote products derived from this software 
-   without specific prior written permission.
-   
-   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-   OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-   TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-   PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-/* If you use this library, you must include dtl.hpp only. */
 
 #ifndef DTL_VARIABLES_H
 #define DTL_VARIABLES_H
@@ -178,42 +142,6 @@ namespace dtl {
 } 
 
 #endif // DTL_VARIABLES_H
-/**
-   dtl -- Diff Template Library
-   
-   In short, Diff Template Library is distributed under so called "BSD license",
-   
-   Copyright (c) 2015 Tatsuhiko Kubo <cubicdaiya@gmail.com>
-   All rights reserved.
-   
-   Redistribution and use in source and binary forms, with or without modification,
-   are permitted provided that the following conditions are met:
-   
-   * Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
-   
-   * Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-   
-   * Neither the name of the authors nor the names of its contributors
-   may be used to endorse or promote products derived from this software 
-   without specific prior written permission.
-   
-   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-   OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-   TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-   PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-/* If you use this library, you must include dtl.hpp only. */
 
 #ifndef DTL_FUNCTORS_H
 #define DTL_FUNCTORS_H
@@ -329,42 +257,6 @@ namespace dtl {
 }
 
 #endif // DTL_FUNCTORS_H
-/**
-   dtl -- Diff Template Library
-   
-   In short, Diff Template Library is distributed under so called "BSD license",
-   
-   Copyright (c) 2015 Tatsuhiko Kubo <cubicdaiya@gmail.com>
-   All rights reserved.
-   
-   Redistribution and use in source and binary forms, with or without modification,
-   are permitted provided that the following conditions are met:
-   
-   * Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
-   
-   * Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-   
-   * Neither the name of the authors nor the names of its contributors
-   may be used to endorse or promote products derived from this software 
-   without specific prior written permission.
-   
-   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-   OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-   TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-   PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-/* If you use this library, you must include dtl.hpp only. */
 
 #ifndef DTL_SEQUENCE_H
 #define DTL_SEQUENCE_H
@@ -394,42 +286,6 @@ namespace dtl {
 }
 
 #endif // DTL_SEQUENCE_H
-/**
-   dtl -- Diff Template Library
-   
-   In short, Diff Template Library is distributed under so called "BSD license",
-   
-   Copyright (c) 2015 Tatsuhiko Kubo <cubicdaiya@gmail.com>
-   All rights reserved.
-   
-   Redistribution and use in source and binary forms, with or without modification,
-   are permitted provided that the following conditions are met:
-   
-   * Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
-   
-   * Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-   
-   * Neither the name of the authors nor the names of its contributors
-   may be used to endorse or promote products derived from this software 
-   without specific prior written permission.
-   
-   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-   OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-   TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-   PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-/* If you use this library, you must include dtl.hpp only. */
 
 #ifndef DTL_LCS_H
 #define DTL_LCS_H
@@ -449,42 +305,6 @@ namespace dtl {
 }
 
 #endif // DTL_LCS_H
-/**
-   dtl -- Diff Template Library
-   
-   In short, Diff Template Library is distributed under so called "BSD license",
-   
-   Copyright (c) 2015 Tatsuhiko Kubo <cubicdaiya@gmail.com>
-   All rights reserved.
-   
-   Redistribution and use in source and binary forms, with or without modification,
-   are permitted provided that the following conditions are met:
-   
-   * Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
-   
-   * Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-   
-   * Neither the name of the authors nor the names of its contributors
-   may be used to endorse or promote products derived from this software 
-   without specific prior written permission.
-   
-   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-   OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-   TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-   PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-/* If you use this library, you must include dtl.hpp only. */
 
 #ifndef DTL_SES_H
 #define DTL_SES_H
@@ -581,42 +401,6 @@ namespace dtl {
 }
 
 #endif // DTL_SES_H
-/**
-   dtl -- Diff Template Library
-   
-   In short, Diff Template Library is distributed under so called "BSD license",
-   
-   Copyright (c) 2015 Tatsuhiko Kubo <cubicdaiya@gmail.com>
-   All rights reserved.
-   
-   Redistribution and use in source and binary forms, with or without modification,
-   are permitted provided that the following conditions are met:
-   
-   * Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
-   
-   * Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-   
-   * Neither the name of the authors nor the names of its contributors
-   may be used to endorse or promote products derived from this software 
-   without specific prior written permission.
-   
-   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-   OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-   TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-   PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-/* If you use this library, you must include dtl.hpp only. */
 
 #ifndef DTL_DIFF_H
 #define DTL_DIFF_H
@@ -1287,42 +1071,6 @@ namespace dtl {
 }
 
 #endif // DTL_DIFF_H
-/**
-   dtl -- Diff Template Library
-   
-   In short, Diff Template Library is distributed under so called "BSD license",
-   
-   Copyright (c) 2015 Tatsuhiko Kubo <cubicdaiya@gmail.com>
-   All rights reserved.
-   
-   Redistribution and use in source and binary forms, with or without modification,
-   are permitted provided that the following conditions are met:
-   
-   * Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
-   
-   * Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-   
-   * Neither the name of the authors nor the names of its contributors
-   may be used to endorse or promote products derived from this software 
-   without specific prior written permission.
-   
-   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-   OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-   TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-   PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-/* If you use this library, you must include dtl.hpp only. */
 
 #ifndef DTL_DIFF3_H
 #define DTL_DIFF3_H

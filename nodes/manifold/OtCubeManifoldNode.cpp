@@ -36,7 +36,7 @@ public:
 		width = std::max(width, 0.0f);
 		height = std::max(height, 0.0f);
 		depth = std::max(depth, 0.0f);
-		manifold.cube(width, height, depth, center);
+		manifold = OtManifold::cube(width, height, depth, center);
 	}
 
 	static constexpr const char* nodeName = "Cube Manifold";

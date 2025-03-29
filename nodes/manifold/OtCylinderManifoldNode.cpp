@@ -38,7 +38,7 @@ public:
 		bottomRadius = std::max(bottomRadius, 0.00000001f);
 		topRadius = std::max(topRadius, 0.00000001f);
 		segments = std::max(segments, 3);
-		manifold.cylinder(height, bottomRadius, topRadius, segments, center);
+		manifold = OtManifold::cylinder(height, bottomRadius, topRadius, segments, center);
 	}
 
 	static constexpr const char* nodeName = "Cylinder Manifold";

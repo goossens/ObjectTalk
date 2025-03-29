@@ -14,6 +14,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "glm/glm.hpp"
 
@@ -90,9 +91,10 @@ public:
 	void save(const std::string& filepath);
 
 	// create primitives
-	void cube(float width, float height, float depth, bool center);
-	void cylinder(float height, float bottomRadius, float topRadius, int segments, bool center);
-	void sphere(float radius, int segments);
+	static OtManifold cube(float width, float height, float depth, bool center);
+	static OtManifold cylinder(float height, float bottomRadius, float topRadius, int segments, bool center);
+	static OtManifold sphere(float radius, int segments);
+	static OtManifold compose(std::vector<OtManifold>& manifolds);
 
 	// combine manifolds
 	OtManifold unionManifolds(OtManifold& other);
@@ -100,8 +102,8 @@ public:
 	OtManifold intersectManifolds(OtManifold& other);
 
 	// 2D to 3D and visa versa
-	void extrude(OtShape& shape, float height, int segments, float twistDegrees, float scaleTop, float tolerance);
-	void revolve(OtShape& shape, int segments, float revolveDegrees, float tolerance);
+	static OtManifold extrude(OtShape& shape, float height, int segments, float twistDegrees, float scaleTop, float tolerance);
+	static OtManifold revolve(OtShape& shape, int segments, float revolveDegrees, float tolerance);
 
 	// transform manifold
 	OtManifold translate(float x, float y, float z);
@@ -113,6 +115,8 @@ public:
 	inline OtManifold rotate(glm::vec3 xyz) { return rotate(xyz.x, xyz.y, xyz.z); }
 	inline OtManifold scale(glm::vec3 xyz) { return scale(xyz.x, xyz.y, xyz.z); }
 	inline OtManifold mirror(glm::vec3 xyz) { return mirror(xyz.x, xyz.y, xyz.z); }
+
+	OtManifold hull();
 
 	// get manifold information
 	inline int getVertexCount() { return manifold ? static_cast<int>(manifold->NumVert()) : 0; }
@@ -136,6 +140,9 @@ public:
 	}
 
 private:
+	// validate manifold and clear on error (also raises an exception)
+	void validate();
+
 	// properties
 	std::shared_ptr<manifold::Manifold> manifold;
 	int version = 0;

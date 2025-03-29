@@ -187,13 +187,8 @@ struct OtValue<OtCanvas> {
 	}
 
 	static inline OtCanvas decode(OtObject object) {
-		if (object.isKindOf<OtCanvasClass>()) {
-			return OtCanvasObject(object)->getCanvas();
-
-		} else {
-			OtLogError("Expected a [Canvas], not a [{}]", object.getTypeName());
-			return OtCanvas();
-		}
+		object.expect<OtCanvasClass>("Canvas");
+		return OtCanvasObject(object)->getCanvas();
 	}
 };
 

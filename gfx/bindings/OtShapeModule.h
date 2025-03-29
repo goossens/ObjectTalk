@@ -85,13 +85,8 @@ struct OtValue<OtShape> {
 	}
 
 	static inline OtShape decode(OtObject object) {
-		if (object.isKindOf<OtShapeClass>()) {
-			return OtShapeObject(object)->getShape();
-
-		} else {
-			OtLogError("Expected a [Shape], not a [{}]", object.getTypeName());
-			return OtShape();
-		}
+		object.expect<OtShapeClass>("Shape");
+		return OtShapeObject(object)->getShape();
 	}
 };
 

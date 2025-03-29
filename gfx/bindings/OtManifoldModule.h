@@ -37,33 +37,25 @@ public:
 
 	// generators
 	static inline OtObject cube(float width, float height, float depth, bool center) {
-		OtManifold result;
-		result.cube(width, height, depth, center);
-		return OtManifoldObject::create(result);
+		return OtManifoldObject::create(OtManifold::cube(width, height, depth, center));
 	}
 
 	static inline OtObject cylinder(float height, float bottomRadius, float topRadius, int segments, bool center) {
-		OtManifold result;
-		result.cylinder(height, bottomRadius, topRadius, segments, center);
-		return OtManifoldObject::create(result);
+		return OtManifoldObject::create(OtManifold::cylinder(height, bottomRadius, topRadius, segments, center));
 	}
 
 	static inline OtObject sphere(float radius, int segments) {
-		OtManifold result;
-		result.sphere(radius, segments);
-		return OtManifoldObject::create(result);
+		return OtManifoldObject::create(OtManifold::sphere(radius, segments));
 	}
 
+	static OtObject compose(OtObject array);
+
 	static inline OtObject extrude(OtShape shape, float height, int divisions, float twistDegrees, float scaleTop, float tolerance) {
-		OtManifold result;
-		result.extrude(shape, height, divisions, twistDegrees, scaleTop, tolerance);
-		return OtManifoldObject::create(result);
+		return OtManifoldObject::create(OtManifold::extrude(shape, height, divisions, twistDegrees, scaleTop, tolerance));
 	}
 
 	static inline OtObject revolve(OtShape shape, int segments, float revolveDegrees, float tolerance) {
-		OtManifold result;
-		result.revolve(shape, segments, revolveDegrees, tolerance);
-		return OtManifoldObject::create(result);
+		return OtManifoldObject::create(OtManifold::revolve(shape, segments, revolveDegrees, tolerance));
 	}
 
 	// combine manifolds
@@ -77,7 +69,9 @@ public:
 	inline OtObject scale(float x, float y, float z) { return OtManifoldObject::create(manifold.scale(x, y, z)); }
 	inline OtObject mirror(float x, float y, float z) { return OtManifoldObject::create(manifold.mirror(x, y, z)); }
 
-	// get manifold information
+	inline OtObject hull() { return OtManifoldObject::create(manifold.hull()); }
+
+	// get maifold information
 	inline int getVertexCount() { return manifold.getVertexCount(); }
 	inline int getTriangleCount() { return manifold.getTriangleCount(); }
 
@@ -110,13 +104,8 @@ struct OtValue<OtManifold> {
 	}
 
 	static inline OtManifold decode(OtObject object) {
-		if (object.isKindOf<OtManifoldClass>()) {
-			return OtManifoldObject(object)->getManifold();
-
-		} else {
-			OtLogError("Expected a [Manifold], not a [{}]", object.getTypeName());
-			return OtManifold();
-		}
+		object.expect<OtManifoldClass>("Manifold");
+		return OtManifoldObject(object)->getManifold();
 	}
 };
 

@@ -218,10 +218,7 @@ OtObject OtArrayClass::clone() {
 //
 
 OtObject OtArrayClass::merge(OtObject object) {
-	if (!object.isKindOf<OtArrayClass>()) {
-		OtLogError("Array merge expects another [Array] instance, not a [{}]", object.getTypeName());
-	}
-
+	object.expect<OtArrayClass>("Array");
 	OtArray result = OtArray::create();
 
 	for (auto& it : array) {

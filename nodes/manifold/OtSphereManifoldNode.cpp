@@ -33,7 +33,7 @@ public:
 	inline void onExecute() override {
 		radius = std::max(radius, 0.00000001f);
 		segments = std::max(segments, 3);
-		manifold.sphere(radius, segments);
+		manifold = OtManifold::sphere(radius, segments);
 	}
 
 	static constexpr const char* nodeName = "Sphere Manifold";

@@ -19,6 +19,7 @@
 #include <utility>
 
 #include "OtAssert.h"
+#include "OtLog.h"
 
 
 //
@@ -128,6 +129,17 @@ public:
 	template<typename Ts>
 	inline bool isKindOf() {
 		return dynamic_cast<Ts*>(ptr);
+	}
+
+	// shortcut for isKindOf and OtLogError
+	template<typename Ts>
+	inline void expect(const char* className) {
+		if (!ptr) {
+			OtLogError("Expected an object derived from [{}], not [null]", className);
+
+		} else if (!isKindOf<Ts>()) {
+			OtLogError("Expected an object derived from [{}], not a [{}]", className, ptr->getTypeName());
+		}
 	}
 
 	// dereferencing operators

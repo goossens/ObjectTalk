@@ -166,10 +166,7 @@ OtObject OtDictClass::index(const std::string& index) {
 //
 
 OtObject OtDictClass::add(OtObject value) {
-	if (!value.isKindOf<OtDictClass>()) {
-		OtLogError("The dictionary add operator expects another [Dict] instance, not [{}]", value.getTypeName());
-	}
-
+	value.expect<OtDictClass>("Dict");
 	auto result = OtDict::create();
 
 	for (auto& it : dict) {
@@ -204,10 +201,7 @@ OtObject OtDictClass::clone() {
 //
 
 OtObject OtDictClass::merge(OtObject value) {
-	if (!value.isKindOf<OtDictClass>()) {
-		OtLogError("Dictionary merge expects another [Dict] instance, not [{}]", value.getTypeName());
-	}
-
+	value.expect<OtDictClass>("Dict");
 	auto result = OtDict::create();
 
 	for (auto& it : dict) {

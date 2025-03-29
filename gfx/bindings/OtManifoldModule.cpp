@@ -9,8 +9,10 @@
 //	Include files
 //
 
+#include "OtArray.h"
 #include "OtClass.h"
 #include "OtFunction.h"
+#include "OtLog.h"
 #include "OtModule.h"
 #include "OtObject.h"
 #include "OtValue.h"
@@ -18,6 +20,28 @@
 #include "OtManifold.h"
 #include "OtManifoldModule.h"
 #include "OtShapeModule.h"
+
+
+//
+//	OtManifoldClass::compose
+//
+
+OtObject OtManifoldClass::compose(OtObject array) {
+	// sanity check
+	array.expect<OtArrayClass>("Array");
+
+	// create list of manifolds
+	auto members = OtArray(array)->raw();
+	std::vector<OtManifold> manifolds;
+
+	for (auto& object: members) {
+		object.expect<OtManifoldClass>("Manifold");
+		manifolds.emplace_back(OtManifoldObject(object)->manifold);
+	}
+
+	// combine manifolds into a single one
+	return OtManifoldObject::create(OtManifold::compose(manifolds));
+}
 
 
 //
@@ -42,10 +66,11 @@ OtType OtManifoldClass::getMeta() {
 		type->set("rotate", OtFunction::create(&OtManifoldClass::rotate));
 		type->set("scale", OtFunction::create(&OtManifoldClass::scale));
 		type->set("mirror", OtFunction::create(&OtManifoldClass::mirror));
+		type->set("hull", OtFunction::create(&OtManifoldClass::hull));
 
 		type->set("getVertexCount", OtFunction::create(&OtManifoldClass::getVertexCount));
 		type->set("getTriangleCount", OtFunction::create(&OtManifoldClass::getTriangleCount));
-		}
+	}
 
 	return type;
 }
@@ -63,6 +88,8 @@ static OtModuleRegistration registration{"manifold", [](OtModule module) {
 	module->set("cube", OtFunction::create(OtManifoldClass::cube));
 	module->set("cylinder", OtFunction::create(OtManifoldClass::cylinder));
 	module->set("sphere", OtFunction::create(OtManifoldClass::sphere));
+
+	module->set("compose", OtFunction::create(OtManifoldClass::compose));
 	module->set("extrude", OtFunction::create(OtManifoldClass::extrude));
 	module->set("revolve", OtFunction::create(OtManifoldClass::revolve));
 }};

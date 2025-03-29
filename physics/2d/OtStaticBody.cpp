@@ -10,7 +10,6 @@
 //
 
 #include "OtFunction.h"
-#include "OtLog.h"
 
 #include "OtStaticBody.h"
 #include "OtWorld.h"
@@ -22,10 +21,7 @@
 
 void OtStaticBodyClass::init(OtObject w) {
 	// sanity check
-	if (!w.isKindOf<OtWorldClass>()) {
-		OtLogError("Expected a [World], not a [{}]", w.getTypeName());
-	}
-
+	w.expect<OtWorldClass>("World");
 	OtWorld world = OtWorld(w);
 
 	b2BodyDef def;

@@ -24,6 +24,11 @@
 			"from": 76158874,
 			"id": 3815704092,
 			"to": 3959511377
+		},
+		{
+			"from": 1093726214,
+			"id": 2300021708,
+			"to": 2007812589
 		}
 	],
 	"metadata": {},
@@ -96,8 +101,8 @@
 			"y": 67.0
 		},
 		{
-			"azimuth": -321.0569152832031,
-			"elevation": 46.87705993652344,
+			"azimuth": 31.92842674255371,
+			"elevation": 75.38611602783203,
 			"id": 336700527,
 			"inputs": [
 				{
@@ -136,7 +141,7 @@
 					"name": "Translate",
 					"type": "vector2",
 					"value": [
-						53.599998474121094,
+						50.0,
 						0.0
 					]
 				},
@@ -234,6 +239,50 @@
 			"wireframe": false,
 			"x": 848.0,
 			"y": 274.0
+		},
+		{
+			"id": 3108721720,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 1093726214,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"path": "assets/pill.ot",
+			"title": "Manifold Generator",
+			"type": "Manifold Generator",
+			"x": 544.0,
+			"y": 610.0
+		},
+		{
+			"azimuth": 0.0,
+			"elevation": 0.0,
+			"id": 305696191,
+			"inputs": [
+				{
+					"id": 2007812589,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"lightColor": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"meshColor": [
+				1.0,
+				0.8500000238418579,
+				0.0
+			],
+			"outputs": [],
+			"title": "Manifold Probe",
+			"type": "Manifold Probe",
+			"wireframe": false,
+			"x": 846.0,
+			"y": 592.0
 		}
 	]
 }

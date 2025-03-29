@@ -58,6 +58,9 @@ void OtTextEditor::load() {
 //
 
 void OtTextEditor::save() {
+	// reset error markers
+	editor.ClearMarkers();
+
 	// strip all trailing whitespaces to make text look better
 	editor.StripTrailingWhitespaces();
 

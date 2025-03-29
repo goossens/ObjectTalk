@@ -31,6 +31,7 @@
 OtManifold::OtManifold(const manifold::Manifold& m) {
 	manifold = std::make_shared<manifold::Manifold>(m);
 	incrementVersion();
+	validate();
 }
 
 
@@ -126,6 +127,7 @@ void OtManifold::load(const std::string& filepath) {
 	// create manifold
 	manifold = std::make_shared<manifold::Manifold>(mesh);
 	incrementVersion();
+	validate();
 }
 
 
@@ -215,11 +217,8 @@ void OtManifold::save(const std::string& filepath) {
 //	OtManifold::cube
 //
 
-void OtManifold::cube(float width, float height, float depth, bool center) {
-	manifold = std::make_shared<manifold::Manifold>(
-		manifold::Manifold::Cube(manifold::vec3(width, height, depth), center).CalculateNormals(0));
-
-	incrementVersion();
+OtManifold OtManifold::cube(float width, float height, float depth, bool center) {
+	return OtManifold(manifold::Manifold::Cube(manifold::vec3(width, height, depth), center).CalculateNormals(0));
 }
 
 
@@ -227,11 +226,8 @@ void OtManifold::cube(float width, float height, float depth, bool center) {
 //	OtManifold::cylinder
 //
 
-void OtManifold::cylinder(float height, float bottomRadius, float topRadius, int segments, bool center) {
-	manifold = std::make_shared<manifold::Manifold>(
-		manifold::Manifold::Cylinder(height, bottomRadius, topRadius, segments, center).CalculateNormals(0));
-
-	incrementVersion();
+OtManifold OtManifold::cylinder(float height, float bottomRadius, float topRadius, int segments, bool center) {
+	return OtManifold(manifold::Manifold::Cylinder(height, bottomRadius, topRadius, segments, center).CalculateNormals(0));
 }
 
 
@@ -239,11 +235,26 @@ void OtManifold::cylinder(float height, float bottomRadius, float topRadius, int
 //	OtManifold::sphere
 //
 
-void OtManifold::sphere(float radius, int segments) {
-	manifold = std::make_shared<manifold::Manifold>(
-		manifold::Manifold::Sphere(radius, segments).CalculateNormals(0));
+OtManifold OtManifold::sphere(float radius, int segments) {
+	return OtManifold(manifold::Manifold::Sphere(radius, segments).CalculateNormals(0));
+}
 
-	incrementVersion();
+
+//
+//	OtManifold::compose
+//
+
+OtManifold OtManifold::compose(std::vector<OtManifold>& manifolds) {
+	std::vector<manifold::Manifold> mans;
+
+	for (auto& manifold : manifolds) {
+		if (manifold.isValid()) {
+			mans.emplace_back(*manifold.manifold);
+		}
+	}
+
+
+	return OtManifold(manifold::Manifold::Compose(mans));
 }
 
 
@@ -303,20 +314,18 @@ static void ShapeToPolygons(manifold::Polygons& polygons, OtShape& shape, float 
 //	OtManifold::extrude
 //
 
-void OtManifold::extrude(OtShape& shape, float height, int divisions, float twistDegrees, float scaleTop, float tolerance) {
+OtManifold OtManifold::extrude(OtShape& shape, float height, int divisions, float twistDegrees, float scaleTop, float tolerance) {
 	// convert shape to polygons
 	manifold::Polygons polygons;
 	ShapeToPolygons(polygons, shape, tolerance);
 
 	// extrude and create manifold
-	manifold = std::make_shared<manifold::Manifold>(manifold::Manifold::Extrude(
+	return OtManifold(manifold::Manifold::Extrude(
 		polygons,
 		height,
 		divisions,
 		twistDegrees,
 		manifold::vec2(scaleTop, scaleTop)).CalculateNormals(0));
-
-	incrementVersion();
 }
 
 
@@ -324,18 +333,13 @@ void OtManifold::extrude(OtShape& shape, float height, int divisions, float twis
 //	OtManifold::revolve
 //
 
-void OtManifold::revolve(OtShape& shape, int segments, float revolveDegrees, float tolerance) {
+OtManifold OtManifold::revolve(OtShape& shape, int segments, float revolveDegrees, float tolerance) {
 	// convert shape to polygons
 	manifold::Polygons polygons;
 	ShapeToPolygons(polygons, shape, tolerance);
 
 	// extrude and create manifold
-	manifold = std::make_shared<manifold::Manifold>(manifold::Manifold::Revolve(
-		polygons,
-		segments,
-		revolveDegrees).CalculateNormals(0));
-
-	incrementVersion();
+	return OtManifold(manifold::Manifold::Revolve(polygons, segments, revolveDegrees).CalculateNormals(0));
 }
 
 
@@ -372,6 +376,15 @@ OtManifold OtManifold::scale(float x, float y, float z) {
 
 OtManifold OtManifold::mirror(float x, float y, float z) {
 	return OtManifold(manifold->Mirror(manifold::vec3(x, y, z)));
+}
+
+
+//
+//	OtManifold::hull
+//
+
+OtManifold OtManifold::hull() {
+	return OtManifold(manifold->Hull().CalculateNormals(0));
 }
 
 
@@ -418,5 +431,36 @@ void OtManifold::createMesh(OtMesh& mesh) {
 	// if normals were not included
 	if (numberOfProperties < 6) {
 		mesh.generateNormals();
+	}
+}
+
+
+//
+//	OtManifold::validate
+//
+
+void OtManifold::validate() {
+	using error = manifold::Manifold::Error;
+	auto status = manifold->Status();
+
+	if (status != error::NoError) {
+		manifold = nullptr;
+
+		switch(status) {
+			case error::NoError: OtLogError("Manifold error: No Error"); break;
+			case error::NonFiniteVertex: OtLogError("Manifold error: Non Finite Vertex"); break;
+			case error::NotManifold: OtLogError("Manifold error: Not Manifold"); break;
+			case error::VertexOutOfBounds: OtLogError("Manifold error: Vertex Out Of Bounds"); break;
+			case error::PropertiesWrongLength: OtLogError("Manifold error: Properties Wrong Length"); break;
+			case error::MissingPositionProperties: OtLogError("Manifold error: Missing Position Properties"); break;
+			case error::MergeVectorsDifferentLengths: OtLogError("Manifold error: Merge Vectors Different Lengths"); break;
+			case error::MergeIndexOutOfBounds: OtLogError("Manifold error: Merge Index Out Of Bounds"); break;
+			case error::TransformWrongLength: OtLogError("Manifold error: Transform Wrong Length"); break;
+			case error::RunIndexWrongLength: OtLogError("Manifold error: Run Index Wrong Length"); break;
+			case error::FaceIDWrongLength: OtLogError("Manifold error: Face ID Wrong Length"); break;
+			case error::InvalidConstruction: OtLogError("Manifold error: Invalid Construction"); break;
+			case error::ResultTooLarge: OtLogError("Manifold error: Result Too Large"); break;
+			default: OtLogError("Manifold error: Unknown Error"); break;
+		}
 	}
 }

@@ -33,7 +33,7 @@ public:
 	// create the manifold
 	inline void onExecute() override {
 		if (shape.isValid()) {
-			manifold.revolve(shape, segments, revolveDegrees, tolerance);
+			manifold = OtManifold::revolve(shape, segments, revolveDegrees, tolerance);
 
 		} else {
 			manifold.clear();

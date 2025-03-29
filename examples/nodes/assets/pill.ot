@@ -1,0 +1,10 @@
+var manifold = import("manifold");
+
+class Generator : Object {
+	function generate(this) {
+		var sphere1 = manifold.sphere(0.5, 64);
+		var sphere2 = manifold.sphere(0.5, 64).translate(1.0, 0.0, 0.0);
+
+		return manifold.compose([sphere1, sphere2]).hull();
+	}
+}

@@ -93,6 +93,7 @@ public:
 	inline void onExecute() override {
 		if (script.isReady() && instance && hasRenderMethod) {
 			try {
+				error.clear();
 				auto result = OtVM::callMemberFunction(instance, GenerateID);
 
 				if (!OtManifoldValidateObject(result)) {
@@ -100,7 +101,6 @@ public:
 				}
 
 				manifold = OtManifoldFromObject(result);
-				error.clear();
 
 			} catch (OtException& e) {
 				onError(e);

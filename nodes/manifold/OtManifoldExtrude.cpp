@@ -35,7 +35,7 @@ public:
 	// create the manifold
 	inline void onExecute() override {
 		if (shape.isValid()) {
-			manifold.extrude(shape, height, divisions, twistDegrees, scaleTop, tolerance);
+			manifold = OtManifold::extrude(shape, height, divisions, twistDegrees, scaleTop, tolerance);
 
 		} else {
 			manifold.clear();

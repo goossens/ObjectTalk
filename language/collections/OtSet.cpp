@@ -174,10 +174,7 @@ OtObject OtSetClass::clone() {
 //
 
 OtObject OtSetClass::merge(OtObject object) {
-	if (!object.isKindOf<OtSetClass>()) {
-		OtLogError("Set merge expects another [Set] instance, not a [{}]", object.getTypeName());
-	}
-
+	object.expect<OtSetClass>("Set");
 	OtSet result = OtSet::create();
 
 	for (auto& item : set) {
@@ -282,10 +279,7 @@ OtObject OtSetClass::diffFrom(OtObject object) {
 //
 
 OtObject OtSetClass::unionWith(OtObject object) {
-	if (!object.isKindOf<OtSetClass>()) {
-		OtLogError("Set union expects another [Set] instance, not a [{}]", object.getTypeName());
-	}
-
+	object.expect<OtSetClass>("Set");
 	OtSet result = OtSet::create();
 
 	for (auto& item : set) {

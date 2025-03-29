@@ -51,9 +51,7 @@ void OtCanvasStackClass::init(size_t count, OtObject* parameters) {
 
 int OtCanvasStackClass::addCanvas(OtObject canvas) {
 	// sanity check
-	if (!canvas.isKindOf<OtCanvasClass>()) {
-		OtLogError("Object is not derived from [Canvas]");
-	}
+	canvas.expect<OtCanvasClass>("Canvas");
 
 	if (!canvas->hasByName("render")) {
 		OtLogError("Object does not have a [render] method");

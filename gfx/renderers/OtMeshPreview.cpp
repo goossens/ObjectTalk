@@ -34,7 +34,7 @@ void OtMeshPreview::render(int width, int height, OtMesh& mesh, Context& context
 	auto aabb = mesh.getAABB();
 	auto size = aabb.getSize();
 	auto center = aabb.getCenter();
-	auto scale = 0.8f / std::max(std::max(size.x, size.y), size.z);
+	auto scale = context.zoom / std::max(std::max(size.x, size.y), size.z);
 
 	auto model =
 		glm::toMat4(glm::quat(glm::radians(glm::vec3(context.elevation, context.azimuth, 0.0f)))) *
@@ -97,18 +97,26 @@ void OtMeshPreview::render(int width, int height, OtMesh& mesh, Context& context
 		(ImTextureID)(intptr_t) framebuffer.getColorTextureIndex(),
 		ImVec2(static_cast<float>(width), static_cast<float>(height)));
 
-	// process left-mouse drag events (if required)
-	if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
-		// determine timestep
-		float delta = ImGui::GetIO().DeltaTime;
+	if (ImGui::IsItemHovered()) {
+		// process left-mouse drag events (if required)
+		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
+			// determine timestep
+			float delta = ImGui::GetIO().DeltaTime;
 
-		// handle mouse interactions
-		ImVec2 drag = ImGui::GetMouseDragDelta();
+			// handle mouse interactions
+			ImVec2 drag = ImGui::GetMouseDragDelta();
 
-		if (drag.x != 0.0f || drag.y != 0.0f) {
-			context.elevation += drag.y * maxRotationPerSecond * delta / 2.0f;
-			context.azimuth += drag.x * maxRotationPerSecond * delta;
-			ImGui::ResetMouseDragDelta();
+			if (drag.x != 0.0f || drag.y != 0.0f) {
+				if (ImGui::IsKeyDown(ImGuiMod_Alt)) {
+					context.zoom += drag.y * maxZoomPerSecond * delta;
+
+				} else {
+					context.elevation += drag.y * maxRotationPerSecond * delta / 2.0f;
+					context.azimuth += drag.x * maxRotationPerSecond * delta;
+				}
+
+				ImGui::ResetMouseDragDelta();
+			}
 		}
 	}
 
@@ -122,4 +130,6 @@ void OtMeshPreview::render(int width, int height, OtMesh& mesh, Context& context
 	if (context.azimuth > 360.0f) {
 		context.azimuth -= 360.0f;
 	}
+
+	context.zoom = std::clamp(context.zoom, 0.5f, 2.0f);
 }

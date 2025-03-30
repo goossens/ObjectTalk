@@ -31,6 +31,7 @@ public:
 	public:
 		float azimuth = 0.0f;
 		float elevation = 0.0f;
+		float zoom = 0.95f;
 		glm::vec3 meshColor{1.0f, 0.85f, 0.0f};
 		glm::vec3 lightColor{1.0f};
 		bool wireframe = false;
@@ -42,6 +43,7 @@ public:
 private:
 	// constants
 	static constexpr float maxRotationPerSecond = 20.0f;
+	static constexpr float maxZoomPerSecond = 0.2f;
 
 	// rendering variables
 	OtUniformVec4 uniform = OtUniformVec4("u_preview", 4);

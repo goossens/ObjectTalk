@@ -1,0 +1,255 @@
+{
+	"links": [
+		{
+			"from": 4243123040,
+			"id": 408184764,
+			"to": 56501210
+		},
+		{
+			"from": 2550862960,
+			"id": 1354971200,
+			"to": 3152811694
+		},
+		{
+			"from": 2550862960,
+			"id": 4213277278,
+			"to": 217555214
+		},
+		{
+			"from": 691126220,
+			"id": 2583584780,
+			"to": 1490071366
+		},
+		{
+			"from": 2105882391,
+			"id": 215882111,
+			"to": 486684054
+		},
+		{
+			"from": 902124213,
+			"id": 4030250391,
+			"to": 3582590217
+		}
+	],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 1863888524,
+			"inputs": [
+				{
+					"id": 1526405463,
+					"name": "Width",
+					"type": "int",
+					"value": 256
+				},
+				{
+					"id": 4094783600,
+					"name": "Height",
+					"type": "int",
+					"value": 256
+				},
+				{
+					"id": 849638715,
+					"name": "Frequency",
+					"type": "int",
+					"value": 7
+				},
+				{
+					"id": 3698526399,
+					"name": "Lacunarity",
+					"type": "float",
+					"value": 1.7000000476837158
+				},
+				{
+					"id": 2380244455,
+					"name": "Amplitude",
+					"type": "float",
+					"value": 0.5
+				},
+				{
+					"id": 850026902,
+					"name": "Persistence",
+					"type": "float",
+					"value": 0.5
+				},
+				{
+					"id": 3017524261,
+					"name": "Octaves",
+					"type": "int",
+					"value": 6
+				}
+			],
+			"noiseType": 1,
+			"outputs": [
+				{
+					"id": 4243123040,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"title": "NoiseMap Generator",
+			"type": "NoiseMap Generator",
+			"x": 14.0,
+			"y": 43.0
+		},
+		{
+			"distance": 0,
+			"id": 2454258453,
+			"inputs": [
+				{
+					"id": 56501210,
+					"name": "Input",
+					"type": "texture"
+				}
+			],
+			"outputs": [
+				{
+					"id": 2550862960,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "Islandizer",
+			"type": "Islandizer",
+			"x": 248.0,
+			"y": 266.0
+		},
+		{
+			"id": 3557975928,
+			"inputs": [
+				{
+					"id": 217555214,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"outputs": [],
+			"title": "Texture Probe",
+			"type": "Texture Probe",
+			"x": 514.0,
+			"y": 45.0
+		},
+		{
+			"id": 833814754,
+			"inputs": [
+				{
+					"id": 3152811694,
+					"name": "Input",
+					"type": "texture"
+				}
+			],
+			"outputs": [
+				{
+					"id": 691126220,
+					"name": "Output",
+					"type": "image"
+				}
+			],
+			"title": "Texture to Image",
+			"type": "Texture to Image",
+			"x": 514.0,
+			"y": 327.0
+		},
+		{
+			"id": 978565693,
+			"inputs": [
+				{
+					"id": 1490071366,
+					"name": "Input",
+					"type": "image"
+				}
+			],
+			"outputs": [
+				{
+					"id": 2105882391,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Terrain Builder",
+			"type": "Terrain Builder",
+			"x": 729.0,
+			"y": 296.0
+		},
+		{
+			"id": 4090088266,
+			"inputs": [
+				{
+					"id": 486684054,
+					"name": "Input",
+					"type": "geometry"
+				},
+				{
+					"id": 1779359825,
+					"name": "Translate",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 950104550,
+					"name": "Rotate",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 3080108351,
+					"name": "Scale",
+					"type": "vector3",
+					"value": [
+						4.0,
+						1.0,
+						4.0
+					]
+				}
+			],
+			"outputs": [
+				{
+					"id": 902124213,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Geometry Transform",
+			"type": "Geometry Transform",
+			"x": 916.0,
+			"y": 271.0
+		},
+		{
+			"azimuth": 12.984578132629395,
+			"elevation": 25.822982788085938,
+			"id": 1846866574,
+			"inputs": [
+				{
+					"id": 3582590217,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"lightColor": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"meshColor": [
+				1.0,
+				0.8500000238418579,
+				0.0
+			],
+			"outputs": [],
+			"title": "Geometry Probe",
+			"type": "Geometry Probe",
+			"wireframe": false,
+			"x": 1257.0,
+			"y": 257.0,
+			"zoom": 1.1302343606948853
+		}
+	]
+}

@@ -17,29 +17,26 @@
 #include "OtGlm.h"
 #include "OtUi.h"
 
-#include "OtManifold.h"
-#include "OtMesh.h"
+#include "OtGeometry.h"
 #include "OtMeshPreview.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtManifoldProbeNode
+//	OtGeometryProbeNode
 //
 
-class OtManifoldProbeNode : public OtNodeClass {
+class OtGeometryProbeNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Manifold", manifold);
+		addInputPin("Geometry", geometry);
 	}
 
-	// convert manifold to mesh
+	// convert geometry to mesh
 	inline void onExecute() override {
-		if (manifold.isValid()) {
-			manifold.createMesh(mesh);
-
+		if (geometry.isValid()) {
 			customW = size;
 			customH = size;
 
@@ -54,11 +51,11 @@ public:
 
 	// render custom fields
 	inline void customRendering(float itemWidth) override {
-		if (manifold.isValid()) {
+		if (geometry.isValid()) {
 			OtUi::hSpacer((itemWidth - customW) / 2.0f);
-			preview.render(static_cast<int>(size), static_cast<int>(size), mesh, context);
+			preview.render(static_cast<int>(size), static_cast<int>(size), geometry.getMesh(), context);
 
-			if (ImGui::BeginPopupContextItem("Manifold Context")) {
+			if (ImGui::BeginPopupContextItem("Geometry Context")) {
 				OtUi::header("Settings:");
 				ImGui::Spacing();
 				OtUi::toggleButton("Wireframe", &context.wireframe);
@@ -67,24 +64,24 @@ public:
 
 				ImGui::TextUnformatted("");
 				OtUi::header("Statistics:");
-				OtUi::readonlySizeT("Vertices", manifold.getVertexCount());
-				OtUi::readonlySizeT("Triangles", manifold.getTriangleCount());
+				OtUi::readonlySizeT("Vertices", geometry.getMesh().getVertexCount());
+				OtUi::readonlySizeT("Triangles", geometry.getMesh().getTriangleCount());
 				ImGui::Spacing();
 				ImGui::EndPopup();
 			}
 
 			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiPopupFlags_MouseButtonLeft)) {
-				ImGui::OpenPopup("Manifold Popup");
+				ImGui::OpenPopup("Geometry Popup");
 			}
 
-			if (ImGui::BeginPopup("Manifold Popup", ImGuiWindowFlags_NoMove)) {
+			if (ImGui::BeginPopup("Geometry Popup", ImGuiWindowFlags_NoMove)) {
 				auto popupSize = ImGui::GetMainViewport()->WorkSize.y * 0.75f;
-				popupPreview.render(static_cast<int>(popupSize), static_cast<int>(popupSize), mesh, context);
+				popupPreview.render(static_cast<int>(popupSize), static_cast<int>(popupSize), geometry.getMesh(), context);
 				ImGui::EndPopup();
 			}
 
 		} else {
-			ImGui::TextUnformatted("No manifold available");
+			ImGui::TextUnformatted("No geometry available");
 		}
 	}
 
@@ -114,14 +111,13 @@ public:
 		context.wireframe = data->value("wireframe", false);
 	}
 
-	static constexpr const char* nodeName = "Manifold Probe";
+	static constexpr const char* nodeName = "Geometry Probe";
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::probe;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 	static constexpr float size = 170.0f;
 
 protected:
-	OtManifold manifold;
-	OtMesh mesh;
+	OtGeometry geometry;
 
 	OtMeshPreview preview;
 	OtMeshPreview popupPreview;
@@ -131,4 +127,4 @@ protected:
 	float customH;
 };
 
-static OtNodesFactoryRegister<OtManifoldProbeNode> registration;
+static OtNodesFactoryRegister<OtGeometryProbeNode> registration;

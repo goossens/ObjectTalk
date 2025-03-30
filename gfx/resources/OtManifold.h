@@ -119,8 +119,8 @@ public:
 	OtManifold hull();
 
 	// get manifold information
-	inline int getVertexCount() { return manifold ? static_cast<int>(manifold->NumVert()) : 0; }
-	inline int getTriangleCount() { return manifold ? static_cast<int>(manifold->NumTri()) : 0; }
+	inline size_t getVertexCount() { return manifold ? manifold->NumVert() : 0; }
+	inline size_t getTriangleCount() { return manifold ? manifold->NumTri() : 0; }
 
 	// create a mesh
 	void createMesh(OtMesh& mesh);

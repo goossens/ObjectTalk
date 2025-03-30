@@ -125,8 +125,9 @@
 			"title": "Manifold Probe",
 			"type": "Manifold Probe",
 			"wireframe": false,
-			"x": 848.0,
-			"y": 12.0
+			"x": 847.0,
+			"y": 12.0,
+			"zoom": 1.1367331743240356
 		},
 		{
 			"id": 3898536446,
@@ -209,7 +210,7 @@
 			],
 			"title": "Manifold Revolve",
 			"type": "Manifold Revolve",
-			"x": 566.0,
+			"x": 576.0,
 			"y": 350.0
 		},
 		{
@@ -237,8 +238,9 @@
 			"title": "Manifold Probe",
 			"type": "Manifold Probe",
 			"wireframe": false,
-			"x": 848.0,
-			"y": 274.0
+			"x": 847.0,
+			"y": 274.0,
+			"zoom": 1.13308846950531
 		},
 		{
 			"id": 3108721720,
@@ -253,12 +255,12 @@
 			"path": "assets/pill.ot",
 			"title": "Manifold Generator",
 			"type": "Manifold Generator",
-			"x": 544.0,
-			"y": 610.0
+			"x": 567.0,
+			"y": 569.0
 		},
 		{
-			"azimuth": 0.0,
-			"elevation": 0.0,
+			"azimuth": -33.92798614501953,
+			"elevation": 76.03055572509766,
 			"id": 305696191,
 			"inputs": [
 				{
@@ -281,8 +283,9 @@
 			"title": "Manifold Probe",
 			"type": "Manifold Probe",
 			"wireframe": false,
-			"x": 846.0,
-			"y": 592.0
+			"x": 847.0,
+			"y": 551.0,
+			"zoom": 1.2058814764022827
 		}
 	]
 }

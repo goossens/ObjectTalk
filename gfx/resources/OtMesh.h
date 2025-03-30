@@ -91,6 +91,7 @@ public:
 
 	// get counts
 	size_t getVertexCount() { return vertices.size(); }
+	size_t getTriangleCount() { return indices.size() / 3; }
 	size_t getIndexCount() { return indices.size(); }
 
 	// generate AABB, normals and tangents

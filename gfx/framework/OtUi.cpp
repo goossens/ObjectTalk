@@ -254,6 +254,16 @@ void OtUi::readonlyInt(const char* label, int value) {
 
 
 //
+//	OtUi::readonlySizeT
+//
+
+void OtUi::readonlySizeT(const char* label, size_t value) {
+	std::string text = std::to_string(value);
+	readonlyText(label, &text);
+}
+
+
+//
 //	OtUi::inputText
 //
 

@@ -9,12 +9,10 @@
 //	Include files
 //
 
+#include "OtClass.h"
 #include "OtFunction.h"
 
-#include "OtAnimation.h"
-#include "OtAnimator.h"
 #include "OtEntityObject.h"
-#include "OtSceneObject.h"
 #include "OtTransformComponentObject.h"
 
 

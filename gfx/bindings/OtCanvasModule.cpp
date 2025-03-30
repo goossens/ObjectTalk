@@ -12,6 +12,7 @@
 #include "nanovg.h"
 
 #include "OtClass.h"
+#include "OtFunction.h"
 #include "OtInteger.h"
 #include "OtModule.h"
 

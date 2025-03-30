@@ -15,7 +15,6 @@
 #include "fmt/format.h"
 #include "glm/glm.hpp"
 
-#include "OtFunction.h"
 #include "OtIdentifier.h"
 #include "OtInteger.h"
 #include "OtLog.h"

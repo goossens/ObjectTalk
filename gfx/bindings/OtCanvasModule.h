@@ -14,7 +14,6 @@
 
 #include "glm/glm.hpp"
 
-#include "OtFunction.h"
 #include "OtLog.h"
 #include "OtObject.h"
 #include "OtValue.h"
@@ -24,7 +23,7 @@
 
 
 //
-//	OtCanvas
+//	OtCanvasObject
 //
 
 class OtCanvasClass;

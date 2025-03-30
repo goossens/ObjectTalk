@@ -10,6 +10,7 @@
 //
 
 #include "OtClass.h"
+#include "OtFunction.h"
 #include "OtModule.h"
 
 #include "OtMathModule.h"

@@ -46,4 +46,5 @@ public:
 	float roughness = 0.2f;
 	float ao = 0.25f;
 	float reflectivity = 1.0f;
+	float depthFactor = 1.0f;
 };

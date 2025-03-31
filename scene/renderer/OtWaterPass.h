@@ -153,7 +153,7 @@ public:
 		float distance = farPoint.z / farPoint.w;
 
 		// submit uniforms
-		waterUniforms.setValue(0, water.level, distance, 0.0f, 0.0f);
+		waterUniforms.setValue(0, water.level, distance, water.depthFactor, 0.0f);
 		waterUniforms.setValue(1, water.scale, static_cast<float>(water.normals.isReady() ? water.normals->getTexture().getWidth() : 1), time, 0.0f);
 		waterUniforms.setValue(2, water.metallic, water.roughness, water.ao, water.reflectivity);
 		waterUniforms.setValue(3, water.color, static_cast<float>(water.useRefractance));

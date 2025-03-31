@@ -30,11 +30,7 @@ bool OtWaterComponent::renderUI() {
 	changed |= OtUi::dragFloat("Level", &level, -100.0f, 1000.0f);
 	changed |= OtUi::dragFloat("Distance", &distance, 1.0f, 1000.0f);
 	changed |= OtUi::toggleButton("Use Refractance", &useRefractance);
-
-	if (!useRefractance) {
-		changed |= ImGui::ColorEdit3("Color", glm::value_ptr(color));
-	}
-
+	changed |= ImGui::ColorEdit3("Color", glm::value_ptr(color));
 	changed |= normals.renderUI("Normals");
 	changed |= OtUi::dragFloat("Scale", &scale, 0.01f, 100.0f);
 	changed |= OtUi::dragFloat("Speed", &speed, 0.01f, 10.0f);
@@ -42,6 +38,7 @@ bool OtWaterComponent::renderUI() {
 	changed |= OtUi::dragFloat("Roughness", &roughness, 0.0f, 1.0f);
 	changed |= OtUi::dragFloat("Ambient Occlusion", &ao, 0.0f, 1.0f);
 	changed |= OtUi::dragFloat("Reflectivity", &reflectivity, 0.1f, 10.0f);
+	changed |= OtUi::dragFloat("Depth Factor", &depthFactor, 0.001f, 1000.0f);
 	return changed;
 }
 
@@ -64,6 +61,7 @@ nlohmann::json OtWaterComponent::serialize(std::string* basedir) {
 	data["roughness"] = roughness;
 	data["ao"] = ao;
 	data["reflectivity"] = reflectivity;
+	data["depthFactor"] = depthFactor;
 	return data;
 }
 
@@ -84,4 +82,5 @@ void OtWaterComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	roughness = data.value("roughness", 0.2f);
 	ao = data.value("ao", 0.25f);
 	reflectivity = data.value("reflectivity", 1.0f);
+	depthFactor = data.value("depthFactor", 1.0f);
 }

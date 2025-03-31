@@ -17,6 +17,7 @@ uniform vec4 u_water[4];
 
 #define u_level u_water[0].x
 #define u_distance u_water[0].y
+#define u_depthFactor u_water[0].z
 
 #define u_scale u_water[1].x
 #define u_size u_water[1].y
@@ -77,7 +78,7 @@ void main() {
 	vec2 refractionUv = gl_FragCoord.xy / u_viewRect.zw;
 	vec2 reflectionUv = vec2(refractionUv.x, 1.0 - refractionUv.y);
 	vec3 reflectionColor = texture2D(s_reflectionTexture, reflectionUv).rgb;
-	vec3 refractionColor = u_refractanceFlag ? texture2D(s_refractionTexture, refractionUv).rgb : u_color;
+	vec3 refractionColor = u_color * (u_refractanceFlag ? texture2D(s_refractionTexture, refractionUv).rgb : 1.0);
 
 	// determine view direction and water depth
 	vec3 viewDirection = normalize(u_cameraPosition - waterWorldPos);
@@ -88,9 +89,9 @@ void main() {
 	float waterDepth = length(refractionWorldPos - waterWorldPos);
 
 	// determine water color and transparency
-	float refractiveFactor = pow(dot(viewDirection, vec3(0.0, 1.0, 0.0)), u_reflectivity);
+	float refractiveFactor = pow(dot(viewDirection, normal), u_reflectivity);
 	vec3 color = mix(reflectionColor, refractionColor, refractiveFactor);
-	float alpha = clamp((waterDepth / 1.0), 0.0, 1.0);
+	float alpha = clamp(waterDepth * u_depthFactor, 0.0, 1.0);
 
 	// material data
 	Material material;
@@ -129,7 +130,7 @@ void main() {
 	}
 
 	// set results
-	gl_FragColor = vec4(color, 1.0);
+	gl_FragColor = vec4(color, alpha);
 
 #if BGFX_SHADER_LANGUAGE_GLSL
 	gl_FragDepth = (waterNdcPos.z + 1.0) * 0.5;

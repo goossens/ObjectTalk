@@ -11,8 +11,8 @@
 				{
 					"component": "Transform",
 					"rotation": [
-						-5.0,
-						0.0,
+						-20.554927825927734,
+						-45.523162841796875,
 						0.0
 					],
 					"scale": [
@@ -21,15 +21,15 @@
 						1.0
 					],
 					"translation": [
-						0.0,
-						47.900001525878906,
-						15.0
+						4.535378932952881,
+						14.03577995300293,
+						497.123046875
 					]
 				},
 				{
 					"component": "Camera",
-					"far": 528.0,
-					"fov": 71.0,
+					"far": 5000.0,
+					"fov": 60.0,
 					"mainCamera": true,
 					"near": 1.0
 				}
@@ -44,16 +44,16 @@
 					"uuid": 864477290
 				},
 				{
-					"azimuth": 19.566999435424805,
+					"azimuth": 45.599998474121094,
 					"castShadow": true,
 					"cirrus": 0.45399999618530273,
 					"component": "Sky",
 					"cumulus": 0.800000011920929,
-					"elevation": 33.26100158691406,
-					"mieCoefficient": 5.734000205993652,
+					"elevation": 55.29999923706055,
+					"mieCoefficient": 7.429999828338623,
 					"mieScattering": 0.9900000095367432,
-					"rayleighCoefficient": 2.8420000076293945,
-					"speed": 2.5439999103546143
+					"rayleighCoefficient": 1.909999966621399,
+					"speed": 1.0
 				}
 			]
 		},
@@ -95,7 +95,7 @@
 						],
 						"region2Overlap": 0.05000000074505806,
 						"region2Texture": "assets/terrain.jpg",
-						"region2TextureScale": 25.0,
+						"region2TextureScale": 28.0,
 						"region2Transition": 0.49000000953674316,
 						"region3Color": [
 							0.6991150379180908,
@@ -104,7 +104,7 @@
 						],
 						"region3Overlap": 0.05000000074505806,
 						"region3Texture": "assets/rock.jpg",
-						"region3TextureScale": 70.0,
+						"region3TextureScale": 160.0,
 						"region3Transition": 0.5799999833106995,
 						"region4Color": [
 							0.8716814517974854,
@@ -112,7 +112,7 @@
 							0.8716814517974854
 						],
 						"region4Texture": "assets/snow.jpg",
-						"region4TextureScale": 28.100000381469727
+						"region4TextureScale": 15.0
 					},
 					"tileSize": 64,
 					"vOffset": -14.0,
@@ -130,22 +130,23 @@
 					"uuid": 2516776593
 				},
 				{
-					"ao": 0.3499999940395355,
+					"ao": 0.23000000417232513,
 					"color": [
-						0.11911659687757492,
-						0.3094998002052307,
-						0.6902654767036438
+						0.3508888781070709,
+						0.5377612709999084,
+						0.9115044474601746
 					],
 					"component": "Water",
+					"depthFactor": 1.2999999523162842,
 					"distance": 500.0,
 					"level": 0.0,
 					"metallic": 0.28999999165534973,
 					"normals": "assets/water.jpg",
-					"reflectivity": 1.0,
+					"reflectivity": 0.46000000834465027,
 					"roughness": 0.25999999046325684,
-					"scale": 15.0,
-					"speed": 0.75,
-					"useRefractance": true
+					"scale": 3.0,
+					"speed": 1.0,
+					"useRefractance": false
 				}
 			]
 		}
@@ -155,13 +156,14 @@
 			"far": 5000.0,
 			"fov": 60.0,
 			"near": 1.0,
-			"pitch": -20.0,
+			"pitch": -20.554927825927734,
 			"position": [
-				0.0,
-				50.0,
-				500.0
+				4.535378932952881,
+				14.03577995300293,
+				497.123046875
 			],
-			"yaw": 0.0
+			"speed": 3.0,
+			"yaw": -45.523162841796875
 		},
 		"gizmo": {
 			"enabled": false,
@@ -183,7 +185,7 @@
 		"bloomIntensity": 0.5400000214576721,
 		"contrast": 1.100000023841858,
 		"exposure": 1.3799999952316284,
-		"fog": true,
+		"fog": false,
 		"fogColor": [
 			0.4000000059604645,
 			0.5,
@@ -191,6 +193,7 @@
 		],
 		"fogDensity": 0.05999999865889549,
 		"fxaa": true,
-		"godrays": false
+		"godrays": false,
+		"tonemap": 3
 	}
 }

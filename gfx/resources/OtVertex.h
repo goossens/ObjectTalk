@@ -57,35 +57,6 @@ struct OtVertex {
 
 
 //
-//	OtVertexPosUvCol
-//
-
-struct OtVertexPosUvCol {
-	// vertex elements
-	glm::vec3 position;
-	glm::vec2 uv;
-	uint32_t color;
-
-	// constructors
-	OtVertexPosUvCol() = default;
-	inline OtVertexPosUvCol(const glm::vec3& p, const glm::vec2& u=glm::vec2(0.0f), uint32_t c=0) : position(p), uv(u), color(c) {}
-
-	// get vertex description
-	static inline bgfx::VertexLayout getLayout() {
-		bgfx::VertexLayout layout;
-
-		layout.begin()
-			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-			.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
-			.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-			.end();
-
-		return layout;
-	}
-};
-
-
-//
 //	OtVertexPosUvCol2D
 //
 
@@ -188,89 +159,6 @@ struct OtVertexPosUvw {
 		layout.begin()
 			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
 			.add(bgfx::Attrib::TexCoord0, 3, bgfx::AttribType::Float)
-			.end();
-
-		return layout;
-	}
-};
-
-
-//
-//	OtVertexPosNormUv
-//
-
-struct OtVertexPosNormUv {
-	// vertex elements
-	glm::vec3 position;
-	glm::vec3 normal;
-	glm::vec2 uv;
-
-	// constructors
-	OtVertexPosNormUv() = default;
-	inline OtVertexPosNormUv(const glm::vec3& p, const glm::vec3& n, const glm::vec2& u=glm::vec2(0.0f)) : position(p), normal(n), uv(u) {}
-
-	// get vertex description
-	static inline bgfx::VertexLayout getLayout() {
-		bgfx::VertexLayout layout;
-
-		layout.begin()
-			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-			.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
-			.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
-			.end();
-
-		return layout;
-	}
-};
-
-
-//
-//	OtVertexPosNorm
-//
-
-struct OtVertexPosNorm {
-	// vertex elements
-	glm::vec3 position;
-	glm::vec3 normal;
-
-	// constructors
-	OtVertexPosNorm() = default;
-	inline OtVertexPosNorm(const glm::vec3& p, const glm::vec3& n=glm::vec3(0.0f)) : position(p), normal(n) {}
-
-	// get vertex description
-	static inline bgfx::VertexLayout getLayout() {
-		bgfx::VertexLayout layout;
-
-		layout.begin()
-			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-			.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
-			.end();
-
-		return layout;
-	}
-};
-
-
-//
-//	OtVertexPosCol
-//
-
-struct OtVertexPosCol {
-	// vertex elements
-	glm::vec3 position;
-	uint32_t color;
-
-	// constructors
-	OtVertexPosCol() = default;
-	inline OtVertexPosCol(const glm::vec3& p, uint32_t c=0) : position(p), color(c) {}
-
-	// get vertex description
-	static inline bgfx::VertexLayout getLayout() {
-		bgfx::VertexLayout layout;
-
-		layout.begin()
-			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-			.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
 			.end();
 
 		return layout;

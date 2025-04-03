@@ -126,12 +126,12 @@ void OtTerrain::deserialize(nlohmann::json data, std::string* basedir) {
 //
 
 std::vector<OtTerrainMesh>& OtTerrain::getMeshes(OtFrustum& frustum, const glm::vec3& camera) {
-	// update heights if required
+	// update heights (if required)
 	if (heights.dirty) {
 		heights.update(tileableFbm, normalMapper);
 	}
 
-	// initialize if required
+	// initialize (if required)
 	if (!vertices.isValid()) {
 		initialize();
 	}

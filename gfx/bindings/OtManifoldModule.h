@@ -70,9 +70,9 @@ public:
 
 	inline OtObject hull() { return OtManifoldObject::create(manifold.hull()); }
 
-	// get maifold information
-	inline int getVertexCount() { return manifold.getVertexCount(); }
-	inline int getTriangleCount() { return manifold.getTriangleCount(); }
+	// get manifold information
+	inline size_t getVertexCount() { return manifold.getVertexCount(); }
+	inline size_t getTriangleCount() { return manifold.getTriangleCount(); }
 
 	// access raw manifold
 	inline OtManifold& getManifold() { return manifold; }

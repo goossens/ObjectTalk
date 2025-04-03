@@ -1,0 +1,73 @@
+{
+	"links": [
+		{
+			"from": 2171744055,
+			"id": 695360812,
+			"to": 3390048014
+		}
+	],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 1888423127,
+			"inputs": [
+				{
+					"id": 3212025501,
+					"name": "Width",
+					"type": "int",
+					"value": 512
+				},
+				{
+					"id": 1586559251,
+					"name": "Height",
+					"type": "int",
+					"value": 512
+				},
+				{
+					"id": 2958252686,
+					"name": "Seed",
+					"type": "int",
+					"value": 57
+				},
+				{
+					"id": 3651781322,
+					"name": "Size",
+					"type": "int",
+					"value": 64
+				},
+				{
+					"id": 852797534,
+					"name": "Disturbance",
+					"type": "float",
+					"value": 0.4000000059604645
+				}
+			],
+			"outputs": [
+				{
+					"id": 2171744055,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"title": "Map Generator",
+			"type": "Map Generator",
+			"x": 485.0,
+			"y": 254.0
+		},
+		{
+			"id": 4200034597,
+			"inputs": [
+				{
+					"id": 3390048014,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"outputs": [],
+			"title": "Texture Probe",
+			"type": "Texture Probe",
+			"x": 756.0,
+			"y": 81.0
+		}
+	]
+}

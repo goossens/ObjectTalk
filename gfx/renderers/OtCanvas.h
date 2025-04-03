@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <cstdint>
 #include <functional>
 #include <string>
 #include <unordered_map>
@@ -62,8 +63,12 @@ public:
 	// manipulate styles
 	inline void antiAlias(bool on) { nvgShapeAntiAlias(context, on); }
 	inline void strokeColor(const std::string& color) { auto c = OtColorParser::toVec4(color); nvgStrokeColor(context, nvgRGBAf(c.r, c.g, c.b, c.a)); }
+	inline void strokeColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) { nvgStrokeColor(context, nvgRGBA(r, g, b, a)); }
+	inline void strokeColor(float r, float g, float b, float a) { nvgStrokeColor(context, nvgRGBAf(r, g, b, a)); }
 	inline void strokePaint(int id) { nvgStrokePaint(context, paints[id]); }
 	inline void fillColor(const std::string& color) { auto c = OtColorParser::toVec4(color); nvgFillColor(context, nvgRGBAf(c.r, c.g, c.b, c.a)); }
+	inline void fillColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) { nvgFillColor(context, nvgRGBA(r, g, b, a)); }
+	inline void fillColor(float r, float g, float b, float a) { nvgFillColor(context, nvgRGBAf(r, g, b, a)); }
 	inline void fillPaint(int id) { nvgFillPaint(context, paints[id]); }
 	inline void miterLimit(float limit) { nvgMiterLimit(context, limit); }
 	inline void strokeWidth(float w) { nvgStrokeWidth(context, w); }

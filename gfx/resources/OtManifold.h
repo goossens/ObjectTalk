@@ -84,7 +84,7 @@ public:
 	void clear();
 
 	// see if anifold is valid
-	bool isValid() { return manifold != nullptr && !manifold->IsEmpty(); }
+	inline bool isValid() { return manifold != nullptr && !manifold->IsEmpty(); }
 
 	// manifold I/O
 	void load(const std::string& filepath);

@@ -38,8 +38,12 @@ if(OT_INCLUDE_UI)
 	file(GLOB MD4C_SOURCES md4c/*.c md4c/*.h)
 	add_library(md4c STATIC ${MD4C_SOURCES})
 	target_include_directories(md4c PUBLIC md4c)
-	target_link_libraries(md4c imgui)
 	set_target_properties(md4c PROPERTIES FOLDER 3rdParty)
+
+	file(GLOB DELAUNATOR_SOURCES delaunator/*.h delaunator/*.cpp)
+	add_library(delaunator STATIC ${DELAUNATOR_SOURCES})
+	target_include_directories(delaunator PUBLIC delaunator)
+	set_target_properties(delaunator PROPERTIES FOLDER deps)
 
 	add_library(tweeny INTERFACE)
 	target_include_directories(tweeny INTERFACE tweeny)

@@ -14,6 +14,10 @@
 
 class OtNoise {
 public:
+	// constructors
+	OtNoise() = default;
+	OtNoise(size_t o, float sf, float sa, float l, float p) : octaves(o), startFrequency(sf), startAmplitude(sa), lacunarity(l), persistence(p) {}
+
 	// get perlin values
 	float perlin(float x, float y);
 	float perlin(float x, float y, float z);
@@ -21,6 +25,15 @@ public:
 	// get Fractional Brownian Motion (FBM) values
 	float fbm(float x, float y);
 	float fbm(float x, float y, float z);
+
+	// configure FBM
+	inline void configure(size_t o, float sf, float sa, float l, float p) {
+		octaves = o;
+		startFrequency = sf;
+		startAmplitude = sa;
+		lacunarity = l;
+		persistence = p;
+	}
 
 private:
 	// Fractional Brownian Motion (FBM) properties

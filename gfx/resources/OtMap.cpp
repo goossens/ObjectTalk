@@ -10,12 +10,16 @@
 //
 
 #include <algorithm>
+#include <cmath>
+#include <set>
 
 #include "delaunator.h"
 
 #include "OtHash.h"
 #include "OtNoise.h"
+#include "OtNumbers.h"
 
+#include "OtCanvas.h"
 #include "OtMap.h"
 
 
@@ -43,7 +47,39 @@ void OtMap::update(int seed, int size, float disturbance) {
 	generateRegions();
 	triangulate();
 	generateCorners();
+	assignWater();
+	assignOceans();
+
 	incrementVersion();
+}
+
+void OtMap::render(OtFrameBuffer& framebuffer) {
+	// render the map
+	OtCanvas canvas;
+
+	canvas.render(framebuffer, 1.0f, [&]() {
+		auto scale = static_cast<float>(std::min(framebuffer.getWidth(), framebuffer.getHeight())) / static_cast<float>(map->size);
+		canvas.scale(scale, scale);
+
+		for (auto& region : map->regions) {
+			if (region.water) {
+				canvas.fillColor(0.0f, 0.0f, 1.0f, 1.0f);
+
+			} else {
+				canvas.fillColor(0.0f, 1.0f, 0.0f, 1.0f);
+			}
+
+			canvas.beginPath();
+			canvas.moveTo(map->corners[region.corners[0]].position.x, map->corners[region.corners[0]].position.y);
+
+			for (size_t i = 1; i < region.corners.size(); i++) {
+				canvas.lineTo(map->corners[region.corners[i]].position.x, map->corners[region.corners[i]].position.y);
+			}
+
+			canvas.closePath();
+			canvas.fill();
+		}
+	});
 }
 
 
@@ -54,20 +90,22 @@ void OtMap::update(int seed, int size, float disturbance) {
 void OtMap::generateRegions() {
 	// create regions
 	for (auto y = 0; y <= map->size; y++) {
-		map->regions.emplace_back(-1.0f, static_cast<float>(y));
-
 		for (auto x = 0; x <= map->size; x++) {
 			map->regions.emplace_back(
 				(OtHash::toFloat(x, y, map->seed, 0) * 2.0f - 1.0f) * map->disturbance + x,
 				(OtHash::toFloat(x, y, map->seed, 1) * 2.0f - 1.0f) * map->disturbance + y);
 		}
-
-		map->regions.emplace_back(static_cast<float>(map->size + 1), static_cast<float>(y));
 	}
 
+	// create extra border regions to ensure Voronoi cells cover the whole map area
 	for (auto x = -1; x <= map->size + 1; x++) {
-		map->regions.emplace_back(static_cast<float>(x), -1.0f);
-		map->regions.emplace_back(static_cast<float>(x), static_cast<float>(map->size + 1));
+		map->regions.emplace_back(static_cast<float>(x), -2.0f, true);
+		map->regions.emplace_back(static_cast<float>(x), static_cast<float>(map->size + 2), true);
+	}
+
+	for (auto y = 0; y <= map->size; y++) {
+		map->regions.emplace_back(-2.0f, static_cast<float>(y), true);
+		map->regions.emplace_back(static_cast<float>(map->size + 2), static_cast<float>(y), true);
 	}
 }
 
@@ -86,8 +124,29 @@ void OtMap::triangulate() {
 	}
 
 	delaunator::Delaunator delaunator(coords);
+
+	// save results
 	map->triangles = delaunator.triangles;
 	map->halfedges = delaunator.halfedges;
+
+	// get corners for each region
+	auto numEdges = map->halfedges.size();
+	std::set<size_t> seen;
+
+	for (size_t edge = 0; edge < numEdges; edge++) {
+		auto region = map->triangles[nextHalfedge(edge)];
+
+		if (seen.find(region) == seen.end()) {
+			seen.insert(region);
+			auto incoming = edge;
+
+			do {
+				map->regions[region].corners.emplace_back(triangleOfEdge(incoming));
+				auto outgoing = nextHalfedge(incoming);
+				incoming = map->halfedges[outgoing];
+			} while (incoming != delaunator::INVALID_INDEX && incoming != edge);
+		}
+	}
 }
 
 
@@ -97,9 +156,10 @@ void OtMap::triangulate() {
 
 void OtMap::generateCorners() {
 	// determine corners
+	auto size = static_cast<float>(map->size);
 	size_t numTriangles = map->triangles.size() / 3;
 
-	for (size_t c = 0; c < numTriangles; c ++) {
+	for (size_t c = 0; c < numTriangles; c++) {
 		// determine position
 		glm::vec2 sum(0.0f);
 
@@ -107,57 +167,72 @@ void OtMap::generateCorners() {
 			sum += map->regions[map->triangles[3 * c + i]].center;
 		}
 
-		auto pos = sum / 3.0f;
-
 		// create a new corner
-		auto& corner = map->corners.emplace_back(pos);
+		auto pos = sum / 3.0f;
+		map->corners.emplace_back(pos, pos.x < 0.0f || pos.y < 0.0f || pos.x > size || pos.y > size);
+	}
+}
 
-		// determine corner height
-		OtNoise noise;
-		auto nx = corner.position.x / map->size - 0.5f;
-		auto ny = corner.position.y / map->size - 0.5f;
 
-		auto h = (1.0f + noise.perlin(nx / 0.5f, ny / 0.5f, map->seed)) / 2.0f;
-		auto d = std::max(std::abs(nx), std::abs(ny)) * 2.0f;
-		corner.height = (1.0f + h - d) / 2.0f;
+//
+//	OtMap::assignWater
+//
 
-		// determine moisture level
-		corner.moisture = (1.0f + noise.perlin(nx / 0.5f, ny / 0.5f, map->seed * 7)) / 2.0f;
+void OtMap::assignWater() {
+	OtNoise noise;
+	auto size = static_cast<float>(map->size);
+	auto size2 = size / 2.0f;
 
-		// determine status
-		auto size = static_cast<float>(map->size);
-
-		if (pos.x < 0.0f || pos.x > size || pos.y < 0.0f || pos.y > size) {
-			corner.border = true;
-			corner.water = true;
-			corner.ocean = true;
+	for (auto& region : map->regions) {
+		if (region.border) {
+			region.water = true;
 
 		} else {
-			corner.water = !isIsland(pos);
+			auto x = (region.center.x - size2) / size2;
+			auto y = (region.center.y - size2) / size2;
+			auto distance = std::max(std::abs(x), std::abs(y));
+			auto n = std::lerp(noise.fbm(x, y, static_cast<float>(map->seed)), 0.5f, 0.5f);
+			region.water = (n - (0.5f * distance * distance)) < 0.0f;
 		}
 	}
 }
 
 
 //
-//	OtMap::isIsland
+//	OtMap::assignOceans
 //
 
-bool OtMap::isIsland(glm::vec2 pos) {
-	static constexpr float threshold = 0.075f;
-	auto size = static_cast<float>(map->size);
-	auto minV = size * threshold;
-	auto maxV = size * (1 - threshold);
+void OtMap::assignOceans() {
+	for (auto& region : map->regions) {
+		if (region.border) {
+			region.ocean = true;
 
-	if (pos.x < minV || pos.y < minV || pos.x > maxV || pos.y > maxV) {
-		return false;
+		} else {
+			auto size = static_cast<float>(map->size);
+			region.ocean = false;
 
-	} else {
-		OtNoise noise;
-		pos -= glm::vec2(size / 2.0f, size / 2.0f);
-		auto x = (pos.x / size) * 4.0f;
-		auto y = (pos.y / size) * 4.0f;
-		auto radius = (pos / size).length();
-		return noise.perlin(x, y) >= 0.3f * radius + (radius - 0.5f);
+			for (auto corner : region.corners) {
+				auto pos = map->corners[corner].position;
+				region.ocean |= pos.x < 0.0f || pos.y < 0.0f || pos.x > size || pos.y > size;
+			}
+
+			region.water |= region.ocean;
+		}
 	}
+}
+
+
+//
+//	OtMap::getPolygon
+//
+
+void OtMap::getPolygon(size_t start, std::vector<glm::vec2>& p) {
+	p.clear();
+	auto incoming = start;
+
+	do {
+		p.emplace_back(map->corners[triangleOfEdge(incoming)].position);
+		auto outgoing = nextHalfedge(incoming);
+		incoming = map->halfedges[outgoing];
+	} while (incoming != delaunator::INVALID_INDEX && incoming != start);
 }

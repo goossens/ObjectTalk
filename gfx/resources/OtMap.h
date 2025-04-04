@@ -17,6 +17,8 @@
 
 #include "glm/glm.hpp"
 
+#include "OtFrameBuffer.h"
+
 
 //
 //	OtMap
@@ -54,6 +56,9 @@ public:
 	// update map
 	void update(int seed, int size, float disturbance);
 
+	// render to framebuffer
+	void render(OtFrameBuffer& framebuffer);
+
 	// version management
 	inline void setVersion(int v) { version = v; }
 	inline int getVersion() { return version; }
@@ -72,21 +77,25 @@ public:
 	// local types
 	class Region {
 	public:
-		Region(float x, float y) : center(x, y) {}
+		Region(float x, float y, bool b=false) : center(x, y), border(b) {}
 		glm::vec2 center;
 		float height = 0.0f;
 		float moisture = 0.0f;
 		Biome biome = Biome::none;
-		std::vector<size_t> polygon;
+		bool border;
+		bool water = false;
+		bool ocean = false;
+		bool coast = false;
+		std::vector<size_t> corners;
 	};
 
 	class Corner {
 	public:
-		Corner(glm::vec2 p) : position(p) {}
+		Corner(glm::vec2 p, bool b=false) : position(p), border(b) {}
 		glm::vec2 position;
 		float height = 0.0f;
 		float moisture = 0.0f;
-		bool border = false;
+		bool border;
 		bool water = false;
 		bool ocean = false;
 		bool coast = false;
@@ -111,6 +120,11 @@ public:
 	void generateRegions();
 	void triangulate();
 	void generateCorners();
+	void assignWater();
+	void assignOceans();
 
-	bool isIsland(glm::vec2 pos);
+	// utility functions
+	inline size_t triangleOfEdge(size_t e) { return e / 3; }
+	inline size_t nextHalfedge(size_t e) { return (e % 3 == 2) ? e - 2 : e + 1; }
+	void getPolygon(size_t start, std::vector<glm::vec2>& p);
 };

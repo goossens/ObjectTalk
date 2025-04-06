@@ -17,6 +17,7 @@
 #include "delaunator.h"
 
 #include "OtHash.h"
+#include "OtLog.h"
 #include "OtNoise.h"
 #include "OtNumbers.h"
 
@@ -38,25 +39,52 @@ void OtMap::clear() {
 //	OtMap::update
 //
 
-void OtMap::update(int seed, int size, float smoothness) {
+void OtMap::update(int seed, int size, float ruggedness) {
 	// create new map definition
 	map = std::make_shared<Map>();
 	map->seed = seed;
 	map->size = size;
-	map->smoothness = smoothness;
+	map->ruggedness = ruggedness;
 
 	generateRegions();
 	triangulate();
 	generateCorners();
 	assignWater();
 	assignOceans();
-	assignCoasts();
+	assignLakes();
+	assignShores();
 	assignElevation();
+	assignMoisture();
+	assignTemperature();
+	assignBiome();
 
 	incrementVersion();
 }
 
 void OtMap::render(OtFrameBuffer& framebuffer) {
+	static const char* colors[] = {
+		"#000000",
+		"#44447a",
+		"#336699",
+		"#2f6666",
+		"#99ffff",
+		"#a09077",
+		"#306090",
+		"#ffffff",
+		"#bbbbaa",
+		"#888888",
+		"#555555",
+		"#99aa77",
+		"#889977",
+		"#c9d29b",
+		"#448855",
+		"#679459",
+		"#88aa55",
+		"#d2b98b",
+		"#337755",
+		"#559944"
+	};
+
 	// render the map
 	OtCanvas canvas;
 
@@ -74,11 +102,11 @@ void OtMap::render(OtFrameBuffer& framebuffer) {
 			} else if (region.water) {
 				canvas.fillColor("#336699");
 
-			} else if (region.coast) {
+			} else if (region.oceanshore) {
 				canvas.fillColor("#a09077");
 
 			} else {
-				canvas.fillColor(0.0f, 0.2f + (region.elevation * 0.8f), 0.0f, 1.0f);
+				canvas.fillColor(colors[static_cast<size_t>(region.biome)]);
 			}
 
 			canvas.beginPath();
@@ -105,40 +133,32 @@ void OtMap::generateRegions() {
 	// create internal regions
 	for (auto y = 1; y < map->size; y++) {
 		for (auto x = 1; x < map->size; x++) {
-			map->regions.emplace_back(
-				(OtHash::toFloat(step * x, step * y, map->seed, 0) * 2.0f - 1.0f) * (1.0f - map->smoothness) + x,
-				(OtHash::toFloat(step * x, step * y, map->seed, 1) * 2.0f - 1.0f) * (1.0f - map->smoothness) + y);
+			addRegion(
+				(OtHash::toFloat(step * x, step * y, map->seed, 0) * 2.0f - 1.0f) * map->ruggedness + x,
+				(OtHash::toFloat(step * x, step * y, map->seed, 1) * 2.0f - 1.0f) * map->ruggedness + y);
 		}
 	}
 
 	// create border regions
 	for (auto x = 0; x <= map->size; x++) {
-		map->borders.insert(map->regions.size());
-		map->regions.emplace_back(step * static_cast<float>(x), 0.0f, false, true);
-		map->borders.insert(map->regions.size());
-		map->regions.emplace_back(step * static_cast<float>(x), step * static_cast<float>(map->size + 1), false, true);
+		addBorderRegion(step * static_cast<float>(x), 0.0f);
+		addBorderRegion(step * static_cast<float>(x), step * static_cast<float>(map->size + 1));
 	}
 
 	for (auto y = 1; y < map->size; y++) {
-		map->borders.insert(map->regions.size());
-		map->regions.emplace_back(0.0f, step * static_cast<float>(y), false, true);
-		map->borders.insert(map->regions.size());
-		map->regions.emplace_back(step * static_cast<float>(map->size + 1), step * static_cast<float>(y), false, true);
+		addBorderRegion(0.0f, step * static_cast<float>(y));
+		addBorderRegion(step * static_cast<float>(map->size + 1), step * static_cast<float>(y));
 	}
 
 	// create ghost regions
 	for (auto x = -1; x <= map->size + 1; x++) {
-		map->ghosts.insert(map->regions.size());
-		map->regions.emplace_back(step * static_cast<float>(x), -2.0f, true);
-		map->ghosts.insert(map->regions.size());
-		map->regions.emplace_back(step * static_cast<float>(x), step * static_cast<float>(map->size + 3), true);
+		addGhostRegion(step * static_cast<float>(x), -10.0f);
+		addGhostRegion(step * static_cast<float>(x), step * static_cast<float>(map->size + 11));
 	}
 
 	for (auto y = 0; y <= map->size; y++) {
-		map->ghosts.insert(map->regions.size());
-		map->regions.emplace_back(step * -2.0f, step * static_cast<float>(y), true);
-		map->ghosts.insert(map->regions.size());
-		map->regions.emplace_back(step * static_cast<float>(map->size + 3), step * static_cast<float>(y), true);
+		addGhostRegion(step * -10.0f, step * static_cast<float>(y));
+		addGhostRegion(step * static_cast<float>(map->size + 11), step * static_cast<float>(y));
 	}
 }
 
@@ -181,7 +201,7 @@ void OtMap::generateCorners() {
 		}
 
 		// create a new corner
-		map->corners.emplace_back(sum / 3.0f);
+		addCorner(sum / 3.0f);
 	}
 
 	// get corners for all regions
@@ -196,7 +216,10 @@ void OtMap::generateCorners() {
 			auto incoming = edge;
 
 			do {
-				map->regions[region].corners.emplace_back(triangleOfEdge(incoming));
+				auto corner = triangleOfEdge(incoming);
+				map->regions[region].corners.emplace_back(corner);
+				map->corners[corner].regions.emplace_back(region);
+
 				auto outgoing = nextHalfEdge(incoming);
 				incoming = map->halfedges[outgoing];
 			} while (incoming != delaunator::INVALID_INDEX && incoming != edge);
@@ -225,16 +248,13 @@ void OtMap::generateCorners() {
 
 void OtMap::assignWater() {
 	OtNoise noise;
-	noise.setStartFrequency(0.5f + 3.0f * (1.0f - map->smoothness));
+	noise.setStartFrequency(0.5f + 3.0f * map->ruggedness);
 
 	auto size = static_cast<float>(map->size);
 	auto size2 = size / 2.0f;
 
 	for (auto& region : map->regions) {
-		if (region.ghost || region.border) {
-			region.water = true;
-
-		} else {
+		if (!region.ghost && !region.border) {
 			auto x = (region.center.x - size2) / size2;
 			auto y = (region.center.y - size2) / size2;
 			auto distance = std::max(std::abs(x), std::abs(y));
@@ -254,8 +274,6 @@ void OtMap::assignOceans() {
 	std::stack<size_t> stack;
 
 	for (auto region : map->borders) {
-		map->regions[region].ocean = true;
-		map->oceans.insert(region);
 		stack.push(region);
 	}
 
@@ -266,11 +284,11 @@ void OtMap::assignOceans() {
 		for (auto n : region.neighbors) {
 			auto& neighbor = map->regions[n];
 
-			// expand search to other watery neighbors that have not been marked as ocens yet
+			// expand search to other watery neighbors that have not been marked as oceans yet
 			if (neighbor.water && !neighbor.ocean) {
 				neighbor.ocean = true;
-				map->oceans.insert(n);
-				stack.push(n);
+				map->oceans.insert(neighbor.id);
+				stack.push(neighbor.id);
 			}
 		}
 	}
@@ -278,16 +296,34 @@ void OtMap::assignOceans() {
 
 
 //
-//	OtMap::assignCoast
+//	OtMap::assignLakes
 //
 
-void OtMap::assignCoasts() {
+void OtMap::assignLakes() {
+	for (auto& region : map->regions) {
+		if (region.water && !region.ocean) {
+			region.lake = true;
+			map->lakes.insert(region.id);
+		}
+	}
+}
+
+
+//
+//	OtMap::assignShores
+//
+
+void OtMap::assignShores() {
 	for (auto& region : map->regions) {
 		if (!region.water) {
 			for (auto neighbor : region.neighbors) {
 				if (map->regions[neighbor].ocean) {
-					region.coast = true;
-					map->coasts.insert(neighbor);
+					region.oceanshore = true;
+					map->oceanshores.insert(neighbor);
+
+				} else if (map->regions[neighbor].lake) {
+					region.lakeshore = true;
+					map->lakeshores.insert(neighbor);
 				}
 			}
 		}
@@ -305,12 +341,12 @@ void OtMap::assignElevation() {
 		map->regions[ocean].elevation = -0.1f;
 	}
 
-	// process all coastline regions
+	// process all ocean shoreline regions
 	std::list<size_t> list;
 
-	for (auto coast : map->coasts) {
-		map->regions[coast].elevation = 0.1f;
-		list.push_back(coast);
+	for (auto shore : map->oceanshores) {
+		map->regions[shore].elevation = 0.1f;
+		list.push_back(shore);
 	}
 
 	// process all other land regions
@@ -326,7 +362,7 @@ void OtMap::assignElevation() {
 			if (!neighbor.ocean) {
 				if (neighbor.elevation == 0.0f || newElevation < neighbor.elevation) {
 					neighbor.elevation = newElevation;
-					list.push_back(n);
+					list.push_back(neighbor.id);
 				}
 			}
 		}
@@ -344,6 +380,177 @@ void OtMap::assignElevation() {
 		if (!region.ocean) {
 			float normalizedElevation = (region.elevation - 0.1f) / (maxElevation - 0.1f);
 			region.elevation = normalizedElevation * normalizedElevation;
+		}
+	}
+
+	// assign elevations to corners
+	for (auto& corner : map->corners) {
+		if (corner.regions.size()) {
+			for (auto region : corner.regions) {
+				corner.elevation += map->regions[region].elevation;
+			}
+
+			corner.elevation /= corner.regions.size();
+		} else {
+			OtLogDebug("test");
+		}
+	}
+}
+
+
+//
+//	OtMap::assignMoisture
+//
+
+void OtMap::assignMoisture() {
+	// process all water regions
+	for (auto& region : map->regions) {
+		if (region.water) {
+			region.moisture = 1.0f;
+		}
+	}
+
+	// process all shoreline regions
+	std::list<size_t> list;
+
+	for (auto shore : map->oceanshores) {
+		map->regions[shore].moisture = 0.9f;
+		list.push_back(shore);
+	}
+
+	for (auto shore : map->lakeshores) {
+		map->regions[shore].moisture = 0.9f;
+		list.push_back(shore);
+	}
+
+	// process all other regions
+	while (!list.empty()) {
+		auto& region = map->regions[list.front()];
+		list.pop_front();
+
+		auto newMoisture = region.moisture - 0.2f;
+
+		for (auto n : region.neighbors) {
+			auto& neighbor = map->regions[n];
+
+			if (neighbor.moisture == 0.0f || newMoisture > neighbor.moisture) {
+				neighbor.moisture = newMoisture;
+				list.push_back(neighbor.id);
+			}
+		}
+	}
+
+	// find lowest moisture level
+	float minMoisture = 0.0f;
+
+	for (auto& region : map->regions) {
+		minMoisture = std::min(minMoisture, region.moisture);
+	}
+
+	// normalize moisture levels
+	for (auto& region : map->regions) {
+		if (!region.ocean) {
+			region.moisture = (region.moisture - minMoisture) / (1.0f - minMoisture);
+		}
+	}
+}
+
+
+//
+//	OtMap::assignTemperature
+//
+
+void OtMap::assignTemperature() {
+	auto size = static_cast<float>(map->size);
+
+	for (auto& region : map->regions) {
+		auto latitude = region.center.y / size;
+		auto bias = std::lerp(map->northBias, map->southBias, latitude);
+		region.temperature = 1.0 - region.elevation + bias;
+	}
+}
+
+
+//
+//	OtMap::assignBiome
+//
+
+void OtMap::assignBiome() {
+	for (auto& region : map->regions) {
+		if (region.ocean) {
+			region.biome = Biome::ocean;
+
+		} else if (region.water) {
+			if (region.temperature > 0.9f) {
+				region.biome = Biome::marsh;
+
+			} else if (region.temperature < 0.2f) {
+				region.biome = Biome::ice;
+
+			} else {
+				region.biome = Biome::lake;
+
+			}
+
+		} else if (region.oceanshore) {
+			region.biome = Biome::oceanShore;
+
+
+		} else if (region.lakeshore) {
+			region.biome = Biome::lakeShore;
+
+		} else if (region.temperature < 0.2f) {
+			if (region.moisture > 0.50f) {
+				region.biome = Biome::snow;
+
+			} else if (region.moisture > 0.33f) {
+				region.biome = Biome::tundra;
+
+			} else if (region.moisture > 0.16f) {
+				region.biome = Biome::bare;
+
+			} else {
+				region.biome = Biome::scorched;
+			}
+
+		} else if (region.temperature < 0.4f) {
+			if (region.moisture > 0.66f) {
+				region.biome = Biome::taiga;
+
+			} else if (region.moisture > 0.33f) {
+				region.biome = Biome::shrubland;
+
+			} else {
+				region.biome = Biome::temperateDesert;
+			}
+
+		} else if (region.temperature < 0.7f) {
+			if (region.moisture > 0.83f) {
+				region.biome = Biome::temperateRainForest;
+
+			} else if (region.moisture > 0.50f) {
+				region.biome = Biome::temperateDeciduousForest;
+
+			} else if (region.moisture > 0.16f) {
+				region.biome = Biome::grassland;
+
+			} else {
+				region.biome = Biome::temperateDesert;
+			}
+
+		} else {
+			if (region.moisture > 0.66f) {
+				region.biome = Biome::tropicalRainForest;
+
+			} else if (region.moisture > 0.33f) {
+				region.biome = Biome::tropicalSeasonalForest;
+
+			} else if (region.moisture > 0.16f) {
+				region.biome = Biome::grassland;
+
+			} else {
+				region.biome = Biome::subtropicalDesert;
+			}
 		}
 	}
 }

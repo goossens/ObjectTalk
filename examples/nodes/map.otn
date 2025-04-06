@@ -24,20 +24,20 @@
 					"value": 512
 				},
 				{
-					"id": 2958252686,
-					"name": "Seed",
-					"type": "int",
-					"value": 59
-				},
-				{
 					"id": 3651781322,
 					"name": "Size",
 					"type": "int",
 					"value": 64
 				},
 				{
-					"id": 365058656,
-					"name": "Smoothness",
+					"id": 2958252686,
+					"name": "Seed",
+					"type": "int",
+					"value": 99
+				},
+				{
+					"id": 401361696,
+					"name": "Ruggedness",
 					"type": "float",
 					"value": 0.5
 				}

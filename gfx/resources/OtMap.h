@@ -30,22 +30,25 @@ public:
 	// biome types
 	enum class Biome {
 		none,
+		ocean,
+		lake,
+		marsh,
+		ice,
+		oceanShore,
+		lakeShore,
 		snow,
 		tundra,
-		mountain,
+		bare,
+		scorched,
 		taiga,
 		shrubland,
 		temperateDesert,
 		temperateRainForest,
 		temperateDeciduousForest,
 		grassland,
-		tropicalRainForest,
-		tropicalSeasonalForest,
 		subtropicalDesert,
-		ocean,
-		lake,
-		beach,
-
+		tropicalRainForest,
+		tropicalSeasonalForest
 	};
 
 	// clear the map
@@ -55,7 +58,7 @@ public:
 	inline bool isValid() { return map != nullptr; }
 
 	// update map
-	void update(int seed, int size, float smoothness);
+	void update(int seed, int size, float ruggedness);
 
 	// render to framebuffer
 	void render(OtFrameBuffer& framebuffer);
@@ -78,41 +81,49 @@ public:
 	// local types
 	class Region {
 	public:
-		Region(float x, float y, bool g=false, bool b=false) : center(x, y), ghost(g), border(b) {}
+		Region(size_t i, glm::vec2 c) : id(i), center(c) {}
+		size_t id;
 		glm::vec2 center;
 		float elevation = 0.0f;
 		float moisture = 0.0f;
+		float temperature = 0.0f;
 		Biome biome = Biome::none;
-		bool ghost;
-		bool border;
+		bool ghost = false;
+		bool border = false;
 		bool water = false;
 		bool ocean = false;
-		bool coast = false;
+		bool lake = false;
+		bool oceanshore = false;
+		bool lakeshore = false;
 		std::vector<size_t> corners;
 		std::set<size_t> neighbors;
 	};
 
 	class Corner {
 	public:
-		Corner(glm::vec2 p) : position(p) {}
+		Corner(size_t i, glm::vec2 p) : id(i), position(p) {}
+		size_t id;
 		glm::vec2 position;
-		float height = 0.0f;
-		float moisture = 0.0f;
+		float elevation = 0.0f;
+		std::vector<size_t> regions;
 	};
 
 	class Map {
 	public:
 		int seed;
 		int size;
-		float smoothness;
+		float ruggedness;
+		float northBias = -0.2f;
+		float southBias = 0.2f;
 		std::vector<Region> regions;
 		std::vector<Corner> corners;
 		std::vector<size_t> triangles;
 		std::vector<size_t> halfedges;
-		std::set<size_t> ghosts;
 		std::set<size_t> borders;
 		std::set<size_t> oceans;
-		std::set<size_t> coasts;
+		std::set<size_t> lakes;
+		std::set<size_t> oceanshores;
+		std::set<size_t> lakeshores;
 	};
 
 	// properties
@@ -125,10 +136,37 @@ public:
 	void generateCorners();
 	void assignWater();
 	void assignOceans();
-	void assignCoasts();
+	void assignLakes();
+	void assignShores();
 	void assignElevation();
+	void assignMoisture();
+	void assignTemperature();
+	void assignBiome();
 
 	// utility functions
+	inline void addRegion(float x, float y) { map->regions.emplace_back(map->regions.size(), glm::vec2(x, y)); }
+
+	inline void addGhostRegion(float x, float y) {
+		auto id = map->regions.size();
+		auto& region = map->regions.emplace_back(id, glm::vec2(x, y));
+		region.ghost = true;
+		region.water = true;
+		region.ocean = true;
+		map->oceans.insert(id);
+	}
+
+	inline void addBorderRegion(float x, float y) {
+		auto id = map->regions.size();
+		auto& region = map->regions.emplace_back(id, glm::vec2(x, y));
+		region.border = true;
+		region.water = true;
+		region.ocean = true;
+		map->borders.insert(id);
+		map->oceans.insert(id);
+	}
+
+	inline void addCorner(glm::vec2 pos) { map->corners.emplace_back(map->corners.size(), pos); }
+
 	inline size_t triangleOfEdge(size_t e) { return e / 3; }
 	inline size_t nextHalfEdge(size_t e) { return (e % 3 == 2) ? e - 2 : e + 1; }
 	inline size_t prevHalfEdge(size_t e) { return (e % 3 == 0) ? e + 2 : e - 1; }

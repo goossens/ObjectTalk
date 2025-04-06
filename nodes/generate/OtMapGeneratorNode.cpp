@@ -35,21 +35,21 @@ public:
 	// configure node
 	inline void configure() override {
 		OtTextureGeneratorNode::configure();
-		addInputPin("Seed", seed);
 		addInputPin("Size", size);
-		addInputPin("Smoothness", smoothness);
+		addInputPin("Seed", seed);
+		addInputPin("Ruggedness", ruggedness);
 	}
 
 	// validate input parameters
 	inline void onValidate() override {
 		seed = std::clamp(seed, 1, 256);
 		size = std::clamp(size, 4, 128);
-		smoothness = std::clamp(smoothness, 0.0f, 1.0f);
+		ruggedness = std::clamp(ruggedness, 0.0f, 1.0f);
 	}
 
 	// run the map generator
 	inline void onGenerate(OtFrameBuffer& output) override {
-		map.update(seed, size, smoothness);
+		map.update(seed, size, ruggedness);
 		map.render(output);
 	}
 
@@ -61,7 +61,7 @@ private:
 	// properties
 	int seed = 1;
 	int size = 32;
-	float smoothness = 0.5f;
+	float ruggedness = 0.5f;
 
 	// map component
 	OtMap map;

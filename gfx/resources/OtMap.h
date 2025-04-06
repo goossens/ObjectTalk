@@ -13,6 +13,7 @@
 //
 
 #include <memory>
+#include <set>
 #include <vector>
 
 #include "glm/glm.hpp"
@@ -54,7 +55,7 @@ public:
 	inline bool isValid() { return map != nullptr; }
 
 	// update map
-	void update(int seed, int size, float disturbance);
+	void update(int seed, int size, float smoothness);
 
 	// render to framebuffer
 	void render(OtFrameBuffer& framebuffer);
@@ -77,39 +78,41 @@ public:
 	// local types
 	class Region {
 	public:
-		Region(float x, float y, bool b=false) : center(x, y), border(b) {}
+		Region(float x, float y, bool g=false, bool b=false) : center(x, y), ghost(g), border(b) {}
 		glm::vec2 center;
-		float height = 0.0f;
+		float elevation = 0.0f;
 		float moisture = 0.0f;
 		Biome biome = Biome::none;
+		bool ghost;
 		bool border;
 		bool water = false;
 		bool ocean = false;
 		bool coast = false;
 		std::vector<size_t> corners;
+		std::set<size_t> neighbors;
 	};
 
 	class Corner {
 	public:
-		Corner(glm::vec2 p, bool b=false) : position(p), border(b) {}
+		Corner(glm::vec2 p) : position(p) {}
 		glm::vec2 position;
 		float height = 0.0f;
 		float moisture = 0.0f;
-		bool border;
-		bool water = false;
-		bool ocean = false;
-		bool coast = false;
 	};
 
 	class Map {
 	public:
 		int seed;
 		int size;
-		float disturbance;
+		float smoothness;
 		std::vector<Region> regions;
 		std::vector<Corner> corners;
 		std::vector<size_t> triangles;
 		std::vector<size_t> halfedges;
+		std::set<size_t> ghosts;
+		std::set<size_t> borders;
+		std::set<size_t> oceans;
+		std::set<size_t> coasts;
 	};
 
 	// properties
@@ -122,9 +125,11 @@ public:
 	void generateCorners();
 	void assignWater();
 	void assignOceans();
+	void assignCoasts();
+	void assignElevation();
 
 	// utility functions
 	inline size_t triangleOfEdge(size_t e) { return e / 3; }
-	inline size_t nextHalfedge(size_t e) { return (e % 3 == 2) ? e - 2 : e + 1; }
-	void getPolygon(size_t start, std::vector<glm::vec2>& p);
+	inline size_t nextHalfEdge(size_t e) { return (e % 3 == 2) ? e - 2 : e + 1; }
+	inline size_t prevHalfEdge(size_t e) { return (e % 3 == 0) ? e + 2 : e - 1; }
 };

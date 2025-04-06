@@ -27,13 +27,11 @@ public:
 	float fbm(float x, float y, float z);
 
 	// configure FBM
-	inline void configure(size_t o, float sf, float sa, float l, float p) {
-		octaves = o;
-		startFrequency = sf;
-		startAmplitude = sa;
-		lacunarity = l;
-		persistence = p;
-	}
+	inline void setOctaves(size_t data) { octaves = data; }
+	inline void setStartFrequency(float data) { startFrequency = data; }
+	inline void setStartAmplitude(float data) { startAmplitude = data; }
+	inline void setLacunarity(float data) { lacunarity = data; }
+	inline void setPersistence(float data) { persistence = data; }
 
 private:
 	// Fractional Brownian Motion (FBM) properties

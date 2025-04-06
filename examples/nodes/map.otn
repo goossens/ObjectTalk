@@ -27,7 +27,7 @@
 					"id": 2958252686,
 					"name": "Seed",
 					"type": "int",
-					"value": 57
+					"value": 59
 				},
 				{
 					"id": 3651781322,
@@ -36,10 +36,10 @@
 					"value": 64
 				},
 				{
-					"id": 852797534,
-					"name": "Disturbance",
+					"id": 365058656,
+					"name": "Smoothness",
 					"type": "float",
-					"value": 0.4000000059604645
+					"value": 0.5
 				}
 			],
 			"outputs": [

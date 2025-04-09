@@ -11,16 +11,6 @@
 			"to": 46268427
 		},
 		{
-			"from": 2452492696,
-			"id": 3064788777,
-			"to": 157824702
-		},
-		{
-			"from": 1568023098,
-			"id": 857531955,
-			"to": 2189260744
-		},
-		{
 			"from": 468368962,
 			"id": 3016368026,
 			"to": 1430325844
@@ -31,14 +21,14 @@
 			"to": 3402575417
 		},
 		{
-			"from": 1428239368,
-			"id": 2133381042,
-			"to": 4284005868
+			"from": 468368962,
+			"id": 3756191298,
+			"to": 749787256
 		},
 		{
-			"from": 1868553866,
-			"id": 407119212,
-			"to": 440574116
+			"from": 1020070050,
+			"id": 3196949182,
+			"to": 1366474996
 		}
 	],
 	"metadata": {},
@@ -74,8 +64,8 @@
 			],
 			"title": "Map Generator",
 			"type": "Map Generator",
-			"x": 27.0,
-			"y": 174.0
+			"x": 54.0,
+			"y": 451.0
 		},
 		{
 			"id": 4292792926,
@@ -101,8 +91,8 @@
 			],
 			"title": "Map to HeightMap",
 			"type": "Map to HeightMap",
-			"x": 252.0,
-			"y": 194.0
+			"x": 414.0,
+			"y": 669.0
 		},
 		{
 			"id": 829204370,
@@ -116,130 +106,35 @@
 			"outputs": [],
 			"title": "Texture Probe",
 			"type": "Texture Probe",
-			"x": 1249.0,
-			"y": 19.0
+			"x": 657.0,
+			"y": 493.0
 		},
 		{
-			"id": 2941163568,
+			"id": 2659919354,
 			"inputs": [
 				{
-					"id": 2189260744,
-					"name": "Input",
-					"type": "texture"
-				}
-			],
-			"outputs": [
-				{
-					"id": 2452492696,
-					"name": "Output",
-					"type": "image"
-				}
-			],
-			"title": "Texture to Image",
-			"type": "Texture to Image",
-			"x": 479.0,
-			"y": 268.0
-		},
-		{
-			"id": 1336460845,
-			"inputs": [
-				{
-					"id": 157824702,
-					"name": "Input",
-					"type": "image"
-				}
-			],
-			"outputs": [
-				{
-					"id": 1428239368,
-					"name": "Output",
-					"type": "geometry"
-				}
-			],
-			"title": "Terrain Builder",
-			"type": "Terrain Builder",
-			"x": 679.0,
-			"y": 270.0
-		},
-		{
-			"id": 880513870,
-			"inputs": [
-				{
-					"id": 4284005868,
-					"name": "Input",
-					"type": "geometry"
+					"id": 749787256,
+					"name": "Map",
+					"type": "map"
 				},
 				{
-					"id": 174949707,
-					"name": "Translate",
-					"type": "vector3",
-					"value": [
-						0.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": 360805990,
-					"name": "Rotate",
-					"type": "vector3",
-					"value": [
-						0.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": 2836665819,
+					"id": 3499028333,
 					"name": "Scale",
-					"type": "vector3",
-					"value": [
-						10.0,
-						1.0,
-						10.0
-					]
+					"type": "float",
+					"value": 10.0
 				}
 			],
 			"outputs": [
 				{
-					"id": 1868553866,
-					"name": "Output",
-					"type": "geometry"
-				}
-			],
-			"title": "Geometry Transform",
-			"type": "Geometry Transform",
-			"x": 895.0,
-			"y": 337.0
-		},
-		{
-			"azimuth": 34.56035614013672,
-			"elevation": 12.631678581237793,
-			"id": 2938264717,
-			"inputs": [
-				{
-					"id": 440574116,
+					"id": 1020070050,
 					"name": "Geometry",
 					"type": "geometry"
 				}
 			],
-			"lightColor": [
-				1.0,
-				1.0,
-				1.0
-			],
-			"meshColor": [
-				1.0,
-				0.8500000238418579,
-				0.0
-			],
-			"outputs": [],
-			"title": "Geometry Probe",
-			"type": "Geometry Probe",
-			"wireframe": false,
-			"x": 1249.0,
-			"y": 257.0,
-			"zoom": 1.272822618484497
+			"title": "Map to Geometry",
+			"type": "Map to Geometry",
+			"x": 418.0,
+			"y": 431.0
 		},
 		{
 			"id": 335545404,
@@ -259,7 +154,7 @@
 					"id": 103489925,
 					"name": "Biome",
 					"type": "bool",
-					"value": true
+					"value": false
 				}
 			],
 			"outputs": [
@@ -271,8 +166,8 @@
 			],
 			"title": "Map to Image",
 			"type": "Map to Image",
-			"x": 266.0,
-			"y": 381.0
+			"x": 427.0,
+			"y": 192.0
 		},
 		{
 			"id": 3197117613,
@@ -286,8 +181,37 @@
 			"outputs": [],
 			"title": "Image Probe",
 			"type": "Image Probe",
-			"x": 1249.0,
-			"y": 505.0
+			"x": 657.0,
+			"y": 18.0
+		},
+		{
+			"azimuth": -5.980799674987793,
+			"elevation": 32.01441192626953,
+			"id": 4268234287,
+			"inputs": [
+				{
+					"id": 1366474996,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"lightColor": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"meshColor": [
+				1.0,
+				0.8500000238418579,
+				0.0
+			],
+			"outputs": [],
+			"title": "Geometry Probe",
+			"type": "Geometry Probe",
+			"wireframe": false,
+			"x": 657.0,
+			"y": 256.0,
+			"zoom": 0.949999988079071
 		}
 	]
 }

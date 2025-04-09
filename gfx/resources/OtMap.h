@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <functional>
+#include <limits>
 #include <memory>
 #include <set>
 #include <vector>
@@ -22,6 +23,7 @@
 #include "glm/glm.hpp"
 
 #include "OtFrameBuffer.h"
+#include "OtGeometry.h"
 #include "OtImage.h"
 #include "OtShaderProgram.h"
 
@@ -71,6 +73,9 @@ public:
 	// render map to framebuffer
 	void renderHeightMap(OtFrameBuffer& framebuffer, int size);
 
+	// convert to geometry
+	OtGeometry createGeometry(float scale);
+
 	// version management
 	inline void setVersion(int v) { version = v; }
 	inline int getVersion() { return version; }
@@ -90,9 +95,11 @@ public:
 	class Region {
 	public:
 		Region(size_t i, glm::vec2 c) : id(i), center(c) {}
+
 		size_t id;
 		glm::vec2 center;
-		float elevation = 0.0f;
+		float distance = invalidValue;
+		float elevation = invalidValue;
 		float moisture = 0.0f;
 		float temperature = 0.0f;
 		Biome biome = Biome::none;
@@ -110,10 +117,13 @@ public:
 	class Corner {
 	public:
 		Corner(size_t i, glm::vec2 p) : id(i), position(p) {}
+
 		size_t id;
 		glm::vec2 position;
-		float elevation = 0.0f;
+		float distance = invalidValue;
+		float elevation = invalidValue;
 		std::vector<size_t> regions;
+		std::vector<size_t> neighbors;
 	};
 
 	class Map {
@@ -143,12 +153,12 @@ public:
 
 	// private functions to generate map
 	void generateRegions();
-	void triangulate();
 	void generateCorners();
 	void assignWater();
 	void assignOceans();
 	void assignLakes();
 	void assignShores();
+	void assignCoastalDistance();
 	void assignElevation();
 	void assignMoisture();
 	void assignTemperature();
@@ -183,4 +193,7 @@ public:
 	inline size_t triangleOfEdge(size_t e) { return e / 3; }
 	inline size_t nextHalfEdge(size_t e) { return (e % 3 == 2) ? e - 2 : e + 1; }
 	inline size_t prevHalfEdge(size_t e) { return (e % 3 == 0) ? e + 2 : e - 1; }
+
+	static constexpr size_t invalidIndex = std::numeric_limits<size_t>::max();
+	static constexpr float invalidValue = std::numeric_limits<float>::max();
 };

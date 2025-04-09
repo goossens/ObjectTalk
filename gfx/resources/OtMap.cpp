@@ -11,13 +11,12 @@
 
 #include <algorithm>
 #include <cmath>
-#include <limits>
 #include <list>
+#include <memory>
 #include <stack>
 
 #include "delaunator.h"
 
-#include "OtHash.h"
 #include "OtNoise.h"
 #include "OtNumbers.h"
 
@@ -52,12 +51,12 @@ void OtMap::update(int seed, int size, float ruggedness) {
 	map->ruggedness = ruggedness;
 
 	generateRegions();
-	triangulate();
 	generateCorners();
 	assignWater();
 	assignOceans();
 	assignLakes();
 	assignShores();
+	assignCoastalDistance();
 	assignElevation();
 	assignMoisture();
 	assignTemperature();
@@ -107,9 +106,9 @@ void OtMap::render(OtImage& image, int size, bool biome) {
 		} else {
 			if (region.ocean) {
 				canvas.fillColor(
-					0.25f * (1.0f - region.elevation),
-					0.25f * (1.0f - region.elevation),
-					0.5f * (1.0f - region.elevation),
+					0.25f * (1.0f + region.elevation),
+					0.25f * (1.0f + region.elevation),
+					0.5f * (1.0f + region.elevation),
 					1.0f);
 
 			} else if (region.water) {
@@ -153,26 +152,57 @@ void OtMap::renderHeightMap(OtFrameBuffer& framebuffer, int size) {
 
 
 //
+//	OtMap::createGeometry
+//
+
+OtGeometry OtMap::createGeometry(float scale) {
+	auto mesh = std::make_shared<OtMesh>();
+
+	for (auto& corner : map->corners) {
+		mesh->addVertex(OtVertex(glm::vec3(
+			corner.position.x,
+			corner.elevation * scale,
+			corner.position.y)));
+	}
+
+	for (auto& region : map->regions) {
+		auto corners = region.corners.size();
+		auto center = mesh->getVertexCount();
+
+		mesh->addVertex(OtVertex(glm::vec3(
+			region.center.x,
+			region.elevation * scale,
+			region.center.y)));
+
+		for (size_t i = 0; i < corners; i++) {
+			mesh->addTriangle(
+				static_cast<uint32_t>(region.corners[(i + 1) % corners]),
+				static_cast<uint32_t>(region.corners[i]),
+				static_cast<uint32_t>(center));
+		}
+	}
+
+	mesh->generateNormals();
+	mesh->generateTangents();
+
+	return OtGeometry(mesh);
+}
+
+
+//
 //	OtMap::generateRegions
 //
 
 void OtMap::generateRegions() {
+	OtNoise noise;
 	auto step = static_cast<float>(map->size) / static_cast<float>(map->size + 1);
 
 	// create internal regions
 	for (auto y = 1; y < map->size; y++) {
 		for (auto x = 1; x < map->size; x++) {
 			addRegion(
-				(OtHash::toFloat(
-					static_cast<uint32_t>(step * x),
-					static_cast<uint32_t>(step * y),
-					map->seed,
-					0) * 2.0f - 1.0f) * map->ruggedness + x,
-				(OtHash::toFloat(
-					static_cast<uint32_t>(step * x),
-					static_cast<uint32_t>(step * y),
-					map->seed,
-					1) * 2.0f - 1.0f) * map->ruggedness + y);
+				step * ((noise.perlin(x, y, map->seed + 1) * 2.0f - 1.0f) * 0.49f + x),
+				step * ((noise.perlin(x, y, map->seed + 2) * 2.0f - 1.0f) * 0.49f + y));
 		}
 	}
 
@@ -197,15 +227,8 @@ void OtMap::generateRegions() {
 		addGhostRegion(step * -10.0f, step * static_cast<float>(y));
 		addGhostRegion(step * static_cast<float>(map->size + 11), step * static_cast<float>(y));
 	}
-}
 
-
-//
-//	OtMap::triangulate
-//
-
-void OtMap::triangulate() {
-	// perform Delaunay triangulation
+	// perform Delaunay triangulation on regions
 	std::vector<double> coords;
 
 	for (auto& region : map->regions) {
@@ -214,10 +237,22 @@ void OtMap::triangulate() {
 	}
 
 	delaunator::Delaunator delaunator(coords);
-
-	// save results
 	map->triangles = delaunator.triangles;
 	map->halfedges = delaunator.halfedges;
+
+	// mark neighbors of all regions
+	for (auto i = map->triangles.begin(); i < map->triangles.end();) {
+		auto r1 = *i++;
+		auto r2 = *i++;
+		auto r3 = *i++;
+
+		map->regions[r1].neighbors.insert(r2);
+		map->regions[r1].neighbors.insert(r3);
+		map->regions[r2].neighbors.insert(r1);
+		map->regions[r2].neighbors.insert(r3);
+		map->regions[r3].neighbors.insert(r1);
+		map->regions[r3].neighbors.insert(r2);
+	}
 }
 
 
@@ -229,12 +264,12 @@ void OtMap::generateCorners() {
 	// determine corners
 	size_t numTriangles = map->triangles.size() / 3;
 
-	for (size_t c = 0; c < numTriangles; c++) {
+	for (size_t triangle = 0; triangle < numTriangles; triangle++) {
 		// determine position
 		glm::vec2 sum(0.0f);
 
-		for (size_t i = 0; i < 3; i++) {
-			sum += map->regions[map->triangles[3 * c + i]].center;
+		for (size_t vertex = 0; vertex < 3; vertex++) {
+			sum += map->regions[map->triangles[3 * triangle + vertex]].center;
 		}
 
 		// create a new corner
@@ -259,22 +294,17 @@ void OtMap::generateCorners() {
 
 				auto outgoing = nextHalfEdge(incoming);
 				incoming = map->halfedges[outgoing];
-			} while (incoming != delaunator::INVALID_INDEX && incoming != edge);
+			} while (incoming != invalidIndex && incoming != edge);
 		}
 	}
 
-	// mark neighbors of all regions
-	for (auto i = map->triangles.begin(); i < map->triangles.end();) {
-		auto r1 = *i++;
-		auto r2 = *i++;
-		auto r3 = *i++;
+	// get neighbors of all corners
+	size_t numCorners = map->corners.size();
 
-		map->regions[r1].neighbors.insert(r2);
-		map->regions[r1].neighbors.insert(r3);
-		map->regions[r2].neighbors.insert(r1);
-		map->regions[r2].neighbors.insert(r3);
-		map->regions[r3].neighbors.insert(r1);
-		map->regions[r3].neighbors.insert(r2);
+	for (size_t corner = 0; corner < numCorners; corner++) {
+		for (size_t vertex = 0; vertex < 3; vertex++) {
+			map->corners[corner].neighbors.emplace_back(3 * corner + vertex);
+		}
 	}
 }
 
@@ -369,6 +399,61 @@ void OtMap::assignShores() {
 
 
 //
+//	OtMap::assignCoastalDistance
+//
+
+void OtMap::assignCoastalDistance() {
+	// process all ocean shoreline regions
+	std::list<size_t> list;
+
+	for (auto shore : map->oceanshores) {
+		map->regions[shore].distance = 0.0f;
+		list.push_back(shore);
+	}
+
+	// process all other regions
+	while (!list.empty()) {
+		auto& region = map->regions[list.front()];
+		list.pop_front();
+
+		auto newDistance = region.distance + 1.0f;
+
+		for (auto n : region.neighbors) {
+			auto& neighbor = map->regions[n];
+
+			if (neighbor.distance == invalidValue || newDistance < neighbor.distance) {
+				neighbor.distance = newDistance;
+				list.push_back(neighbor.id);
+			}
+		}
+	}
+
+	// find distance limit
+	float maxDistance = std::numeric_limits<float>::lowest();
+
+	for (auto& region : map->regions) {
+		maxDistance = std::max(maxDistance, region.distance);
+	}
+
+	// normalize distances
+	for (auto& region : map->regions) {
+		region.distance = region.distance / maxDistance;
+	}
+
+	// assign distances to corners
+	for (auto& corner : map->corners) {
+		auto total = 0.0f;
+
+		for (auto region : corner.regions) {
+			total += map->regions[region].distance;
+		}
+
+		corner.distance = total / static_cast<float>(corner.regions.size());
+	}
+}
+
+
+//
 //	OtMap::assignElevation
 //
 
@@ -377,7 +462,7 @@ void OtMap::assignElevation() {
 	std::list<size_t> list;
 
 	for (auto shore : map->oceanshores) {
-		map->regions[shore].elevation = 1.0f;
+		map->regions[shore].elevation = 0.0f;
 		list.push_back(shore);
 	}
 
@@ -392,7 +477,7 @@ void OtMap::assignElevation() {
 			auto& neighbor = map->regions[n];
 
 			if (!neighbor.ocean) {
-				if (neighbor.elevation == 0.0f || newElevation < neighbor.elevation) {
+				if (neighbor.elevation == invalidValue || newElevation < neighbor.elevation) {
 					neighbor.elevation = newElevation;
 					list.push_back(neighbor.id);
 				}
@@ -411,25 +496,9 @@ void OtMap::assignElevation() {
 	}
 
 	// assign ocean depth
-	for (auto shore : map->oceanshores) {
-		list.push_back(shore);
-	}
-
-	while (!list.empty()) {
-		auto& region = map->regions[list.front()];
-		list.pop_front();
-
-		auto newElevation = region.elevation - 1.0f;
-
-		for (auto n : region.neighbors) {
-			auto& neighbor = map->regions[n];
-
-			if (neighbor.ocean) {
-				if (neighbor.elevation == 0.0f || newElevation > neighbor.elevation) {
-					neighbor.elevation = newElevation;
-					list.push_back(neighbor.id);
-				}
-			}
+	for (auto& region : map->regions) {
+		if (region.ocean) {
+			region.elevation = -region.distance;
 		}
 	}
 

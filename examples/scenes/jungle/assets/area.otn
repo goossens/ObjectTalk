@@ -123,12 +123,22 @@
 				{
 					"id": 3794724185,
 					"name": "Translate",
-					"type": "vector3"
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
 				},
 				{
 					"id": 2482379890,
 					"name": "Rotate",
-					"type": "vector3"
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
 				},
 				{
 					"id": 1921743067,
@@ -166,7 +176,7 @@
 			"outputs": [],
 			"title": "Save Geometry To Virtual",
 			"type": "Save Geometry To Virtual",
-			"x": 848.0,
+			"x": 937.0,
 			"y": 71.0
 		}
 	]

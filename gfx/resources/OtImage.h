@@ -37,7 +37,7 @@ public:
 	static constexpr int rgbaFloat16Image = bimg::TextureFormat::RGBA16F;
 	static constexpr int rgbaFloat32Image = bimg::TextureFormat::RGBA32F;
 
-	// constructors/destructor
+	// constructors
 	OtImage() = default;
 	OtImage(const std::string& path, bool powerof2=false, bool square=false);
 

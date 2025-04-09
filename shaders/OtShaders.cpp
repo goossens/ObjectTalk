@@ -14,9 +14,15 @@
 #include "OtLog.h"
 
 #include "OtShaders.h"
+#include "generated/canvas/OtMapVS_mtl.h"
+#include "generated/canvas/OtMapVS_spv.h"
+#include "generated/canvas/OtMapVS_dx11.h"
 #include "generated/canvas/OtOscilloscopeVS_mtl.h"
 #include "generated/canvas/OtOscilloscopeVS_spv.h"
 #include "generated/canvas/OtOscilloscopeVS_dx11.h"
+#include "generated/canvas/OtMapFS_mtl.h"
+#include "generated/canvas/OtMapFS_spv.h"
+#include "generated/canvas/OtMapFS_dx11.h"
 #include "generated/canvas/OtOscilloscopeFS_mtl.h"
 #include "generated/canvas/OtOscilloscopeFS_spv.h"
 #include "generated/canvas/OtOscilloscopeFS_dx11.h"
@@ -273,8 +279,12 @@
 //	Globals
 //
 
+static const uint8_t OtMapVS_glsl[1] = {0};
+static const uint8_t OtMapVS_essl[1] = {0};
 static const uint8_t OtOscilloscopeVS_glsl[1] = {0};
 static const uint8_t OtOscilloscopeVS_essl[1] = {0};
+static const uint8_t OtMapFS_glsl[1] = {0};
+static const uint8_t OtMapFS_essl[1] = {0};
 static const uint8_t OtOscilloscopeFS_glsl[1] = {0};
 static const uint8_t OtOscilloscopeFS_essl[1] = {0};
 static const uint8_t OtCubeMapCrossVS_glsl[1] = {0};
@@ -444,7 +454,9 @@ static const uint8_t OtWaterFS_essl[1] = {0};
 
 
 static const bgfx::EmbeddedShader embeddedShaders[] = {
+	BGFX_EMBEDDED_SHADER(OtMapVS),
 	BGFX_EMBEDDED_SHADER(OtOscilloscopeVS),
+	BGFX_EMBEDDED_SHADER(OtMapFS),
 	BGFX_EMBEDDED_SHADER(OtOscilloscopeFS),
 	BGFX_EMBEDDED_SHADER(OtCubeMapCrossVS),
 	BGFX_EMBEDDED_SHADER(OtHdrReprojectVS),

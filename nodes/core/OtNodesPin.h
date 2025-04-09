@@ -28,6 +28,7 @@
 #include "OtImage.h"
 #include "OtInstances.h"
 #include "OtManifold.h"
+#include "OtMap.h"
 #include "OtShape.h"
 #include "OtTexture.h"
 
@@ -60,6 +61,7 @@ using OtNodesPinTypes = OtTypeList<
 	OtShape,
 	OtGeometry,
 	OtManifold,
+	OtMap,
 	OtInstances>;
 
 static constexpr const char* OtNodesPinTypeNames[] = {
@@ -77,6 +79,7 @@ static constexpr const char* OtNodesPinTypeNames[] = {
 	"shape",
 	"geometry",
 	"manifold",
+	"map",
 	"instances"
 };
 
@@ -188,6 +191,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtTexture& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtShape& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtGeometry& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtManifold& value);
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtMap& value);
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtInstances& value);
 
 

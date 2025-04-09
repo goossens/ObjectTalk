@@ -1,64 +1,114 @@
 {
 	"links": [
 		{
-			"from": 2171744055,
-			"id": 695360812,
-			"to": 3390048014
+			"from": 468368962,
+			"id": 4002493902,
+			"to": 501568887
+		},
+		{
+			"from": 1568023098,
+			"id": 1612095757,
+			"to": 46268427
+		},
+		{
+			"from": 2452492696,
+			"id": 3064788777,
+			"to": 157824702
+		},
+		{
+			"from": 1568023098,
+			"id": 857531955,
+			"to": 2189260744
+		},
+		{
+			"from": 468368962,
+			"id": 3016368026,
+			"to": 1430325844
+		},
+		{
+			"from": 3146696924,
+			"id": 2235841270,
+			"to": 3402575417
+		},
+		{
+			"from": 1428239368,
+			"id": 2133381042,
+			"to": 4284005868
+		},
+		{
+			"from": 1868553866,
+			"id": 407119212,
+			"to": 440574116
 		}
 	],
 	"metadata": {},
 	"nodes": [
 		{
-			"id": 1888423127,
+			"id": 1579014303,
 			"inputs": [
 				{
-					"id": 3212025501,
-					"name": "Width",
-					"type": "int",
-					"value": 512
-				},
-				{
-					"id": 1586559251,
-					"name": "Height",
-					"type": "int",
-					"value": 512
-				},
-				{
-					"id": 3651781322,
+					"id": 3359103614,
 					"name": "Size",
 					"type": "int",
-					"value": 64
+					"value": 80
 				},
 				{
-					"id": 2958252686,
+					"id": 3612237621,
 					"name": "Seed",
 					"type": "int",
 					"value": 99
 				},
 				{
-					"id": 401361696,
+					"id": 1799471862,
 					"name": "Ruggedness",
 					"type": "float",
-					"value": 0.5
+					"value": 0.4000000059604645
 				}
 			],
 			"outputs": [
 				{
-					"id": 2171744055,
-					"name": "Texture",
-					"type": "texture"
+					"id": 468368962,
+					"name": "Map",
+					"type": "map"
 				}
 			],
 			"title": "Map Generator",
 			"type": "Map Generator",
-			"x": 485.0,
-			"y": 254.0
+			"x": 27.0,
+			"y": 174.0
 		},
 		{
-			"id": 4200034597,
+			"id": 4292792926,
 			"inputs": [
 				{
-					"id": 3390048014,
+					"id": 501568887,
+					"name": "Map",
+					"type": "map"
+				},
+				{
+					"id": 3956068435,
+					"name": "Size",
+					"type": "int",
+					"value": 256
+				}
+			],
+			"outputs": [
+				{
+					"id": 1568023098,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"title": "Map to HeightMap",
+			"type": "Map to HeightMap",
+			"x": 252.0,
+			"y": 194.0
+		},
+		{
+			"id": 829204370,
+			"inputs": [
+				{
+					"id": 46268427,
 					"name": "Texture",
 					"type": "texture"
 				}
@@ -66,8 +116,178 @@
 			"outputs": [],
 			"title": "Texture Probe",
 			"type": "Texture Probe",
-			"x": 756.0,
-			"y": 81.0
+			"x": 1249.0,
+			"y": 19.0
+		},
+		{
+			"id": 2941163568,
+			"inputs": [
+				{
+					"id": 2189260744,
+					"name": "Input",
+					"type": "texture"
+				}
+			],
+			"outputs": [
+				{
+					"id": 2452492696,
+					"name": "Output",
+					"type": "image"
+				}
+			],
+			"title": "Texture to Image",
+			"type": "Texture to Image",
+			"x": 479.0,
+			"y": 268.0
+		},
+		{
+			"id": 1336460845,
+			"inputs": [
+				{
+					"id": 157824702,
+					"name": "Input",
+					"type": "image"
+				}
+			],
+			"outputs": [
+				{
+					"id": 1428239368,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Terrain Builder",
+			"type": "Terrain Builder",
+			"x": 679.0,
+			"y": 270.0
+		},
+		{
+			"id": 880513870,
+			"inputs": [
+				{
+					"id": 4284005868,
+					"name": "Input",
+					"type": "geometry"
+				},
+				{
+					"id": 174949707,
+					"name": "Translate",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 360805990,
+					"name": "Rotate",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 2836665819,
+					"name": "Scale",
+					"type": "vector3",
+					"value": [
+						10.0,
+						1.0,
+						10.0
+					]
+				}
+			],
+			"outputs": [
+				{
+					"id": 1868553866,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Geometry Transform",
+			"type": "Geometry Transform",
+			"x": 895.0,
+			"y": 337.0
+		},
+		{
+			"azimuth": 34.56035614013672,
+			"elevation": 12.631678581237793,
+			"id": 2938264717,
+			"inputs": [
+				{
+					"id": 440574116,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"lightColor": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"meshColor": [
+				1.0,
+				0.8500000238418579,
+				0.0
+			],
+			"outputs": [],
+			"title": "Geometry Probe",
+			"type": "Geometry Probe",
+			"wireframe": false,
+			"x": 1249.0,
+			"y": 257.0,
+			"zoom": 1.272822618484497
+		},
+		{
+			"id": 335545404,
+			"inputs": [
+				{
+					"id": 1430325844,
+					"name": "Map",
+					"type": "map"
+				},
+				{
+					"id": 1030008575,
+					"name": "Size",
+					"type": "int",
+					"value": 512
+				},
+				{
+					"id": 103489925,
+					"name": "Biome",
+					"type": "bool",
+					"value": true
+				}
+			],
+			"outputs": [
+				{
+					"id": 3146696924,
+					"name": "Image",
+					"type": "image"
+				}
+			],
+			"title": "Map to Image",
+			"type": "Map to Image",
+			"x": 266.0,
+			"y": 381.0
+		},
+		{
+			"id": 3197117613,
+			"inputs": [
+				{
+					"id": 3402575417,
+					"name": "Image",
+					"type": "image"
+				}
+			],
+			"outputs": [],
+			"title": "Image Probe",
+			"type": "Image Probe",
+			"x": 1249.0,
+			"y": 505.0
 		}
 	]
 }

@@ -52,6 +52,7 @@ static constexpr ImU32 nodeColors[] = {
 	IM_COL32(80, 130, 170, 255),	// shape
 	IM_COL32(30, 110, 90, 255),		// geometry
 	IM_COL32(15, 125, 115, 255),	// manifold
+	IM_COL32(0, 70, 170, 255),		// map
 	IM_COL32(10, 80, 80, 255),		// virtualizer
 	IM_COL32(120, 115, 55, 255),	// save
 	IM_COL32(50, 50, 90, 255)		// probe
@@ -72,6 +73,7 @@ static constexpr ImU32 pinColors[] = {
 	IM_COL32(110, 140, 190, 255),	// shape
 	IM_COL32(0, 120, 65, 255),		// geometry
 	IM_COL32(25, 135, 125, 255),	// manifold
+	IM_COL32(0, 100, 200, 255),		// map
 	IM_COL32(0, 160, 220, 255)		// instances
 };
 

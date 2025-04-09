@@ -28,21 +28,12 @@ public:
 		addOutputPin("Output", image);
 	}
 
-	// update state
-	inline bool onUpdate() override {
-		if (texture.isValid() && image.getVersion() != buffer.getImage().getVersion()) {
-			image = buffer.getImage();
-			return true;
-
-		} else {
-			return false;
-		}
-	}
-
 	// when the input changes, we read back the texture into a CPU buffer
 	inline void onExecute() override {
 		if (texture.isValid()) {
-			buffer.readback(texture);
+			buffer.readback(texture, [&]() {
+				image = buffer.getImage();
+			});
 
 		} else {
 			image.clear();

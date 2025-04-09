@@ -76,6 +76,7 @@ public:
 	inline void lineJoin(int join) { nvgLineJoin(context, join); }
 	inline void globalAlpha(float alpha) { nvgGlobalAlpha(context, alpha); }
 
+	// manipulate transform
 	inline void translate(float x, float y) { nvgTranslate(context, x, y); }
 	inline void rotate(float angle) { nvgRotate(context, angle); }
 	inline void scale(float x, float y) { nvgScale(context, x, y); }
@@ -83,6 +84,7 @@ public:
 	inline void skewY(float angle) { nvgSkewY(context, angle); }
 	inline void resetTransform() { nvgResetTransform(context); }
 
+	// manipulate path
 	inline void beginPath() { nvgBeginPath(context); }
 	inline void moveTo(float x, float y) { nvgMoveTo(context, x, y); }
 	inline void lineTo(float x, float y) { nvgLineTo(context, x, y); }
@@ -98,6 +100,7 @@ public:
 	inline void ellipse(float cx, float cy, float rx, float ry) { nvgEllipse(context, cx, cy, rx, ry); }
 	inline void circle(float cx, float cy, float r) { nvgCircle(context, cx, cy, r); }
 
+	// render path
 	inline void stroke() { nvgStroke(context); }
 	inline void fill() { nvgFill(context); }
 

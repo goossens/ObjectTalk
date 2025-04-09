@@ -42,7 +42,7 @@ public:
 
 			// get accesss to the mesh and vertex list
 			auto& mesh = output.getMesh();
-			OtVertex* vertex = mesh.getVertices().data();
+			OtVertex* vertex = mesh.getVertices(true).data();
 			auto count = mesh.getVertexCount();
 
 			// transform all vertices

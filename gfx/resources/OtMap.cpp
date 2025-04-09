@@ -11,18 +11,23 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <list>
 #include <stack>
 
 #include "delaunator.h"
 
 #include "OtHash.h"
-#include "OtLog.h"
 #include "OtNoise.h"
 #include "OtNumbers.h"
 
 #include "OtCanvas.h"
+#include "OtImageCanvas.h"
 #include "OtMap.h"
+#include "OtPass.h"
+#include "OtTransientIndexBuffer.h"
+#include "OtTransientVertexBuffer.h"
+#include "OtVertex.h"
 
 
 //
@@ -61,7 +66,12 @@ void OtMap::update(int seed, int size, float ruggedness) {
 	incrementVersion();
 }
 
-void OtMap::render(OtFrameBuffer& framebuffer) {
+
+//
+//	OtMap::render
+//
+
+void OtMap::render(OtImage& image, int size, bool biome) {
 	static const char* colors[] = {
 		"#000000",
 		"#44447a",
@@ -86,39 +96,58 @@ void OtMap::render(OtFrameBuffer& framebuffer) {
 	};
 
 	// render the map
-	OtCanvas canvas;
+	OtImageCanvas canvas(size, size);
+	auto scale = static_cast<float>(size) / static_cast<float>(map->size);
+	canvas.scale(scale, scale);
 
-	canvas.render(framebuffer, 1.0f, [&]() {
-		auto scale = static_cast<float>(std::min(framebuffer.getWidth(), framebuffer.getHeight())) / static_cast<float>(map->size);
-		canvas.scale(scale, scale);
+	for (auto& region : map->regions) {
+		if (biome) {
+			canvas.fillColor(colors[static_cast<size_t>(region.biome)]);
 
-		for (auto& region : map->regions) {
-			if (region.ghost) {
-				canvas.fillColor(1.0f, 0.0f, 0.0f, 1.0f);
-
-			} else if (region.ocean) {
-				canvas.fillColor("#44447a");
+		} else {
+			if (region.ocean) {
+				canvas.fillColor(
+					0.25f * (1.0f - region.elevation),
+					0.25f * (1.0f - region.elevation),
+					0.5f * (1.0f - region.elevation),
+					1.0f);
 
 			} else if (region.water) {
-				canvas.fillColor("#336699");
-
-			} else if (region.oceanshore) {
-				canvas.fillColor("#a09077");
+				canvas.fillColor(colors[static_cast<size_t>(region.biome)]);
 
 			} else {
-				canvas.fillColor(colors[static_cast<size_t>(region.biome)]);
+				auto white = (1.0f - region.temperature) * (1.0f - region.temperature);
+			    auto moisture = 1.0f - ((1.0f - region.moisture) * (1.0f - region.moisture));
+				auto red = white + (0.85f - 0.39f * moisture) * (1.0f - white);
+				auto green = white + (0.73f - 0.18f * moisture) * (1.0f - white);
+				auto blue = white + (0.55f - 0.18f * moisture) * (1.0f - white);
+				canvas.fillColor(red, green, blue, 1.0f);
 			}
-
-			canvas.beginPath();
-			canvas.moveTo(map->corners[region.corners[0]].position.x, map->corners[region.corners[0]].position.y);
-
-			for (size_t i = 1; i < region.corners.size(); i++) {
-				canvas.lineTo(map->corners[region.corners[i]].position.x, map->corners[region.corners[i]].position.y);
-			}
-
-			canvas.closePath();
-			canvas.fill();
 		}
+
+		canvas.beginPath();
+		canvas.moveTo(map->corners[region.corners[0]].position.x, map->corners[region.corners[0]].position.y);
+
+		for (size_t i = 1; i < region.corners.size(); i++) {
+			canvas.lineTo(map->corners[region.corners[i]].position.x, map->corners[region.corners[i]].position.y);
+		}
+
+		canvas.closePath();
+		canvas.fill();
+	}
+
+	canvas.render(image);
+	image.incrementVersion();
+}
+
+
+//
+//	OtMap::renderHeightMap
+//
+
+void OtMap::renderHeightMap(OtFrameBuffer& framebuffer, int size) {
+	renderImage(framebuffer, size, [](float elevation) {
+		return static_cast<uint32_t>(std::max(elevation, 0.0f) * 255.0f);
 	});
 }
 
@@ -134,8 +163,16 @@ void OtMap::generateRegions() {
 	for (auto y = 1; y < map->size; y++) {
 		for (auto x = 1; x < map->size; x++) {
 			addRegion(
-				(OtHash::toFloat(step * x, step * y, map->seed, 0) * 2.0f - 1.0f) * map->ruggedness + x,
-				(OtHash::toFloat(step * x, step * y, map->seed, 1) * 2.0f - 1.0f) * map->ruggedness + y);
+				(OtHash::toFloat(
+					static_cast<uint32_t>(step * x),
+					static_cast<uint32_t>(step * y),
+					map->seed,
+					0) * 2.0f - 1.0f) * map->ruggedness + x,
+				(OtHash::toFloat(
+					static_cast<uint32_t>(step * x),
+					static_cast<uint32_t>(step * y),
+					map->seed,
+					1) * 2.0f - 1.0f) * map->ruggedness + y);
 		}
 	}
 
@@ -336,16 +373,11 @@ void OtMap::assignShores() {
 //
 
 void OtMap::assignElevation() {
-	// process all ocean regions
-	for (auto ocean : map->oceans) {
-		map->regions[ocean].elevation = -0.1f;
-	}
-
 	// process all ocean shoreline regions
 	std::list<size_t> list;
 
 	for (auto shore : map->oceanshores) {
-		map->regions[shore].elevation = 0.1f;
+		map->regions[shore].elevation = 1.0f;
 		list.push_back(shore);
 	}
 
@@ -368,32 +400,68 @@ void OtMap::assignElevation() {
 		}
 	}
 
-	// find highest elevation
-	float maxElevation = 0.0f;
+	// add some randomness to land elevation
+	OtNoise noise;
 
 	for (auto& region : map->regions) {
+		if (!region.water && !region.oceanshore && !region.lakeshore) {
+			auto offset = noise.fbm(region.center.x, region.center.y, static_cast<float>(map->seed + 7));
+			region.elevation += ((offset * 2.0f) - 1.0f) * 0.25f;
+		}
+	}
+
+	// assign ocean depth
+	for (auto shore : map->oceanshores) {
+		list.push_back(shore);
+	}
+
+	while (!list.empty()) {
+		auto& region = map->regions[list.front()];
+		list.pop_front();
+
+		auto newElevation = region.elevation - 1.0f;
+
+		for (auto n : region.neighbors) {
+			auto& neighbor = map->regions[n];
+
+			if (neighbor.ocean) {
+				if (neighbor.elevation == 0.0f || newElevation > neighbor.elevation) {
+					neighbor.elevation = newElevation;
+					list.push_back(neighbor.id);
+				}
+			}
+		}
+	}
+
+	// find elevation limits
+	float minElevation = std::numeric_limits<float>::max();
+	float maxElevation = std::numeric_limits<float>::lowest();
+
+	for (auto& region : map->regions) {
+		minElevation = std::min(minElevation, region.elevation);
 		maxElevation = std::max(maxElevation, region.elevation);
 	}
 
-	// normalize elevations and redistribute so that lower elevations are more common than higher elevations
+	// normalize elevations and redistribute
 	for (auto& region : map->regions) {
-		if (!region.ocean) {
-			float normalizedElevation = (region.elevation - 0.1f) / (maxElevation - 0.1f);
+		if (region.ocean) {
+			region.elevation = 0.5f * (region.elevation - minElevation) / minElevation;
+
+		} else {
+			float normalizedElevation = region.elevation / maxElevation;
 			region.elevation = normalizedElevation * normalizedElevation;
 		}
 	}
 
 	// assign elevations to corners
 	for (auto& corner : map->corners) {
-		if (corner.regions.size()) {
-			for (auto region : corner.regions) {
-				corner.elevation += map->regions[region].elevation;
-			}
+		auto total = 0.0f;
 
-			corner.elevation /= corner.regions.size();
-		} else {
-			OtLogDebug("test");
+		for (auto region : corner.regions) {
+			total += map->regions[region].elevation;
 		}
+
+		corner.elevation = total / static_cast<float>(corner.regions.size());
 	}
 }
 
@@ -466,7 +534,7 @@ void OtMap::assignTemperature() {
 	for (auto& region : map->regions) {
 		auto latitude = region.center.y / size;
 		auto bias = std::lerp(map->northBias, map->southBias, latitude);
-		region.temperature = 1.0 - region.elevation + bias;
+		region.temperature = 1.0f - region.elevation + bias;
 	}
 }
 
@@ -553,4 +621,55 @@ void OtMap::assignBiome() {
 			}
 		}
 	}
+}
+
+
+//
+//	OtMap::renderImage
+//
+
+void OtMap::renderImage(OtFrameBuffer& framebuffer, int size, std::function<uint32_t(float elevation)> callback) {
+	framebuffer.update(size, size);
+
+	// create vertex buffers
+	std::vector<OtVertexPosCol2D> vertices;
+	auto scale = static_cast<float>(size) / static_cast<float>(map->size);
+
+	for (auto& corner : map->corners) {
+		vertices.emplace_back(corner.position * scale, callback(corner.elevation));
+	}
+
+	// create index buffer
+	std::vector<uint32_t> indices;
+
+	for (auto& region : map->regions) {
+		auto center = vertices.size();
+		vertices.emplace_back(region.center * scale, callback(region.elevation));
+		auto corners = region.corners.size();
+
+		for (size_t i = 0; i < corners; i++) {
+			indices.emplace_back(static_cast<uint32_t>(center));
+			indices.emplace_back(static_cast<uint32_t>(region.corners[i]));
+			indices.emplace_back(static_cast<uint32_t>(region.corners[(i + 1) % corners]));
+		}
+	}
+
+	OtTransientVertexBuffer tvb;
+	OtTransientIndexBuffer tib;
+
+	// start rendering pass
+	OtPass pass;
+	pass.setClear(true);
+	pass.setRectangle(0, 0, size, size);
+	pass.setFrameBuffer(framebuffer);
+	glm::mat4 projMatrix = glm::ortho(0.0f, static_cast<float>(size), static_cast<float>(size), 0.0f);
+	pass.setTransform(glm::mat4(1.0f), projMatrix);
+
+	// submit
+	tvb.submit(vertices.data(), vertices.size(), OtVertexPosCol2D::getLayout());
+	tib.submit(indices.data(), indices.size());
+
+	// run shader
+	program.setState(OtStateWriteRgb);
+	pass.runShaderProgram(program);
 }

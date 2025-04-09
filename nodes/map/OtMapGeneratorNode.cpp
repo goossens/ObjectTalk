@@ -10,34 +10,24 @@
 //
 
 #include <algorithm>
-#include <set>
-#include <vector>
-
-#include "delaunator.h"
-#include "glm/glm.hpp"
-
-#include "OtHash.h"
-#include "OtLog.h"
 
 #include "OtMap.h"
-#include "OtNoise.h"
 
 #include "OtNodesFactory.h"
-#include "OtTextureGeneratorNode.h"
 
 
 //
 //	OtMapGeneratorNode
 //
 
-class OtMapGeneratorNode : public OtTextureGeneratorNode {
+class OtMapGeneratorNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		OtTextureGeneratorNode::configure();
 		addInputPin("Size", size);
 		addInputPin("Seed", seed);
 		addInputPin("Ruggedness", ruggedness);
+		addOutputPin("Map", map);
 	}
 
 	// validate input parameters
@@ -48,13 +38,12 @@ public:
 	}
 
 	// run the map generator
-	inline void onGenerate(OtFrameBuffer& output) override {
+	inline void onExecute() override {
 		map.update(seed, size, ruggedness);
-		map.render(output);
 	}
 
 	static constexpr const char* nodeName = "Map Generator";
-	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::generate;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::map;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 private:

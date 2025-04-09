@@ -12,6 +12,9 @@
 //	Include files
 //
 
+#include <algorithm>
+#include <cstdint>
+#include <functional>
 #include <memory>
 #include <set>
 #include <vector>
@@ -19,6 +22,8 @@
 #include "glm/glm.hpp"
 
 #include "OtFrameBuffer.h"
+#include "OtImage.h"
+#include "OtShaderProgram.h"
 
 
 //
@@ -60,8 +65,11 @@ public:
 	// update map
 	void update(int seed, int size, float ruggedness);
 
-	// render to framebuffer
-	void render(OtFrameBuffer& framebuffer);
+	// render to image
+	void render(OtImage& image, int size, bool biome);
+
+	// render map to framebuffer
+	void renderHeightMap(OtFrameBuffer& framebuffer, int size);
 
 	// version management
 	inline void setVersion(int v) { version = v; }
@@ -130,6 +138,9 @@ public:
 	std::shared_ptr<Map> map;
 	int version = 0;
 
+	// rendering support
+	OtShaderProgram program = OtShaderProgram("OtMapVS", "OtMapFS");
+
 	// private functions to generate map
 	void generateRegions();
 	void triangulate();
@@ -144,6 +155,8 @@ public:
 	void assignBiome();
 
 	// utility functions
+	void renderImage(OtFrameBuffer& framebuffer, int size, std::function<uint32_t(float elevation)> callback);
+
 	inline void addRegion(float x, float y) { map->regions.emplace_back(map->regions.size(), glm::vec2(x, y)); }
 
 	inline void addGhostRegion(float x, float y) {

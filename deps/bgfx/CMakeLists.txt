@@ -4,8 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Declare(bgfx GIT_REPOSITORY "https://github.com/bkaradzic/bgfx")
-FetchContent_MakeAvailable(bgfx)
+FetchContent_Populate(bgfx QUIET GIT_REPOSITORY "https://github.com/bkaradzic/bgfx")
 
 file(GLOB BGFX_SOURCES
 	${bgfx_SOURCE_DIR}/src/*.cpp

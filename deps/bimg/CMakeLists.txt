@@ -4,8 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Declare(bimg GIT_REPOSITORY "https://github.com/bkaradzic/bimg")
-FetchContent_MakeAvailable(bimg)
+FetchContent_Populate(bimg QUIET GIT_REPOSITORY "https://github.com/bkaradzic/bimg")
 
 file(GLOB BIMG_SOURCES
 	${bimg_SOURCE_DIR}/src/*.cpp

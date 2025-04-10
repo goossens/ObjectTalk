@@ -4,8 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Declare(imguizmo GIT_REPOSITORY "https://github.com/CedricGuillemet/ImGuizmo")
-FetchContent_MakeAvailable(imguizmo)
+FetchContent_Populate(imguizmo QUIET GIT_REPOSITORY "https://github.com/CedricGuillemet/ImGuizmo")
 
 set(imguizmo_SOURCES
 	${imguizmo_SOURCE_DIR}/ImGuizmo.h

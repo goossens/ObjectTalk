@@ -116,7 +116,7 @@ void OtMap::render(OtImage& image, int size, bool biome) {
 
 			} else {
 				auto white = (1.0f - region.temperature) * (1.0f - region.temperature);
-			    auto moisture = 1.0f - ((1.0f - region.moisture) * (1.0f - region.moisture));
+				auto moisture = 1.0f - ((1.0f - region.moisture) * (1.0f - region.moisture));
 				auto red = white + (0.85f - 0.39f * moisture) * (1.0f - white);
 				auto green = white + (0.73f - 0.18f * moisture) * (1.0f - white);
 				auto blue = white + (0.55f - 0.18f * moisture) * (1.0f - white);

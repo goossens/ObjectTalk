@@ -328,6 +328,118 @@ void OtMesh::generateTangents() {
 
 
 //
+//	OtMesh::clip
+//
+
+void OtMesh::clip(OtPlane plane, OtMesh& result) {
+	// static constexpr uint8_t X = UINT8_MAX;
+
+	// static constexpr std::array<std::array<uint8_t, 6>, 8> triIndices {{
+	//   {X, X, X, X, X, X},
+	//   {0, 3, 5, X, X, X},
+	//   {3, 1, 4, X, X, X},
+	//   {0, 1, 5, 1, 4, 5},
+	//   {4, 2, 5, X, X, X},
+	//   {0, 3, 4, 0, 4, 2},
+	//   {1, 5, 3, 1, 2, 5},
+	//   {0, 1, 2, X, X, X},
+	// }};
+
+	// static constexpr std::array<uint8_t, 8> numVerts {0, 3, 3, 6, 3, 6, 6, 3};
+	// static constexpr std::array<uint8_t, 8> numHedges {0, 1, 1, 1, 2, 2, 2, 0};
+
+	// calculate vertex distances to plane
+	std::vector<float> distances(vertices.size());
+
+	for (auto& vertex : vertices) {
+		distances.emplace_back(plane.distance(vertex.position));
+	}
+
+	// compute edge-plain intersections and face-vertex masks
+	std::vector<glm::vec3> edges(indices.size());
+	std::vector<uint8_t> masks(vertices.size());
+
+	for (size_t i = 0; i < indices.size(); i +=3) {
+		auto v1 = indices[i];
+		auto v2 = indices[i + 1];
+		auto v3 = indices[i + 2];
+
+ 		auto d1 = distances[v1];
+		auto d2 = distances[v2];
+		auto d3 = distances[v3];
+
+		if (d1 * d2 < 0.0f) {
+			edges[i] = glm::mix(vertices[v1].position, vertices[v2].position, d1 / (d1 - d2));
+		}
+
+		if (d2 * d3 < 0.0f) {
+			edges[i] = glm::mix(vertices[v2].position, vertices[v3].position, d2 / (d2 - d3));
+		}
+
+		if (d3 * d1 < 0.0f) {
+			edges[i] = glm::mix(vertices[v3].position, vertices[v1].position, d3 / (d3 - d1));
+		}
+
+		uint8_t mask = 0;
+		if (d1 < 0.0f) {mask |= 1; }
+		if (d2 < 0.0f) {mask |= 2; }
+		if (d3 < 0.0f) {mask |= 4; }
+		masks[i / 3] = mask;
+	}
+
+	result.clear();
+
+// 	std::vector<VertH> edgepts(n_edges());
+
+// 	for (auto f : faces()) {
+// 	  uint8_t              fvi = 0;
+// 	  uint8_t              fe  = 0;
+// 	  std::array<EdgeH, 3> fedges;
+// 	  std::array<VertH, 3> fverts;
+// 	  for (auto it = cfh_begin(f); it != cfh_end(f) && fvi < 3; it++, fvi++) {
+// 		HalfH h     = *it;
+// 		VertH fv    = from_vertex_handle(h);
+// 		fedges[fvi] = edge_handle(h);
+// 		fverts[fvi] = fv;
+// 		fe |= (1 << fvi) * uint8_t(vdata[fv.idx()].inside);
+// 	  }
+// 	  std::array<VertH, 6> tempV;
+// 	  const uint8_t* const row = triIndices[fe].data();
+// 	  std::transform(row, row + numVerts[fe], tempV.begin(), [&](const uint8_t vi) {
+// 		VertH v;
+// 		if (vi > 2) {
+// 		  EdgeH  e  = fedges[vi - 3];
+// 		  VertH& ev = edgepts[e.idx()];
+// 		  if (!ev.is_valid()) {
+// 			VertH a  = to_vertex_handle(halfedge_handle(e, 0));
+// 			VertH b  = to_vertex_handle(halfedge_handle(e, 1));
+// 			auto& ad = vdata[a.idx()];
+// 			auto& bd = vdata[b.idx()];
+// 			assert(ad.inside != bd.inside);
+// 			float r = bd.distance / (bd.distance - ad.distance);
+// 			ev =
+// 			  gal::handle<VertH>(clipped.add_vertex(point(a) * r + point(b) * (1.f - r)));
+// 		  }
+// 		  return ev;
+// 		}
+// 		else {
+// 		  VertH  oldv = fverts[vi];
+// 		  VertH& newv = vdata[oldv.idx()].mappedV;
+// 		  if (!newv.is_valid()) {
+// 			newv = gal::handle<VertH>(clipped.add_vertex(point(oldv)));
+// 		  }
+// 		  return newv;
+// 		}
+// 	  });
+// 	  for (size_t vi = 0; vi < numVerts[fe]; vi += 3) {
+// 		clipped.add_face(tempV[vi], tempV[vi + 1], tempV[vi + 2]);
+// 	  }
+// 	}
+// 	return clipped;
+}
+
+
+//
 //	OtMesh::getVertices
 //
 

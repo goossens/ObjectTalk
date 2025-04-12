@@ -89,9 +89,6 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 		startFrameBGFX();
 		startFrameIMGUI();
 
-		// time measurement
-		OtMeasureStopWatch stopwatch;
-
 		// process all messages on the bus
 		OtMessageBus::process();
 
@@ -107,9 +104,8 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 		uv_run(uv_default_loop(), UV_RUN_NOWAIT);
 
 		// let app render a frame
+		OtMeasureStopWatch stopwatch;
 		app->onRender();
-
-		// calculate CPU time
 		cpuTime = stopwatch.elapsed();
 
 		// show profiler (if required)
@@ -119,6 +115,8 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 
 		// put results on screen
 		endFrameIMGUI();
+
+		stopwatch.reset();
 		endFrameBGFX();
 	}
 

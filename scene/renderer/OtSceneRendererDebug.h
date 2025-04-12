@@ -48,6 +48,7 @@ private:
 	void renderShadowMaps(OtSceneRenderer& renderer);
 	void renderReflection(OtSceneRenderer& renderer);
 	void renderOclussion(OtSceneRenderer& renderer);
+	void renderTimings(OtSceneRenderer& renderer);
 	void renderAssets();
 
 	void renderTexture(const char* title, uint16_t index, int width, int height);

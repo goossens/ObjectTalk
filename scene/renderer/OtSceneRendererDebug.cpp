@@ -41,6 +41,7 @@ void OtSceneRendererDebug::render(OtSceneRenderer& renderer) {
 	renderShadowMaps(renderer);
 	renderReflection(renderer);
 	renderOclussion(renderer);
+	renderTimings(renderer);
 	renderAssets();
 	ImGui::End();
 }
@@ -157,6 +158,25 @@ void OtSceneRendererDebug::renderOclussion(OtSceneRenderer& renderer) {
 		} else {
 			ImGui::SeparatorText("No Data");
 		}
+	}
+}
+
+
+//
+//	OtSceneRendererDebug::renderTimings
+//
+
+void OtSceneRendererDebug::renderTimings(OtSceneRenderer& renderer) {
+	if (ImGui::CollapsingHeader("Timings")) {
+		OtUi::readonlyFloat("IBL pass", renderer.iblPassTime);
+		OtUi::readonlyFloat("Shadow pass", renderer.shadowPassTime);
+		OtUi::readonlyFloat("Background pass", renderer.backgroundPassTime);
+		OtUi::readonlyFloat("Opaque pass", renderer.opaquePassTime);
+		OtUi::readonlyFloat("Tranparent pass", renderer.transparentPassTime);
+		OtUi::readonlyFloat("Water pass", renderer.waterPassTime);
+		OtUi::readonlyFloat("Particle pass", renderer.particlePassTime);
+		OtUi::readonlyFloat("Editor pass", renderer.editorPassTime);
+		OtUi::readonlyFloat("Post Processing", renderer.postProcessingTime);
 	}
 }
 

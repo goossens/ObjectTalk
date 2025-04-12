@@ -46,19 +46,29 @@ public:
 
 	// reset the stopwatch
 	inline void reset() {
-		start = std::chrono::high_resolution_clock::now();
+		startTime = std::chrono::high_resolution_clock::now();
+		lapTime = startTime;
 	}
 
 	// return elapsed time in milliseconds
 	inline float elapsed() {
 		auto now = std::chrono::high_resolution_clock::now();
-		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count();
+		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(now - startTime).count();
+		return static_cast<float>(microseconds) / 1000.0f;
+	}
+
+	// return elapsed time in milliseconds since last call to lap
+	inline float lap() {
+		auto now = std::chrono::high_resolution_clock::now();
+		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(now - lapTime).count();
+		lapTime = now;
 		return static_cast<float>(microseconds) / 1000.0f;
 	}
 
 private:
 	// start of measurement
-	std::chrono::time_point<std::chrono::high_resolution_clock> start;
+	std::chrono::time_point<std::chrono::high_resolution_clock> startTime;
+	std::chrono::time_point<std::chrono::high_resolution_clock> lapTime;
 };
 
 

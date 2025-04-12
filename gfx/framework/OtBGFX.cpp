@@ -175,14 +175,13 @@ void OtFramework::startFrameBGFX() {
 void OtFramework::renderProfiler() {
 	auto caps = bgfx::getCaps();
 	auto stats = bgfx::getStats();
-	float toMsCpu = 1000.0f / stats->cpuTimerFreq;
 	float toMsGpu = 1000.0f / stats->gpuTimerFreq;
 	auto labelWith = ImGui::CalcTextSize("                         ").x;
 
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
 	ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Framerate:"); ImGui::SameLine(labelWith); ImGui::Text("%.1f", 1000.0f / loopDuration);
-	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.2f", std::abs(cpuTime - static_cast<float>(stats->waitSubmit) * toMsCpu));
+	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.2f", cpuTime);
 	ImGui::Text("GPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.2f", static_cast<float>((stats->gpuTimeEnd - stats->gpuTimeBegin)) * toMsGpu);
 	ImGui::Text("Backbuffer width:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->width);
 	ImGui::Text("Backbuffer height:"); ImGui::SameLine(labelWith); ImGui::Text("%d", stats->height);

@@ -50,7 +50,10 @@ public:
 	// are we rendering a wireframe
 	inline bool isWireframe() { return wireframe; }
 
-private:
+	// is the terain castign a shadow
+	inline bool isCastingShadow() { return castShadow; }
+
+	private:
 	// the scene renderer needs access to our properties
 	friend class OtSceneRenderPass;
 
@@ -60,6 +63,7 @@ private:
 	float hScale = 1.0f;
 	float vScale = 1.0f;
 	float vOffset = 0.5f;
+	bool castShadow = true;
 	bool wireframe = false;
 
 	// terrain geometry

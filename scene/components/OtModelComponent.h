@@ -38,4 +38,5 @@ public:
 
 	// stored properties
 	OtAsset<OtModelAsset> model;
+	bool castShadow = true;
 };

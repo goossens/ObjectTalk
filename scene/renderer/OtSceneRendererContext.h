@@ -68,6 +68,7 @@ public:
 	bool hasTransparentEntities;
 	bool hasWaterEntities;
 	bool hasParticlesEntities;
+	bool renderingShadow = false;
 
 	// directional light information
 	glm::vec3 directionalLightDirection = glm::vec3(0.0f);

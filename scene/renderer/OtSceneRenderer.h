@@ -85,6 +85,17 @@ private:
 	OtPickingPass pickingPass;
 	OtPostProcessingPass postProcessingPass{compositeBuffer};
 
+	// timings
+	float iblPassTime;
+	float shadowPassTime;
+	float backgroundPassTime;
+	float opaquePassTime;
+	float transparentPassTime;
+	float waterPassTime;
+	float particlePassTime;
+	float editorPassTime;
+	float postProcessingTime;
+
 	// support for selected entities and entity picking
 	OtEntity selectedEntity = OtEntityNull;
 	glm::vec2 pickingNDC;

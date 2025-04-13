@@ -68,6 +68,7 @@ bool OtTerrain::renderUI() {
 	changed |= OtUi::dragFloat("Vertical Offset", &vOffset, -1000.0f, 1000.0f);
 	changed |= heights.renderUI();
 	changed |= material.renderUI();
+	changed |= OtUi::toggleButton("Cast Shadow", &castShadow);
 	changed |= OtUi::toggleButton("Wireframe", &wireframe);
 
 #ifdef OT_DEBUG
@@ -92,6 +93,7 @@ nlohmann::json OtTerrain::serialize(std::string* basedir) {
 	data["vOffset"] = vOffset;
 	data["heights"] = heights.serialize(basedir);
 	data["material"] = material.serialize(basedir);
+	data["castShadow"] = castShadow;
 	data["wireframe"] = wireframe;
 	return data;
 }
@@ -116,6 +118,7 @@ void OtTerrain::deserialize(nlohmann::json data, std::string* basedir) {
 		material.deserialize(data["material"], basedir);
 	}
 
+	castShadow = data.value("castShadow", true);
 	wireframe = data.value("wireframe", false);
 	clear();
 }

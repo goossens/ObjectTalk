@@ -41,6 +41,7 @@ public:
 
 			OtSceneRendererContext sctx{ctx};
 			sctx.camera = ctx.csm->getCamera(i);
+			sctx.renderingShadow = true;
 
 			// render all entities
 			renderEntities(sctx, pass);

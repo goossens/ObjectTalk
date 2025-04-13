@@ -22,7 +22,10 @@
 //
 
 bool OtModelComponent::renderUI() {
-	return model.renderUI("Model");
+	bool changed = false;
+	changed |= model.renderUI("Model");
+	changed |= OtUi::toggleButton("Cast shadow", &castShadow);
+	return changed;
 }
 
 
@@ -34,6 +37,7 @@ nlohmann::json OtModelComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["model"] = OtAssetSerialize(model.getPath(), basedir);
+	data["castShadow"] = castShadow;
 	return data;
 }
 
@@ -44,4 +48,5 @@ nlohmann::json OtModelComponent::serialize(std::string* basedir) {
 
 void OtModelComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	model = OtAssetDeserialize(&data, "model", basedir);
+	castShadow = data.value("castShadow", true);
 }

@@ -101,6 +101,7 @@
 					"uuid": 641517014
 				},
 				{
+					"castShadow": false,
 					"component": "Terrain",
 					"hScale": 1.0,
 					"heights": {
@@ -187,6 +188,7 @@
 					"uuid": 3900388003
 				},
 				{
+					"castShadow": true,
 					"component": "Geometry",
 					"cullback": false,
 					"path": "assets/hightree.obj",
@@ -257,6 +259,7 @@
 					"uuid": 3256211151
 				},
 				{
+					"castShadow": true,
 					"component": "Geometry",
 					"cullback": false,
 					"path": "assets/palmtree.obj",
@@ -327,6 +330,7 @@
 					"uuid": 3209023637
 				},
 				{
+					"castShadow": true,
 					"component": "Geometry",
 					"cullback": false,
 					"path": "assets/bamboopalm.obj",
@@ -397,6 +401,7 @@
 					"uuid": 1452129769
 				},
 				{
+					"castShadow": true,
 					"component": "Geometry",
 					"cullback": false,
 					"path": "assets/groundpalm.obj",
@@ -467,6 +472,7 @@
 					"uuid": 1226033295
 				},
 				{
+					"castShadow": true,
 					"component": "Geometry",
 					"cullback": false,
 					"path": "assets/bush.obj",
@@ -537,6 +543,7 @@
 					"uuid": 3824586795
 				},
 				{
+					"castShadow": true,
 					"component": "Geometry",
 					"cullback": true,
 					"path": "assets/rock.obj",
@@ -604,14 +611,14 @@
 			"far": 300.0,
 			"fov": 60.0,
 			"near": 0.009999999776482582,
-			"pitch": -1.4097050428390503,
+			"pitch": 10.489108085632324,
 			"position": [
 				5.300000190734863,
 				6.699999809265137,
 				2.799999952316284
 			],
 			"speed": 3.0,
-			"yaw": 68.51288604736328
+			"yaw": 72.04635620117188
 		},
 		"gizmo": {
 			"enabled": false,

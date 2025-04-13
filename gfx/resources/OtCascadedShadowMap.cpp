@@ -22,14 +22,14 @@
 //
 
 void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirection, int size) {
-	// create resources if required
+	// create resources (if required)
 	if (!isValid()) {
 		for (auto& cascade : cascades) {
 			cascade.framebuffer.initialize(OtTexture::noTexture, OtTexture::dFloatTexture);
 		}
 	}
 
-	// update framebuffers if required
+	// update framebuffers (if required)
 	if (cascades[0].framebuffer.getWidth() != size) {
 		for (auto& cascade : cascades) {
 			cascade.framebuffer.update(size, size);
@@ -45,39 +45,40 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 	float range = maxZ - minZ;
 	float ratio = maxZ / minZ;
 
-	static constexpr float cascadeSplitLambda = 0.95f;
+	static constexpr float cascadeSplitLambda = 0.75f;
 	float cascadeSplits[maxCascades];
 
 	for (size_t i = 0; i < maxCascades; i++) {
 		float p = static_cast<float>(i + 1) / static_cast<float>(maxCascades);
-		float log = minZ * glm::pow(ratio, p);
+		float log = minZ * std::pow(ratio, p);
 		float uniform = minZ + range * p;
 		float d = cascadeSplitLambda * (log - uniform) + uniform;
 		cascadeSplits[i] = (d - minZ) / range;
 	}
 
-	// determine frustum corners
-	glm::mat4 invViewProj = glm::inverse(camera.viewProjectionMatrix);
+	// determine frustum corners in clip space
 	float n = OtGpuHasHomogeneousDepth() ? -1.0f : 0.0f;
 
-	glm::vec4 frustumCorners[] = {
+	glm::vec3 frustumCorners[] = {
 		// near face
-		{  1.0f,  1.0f, n, 1.0f },
-		{ -1.0f,  1.0f, n, 1.0f },
-		{  1.0f, -1.0f, n, 1.0f },
-		{ -1.0f, -1.0f, n, 1.0f },
+		{  1.0f,  1.0f, n },
+		{ -1.0f,  1.0f, n },
+		{  1.0f, -1.0f, n },
+		{ -1.0f, -1.0f, n },
 
 		// far face
-		{  1.0f,  1.0f, 1.0f, 1.0f },
-		{ -1.0f,  1.0f, 1.0f, 1.0f },
-		{  1.0f, -1.0f, 1.0f, 1.0f },
-		{ -1.0f, -1.0f, 1.0f, 1.0f }
+		{  1.0f,  1.0f, 1.0f },
+		{ -1.0f,  1.0f, 1.0f },
+		{  1.0f, -1.0f, 1.0f },
+		{ -1.0f, -1.0f, 1.0f }
 	};
 
 	// project frustum corners into world space from clip space
+	glm::mat4 invViewProj = glm::inverse(camera.viewProjectionMatrix);
+
 	for (auto& frustumCorner : frustumCorners) {
-		auto invCorner = invViewProj * frustumCorner;
-		frustumCorner = invCorner / invCorner.w;
+		auto invCorner = invViewProj * glm::vec4(frustumCorner, 1.0f);
+		frustumCorner = glm::vec3(invCorner / invCorner.w);
 	}
 
 	// calculate orthographic projection matrix for each cascade
@@ -87,26 +88,26 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 		float splitDist = cascadeSplits[cascade];
 
 		// determine cascade corners (in world space)
-		glm::vec4 cascadeCorners[8];
+		glm::vec3 cascadeWorldCorners[8];
 
 		for (auto i = 0; i < 4; i++) {
 			auto dist = frustumCorners[i + 4] - frustumCorners[i];
-			cascadeCorners[i + 4] = frustumCorners[i] + (dist * splitDist);
-			cascadeCorners[i] = frustumCorners[i] + (dist * lastSplitDist);
+			cascadeWorldCorners[i + 4] = frustumCorners[i] + (dist * splitDist);
+			cascadeWorldCorners[i] = frustumCorners[i] + (dist * lastSplitDist);
 		}
 
 		// determine AABB for cascade (in world space)
 		cascades[cascade].aabb.clear();
 
-		for (auto& cascadeCorner : cascadeCorners) {
-			cascades[cascade].aabb.addPoint(cascadeCorner);
+		for (auto& cascadeWorldCorner : cascadeWorldCorners) {
+			cascades[cascade].aabb.addPoint(cascadeWorldCorner);
 		}
 
 		// get cascade center (in world space)
 		glm::vec3 cascadeCenter = glm::vec3(0.0f);
 
-		for (auto& cascadeCorner : cascadeCorners) {
-			cascadeCenter += glm::vec3(cascadeCorner);
+		for (auto& cascadeWorldCorner : cascadeWorldCorners) {
+			cascadeCenter += cascadeWorldCorner;
 		}
 
 		cascadeCenter /= 8.0f;
@@ -114,9 +115,9 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 		// determine sphere that encloses cascade
 		float radius = 0.0f;
 
-		for (auto& cascadeCorner : cascadeCorners) {
-			float distance = glm::length(glm::vec3(cascadeCorner) - cascadeCenter);
-			radius = glm::max(radius, distance);
+		for (auto& cascadeWorldCorner : cascadeWorldCorners) {
+			float distance = glm::length(glm::vec3(cascadeWorldCorner) - cascadeCenter);
+			radius = std::max(radius, distance);
 		}
 
 		radius = std::ceil(radius * 16.0f) / 16.0f;
@@ -126,8 +127,8 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 		glm::mat4 lightViewMatrix = glm::lookAt(cameraPosition, cascadeCenter, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		glm::mat4 lightProjectionMatrix = OtGpuHasHomogeneousDepth()
-			? glm::orthoRH_NO(-radius, radius, -radius, radius, 0.0f, radius + radius)
-			: glm::orthoRH_ZO(-radius, radius, -radius, radius, 0.0f, radius + radius);
+			? glm::orthoRH_NO(-radius, radius, -radius, radius, -maxZ, radius + radius)
+			: glm::orthoRH_ZO(-radius, radius, -radius, radius, -maxZ, radius + radius);
 
 		// offset to texel space to avoid shimmering
 		// https://stackoverflow.com/questions/33499053/cascaded-shadow-map-shimmering

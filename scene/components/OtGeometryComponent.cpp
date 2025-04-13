@@ -21,9 +21,10 @@
 
 bool OtGeometryComponent::renderUI() {
 	bool changed = asset.renderUI("Path##GeometryPath");
-	changed |= OtUi::toggleButton("Wireframe", &wireframe);
 	changed |= OtUi::toggleButton("Transparent", &transparent);
 	changed |= OtUi::toggleButton("Cull Back Faces", &cullback);
+	changed |= OtUi::toggleButton("Cast shadow", &castShadow);
+	changed |= OtUi::toggleButton("Wireframe", &wireframe);
 	return changed;
 }
 
@@ -36,9 +37,10 @@ nlohmann::json OtGeometryComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
 	data["path"] = OtAssetSerialize(asset.getPath(), basedir);
-	data["wireframe"] = wireframe;
 	data["transparent"] = transparent;
 	data["cullback"] = cullback;
+	data["castShadow"] = castShadow;
+	data["wireframe"] = wireframe;
 	return data;
 }
 
@@ -49,7 +51,8 @@ nlohmann::json OtGeometryComponent::serialize(std::string* basedir) {
 
 void OtGeometryComponent::deserialize(nlohmann::json data, std::string* basedir) {
 	asset = OtAssetDeserialize(&data, "path", basedir);
-	wireframe = data.value("wireframe", false);
 	transparent = data.value("transparent", false);
 	cullback = data.value("cullback", true);
+	castShadow = data.value("castShadow", true);
+	wireframe = data.value("wireframe", false);
 }

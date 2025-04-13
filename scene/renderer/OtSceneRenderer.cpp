@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include "OtMeasure.h"
+
 #include "OtSceneRenderer.h"
 
 
@@ -19,16 +21,21 @@
 int OtSceneRenderer::render(OtCamera& camera, OtScene* scene) {
 	// create rendering context
 	OtSceneRendererContext ctx{camera, scene, &ibl, &csm};
+	OtMeasureStopWatch stopwatch;
 
 	// update image based lighting (if required)
 	if (ctx.hasImageBasedLighting) {
 		ibl.update(ctx.scene->getComponent<OtIblComponent>(ctx.iblEntity));
 	}
 
+	iblPassTime = stopwatch.lap();
+
 	// generate shadow maps (if required)
 	if (ctx.castShadow) {
 		shadowPass.render(ctx);
 	}
+
+	shadowPassTime = stopwatch.lap();
 
 	// render background items
 	compositeBuffer.update(camera.width, camera.height);
@@ -38,26 +45,36 @@ int OtSceneRenderer::render(OtCamera& camera, OtScene* scene) {
 		skyPass.render(ctx);
 	}
 
+	backgroundPassTime = stopwatch.lap();
+
 	// render opaque entities
 	if (ctx.hasOpaqueEntities) {
 		deferredRenderingBuffer.update(camera.width, camera.height);
 		deferredPass.render(ctx);
 	}
 
+	opaquePassTime = stopwatch.lap();
+
 	// render transparent entities
 	if (ctx.hasTransparentEntities) {
 		forwardPass.render(ctx);
 	}
+
+	transparentPassTime = stopwatch.lap();
 
 	// generate water (if required)
 	if (ctx.hasWaterEntities) {
 		waterPass.render(ctx);
 	}
 
+	waterPassTime = stopwatch.lap();
+
 	// render particles
 	if (ctx.hasParticlesEntities) {
 		particlePass.render(ctx);
 	}
+
+	particlePassTime = stopwatch.lap();
 
 	// handle editor passes
 	gridPass.render(ctx);
@@ -71,6 +88,10 @@ int OtSceneRenderer::render(OtCamera& camera, OtScene* scene) {
 		pickingCallback = nullptr;
 	}
 
+	editorPassTime = stopwatch.lap();
+
 	// post process frame
-	return postProcessingPass.render(ctx);
+	auto textureIndex = postProcessingPass.render(ctx);
+	postProcessingTime = stopwatch.lap();
+	return textureIndex;
 }

@@ -66,6 +66,7 @@
 					"uuid": 3013357444
 				},
 				{
+					"castShadow": false,
 					"component": "Geometry",
 					"cullback": true,
 					"path": "assets/grid.obj",
@@ -126,6 +127,7 @@
 					"uuid": 2230698124
 				},
 				{
+					"castShadow": true,
 					"component": "Geometry",
 					"cullback": true,
 					"path": "assets/sphere.obj",

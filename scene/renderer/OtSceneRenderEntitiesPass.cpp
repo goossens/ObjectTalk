@@ -27,7 +27,9 @@ void OtSceneRenderEntitiesPass::renderEntities(OtSceneRendererContext& ctx, OtPa
 			ctx.scene->view<OtGeometryComponent>().each([&](auto entity, auto& geometry) {
 				// ensure geometry is ready to be rendered
 				if (!geometry.transparent && geometry.asset.isReady()) {
-					renderOpaqueGeometry(ctx, entity, geometry);
+					if (!ctx.renderingShadow || geometry.castShadow) {
+						renderOpaqueGeometry(ctx, entity, geometry);
+					}
 				}
 			});
 		}
@@ -36,7 +38,9 @@ void OtSceneRenderEntitiesPass::renderEntities(OtSceneRendererContext& ctx, OtPa
 		if (ctx.hasOpaqueModels) {
 			ctx.scene->view<OtModelComponent>().each([&](auto entity, auto& model) {
 				if (model.model.isReady()) {
-					renderOpaqueModel(ctx, entity, model);
+					if (!ctx.renderingShadow || model.castShadow) {
+						renderOpaqueModel(ctx, entity, model);
+					}
 				}
 			});
 		}
@@ -44,7 +48,9 @@ void OtSceneRenderEntitiesPass::renderEntities(OtSceneRendererContext& ctx, OtPa
 		// render terrain
 		if (ctx.hasTerrainEntities) {
 			ctx.scene->view<OtTerrainComponent>().each([&](auto entity, auto& terrain) {
-				renderTerrain(ctx, entity, terrain);
+				if (!ctx.renderingShadow || terrain.terrain->isCastingShadow()) {
+					renderTerrain(ctx, entity, terrain);
+				}
 			});
 		}
 	}
@@ -53,7 +59,9 @@ void OtSceneRenderEntitiesPass::renderEntities(OtSceneRendererContext& ctx, OtPa
 	if (isRenderingTransparent() && ctx.hasTransparentEntities) {
 		ctx.scene->view<OtGeometryComponent>().each([&](auto entity, auto& geometry) {
 			if (geometry.transparent && geometry.asset.isReady()) {
-				renderTransparentGeometry(ctx, entity, geometry);
+				if (!ctx.renderingShadow || geometry.castShadow) {
+					renderTransparentGeometry(ctx, entity, geometry);
+				}
 			}
 		});
 	}
@@ -73,11 +81,13 @@ void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtPass
 		auto& geometry = ctx.scene->getComponent<OtGeometryComponent>(entity);
 
 		if (geometry.asset.isReady()) {
-			if (isRenderingOpaque() && !geometry.transparent) {
-				renderOpaqueGeometry(ctx, entity, geometry);
+			if (!ctx.renderingShadow || geometry.castShadow) {
+				if (isRenderingOpaque() && !geometry.transparent) {
+					renderOpaqueGeometry(ctx, entity, geometry);
 
-			} else if (isRenderingTransparent() && geometry.transparent) {
-				renderTransparentGeometry(ctx, entity, geometry);
+				} else if (isRenderingTransparent() && geometry.transparent) {
+					renderTransparentGeometry(ctx, entity, geometry);
+				}
 			}
 		}
 	}
@@ -87,14 +97,19 @@ void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtPass
 		auto& model = ctx.scene->getComponent<OtModelComponent>(entity);
 
 		if (isRenderingOpaque() && model.model.isReady()) {
-			renderOpaqueModel(ctx, entity, model);
+			if (!ctx.renderingShadow || model.castShadow) {
+				renderOpaqueModel(ctx, entity, model);
+			}
 		}
 	}
 
 	// render terrain
 	if (ctx.scene->hasComponent<OtTerrainComponent>(entity)) {
 		auto& terrain = ctx.scene->getComponent<OtTerrainComponent>(entity);
-		renderTerrain(ctx, entity, terrain);
+
+		if (!ctx.renderingShadow || terrain.terrain->isCastingShadow()) {
+			renderTerrain(ctx, entity, terrain);
+		}
 	}
 }
 

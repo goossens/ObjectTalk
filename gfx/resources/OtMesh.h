@@ -21,7 +21,6 @@
 
 #include "OtAABB.h"
 #include "OtIndexBuffer.h"
-#include "OtPlane.h"
 #include "OtVertex.h"
 #include "OtVertexBuffer.h"
 
@@ -99,9 +98,6 @@ public:
 	void generateAABB();
 	void generateNormals();
 	void generateTangents();
-
-	// clip a mesh by a plane and create a new mesh
-	void clip(OtPlane plane, OtMesh& result);
 
 	// get access to vertices and indices (to allow transformations)
 	std::vector<OtVertex>& getVertices(bool update=false);

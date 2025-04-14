@@ -28,7 +28,7 @@
 class OtModelMaterial {
 public:
 	// load the material
-	void load(const aiMaterial* material, const std::string& dir);
+	void load(size_t modelID, const aiMaterial* material, const std::string& dir);
 
 	// see if material is valid
 	inline bool isValid() { return valid; }
@@ -40,4 +40,7 @@ private:
 	// the PBR material
 	std::shared_ptr<OtMaterial> material;
 	bool valid = false;
+
+	// determine texture path
+	std::string getTexturePath(size_t modelID, const std::string& dir, const std::string& file);
 };

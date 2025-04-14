@@ -39,6 +39,9 @@ void OtModelMesh::load(const aiMesh* mesh) {
 		OtLogFatal("Internal error: mesh has incompatible primitive type");
 	}
 
+	// save the name
+	name = mesh->mName.data;
+
 	// clear and reserve vertex space
 	vertices.clear();
 	vertices.reserve(mesh->mNumVertices);

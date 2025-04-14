@@ -30,7 +30,7 @@ public:
 
 	// asset properties
 	static constexpr bool canHandleVirtual = true;
-	static constexpr const char* supportedFileTypes = ".blend,.fbx,.gltf,.obj";
+	static constexpr const char* supportedFileTypes = ".blend,.fbx,.glb,.gltf,.obj";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
 
 protected:

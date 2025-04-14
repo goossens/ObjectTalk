@@ -13,6 +13,7 @@
 //
 
 #include <cstdint>
+#include <string>
 #include <vector>
 
 #include "assimp/mesh.h"
@@ -42,7 +43,8 @@ public:
 	OtAABB& getAABB() { return aabb; }
 
 private:
-	// our vertices and triangle indices
+	// properties
+	std::string name;
 	std::vector<OtVertex> vertices;
 	std::vector<uint32_t> indices;
 

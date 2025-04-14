@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <cstdlib>
 #include <random>
 #include <sstream>
 
@@ -66,6 +67,40 @@ std::string OtPath::getDocumentsDirectory(){
 
 #else
 	return join(home, "Documents");
+#endif
+}
+
+
+//
+//	OtPath::getPreferencesDirectory
+//
+
+std::string OtPath::getPreferencesDirectory() {
+#if __APPLE__
+	auto home = getHomeDirectory();
+	return join(join(home, "Library"), "Preferences");
+
+#elif _WIN32
+	size_t size = 256;
+	char* value = (char*) malloc(size);
+	int result = uv_os_getenv("LOCALAPPDATA", value, &size);
+
+	if (result == UV_ENOBUFS) {
+		value = (char*) realloc(value, size);
+		result = uv_os_getenv(name.c_str(), value, &size);
+	}
+
+	if (result == UV_ENOENT) {
+		return nullptr;
+	}
+
+	std::string v = value;
+	free(value);
+	return v;
+
+#else
+	auto home = getHomeDirectory();
+	return join(home, "/.config");
 #endif
 }
 

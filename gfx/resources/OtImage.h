@@ -52,6 +52,9 @@ public:
 	void loadAsGrayscale(const std::string& path, bool powerof2=false, bool square=false);
 	void loadAsRGBA(const std::string& path, bool powerof2=false, bool square=false);
 
+	// load from memory
+	void loadFromMemory(int width, int height, int format, void* pixels);
+
 	// load the image from a file in memory
 	void loadFromFileInMemory(void* data, uint32_t size);
 

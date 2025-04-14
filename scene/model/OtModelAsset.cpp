@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <atomic>
 #include <cstdint>
 
 #include "assimp/Importer.hpp"
@@ -32,6 +33,10 @@ OtAssetBase::State OtModelAsset::load() {
 	meshes.clear();
 	materials.clear();
 	aabb.clear();
+
+	// assign a mode identifier
+	static std::atomic<size_t> nextID = 0;
+	id = nextID++;
 
 	// create an asset importer
 	Assimp::Importer importer;
@@ -70,12 +75,19 @@ OtAssetBase::State OtModelAsset::load() {
 		aabb.addAABB(meshes[i].getAABB());
 	}
 
+	// load all the embedded textures
+	textures.resize(scene->mNumTextures);
+
+	for (auto i = 0u; i < scene->mNumTextures; i++) {
+		textures[i].load(id, i, scene->mTextures[i]);
+	}
+
 	// load all the materials
 	materials.resize(scene->mNumMaterials);
 	auto dir = OtPath::getParent(path);
 
 	for (auto i = 0u; i < scene->mNumMaterials; i++) {
-		materials[i].load(scene->mMaterials[i], dir);
+		materials[i].load(id, scene->mMaterials[i], dir);
 	}
 
 	return State::ready;

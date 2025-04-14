@@ -9,9 +9,14 @@
 //	Include files
 //
 
+#include <cstring>
+
+#include "assimp/texture.h"
+#include "fmt/format.h"
 #include "glm/glm.hpp"
 
 #include "OtPath.h"
+#include "OtText.h"
 
 #include "OtModelMaterial.h"
 
@@ -20,7 +25,7 @@
 //	OtModelMaterial::load
 //
 
-void OtModelMaterial::load(const aiMaterial* mat, const std::string& dir) {
+void OtModelMaterial::load(size_t modelID, const aiMaterial* mat, const std::string& dir) {
 	// work variables
 	aiColor4D color;
 	aiString string;
@@ -54,37 +59,51 @@ void OtModelMaterial::load(const aiMaterial* mat, const std::string& dir) {
 
 	// albedo texture
 	if (mat->GetTexture(aiTextureType_BASE_COLOR, 0, &string) == AI_SUCCESS) {
-		auto file = std::string(string.data, string.length);
-		material->setAlbedoTexture(OtPath::join(dir, file));
+		auto path = getTexturePath(modelID, dir, std::string(string.data, string.length));
+		material->setAlbedoTexture(path);
 
 	} else if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &string) == AI_SUCCESS) {
-		auto file = std::string(string.data, string.length);
-		material->setAlbedoTexture(OtPath::join(dir, file));
+		auto path = getTexturePath(modelID, dir, std::string(string.data, string.length));
+		material->setAlbedoTexture(path);
 	}
 
 	// normal texture
 	if (mat->GetTexture(aiTextureType_NORMALS, 0, &string) == AI_SUCCESS) {
-		auto file = std::string(string.data, string.length);
-		material->setNormalTexture(OtPath::join(dir, file));
+		auto path = getTexturePath(modelID, dir, std::string(string.data, string.length));
+		material->setNormalTexture(path);
 	}
 
 	// metallic texture
 	if (mat->GetTexture(aiTextureType_METALNESS, 0, &string) == AI_SUCCESS) {
-		auto file = std::string(string.data, string.length);
-		material->setMetallicRoughnessTexture(OtPath::join(dir, file));
+		auto path = getTexturePath(modelID, dir, std::string(string.data, string.length));
+		material->setMetallicRoughnessTexture(path);
 	}
 
 	// emissive texture
 	if (mat->GetTexture(aiTextureType_EMISSIVE, 0, &string) == AI_SUCCESS) {
-		auto file = std::string(string.data, string.length);
-		material->setEmissiveTexture(OtPath::join(dir, file));
+		auto path = getTexturePath(modelID, dir, std::string(string.data, string.length));
+		material->setEmissiveTexture(path);
 	}
 
 	// ambient occlusion texture
 	if (mat->GetTexture(aiTextureType_AMBIENT_OCCLUSION, 0, &string) == AI_SUCCESS) {
-		auto file = std::string(string.data, string.length);
-		material->setAoTexture(OtPath::join(dir, file));
+		auto path = getTexturePath(modelID, dir, std::string(string.data, string.length));
+		material->setAoTexture(path);
 	}
 
 	valid = true;
+}
+
+
+//
+//	OtModelMaterial::getTexturePath
+//
+
+std::string OtModelMaterial::getTexturePath(size_t modelID, const std::string& dir, const std::string& file) {
+	if (OtText::startsWith(file, AI_EMBEDDED_TEXNAME_PREFIX)) {
+		return fmt::format("virtual:model{}.{}", modelID, OtText::from(file, std::strlen(AI_EMBEDDED_TEXNAME_PREFIX)));
+
+	} else {
+		return OtPath::join(dir, file);
+	}
 }

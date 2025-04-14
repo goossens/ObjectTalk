@@ -408,7 +408,7 @@ void OtCubeMap::createCubemapFromHDR() {
 		glm::lookAt(glm::vec3(0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f))};
 
 	// create an empty cubemap
-	size = 512;
+	size = 1024;
 	mip = true;
 	layers = 1;
 	format = bgfx::TextureFormat::RGBA16F;

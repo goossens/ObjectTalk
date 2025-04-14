@@ -27,6 +27,7 @@ public:
 	inline OtTexture& getTexture() { return texture; }
 	inline void setTexture(OtTexture& t) { texture = t; state = State::ready; }
 	inline void clearTexture() { texture.clear(); state = State::missing; }
+	inline void setTextureReady() { state = State::ready; }
 
 	// asset properties
 	static constexpr bool canHandleVirtual = true;

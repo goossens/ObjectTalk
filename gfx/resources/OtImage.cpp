@@ -178,6 +178,31 @@ void OtImage::loadAsRGBA(const std::string& path, bool powerof2, bool square) {
 
 
 //
+//	OtImage::loadFromMemory
+//
+
+void OtImage::loadFromMemory(int width, int height, int format, void* pixels) {
+	// create new image
+	auto imageContainer = bimg::imageAlloc(
+		&allocator,
+		bimg::TextureFormat::Enum(format),
+		uint16_t(width),
+		uint16_t(height),
+		1,
+		1,
+		false,
+		false,
+	pixels);
+
+	if (!imageContainer) {
+		OtLogFatal("Internal error: function [bimg::imageAlloc] failed");
+	}
+
+	assignImageContainer(imageContainer);
+}
+
+
+//
 //	OtImage::loadFromFileInMemory
 //
 

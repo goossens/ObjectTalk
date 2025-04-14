@@ -81,10 +81,10 @@ public:
 	void loadFromFile(const std::string& path, bool async=false);
 
 	// load from memory
-	void loadFromMemory(int width, int height, int format, void* pixels);
+	void loadFromMemory(int width, int height, int format, void* pixels, bool async=false);
 
 	// load from file in memory
-	void loadFromFileInMemory(void* data, uint32_t size);
+	void loadFromFileInMemory(void* data, uint32_t size, bool async=false);
 
 	// update (part of) texture
 	void update(int x, int y, int width, int height, void* pixels);
@@ -147,4 +147,5 @@ private:
 	// support for async loading
 	std::shared_ptr<OtImage> asyncImage;
 	uv_async_t* asyncHandle = nullptr;
+	void loadAsync();
 };

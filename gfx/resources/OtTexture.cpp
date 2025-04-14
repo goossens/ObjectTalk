@@ -140,32 +140,9 @@ void OtTexture::loadFromImage(OtImage& image) {
 
 void OtTexture::loadFromFile(const std::string& path, bool async) {
 	if (async) {
+		// get image and schedule an asynchronous load to the GPU
 		asyncImage = std::make_shared<OtImage>(path);
-
-		// schedule a task to upload image to texture
-		// we can't do that here as loading is done in a seperate thread
-		// the callback below will be called in the main thread
-		asyncHandle = new uv_async_t;
-		asyncHandle->data = this;
-
-		auto status = uv_async_init(uv_default_loop(), asyncHandle, [](uv_async_t* handle){
-			// run the HDR to cubemap conversion
-			auto texture = (OtTexture*) handle->data;
-			texture->loadFromImage(*texture->asyncImage);
-			texture->asyncImage = nullptr;
-
-			// cleanup
-			uv_close((uv_handle_t*) texture->asyncHandle, [](uv_handle_t* handle) {
-				auto texture = (OtTexture*) handle->data;
-				delete (uv_fs_event_t*) handle;
-				texture->asyncHandle = nullptr;
-			});
-		});
-
-		UV_CHECK_ERROR("uv_async_init", status);
-
-		status = uv_async_send(asyncHandle);
-		UV_CHECK_ERROR("uv_async_send", status);
+		loadAsync();
 
 	} else {
 		// get the image
@@ -179,33 +156,19 @@ void OtTexture::loadFromFile(const std::string& path, bool async) {
 //	OtTexture::loadFromMemory
 //
 
-void OtTexture::loadFromMemory(int w, int h, int f, void* pixels) {
-	// update properties
-	width = w;
-	height = h;
-	format = f;
-	incrementVersion();
+void OtTexture::loadFromMemory(int w, int h, int f, void* pixels, bool async) {
+	if (async) {
+		// get image and schedule an asynchronous load to the GPU
+		asyncImage = std::make_shared<OtImage>();
+		asyncImage->loadFromMemory(w, h, f, pixels);
+		loadAsync();
 
-	// determine image size
-	int size = bimg::imageGetSize(
-		nullptr,
-		static_cast<uint16_t>(w),
-		static_cast<uint16_t>(h),
-		1,
-		false,
-		false,
-		1,
-		bimg::TextureFormat::Enum(format));
-
-	// create texture
-	texture = bgfx::createTexture2D(
-		static_cast<uint16_t>(w),
-		static_cast<uint16_t>(h),
-		false,
-		1,
-		bgfx::TextureFormat::Enum(format),
-		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
-		bgfx::copy(pixels, size));
+	} else {
+		// get the image
+		OtImage image;
+		image.loadFromMemory(w, h, f, pixels);
+		loadFromImage(image);
+	}
 }
 
 
@@ -213,20 +176,19 @@ void OtTexture::loadFromMemory(int w, int h, int f, void* pixels) {
 //	OtTexture::loadFromFileInMemory
 //
 
-void OtTexture::loadFromFileInMemory(void* data, uint32_t size) {
-	// get the image
-	OtImage image;
-	image.loadFromFileInMemory(data, size);
-	bimg::ImageContainer* container = image.getContainer();
+void OtTexture::loadFromFileInMemory(void* data, uint32_t size, bool async) {
+	if (async) {
+		// get image and schedule an asynchronous load to the GPU
+		asyncImage = std::make_shared<OtImage>();
+		asyncImage->loadFromFileInMemory(data, size);
+		loadAsync();
 
-	// update properties
-	width = container->m_width;
-	height = container->m_height;
-	format = container->m_format;
-	incrementVersion();
-
-	// create texture
-	texture = createRegularTexture(container);
+	} else {
+		// get the image
+		OtImage image;
+		image.loadFromFileInMemory(data, size);
+		loadFromImage(image);
+	}
 }
 
 
@@ -294,4 +256,36 @@ bgfx::TextureHandle OtTexture::getHandle() {
 		// just return a dummy image to keep everybody happy
 		return dummy;
 	}
+}
+
+
+//
+//	OtTexture::loadAsync
+//
+
+void OtTexture::loadAsync() {
+	// schedule a task to upload image to texture
+	// we can't do that here as loading is done in a seperate thread
+	// the callback below will be called in the main thread
+	asyncHandle = new uv_async_t;
+	asyncHandle->data = this;
+
+	auto status = uv_async_init(uv_default_loop(), asyncHandle, [](uv_async_t* handle){
+		// load image to texture
+		auto texture = (OtTexture*) handle->data;
+		texture->loadFromImage(*texture->asyncImage);
+		texture->asyncImage = nullptr;
+
+		// cleanup
+		uv_close((uv_handle_t*) texture->asyncHandle, [](uv_handle_t* handle) {
+			auto texture = (OtTexture*) handle->data;
+			delete (uv_fs_event_t*) handle;
+			texture->asyncHandle = nullptr;
+		});
+	});
+
+	UV_CHECK_ERROR("uv_async_init", status);
+
+	status = uv_async_send(asyncHandle);
+	UV_CHECK_ERROR("uv_async_send", status);
 }

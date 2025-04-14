@@ -20,6 +20,7 @@
 
 #include "OtModelMaterial.h"
 #include "OtModelMesh.h"
+#include "OtModelTexture.h"
 
 //
 //	OtModelAsset
@@ -36,7 +37,7 @@ public:
 
 	// asset properties
 	static constexpr bool canHandleVirtual = false;
-	static constexpr const char* supportedFileTypes = ".blender,.fbx,.gltf,.obj";
+	static constexpr const char* supportedFileTypes = ".fbx,.glb,.gltf,.obj";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
 
 protected:
@@ -47,7 +48,11 @@ private:
 	// our meshes and materials
 	std::vector<OtModelMesh> meshes;
 	std::vector<OtModelMaterial> materials;
+	std::vector<OtModelTexture> textures;
 
 	// model bounding box
 	OtAABB aabb;
+
+	// model identifier
+	size_t id;
 };

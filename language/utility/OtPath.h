@@ -54,6 +54,7 @@ public:
 	static inline void changeDirectory(const std::string& path) { std::filesystem::current_path(std::filesystem::path(path)); }
 	static std::string getHomeDirectory();
 	static std::string getDocumentsDirectory();
+	static std::string getPreferencesDirectory();
 	static inline std::string getTmpDirectory() { return std::filesystem::temp_directory_path().string(); }
 	static std::string getTmpFilename();
 

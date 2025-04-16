@@ -216,3 +216,30 @@ struct OtVertexPos {
 		return layout;
 	}
 };
+
+
+//
+//	OtVertexBones
+//
+
+struct OtVertexBones {
+	// vertex elements
+	glm::vec4 indices;
+	glm::vec4 weights;
+
+	// constructors
+	OtVertexBones() = default;
+	inline OtVertexBones(const glm::vec4& i, const glm::vec4& w) : indices(i), weights(w) {}
+
+	// get vertex description
+	static inline bgfx::VertexLayout getLayout() {
+		bgfx::VertexLayout layout;
+
+		layout.begin()
+			.add(bgfx::Attrib::Indices, 4, bgfx::AttribType::Float)
+			.add(bgfx::Attrib::Weight, 4, bgfx::AttribType::Float)
+			.end();
+
+		return layout;
+	}
+};

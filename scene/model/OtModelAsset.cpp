@@ -16,6 +16,7 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
+#include "OtException.h"
 #include "OtLog.h"
 
 #include "OtGpu.h"
@@ -34,7 +35,7 @@ OtAssetBase::State OtModelAsset::load() {
 	materials.clear();
 	aabb.clear();
 
-	// assign a mode identifier
+	// assign a model identifier
 	static std::atomic<size_t> nextID = 0;
 	id = nextID++;
 
@@ -67,28 +68,55 @@ OtAssetBase::State OtModelAsset::load() {
 		return State::invalid;
 	}
 
-	// load all the meshes
-	meshes.resize(scene->mNumMeshes);
+	try {
+		// load the node hierarchy
+		nodes.load(scene->mRootNode);
 
-	for (auto i = 0u; i < scene->mNumMeshes; i++) {
-		meshes[i].load(scene->mMeshes[i]);
-		aabb.addAABB(meshes[i].getAABB());
+		// load all the meshes
+		if (scene->HasMeshes()) {
+			meshes.resize(scene->mNumMeshes);
+
+			for (auto i = 0u; i < scene->mNumMeshes; i++) {
+				meshes[i].load(scene->mMeshes[i], nodes);
+				aabb.addAABB(meshes[i].getAABB());
+			}
+		}
+
+		// load all the embedded textures
+		if (scene->HasTextures()) {
+			textures.resize(scene->mNumTextures);
+
+			for (auto i = 0u; i < scene->mNumTextures; i++) {
+				textures[i].load(id, i, scene->mTextures[i]);
+			}
+		}
+
+		// load all the materials
+		if (scene->HasMaterials()) {
+			materials.resize(scene->mNumMaterials);
+			auto dir = OtPath::getParent(path);
+
+			for (auto i = 0u; i < scene->mNumMaterials; i++) {
+				materials[i].load(id, scene, scene->mMaterials[i], dir);
+			}
+		}
+
+		// load the animations
+		if (scene->HasAnimations()) {
+			animations.resize(scene->mNumAnimations);
+
+			for (auto i = 0u; i < scene->mNumMaterials; i++) {
+				animations[i].load(scene->mAnimations[i]);
+			}
+		}
+
+	} catch (OtException& e) {
+		OtLogWarning("Invalid model [{}]: {}", path, e.getShortErrorMessage());
+		return State::invalid;
 	}
 
-	// load all the embedded textures
-	textures.resize(scene->mNumTextures);
-
-	for (auto i = 0u; i < scene->mNumTextures; i++) {
-		textures[i].load(id, i, scene->mTextures[i]);
-	}
-
-	// load all the materials
-	materials.resize(scene->mNumMaterials);
-	auto dir = OtPath::getParent(path);
-
-	for (auto i = 0u; i < scene->mNumMaterials; i++) {
-		materials[i].load(id, scene->mMaterials[i], dir);
-	}
+	// output diagnostics
+	nodes.debug();
 
 	return State::ready;
 }

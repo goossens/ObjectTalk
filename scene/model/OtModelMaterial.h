@@ -17,6 +17,7 @@
 #include <string>
 
 #include "assimp/material.h"
+#include "assimp/scene.h"
 
 #include "OtMaterial.h"
 
@@ -28,7 +29,7 @@
 class OtModelMaterial {
 public:
 	// load the material
-	void load(size_t modelID, const aiMaterial* material, const std::string& dir);
+	void load(size_t modelID, const aiScene* scene, const aiMaterial* material, const std::string& dir);
 
 	// see if material is valid
 	inline bool isValid() { return valid; }
@@ -42,5 +43,5 @@ private:
 	bool valid = false;
 
 	// determine texture path
-	std::string getTexturePath(size_t modelID, const std::string& dir, const std::string& file);
+	std::string getTexturePath(size_t modelID, const aiScene* scene, const std::string& dir, const std::string& file);
 };

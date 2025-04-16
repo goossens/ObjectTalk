@@ -25,7 +25,7 @@
 //	OtModelMaterial::load
 //
 
-void OtModelMaterial::load(size_t modelID, const aiMaterial* mat, const std::string& dir) {
+void OtModelMaterial::load(size_t modelID, const aiScene* scene, const aiMaterial* mat, const std::string& dir) {
 	// work variables
 	aiColor4D color;
 	aiString string;
@@ -59,35 +59,35 @@ void OtModelMaterial::load(size_t modelID, const aiMaterial* mat, const std::str
 
 	// albedo texture
 	if (mat->GetTexture(aiTextureType_BASE_COLOR, 0, &string) == AI_SUCCESS) {
-		auto path = getTexturePath(modelID, dir, std::string(string.data, string.length));
+		auto path = getTexturePath(modelID, scene, dir, std::string(string.data, string.length));
 		material->setAlbedoTexture(path);
 
 	} else if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &string) == AI_SUCCESS) {
-		auto path = getTexturePath(modelID, dir, std::string(string.data, string.length));
+		auto path = getTexturePath(modelID, scene, dir, std::string(string.data, string.length));
 		material->setAlbedoTexture(path);
 	}
 
 	// normal texture
 	if (mat->GetTexture(aiTextureType_NORMALS, 0, &string) == AI_SUCCESS) {
-		auto path = getTexturePath(modelID, dir, std::string(string.data, string.length));
+		auto path = getTexturePath(modelID, scene, dir, std::string(string.data, string.length));
 		material->setNormalTexture(path);
 	}
 
 	// metallic texture
 	if (mat->GetTexture(aiTextureType_METALNESS, 0, &string) == AI_SUCCESS) {
-		auto path = getTexturePath(modelID, dir, std::string(string.data, string.length));
+		auto path = getTexturePath(modelID, scene, dir, std::string(string.data, string.length));
 		material->setMetallicRoughnessTexture(path);
 	}
 
 	// emissive texture
 	if (mat->GetTexture(aiTextureType_EMISSIVE, 0, &string) == AI_SUCCESS) {
-		auto path = getTexturePath(modelID, dir, std::string(string.data, string.length));
+		auto path = getTexturePath(modelID, scene, dir, std::string(string.data, string.length));
 		material->setEmissiveTexture(path);
 	}
 
 	// ambient occlusion texture
 	if (mat->GetTexture(aiTextureType_AMBIENT_OCCLUSION, 0, &string) == AI_SUCCESS) {
-		auto path = getTexturePath(modelID, dir, std::string(string.data, string.length));
+		auto path = getTexturePath(modelID, scene, dir, std::string(string.data, string.length));
 		material->setAoTexture(path);
 	}
 
@@ -99,9 +99,11 @@ void OtModelMaterial::load(size_t modelID, const aiMaterial* mat, const std::str
 //	OtModelMaterial::getTexturePath
 //
 
-std::string OtModelMaterial::getTexturePath(size_t modelID, const std::string& dir, const std::string& file) {
-	if (OtText::startsWith(file, AI_EMBEDDED_TEXNAME_PREFIX)) {
-		return fmt::format("virtual:model{}.{}", modelID, OtText::from(file, std::strlen(AI_EMBEDDED_TEXNAME_PREFIX)));
+std::string OtModelMaterial::getTexturePath(size_t modelID, const aiScene* scene, const std::string& dir, const std::string& file) {
+	auto [texture, textureID] = scene->GetEmbeddedTextureAndIndex(file.c_str());
+
+	if (textureID != -1) {
+		return fmt::format("virtual:model{}.{}", modelID, textureID);
 
 	} else {
 		return OtPath::join(dir, file);

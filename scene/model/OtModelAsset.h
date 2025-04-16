@@ -18,8 +18,10 @@
 #include "OtAsset.h"
 #include "OtAssetBase.h"
 
+#include "OtModelAnimation.h"
 #include "OtModelMaterial.h"
 #include "OtModelMesh.h"
+#include "OtModelNodes.h"
 #include "OtModelTexture.h"
 
 //
@@ -37,7 +39,7 @@ public:
 
 	// asset properties
 	static constexpr bool canHandleVirtual = false;
-	static constexpr const char* supportedFileTypes = ".fbx,.glb,.gltf,.obj";
+	static constexpr const char* supportedFileTypes = ".fbx,.glb,.gltf,.md5mesh,.obj";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
 
 protected:
@@ -45,10 +47,12 @@ protected:
 	OtAssetBase::State load() override;
 
 private:
-	// our meshes and materials
+	// our nodes, meshes, materials, textures and animations
+	OtModelNodes nodes;
 	std::vector<OtModelMesh> meshes;
 	std::vector<OtModelMaterial> materials;
 	std::vector<OtModelTexture> textures;
+	std::vector<OtModelAnimation> animations;
 
 	// model bounding box
 	OtAABB aabb;

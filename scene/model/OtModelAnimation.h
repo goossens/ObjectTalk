@@ -29,7 +29,10 @@
 class OtModelAnimation {
 public:
 	// load the animation
-	void load(const aiAnimation* animation);
+	void load(const aiAnimation* animation, OtModelNodes& nodes);
+
+	// update animation based on current time
+	void update(float time, OtModelNodes& nodes, size_t slot);
 
 private:
 	// properties
@@ -37,9 +40,10 @@ private:
 	float duration;
 	float ticksPerSecond;
 
-	class KeyFrame {
+	class Channel {
 	public:
-		std::string nodeName;
+		size_t node;
+
 		std::vector<float> positionTimestamps;
 		std::vector<float> rotationTimestamps;
 		std::vector<float> scaleTimestamps;
@@ -49,5 +53,8 @@ private:
 		std::vector<glm::vec3> scales;
 	};
 
-	std::vector<KeyFrame> keyframes;
+	std::vector<Channel> channels;
+
+	// support functions
+	void getTimeFraction(const std::vector<float>& times, float dt, size_t& element, float& fraction);
 };

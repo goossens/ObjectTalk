@@ -18,11 +18,7 @@
 #include "OtAsset.h"
 #include "OtAssetBase.h"
 
-#include "OtModelAnimation.h"
-#include "OtModelMaterial.h"
-#include "OtModelMesh.h"
-#include "OtModelNodes.h"
-#include "OtModelTexture.h"
+#include "OtModel.h"
 
 //
 //	OtModelAsset
@@ -30,12 +26,8 @@
 
 class OtModelAsset : public OtAssetBase {
 public:
-	// access the meshes and materials
-	inline std::vector<OtModelMesh>& getMeshes() { return meshes; }
-	inline std::vector<OtModelMaterial>& getMaterials() { return materials; }
-
-	// access bounding box
-	OtAABB& getAABB() { return aabb; }
+	// access the model
+	inline OtModel& getModel() { return model; }
 
 	// asset properties
 	static constexpr bool canHandleVirtual = false;
@@ -47,16 +39,6 @@ protected:
 	OtAssetBase::State load() override;
 
 private:
-	// our nodes, meshes, materials, textures and animations
-	OtModelNodes nodes;
-	std::vector<OtModelMesh> meshes;
-	std::vector<OtModelMaterial> materials;
-	std::vector<OtModelTexture> textures;
-	std::vector<OtModelAnimation> animations;
-
-	// model bounding box
-	OtAABB aabb;
-
-	// model identifier
-	size_t id;
+	// the actual model
+	OtModel model;
 };

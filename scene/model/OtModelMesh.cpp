@@ -80,17 +80,23 @@ void OtModelMesh::load(const aiMesh* mesh, OtModelNodes& nodes) {
 
 	if (mesh->HasBones()) {
 		bones.reserve(mesh->mNumBones);
-		vertexBones.reserve(mesh->mNumVertices);
+		vertexBones.resize(mesh->mNumVertices);
 		std::vector<size_t> boneCounts;
-		boneCounts.resize(mesh->mNumBones, 0);
+		boneCounts.resize(mesh->mNumVertices, 0);
 
 		// process all bones
 		for(auto i = 0u; i < mesh->mNumBones; i++) {
 			aiBone* bone = mesh->mBones[i];
-			bones.emplace_back(bone->mName.C_Str(), toMat4(bone->mOffsetMatrix));
-			boneIndex[bone->mName.C_Str()] = i;
+			std::string name = bone->mName.C_Str();
 
-			// loop through each vertex that has that bone
+			if (!nodes.hasNode(name)) {
+				OtLogError("Bone [{}] is not part of model's hierarchy", name);
+			}
+
+			bones.emplace_back(name, toMat4(bone->mOffsetMatrix));
+			boneIndex[name] = i;
+
+			// loop through each vertex that is affected by that bone
 			for (auto j = 0u; j < bone->mNumWeights; j++) {
 				auto id = bone->mWeights[j].mVertexId;
 				auto weight = bone->mWeights[j].mWeight;
@@ -131,27 +137,6 @@ void OtModelMesh::load(const aiMesh* mesh, OtModelNodes& nodes) {
 
 			if (totalWeight > 0.0f) {
 				vertexBones[i].weights = boneWeights / totalWeight;
-			}
-		}
-
-		// establish skeleton (bone hierarchy)
-		for (auto& bone : bones) {
-			if (nodes.hasNode(bone.name)) {
-				auto& node = nodes.getNode(bone.name);
-
-				for (auto child : node.children) {
-					auto& childNode = nodes.getNode(child);
-
-					if (boneIndex.find(childNode.name) != boneIndex.end()) {
-						bone.children.emplace_back(boneIndex[childNode.name]);
-
-					} else {
-						OtLogError("Child node [{}] of bone [{}] is not a bone", childNode.name, bone.name);
-					}
-				}
-
-			} else {
-				OtLogError("Bone [{}] does not appear in model's hierarchy", bone.name);
 			}
 		}
 	}

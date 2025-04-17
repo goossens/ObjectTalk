@@ -195,49 +195,53 @@ void OtSceneRenderEntitiesPass::renderOpaqueGeometry(OtSceneRendererContext& ctx
 
 void OtSceneRenderEntitiesPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& component) {
 	// visibility flag and target program
-	bool visible = false;
+	// bool visible = false;
 	OtShaderProgram* program = nullptr;
 
 	// get camera frustum and geometry AABB
 	auto& frustum = ctx.camera.frustum;
-	auto& aabb = component.model->getAABB();
+	auto& model = component.model->getModel();
 
-	// is this a case of instancing?
-	if (ctx.scene->hasComponent<OtInstancingComponent>(entity)) {
-		// only render instances if we have a valid asset and at least one instance is visible
-		auto& instancing = ctx.scene->getComponent<OtInstancingComponent>(entity);
+	// // is this a case of instancing?
+	// if (ctx.scene->hasComponent<OtInstancingComponent>(entity)) {
+	// 	// only render instances if we have a valid asset and at least one instance is visible
+	// 	auto& instancing = ctx.scene->getComponent<OtInstancingComponent>(entity);
 
-		if (!instancing.asset.isNull() && instancing.asset->getInstances().submit(frustum, aabb)) {
-			visible = true;
-			program = getInstancedOpaqueProgram();
+	// 	if (!instancing.asset.isNull() && instancing.asset->getInstances().submit(frustum, aabb)) {
+	// 		visible = true;
+	// 		program = getInstancedOpaqueProgram();
+	// 	}
+
+	// } else {
+	// 	// see if model is visible
+	// 	if (frustum.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
+	// 		visible = true;
+	// 		program = getOpaqueProgram();
+	// 	}
+	// }
+
+	// if (visible) {
+		program = getOpaqueProgram();
+
+		// process all render commands
+		auto renderList = model.getRenderList();
+
+		for (auto& cmd : renderList) {
+			if (frustum.isVisibleAABB(cmd.aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
+				// submit uniforms
+				Scope scope{entity, false, false, cmd.material, nullptr};
+				submitUniforms(ctx, scope);
+
+				// submit the geometry
+				cmd.mesh->submitTriangles();
+
+				// run the program
+				program->setTransform(ctx.scene->getGlobalTransform(entity) * cmd.transforms[0]);
+				program->setState(getCullbackState());
+				ctx.pass->runShaderProgram(*program);
+			}
 		}
-
-	} else {
-		// see if model is visible
-		if (frustum.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
-			visible = true;
-			program = getOpaqueProgram();
-		}
-	}
-
-	if (visible) {
-		// process all the meshes
-		auto model = component.model;
-
-		for (auto& mesh : model->getMeshes()) {
-			// submit uniforms
-			Scope scope{entity, false, false, model->getMaterials()[mesh.getMaterialIndex()].getMaterial(), nullptr};
-			submitUniforms(ctx, scope);
-
-			// submit the geometry
-			mesh.submitTriangles();
-
-			// run the program
-			program->setTransform(ctx.scene->getGlobalTransform(entity));
-			program->setState(getCullbackState());
-			ctx.pass->runShaderProgram(*program);
-		}
-	}
+	// }
 }
 
 

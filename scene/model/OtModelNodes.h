@@ -18,6 +18,7 @@
 
 #include "assimp/scene.h"
 #include "glm/glm.hpp"
+#include "glm/gtx/quaternion.hpp"
 
 
 //
@@ -27,33 +28,50 @@
 class OtModelNodes {
 public:
 	// load the nodes into a hierarchy
-	void load(const aiNode* node);
+	void load(const aiNode* rootnode);
+
+	// clar the nodes structure
+	void clear();
+
+	// update transforms
+	void resetAnimationTransforms();
+	void setAnimationTransformParts(size_t nodeID, size_t slot, const glm::vec3& position, const glm::quat& rotation, const glm::vec3& scale);
+	void updateAnimationTransforms();
+	void updateModelTransforms(size_t nodeID=0, glm::mat4* transform=nullptr);
 
 	// properties
 	class Node {
 	public:
 		size_t id;
 		std::string name;
+		glm::mat4 localTransform;
+		glm::mat4 animationTransform;
+		glm::mat4 modelTransform;
 		size_t parent;
 		std::vector<size_t> children;
+		std::vector<size_t> meshes;
+
+		struct TransformParts {
+			bool available;
+			glm::vec3 position;
+			glm::quat rotation;
+			glm::vec3 scale;
+		};
+
+		TransformParts transformParts[2];
 	};
 
 	// access nodes
 	inline bool hasNode(const std::string& name) { return index.find(name) != index.end(); }
 	inline Node& getNode(const std::string& name) { return nodes[index[name]]; }
 	inline Node& getNode(size_t id) { return nodes[id]; }
-
-	// print debug information
-	inline void debug() { printDebug(0, 0); }
+	inline size_t getNodeID(const std::string& name) { return index[name]; }
 
 private:
 	// properties
 	std::vector<Node> nodes;
 	std::unordered_map<std::string, size_t> index;
 
-	glm::mat4 globalInverseTransform;
-
 	size_t addNode(const aiNode* node);
 	void markParent(size_t id, size_t parent);
-	void printDebug(size_t id, size_t indent);
 };

@@ -41,23 +41,20 @@ public:
 	// submit the triangles
 	void submitTriangles();
 
-	// get the material index number
+	// get properties
 	inline int getMaterialIndex() { return material; }
+	inline OtAABB& getAABB() { return aabb; }
+	inline size_t getBoneCount() { return bones.size(); }
 
-	// get the bounding box
-	OtAABB& getAABB() { return aabb; }
-
-	private:
-	// bone information
-	class Bone {
-	public:
-		Bone(const std::string& n, const glm::mat4& o) : name(n), offset(o) {}
-
+	struct Bone {
+		Bone(const std::string& n, const glm::mat4& o) : name(n), offsetTransform(o) {}
 		std::string name;
-		glm::mat4 offset = glm::mat4(1.0f);
-		std::vector<size_t> children;
+		glm::mat4 offsetTransform;
 	};
 
+	inline Bone& getBone(size_t bone) { return bones[bone]; }
+
+	private:
 	// properties
 	std::string name;
 	std::vector<OtVertex> vertices;

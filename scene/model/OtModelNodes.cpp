@@ -21,17 +21,78 @@
 //	OtModelNodes::load
 //
 
-void OtModelNodes::load(const aiNode* node) {
-	// get all the nodes
-	nodes.clear();
-	addNode(node);
-
-	// calculate the inverse transformation matrix for root node
-	auto matrix = toMat4(node->mTransformation);
-	globalInverseTransform = glm::inverse(matrix);
-
-	// mark all parents
+void OtModelNodes::load(const aiNode* rootnode) {
+	// get all nodes, mark parents and calculate matrices
+	addNode(rootnode);
 	markParent(0, std::numeric_limits<size_t>::max());
+	resetAnimationTransforms();
+	updateModelTransforms();
+}
+
+
+//
+//	OtModelNodes::clear
+//
+
+void OtModelNodes::clear() {
+	nodes.clear();
+	index.clear();
+}
+
+
+//
+//	OtModelNodes::resetAnimationTransforms
+//
+
+void OtModelNodes::resetAnimationTransforms() {
+	for (auto& node : nodes) {
+		node.animationTransform = node.localTransform;
+		node.transformParts[0].available = false;
+		node.transformParts[1].available = false;
+	}
+}
+
+
+//
+//	OtModelNodes::setAnimationTransformParts
+//
+
+void OtModelNodes::setAnimationTransformParts(size_t nodeID, size_t slot, const glm::vec3& position, const glm::quat& rotation, const glm::vec3& scale) {
+	auto& transformParts = nodes.at(nodeID).transformParts[slot];
+	transformParts.available = true;
+	transformParts.position = position;
+	transformParts.rotation = rotation;
+	transformParts.scale = scale;
+}
+
+
+//
+//	OtModelNodes::updateAnimationTransforms
+//
+
+void OtModelNodes::updateAnimationTransforms() {
+	for (auto& node : nodes) {
+		if (node.transformParts[0].available) {
+			node.animationTransform =
+				glm::translate(glm::mat4(1.0f), node.transformParts[0].position) *
+				glm::toMat4(node.transformParts[0].rotation) *
+				glm::scale(glm::mat4(1.0f), node.transformParts[0].scale);
+		}
+	}
+}
+
+
+//
+//	OtModelNodes::updateModelTransforms
+//
+
+void OtModelNodes::updateModelTransforms(size_t nodeID, glm::mat4* parentTransform) {
+	auto& node = nodes.at(nodeID);
+	node.modelTransform = nodeID == 0 ? node.animationTransform : *parentTransform * node.animationTransform;
+
+	for (auto child : node.children) {
+		updateModelTransforms(child, &node.modelTransform);
+	}
 }
 
 
@@ -47,6 +108,11 @@ size_t OtModelNodes::addNode(const aiNode* node) {
 	nodes.emplace_back();
 	nodes[id].id = id;
 	nodes[id].name = name;
+	nodes[id].localTransform = toMat4(node->mTransformation);
+
+	for (auto i = 0u; i < node->mNumMeshes; i++) {
+		nodes[id].meshes.emplace_back(node->mMeshes[i]);
+	}
 
 	for (auto i = 0u; i < node->mNumChildren; i++) {
 		auto child = addNode(node->mChildren[i]);
@@ -67,19 +133,5 @@ void OtModelNodes::markParent(size_t id, size_t parent) {
 
 	for (auto child : node.children) {
 		markParent(child, node.id);
-	}
-}
-
-
-//
-//	OtModelNodes::printDebug
-//
-
-void OtModelNodes::printDebug(size_t id, size_t indent) {
-	auto& node = nodes.at(id);
-	OtLogDebug("{}Node {}: {}", std::string(indent * 4, ' '), id, node.name);
-
-	for (auto child : node.children) {
-		printDebug(child, indent + 1);
 	}
 }

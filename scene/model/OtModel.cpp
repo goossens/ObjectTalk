@@ -80,6 +80,7 @@ void OtModel::load(const std::string& path) {
 
 		for (auto i = 0u; i < scene->mNumMeshes; i++) {
 			meshes[i].load(scene->mMeshes[i], nodes);
+			aabb.addAABB(meshes[i].getAABB());
 		}
 	}
 
@@ -118,6 +119,7 @@ void OtModel::load(const std::string& path) {
 //
 
 void OtModel::clear() {
+	aabb.clear();
 	nodes.clear();
 	meshes.clear();
 	materials.clear();
@@ -132,7 +134,6 @@ void OtModel::clear() {
 //
 
 void OtModel::resetAnimation() {
-	isAnimating = false;
 	currentAnimation = 0;
 }
 
@@ -142,9 +143,10 @@ void OtModel::resetAnimation() {
 //
 
 void OtModel::setAnimation(size_t animation) {
-	isAnimating = true;
-	isTransitioningAnimation = false;
-	currentAnimation = animation;
+	if (animation < animations.size()) {
+		isTransitioningAnimation = false;
+		currentAnimation = animation;
+	}
 }
 
 
@@ -153,7 +155,7 @@ void OtModel::setAnimation(size_t animation) {
 //
 
 void OtModel::fadeToAnimation(size_t animation, float seconds) {
-	if (isAnimating) {
+	if (animation < animations.size()) {
 		if (isTransitioningAnimation) {
 			currentAnimation = nextAnimation;
 		}
@@ -162,9 +164,6 @@ void OtModel::fadeToAnimation(size_t animation, float seconds) {
 		isTransitioningAnimation = true;
 		animationTransionTime = seconds;
 		animationRatio = 0.0f;
-
-	} else {
-		setAnimation(animation);
 	}
 }
 
@@ -173,19 +172,20 @@ void OtModel::fadeToAnimation(size_t animation, float seconds) {
 //	OtModel::getRenderList
 //
 
-std::vector<OtModel::RenderCommand>& OtModel::getRenderList() {
+std::vector<OtModel::RenderCommand>& OtModel::getRenderList(const glm::mat4& modelTransform) {
 	// update animations (if required)
-	if (isAnimating) {
+	if (animations.size()) {
 		time += ImGui::GetIO().DeltaTime;
 		nodes.resetAnimationTransforms();
 
 		if (isTransitioningAnimation) {
 			animations[currentAnimation].update(time, nodes, 0);
 			animations[nextAnimation].update(time, nodes, 1);
+			nodes.updateAnimationTransforms(animationRatio);
 
 		} else {
 			animations[currentAnimation].update(time, nodes, 0);
-			nodes.updateAnimationTransforms();
+			nodes.updateAnimationTransforms(1.0f);
 		}
 
 		nodes.updateModelTransforms();
@@ -193,7 +193,7 @@ std::vector<OtModel::RenderCommand>& OtModel::getRenderList() {
 
 	// process all nodes and find meshes
 	renderList.clear();
-	traverseMeshes(0);
+	traverseMeshes(0, modelTransform);
 	return renderList;
 }
 
@@ -202,7 +202,7 @@ std::vector<OtModel::RenderCommand>& OtModel::getRenderList() {
 //	OtModel::traverseMeshes
 //
 
-void OtModel::traverseMeshes(size_t nodeID) {
+void OtModel::traverseMeshes(size_t nodeID, const glm::mat4& modelTransform) {
 	auto& node = nodes.getNode(nodeID);
 
 	for (auto meshID : node.meshes) {
@@ -210,7 +210,7 @@ void OtModel::traverseMeshes(size_t nodeID) {
 		auto& cmd = renderList.emplace_back();
 		cmd.mesh = &mesh;
 		cmd.material = materials[mesh.getMaterialIndex()].getMaterial();
-		cmd.animation = isAnimating && mesh.getBoneCount();
+		cmd.animation = animations.size() && mesh.getBoneCount();
 
 		if (cmd.animation) {
 			auto bones = mesh.getBoneCount();
@@ -218,15 +218,15 @@ void OtModel::traverseMeshes(size_t nodeID) {
 
 			for (size_t i = 0; i < bones; i++) {
 				auto& bone = mesh.getBone(i);
-				cmd.transforms.emplace_back(node.modelTransform * bone.offsetTransform);
+				cmd.transforms.emplace_back(modelTransform * nodes.getNode(bone.node).modelTransform * bone.offsetTransform);
 			}
 
 		} else {
-			cmd.transforms.emplace_back(node.modelTransform);
+			cmd.transforms.emplace_back(modelTransform * node.modelTransform);
 		}
 	}
 
 	for (auto child : node.children) {
-		traverseMeshes(child);
+		traverseMeshes(child, modelTransform);
 	}
 }

@@ -25,7 +25,7 @@ void OtModelAnimation::load(const aiAnimation* animation, OtModelNodes& nodes) {
 	ticksPerSecond = (animation->mTicksPerSecond != 0.0) ? static_cast<float>(animation->mTicksPerSecond) : 1.0f;
 	duration = static_cast<float>(animation->mDuration * ticksPerSecond);
 
-	// process all transformation channels
+	// process all channels
 	channels.resize(animation->mNumChannels);
 
 	for (auto i = 0u; i < animation->mNumChannels; i++) {
@@ -40,17 +40,17 @@ void OtModelAnimation::load(const aiAnimation* animation, OtModelNodes& nodes) {
 		channel.node = nodes.getNodeID(nodeName);
 
 		for (auto j = 0u; j < chn->mNumPositionKeys; j++) {
-			channel.positionTimestamps.push_back(chn->mPositionKeys[j].mTime);
+			channel.positionTimestamps.push_back(static_cast<float>(chn->mPositionKeys[j].mTime));
 			channel.positions.push_back(toVec3(chn->mPositionKeys[j].mValue));
 		}
 
 		for (auto j = 0u; j < chn->mNumRotationKeys; j++) {
-			channel.rotationTimestamps.push_back(chn->mRotationKeys[j].mTime);
+			channel.rotationTimestamps.push_back(static_cast<float>(chn->mRotationKeys[j].mTime));
 			channel.rotations.push_back(toQuat(chn->mRotationKeys[j].mValue));
 		}
 
 		for (auto j = 0u; j < chn->mNumScalingKeys; j++) {
-			channel.scaleTimestamps.push_back(chn->mScalingKeys[j].mTime);
+			channel.scaleTimestamps.push_back(static_cast<float>(chn->mScalingKeys[j].mTime));
 			channel.scales.push_back(toVec3(chn->mScalingKeys[j].mValue));
 		}
 	}

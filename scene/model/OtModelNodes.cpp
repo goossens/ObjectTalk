@@ -70,13 +70,29 @@ void OtModelNodes::setAnimationTransformParts(size_t nodeID, size_t slot, const 
 //	OtModelNodes::updateAnimationTransforms
 //
 
-void OtModelNodes::updateAnimationTransforms() {
+void OtModelNodes::updateAnimationTransforms(float ratio) {
 	for (auto& node : nodes) {
-		if (node.transformParts[0].available) {
+		if (node.transformParts[0].available && node.transformParts[0].available) {
+			auto position = glm::mix(node.transformParts[0].position, node.transformParts[1].position, ratio);
+			auto rotation = glm::slerp(node.transformParts[0].rotation, node.transformParts[1].rotation, ratio);
+			auto scale = glm::mix(node.transformParts[0].scale, node.transformParts[1].scale, ratio);
+
+			node.animationTransform =
+				glm::translate(glm::mat4(1.0f), position) *
+				glm::toMat4(rotation) *
+				glm::scale(glm::mat4(1.0f), scale);
+
+		} else if (node.transformParts[0].available) {
 			node.animationTransform =
 				glm::translate(glm::mat4(1.0f), node.transformParts[0].position) *
 				glm::toMat4(node.transformParts[0].rotation) *
 				glm::scale(glm::mat4(1.0f), node.transformParts[0].scale);
+
+		} else if (node.transformParts[1].available) {
+			node.animationTransform =
+				glm::translate(glm::mat4(1.0f), node.transformParts[1].position) *
+				glm::toMat4(node.transformParts[1].rotation) *
+				glm::scale(glm::mat4(1.0f), node.transformParts[1].scale);
 		}
 	}
 }
@@ -86,12 +102,12 @@ void OtModelNodes::updateAnimationTransforms() {
 //	OtModelNodes::updateModelTransforms
 //
 
-void OtModelNodes::updateModelTransforms(size_t nodeID, glm::mat4* parentTransform) {
+void OtModelNodes::updateModelTransforms(size_t nodeID, const glm::mat4& parentTransform) {
 	auto& node = nodes.at(nodeID);
-	node.modelTransform = nodeID == 0 ? node.animationTransform : *parentTransform * node.animationTransform;
+	node.modelTransform = nodeID == 0 ? node.animationTransform : parentTransform * node.animationTransform;
 
 	for (auto child : node.children) {
-		updateModelTransforms(child, &node.modelTransform);
+		updateModelTransforms(child, node.modelTransform);
 	}
 }
 

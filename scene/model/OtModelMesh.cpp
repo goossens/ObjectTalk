@@ -75,7 +75,6 @@ void OtModelMesh::load(const aiMesh* mesh, OtModelNodes& nodes) {
 
 	// process bones data (if required)
 	bones.clear();
-	boneIndex.clear();
 	vertexBones.clear();
 
 	if (mesh->HasBones()) {
@@ -87,39 +86,39 @@ void OtModelMesh::load(const aiMesh* mesh, OtModelNodes& nodes) {
 		// process all bones
 		for(auto i = 0u; i < mesh->mNumBones; i++) {
 			aiBone* bone = mesh->mBones[i];
-			std::string name = bone->mName.C_Str();
+			std::string boneName = bone->mName.C_Str();
 
-			if (!nodes.hasNode(name)) {
-				OtLogError("Bone [{}] is not part of model's hierarchy", name);
+			if (!nodes.hasNode(boneName)) {
+				OtLogError("Bone [{}] is not part of model's hierarchy", boneName);
 			}
 
-			bones.emplace_back(name, toMat4(bone->mOffsetMatrix));
-			boneIndex[name] = i;
+			bones.emplace_back(boneName, toMat4(bone->mOffsetMatrix), nodes.getNodeID(boneName));
 
 			// loop through each vertex that is affected by that bone
 			for (auto j = 0u; j < bone->mNumWeights; j++) {
 				auto id = bone->mWeights[j].mVertexId;
-				auto weight = bone->mWeights[j].mWeight;
+				auto index = static_cast<float>(i);
+				auto weight = static_cast<float>(bone->mWeights[j].mWeight);
 				boneCounts[id]++;
 
 				switch (boneCounts[id]) {
 					case 1:
-						vertexBones[id].indices.x = i;
+						vertexBones[id].indices.x = index;
 						vertexBones[id].weights.x = weight;
 						break;
 
 					case 2:
-						vertexBones[id].indices.y = i;
+						vertexBones[id].indices.y = index;
 						vertexBones[id].weights.y = weight;
 						break;
 
 					case 3:
-						vertexBones[id].indices.z = i;
+						vertexBones[id].indices.z = index;
 						vertexBones[id].weights.z = weight;
 						break;
 
 					case 4:
-						vertexBones[id].indices.w = i;
+						vertexBones[id].indices.w = index;
 						vertexBones[id].weights.w = weight;
 						break;
 

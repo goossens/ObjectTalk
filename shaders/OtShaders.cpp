@@ -38,6 +38,9 @@
 #include "generated/cubemap/OtHdrReprojectFS_mtl.h"
 #include "generated/cubemap/OtHdrReprojectFS_spv.h"
 #include "generated/cubemap/OtHdrReprojectFS_dx11.h"
+#include "generated/deferred/OtDeferredAnimatedVS_mtl.h"
+#include "generated/deferred/OtDeferredAnimatedVS_spv.h"
+#include "generated/deferred/OtDeferredAnimatedVS_dx11.h"
 #include "generated/deferred/OtDeferredInstancingVS_mtl.h"
 #include "generated/deferred/OtDeferredInstancingVS_spv.h"
 #include "generated/deferred/OtDeferredInstancingVS_dx11.h"
@@ -164,6 +167,9 @@
 #include "generated/highlight/OtOutlineVS_mtl.h"
 #include "generated/highlight/OtOutlineVS_spv.h"
 #include "generated/highlight/OtOutlineVS_dx11.h"
+#include "generated/highlight/OtSelectAnimatedVS_mtl.h"
+#include "generated/highlight/OtSelectAnimatedVS_spv.h"
+#include "generated/highlight/OtSelectAnimatedVS_dx11.h"
 #include "generated/highlight/OtSelectInstancingVS_mtl.h"
 #include "generated/highlight/OtSelectInstancingVS_spv.h"
 #include "generated/highlight/OtSelectInstancingVS_dx11.h"
@@ -194,6 +200,9 @@
 #include "generated/imgui/OtImGuiFS_mtl.h"
 #include "generated/imgui/OtImGuiFS_spv.h"
 #include "generated/imgui/OtImGuiFS_dx11.h"
+#include "generated/occlusion/OtOcclusionAnimatedVS_mtl.h"
+#include "generated/occlusion/OtOcclusionAnimatedVS_spv.h"
+#include "generated/occlusion/OtOcclusionAnimatedVS_dx11.h"
 #include "generated/occlusion/OtOcclusionInstancingVS_mtl.h"
 #include "generated/occlusion/OtOcclusionInstancingVS_spv.h"
 #include "generated/occlusion/OtOcclusionInstancingVS_dx11.h"
@@ -212,6 +221,9 @@
 #include "generated/particles/OtParticlesFS_mtl.h"
 #include "generated/particles/OtParticlesFS_spv.h"
 #include "generated/particles/OtParticlesFS_dx11.h"
+#include "generated/picking/OtPickingAnimatedVS_mtl.h"
+#include "generated/picking/OtPickingAnimatedVS_spv.h"
+#include "generated/picking/OtPickingAnimatedVS_dx11.h"
 #include "generated/picking/OtPickingInstancingVS_mtl.h"
 #include "generated/picking/OtPickingInstancingVS_spv.h"
 #include "generated/picking/OtPickingInstancingVS_dx11.h"
@@ -236,6 +248,9 @@
 #include "generated/preview/OtPreviewFS_mtl.h"
 #include "generated/preview/OtPreviewFS_spv.h"
 #include "generated/preview/OtPreviewFS_dx11.h"
+#include "generated/shadow/OtShadowAnimatedVS_mtl.h"
+#include "generated/shadow/OtShadowAnimatedVS_spv.h"
+#include "generated/shadow/OtShadowAnimatedVS_dx11.h"
 #include "generated/shadow/OtShadowInstancingVS_mtl.h"
 #include "generated/shadow/OtShadowInstancingVS_spv.h"
 #include "generated/shadow/OtShadowInstancingVS_dx11.h"
@@ -295,6 +310,8 @@ static const uint8_t OtCubeMapCrossFS_glsl[1] = {0};
 static const uint8_t OtCubeMapCrossFS_essl[1] = {0};
 static const uint8_t OtHdrReprojectFS_glsl[1] = {0};
 static const uint8_t OtHdrReprojectFS_essl[1] = {0};
+static const uint8_t OtDeferredAnimatedVS_glsl[1] = {0};
+static const uint8_t OtDeferredAnimatedVS_essl[1] = {0};
 static const uint8_t OtDeferredInstancingVS_glsl[1] = {0};
 static const uint8_t OtDeferredInstancingVS_essl[1] = {0};
 static const uint8_t OtDeferredLightingVS_glsl[1] = {0};
@@ -379,6 +396,8 @@ static const uint8_t OtGridFS_glsl[1] = {0};
 static const uint8_t OtGridFS_essl[1] = {0};
 static const uint8_t OtOutlineVS_glsl[1] = {0};
 static const uint8_t OtOutlineVS_essl[1] = {0};
+static const uint8_t OtSelectAnimatedVS_glsl[1] = {0};
+static const uint8_t OtSelectAnimatedVS_essl[1] = {0};
 static const uint8_t OtSelectInstancingVS_glsl[1] = {0};
 static const uint8_t OtSelectInstancingVS_essl[1] = {0};
 static const uint8_t OtSelectVS_glsl[1] = {0};
@@ -399,6 +418,8 @@ static const uint8_t OtImGuiVS_glsl[1] = {0};
 static const uint8_t OtImGuiVS_essl[1] = {0};
 static const uint8_t OtImGuiFS_glsl[1] = {0};
 static const uint8_t OtImGuiFS_essl[1] = {0};
+static const uint8_t OtOcclusionAnimatedVS_glsl[1] = {0};
+static const uint8_t OtOcclusionAnimatedVS_essl[1] = {0};
 static const uint8_t OtOcclusionInstancingVS_glsl[1] = {0};
 static const uint8_t OtOcclusionInstancingVS_essl[1] = {0};
 static const uint8_t OtOcclusionVS_glsl[1] = {0};
@@ -411,6 +432,8 @@ static const uint8_t OtParticlesVS_glsl[1] = {0};
 static const uint8_t OtParticlesVS_essl[1] = {0};
 static const uint8_t OtParticlesFS_glsl[1] = {0};
 static const uint8_t OtParticlesFS_essl[1] = {0};
+static const uint8_t OtPickingAnimatedVS_glsl[1] = {0};
+static const uint8_t OtPickingAnimatedVS_essl[1] = {0};
 static const uint8_t OtPickingInstancingVS_glsl[1] = {0};
 static const uint8_t OtPickingInstancingVS_essl[1] = {0};
 static const uint8_t OtPickingVS_glsl[1] = {0};
@@ -427,6 +450,8 @@ static const uint8_t OtPreviewVS_glsl[1] = {0};
 static const uint8_t OtPreviewVS_essl[1] = {0};
 static const uint8_t OtPreviewFS_glsl[1] = {0};
 static const uint8_t OtPreviewFS_essl[1] = {0};
+static const uint8_t OtShadowAnimatedVS_glsl[1] = {0};
+static const uint8_t OtShadowAnimatedVS_essl[1] = {0};
 static const uint8_t OtShadowInstancingVS_glsl[1] = {0};
 static const uint8_t OtShadowInstancingVS_essl[1] = {0};
 static const uint8_t OtShadowVS_glsl[1] = {0};
@@ -462,6 +487,7 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtHdrReprojectVS),
 	BGFX_EMBEDDED_SHADER(OtCubeMapCrossFS),
 	BGFX_EMBEDDED_SHADER(OtHdrReprojectFS),
+	BGFX_EMBEDDED_SHADER(OtDeferredAnimatedVS),
 	BGFX_EMBEDDED_SHADER(OtDeferredInstancingVS),
 	BGFX_EMBEDDED_SHADER(OtDeferredLightingVS),
 	BGFX_EMBEDDED_SHADER(OtDeferredVS),
@@ -504,6 +530,7 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtGridVS),
 	BGFX_EMBEDDED_SHADER(OtGridFS),
 	BGFX_EMBEDDED_SHADER(OtOutlineVS),
+	BGFX_EMBEDDED_SHADER(OtSelectAnimatedVS),
 	BGFX_EMBEDDED_SHADER(OtSelectInstancingVS),
 	BGFX_EMBEDDED_SHADER(OtSelectVS),
 	BGFX_EMBEDDED_SHADER(OtOutlineFS),
@@ -514,12 +541,14 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtIblIrradianceMapCS),
 	BGFX_EMBEDDED_SHADER(OtImGuiVS),
 	BGFX_EMBEDDED_SHADER(OtImGuiFS),
+	BGFX_EMBEDDED_SHADER(OtOcclusionAnimatedVS),
 	BGFX_EMBEDDED_SHADER(OtOcclusionInstancingVS),
 	BGFX_EMBEDDED_SHADER(OtOcclusionVS),
 	BGFX_EMBEDDED_SHADER(OtOcclusionOpaqueFS),
 	BGFX_EMBEDDED_SHADER(OtOcclusionTransparentFS),
 	BGFX_EMBEDDED_SHADER(OtParticlesVS),
 	BGFX_EMBEDDED_SHADER(OtParticlesFS),
+	BGFX_EMBEDDED_SHADER(OtPickingAnimatedVS),
 	BGFX_EMBEDDED_SHADER(OtPickingInstancingVS),
 	BGFX_EMBEDDED_SHADER(OtPickingVS),
 	BGFX_EMBEDDED_SHADER(OtPickingOpaqueFS),
@@ -528,6 +557,7 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtPointLightsFS),
 	BGFX_EMBEDDED_SHADER(OtPreviewVS),
 	BGFX_EMBEDDED_SHADER(OtPreviewFS),
+	BGFX_EMBEDDED_SHADER(OtShadowAnimatedVS),
 	BGFX_EMBEDDED_SHADER(OtShadowInstancingVS),
 	BGFX_EMBEDDED_SHADER(OtShadowVS),
 	BGFX_EMBEDDED_SHADER(OtShadowOpaqueFS),

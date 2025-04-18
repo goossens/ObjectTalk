@@ -30,6 +30,7 @@ protected:
 
 	virtual OtShaderProgram* getOpaqueProgram() = 0;
 	virtual OtShaderProgram* getInstancedOpaqueProgram() = 0;
+	virtual OtShaderProgram* getAnimatedOpaqueProgram() = 0;
 	virtual OtShaderProgram* getTransparentProgram() = 0;
 	virtual OtShaderProgram* getInstancedTransparentProgram() = 0;
 	virtual OtShaderProgram* getTerrainProgram() = 0;

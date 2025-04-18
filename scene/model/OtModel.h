@@ -40,17 +40,19 @@ public:
 	void setAnimation(size_t animation);
 	void fadeToAnimation(size_t animation, float seconds);
 
+	// get bounding box
+	inline OtAABB& getAABB() { return aabb; }
+
 	// render list access
 	class RenderCommand {
 	public:
 		OtModelMesh* mesh;
 		std::shared_ptr<OtMaterial> material;
 		bool animation;
-		OtAABB aabb;
 		std::vector<glm::mat4> transforms;
 	};
 
-	std::vector<RenderCommand>& getRenderList();
+	std::vector<RenderCommand>& getRenderList(const glm::mat4& modelTransform);
 
 private:
 	// our nodes, meshes, materials, textures and animations
@@ -64,7 +66,6 @@ private:
 	size_t id;
 
 	// animation support
-	bool isAnimating;
 	bool isTransitioningAnimation;
 	size_t currentAnimation;
 	size_t nextAnimation;
@@ -72,9 +73,10 @@ private:
 	float animationRatio;
 
 	// rendering support
+	OtAABB aabb;
 	float time = 0.0f;
 	std::vector<RenderCommand> renderList;
 
 	// support functions
-	void traverseMeshes(size_t nodeID);
+	void traverseMeshes(size_t nodeID, const glm::mat4& modelTransform);
 };

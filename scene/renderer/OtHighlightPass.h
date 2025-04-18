@@ -113,6 +113,7 @@ protected:
 
 	OtShaderProgram* getOpaqueProgram() override { return &opaqueProgram; }
 	OtShaderProgram* getInstancedOpaqueProgram() override { return &instancedOpaqueProgram; }
+	OtShaderProgram* getAnimatedOpaqueProgram() override { return &animatedOpaqueProgram; }
 	OtShaderProgram* getTransparentProgram() override { return &transparentProgram; }
 	OtShaderProgram* getInstancedTransparentProgram() override { return &instancedTransparentProgram; }
 	OtShaderProgram* getTerrainProgram() override { return &terrainProgram; }
@@ -136,6 +137,7 @@ private:
 
 	OtShaderProgram opaqueProgram{"OtSelectVS", "OtSelectOpaqueFS"};
 	OtShaderProgram instancedOpaqueProgram{"OtSelectInstancingVS", "OtSelectOpaqueFS"};
+	OtShaderProgram animatedOpaqueProgram{"OtSelectAnimatedVS", "OtSelectOpaqueFS"};
 	OtShaderProgram transparentProgram{"OtSelectVS", "OtSelectTransparentFS"};
 	OtShaderProgram instancedTransparentProgram{"OtSelectInstancingVS", "OtSelectTransparentFS"};
 	OtShaderProgram terrainProgram{"OtTerrainSimpleVS", "OtSelectOpaqueFS"};

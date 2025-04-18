@@ -201,8 +201,14 @@ void OtMap::generateRegions() {
 	for (auto y = 1; y < map->size; y++) {
 		for (auto x = 1; x < map->size; x++) {
 			addRegion(
-				step * ((noise.perlin(x, y, map->seed + 1) * 2.0f - 1.0f) * 0.49f + x),
-				step * ((noise.perlin(x, y, map->seed + 2) * 2.0f - 1.0f) * 0.49f + y));
+				step * ((noise.perlin(
+					static_cast<float>(x),
+					static_cast<float>(y),
+					static_cast<float>(map->seed + 1)) * 2.0f - 1.0f) * 0.49f + x),
+				step * ((noise.perlin(
+					static_cast<float>(x),
+					static_cast<float>(y),
+					static_cast<float>(map->seed + 2)) * 2.0f - 1.0f) * 0.49f + y));
 		}
 	}
 

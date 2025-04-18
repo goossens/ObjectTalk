@@ -47,6 +47,7 @@ protected:
 
 	OtShaderProgram* getOpaqueProgram() override { return nullptr; }
 	OtShaderProgram* getInstancedOpaqueProgram() override { return nullptr; }
+	OtShaderProgram* getAnimatedOpaqueProgram() override { return nullptr; }
 	OtShaderProgram* getTransparentProgram() override { return &transparentProgram; }
 	OtShaderProgram* getInstancedTransparentProgram() override { return &instancedTransparentProgram; }
 	OtShaderProgram* getTerrainProgram() override { return nullptr; }

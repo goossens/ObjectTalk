@@ -135,16 +135,23 @@ function compileShader() {
 
 # goto shaders directory and ensure output path exists
 cd -P "$(dirname "${BASH_SOURCE[0]}")"
+
+#delete all old generated shaders (if required)
+if [ ${FORCE} -eq 1 ]
+then
+	rm -rf generated
+fi
+
 mkdir -p generated
 
 # determine newest include file
-	for INCLUDE in include/*.glsl
-	do
-		if [ ${INCLUDE} -nt "${NEWEST_INCLUDE}" ]
-		then
-			NEWEST_INCLUDE=${INCLUDE}
-		fi
-	done
+for INCLUDE in include/*.glsl
+do
+	if [ ${INCLUDE} -nt "${NEWEST_INCLUDE}" ]
+	then
+		NEWEST_INCLUDE=${INCLUDE}
+	fi
+done
 
 # process all shader groups
 for DEF_PATH in */varying.def.sc

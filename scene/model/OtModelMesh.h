@@ -14,7 +14,6 @@
 
 #include <cstdint>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 #include "assimp/mesh.h"
@@ -47,9 +46,10 @@ public:
 	inline size_t getBoneCount() { return bones.size(); }
 
 	struct Bone {
-		Bone(const std::string& n, const glm::mat4& o) : name(n), offsetTransform(o) {}
+		Bone(const std::string& nm, const glm::mat4& ot, size_t nd) : name(nm), offsetTransform(ot), node(nd) {}
 		std::string name;
 		glm::mat4 offsetTransform;
+		size_t node;
 	};
 
 	inline Bone& getBone(size_t bone) { return bones[bone]; }
@@ -61,7 +61,6 @@ public:
 	std::vector<uint32_t> indices;
 
 	std::vector<Bone> bones;
-	std::unordered_map<std::string, size_t> boneIndex;
 	std::vector<OtVertexBones> vertexBones;
 
 	// material reference (index in model)

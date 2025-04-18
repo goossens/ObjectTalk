@@ -87,7 +87,7 @@ std::string OtPath::getPreferencesDirectory() {
 
 	if (result == UV_ENOBUFS) {
 		value = (char*) realloc(value, size);
-		result = uv_os_getenv(name.c_str(), value, &size);
+		result = uv_os_getenv("LOCALAPPDATA", value, &size);
 	}
 
 	if (result == UV_ENOENT) {

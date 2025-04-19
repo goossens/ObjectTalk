@@ -175,7 +175,12 @@ void OtFrustum::debugPlanes() {
 //
 
 void OtFrustum::debugPoints() {
-	for (auto& point : corners) {
-		OtGlmDebug(point);
-	}
+	OtGlmDebug("NearBottomLeft: ", corners[nearBottomLeft]);
+	OtGlmDebug("NearTopLeft: ", corners[nearTopLeft]);
+	OtGlmDebug("NearTopRight: ", corners[nearTopRight]);
+	OtGlmDebug("NearBottomRight: ", corners[nearBottomRight]);
+	OtGlmDebug("FarBottomLeft: ", corners[farBottomLeft]);
+	OtGlmDebug("FarTopLeft: ", corners[farTopLeft]);
+	OtGlmDebug("FarTopRight: ", corners[farTopRight]);
+	OtGlmDebug("FarBottomRight: ", corners[farBottomRight]);
 }

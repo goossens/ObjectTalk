@@ -9,10 +9,6 @@
 //	Include files
 //
 
-#include <limits>
-
-#include "OtLog.h"
-
 #include "OtModelNodes.h"
 #include "OtModelUtils.h"
 
@@ -22,11 +18,37 @@
 //
 
 void OtModelNodes::load(const aiNode* rootnode) {
-	// get all nodes, mark parents and calculate matrices
+	// get all nodes and calculate matrices
 	addNode(rootnode);
-	markParent(0, std::numeric_limits<size_t>::max());
 	resetAnimationTransforms();
 	updateModelTransforms();
+}
+
+
+//
+//	OtModelNodes::addNode
+//
+
+size_t OtModelNodes::addNode(const aiNode* node) {
+	auto id = nodes.size();
+	auto name = std::string(node->mName.C_Str());
+	index[name] = id;
+
+	nodes.emplace_back();
+	nodes[id].id = id;
+	nodes[id].name = name;
+	nodes[id].localTransform = toMat4(node->mTransformation);
+
+	for (auto i = 0u; i < node->mNumMeshes; i++) {
+		nodes[id].meshes.emplace_back(node->mMeshes[i]);
+	}
+
+	for (auto i = 0u; i < node->mNumChildren; i++) {
+		auto child = addNode(node->mChildren[i]);
+		nodes[id].children.emplace_back(child);
+	}
+
+	return id;
 }
 
 
@@ -72,27 +94,24 @@ void OtModelNodes::setAnimationTransformParts(size_t nodeID, size_t slot, const 
 
 void OtModelNodes::updateAnimationTransforms(float ratio) {
 	for (auto& node : nodes) {
-		if (node.transformParts[0].available && node.transformParts[0].available) {
+		if (node.transformParts[0].available && node.transformParts[1].available) {
 			auto position = glm::mix(node.transformParts[0].position, node.transformParts[1].position, ratio);
 			auto rotation = glm::slerp(node.transformParts[0].rotation, node.transformParts[1].rotation, ratio);
 			auto scale = glm::mix(node.transformParts[0].scale, node.transformParts[1].scale, ratio);
 
 			node.animationTransform =
 				glm::translate(glm::mat4(1.0f), position) *
-				glm::toMat4(rotation) *
-				glm::scale(glm::mat4(1.0f), scale);
+				glm::scale(glm::toMat4(rotation), scale);
 
 		} else if (node.transformParts[0].available) {
 			node.animationTransform =
 				glm::translate(glm::mat4(1.0f), node.transformParts[0].position) *
-				glm::toMat4(node.transformParts[0].rotation) *
-				glm::scale(glm::mat4(1.0f), node.transformParts[0].scale);
+				glm::scale(glm::toMat4(node.transformParts[0].rotation), node.transformParts[0].scale);
 
 		} else if (node.transformParts[1].available) {
 			node.animationTransform =
 				glm::translate(glm::mat4(1.0f), node.transformParts[1].position) *
-				glm::toMat4(node.transformParts[1].rotation) *
-				glm::scale(glm::mat4(1.0f), node.transformParts[1].scale);
+				glm::scale(glm::toMat4(node.transformParts[1].rotation), node.transformParts[1].scale);
 		}
 	}
 }
@@ -108,46 +127,5 @@ void OtModelNodes::updateModelTransforms(size_t nodeID, const glm::mat4& parentT
 
 	for (auto child : node.children) {
 		updateModelTransforms(child, node.modelTransform);
-	}
-}
-
-
-//
-//	OtModelNodes::addNode
-//
-
-size_t OtModelNodes::addNode(const aiNode* node) {
-	auto id = nodes.size();
-	auto name = std::string(node->mName.C_Str());
-	index[name] = id;
-
-	nodes.emplace_back();
-	nodes[id].id = id;
-	nodes[id].name = name;
-	nodes[id].localTransform = toMat4(node->mTransformation);
-
-	for (auto i = 0u; i < node->mNumMeshes; i++) {
-		nodes[id].meshes.emplace_back(node->mMeshes[i]);
-	}
-
-	for (auto i = 0u; i < node->mNumChildren; i++) {
-		auto child = addNode(node->mChildren[i]);
-		nodes[id].children.emplace_back(child);
-	}
-
-	return id;
-}
-
-
-//
-//	OtModelNodes::markParent
-//
-
-void OtModelNodes::markParent(size_t id, size_t parent) {
-	auto& node = nodes.at(id);
-	node.parent = parent;
-
-	for (auto child : node.children) {
-		markParent(child, node.id);
 	}
 }

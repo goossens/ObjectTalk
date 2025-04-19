@@ -16,6 +16,7 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtx/string_cast.hpp"
+#include "glm/gtx/quaternion.hpp"
 #include "nlohmann/json_fwd.hpp"
 
 #include "OtNumbers.h"
@@ -87,23 +88,28 @@ namespace glm {
 //	Debug functions
 //
 
-inline void OtGlmDebug(const glm::vec2& v) {
-	std::cout << glm::to_string(v) << std::endl;
+inline void OtGlmDebug(const char* label, const glm::vec2& v) {
+	std::cout << label << glm::to_string(v) << std::endl;
 }
 
-inline void OtGlmDebug(const glm::vec3& v) {
-	std::cout << glm::to_string(v) << std::endl;
+inline void OtGlmDebug(const char* label, const glm::vec3& v) {
+	std::cout << label << glm::to_string(v) << std::endl;
 }
 
-inline void OtGlmDebug(const glm::vec4& v) {
-	std::cout << glm::to_string(v) << std::endl;
+inline void OtGlmDebug(const char* label, const glm::vec4& v) {
+	std::cout << label << glm::to_string(v) << std::endl;
 }
 
 
-inline void OtGlmDebug(const glm::mat3& m) {
-	std::cout << glm::to_string(m) << std::endl;
+inline void OtGlmDebug(const char* label, const glm::quat& q) {
+	std::cout << label << glm::to_string(q) << std::endl;
 }
 
-inline void OtGlmDebug(const glm::mat4& m) {
-	std::cout << glm::to_string(m) << std::endl;
+
+inline void OtGlmDebug(const char* label, const glm::mat3& m) {
+	std::cout << label << glm::to_string(m) << std::endl;
+}
+
+inline void OtGlmDebug(const char* label, const glm::mat4& m) {
+	std::cout << label << glm::to_string(m) << std::endl;
 }

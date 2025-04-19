@@ -52,7 +52,7 @@ public:
 		size_t node;
 	};
 
-	inline Bone& getBone(size_t bone) { return bones[bone]; }
+	inline Bone& getBone(size_t boneID) { return bones[boneID]; }
 
 	private:
 	// properties

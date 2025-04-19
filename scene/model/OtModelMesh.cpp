@@ -150,12 +150,23 @@ void OtModelMesh::load(const aiMesh* mesh, OtModelNodes& nodes) {
 //
 
 void OtModelMesh::submitTriangles() {
+	auto vertexBoneCount = vertexBones.size();
+
 	if (update) {
 		vertexBuffer.set(vertices.data(), vertices.size(), OtVertex::getLayout());
 		indexBuffer.set(indices.data(), indices.size());
+
+		if (vertexBoneCount) {
+			vertexBonesBuffer.set(vertexBones.data(), vertexBoneCount, OtVertexBones::getLayout());
+		}
+
 		update = false;
 	}
 
 	vertexBuffer.submit();
 	indexBuffer.submit();
+
+	if (vertexBoneCount) {
+		vertexBonesBuffer.submit(1);
+	}
 }

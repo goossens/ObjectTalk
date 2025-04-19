@@ -74,7 +74,6 @@ private:
 
 	// rendering support
 	OtAABB aabb;
-	float time = 0.0f;
 	std::vector<RenderCommand> renderList;
 
 	// support functions

@@ -36,7 +36,7 @@ public:
 	// update transforms
 	void resetAnimationTransforms();
 	void setAnimationTransformParts(size_t nodeID, size_t slot, const glm::vec3& position, const glm::quat& rotation, const glm::vec3& scale);
-	void updateAnimationTransforms(float ratio);
+	void updateAnimationTransforms(float ratio=1.0f);
 	void updateModelTransforms(size_t nodeID, const glm::mat4& transform);
 
 	inline void updateModelTransforms() {
@@ -52,7 +52,6 @@ public:
 		glm::mat4 localTransform;
 		glm::mat4 animationTransform;
 		glm::mat4 modelTransform;
-		size_t parent;
 		std::vector<size_t> children;
 		std::vector<size_t> meshes;
 
@@ -69,7 +68,7 @@ public:
 	// access nodes
 	inline bool hasNode(const std::string& name) { return index.find(name) != index.end(); }
 	inline Node& getNode(const std::string& name) { return nodes[index[name]]; }
-	inline Node& getNode(size_t id) { return nodes[id]; }
+	inline Node& getNode(size_t nodeID) { return nodes[nodeID]; }
 	inline size_t getNodeID(const std::string& name) { return index[name]; }
 
 private:
@@ -78,5 +77,4 @@ private:
 	std::unordered_map<std::string, size_t> index;
 
 	size_t addNode(const aiNode* node);
-	void markParent(size_t id, size_t parent);
 };

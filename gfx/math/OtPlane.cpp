@@ -51,5 +51,5 @@ OtPlane OtPlane::transform(const glm::mat4& transform) {
 //
 
 void OtPlane::debug() {
-	OtGlmDebug(glm::vec4(normal, distanceToOrigin));
+	OtGlmDebug("Plane: ", glm::vec4(normal, distanceToOrigin));
 }

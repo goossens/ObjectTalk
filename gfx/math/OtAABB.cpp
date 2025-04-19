@@ -103,6 +103,6 @@ OtAABB OtAABB::transform(const glm::mat4& matrix) {
 
 // debugging support
 void OtAABB::debug() {
-	OtGlmDebug(minp);
-	OtGlmDebug(maxp);
+	OtGlmDebug("Min: ", minp);
+	OtGlmDebug("Max: ", maxp);
 }

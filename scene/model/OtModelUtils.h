@@ -41,6 +41,11 @@ inline glm::mat4 toMat4(const aiMatrix4x4& mat) {
 	return m;
 }
 
-inline glm::quat toQuat(const aiQuaternion& q) {
-	return glm::quat(q.x, q.y, q.z, q.w);
+inline glm::quat toQuat(const aiQuaternion& quat) {
+	glm::quat q;
+	q.x = quat.x;
+	q.y = quat.y;
+	q.z = quat.z;
+	q.w = quat.w;
+	return q;
 }

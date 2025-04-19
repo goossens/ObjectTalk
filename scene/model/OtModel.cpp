@@ -175,7 +175,7 @@ void OtModel::fadeToAnimation(size_t animation, float seconds) {
 std::vector<OtModel::RenderCommand>& OtModel::getRenderList(const glm::mat4& modelTransform) {
 	// update animations (if required)
 	if (animations.size()) {
-		time += ImGui::GetIO().DeltaTime;
+		auto time = static_cast<float>(ImGui::GetTime());
 		nodes.resetAnimationTransforms();
 
 		if (isTransitioningAnimation) {
@@ -185,7 +185,7 @@ std::vector<OtModel::RenderCommand>& OtModel::getRenderList(const glm::mat4& mod
 
 		} else {
 			animations[currentAnimation].update(time, nodes, 0);
-			nodes.updateAnimationTransforms(1.0f);
+			nodes.updateAnimationTransforms();
 		}
 
 		nodes.updateModelTransforms();

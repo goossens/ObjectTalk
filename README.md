@@ -126,10 +126,11 @@ spinning cubes based on timers and an earth rotating based on mouse movements.
 Both of these a driven by script components. The jungle and island examples
 use nodes to procedurally create terrain and asset instances.
 
-To round it all out, modern engine features like deferred rendering,
-Physically Based Rendering (PBR), particle systems, Image Based Lighting (IBL),
-Cascaded Shadow Maps (CSMs) and post processing with fog, Bloom, God Rays,
-Fast Approximate Anti-Aliasing (FXAA) and Tone Mapping are also available.
+To round it all out, modern engine features like geometry/model importing,
+support for animated models, deferred rendering, Physically Based Rendering (PBR),
+particle systems, Image Based Lighting (IBL), Cascaded Shadow Maps (CSMs) and
+post processing with Fog, Bloom, God Rays, Fast Approximate Anti-Aliasing (FXAA),
+Exposure/Contrast correction and Tone Mapping are also available.
 
 ![Scenes](docs/img/scenes.png)
 

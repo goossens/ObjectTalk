@@ -13,6 +13,7 @@
 #include "OtFunction.h"
 
 #include "OtEntityObject.h"
+#include "OtModelComponentObject.h"
 #include "OtTransformComponentObject.h"
 
 
@@ -23,6 +24,24 @@
 void OtEntityObjectClass::linkToECS(OtScene* s, OtEntity e) {
 	scene = s;
 	entity = e;
+}
+
+
+//
+//	OtEntityObjectClass::hasModelComponent
+//
+
+bool OtEntityObjectClass::hasModelComponent() {
+	return scene->hasComponent<OtModelComponent>(entity);
+}
+
+
+//
+//	OtEntityObjectClass::getModelComponent
+//
+
+OtObject OtEntityObjectClass::getModelComponent() {
+	return OtModelComponentObject::create(&scene->getComponent<OtModelComponent>(entity));
 }
 
 
@@ -53,6 +72,9 @@ OtType OtEntityObjectClass::getMeta() {
 
 	if (!type) {
 		type = OtType::create<OtEntityObjectClass>("Entity", OtObjectClass::getMeta());
+
+		type->set("hasModelComponent", OtFunction::create(&OtEntityObjectClass::hasModelComponent));
+		type->set("getModelComponent", OtFunction::create(&OtEntityObjectClass::getModelComponent));
 
 		type->set("hasTransformComponent", OtFunction::create(&OtEntityObjectClass::hasTransformComponent));
 		type->set("getTransformComponent", OtFunction::create(&OtEntityObjectClass::getTransformComponent));

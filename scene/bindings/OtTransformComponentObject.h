@@ -32,8 +32,8 @@ public:
 	inline void setScale(glm::vec3 scale) { transform->scale = scale; }
 
 	inline glm::vec3 getTranslation() { return transform->translation; }
-	inline glm::vec3 getRotation()  { return transform->rotation; }
-	inline glm::vec3 getScale()  { return transform->scale; }
+	inline glm::vec3 getRotation() { return transform->rotation; }
+	inline glm::vec3 getScale() { return transform->scale; }
 
 	// get type definition
 	static OtType getMeta();

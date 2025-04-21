@@ -109,6 +109,7 @@ void OtModel::load(const std::string& path) {
 
 		for (auto i = 0u; i < scene->mNumAnimations; i++) {
 			animations[i].load(scene->mAnimations[i], nodes);
+			animationIndex[animations[i].getName()] = i;
 		}
 	}
 }
@@ -162,8 +163,8 @@ void OtModel::fadeToAnimation(size_t animation, float seconds) {
 
 		nextAnimation = animation;
 		isTransitioningAnimation = true;
-		animationTransionTime = seconds;
-		animationRatio = 0.0f;
+		animationTransionStart = static_cast<float>(ImGui::GetTime());
+		animationTransionDuration = seconds;
 	}
 }
 
@@ -179,9 +180,19 @@ std::vector<OtModel::RenderCommand>& OtModel::getRenderList(const glm::mat4& mod
 		nodes.resetAnimationTransforms();
 
 		if (isTransitioningAnimation) {
-			animations[currentAnimation].update(time, nodes, 0);
-			animations[nextAnimation].update(time, nodes, 1);
-			nodes.updateAnimationTransforms(animationRatio);
+			auto ratio = (time - animationTransionStart) / animationTransionDuration;
+
+			if (ratio < 1.0f) {
+				animations[currentAnimation].update(time, nodes, 0);
+				animations[nextAnimation].update(time, nodes, 1);
+				nodes.updateAnimationTransforms(ratio);
+
+			} else {
+				currentAnimation = nextAnimation;
+				isTransitioningAnimation = false;
+				animations[currentAnimation].update(time, nodes, 0);
+				nodes.updateAnimationTransforms();
+			}
 
 		} else {
 			animations[currentAnimation].update(time, nodes, 0);

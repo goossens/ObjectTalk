@@ -13,6 +13,7 @@
 //
 
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "OtAABB.h"
@@ -35,10 +36,18 @@ public:
 	// clear the model
 	void clear();
 
+	// access animations
+	inline bool hasAnimation(const std::string& name) { return animationIndex.find(name) != animationIndex.end(); }
+	inline size_t getAnimationCount() { return animations.size(); }
+	inline std::string getAnimationName(size_t index) { return animations[index].getName(); }
+	inline size_t getAnimationIndex(const std::string& name) { return animationIndex[name]; }
+
 	// change animations
 	void resetAnimation();
 	void setAnimation(size_t animation);
 	void fadeToAnimation(size_t animation, float seconds);
+	inline void setAnimation(const std::string& name) { setAnimation(getAnimationIndex(name)); }
+	inline void fadeToAnimation(const std::string& name, float seconds) { fadeToAnimation(getAnimationIndex(name), seconds); }
 
 	// get bounding box
 	inline OtAABB& getAABB() { return aabb; }
@@ -61,6 +70,7 @@ private:
 	std::vector<OtModelMaterial> materials;
 	std::vector<OtModelTexture> textures;
 	std::vector<OtModelAnimation> animations;
+	std::unordered_map<std::string, size_t> animationIndex;
 
 	// model identifier
 	size_t id;
@@ -69,8 +79,8 @@ private:
 	bool isTransitioningAnimation;
 	size_t currentAnimation;
 	size_t nextAnimation;
-	float animationTransionTime;
-	float animationRatio;
+	float animationTransionStart;
+	float animationTransionDuration;
 
 	// rendering support
 	OtAABB aabb;

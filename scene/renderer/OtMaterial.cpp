@@ -75,9 +75,14 @@ bool OtMaterial::renderUI() {
 			ImGui::TableNextColumn(); ImGui::TextUnformatted("Ambient Occlusion");
 
 			ImGui::TableNextRow();
+			ImGui::TableNextColumn(); W(); changed |= OtUi::editVec2("##offset", &offset, 0.0f, 1.0f);
+			ImGui::TableNextColumn();
+			ImGui::TableNextColumn(); ImGui::TextUnformatted("Texture Offset");
+
+			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= OtUi::dragFloat("##scale", &scale, 0.0f, 100.0f);
 			ImGui::TableNextColumn();
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Scale");
+			ImGui::TableNextColumn(); ImGui::TextUnformatted("Texture Scale");
 			ImGui::EndTable();
 		}
 
@@ -100,6 +105,7 @@ nlohmann::json OtMaterial::serialize(std::string* basedir) {
 	data["roughness"] = roughness;
 	data["emissive"] = emissive;
 	data["ao"] = ao;
+	data["offset"] = offset;
 	data["scale"] = scale;
 
 	data["albedoTexture"] = OtAssetSerialize(albedoTexture.getPath(), basedir);
@@ -121,6 +127,7 @@ void OtMaterial::deserialize(nlohmann::json data, std::string* basedir) {
 	roughness = data.value("roughness", 0.5f);
 	emissive = data.value("emissive", glm::vec3(0.0f));
 	ao = data.value("ao", 1.0f);
+	offset = data.value("offset", glm::vec2(0.0f));
 	scale = data.value("scale", 1.0f);
 
 	albedoTexture = OtAssetDeserialize(&data, "albedoTexture", basedir);

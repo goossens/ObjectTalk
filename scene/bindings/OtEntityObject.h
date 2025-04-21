@@ -31,6 +31,9 @@ public:
 	void linkToECS(OtScene* scene, OtEntity entity);
 
 	// access components
+	bool hasModelComponent();
+	OtObject getModelComponent();
+
 	bool hasTransformComponent();
 	OtObject getTransformComponent();
 

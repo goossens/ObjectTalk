@@ -188,6 +188,9 @@ OtType OtAnimationClass::getMeta() {
 		type->set("stop", OtFunction::create(&OtAnimationClass::stop));
 		type->set("pause", OtFunction::create(&OtAnimationClass::pause));
 
+		type->set("isRunning", OtFunction::create(&OtAnimationClass::isRunning));
+		type->set("isPaused", OtFunction::create(&OtAnimationClass::isPaused));
+
 		type->set("onStep", OtFunction::create(&OtAnimationClass::onStep));
 	}
 

@@ -34,7 +34,10 @@ public:
 	// update animation based on current time
 	void update(float time, OtModelNodes& nodes, size_t slot);
 
-private:
+	// access properties
+	inline std::string getName() { return name; }
+
+	private:
 	// properties
 	std::string name;
 	float duration;

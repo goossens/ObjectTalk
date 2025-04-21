@@ -104,23 +104,22 @@ void OtSceneRenderPass::submitMaterialUniforms(OtMaterial& material) {
 		material.metallic,
 		material.roughness,
 		material.ao,
-		material.scale);
+		0.0f);
 
 	uniforms[2] = glm::vec4(
 		material.emissive,
 		0.0f);
 
 	uniforms[3] = glm::vec4(
-		material.albedoTexture.isReady(),
-		material.metallicRoughnessTexture.isReady(),
-		0.0f,
-		0.0f);
+		material.offset,
+		material.scale,
+		material.albedoTexture.isReady());
 
 	uniforms[4] = glm::vec4(
+		material.metallicRoughnessTexture.isReady(),
 		material.emissiveTexture.isReady(),
 		material.aoTexture.isReady(),
-		material.normalTexture.isReady(),
-		0.0);
+		material.normalTexture.isReady());
 
 	// submit the uniforms
 	materialUniforms.submit();

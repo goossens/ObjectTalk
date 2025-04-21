@@ -40,6 +40,8 @@ public:
 	void setRoughness(float r) { roughness = r; }
 	void setEmissive(const glm::vec3& e) { emissive = e; }
 	void setAo(float a) { ao = a; }
+	void setTextureOffset(const glm::vec2& o) { offset = o; }
+	void setTextureScale(float s) { scale = s; }
 
 	// set the textures
 	void setAlbedoTexture(const std::string& path) { albedoTexture = path; }
@@ -58,6 +60,7 @@ private:
 	float roughness = 0.5f;
 	glm::vec3 emissive{0.0f};
 	float ao = 1.0f;
+	glm::vec2 offset{0.0f};
 	float scale = 1.0f;
 
 	OtAsset<OtTextureAsset> albedoTexture;

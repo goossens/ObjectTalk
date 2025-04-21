@@ -14,6 +14,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 #include "OtAABB.h"
@@ -64,13 +65,14 @@ public:
 	std::vector<RenderCommand>& getRenderList(const glm::mat4& modelTransform);
 
 private:
-	// our nodes, meshes, materials, textures and animations
+	// mode elements
 	OtModelNodes nodes;
 	std::vector<OtModelMesh> meshes;
 	std::vector<OtModelMaterial> materials;
 	std::vector<OtModelTexture> textures;
 	std::vector<OtModelAnimation> animations;
 	std::unordered_map<std::string, size_t> animationIndex;
+	std::vector<std::pair<size_t, float>> animationStack;
 
 	// model identifier
 	size_t id;

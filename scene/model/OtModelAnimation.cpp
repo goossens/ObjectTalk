@@ -39,20 +39,80 @@ void OtModelAnimation::load(const aiAnimation* animation, OtModelNodes& nodes) {
 		}
 
 		channel.node = nodes.getNodeID(nodeName);
+		channel.positionTimestamps.reserve(chn->mNumPositionKeys + 2);
+		channel.positions.reserve(chn->mNumPositionKeys + 2);
+		channel.rotationTimestamps.reserve(chn->mNumRotationKeys + 2);
+		channel.rotations.reserve(chn->mNumRotationKeys + 2);
+		channel.scaleTimestamps.reserve(chn->mNumScalingKeys + 2);
+		channel.scales.reserve(chn->mNumScalingKeys + 2);
 
 		for (auto j = 0u; j < chn->mNumPositionKeys; j++) {
-			channel.positionTimestamps.push_back(static_cast<float>(chn->mPositionKeys[j].mTime / tps));
-			channel.positions.push_back(toVec3(chn->mPositionKeys[j].mValue));
+			auto& key = chn->mPositionKeys[j];
+
+			if (j == 0 && key.mTime > 0.0f) {
+				channel.positionTimestamps.emplace_back(0.0f);
+				channel.positions.emplace_back(toVec3(key.mValue));
+			}
+
+			channel.positionTimestamps.emplace_back(static_cast<float>(key.mTime / tps));
+			channel.positions.emplace_back(toVec3(key.mValue));
+		}
+
+		if (channel.positions.empty()) {
+			channel.positionTimestamps.emplace_back(0.0f);
+			channel.positions.emplace_back(glm::vec3(0.0f));
+			channel.positionTimestamps.emplace_back(duration);
+			channel.positions.emplace_back(glm::vec3(0.0f));
+
+		} else if (channel.positionTimestamps.back() < duration) {
+			channel.positionTimestamps.emplace_back(1.0f);
+			channel.positions.emplace_back(channel.positions.back());
 		}
 
 		for (auto j = 0u; j < chn->mNumRotationKeys; j++) {
-			channel.rotationTimestamps.push_back(static_cast<float>(chn->mRotationKeys[j].mTime / tps));
-			channel.rotations.push_back(toQuat(chn->mRotationKeys[j].mValue));
+			auto& key = chn->mRotationKeys[j];
+
+			if (j == 0 && key.mTime > 0.0f) {
+				channel.rotationTimestamps.emplace_back(0.0f);
+				channel.rotations.emplace_back(toQuat(key.mValue));
+			}
+
+			channel.rotationTimestamps.emplace_back(static_cast<float>(key.mTime / tps));
+			channel.rotations.emplace_back(toQuat(key.mValue));
+		}
+
+		if (channel.rotations.empty()) {
+			channel.rotationTimestamps.emplace_back(0.0f);
+			channel.rotations.emplace_back(glm::quat{1.0f, 0.0f, 0.0f, 0.0f});
+			channel.rotationTimestamps.emplace_back(duration);
+			channel.rotations.emplace_back(glm::quat{1.0f, 0.0f, 0.0f, 0.0f});
+
+		} else if (channel.rotationTimestamps.back() < duration) {
+			channel.rotationTimestamps.emplace_back(1.0f);
+			channel.rotations.emplace_back(channel.rotations.back());
 		}
 
 		for (auto j = 0u; j < chn->mNumScalingKeys; j++) {
-			channel.scaleTimestamps.push_back(static_cast<float>(chn->mScalingKeys[j].mTime / tps));
-			channel.scales.push_back(toVec3(chn->mScalingKeys[j].mValue));
+			auto& key = chn->mScalingKeys[j];
+
+			if (j == 0 && key.mTime > 0.0f) {
+				channel.scaleTimestamps.emplace_back(0.0f);
+				channel.scales.emplace_back(toVec3(key.mValue));
+			}
+
+			channel.scaleTimestamps.emplace_back(static_cast<float>(key.mTime / tps));
+			channel.scales.emplace_back(toVec3(key.mValue));
+		}
+
+		if (channel.scales.empty()) {
+			channel.scaleTimestamps.emplace_back(0.0f);
+			channel.scales.emplace_back(glm::vec3(0.0f));
+			channel.scaleTimestamps.emplace_back(duration);
+			channel.scales.emplace_back(glm::vec3(0.0f));
+
+		} else if (channel.scaleTimestamps.back() < duration) {
+			channel.scaleTimestamps.emplace_back(1.0f);
+			channel.scales.emplace_back(channel.scales.back());
 		}
 	}
 }
@@ -69,24 +129,22 @@ void OtModelAnimation::update(float time, OtModelNodes& nodes, size_t slot) {
 		size_t element;
 		float fraction;
 
-		if (channel.positions.size() > 1 && channel.rotations.size() > 1 && channel.scales.size() > 1) {
-			getTimeFraction(channel.positionTimestamps, dt, element, fraction);
-			auto position1 = channel.positions[element - 1];
-			auto position2 = channel.positions[element];
-			auto position = glm::mix(position1, position2, fraction);
+		getTimeFraction(channel.positionTimestamps, dt, element, fraction);
+		auto position1 = channel.positions[element - 1];
+		auto position2 = channel.positions[element];
+		auto position = glm::mix(position1, position2, fraction);
 
-			getTimeFraction(channel.rotationTimestamps, dt, element, fraction);
-			auto rotation1 = channel.rotations[element - 1];
-			auto rotation2 = channel.rotations[element];
-			auto rotation = glm::slerp(rotation1, rotation2, fraction);
+		getTimeFraction(channel.rotationTimestamps, dt, element, fraction);
+		auto rotation1 = channel.rotations[element - 1];
+		auto rotation2 = channel.rotations[element];
+		auto rotation = glm::slerp(rotation1, rotation2, fraction);
 
-			getTimeFraction(channel.scaleTimestamps, dt, element, fraction);
-			auto scale1 = channel.scales[element - 1];
-			auto scale2 = channel.scales[element];
-			auto scale = glm::mix(scale1, scale2, fraction);
+		getTimeFraction(channel.scaleTimestamps, dt, element, fraction);
+		auto scale1 = channel.scales[element - 1];
+		auto scale2 = channel.scales[element];
+		auto scale = glm::mix(scale1, scale2, fraction);
 
-			nodes.setAnimationTransformParts(channel.node, slot, position, rotation, scale);
-		}
+		nodes.setAnimationTransformParts(channel.node, slot, position, rotation, scale);
 	}
 }
 
@@ -96,15 +154,10 @@ void OtModelAnimation::update(float time, OtModelNodes& nodes, size_t slot) {
 //
 
 void OtModelAnimation::getTimeFraction(const std::vector<float>& times, float dt, size_t& element, float& fraction) {
-	auto elements = times.size();
 	element = 0;
 
-	while (element < elements && dt > times[element]) {
+	while (dt > times[element]) {
 		element++;
-	}
-
-	if (element == elements) {
-		element--;
 	}
 
 	float start = times[element - 1];

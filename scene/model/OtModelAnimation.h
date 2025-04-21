@@ -36,8 +36,9 @@ public:
 
 	// access properties
 	inline std::string getName() { return name; }
+	inline float getDuration() { return duration; }
 
-	private:
+private:
 	// properties
 	std::string name;
 	float duration;

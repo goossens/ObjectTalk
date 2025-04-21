@@ -54,8 +54,8 @@ public:
 	static OtType getMeta();
 
 private:
-	// our animator
-	tweeny::tween<double> animator = tweeny::from(0.0);
+	// our tweener
+	tweeny::tween<double> tweener = tweeny::from(0.0);
 
 	// repeat counter
 	size_t repeatCounter = 0;

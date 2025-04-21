@@ -158,13 +158,14 @@ void OtModel::setAnimation(size_t animation) {
 void OtModel::fadeToAnimation(size_t animation, float seconds) {
 	if (animation < animations.size()) {
 		if (isTransitioningAnimation) {
-			currentAnimation = nextAnimation;
-		}
+			animationStack.emplace_back(animation, seconds);
 
-		nextAnimation = animation;
-		isTransitioningAnimation = true;
-		animationTransionStart = static_cast<float>(ImGui::GetTime());
-		animationTransionDuration = seconds;
+		} else {
+			nextAnimation = animation;
+			animationTransionDuration = seconds;
+			animationTransionStart = static_cast<float>(ImGui::GetTime());
+			isTransitioningAnimation = true;
+		}
 	}
 }
 
@@ -181,17 +182,40 @@ std::vector<OtModel::RenderCommand>& OtModel::getRenderList(const glm::mat4& mod
 
 		if (isTransitioningAnimation) {
 			auto ratio = (time - animationTransionStart) / animationTransionDuration;
+			bool done = false;
 
-			if (ratio < 1.0f) {
-				animations[currentAnimation].update(time, nodes, 0);
-				animations[nextAnimation].update(time, nodes, 1);
-				nodes.updateAnimationTransforms(ratio);
+			if (ratio >= 1.0f) {
+				ratio = 1.0f;
+				done = true;
+			}
 
-			} else {
+			float fadeOutRatio = animations[currentAnimation].getDuration() / animations[nextAnimation].getDuration();
+			float fadeInRatio = animations[nextAnimation].getDuration() / animations[currentAnimation].getDuration();
+
+			float fadeOutMultiplier = glm::mix(1.0f, fadeOutRatio, ratio);
+			float fadeInMultiplier = glm::mix(fadeInRatio, 1.0f, ratio);
+
+			float fadeOutTime = animationTransionStart + animationTransionDuration * ratio * fadeOutMultiplier;
+			float fadeInTime = animationTransionStart + animationTransionDuration * ratio * fadeInMultiplier;
+
+			animations[currentAnimation].update(fadeOutTime, nodes, 0);
+			animations[nextAnimation].update(fadeInTime, nodes, 1);
+			nodes.updateAnimationTransforms(ratio);
+
+			if (done) {
 				currentAnimation = nextAnimation;
-				isTransitioningAnimation = false;
-				animations[currentAnimation].update(time, nodes, 0);
-				nodes.updateAnimationTransforms();
+
+				if (animationStack.empty()) {
+					isTransitioningAnimation = false;
+
+				} else {
+					auto [animation, seconds] = animationStack.back();
+					animationStack.clear();
+
+					nextAnimation = animation;
+					animationTransionDuration = seconds;
+					animationTransionStart = time;
+				}
 			}
 
 		} else {

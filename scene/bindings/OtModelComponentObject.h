@@ -30,14 +30,14 @@ public:
 	inline bool isReady() { return model->model->isReady(); }
 
 	// access animations
-	inline bool hasAnimation(const std::string& name) { return model->model->getModel().hasAnimation(name); }
-	inline size_t getAnimationCount() { return model->model->getModel().getAnimationCount(); }
-	inline std::string getAnimationName(size_t index) { return model->model->getModel().getAnimationName(index); }
+	bool hasAnimation(const std::string& name);
+	size_t getAnimationCount();
+	std::string getAnimationName(size_t index);
 	OtObject getAnimations();
 
 	// set animations
-	inline void setAnimation(const std::string& name) { model->model->getModel().setAnimation(name); }
-	inline void fadeToAnimation(const std::string& name, float seconds) { model->model->getModel().fadeToAnimation(name, seconds); }
+	void setAnimation(const std::string& name);
+	void fadeToAnimation(const std::string& name, float seconds);
 
 	// get type definition
 	static OtType getMeta();

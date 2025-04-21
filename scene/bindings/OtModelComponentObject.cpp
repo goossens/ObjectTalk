@@ -17,6 +17,55 @@
 
 
 //
+//	OtModelComponentObjectClass::hasAnimation
+//
+
+bool OtModelComponentObjectClass::hasAnimation(const std::string& name) {
+	if (model->model->isReady()) {
+		return model->model->getModel().hasAnimation(name);
+
+	} else {
+		return false;
+	}
+}
+
+
+//
+//	OtModelComponentObjectClass::getAnimationCount
+//
+
+size_t OtModelComponentObjectClass::getAnimationCount() {
+	if (model->model->isReady()) {
+		return model->model->getModel().getAnimationCount();
+
+	} else {
+		return 0;
+	}
+}
+
+
+//
+//	OtModelComponentObjectClass::getAnimationName
+//
+
+std::string OtModelComponentObjectClass::getAnimationName(size_t index) {
+	if (model->model->isReady()) {
+		if (index < model->model->getModel().getAnimationCount()) {
+			return model->model->getModel().getAnimationName(index);
+
+		} else {
+			OtLogError("Invalid animation index");
+		}
+
+	} else {
+		OtLogError("Can't access model that is not ready");
+	}
+
+	return "";
+}
+
+
+//
 //	OtModelComponentObjectClass::getAnimations
 //
 
@@ -32,6 +81,29 @@ OtObject OtModelComponentObjectClass::getAnimations() {
 	}
 
 	return result;
+}
+
+
+//
+//	OtModelComponentObjectClass::setAnimation
+//
+
+void OtModelComponentObjectClass::setAnimation(const std::string& name) {
+	if (model->model->isReady()) {
+		model->model->getModel().setAnimation(name);
+
+	} else {
+		OtLogError("Can't animate model that is not ready");
+	}
+}
+
+void OtModelComponentObjectClass::fadeToAnimation(const std::string& name, float seconds) {
+	if (model->model->isReady()) {
+		model->model->getModel().fadeToAnimation(name, seconds);
+
+	} else {
+		OtLogError("Can't animate model that is not ready");
+	}
 }
 
 

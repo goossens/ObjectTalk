@@ -29,6 +29,9 @@ public:
 	// UI to change component properties
 	bool renderUI();
 
+	// update model (used for animations)
+	void update();
+
 	// (de)serialize component
 	nlohmann::json serialize(std::string* basedir);
 	void deserialize(nlohmann::json data, std::string* basedir);

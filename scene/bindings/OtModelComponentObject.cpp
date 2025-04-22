@@ -85,24 +85,57 @@ OtObject OtModelComponentObjectClass::getAnimations() {
 
 
 //
-//	OtModelComponentObjectClass::setAnimation
+//	OtModelComponentObjectClass::startAnimation
 //
 
-void OtModelComponentObjectClass::setAnimation(const std::string& name) {
+void OtModelComponentObjectClass::startAnimation(const std::string& name) {
 	if (model->model->isReady()) {
-		model->model->getModel().setAnimation(name);
+		model->model->getModel().startAnimation(name);
 
 	} else {
 		OtLogError("Can't animate model that is not ready");
 	}
 }
 
-void OtModelComponentObjectClass::fadeToAnimation(const std::string& name, float seconds) {
+
+//
+//	OtModelComponentObjectClass::fadeToAnimation
+//
+
+void OtModelComponentObjectClass::fadeToAnimation(const std::string& name, float duration) {
 	if (model->model->isReady()) {
-		model->model->getModel().fadeToAnimation(name, seconds);
+		model->model->getModel().fadeToAnimation(name, duration);
 
 	} else {
 		OtLogError("Can't animate model that is not ready");
+	}
+}
+
+
+//
+//	OtModelComponentObjectClass::stopAnimation
+//
+
+void OtModelComponentObjectClass::stopAnimation() {
+	if (model->model->isReady()) {
+		model->model->getModel().stopAnimation();
+
+	} else {
+		OtLogError("Model is not ready");
+	}
+}
+
+
+//
+//	OtModelComponentObjectClass::isAnimating
+//
+
+bool OtModelComponentObjectClass::isAnimating() {
+	if (model->model->isReady()) {
+		return model->model->getModel().isAnimating();
+
+	} else {
+		return false;
 	}
 }
 
@@ -124,8 +157,10 @@ OtType OtModelComponentObjectClass::getMeta() {
 		type->set("getAnimationName", OtFunction::create(&OtModelComponentObjectClass::getAnimationName));
 		type->set("getAnimations", OtFunction::create(&OtModelComponentObjectClass::getAnimations));
 
-		type->set("setAnimation", OtFunction::create(&OtModelComponentObjectClass::setAnimation));
+		type->set("startAnimation", OtFunction::create(&OtModelComponentObjectClass::startAnimation));
+		type->set("stopAnimation", OtFunction::create(&OtModelComponentObjectClass::stopAnimation));
 		type->set("fadeToAnimation", OtFunction::create(&OtModelComponentObjectClass::fadeToAnimation));
+		type->set("isAnimating", OtFunction::create(&OtModelComponentObjectClass::isAnimating));
 	}
 
 	return type;

@@ -129,3 +129,15 @@ void OtModelNodes::updateModelTransforms(size_t nodeID, const glm::mat4& parentT
 		updateModelTransforms(child, node.modelTransform);
 	}
 }
+
+
+//
+//	OtModelNodes::updateModelTransforms
+//
+
+void OtModelNodes::updateModelTransforms() {
+	if (nodes.size()) {
+		glm::mat4 identity(1.0f);
+		updateModelTransforms(0, identity);
+	}
+}

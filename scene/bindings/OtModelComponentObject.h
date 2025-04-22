@@ -36,8 +36,10 @@ public:
 	OtObject getAnimations();
 
 	// set animations
-	void setAnimation(const std::string& name);
-	void fadeToAnimation(const std::string& name, float seconds);
+	void startAnimation(const std::string& name);
+	void stopAnimation();
+	void fadeToAnimation(const std::string& name, float duration);
+	bool isAnimating();
 
 	// get type definition
 	static OtType getMeta();

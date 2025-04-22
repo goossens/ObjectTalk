@@ -31,8 +31,8 @@ public:
 	// load the animation
 	void load(const aiAnimation* animation, OtModelNodes& nodes);
 
-	// update animation based on current time
-	void update(float time, OtModelNodes& nodes, size_t slot);
+	// update animation based on animation time (0.0 - duration)
+	void update(float dt, OtModelNodes& nodes, size_t slot);
 
 	// access properties
 	inline std::string getName() { return name; }

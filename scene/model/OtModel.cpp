@@ -10,6 +10,7 @@
 //
 
 #include <atomic>
+#include <cmath>
 #include <cstdint>
 
 #include "assimp/Importer.hpp"
@@ -126,28 +127,51 @@ void OtModel::clear() {
 	materials.clear();
 	textures.clear();
 	animations.clear();
-	resetAnimation();
+	runningAnimation = false;
+	isTransitioningAnimation = false;
 }
 
 
 //
-//	OtModel::resetAnimation
+//	OtModel::startAnimation
 //
 
-void OtModel::resetAnimation() {
-	currentAnimation = 0;
-}
+void OtModel::startAnimation(const std::string& name) {
+	if (hasAnimation(name)) {
+		currentAnimation = animationIndex[name];
+		runningAnimation = true;
+		currentAnimationTime = 0.0f;
+		currentAnimationDuration = animations[currentAnimation].getDuration();
 
-
-//
-//	OtModel::setAnimation
-//
-
-void OtModel::setAnimation(size_t animation) {
-	if (animation < animations.size()) {
-		isTransitioningAnimation = false;
-		currentAnimation = animation;
+	} else {
+		OtLogError("Unknown animation [{}] for model", name);
 	}
+}
+
+
+//
+//	OtModel::stopAnimation
+//
+
+void OtModel::stopAnimation() {
+	runningAnimation = false;
+	isTransitioningAnimation = false;
+	nodes.resetAnimationTransforms();
+	nodes.updateModelTransforms();
+}
+
+
+//
+//	OtModel::startAnimationFade
+//
+
+void OtModel::startAnimationFade(size_t animation, float duration) {
+	nextAnimation = animation;
+	nextAnimationDuration = animations[animation].getDuration();
+	nextAnimationTime = currentAnimationTime / currentAnimationDuration * nextAnimationDuration;
+	animationTransionTime = 0.0f;
+	animationTransionDuration = duration;
+	isTransitioningAnimation = true;
 }
 
 
@@ -155,17 +179,81 @@ void OtModel::setAnimation(size_t animation) {
 //	OtModel::fadeToAnimation
 //
 
-void OtModel::fadeToAnimation(size_t animation, float seconds) {
-	if (animation < animations.size()) {
+void OtModel::fadeToAnimation(const std::string& name, float duration) {
+	if (!runningAnimation) {
+		startAnimation(name);
+
+	} else if (hasAnimation(name)) {
+		auto animation = animationIndex[name];
+
 		if (isTransitioningAnimation) {
-			animationStack.emplace_back(animation, seconds);
+			animationStack.emplace_back(animation, duration);
 
 		} else {
-			nextAnimation = animation;
-			animationTransionDuration = seconds;
-			animationTransionStart = static_cast<float>(ImGui::GetTime());
-			isTransitioningAnimation = true;
+			startAnimationFade(animation, duration);
 		}
+
+	} else {
+		OtLogError("Unknown animation [{}] for model", name);
+	}
+}
+
+
+//
+//	OtModel::update
+//
+
+void OtModel::update() {
+	// update animations (if required)
+	if (runningAnimation) {
+		float dt = ImGui::GetIO().DeltaTime;
+		nodes.resetAnimationTransforms();
+
+		if (isTransitioningAnimation) {
+			animationTransionTime += dt;
+			auto ratio = animationTransionTime / animationTransionDuration;
+
+			if (ratio >= 1.0f) {
+				currentAnimation = nextAnimation;
+				currentAnimationTime = std::fmod(nextAnimationTime + dt, nextAnimationDuration);
+				currentAnimationDuration = nextAnimationDuration;
+				animations[currentAnimation].update(currentAnimationTime, nodes, 0);
+				nodes.updateAnimationTransforms();
+
+				if (animationStack.empty()) {
+					isTransitioningAnimation = false;
+
+				} else {
+					auto [animation, seconds] = animationStack.back();
+					animationStack.clear();
+					startAnimationFade(animation, seconds);
+				}
+
+			} else {
+				float fadeOutRatio = currentAnimationDuration / nextAnimationDuration;
+				float fadeInRatio = nextAnimationDuration / currentAnimationDuration;
+
+				float fadeOutMultiplier = glm::mix(1.0f, fadeOutRatio, ratio);
+				float fadeInMultiplier = glm::mix(fadeInRatio, 1.0f, ratio);
+
+				currentAnimationTime += dt * fadeOutMultiplier;
+				currentAnimationTime = std::fmod(currentAnimationTime, currentAnimationDuration);
+
+				nextAnimationTime += dt * fadeInMultiplier;
+				nextAnimationTime = std::fmod(nextAnimationTime, nextAnimationDuration);
+
+				animations[currentAnimation].update(currentAnimationTime, nodes, 0);
+				animations[nextAnimation].update(nextAnimationTime, nodes, 1);
+				nodes.updateAnimationTransforms(ratio);
+			}
+
+		} else {
+			currentAnimationTime = std::fmod(currentAnimationTime + dt, currentAnimationDuration);
+			animations[currentAnimation].update(currentAnimationTime, nodes, 0);
+			nodes.updateAnimationTransforms();
+		}
+
+		nodes.updateModelTransforms();
 	}
 }
 
@@ -175,57 +263,6 @@ void OtModel::fadeToAnimation(size_t animation, float seconds) {
 //
 
 std::vector<OtModel::RenderCommand>& OtModel::getRenderList(const glm::mat4& modelTransform) {
-	// update animations (if required)
-	if (animations.size()) {
-		auto time = static_cast<float>(ImGui::GetTime());
-		nodes.resetAnimationTransforms();
-
-		if (isTransitioningAnimation) {
-			auto ratio = (time - animationTransionStart) / animationTransionDuration;
-			bool done = false;
-
-			if (ratio >= 1.0f) {
-				ratio = 1.0f;
-				done = true;
-			}
-
-			float fadeOutRatio = animations[currentAnimation].getDuration() / animations[nextAnimation].getDuration();
-			float fadeInRatio = animations[nextAnimation].getDuration() / animations[currentAnimation].getDuration();
-
-			float fadeOutMultiplier = glm::mix(1.0f, fadeOutRatio, ratio);
-			float fadeInMultiplier = glm::mix(fadeInRatio, 1.0f, ratio);
-
-			float fadeOutTime = animationTransionStart + animationTransionDuration * ratio * fadeOutMultiplier;
-			float fadeInTime = animationTransionStart + animationTransionDuration * ratio * fadeInMultiplier;
-
-			animations[currentAnimation].update(fadeOutTime, nodes, 0);
-			animations[nextAnimation].update(fadeInTime, nodes, 1);
-			nodes.updateAnimationTransforms(ratio);
-
-			if (done) {
-				currentAnimation = nextAnimation;
-
-				if (animationStack.empty()) {
-					isTransitioningAnimation = false;
-
-				} else {
-					auto [animation, seconds] = animationStack.back();
-					animationStack.clear();
-
-					nextAnimation = animation;
-					animationTransionDuration = seconds;
-					animationTransionStart = time;
-				}
-			}
-
-		} else {
-			animations[currentAnimation].update(time, nodes, 0);
-			nodes.updateAnimationTransforms();
-		}
-
-		nodes.updateModelTransforms();
-	}
-
 	// process all nodes and find meshes
 	renderList.clear();
 	traverseMeshes(0, modelTransform);

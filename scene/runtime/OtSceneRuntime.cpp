@@ -66,6 +66,11 @@ int OtSceneRuntime::render(int width, int height) {
 		component.update();
 	}
 
+	// update all the models
+	for (auto&& [entity, component] : scene->view<OtModelComponent>().each()) {
+		component.update();
+	}
+
 	// update (evaluate) all the nodes
 	scene->evaluateNodes();
 

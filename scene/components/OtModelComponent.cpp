@@ -30,6 +30,17 @@ bool OtModelComponent::renderUI() {
 
 
 //
+//	OtModelComponent::update
+//
+
+void OtModelComponent::update() {
+	if (model.isReady()) {
+		model->getModel().update();
+	}
+}
+
+
+//
 //	OtModelComponent::serialize
 //
 

@@ -41,17 +41,18 @@ public:
 	inline bool hasAnimation(const std::string& name) { return animationIndex.find(name) != animationIndex.end(); }
 	inline size_t getAnimationCount() { return animations.size(); }
 	inline std::string getAnimationName(size_t index) { return animations[index].getName(); }
-	inline size_t getAnimationIndex(const std::string& name) { return animationIndex[name]; }
 
 	// change animations
-	void resetAnimation();
-	void setAnimation(size_t animation);
-	void fadeToAnimation(size_t animation, float seconds);
-	inline void setAnimation(const std::string& name) { setAnimation(getAnimationIndex(name)); }
-	inline void fadeToAnimation(const std::string& name, float seconds) { fadeToAnimation(getAnimationIndex(name), seconds); }
+	void startAnimation(const std::string& name);
+	void stopAnimation();
+	void fadeToAnimation(const std::string& name, float duration);
+	inline bool isAnimating() { return runningAnimation; }
 
 	// get bounding box
 	inline OtAABB& getAABB() { return aabb; }
+
+	// update the model for the current frame
+	void update();
 
 	// render list access
 	class RenderCommand {
@@ -78,10 +79,18 @@ private:
 	size_t id;
 
 	// animation support
-	bool isTransitioningAnimation;
+	bool runningAnimation = false;
+
 	size_t currentAnimation;
+	float currentAnimationTime;
+	float currentAnimationDuration;
+
 	size_t nextAnimation;
-	float animationTransionStart;
+	float nextAnimationTime;
+	float nextAnimationDuration;
+
+	bool isTransitioningAnimation = false;
+	float animationTransionTime;
 	float animationTransionDuration;
 
 	// rendering support
@@ -89,5 +98,6 @@ private:
 	std::vector<RenderCommand> renderList;
 
 	// support functions
+	void startAnimationFade(size_t animation, float duration);
 	void traverseMeshes(size_t nodeID, const glm::mat4& modelTransform);
 };

@@ -122,9 +122,7 @@ void OtModelAnimation::load(const aiAnimation* animation, OtModelNodes& nodes) {
 //	OtModelAnimation::update
 //
 
-void OtModelAnimation::update(float time, OtModelNodes& nodes, size_t slot) {
-	auto dt = std::fmod(time, duration);
-
+void OtModelAnimation::update(float dt, OtModelNodes& nodes, size_t slot) {
 	for (auto& channel : channels) {
 		size_t element;
 		float fraction;

@@ -38,11 +38,7 @@ public:
 	void setAnimationTransformParts(size_t nodeID, size_t slot, const glm::vec3& position, const glm::quat& rotation, const glm::vec3& scale);
 	void updateAnimationTransforms(float ratio=1.0f);
 	void updateModelTransforms(size_t nodeID, const glm::mat4& transform);
-
-	inline void updateModelTransforms() {
-		glm::mat4 identity(1.0f);
-		updateModelTransforms(0, identity);
-	}
+	void updateModelTransforms();
 
 	// properties
 	class Node {

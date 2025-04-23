@@ -22,11 +22,6 @@
 //
 
 void OtModelMesh::load(const aiMesh* mesh, OtModelNodes& nodes) {
-	// sanity check
-	if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
-		OtLogError("Mesh has incompatible primitive type");
-	}
-
 	// save the name
 	name = mesh->mName.C_Str();
 

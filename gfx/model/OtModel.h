@@ -76,6 +76,7 @@ private:
 	std::vector<std::pair<size_t, float>> animationStack;
 
 	// model identifier
+	std::string path;
 	size_t id;
 
 	// animation support
@@ -98,6 +99,9 @@ private:
 	std::vector<RenderCommand> renderList;
 
 	// support functions
+	void loadJSON();
+	void loadModel(const std::string& path);
+	void loadAnimations(const std::string& path);
 	void startAnimationFade(size_t animation, float duration);
 	void traverseMeshes(size_t nodeID, const glm::mat4& modelTransform);
 };

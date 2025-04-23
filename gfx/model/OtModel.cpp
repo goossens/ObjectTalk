@@ -17,8 +17,11 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 #include "imgui.h"
+#include "nlohmann/json.hpp"
 
 #include "OtLog.h"
+#include "OtPath.h"
+#include "OtText.h"
 
 #include "OtGpu.h"
 
@@ -29,89 +32,23 @@
 //	OtModel::load
 //
 
-void OtModel::load(const std::string& path) {
-	// clear current model
-	clear();
-
+void OtModel::load(const std::string& p) {
 	// assign a model identifier
+	path = p;
 	static std::atomic<size_t> nextID = 0;
 	id = nextID++;
 
-	// create an asset importer
-	Assimp::Importer importer;
-	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
+	// clear current model
+	clear();
 
-	// determine the import flags
-	auto flags =
-		aiProcess_CalcTangentSpace |
-		aiProcess_JoinIdenticalVertices |
-		aiProcess_LimitBoneWeights |
-		aiProcess_GenNormals |
-		aiProcess_Triangulate |
-		aiProcess_GenUVCoords |
-		aiProcess_SortByPType |
-		aiProcess_OptimizeMeshes |
-		aiProcess_GenBoundingBoxes |
-		aiProcess_ValidateDataStructure |
-		aiProcess_GlobalScale;
+	// load based on file extension
+	auto ext = OtPath::getExtension(path);
 
-	if (!OtGpuHasOriginBottomLeft()) {
-		flags |= aiProcess_FlipUVs;
-	}
+	if (ext == ".json") {
+		loadJSON();
 
-	// read the model file
-	const aiScene* scene = importer.ReadFile(path, static_cast<unsigned int>(flags));
-
-	// ensure model was loaded correctly
-	if (scene == nullptr) {
-		OtLogError("Unable to load model [{}], error: {}", path, importer.GetErrorString());
-	}
-
-	// ensure scene is complete
-	if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
-		OtLogError("Incomplete model [{}]", path);
-	}
-
-	// load the node hierarchy
-	nodes.load(scene->mRootNode);
-
-	// load all the meshes
-	if (scene->HasMeshes()) {
-		meshes.resize(scene->mNumMeshes);
-
-		for (auto i = 0u; i < scene->mNumMeshes; i++) {
-			meshes[i].load(scene->mMeshes[i], nodes);
-			aabb.addAABB(meshes[i].getAABB());
-		}
-	}
-
-	// load all the embedded textures
-	if (scene->HasTextures()) {
-		textures.resize(scene->mNumTextures);
-
-		for (auto i = 0u; i < scene->mNumTextures; i++) {
-			textures[i].load(id, i, scene->mTextures[i]);
-		}
-	}
-
-	// load all the materials
-	if (scene->HasMaterials()) {
-		materials.resize(scene->mNumMaterials);
-		auto dir = OtPath::getParent(path);
-
-		for (auto i = 0u; i < scene->mNumMaterials; i++) {
-			materials[i].load(id, scene, scene->mMaterials[i], dir);
-		}
-	}
-
-	// load the animations
-	if (scene->HasAnimations()) {
-		animations.resize(scene->mNumAnimations);
-
-		for (auto i = 0u; i < scene->mNumAnimations; i++) {
-			animations[i].load(scene->mAnimations[i], nodes);
-			animationIndex[animations[i].getName()] = i;
-		}
+	} else {
+		loadModel(path);
 	}
 }
 
@@ -158,20 +95,6 @@ void OtModel::stopAnimation() {
 	isTransitioningAnimation = false;
 	nodes.resetAnimationTransforms();
 	nodes.updateModelTransforms();
-}
-
-
-//
-//	OtModel::startAnimationFade
-//
-
-void OtModel::startAnimationFade(size_t animation, float duration) {
-	nextAnimation = animation;
-	nextAnimationDuration = animations[animation].getDuration();
-	nextAnimationTime = currentAnimationTime / currentAnimationDuration * nextAnimationDuration;
-	animationTransionTime = 0.0f;
-	animationTransionDuration = duration;
-	isTransitioningAnimation = true;
 }
 
 
@@ -267,6 +190,191 @@ std::vector<OtModel::RenderCommand>& OtModel::getRenderList(const glm::mat4& mod
 	renderList.clear();
 	traverseMeshes(0, modelTransform);
 	return renderList;
+}
+
+
+//
+//	OtModel::loadJSON
+//
+
+void OtModel::loadJSON() {
+	// parse json
+	std::string text;
+	OtText::load(path, text);
+
+	auto basedir = OtPath::getParent(path);
+	auto data = nlohmann::json::parse(text);
+
+	if (data.contains("model")) {
+		if (!data["model"].is_string()) {
+			OtLogError("Invalid model file at [{}]: 'model' path is not a string", path);
+		}
+
+		loadModel(OtPath::join(basedir, data["model"]));
+
+	} else {
+		OtLogError("Invalid model file at [{}]: 'model' path missing", path);
+	}
+
+	if (data.contains("animations")) {
+		auto animationPaths = data["animations"];
+
+		if (!animationPaths.is_array()) {
+			OtLogError("Invalid model file at [{}]: 'animations' is not an array", path);
+		}
+
+		for (auto& animationPath : animationPaths) {
+			if (!animationPath.is_string()) {
+				OtLogError("Invalid model file at [{}]: 'animation' path is not a string", path);
+			}
+
+			loadAnimations(OtPath::join(basedir, animationPath));
+		}
+	}
+}
+
+
+//
+//	OtModel::loadModel
+//
+
+void OtModel::loadModel(const std::string& modelPath) {
+	// create an asset importer
+	Assimp::Importer importer;
+//	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
+
+	// determine the import flags
+	auto flags =
+		aiProcess_CalcTangentSpace |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_LimitBoneWeights |
+		aiProcess_GenNormals |
+		aiProcess_Triangulate |
+		aiProcess_GenUVCoords |
+		aiProcess_SortByPType |
+		aiProcess_OptimizeMeshes |
+		aiProcess_GenBoundingBoxes |
+		aiProcess_ValidateDataStructure |
+		aiProcess_GlobalScale;
+
+	if (!OtGpuHasOriginBottomLeft()) {
+		flags |= aiProcess_FlipUVs;
+	}
+
+	// read the model file
+	const aiScene* scene = importer.ReadFile(modelPath, static_cast<unsigned int>(flags));
+
+	// ensure model was loaded correctly
+	if (scene == nullptr) {
+		OtLogError("Unable to load model [{}], error: {}", modelPath, importer.GetErrorString());
+	}
+
+	// ensure scene is complete
+	if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
+		OtLogError("Incomplete model [{}]", modelPath);
+	}
+
+	// load the node hierarchy
+	nodes.load(scene->mRootNode);
+
+	// load all the meshes
+	if (scene->HasMeshes()) {
+		meshes.resize(scene->mNumMeshes);
+
+		for (auto i = 0u; i < scene->mNumMeshes; i++) {
+			meshes[i].load(scene->mMeshes[i], nodes);
+			aabb.addAABB(meshes[i].getAABB());
+		}
+	}
+
+	// load all the embedded textures
+	if (scene->HasTextures()) {
+		textures.resize(scene->mNumTextures);
+
+		for (auto i = 0u; i < scene->mNumTextures; i++) {
+			textures[i].load(id, i, scene->mTextures[i]);
+		}
+	}
+
+	// load all the materials
+	if (scene->HasMaterials()) {
+		materials.resize(scene->mNumMaterials);
+		auto dir = OtPath::getParent(path);
+
+		for (auto i = 0u; i < scene->mNumMaterials; i++) {
+			materials[i].load(id, scene, scene->mMaterials[i], dir);
+		}
+	}
+
+	// load the animations
+	if (scene->HasAnimations()) {
+		animations.resize(scene->mNumAnimations);
+
+		for (auto i = 0u; i < scene->mNumAnimations; i++) {
+			animations[i].load(scene->mAnimations[i], nodes);
+			animationIndex[animations[i].getName()] = i;
+		}
+	}
+}
+
+
+//
+//	OtModel::loadAnimations
+//
+
+void OtModel::loadAnimations(const std::string& animationPath) {
+	// create an asset importer
+	Assimp::Importer importer;
+//	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
+
+	// determine the import flags
+	auto flags =
+		aiProcess_ValidateDataStructure |
+		aiProcess_GlobalScale;
+
+	if (!OtGpuHasOriginBottomLeft()) {
+		flags |= aiProcess_FlipUVs;
+	}
+
+	// read the model file
+	const aiScene* scene = importer.ReadFile(animationPath, static_cast<unsigned int>(flags));
+
+	// ensure model was loaded correctly
+	if (scene == nullptr) {
+		OtLogError("Unable to load model [{}], error: {}", animationPath, importer.GetErrorString());
+	}
+
+	// load the nodes
+	OtModelNodes animationNodes;
+	animationNodes.load(scene->mRootNode);
+
+	// load the animations
+	if (scene->HasAnimations()) {
+		auto offset = animations.size();
+
+		for (auto i = 0u; i < scene->mNumAnimations; i++) {
+			auto& animation = animations.emplace_back();
+			animation.load(scene->mAnimations[i], nodes);
+			animationIndex[animation.getName()] = offset + i;
+		}
+
+	} else {
+		OtLogError("File [{}] has no animations", animationPath);
+	}
+}
+
+
+//
+//	OtModel::startAnimationFade
+//
+
+void OtModel::startAnimationFade(size_t animation, float duration) {
+	nextAnimation = animation;
+	nextAnimationDuration = animations[animation].getDuration();
+	nextAnimationTime = currentAnimationTime / currentAnimationDuration * nextAnimationDuration;
+	animationTransionTime = 0.0f;
+	animationTransionDuration = duration;
+	isTransitioningAnimation = true;
 }
 
 

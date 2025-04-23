@@ -42,14 +42,13 @@ In case User Interface (UI) modules are included, we also use:
 * The Fast Approximate Anti-Aliasing (FXAA) post-processing shader was originally developped by Timothy Lottes at Nvidia. It was released under a public domain license. A later version is released under a [3-clause BSD license](https://opensource.org/license/bsd-3-clause).
 * Some shaders and shader ideas are based on [JungleIN](https://github.com/BKcore/JungleIN), an OpenGL jungle viewer written as part of a scholar project, released under the [MIT license](https://opensource.org/licenses/MIT).
 
-## Data
+## Fonts
 
-The [BitStream Vera Mono Font](https://en.wikipedia.org/wiki/Bitstream_Vera) is extracted from
+* [BitStream Vera Mono Font](https://en.wikipedia.org/wiki/Bitstream_Vera) is extracted from
 [here](https://download.gnome.org/sources/ttf-bitstream-vera/1.10/) and it was released onder a
 [generous license](https://raw.githubusercontent.com/goossens/ObjectTalk/master/gfx/framework/OtBitstreamVeraMono.lic)
 similar to the [SIL Open Font License](https://openfontlicense.org/documents/OFL.txt).
-
-The Simple Font is extracted from the [Hershey Fonts](https://github.com/kamalmostafa/hershey-fonts)
+* Simple Font is extracted from the [Hershey Fonts](https://github.com/kamalmostafa/hershey-fonts)
 released under the [GNU General Public License, version 2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
 
 ## Tools
@@ -74,7 +73,11 @@ what applies where.
 * [OGLdev](https://ogldev.org/index.html) by [Etay Meiri](https://ogldev.org/contact.html) release under the [GNU General Public License Version 3](https://www.gnu.org/licenses/gpl-3.0.txt). You can find his videos on [YouTube](https://www.youtube.com/channel/UC7Z1FTCdSln_qFKK95AWplw).
 * [Hazel](https://github.com/TheCherno/Hazel) by [Yan Chernikov (The Cherno)](https://www.youtube.com/@TheCherno/about) released under the [Apache License version 2.0](http://www.apache.org/licenses/LICENSE-2.0). You can find his videos on [YouTube](https://www.youtube.com/@TheCherno).
 
+## Examples
+
+* Some 3D examples are based on [ThreeJS](https://threejs.org) examples which are released under the [MIT license](https://opensource.org/licenses/MIT).
+
 ## Assets
 
-Some examples use a number of assetts (e.g. images and models) that were reused from other projects.
+Some examples use a number of assetts (e.g. fonts, images and models) that were reused from other projects.
 A full list with links and licenses can be found in the appropriate asset folders.

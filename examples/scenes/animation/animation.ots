@@ -1,0 +1,208 @@
+{
+	"entities": [
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Camera",
+					"uuid": 2348125749
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						-26.962533950805664,
+						-2.6609432697296143,
+						0.0
+					],
+					"scale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"translation": [
+						-0.07470238208770752,
+						1.8502590656280518,
+						1.9912492036819458
+					]
+				},
+				{
+					"component": "Camera",
+					"far": 100.0,
+					"fov": 60.0,
+					"mainCamera": false,
+					"near": 1.0
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Light",
+					"uuid": 1276609637
+				},
+				{
+					"ambient": 0.10000000149011612,
+					"azimuth": 230.0,
+					"castShadow": true,
+					"color": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"component": "Directional Light",
+					"elevation": 39.0
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Floor",
+					"uuid": 3971859130
+				},
+				{
+					"castShadow": false,
+					"component": "Geometry",
+					"cullback": false,
+					"path": "assets/grid.obj",
+					"transparent": false,
+					"wireframe": false
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"scale": [
+						25.0,
+						1.0,
+						25.0
+					],
+					"translation": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"component": "Material",
+					"material": {
+						"albedo": [
+							0.5309734344482422,
+							0.5309734344482422,
+							0.5309734344482422,
+							1.0
+						],
+						"albedoTexture": "assets/floorA.jpg",
+						"ao": 1.0,
+						"aoTexture": "",
+						"emissive": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"emissiveTexture": "",
+						"metallic": 0.0,
+						"metallicRoughnessTexture": "",
+						"normalTexture": "assets/floorN.jpg",
+						"offset": [
+							0.0,
+							0.0
+						],
+						"roughness": 1.0,
+						"scale": 10.0
+					}
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Soldier",
+					"uuid": 2793597041
+				},
+				{
+					"castShadow": true,
+					"component": "Model",
+					"model": "assets/Soldier.glb"
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"scale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"translation": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"component": "Script",
+					"path": "assets/controller.ot"
+				}
+			]
+		}
+	],
+	"metadata": {
+		"camera": {
+			"far": 100.0,
+			"fov": 60.0,
+			"near": 1.0,
+			"pitch": -26.962533950805664,
+			"position": [
+				-0.07470238208770752,
+				1.8502590656280518,
+				1.9912492036819458
+			],
+			"speed": 3.0,
+			"yaw": -2.6609432697296143
+		},
+		"gizmo": {
+			"enabled": false,
+			"mode": 7,
+			"snapInterval": [
+				0.10000000149011612,
+				0.10000000149011612,
+				0.10000000149011612
+			],
+			"snapping": false
+		},
+		"grid": {
+			"enabled": false,
+			"scale": 1.0
+		},
+		"type": "scene"
+	},
+	"processing": {
+		"bloomIntensity": 0.0,
+		"contrast": 1.0,
+		"exposure": 2.0,
+		"fog": true,
+		"fogColor": [
+			0.08364005386829376,
+			0.08927872031927109,
+			0.10619467496871948
+		],
+		"fogDensity": 12.0,
+		"fxaa": true,
+		"godrays": false,
+		"tonemap": 3
+	}
+}

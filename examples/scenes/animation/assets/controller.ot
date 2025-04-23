@@ -1,0 +1,106 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var animation = import("animation");
+var input = import("input");
+var math = import("math");
+var scene = import("scene");
+
+class controller : scene.Entity {
+	function create(this) {
+		this.rotation = 0.0;
+		this.degreesPerSecond = 120.0;
+		this.model = this.getModelComponent();
+		this.state = "Idle";
+	}
+
+	function update(this) {
+		var z = 0.0;
+		var x = 0.0;
+
+		if (input.isButtonDown(input.keyUpArrow)) {
+			z -= 1.0;
+		}
+
+		if (input.isButtonDown(input.keyDownArrow)) {
+			z += 1.0;
+		}
+
+		if (input.isButtonDown(input.keyLeftArrow)) {
+			x -= 1.0;
+		}
+
+		if (input.isButtonDown(input.keyRightArrow)) {
+			x += 1.0;
+		}
+
+		if (z != 0.0 || x != 0.0) {
+			var rotation = -x.atan2(-z).degrees();
+
+			if (rotation != this.rotation) {
+				var angle = rotation - this.rotation;
+
+				if (angle < -180.0) {
+					rotation += 360.0;
+
+				} elif (angle > 180.0) {
+					rotation -= 360.0;
+				}
+
+				if (rotation - this.rotation != 0.0) {
+					if (this.has("animation") && this.animation.isRunning()) {
+						this.animation.stop();
+					}
+
+					this.animation = animation.Animation()
+						.from(this.rotation)
+						.to(rotation)
+						.during((rotation - this.rotation).abs() / this.degreesPerSecond)
+						.onStep(function(angle) {
+							if (angle < -180.0) {
+								this.rotation = angle + 360.0;
+
+							} elif (angle > 180.0) {
+								this.rotation = angle - 360.0;
+
+							} else {
+								this.rotation = angle;
+							}
+
+							this.getTransformComponent().setRotation(math.Vec3(0.0, this.rotation, 0.0));
+						})
+						.start();
+				}
+			}
+		}
+
+		if (this.state == "Idle") {
+			if (z != 0.0 || x != 0.0) {
+				if (input.isButtonDown(input.modShift)) {
+					this.state = "Run";
+
+				} else {
+					this.state = "Walk";
+				}
+
+				this.model.fadeToAnimation(this.state, 0.5);
+			}
+
+		} elif (z == 0.0 && x == 0.0) {
+			this.model.fadeToAnimation(this.state = "Idle", 1.0);
+
+		} elif (this.state == "Walk") {
+			if (input.isButtonDown(input.modShift)) {
+				this.model.fadeToAnimation(this.state = "Run", 0.5);
+			}
+
+		} elif (this.state == "Run") {
+			if (!input.isButtonDown(input.modShift)) {
+				this.model.fadeToAnimation(this.state = "Walk", 0.5);
+			}
+		}
+	}
+}

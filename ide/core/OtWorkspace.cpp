@@ -637,6 +637,9 @@ void OtWorkspace::renderEditors() {
 	if (iWindowEditors) {
 		renderWindowedEditors();
 	}
+
+	// reset activation request
+	editorToActivate = nullptr;
 }
 
 
@@ -681,7 +684,6 @@ void OtWorkspace::renderTabbedEditors() {
 					activeEditor = editor;
 				}
 
-				editorToActivate = nullptr;
 				ImGui::PopID();
 			}
 		}
@@ -712,7 +714,6 @@ void OtWorkspace::renderWindowedEditors() {
 			// focus on this editor (if required)
 			if (editorToActivate == editor) {
 				ImGui::SetNextWindowFocus();
-				editorToActivate = nullptr;
 			}
 
 			// set size and position when opened for the first time

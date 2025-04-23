@@ -26,7 +26,7 @@ OtAssetBase::State OtShapeAsset::load() {
 		return State::ready;
 
 	} catch ([[maybe_unused]] const OtException& exception) {
-		OtLogWarning("Can't load shape [{}]: {}", path, exception.what());
+		errorMessage = exception.what();
 		return State::invalid;
 	}
 }

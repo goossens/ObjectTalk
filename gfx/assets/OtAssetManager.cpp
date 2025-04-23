@@ -154,6 +154,7 @@ void OtAssetManager::scheduleLoad(OtAssetBase* asset) {
 	loading++;
 
 	threadpool.detach_task([this, asset]() {
+		asset->errorMessage.clear();
 		asset->state = asset->load();
 		loading--;
 		auto status = uv_async_send(asset->loaderEventHandle);

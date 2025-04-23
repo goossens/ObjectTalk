@@ -28,7 +28,7 @@ public:
 
 	// asset properties
 	static constexpr bool canHandleVirtual = false;
-	static constexpr const char* supportedFileTypes = ".dds,.ktx,.cubemap,.hdr";
+	static constexpr const char* supportedFileTypes = ".dds,.hdr,.json,.ktx";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
 
 protected:

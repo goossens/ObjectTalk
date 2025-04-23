@@ -63,6 +63,8 @@ public:
 	const char* getStateName();
 	bool supportsFileType(const std::string& ext);
 
+	inline std::string getErrorMessage() { return errorMessage; }
+
 	// asset properties
 	static constexpr bool hasEditor = false;
 	static constexpr bool hasCreator = false;
@@ -97,6 +99,7 @@ protected:
 	};
 
 	State state = State::null;
+	std::string errorMessage;
 
 	// functions to load the asset (to be implemented by derived classes)
 	virtual inline State load() { return State::null; }

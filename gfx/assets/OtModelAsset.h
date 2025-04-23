@@ -31,7 +31,7 @@ public:
 
 	// asset properties
 	static constexpr bool canHandleVirtual = false;
-	static constexpr const char* supportedFileTypes = ".fbx,.glb,.gltf,.md5mesh,.obj";
+	static constexpr const char* supportedFileTypes = ".fbx,.glb,.gltf,.json,.md5mesh,.obj";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
 
 protected:

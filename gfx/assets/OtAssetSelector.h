@@ -27,6 +27,7 @@ public:
 		const char* label;
 		std::string path;
 		const char* supportedFileTypes = "";
+		std::string errorMessage;
 		bool isMissing = false;
 		bool isInvalid = false;
 		bool hasEditor = false;

@@ -61,7 +61,7 @@ OtAssetBase::State OtTextureAsset::load() {
 		return State::loaded;
 
 	} catch ([[maybe_unused]] const OtException& exception) {
-		OtLogWarning("Can't load texture [{}]: {}", path, exception.what());
+		errorMessage = exception.what();
 		return State::invalid;
 	}
 }

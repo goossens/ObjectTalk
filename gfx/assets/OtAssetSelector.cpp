@@ -41,7 +41,7 @@ void OtAssetSelector::showErrorPopup(Info& info) {
 		message += fmt::format("Asset [{}] is missing", info.path);
 
 	} else if (info.isInvalid) {
-		message += fmt::format("Asset [{}] is invalid", info.path);
+		message += fmt::format("Asset [{}] is invalid:\n{}", info.path, info.errorMessage);
 	}
 
 	ImGui::PushStyleColor(ImGuiCol_Border, errorColor);

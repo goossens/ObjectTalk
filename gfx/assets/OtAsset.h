@@ -226,6 +226,8 @@ public:
 	inline bool isLoaded() { return ptr && ptr->isLoaded(); }
 	inline bool isReady() { return ptr && ptr->isReady(); }
 	inline bool isVirtual() { return ptr && ptr->isVirtual(); }
+	inline std::string getErrorMessage() { return ptr ? ptr->getErrorMessage() : ""; }
+
 	inline bool canHandleVirtual() { return T::canHandleVirtual; }
 	inline const char* getSupportedFileTypes() { return T::supportedFileTypes; }
 
@@ -243,6 +245,7 @@ public:
 		info.supportedFileTypes = T::supportedFileTypes;
 		info.isMissing = isMissing();
 		info.isInvalid = isInvalid();
+		info.errorMessage = getErrorMessage();
 		info.hasEditor = T::hasEditor;
 		info.virtualMode = canHandleVirtual() ? &virtualMode : nullptr;
 		info.creator = creator;

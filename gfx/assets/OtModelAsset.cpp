@@ -26,7 +26,7 @@ OtAssetBase::State OtModelAsset::load() {
 		return State::ready;
 
 	} catch (const OtException& exception) {
-		OtLogWarning("Can't load model [{}]: {}", path, exception.what());
+		errorMessage = exception.what();
 		return State::invalid;
 	}
 }

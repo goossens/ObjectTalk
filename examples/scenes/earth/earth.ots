@@ -72,7 +72,7 @@
 				{
 					"brightness": 0.5,
 					"component": "Sky Box",
-					"cubemap": "assets/space.cubemap",
+					"cubemap": "assets/space.json",
 					"gamma": 2.200000047683716
 				}
 			]
@@ -103,6 +103,7 @@
 							"uuid": 3890719025
 						},
 						{
+							"castShadow": true,
 							"component": "Geometry",
 							"cullback": false,
 							"path": "virtual:sphere",
@@ -148,6 +149,10 @@
 								"metallic": 1.0,
 								"metallicRoughnessTexture": "",
 								"normalTexture": "",
+								"offset": [
+									0.0,
+									0.0
+								],
 								"roughness": 0.0,
 								"scale": 1.0
 							}
@@ -163,6 +168,7 @@
 							"uuid": 1076804477
 						},
 						{
+							"castShadow": true,
 							"component": "Geometry",
 							"cullback": false,
 							"path": "virtual:sphere",
@@ -208,6 +214,10 @@
 								"metallic": 0.27000001072883606,
 								"metallicRoughnessTexture": "",
 								"normalTexture": "",
+								"offset": [
+									0.0,
+									0.0
+								],
 								"roughness": 0.5699999928474426,
 								"scale": 1.0
 							}
@@ -223,6 +233,7 @@
 							"uuid": 830609709
 						},
 						{
+							"castShadow": true,
 							"component": "Geometry",
 							"cullback": false,
 							"path": "virtual:sphere",
@@ -268,6 +279,10 @@
 								"metallic": 0.1899999976158142,
 								"metallicRoughnessTexture": "",
 								"normalTexture": "",
+								"offset": [
+									0.0,
+									0.0
+								],
 								"roughness": 0.4099999964237213,
 								"scale": 1.0
 							}

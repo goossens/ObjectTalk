@@ -104,7 +104,7 @@ void OtCubeMap::create(int s, bool m, int l, int f, uint64_t flags) {
 void OtCubeMap::load(const std::string& path, bool async) {
 	auto ext = OtPath::getExtension(path);
 
-	if (ext == ".cubemap") {
+	if (ext == ".json") {
 		loadJSON(path, async);
 
 	} else if (ext == ".hdr") {

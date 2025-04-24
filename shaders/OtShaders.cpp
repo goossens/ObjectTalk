@@ -98,6 +98,9 @@
 #include "generated/filter/OtFxaaFS_mtl.h"
 #include "generated/filter/OtFxaaFS_spv.h"
 #include "generated/filter/OtFxaaFS_dx11.h"
+#include "generated/filter/OtGaussianFS_mtl.h"
+#include "generated/filter/OtGaussianFS_spv.h"
+#include "generated/filter/OtGaussianFS_dx11.h"
 #include "generated/filter/OtIslandizerFS_mtl.h"
 #include "generated/filter/OtIslandizerFS_spv.h"
 #include "generated/filter/OtIslandizerFS_dx11.h"
@@ -350,6 +353,8 @@ static const uint8_t OtFogFS_glsl[1] = {0};
 static const uint8_t OtFogFS_essl[1] = {0};
 static const uint8_t OtFxaaFS_glsl[1] = {0};
 static const uint8_t OtFxaaFS_essl[1] = {0};
+static const uint8_t OtGaussianFS_glsl[1] = {0};
+static const uint8_t OtGaussianFS_essl[1] = {0};
 static const uint8_t OtIslandizerFS_glsl[1] = {0};
 static const uint8_t OtIslandizerFS_essl[1] = {0};
 static const uint8_t OtLinearizeDepthFS_glsl[1] = {0};
@@ -507,6 +512,7 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtContrastSaturationBrightnessFS),
 	BGFX_EMBEDDED_SHADER(OtFogFS),
 	BGFX_EMBEDDED_SHADER(OtFxaaFS),
+	BGFX_EMBEDDED_SHADER(OtGaussianFS),
 	BGFX_EMBEDDED_SHADER(OtIslandizerFS),
 	BGFX_EMBEDDED_SHADER(OtLinearizeDepthFS),
 	BGFX_EMBEDDED_SHADER(OtNormalMapperFS),

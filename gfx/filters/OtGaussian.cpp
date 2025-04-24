@@ -9,24 +9,26 @@
 //	Include files
 //
 
-#include "OtBlur.h"
+#include "OtLog.h"
+
+#include "OtGaussian.h"
 
 
 //
-//	OtBlur::OtBlur
+//	OtGaussian::OtGaussian
 //
 
-OtBlur::OtBlur() {
-	setFlags(OtTexture::clampSampling);
+OtGaussian::OtGaussian() {
+	setFlags(OtTexture::linearSampling | OtTexture::clampSampling);
 }
 
 
 //
-//	OtBlur::execute
+//	OtGaussian::execute
 //
 
-void OtBlur::execute(OtPass& pass) {
-	uniform.setValue(0, intensity, alpha, direction);
+void OtGaussian::execute(OtPass& pass) {
+	uniform.setValue(0, direction * radius, 0.0f, 0.0f);
 	uniform.submit();
 	pass.runShaderProgram(program);
 }

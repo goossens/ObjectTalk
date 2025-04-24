@@ -362,19 +362,11 @@ void OtOscilloscope::render(OtFrameBuffer& framebuffer) {
 
 	for (auto p = 0; p < 4; p++) {
 		// run horizontal blur
-		blur.setHorizontalScale(1.0f / width);
-		blur.setVerticalScale(0.0f);
-
-		if (p == 0) {
-			blur.render(framebuffer, blur1);
-
-		} else {
-			blur.render(blur2, blur1);
-		}
+		blur.setDirection(glm::vec2(1.0f, 0.0f));
+		blur.render(p == 0 ? framebuffer : blur2, blur1);
 
 		// run vertical blur
-		blur.setHorizontalScale(0.0f);
-		blur.setVerticalScale(1.0f / height);
+		blur.setDirection(glm::vec2(0.0f, 1.0f));
 		blur.render(blur1, blur2);
 	}
 

@@ -20,17 +20,16 @@
 
 
 //
-//	OtBlur
+//	OtGaussian
 //
 
-class OtBlur : public OtFilter {
+class OtGaussian : public OtFilter {
 public:
 	// constructor
-	OtBlur();
+	OtGaussian();
 
 	// set properties
-	inline void setIntensity(float i) { intensity = i; }
-	inline void setAlpha(float a) { alpha = a; }
+	inline void setRadius(float r) { radius = r; }
 	inline void setDirection(const glm::vec2& d) { direction = d; }
 
 private:
@@ -38,11 +37,10 @@ private:
 	void execute(OtPass& pass) override;
 
 	// properties
-	float intensity = 2.0f;
-	float alpha = 1.0f;
+	float radius = 1.0f;
 	glm::vec2 direction{1.0f};
 
 	// GPU assets
-	OtUniformVec4 uniform = OtUniformVec4("u_blur", 1);
-	OtShaderProgram program = OtShaderProgram("OtFilterVS", "OtBlurFS");
+	OtUniformVec4 uniform = OtUniformVec4("u_gaussian", 1);
+	OtShaderProgram program = OtShaderProgram("OtFilterVS", "OtGaussian9FS");
 };

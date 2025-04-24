@@ -31,7 +31,7 @@ public:
 	virtual inline ~OtGenerator() {}
 
 	// set rendering state
-	inline void setState(int s) { state = s; }
+	inline void setState(uint64_t s) { state = s; }
 
 	// run generator
 	void render(OtFrameBuffer& destination);

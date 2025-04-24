@@ -1,3 +1,5 @@
+## Credits
+
 The Battle Damaged Sci-fi Helmet was created by [theblueturtle_](https://sketchfab.com/theblueturtle_)
 and published under a [Creative Commons Attribution-NonCommercial license](https://creativecommons.org/licenses/by-nc/3.0/).
 The version used here is downloaded from the [Khronos Group glTF sample models](https://github.com/KhronosGroup/glTF-Sample-Models)

@@ -35,6 +35,7 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtContrastSaturationBrightnessFS.glsl -o generated\filter\OtContrastSaturationBrightnessFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtContrastSaturationBrightnessFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtFogFS.glsl -o generated\filter\OtFogFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtFogFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtFxaaFS.glsl -o generated\filter\OtFxaaFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtFxaaFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtGaussianFS.glsl -o generated\filter\OtGaussianFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtGaussianFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtIslandizerFS.glsl -o generated\filter\OtIslandizerFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtIslandizerFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtLinearizeDepthFS.glsl -o generated\filter\OtLinearizeDepthFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtLinearizeDepthFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtNormalMapperFS.glsl -o generated\filter\OtNormalMapperFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtNormalMapperFS_dx11

@@ -13,11 +13,13 @@ SAMPLER2D(s_texture, 0);
 uniform vec4 u_blur;
 #define u_mult u_blur.x
 #define u_alpha u_blur.y
-#define u_blurX u_blur.z
-#define u_blurY u_blur.a
+#define u_directionX u_blur.z
+#define u_directionY u_blur.w
 
 void main() {
 	vec4 color;
+	float u_blurX = u_directionX * u_viewTexel.x;
+	float u_blurY = u_directionY * u_viewTexel.y;
 	color  = texture2D(s_texture, vec2(v_texcoord0.x - 4.0 * u_blurX, v_texcoord0.y - 4.0 * u_blurY)) * 0.05;
 	color += texture2D(s_texture, vec2(v_texcoord0.x - 3.0 * u_blurX, v_texcoord0.y - 3.0 * u_blurY)) * 0.09;
 	color += texture2D(s_texture, vec2(v_texcoord0.x - 2.0 * u_blurX, v_texcoord0.y - 2.0 * u_blurY)) * 0.12;

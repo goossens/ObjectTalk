@@ -26,6 +26,7 @@ void OtFilter::render(OtTexture& origin, OtFrameBuffer& destination) {
 	pass.submitQuad(destination.getWidth(), destination.getHeight());
 
 	// execute filter
+	textureSampler.setFlags(flags);
 	textureSampler.submit(0, origin);
 	bgfx::setState(state);
 	execute(pass);

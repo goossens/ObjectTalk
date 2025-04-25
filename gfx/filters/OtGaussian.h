@@ -42,5 +42,5 @@ private:
 
 	// GPU assets
 	OtUniformVec4 uniform = OtUniformVec4("u_gaussian", 1);
-	OtShaderProgram program = OtShaderProgram("OtFilterVS", "OtGaussian9FS");
+	OtShaderProgram program = OtShaderProgram("OtFilterVS", "OtGaussianFS");
 };

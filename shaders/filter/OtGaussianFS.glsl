@@ -11,6 +11,7 @@
 $input v_texcoord0
 
 #include <bgfx_shader.glsl>
+#include <utilities.glsl>
 
 SAMPLER2D(s_texture, 0);
 
@@ -21,10 +22,10 @@ void main() {
 	vec2 off1 = vec2_splat(1.3846153846) * u_direction * u_viewTexel.xy;
 	vec2 off2 = vec2_splat(3.2307692308) * u_direction * u_viewTexel.xy;
 
-	vec4 color = texture2D(s_texture, v_texcoord0) * 0.2270270270;
-	color += texture2D(s_texture, v_texcoord0 + off1) * 0.3162162162;
-	color += texture2D(s_texture, v_texcoord0 - off1) * 0.3162162162;
-	color += texture2D(s_texture, v_texcoord0 + off2) * 0.0702702703;
-	color += texture2D(s_texture, v_texcoord0 - off2) * 0.0702702703;
-	gl_FragColor = color;
+	vec4 color = premultiplyAlpha(texture2D(s_texture, v_texcoord0)) * 0.2270270270;
+	color += premultiplyAlpha(texture2D(s_texture, v_texcoord0 + off1)) * 0.3162162162;
+	color += premultiplyAlpha(texture2D(s_texture, v_texcoord0 - off1)) * 0.3162162162;
+	color += premultiplyAlpha(texture2D(s_texture, v_texcoord0 + off2)) * 0.0702702703;
+	color += premultiplyAlpha(texture2D(s_texture, v_texcoord0 - off2)) * 0.0702702703;
+	gl_FragColor = unpremultiplyAlpha(color);
 }

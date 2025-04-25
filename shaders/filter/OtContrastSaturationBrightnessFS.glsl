@@ -21,10 +21,11 @@ void main() {
 	vec3 LumCoeff = vec3(0.2125, 0.7154, 0.0721);
 	vec3 AvgLumin  = vec3(0.5, 0.5, 0.5);
 
-	vec3 brtColor  = texture2D(s_texture, v_texcoord0).rgb * u_brightness;
+	vec4 color = texture2D(s_texture, v_texcoord0);
+	vec3 brtColor  = color.rgb * u_brightness;
 	vec3 intensity = vec3_splat(dot(brtColor, LumCoeff));
 	vec3 satColor  = mix(intensity, brtColor, u_saturation);
 	vec3 conColor  = mix(AvgLumin, satColor, u_contrast);
 
-	gl_FragColor = vec4(conColor, 1.0);
+	gl_FragColor = vec4(conColor, color.a);
 }

@@ -229,11 +229,11 @@ private:
 
 	OtUniformMat4 invViewProjUniform{"u_invViewProjUniform", 1};
 
-	OtSampler lightingAlbedoSampler{"s_lightingAlbedoTexture", OtTexture::pointSampling | OtTexture::clampSampling};
-	OtSampler lightingNormalSampler{"s_lightingNormalTexture", OtTexture::pointSampling | OtTexture::clampSampling};
-	OtSampler lightingPbrSampler{"s_lightingPbrTexture", OtTexture::pointSampling | OtTexture::clampSampling};
-	OtSampler lightingEmissiveSampler{"s_lightingEmissiveTexture", OtTexture::pointSampling | OtTexture::clampSampling};
-	OtSampler lightingDepthSampler{"s_lightingDepthTexture", OtTexture::pointSampling | OtTexture::clampSampling};
+	OtSampler lightingAlbedoSampler{"s_lightingAlbedoTexture"};
+	OtSampler lightingNormalSampler{"s_lightingNormalTexture"};
+	OtSampler lightingPbrSampler{"s_lightingPbrTexture"};
+	OtSampler lightingEmissiveSampler{"s_lightingEmissiveTexture"};
+	OtSampler lightingDepthSampler{"s_lightingDepthTexture"};
 
 	OtShaderProgram opaqueProgram{"OtDeferredVS", "OtDeferredPbrFS"};
 	OtShaderProgram instancedOpaqueProgram{"OtDeferredInstancingVS", "OtDeferredPbrFS"};

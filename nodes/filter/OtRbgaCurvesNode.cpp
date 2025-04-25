@@ -17,7 +17,7 @@
 #include "nlohmann/json.hpp"
 
 #include "OtColor.h"
-#include "OtRgbCurve.h"
+#include "OtRgbaCurve.h"
 #include "OtUi.h"
 
 #include "OtNodesFactory.h"
@@ -43,26 +43,26 @@ public:
 		auto old = serialize().dump();
 
 		ImGui::PushID("Mode");
-		changed |= OtUi::radioButton("RGB", &curve, OtRgbCurve::Curve::rgb);
+		changed |= OtUi::radioButton("RGB", &curve, OtRgbaCurve::Curve::rgb);
 		ImGui::SameLine(0.0f, 5.0f);
-		changed |= OtUi::radioButton("R", &curve, OtRgbCurve::Curve::red);
+		changed |= OtUi::radioButton("R", &curve, OtRgbaCurve::Curve::red);
 		ImGui::SameLine(0.0f, 0.0f);
-		changed |= OtUi::radioButton("G", &curve, OtRgbCurve::Curve::green);
+		changed |= OtUi::radioButton("G", &curve, OtRgbaCurve::Curve::green);
 		ImGui::SameLine(0.0f, 0.0f);
-		changed |= OtUi::radioButton("B", &curve, OtRgbCurve::Curve::blue);
+		changed |= OtUi::radioButton("B", &curve, OtRgbaCurve::Curve::blue);
 		ImGui::SameLine(0.0f, 0.0f);
-		changed |= OtUi::radioButton("A", &curve, OtRgbCurve::Curve::alpha);
+		changed |= OtUi::radioButton("A", &curve, OtRgbaCurve::Curve::alpha);
 		ImGui::PopID();
 
 		ImVec2 size{itemWidth, getCustomRenderingWidth()};
 		const char* curveSelector = "";
 
 		switch (curve) {
-			case OtRgbCurve::Curve::rgb: curveSelector = "RGB"; break;
-			case OtRgbCurve::Curve::red: curveSelector = "Red"; break;
-			case OtRgbCurve::Curve::green: curveSelector = "Green"; break;
-			case OtRgbCurve::Curve::blue: curveSelector = "Blue"; break;
-			case OtRgbCurve::Curve::alpha: curveSelector = "Alpha"; break;
+			case OtRgbaCurve::Curve::rgb: curveSelector = "RGB"; break;
+			case OtRgbaCurve::Curve::red: curveSelector = "Red"; break;
+			case OtRgbaCurve::Curve::green: curveSelector = "Green"; break;
+			case OtRgbaCurve::Curve::blue: curveSelector = "Blue"; break;
+			case OtRgbaCurve::Curve::alpha: curveSelector = "Alpha"; break;
 		}
 
 		changed |= ImGui::Curve(curveSelector, size, curvePoints, lut.data(), &lutSelection);
@@ -91,7 +91,7 @@ public:
 	}
 
 	inline void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
-		curve = data->value("curve", OtRgbCurve::Curve::rgb);
+		curve = data->value("curve", OtRgbaCurve::Curve::rgb);
 		lut = data->value("lut", std::array<ImVec2, curvePoints>{ImVec2(ImGui::CurveTerminator, 0.0f)});
 	}
 
@@ -117,12 +117,12 @@ public:
 		rgbCurve.render(input, output);
 	}
 
-	static constexpr const char* nodeName = "RGB Curves";
+	static constexpr const char* nodeName = "RGBA Curves";
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::filter;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 	// properties
-	OtRgbCurve::Curve curve = OtRgbCurve::Curve::rgb;
+	OtRgbaCurve::Curve curve = OtRgbaCurve::Curve::rgb;
 
 	static constexpr int curvePoints = 6;
 	std::array<ImVec2, curvePoints> lut{ImVec2(ImGui::CurveTerminator, 0.0f)};
@@ -133,7 +133,7 @@ public:
 	OtTexture lutCurve;
 	int lutSelection = -1;
 
-	OtRgbCurve rgbCurve;
+	OtRgbaCurve rgbCurve;
 };
 
 static OtNodesFactoryRegister<OtRbgCurvesNode> registration;

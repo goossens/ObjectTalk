@@ -193,8 +193,8 @@
 					"type": "texture"
 				}
 			],
-			"title": "RGB Curves",
-			"type": "RGB Curves",
+			"title": "RGBA Curves",
+			"type": "RGBA Curves",
 			"x": 366.0,
 			"y": 6.0
 		},

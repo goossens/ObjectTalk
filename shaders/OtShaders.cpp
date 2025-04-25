@@ -119,9 +119,12 @@
 #include "generated/filter/OtPosterizeFS_mtl.h"
 #include "generated/filter/OtPosterizeFS_spv.h"
 #include "generated/filter/OtPosterizeFS_dx11.h"
-#include "generated/filter/OtRgbCurvesFS_mtl.h"
-#include "generated/filter/OtRgbCurvesFS_spv.h"
-#include "generated/filter/OtRgbCurvesFS_dx11.h"
+#include "generated/filter/OtRgbaCurvesFS_mtl.h"
+#include "generated/filter/OtRgbaCurvesFS_spv.h"
+#include "generated/filter/OtRgbaCurvesFS_dx11.h"
+#include "generated/filter/OtRgbaFS_mtl.h"
+#include "generated/filter/OtRgbaFS_spv.h"
+#include "generated/filter/OtRgbaFS_dx11.h"
 #include "generated/filter/OtSeamlessTileFS_mtl.h"
 #include "generated/filter/OtSeamlessTileFS_spv.h"
 #include "generated/filter/OtSeamlessTileFS_dx11.h"
@@ -367,8 +370,10 @@ static const uint8_t OtPostProcessFS_glsl[1] = {0};
 static const uint8_t OtPostProcessFS_essl[1] = {0};
 static const uint8_t OtPosterizeFS_glsl[1] = {0};
 static const uint8_t OtPosterizeFS_essl[1] = {0};
-static const uint8_t OtRgbCurvesFS_glsl[1] = {0};
-static const uint8_t OtRgbCurvesFS_essl[1] = {0};
+static const uint8_t OtRgbaCurvesFS_glsl[1] = {0};
+static const uint8_t OtRgbaCurvesFS_essl[1] = {0};
+static const uint8_t OtRgbaFS_glsl[1] = {0};
+static const uint8_t OtRgbaFS_essl[1] = {0};
 static const uint8_t OtSeamlessTileFS_glsl[1] = {0};
 static const uint8_t OtSeamlessTileFS_essl[1] = {0};
 static const uint8_t OtSharpenFS_glsl[1] = {0};
@@ -519,7 +524,8 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtPixelateFS),
 	BGFX_EMBEDDED_SHADER(OtPostProcessFS),
 	BGFX_EMBEDDED_SHADER(OtPosterizeFS),
-	BGFX_EMBEDDED_SHADER(OtRgbCurvesFS),
+	BGFX_EMBEDDED_SHADER(OtRgbaCurvesFS),
+	BGFX_EMBEDDED_SHADER(OtRgbaFS),
 	BGFX_EMBEDDED_SHADER(OtSeamlessTileFS),
 	BGFX_EMBEDDED_SHADER(OtSharpenFS),
 	BGFX_EMBEDDED_SHADER(OtForwardInstancingVS),

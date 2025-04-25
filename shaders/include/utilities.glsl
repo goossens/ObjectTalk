@@ -120,5 +120,19 @@ vec3 screenToWorldSpace(vec4 screen) {
 	return world.xyz;
 }
 
+// premultiply color
+vec4 premultiplyAlpha(vec4 color) {
+	return vec4(color.rgb * color.a, color.a);
+}
+
+// unpremultiply color
+vec4 unpremultiplyAlpha(vec4 color)  {
+	if (color.a == 0.0) {
+		return vec4_splat(0.0);
+	}
+
+	return vec4(color.rgb / color.a, color.a);
+}
+
 
 #endif

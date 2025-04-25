@@ -9,23 +9,15 @@
 //	Include files
 //
 
-#include "OtRgbCurve.h"
+#include "OtRgba.h"
 
 
 //
-//	OtRgbCurve::execute
+//	OtRgba::execute
 //
 
-void OtRgbCurve::execute(OtPass& pass) {
-	uniform.setValue(0, float(curve), 0.0f, 0.0f, 0.0f);
-	uniform.setValue(1, blackLevel);
-	uniform.setValue(2, whiteLevel);
+void OtRgba::execute(OtPass& pass) {
+	uniform.setValue(0, filter);
 	uniform.submit();
-
-	if (!lutTexture.isValid()) {
-
-	}
-
-	lutSampler.submit(1, lutTexture);
 	pass.runShaderProgram(program);
 }

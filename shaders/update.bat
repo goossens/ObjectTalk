@@ -42,7 +42,8 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtPixelateFS.glsl -o generated\filter\OtPixelateFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtPixelateFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtPostProcessFS.glsl -o generated\filter\OtPostProcessFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtPostProcessFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtPosterizeFS.glsl -o generated\filter\OtPosterizeFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtPosterizeFS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtRgbCurvesFS.glsl -o generated\filter\OtRgbCurvesFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtRgbCurvesFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtRgbaCurvesFS.glsl -o generated\filter\OtRgbaCurvesFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtRgbaCurvesFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtRgbaFS.glsl -o generated\filter\OtRgbaFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtRgbaFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtSeamlessTileFS.glsl -o generated\filter\OtSeamlessTileFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtSeamlessTileFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtSharpenFS.glsl -o generated\filter\OtSharpenFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtSharpenFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f forward\OtForwardInstancingVS.glsl -o generated\forward\OtForwardInstancingVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtForwardInstancingVS_dx11

@@ -21,10 +21,10 @@
 
 
 //
-//	OtRgbCurve
+//	OtRgbaCurve
 //
 
-class OtRgbCurve : public OtFilter {
+class OtRgbaCurve : public OtFilter {
 public:
 	// curve types
 	enum class Curve {
@@ -54,5 +54,5 @@ private:
 	OtUniformVec4 uniform = OtUniformVec4("u_rbgcurves", 3);
 	OtTexture lutTexture;
 	OtSampler lutSampler{"s_lut", OtTexture::linearSampling | OtTexture::clampSampling};
-	OtShaderProgram program = OtShaderProgram("OtFilterVS", "OtRgbCurvesFS");
+	OtShaderProgram program = OtShaderProgram("OtFilterVS", "OtRgbaCurvesFS");
 };

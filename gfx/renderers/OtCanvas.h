@@ -34,6 +34,56 @@ public:
 	OtCanvas();
 	~OtCanvas();
 
+	// image repeat options
+	static constexpr int imageRepeatX = NVG_IMAGE_REPEATX;
+	static constexpr int imageRepeatY = NVG_IMAGE_REPEATY;
+	static constexpr int imageFlipY = NVG_IMAGE_FLIPY;
+	static constexpr int imageNearest = NVG_IMAGE_NEAREST;
+
+	// composite operations
+	static constexpr int compositeSourceOver = NVG_SOURCE_OVER;
+	static constexpr int compositeSourceIn = NVG_SOURCE_IN;
+	static constexpr int compositeSourceOut = NVG_SOURCE_OUT;
+	static constexpr int compositeSourceAtop = NVG_ATOP;
+	static constexpr int compositeDestinationOver = NVG_DESTINATION_OVER;
+	static constexpr int compositeDestinationIn = NVG_DESTINATION_IN;
+	static constexpr int compositeDestinationOut = NVG_DESTINATION_OUT;
+	static constexpr int compositeDestinationAtop = NVG_DESTINATION_ATOP;
+	static constexpr int compositeLighter = NVG_LIGHTER;
+	static constexpr int compositeCopy = NVG_COPY;
+	static constexpr int compositeXor = NVG_XOR;
+
+	// blend factors
+	static constexpr int blendZero = NVG_ZERO;
+	static constexpr int blendOne = NVG_ONE;
+	static constexpr int blendSourceColor = NVG_SRC_COLOR;
+	static constexpr int blendOneMinusSourceColor = NVG_ONE_MINUS_SRC_COLOR;
+	static constexpr int blendDestinationColor = NVG_DST_COLOR;
+	static constexpr int blendDneMinusDestinationColor = NVG_ONE_MINUS_DST_COLOR;
+	static constexpr int blendSourceAlpha = NVG_SRC_ALPHA;
+	static constexpr int blendOneMinusSourceAlpha = NVG_ONE_MINUS_SRC_ALPHA;
+	static constexpr int blendDestinationAlpha = NVG_DST_ALPHA;
+	static constexpr int blendOneMinusDestinationAlpha = NVG_ONE_MINUS_DST_ALPHA;
+	static constexpr int blendAlphaSaturate = NVG_SRC_ALPHA_SATURATE;
+
+	// line caps
+	static constexpr int lineButtCap = NVG_BUTT;
+	static constexpr int lineRoundCap = NVG_ROUND;
+	static constexpr int lineSquareCap = NVG_SQUARE;
+
+	// winding order
+	static constexpr int windingCcw = NVG_CCW;
+	static constexpr int windingCw = NVG_CW;
+
+	// alignment options
+	static constexpr int alignLeft = NVG_ALIGN_LEFT;
+	static constexpr int alignCenter = NVG_ALIGN_CENTER;
+	static constexpr int alignRight = NVG_ALIGN_RIGHT;
+	static constexpr int alignTop = NVG_ALIGN_TOP;
+	static constexpr int alignMiddle = NVG_ALIGN_MIDDLE;
+	static constexpr int alignBottom = NVG_ALIGN_BOTTOM;
+	static constexpr int alignBaseline = NVG_ALIGN_BASELINE;
+
 	// manipulate composite operation
 	inline void compositeOperation(int operation) { nvgGlobalCompositeOperation(context, operation); }
 	inline void compositeBlendFunc(int sfactor, int dfactor) { nvgGlobalCompositeBlendFunc(context, sfactor, dfactor); }

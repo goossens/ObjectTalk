@@ -29,6 +29,9 @@ OtType OtCanvasClass::getMeta() {
 	if (!type) {
 		type = OtType::create<OtCanvasClass>("Canvas", OtObjectClass::getMeta());
 
+		type->set("getWidth", OtFunction::create(&OtCanvasClass::getWidth));
+		type->set("getHeight", OtFunction::create(&OtCanvasClass::getHeight));
+
 		type->set("compositeOperation", OtFunction::create(&OtCanvasClass::compositeOperation));
 		type->set("compositeBlendFunc", OtFunction::create(&OtCanvasClass::compositeBlendFunc));
 		type->set("compositeBlendFuncSeparate", OtFunction::create(&OtCanvasClass::compositeBlendFuncSeparate));

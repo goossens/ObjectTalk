@@ -1,0 +1,20 @@
+var canvas = import("canvas");
+
+class Generator : canvas.Canvas {
+	function __init__(this) {
+		this.font = this.loadFont(__DIR__.join("sacramento.ttf"));
+	}
+
+	function generate(this) {
+		this.beginPath();
+		this.roundedRect(100, 120, 824, 270, 50);
+		this.strokeColor("#ffffff");
+		this.strokeWidth(5);
+		this.stroke();
+
+		this.fontFace(this.font);
+		this.fontSize(200);
+		this.fontAlign(canvas.center | canvas.middle);
+		this.text(this.getWidth() / 2, this.getHeight() / 2, "Goosje Studios");
+	}
+}

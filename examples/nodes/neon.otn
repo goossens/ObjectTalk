@@ -1,0 +1,612 @@
+{
+	"links": [
+		{
+			"from": 2265122888,
+			"id": 2708664266,
+			"to": 1859743326
+		},
+		{
+			"from": 1243237258,
+			"id": 327833537,
+			"to": 838087500
+		},
+		{
+			"from": 1243237258,
+			"id": 270590359,
+			"to": 4032784718
+		},
+		{
+			"from": 1174290744,
+			"id": 1759233174,
+			"to": 374728337
+		},
+		{
+			"from": 3712928545,
+			"id": 2645712187,
+			"to": 1300107461
+		},
+		{
+			"from": 1243237258,
+			"id": 2716016023,
+			"to": 2925709105
+		},
+		{
+			"from": 8032528,
+			"id": 1193475704,
+			"to": 3880006697
+		},
+		{
+			"from": 1145225208,
+			"id": 255324516,
+			"to": 3263670001
+		},
+		{
+			"from": 1255532261,
+			"id": 3759036581,
+			"to": 3901967658
+		},
+		{
+			"from": 4051582349,
+			"id": 1113856839,
+			"to": 849975216
+		},
+		{
+			"from": 2331550013,
+			"id": 2004468167,
+			"to": 205043617
+		},
+		{
+			"from": 1338652544,
+			"id": 2122575142,
+			"to": 3597852783
+		},
+		{
+			"from": 1243237258,
+			"id": 392822109,
+			"to": 3762680302
+		},
+		{
+			"from": 3849775609,
+			"id": 780255419,
+			"to": 3729873609
+		},
+		{
+			"from": 3712928545,
+			"id": 3262706516,
+			"to": 2424874709
+		},
+		{
+			"from": 523429238,
+			"id": 3144792389,
+			"to": 3133304885
+		},
+		{
+			"from": 308254815,
+			"id": 2667738560,
+			"to": 3273653600
+		}
+	],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 2094008723,
+			"inputs": [
+				{
+					"id": 490067382,
+					"name": "Width",
+					"type": "int",
+					"value": 1024
+				},
+				{
+					"id": 3908885178,
+					"name": "Height",
+					"type": "int",
+					"value": 512
+				}
+			],
+			"outputs": [
+				{
+					"id": 1243237258,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"path": "assets/neon.ot",
+			"title": "Canvas Generator",
+			"type": "Canvas Generator",
+			"x": 7.0,
+			"y": 61.0
+		},
+		{
+			"id": 3937156028,
+			"inputs": [
+				{
+					"id": 4032784718,
+					"name": "Input",
+					"type": "texture"
+				},
+				{
+					"id": 3311749342,
+					"name": "Red",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 4106704082,
+					"name": "Green",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 1733840061,
+					"name": "Blue",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 3575297687,
+					"name": "Alpha",
+					"type": "float",
+					"value": 1.0
+				}
+			],
+			"outputs": [
+				{
+					"id": 1255532261,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "RGBA Filter",
+			"type": "RGBA Filter",
+			"x": 293.0,
+			"y": 6.5
+		},
+		{
+			"id": 3721937331,
+			"inputs": [
+				{
+					"id": 3901967658,
+					"name": "Input",
+					"type": "texture"
+				},
+				{
+					"id": 3396079157,
+					"name": "Contrast",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 3775216392,
+					"name": "Saturation",
+					"type": "float",
+					"value": 5.0
+				},
+				{
+					"id": 390877782,
+					"name": "Brightness",
+					"type": "float",
+					"value": 4.0
+				}
+			],
+			"outputs": [
+				{
+					"id": 4051582349,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "Color Adjust",
+			"type": "Contrast Saturation Brightness",
+			"x": 472.0,
+			"y": 16.0
+		},
+		{
+			"id": 2897032216,
+			"inputs": [
+				{
+					"id": 849975216,
+					"name": "Input",
+					"type": "texture"
+				},
+				{
+					"id": 4292351742,
+					"name": "Radius",
+					"type": "float",
+					"value": 3.0
+				},
+				{
+					"id": 590271958,
+					"name": "Iterations",
+					"type": "int",
+					"value": 10
+				}
+			],
+			"outputs": [
+				{
+					"id": 2265122888,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "Gaussian Blur",
+			"type": "Gaussian Blur",
+			"x": 685.0,
+			"y": 31.5
+		},
+		{
+			"id": 2656964882,
+			"inputs": [
+				{
+					"id": 1859743326,
+					"name": "Input",
+					"type": "texture"
+				},
+				{
+					"id": 4187936600,
+					"name": "Contrast",
+					"type": "float",
+					"value": 4.0
+				},
+				{
+					"id": 3901569796,
+					"name": "Saturation",
+					"type": "float",
+					"value": 6.900000095367432
+				},
+				{
+					"id": 2575910282,
+					"name": "Brightness",
+					"type": "float",
+					"value": 1.0
+				}
+			],
+			"outputs": [
+				{
+					"id": 2331550013,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "Color Adjust",
+			"type": "Contrast Saturation Brightness",
+			"x": 900.0,
+			"y": 6.0
+		},
+		{
+			"id": 2773540058,
+			"inputs": [
+				{
+					"id": 838087500,
+					"name": "Input",
+					"type": "texture"
+				},
+				{
+					"id": 1246986636,
+					"name": "Radius",
+					"type": "float",
+					"value": 0.5099999904632568
+				},
+				{
+					"id": 3035448133,
+					"name": "Iterations",
+					"type": "int",
+					"value": 1
+				}
+			],
+			"outputs": [
+				{
+					"id": 1174290744,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "Gaussian Blur",
+			"type": "Gaussian Blur",
+			"x": 273.0,
+			"y": 425.0
+		},
+		{
+			"id": 410000429,
+			"inputs": [
+				{
+					"id": 374728337,
+					"name": "Input",
+					"type": "texture"
+				},
+				{
+					"id": 42445846,
+					"name": "Contrast",
+					"type": "float",
+					"value": 2.0
+				},
+				{
+					"id": 2034870263,
+					"name": "Saturation",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 1772575198,
+					"name": "Brightness",
+					"type": "float",
+					"value": 5.0
+				}
+			],
+			"outputs": [
+				{
+					"id": 1145225208,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "Color Adjust",
+			"type": "Contrast Saturation Brightness",
+			"x": 472.0,
+			"y": 402.0
+		},
+		{
+			"id": 2505319984,
+			"inputs": [
+				{
+					"id": 2925709105,
+					"name": "Input",
+					"type": "texture"
+				},
+				{
+					"id": 2744371760,
+					"name": "Red",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 3371047412,
+					"name": "Green",
+					"type": "float",
+					"value": 0.2800000011920929
+				},
+				{
+					"id": 1322803180,
+					"name": "Blue",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 204639047,
+					"name": "Alpha",
+					"type": "float",
+					"value": 1.0
+				}
+			],
+			"outputs": [
+				{
+					"id": 1338652544,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "RGBA Filter",
+			"type": "RGBA Filter",
+			"x": 293.0,
+			"y": 200.5
+		},
+		{
+			"id": 2160832036,
+			"inputs": [
+				{
+					"id": 3597852783,
+					"name": "Input",
+					"type": "texture"
+				},
+				{
+					"id": 2997610751,
+					"name": "Radius",
+					"type": "float",
+					"value": 1.5
+				},
+				{
+					"id": 1798708908,
+					"name": "Iterations",
+					"type": "int",
+					"value": 5
+				}
+			],
+			"outputs": [
+				{
+					"id": 8032528,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "Gaussian Blur",
+			"type": "Gaussian Blur",
+			"x": 472.0,
+			"y": 219.5
+		},
+		{
+			"id": 2507729936,
+			"inputs": [
+				{
+					"id": 3880006697,
+					"name": "Input",
+					"type": "texture"
+				},
+				{
+					"id": 753827182,
+					"name": "Contrast",
+					"type": "float",
+					"value": 4.0
+				},
+				{
+					"id": 1472377648,
+					"name": "Saturation",
+					"type": "float",
+					"value": 6.800000190734863
+				},
+				{
+					"id": 2290958339,
+					"name": "Brightness",
+					"type": "float",
+					"value": 1.0
+				}
+			],
+			"outputs": [
+				{
+					"id": 308254815,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "Color Adjust",
+			"type": "Contrast Saturation Brightness",
+			"x": 685.0,
+			"y": 209.0
+		},
+		{
+			"id": 2607174124,
+			"inputs": [
+				{
+					"id": 3762680302,
+					"name": "Input",
+					"type": "texture"
+				},
+				{
+					"id": 2157178151,
+					"name": "Contrast",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 3102632117,
+					"name": "Saturation",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 3873364993,
+					"name": "Brightness",
+					"type": "float",
+					"value": 2.0
+				}
+			],
+			"outputs": [
+				{
+					"id": 3849775609,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "Color Adjust",
+			"type": "Contrast Saturation Brightness",
+			"x": 273.0,
+			"y": 600.0
+		},
+		{
+			"id": 1000916861,
+			"inputs": [
+				{
+					"id": 205043617,
+					"name": "Input 1",
+					"type": "texture"
+				},
+				{
+					"id": 3273653600,
+					"name": "Input 2",
+					"type": "texture"
+				},
+				{
+					"id": 3263670001,
+					"name": "Input 3",
+					"type": "texture"
+				},
+				{
+					"id": 3729873609,
+					"name": "Input 4",
+					"type": "texture"
+				},
+				{
+					"id": 2983968617,
+					"name": "Input 5",
+					"type": "texture"
+				},
+				{
+					"id": 3420682580,
+					"name": "Input 6",
+					"type": "texture"
+				},
+				{
+					"id": 445006837,
+					"name": "Input 7",
+					"type": "texture"
+				},
+				{
+					"id": 2087348179,
+					"name": "Input 8",
+					"type": "texture"
+				}
+			],
+			"outputs": [
+				{
+					"id": 3712928545,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "Composite",
+			"type": "Composite Textures",
+			"x": 1093.0,
+			"y": 332.0
+		},
+		{
+			"id": 3449483021,
+			"inputs": [
+				{
+					"id": 1300107461,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"outputs": [],
+			"title": "Texture Probe",
+			"type": "Texture Probe",
+			"x": 1354.0,
+			"y": 437.0
+		},
+		{
+			"id": 1653463163,
+			"inputs": [
+				{
+					"id": 2424874709,
+					"name": "Input",
+					"type": "texture"
+				}
+			],
+			"outputs": [
+				{
+					"id": 523429238,
+					"name": "Output",
+					"type": "image"
+				}
+			],
+			"title": "Texture to Image",
+			"type": "Texture to Image",
+			"x": 1153.0,
+			"y": 189.0
+		},
+		{
+			"id": 94448155,
+			"inputs": [
+				{
+					"id": 3133304885,
+					"name": "Input",
+					"type": "image"
+				}
+			],
+			"outputs": [],
+			"title": "Save Image To File",
+			"type": "Save Image To File",
+			"x": 1365.0,
+			"y": 190.0
+		}
+	]
+}

@@ -5,6 +5,22 @@
 			"components": [
 				{
 					"component": "Core",
+					"tag": "Instructions",
+					"uuid": 2946058989
+				},
+				{
+					"component": "Message",
+					"fadeTime": 2.0,
+					"message": "Use left mouse button down and mouse drag\nto orbit around the earth.",
+					"visibleTime": 5.0
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
 					"tag": "Main Camera",
 					"uuid": 182459982
 				},

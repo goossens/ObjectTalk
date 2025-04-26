@@ -34,6 +34,9 @@ public:
 	// render a frame for the scene (return the texture index)
 	int render(int width, int height);
 
+	// handle popup messages
+	void messages();
+
 	// terminate the runtime
 	void terminate();
 
@@ -44,6 +47,7 @@ private:
 	// system initialization function
 	void initializeScriptingSystem();
 	void initializeRenderingSystem();
+	void initializeMessagingSystem();
 
 	// active camera
 	OtEntity activeCamera = OtEntityNull;

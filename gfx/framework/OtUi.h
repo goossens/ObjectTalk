@@ -128,6 +128,7 @@ public:
 	}
 
 	static bool inputText(const char* label, std::string* value, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None);
+	static bool inputMultilineText(const char* label, std::string* value, const ImVec2& size, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None);
 
 	// field to edit numbers
 	static bool dragInt(const char* label, int* value, int minv=std::numeric_limits<int>::lowest(), int maxv=std::numeric_limits<int>::max());

@@ -158,6 +158,7 @@ public:
 	void drawImage(int image, float x, float y, float w, float h);
 	void drawImage(int image, float sx, float sy, float sw, float sh, float x, float y, float w, float h);
 
+	// render text
 	inline void fontFace(int id) { nvgFontFaceId(context, id); }
 	inline void fontSize(float size) { nvgFontSize(context, size); }
 	inline void fontBlur(float blur) { nvgFontBlur(context, blur); }
@@ -170,9 +171,6 @@ public:
 	glm::vec2 textSize(const std::string& string);
 	glm::vec2 textBoxSize(const std::string& string, float w);
 
-	inline float getWidth() { return width; }
-	inline float getHeight() { return height; }
-
 	// access state
 	inline void enable() { enabled = true; dirty = true; }
 	inline void disable() { enabled = false; }
@@ -184,6 +182,10 @@ public:
 
 	// render canvas to framebuffer
 	void render(OtFrameBuffer& framebuffer, float scale, std::function<void()> renderer);
+
+	// access size
+	inline float getWidth() { return width; }
+	inline float getHeight() { return height; }
 
 private:
 	// properties

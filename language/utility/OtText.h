@@ -95,6 +95,13 @@ public:
 	}
 
 	template <class FUNCTION>
+	static inline void splitIterator(const std::string& text, char character, FUNCTION function) {
+		splitIterator(text.data(), text.data() + text.size(), character, [function] (const char* begin, const char* end) {
+			function(std::string(begin, end));
+		});
+	}
+
+	template <class FUNCTION>
 	static inline void splitTrimIterator(const char* begin, const char* end, char character, FUNCTION function) {
 		splitIterator(begin, end, character, [&](const char* b, const char* e) {
 			while (isspace(*b) && b < e) {
@@ -106,6 +113,13 @@ public:
 			}
 
 			function(b, e);
+		});
+	}
+
+	template <class FUNCTION>
+	static inline void splitTrimIterator(const std::string& text, char character, FUNCTION function) {
+		splitTrimIterator(text.data(), text.data() + text.size(), character, [function] (const char* begin, const char* end) {
+			function(std::string(begin, end));
 		});
 	}
 

@@ -5,6 +5,22 @@
 			"components": [
 				{
 					"component": "Core",
+					"tag": "Instructions",
+					"uuid": 1844945760
+				},
+				{
+					"component": "Message",
+					"fadeTime": 2.0,
+					"message": "Use arrow keys to walk.\nUse shift with arrow keys to run.",
+					"visibleTime": 5.0
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
 					"tag": "Camera",
 					"uuid": 2348125749
 				},

@@ -10,8 +10,10 @@
 //
 
 #include "glm/glm.hpp"
+#include "imgui.h"
 
 #include "OtLog.h"
+#include "OtText.h"
 
 #include "OtAssetManager.h"
 
@@ -47,6 +49,7 @@ bool OtSceneRuntime::isReady() {
 	} else {
 		initializeScriptingSystem();
 		initializeRenderingSystem();
+		initializeMessagingSystem();
 		ready = true;
 		return true;
 	}
@@ -87,6 +90,51 @@ int OtSceneRuntime::render(int width, int height) {
 
 	// render the scene and return the ID of the generated texture
 	return renderer->render(camera, scene);
+}
+
+
+//
+//	OtSceneRuntime::messages
+//
+
+void OtSceneRuntime::messages() {
+	// render messages
+	auto delta = ImGui::GetIO().DeltaTime;
+
+	for (auto&& [entity, component] : sceneAsset->getScene()->view<OtMessageComponent>().each()) {
+		if (component.visibleRemaining >= 0.0f || component.fadeRemaining >= 0.0f) {
+			if (component.visibleRemaining < 0.0f && component.fadeRemaining > 0.0f) {
+				ImGui::PushStyleVar(ImGuiStyleVar_Alpha, component.fadeRemaining / component.fadeTime);
+			}
+
+			ImGui::SetNextWindowPos(ImVec2(ImGui::GetMainViewport()->GetCenter().x, 10.0f), ImGuiCond_Always, ImVec2(0.5f, 0.0f));
+
+			ImGui::Begin(
+				"Message",
+				nullptr,
+				ImGuiWindowFlags_NoDecoration |
+					ImGuiWindowFlags_AlwaysAutoResize |
+					ImGuiWindowFlags_NoFocusOnAppearing |
+					ImGuiWindowFlags_NoNav);
+
+			OtText::splitIterator(component.message, '\n', [](const std::string& line) {
+				OtUi::centeredText(line.c_str());
+			});
+
+			ImGui::End();
+
+			if (component.visibleRemaining < 0.0f && component.fadeRemaining > 0.0f) {
+				ImGui::PopStyleVar();
+			}
+
+			if (component.visibleRemaining > 0.0f) {
+				component.visibleRemaining -= delta;
+
+			} else if (component.visibleRemaining < 0.0f) {
+				component.fadeRemaining -= delta;
+			}
+		}
+	}
 }
 
 
@@ -153,4 +201,16 @@ void OtSceneRuntime::initializeRenderingSystem() {
 	} else {
 		OtLogError("No camera found in scene at [{}]", sceneAsset.getPath());
 	}
+}
+
+
+//
+//	OtSceneRuntime::initializeMessagingSystem
+//
+
+void OtSceneRuntime::initializeMessagingSystem() {
+	for (auto&& [entity, component] : sceneAsset->getScene()->view<OtMessageComponent>().each()) {
+		component.visibleRemaining = component.visibleTime;
+		component.fadeRemaining = component.fadeTime;
+	};
 }

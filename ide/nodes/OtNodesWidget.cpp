@@ -449,10 +449,10 @@ void OtNodesWidget::renderPin(ImDrawList* drawlist, OtNodesPin& pin, float x, fl
 
 	if (pin->isVarying()) {
 		drawlist->AddQuadFilled(
-			ImVec2(pos.x, pos.y - pinRadius - 1),
-			ImVec2(pos.x + pinRadius + 1, pos.y),
-			ImVec2(pos.x, pos.y + pinRadius + 1),
-			ImVec2(pos.x - pinRadius - 1, pos.y),
+			ImVec2(pos.x, pos.y - pinRadius - 1.0f),
+			ImVec2(pos.x + pinRadius + 1.0f, pos.y),
+			ImVec2(pos.x, pos.y + pinRadius + 1.0f),
+			ImVec2(pos.x - pinRadius - 1.0f, pos.y),
 			color);
 
 	} else {
@@ -562,7 +562,7 @@ void OtNodesWidget::renderLink(ImDrawList* drawlist, const ImVec2& start, const 
 		auto distanceY = end.y - start.y;
 		auto length = std::sqrt(distanceX * distanceX + distanceY * distanceY);
 		auto offset = ImVec2(0.25f * length, 0.0f);
-		int segments = std::max(int(length / 4), 2) | 1;
+		int segments = std::max(int(length / 4.0f), 2) | 1;
 
 		if (isVarying) {
 			dashedBezierCubic(drawlist, start, start + offset, end - offset, end, color, segments);

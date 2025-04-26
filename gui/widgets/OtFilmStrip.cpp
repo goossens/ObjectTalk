@@ -93,7 +93,7 @@ void OtFilmStripClass::render() {
 
 		// determine visible size and position
 		auto size = ImVec2(w * scale, h * scale);
-		ImGui::Dummy(ImVec2(0, ImGui::GetStyle().FramePadding.y));
+		ImGui::Dummy(ImVec2(0.0f, ImGui::GetStyle().FramePadding.y));
 		OtUi::align(size, horizontalAlign, verticalAlign);
 		auto pos = ImGui::GetCursorPos();
 
@@ -119,7 +119,7 @@ void OtFilmStripClass::render() {
 			}
 
 			ImGui::PopID();
-			ImGui::Dummy(ImVec2(0, ImGui::GetStyle().FramePadding.y));
+			ImGui::Dummy(ImVec2(0.0f, ImGui::GetStyle().FramePadding.y));
 		}
 	}
 }

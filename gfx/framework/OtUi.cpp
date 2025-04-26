@@ -189,7 +189,7 @@ bool OtUi::toggleButton(const char* labelPlusID, bool* value) {
 	}
 
 	drawlist->AddCircleFilled(
-		ImVec2(p.x + radius + (*value ? 1 : 0) * (width - radius * 2.0f), p.y + radius),
+		ImVec2(p.x + radius + (*value ? 1.0f : 0.0f) * (width - radius * 2.0f), p.y + radius),
 		radius - 1.5f,
 		IM_COL32(255, 255, 255, 255));
 
@@ -292,6 +292,42 @@ bool OtUi::inputText(const char* label, std::string* value, ImGuiInputTextFlags 
 	return false;
 }
 
+
+//
+//	OtUi::inputMultilineText
+//
+
+bool OtUi::inputMultilineText(const char* label, std::string* value, const ImVec2& size, ImGuiInputTextFlags flags) {
+	flags |=
+	ImGuiInputTextFlags_NoUndoRedo |
+	ImGuiInputTextFlags_CallbackResize;
+
+	ImGui::InputTextMultiline(label, (char*) value->c_str(), value->capacity() + 1, size, flags, [](ImGuiInputTextCallbackData* data) {
+		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
+			std::string* value = (std::string*) data->UserData;
+			value->resize(data->BufTextLen);
+			data->Buf = (char*) value->c_str();
+		}
+
+		return 0;
+	}, value);
+
+	if (ImGui::IsItemDeactivatedAfterEdit()) {
+		if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+			return false;
+
+		} else {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+//
+//	OtUi::dragInt
+//
 
 bool OtUi::dragInt(const char* label, int* value, int minv, int maxv) {
 	// automatically determine drag speed

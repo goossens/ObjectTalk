@@ -25,6 +25,7 @@
 #include "OtIblComponent.h"
 #include "OtInstancingComponent.h"
 #include "OtMaterialComponent.h"
+#include "OtMessageComponent.h"
 #include "OtModelComponent.h"
 #include "OtNodesComponent.h"
 #include "OtScriptComponent.h"
@@ -59,7 +60,8 @@
 	OtSkyComponent, \
 	OtSkyBoxComponent, \
 	OtParticlesComponent, \
-	OtWaterComponent
+	OtWaterComponent, \
+	OtMessageComponent
 
 
 //

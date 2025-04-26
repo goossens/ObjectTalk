@@ -538,7 +538,7 @@ void OtWorkspace::renderSplashScreen() {
 	}
 
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-	ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5, 0.5));
+	ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
 	ImGui::Begin(
 		"SplashScreen",

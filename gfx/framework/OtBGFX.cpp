@@ -118,6 +118,9 @@ void OtFramework::initBGFX() {
 	if (!(caps->supported & BGFX_CAPS_COMPUTE)) {
 		OtLogFatal("Your system/graphics card does not support compute shaders");
 	}
+
+	// start loop timer
+	lastTime = std::chrono::high_resolution_clock::now();
 }
 
 
@@ -128,15 +131,8 @@ void OtFramework::initBGFX() {
 void OtFramework::startFrameBGFX() {
 	// calculate loop speed
 	loopTime = std::chrono::high_resolution_clock::now();
-
-	if (loopTime >= lastTime) {
-		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(loopTime - lastTime).count();
-		loopDuration = static_cast<float>(microseconds) / 1000.0f;
-
-	} else {
-		loopDuration = 1.0f / 60.0f * 1000.0f;
-	}
-
+	auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(loopTime - lastTime).count();
+	loopDuration = static_cast<float>(microseconds) / 1000.0f;
 	lastTime = loopTime;
 
 	// reset graphic settings and back-buffer size (if required)
@@ -178,7 +174,7 @@ void OtFramework::renderProfiler() {
 	float toMsGpu = 1000.0f / stats->gpuTimerFreq;
 	auto labelWith = ImGui::CalcTextSize("                         ").x;
 
-	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), ImGuiCond_Once);
 	ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text("Framerate:"); ImGui::SameLine(labelWith); ImGui::Text("%.1f", 1000.0f / loopDuration);
 	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.2f", cpuTime);

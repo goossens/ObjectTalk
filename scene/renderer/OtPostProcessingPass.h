@@ -47,21 +47,23 @@ public:
 		glm::vec2 uv;
 
 		if (settings.godrays) {
-			// determin light position in clipspace
-			glm::vec4 clipspace = ctx.camera.viewProjectionMatrix * glm::vec4(ctx.directionalLightDirection, 0.0f);
+			// determine light position in clipspace
+			glm::vec4 viewspace = ctx.camera.viewMatrix * glm::vec4(ctx.directionalLightDirection, 0.0f);
+			glm::vec4 clipspace = ctx.camera.projectionMatrix * viewspace;
 			clipspace /= clipspace.w;
 
-			// convert to UV
-			uv = glm::vec2(clipspace.x, clipspace.y) * 0.5f + 0.5f;
-
-			if (!OtGpuHasOriginBottomLeft()) {
-				uv.y = 1.0f - uv.y;
-			}
-
 			// see if it has any effect
-			if (uv.x < -0.5f || uv.x > 1.5f || uv.y < -0.5f || uv.y > 1.5f) {
+			if (viewspace.z > 0.0f || clipspace.x < -1.5f || clipspace.x > 1.5f || clipspace.y < -1.5f || clipspace.y > 1.5f) {
 				// nope, just turn it off for this frame
 				settings.godrays = false;
+
+			} else {
+				// convert to UV
+				uv = glm::vec2(clipspace.x, clipspace.y) * 0.5f + 0.5f;
+
+				if (!OtGpuHasOriginBottomLeft()) {
+					uv.y = 1.0f - uv.y;
+				}
 			}
 		}
 

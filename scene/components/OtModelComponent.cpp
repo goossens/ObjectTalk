@@ -25,6 +25,18 @@ bool OtModelComponent::renderUI() {
 	bool changed = false;
 	changed |= model.renderUI("Model");
 	changed |= OtUi::toggleButton("Cast shadow", &castShadow);
+
+	if (model.isReady()) {
+		if (ImGui::Button("Open Details", ImVec2(ImGui::CalcItemWidth(), 0.0f))) {
+			ImGui::OpenPopup("ModelPopup");
+		}
+
+		if (ImGui::BeginPopup("ModelPopup")) {
+			model->getModel().renderDetails();
+			ImGui::EndPopup();
+		}
+	}
+
 	return changed;
 }
 

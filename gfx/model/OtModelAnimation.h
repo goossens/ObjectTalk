@@ -39,6 +39,8 @@ public:
 	inline float getDuration() { return duration; }
 
 private:
+	friend class OtModel;
+
 	// properties
 	std::string name;
 	float duration;

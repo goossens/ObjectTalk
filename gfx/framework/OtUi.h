@@ -105,7 +105,7 @@ public:
 	}
 
 	// readonly fields
-	static void readonlyText(const char* label, std::string* value);
+	static void readonlyText(const char* label, const std::string& value);
 	static void readonlyInt(const char* label, int value);
 	static void readonlySizeT(const char* label, size_t value);
 	static void readonlyFloat(const char* label, float value);
@@ -135,7 +135,13 @@ public:
 	static bool dragSizeT(const char* label, size_t* value, size_t minv=0, size_t maxv=std::numeric_limits<size_t>::max());
 	static bool dragFloat(const char* label, float* value, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
 
-	// field to edit glm vectors
+	// fields to view glm entities
+	static void viewVec2(const char* label, const glm::vec2& vector);
+	static void viewVec3(const char* label, const glm::vec3& vector);
+	static void viewVec4(const char* label, const glm::vec4& vector);
+	static void viewMat4(const char* label, const glm::mat4& matrix);
+
+	// fields to edit glm vectors
 	static bool editVec2(const char* label, glm::vec2* vector, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
 	static bool editVec3(const char* label, glm::vec3* vector, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
 	static bool editVec4(const char* label, glm::vec4* vector, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
@@ -179,7 +185,8 @@ public:
 	static bool bezier(const char* label, float P[4]);
 
 private:
-	// generic vector editor
+	// generic glm tools
+	static void viewVecX(const char* labelPlusID, const float* value, int components);
 	static bool editVecX(const char* labelPlusID, float* value, int components, float minv, float maxv);
 
 	// generic splitter

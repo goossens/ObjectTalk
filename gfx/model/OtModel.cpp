@@ -24,6 +24,7 @@
 #include "OtText.h"
 
 #include "OtGpu.h"
+#include "OtUi.h"
 
 #include "OtModel.h"
 
@@ -190,6 +191,42 @@ std::vector<OtModel::RenderCommand>& OtModel::getRenderList(const glm::mat4& mod
 	renderList.clear();
 	traverseMeshes(0, modelTransform);
 	return renderList;
+}
+
+
+//
+//	OtModel::renderDetails
+//
+
+void OtModel::renderDetails() {
+	if (ImGui::BeginTabBar("Tabs")) {
+		if (ImGui::BeginTabItem("Meshes")) {
+			renderMeshes();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Materials")) {
+			renderMaterials();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Textures")) {
+			renderTextures();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Nodes")) {
+			renderNodes();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Animations")) {
+			ImGui::EndTabItem();
+			renderAnimations();
+		}
+
+		ImGui::EndTabBar();
+	}
 }
 
 
@@ -387,13 +424,13 @@ void OtModel::traverseMeshes(size_t nodeID, const glm::mat4& modelTransform) {
 
 	for (auto meshID : node.meshes) {
 		auto& mesh = meshes.at(meshID);
+		auto bones = mesh.getBoneCount();
 		auto& cmd = renderList.emplace_back();
 		cmd.mesh = &mesh;
 		cmd.material = materials[mesh.getMaterialIndex()].getMaterial();
-		cmd.animation = animations.size() && mesh.getBoneCount();
+		cmd.animation = animations.size() && bones;
 
 		if (cmd.animation) {
-			auto bones = mesh.getBoneCount();
 			cmd.transforms.reserve(bones);
 
 			for (size_t i = 0; i < bones; i++) {
@@ -408,5 +445,184 @@ void OtModel::traverseMeshes(size_t nodeID, const glm::mat4& modelTransform) {
 
 	for (auto child : node.children) {
 		traverseMeshes(child, modelTransform);
+	}
+}
+
+
+//
+//	OtModel::renderMeshes
+//
+
+void OtModel::renderMeshes() {
+	if (ImGui::BeginTable("Meshes", 6, tableFlags)) {
+		ImGui::TableSetupColumn("Name", columnFlags);
+		ImGui::TableSetupColumn("Vertices", columnFlags);
+		ImGui::TableSetupColumn("Indices", columnFlags);
+		ImGui::TableSetupColumn("Material", columnFlags);
+		ImGui::TableSetupColumn("Bones", columnFlags);
+		ImGui::TableSetupColumn("Root", columnFlags);
+		ImGui::TableHeadersRow();
+
+		for (auto& mesh : meshes) {
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn();
+			ImGui::TextUnformatted(mesh.name.c_str());
+			ImGui::TableNextColumn();
+			ImGui::TextUnformatted(std::to_string(mesh.vertices.size()).c_str());
+			ImGui::TableNextColumn();
+			ImGui::TextUnformatted(std::to_string(mesh.indices.size()).c_str());
+			ImGui::TableNextColumn();
+			ImGui::TextUnformatted(std::to_string(mesh.getMaterialIndex()).c_str());
+			ImGui::TableNextColumn();
+			ImGui::TextUnformatted(std::to_string(mesh.bones.size()).c_str());
+
+			if (mesh.hasRootNode()) {
+				ImGui::TableNextColumn();
+				ImGui::TextUnformatted(std::to_string(mesh.getRootNode()).c_str());
+			}
+		}
+
+		ImGui::EndTable();
+	}
+}
+
+
+//
+//	OtModel::renderMaterials
+//
+
+void OtModel::renderMaterials() {
+	if (ImGui::BeginTable("Materials", 2, tableFlags)) {
+		ImGui::TableSetupColumn("ID", columnFlags);
+		ImGui::TableSetupColumn("Name", columnFlags);
+		ImGui::TableHeadersRow();
+
+		for (size_t i = 0; i < materials.size(); i++) {
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn();
+			ImGui::TextUnformatted(std::to_string(i).c_str());
+			ImGui::TableNextColumn();
+			ImGui::TextUnformatted(materials[i].name.c_str());
+		}
+
+		ImGui::EndTable();
+	}
+}
+
+
+//
+//	OtModel::renderTextures
+//
+
+void OtModel::renderTextures() {
+	if (ImGui::BeginTable("Textures", 2, tableFlags)) {
+		ImGui::TableSetupColumn("ID", columnFlags);
+		ImGui::TableSetupColumn("Name", columnFlags);
+		ImGui::TableHeadersRow();
+
+		for (size_t i = 0; i < textures.size(); i++) {
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn();
+			ImGui::TextUnformatted(std::to_string(i).c_str());
+			ImGui::TableNextColumn();
+			ImGui::TextUnformatted(textures[i].asset.getPath().c_str());
+		}
+
+		ImGui::EndTable();
+	}
+}
+
+
+//
+//	OtModel::renderNodes
+//
+
+void OtModel::renderNodes() {
+	if (ImGui::BeginTable("Nodes", 4, tableFlags)) {
+		ImGui::TableSetupColumn("Name", columnFlags);
+		ImGui::TableSetupColumn("ID", columnFlags);
+		ImGui::TableSetupColumn("Meshes", columnFlags);
+		ImGui::TableSetupColumn("Transforms", columnFlags);
+		ImGui::TableHeadersRow();
+
+		renderNode(0);
+		ImGui::EndTable();
+	}
+}
+
+
+//
+//	OtModel::renderNode
+//
+
+void OtModel::renderNode(size_t nodeID) {
+	auto& node = nodes.getNode(nodeID);
+
+	ImGui::TableNextRow();
+	ImGui::TableNextColumn();
+	bool open = ImGui::TreeNodeEx(node.name.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
+	ImGui::TableNextColumn();
+	ImGui::TextUnformatted(std::to_string(node.id).c_str());
+	ImGui::TableNextColumn();
+	ImGui::TextUnformatted(std::to_string(node.meshes.size()).c_str());
+	ImGui::TableNextColumn();
+	renderNodeTransforms(nodeID);
+
+	if (open) {
+		for (auto& child : node.children) {
+			renderNode(child);
+		}
+
+		ImGui::TreePop();
+	}
+}
+
+
+//
+//	OtModel::renderNodeTransforms
+//
+
+void OtModel::renderNodeTransforms(size_t nodeID) {
+	if (ImGui::Button("View", ImVec2(ImGui::CalcItemWidth(), 0.0f))) {
+		ImGui::OpenPopup("NodeTransformPopup");
+	}
+
+	if (ImGui::BeginPopup("NodeTransformPopup")) {
+		auto& node = nodes.getNode(nodeID);
+		ImGui::PushItemWidth(300.0f);
+		OtUi::viewMat4("Local", node.localTransform);
+		ImGui::TextUnformatted("");
+		OtUi::viewMat4("Model", node.modelTransform);
+		ImGui::PopItemWidth();
+		ImGui::EndPopup();
+	}
+}
+
+
+//
+//	OtModel::renderAnimations
+//
+
+void OtModel::renderAnimations() {
+	if (ImGui::BeginTable("Animations", 4, tableFlags)) {
+		ImGui::TableSetupColumn("ID", columnFlags);
+		ImGui::TableSetupColumn("Name", columnFlags);
+		ImGui::TableSetupColumn("Duration", columnFlags);
+		ImGui::TableSetupColumn("Channels", columnFlags);
+		ImGui::TableHeadersRow();
+
+		for (size_t i = 0; i < animations.size(); i++) {
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn();
+			ImGui::TextUnformatted(std::to_string(i).c_str());
+			ImGui::TableNextColumn();
+			ImGui::TextUnformatted(animations[i].name.c_str());
+			ImGui::TableNextColumn();
+			ImGui::TextUnformatted(std::to_string(animations[i].duration).c_str());
+			ImGui::TableNextColumn();
+			ImGui::TextUnformatted(std::to_string(animations[i].channels.size()).c_str());
+		}
+
+		ImGui::EndTable();
 	}
 }

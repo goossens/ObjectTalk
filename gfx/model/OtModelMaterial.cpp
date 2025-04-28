@@ -31,6 +31,9 @@ void OtModelMaterial::load(size_t modelID, const aiScene* scene, const aiMateria
 	aiString string;
 	ai_real real;
 
+	// save name
+	name = std::string(mat->GetName().C_Str());
+
 	// create new material
 	material = std::make_shared<OtMaterial>();
 

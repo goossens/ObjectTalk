@@ -38,7 +38,10 @@ public:
 	inline std::shared_ptr<OtMaterial> getMaterial() { return material; }
 
 private:
+	friend class OtModel;
+
 	// the PBR material
+	std::string name;
 	std::shared_ptr<OtMaterial> material;
 	bool valid = false;
 

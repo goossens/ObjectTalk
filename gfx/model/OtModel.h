@@ -65,6 +65,9 @@ public:
 
 	std::vector<RenderCommand>& getRenderList(const glm::mat4& modelTransform);
 
+	// render debugging information
+	void renderDetails();
+
 private:
 	// mode elements
 	OtModelNodes nodes;
@@ -104,4 +107,22 @@ private:
 	void loadAnimations(const std::string& path);
 	void startAnimationFade(size_t animation, float duration);
 	void traverseMeshes(size_t nodeID, const glm::mat4& modelTransform);
+
+	// render model details
+	void renderMeshes();
+	void renderMaterials();
+	void renderTextures();
+	void renderNodes();
+	void renderNode(size_t nodeID);
+	void renderNodeTransforms(size_t nodeID);
+	void renderAnimations();
+
+	// rendering flags
+	static constexpr ImGuiTableFlags tableFlags =
+		ImGuiTableFlags_BordersV |
+		ImGuiTableFlags_BordersOuterH |
+		ImGuiTableFlags_RowBg;
+
+	static constexpr ImGuiTableColumnFlags columnFlags =
+		ImGuiTableColumnFlags_NoHide;
 };

@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <limits>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -48,6 +49,7 @@ public:
 		glm::mat4 localTransform;
 		glm::mat4 animationTransform;
 		glm::mat4 modelTransform;
+		size_t parent = std::numeric_limits<size_t>::max();
 		std::vector<size_t> children;
 		std::vector<size_t> meshes;
 
@@ -59,6 +61,8 @@ public:
 		};
 
 		TransformParts transformParts[2];
+
+		inline bool hasParent() { return parent != std::numeric_limits<size_t>::max(); }
 	};
 
 	// access nodes
@@ -66,8 +70,9 @@ public:
 	inline Node& getNode(const std::string& name) { return nodes[index[name]]; }
 	inline Node& getNode(size_t nodeID) { return nodes[nodeID]; }
 	inline size_t getNodeID(const std::string& name) { return index[name]; }
+	inline std::vector<Node>& getNodes() { return nodes; }
 
-private:
+	private:
 	// properties
 	std::vector<Node> nodes;
 	std::unordered_map<std::string, size_t> index;

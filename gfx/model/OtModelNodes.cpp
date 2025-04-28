@@ -46,6 +46,7 @@ size_t OtModelNodes::addNode(const aiNode* node) {
 	for (auto i = 0u; i < node->mNumChildren; i++) {
 		auto child = addNode(node->mChildren[i]);
 		nodes[id].children.emplace_back(child);
+		nodes[child].parent = id;
 	}
 
 	return id;

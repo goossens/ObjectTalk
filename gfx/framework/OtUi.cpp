@@ -13,6 +13,7 @@
 #include <cmath>
 #include <string>
 
+#include "fmt/format.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "nlohmann/json.hpp"
 
@@ -238,8 +239,8 @@ bool OtUi::latchButton(const char* label, bool* value, const ImVec2& size) {
 //	OtUi::readonlyText
 //
 
-void OtUi::readonlyText(const char* label, std::string* value) {
-	ImGui::InputText(label, (char*) value->c_str(), value->capacity() + 1, ImGuiInputTextFlags_ReadOnly);
+void OtUi::readonlyText(const char* label, const std::string& value) {
+	ImGui::InputText(label, (char*) value.c_str(), value.capacity() + 1, ImGuiInputTextFlags_ReadOnly);
 }
 
 
@@ -249,7 +250,7 @@ void OtUi::readonlyText(const char* label, std::string* value) {
 
 void OtUi::readonlyInt(const char* label, int value) {
 	std::string text = std::to_string(value);
-	readonlyText(label, &text);
+	readonlyText(label, text);
 }
 
 
@@ -259,7 +260,7 @@ void OtUi::readonlyInt(const char* label, int value) {
 
 void OtUi::readonlySizeT(const char* label, size_t value) {
 	std::string text = std::to_string(value);
-	readonlyText(label, &text);
+	readonlyText(label, text);
 }
 
 
@@ -269,7 +270,7 @@ void OtUi::readonlySizeT(const char* label, size_t value) {
 
 void OtUi::readonlyFloat(const char* label, float value) {
 	std::string text = std::to_string(value);
-	readonlyText(label, &text);
+	readonlyText(label, text);
 }
 
 
@@ -410,6 +411,63 @@ bool OtUi::dragFloat(const char* label, float* value, float minv, float maxv) {
 
 
 //
+//	OtUi::viewVecX
+//
+
+void OtUi::viewVecX(const char* labelPlusID, const float* value, int components) {
+	ImGuiWindow* window = ImGui::GetCurrentWindow();
+
+	std::string label;
+	std::string id;
+	splitLabel(labelPlusID, label, id);
+
+	ImGui::BeginGroup();
+	ImGui::PushID(id.c_str());
+	ImGui::PushMultiItemsWidths(components, ImGui::CalcItemWidth());
+
+	static const ImU32 colors[] = { 0xBB0000FF, 0xBB00FF00, 0xBBFF0000, 0xBBFFFFFF };
+
+	for (int i = 0; i < components; i++) {
+		ImGui::PushID(i);
+
+		auto absValue = std::abs(value[i]);
+		std::string text;
+
+		if (absValue < 1.0f) {
+			text = fmt::format("{:.3f}", value[i]);
+
+		} else if (absValue < 10.0f) {
+			text = fmt::format("{:.2f}", value[i]);
+
+		} else if (absValue < 100.0f) {
+			text = fmt::format("{:.1f}", value[i]);
+
+		} else {
+			text = fmt::format("{:.0f}", value[i]);
+		}
+
+		readonlyText("##value", text);
+
+		const ImVec2 min = ImGui::GetItemRectMin();
+		const ImVec2 max = ImGui::GetItemRectMax();
+		window->DrawList->AddLine(ImVec2(min.x, max.y - 1.0f), ImVec2(max.x, max.y - 1.0f), colors[i]);
+
+		ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x);
+		ImGui::PopID();
+		ImGui::PopItemWidth();
+	}
+
+	ImGui::PopID();
+
+	if (label.size()) {
+		ImGui::TextUnformatted(label.c_str(), ImGui::FindRenderedTextEnd(label.c_str()));
+	}
+
+	ImGui::EndGroup();
+}
+
+
+//
 //	OtUi::editVecX
 //
 
@@ -448,6 +506,52 @@ bool OtUi::editVecX(const char* labelPlusID, float* value, int components, float
 
 	ImGui::EndGroup();
 	return changed;
+}
+
+
+//
+//	OtUi::viewVec2
+//
+
+void OtUi::viewVec2(const char* label, const glm::vec2& vector) {
+	viewVecX(label, glm::value_ptr(vector), 2);
+}
+
+
+//
+//	OtUi::viewVec3
+//
+
+void OtUi::viewVec3(const char* label, const glm::vec3& vector) {
+	viewVecX(label, glm::value_ptr(vector), 3);
+}
+
+
+//
+//	OtUi::viewVec4
+//
+
+void OtUi::viewVec4(const char* label, const glm::vec4& vector) {
+	viewVecX(label, glm::value_ptr(vector), 4);
+}
+
+
+//
+//	OtUi::viewMat4
+//
+
+void OtUi::viewMat4(const char* labelPlusID, const glm::mat4& matrix) {
+	auto m = glm::transpose(matrix);
+	auto data = glm::value_ptr(m);
+
+	std::string label;
+	std::string id;
+	splitLabel(labelPlusID, label, id);
+
+	viewVecX(labelPlusID, data, 4);
+	viewVecX(fmt::format("##{}1", label).c_str(), data + 4, 4);
+	viewVecX(fmt::format("##{}2", label).c_str(), data + 8, 4);
+	viewVecX(fmt::format("##{}3", label).c_str(), data + 12, 4);
 }
 
 

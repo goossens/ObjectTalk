@@ -72,8 +72,7 @@ bool OtTerrain::renderUI() {
 	changed |= OtUi::toggleButton("Wireframe", &wireframe);
 
 #ifdef OT_DEBUG
-	std::string buffer = std::to_string(meshes.size());
-	OtUi::readonlyText("Visible Meshes", &buffer);
+	OtUi::readonlySizeT("Visible Meshes", meshes.size());
 #endif
 
 	return changed;

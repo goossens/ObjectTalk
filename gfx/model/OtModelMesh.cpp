@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include <limits>
-
 #include "OtLog.h"
 
 #include "OtModelMesh.h"
@@ -61,7 +59,7 @@ void OtModelMesh::load(const aiMesh* mesh, OtModelNodes& nodes) {
 	}
 
 	// remember material reference
-	material = mesh->mMaterialIndex;
+	material = static_cast<size_t>(mesh->mMaterialIndex);
 
 	// set bounding box
 	aabb.clear();
@@ -88,6 +86,7 @@ void OtModelMesh::load(const aiMesh* mesh, OtModelNodes& nodes) {
 			}
 
 			bones.emplace_back(boneName, toMat4(bone->mOffsetMatrix), nodes.getNodeID(boneName));
+			boneIndex[boneName] = static_cast<size_t>(i);
 
 			// loop through each vertex that is affected by that bone
 			for (auto j = 0u; j < bone->mNumWeights; j++) {
@@ -131,6 +130,20 @@ void OtModelMesh::load(const aiMesh* mesh, OtModelNodes& nodes) {
 
 			if (totalWeight > 0.0f) {
 				vertexBones[i].weights = boneWeights / totalWeight;
+			}
+		}
+
+		// find the root node for this mesh
+		for (auto& node : nodes.getNodes()) {
+			if (hasBone(node.name)) {
+				if (node.hasParent()) {
+					if (!hasBone(nodes.getNode(node.parent).name)) {
+						rootNode = node.id;
+					}
+
+				} else {
+					rootNode = node.id;
+				}
 			}
 		}
 	}

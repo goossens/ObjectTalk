@@ -218,7 +218,6 @@ void OtDebuggerUI::renderVariables() {
 
 				ImGui::TreePop();
 			}
-
 		}
 
 		ImGui::EndTable();

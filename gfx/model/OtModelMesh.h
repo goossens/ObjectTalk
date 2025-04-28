@@ -13,7 +13,9 @@
 //
 
 #include <cstdint>
+#include <limits>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "assimp/mesh.h"
@@ -41,7 +43,7 @@ public:
 	void submitTriangles();
 
 	// get properties
-	inline int getMaterialIndex() { return material; }
+	inline size_t getMaterialIndex() { return material; }
 	inline OtAABB& getAABB() { return aabb; }
 	inline size_t getBoneCount() { return bones.size(); }
 
@@ -52,19 +54,28 @@ public:
 		size_t node;
 	};
 
+	inline bool hasBone(const std::string& name) { return boneIndex.find(name) != boneIndex.end(); }
+	inline Bone& getNode(const std::string& name) { return bones[boneIndex[name]]; }
 	inline Bone& getBone(size_t boneID) { return bones[boneID]; }
 
-	private:
+	inline bool hasRootNode() { return rootNode != std::numeric_limits<size_t>::max(); }
+	inline size_t getRootNode() { return rootNode; }
+
+private:
+	friend class OtModel;
+
 	// properties
 	std::string name;
 	std::vector<OtVertex> vertices;
 	std::vector<uint32_t> indices;
 
 	std::vector<Bone> bones;
+	std::unordered_map<std::string, size_t> boneIndex;
 	std::vector<OtVertexBones> vertexBones;
+	size_t rootNode = std::numeric_limits<size_t>::max();
 
 	// material reference (index in model)
-	unsigned int material;
+	size_t material;
 
 	// bounding box
 	OtAABB aabb;

@@ -28,6 +28,8 @@ public:
 	void load(size_t modelID, size_t textureID, const aiTexture* texture);
 
 private:
+	friend class OtModel;
+
 	// properties
 	OtAsset<OtTextureAsset> asset;
 };

@@ -278,7 +278,7 @@ void OtModel::loadJSON() {
 void OtModel::loadModel(const std::string& modelPath) {
 	// create an asset importer
 	Assimp::Importer importer;
-//	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
+	// importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
 
 	// determine the import flags
 	auto flags =
@@ -362,7 +362,7 @@ void OtModel::loadModel(const std::string& modelPath) {
 void OtModel::loadAnimations(const std::string& animationPath) {
 	// create an asset importer
 	Assimp::Importer importer;
-//	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
+	// importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
 
 	// determine the import flags
 	auto flags =
@@ -428,7 +428,7 @@ void OtModel::traverseMeshes(size_t nodeID, const glm::mat4& modelTransform) {
 		auto& cmd = renderList.emplace_back();
 		cmd.mesh = &mesh;
 		cmd.material = materials[mesh.getMaterialIndex()].getMaterial();
-		cmd.animation = animations.size() && bones;
+		cmd.animation = animations.size() && bones > 0;
 
 		if (cmd.animation) {
 			cmd.transforms.reserve(bones);

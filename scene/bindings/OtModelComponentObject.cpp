@@ -119,9 +119,6 @@ void OtModelComponentObjectClass::fadeToAnimation(const std::string& name, float
 void OtModelComponentObjectClass::stopAnimation() {
 	if (model->model->isReady()) {
 		model->model->getModel().stopAnimation();
-
-	} else {
-		OtLogError("Model is not ready");
 	}
 }
 

@@ -49,6 +49,16 @@
 			"from": 2058357043,
 			"id": 3667428162,
 			"to": 3644423933
+		},
+		{
+			"from": 800095462,
+			"id": 2232884649,
+			"to": 797304172
+		},
+		{
+			"from": 468368962,
+			"id": 1889031874,
+			"to": 801060736
 		}
 	],
 	"metadata": {},
@@ -124,7 +134,7 @@
 				}
 			],
 			"outputs": [],
-			"title": "Texture Probe",
+			"title": "Height Map",
 			"type": "Texture Probe",
 			"x": 516.0,
 			"y": 254.0
@@ -159,8 +169,8 @@
 			],
 			"title": "Map to Image",
 			"type": "Map to Image",
-			"x": 314.0,
-			"y": 189.0
+			"x": 328.0,
+			"y": 9.0
 		},
 		{
 			"id": 3197117613,
@@ -172,10 +182,10 @@
 				}
 			],
 			"outputs": [],
-			"title": "Image Probe",
+			"title": "Coastline Distance",
 			"type": "Image Probe",
-			"x": 516.0,
-			"y": 14.0
+			"x": 766.0,
+			"y": 5.0
 		},
 		{
 			"id": 2616320889,
@@ -271,8 +281,8 @@
 			"y": 447.0
 		},
 		{
-			"azimuth": 19.889854431152344,
-			"elevation": 17.11284637451172,
+			"azimuth": 30.574609756469727,
+			"elevation": 16.1879940032959,
 			"id": 1546965795,
 			"inputs": [
 				{
@@ -354,6 +364,54 @@
 			"x": 516.0,
 			"y": 589.0,
 			"zoom": 1.5397131443023682
+		},
+		{
+			"id": 1962373291,
+			"inputs": [
+				{
+					"id": 801060736,
+					"name": "Map",
+					"type": "map"
+				},
+				{
+					"id": 2481129995,
+					"name": "Size",
+					"type": "int",
+					"value": 512
+				},
+				{
+					"id": 760579038,
+					"name": "Biome",
+					"type": "bool",
+					"value": true
+				}
+			],
+			"outputs": [
+				{
+					"id": 800095462,
+					"name": "Image",
+					"type": "image"
+				}
+			],
+			"title": "Map to Image",
+			"type": "Map to Image",
+			"x": 325.0,
+			"y": 205.0
+		},
+		{
+			"id": 1154274012,
+			"inputs": [
+				{
+					"id": 797304172,
+					"name": "Image",
+					"type": "image"
+				}
+			],
+			"outputs": [],
+			"title": "Biomes",
+			"type": "Image Probe",
+			"x": 1023.0,
+			"y": 32.0
 		}
 	]
 }

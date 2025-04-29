@@ -65,7 +65,7 @@ void OtModelAnimation::load(const aiAnimation* animation, OtModelNodes& nodes) {
 			channel.positions.emplace_back(glm::vec3(0.0f));
 
 		} else if (channel.positionTimestamps.back() < duration) {
-			channel.positionTimestamps.emplace_back(1.0f);
+			channel.positionTimestamps.emplace_back(duration);
 			channel.positions.emplace_back(channel.positions.back());
 		}
 
@@ -88,7 +88,7 @@ void OtModelAnimation::load(const aiAnimation* animation, OtModelNodes& nodes) {
 			channel.rotations.emplace_back(glm::quat{1.0f, 0.0f, 0.0f, 0.0f});
 
 		} else if (channel.rotationTimestamps.back() < duration) {
-			channel.rotationTimestamps.emplace_back(1.0f);
+			channel.rotationTimestamps.emplace_back(duration);
 			channel.rotations.emplace_back(channel.rotations.back());
 		}
 
@@ -106,12 +106,12 @@ void OtModelAnimation::load(const aiAnimation* animation, OtModelNodes& nodes) {
 
 		if (channel.scales.empty()) {
 			channel.scaleTimestamps.emplace_back(0.0f);
-			channel.scales.emplace_back(glm::vec3(0.0f));
+			channel.scales.emplace_back(glm::vec3(1.0f));
 			channel.scaleTimestamps.emplace_back(duration);
-			channel.scales.emplace_back(glm::vec3(0.0f));
+			channel.scales.emplace_back(glm::vec3(1.0f));
 
 		} else if (channel.scaleTimestamps.back() < duration) {
-			channel.scaleTimestamps.emplace_back(1.0f);
+			channel.scaleTimestamps.emplace_back(duration);
 			channel.scales.emplace_back(channel.scales.back());
 		}
 	}

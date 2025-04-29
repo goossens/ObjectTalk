@@ -1,0 +1,28 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var animation = import("animation");
+var math = import("math");
+var scene = import("scene");
+
+class rotator : scene.Entity {
+	function create(this) {
+		var model = this.getModelComponent();
+		var transform = this.getTransformComponent();
+
+		model.startAnimation("Take 001");
+
+		animation.Animation()
+			.from(360.0)
+			.to(0.0)
+			.during (30.0)
+			.continuous()
+			.onStep(function(angle) {
+				transform.setRotation(math.Vec3(0.0, angle, 0.0));
+			})
+			.start();
+	}
+}

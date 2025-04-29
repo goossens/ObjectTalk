@@ -1,0 +1,143 @@
+{
+	"entities": [
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Camera",
+					"uuid": 2187871061
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						-23.675579071044922,
+						10.801462173461914,
+						0.0
+					],
+					"scale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"translation": [
+						1.0552525520324707,
+						2.389197826385498,
+						7.54524040222168
+					]
+				},
+				{
+					"component": "Camera",
+					"far": 100.0,
+					"fov": 60.0,
+					"mainCamera": false,
+					"near": 0.10000000149011612
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Light",
+					"uuid": 2046399255
+				},
+				{
+					"ambient": 0.05000000074505806,
+					"azimuth": 162.0,
+					"castShadow": true,
+					"color": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"component": "Directional Light",
+					"elevation": 8.0
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Little Tokyo",
+					"uuid": 3110940478
+				},
+				{
+					"castShadow": true,
+					"component": "Model",
+					"model": "assets/LittlestTokyo.glb"
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						0.0,
+						46.0,
+						0.0
+					],
+					"scale": [
+						0.009999999776482582,
+						0.009999999776482582,
+						0.009999999776482582
+					],
+					"translation": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"component": "Script",
+					"path": "assets/rotator.ot"
+				}
+			]
+		}
+	],
+	"metadata": {
+		"camera": {
+			"far": 100.0,
+			"fov": 60.0,
+			"near": 0.10000000149011612,
+			"pitch": -23.675579071044922,
+			"position": [
+				1.0552525520324707,
+				2.389197826385498,
+				7.54524040222168
+			],
+			"speed": 3.0,
+			"yaw": 10.801462173461914
+		},
+		"gizmo": {
+			"enabled": false,
+			"mode": 7,
+			"snapInterval": [
+				0.10000000149011612,
+				0.10000000149011612,
+				0.10000000149011612
+			],
+			"snapping": false
+		},
+		"grid": {
+			"enabled": false,
+			"scale": 1.0
+		},
+		"type": "scene"
+	},
+	"processing": {
+		"bloomIntensity": 0.8700000047683716,
+		"contrast": 1.100000023841858,
+		"exposure": 1.100000023841858,
+		"fog": true,
+		"fogColor": [
+			0.4000000059604645,
+			0.5,
+			0.800000011920929
+		],
+		"fogDensity": 0.27000001072883606,
+		"fxaa": false,
+		"godrays": false,
+		"tonemap": 3
+	}
+}

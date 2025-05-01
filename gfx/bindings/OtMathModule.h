@@ -47,7 +47,7 @@ public:
 
 	// debugging support
 	inline std::string describe() override { return fmt::format("Vec2({}, {})", value.x, value.y); }
-	inline operator std::string() override { return describe(); }
+	inline operator std::string() override { return fmt::format("{}, {}", value.x, value.y); }
 
 	// access members
 	inline operator glm::vec2() { return value; }
@@ -173,7 +173,7 @@ public:
 
 	// debugging support
 	inline std::string describe() override { return fmt::format("Vec3({}, {}, {})", value.x, value.y, value.z); }
-	inline operator std::string() override { return describe(); }
+	inline operator std::string() override { return fmt::format("{}, {}, {}", value.x, value.y, value.z); }
 
 	// access members
 	inline operator glm::vec3() { return value; }
@@ -312,7 +312,7 @@ public:
 
 	// debugging support
 	inline std::string describe() override { return fmt::format("Vec4({}, {}, {}, {})", value.x, value.y, value.z, value.w); }
-	inline operator std::string() override { return describe(); }
+	inline operator std::string() override { return fmt::format("{}, {}, {}, {}", value.x, value.y, value.z, value.w); }
 
 	// access members
 	inline operator glm::vec4() { return value; }

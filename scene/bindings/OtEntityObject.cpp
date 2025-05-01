@@ -13,6 +13,7 @@
 #include "OtFunction.h"
 
 #include "OtEntityObject.h"
+#include "OtMessageComponentObject.h"
 #include "OtModelComponentObject.h"
 #include "OtTransformComponentObject.h"
 
@@ -64,6 +65,24 @@ OtObject OtEntityObjectClass::getTransformComponent() {
 
 
 //
+//	OtEntityObjectClass::hasMessageComponent
+//
+
+bool OtEntityObjectClass::hasMessageComponent() {
+	return scene->hasComponent<OtMessageComponent>(entity);
+}
+
+
+//
+//	OtEntityObjectClass::getMessageComponent
+//
+
+OtObject OtEntityObjectClass::getMessageComponent() {
+	return OtMessageComponentObject::create(&scene->getComponent<OtMessageComponent>(entity));
+}
+
+
+//
 //	OtEntityObjectClass::getMeta
 //
 
@@ -78,6 +97,9 @@ OtType OtEntityObjectClass::getMeta() {
 
 		type->set("hasTransformComponent", OtFunction::create(&OtEntityObjectClass::hasTransformComponent));
 		type->set("getTransformComponent", OtFunction::create(&OtEntityObjectClass::getTransformComponent));
+
+		type->set("hasMessageComponent", OtFunction::create(&OtEntityObjectClass::hasMessageComponent));
+		type->set("getMessageComponent", OtFunction::create(&OtEntityObjectClass::getMessageComponent));
 	}
 
 	return type;

@@ -37,6 +37,9 @@ public:
 	bool hasTransformComponent();
 	OtObject getTransformComponent();
 
+	bool hasMessageComponent();
+	OtObject getMessageComponent();
+
 	// get type definition
 	static OtType getMeta();
 

@@ -26,6 +26,21 @@ public:
 	// UI to change component properties
 	bool renderUI();
 
+	// update properties
+	inline void show(const std::string& m, float v, float f) {
+		message = m;
+		visibleTime = v;
+		fadeTime = f;
+
+		visibleRemaining = v;
+		fadeRemaining = f;
+	}
+
+	inline void hide() {
+		visibleRemaining = -1.0f;
+		fadeRemaining = -1.0f;
+	}
+
 	// (de)serialize component
 	nlohmann::json serialize(std::string* basedir);
 	void deserialize(nlohmann::json data, std::string* basedir);

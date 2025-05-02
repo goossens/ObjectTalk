@@ -10,6 +10,7 @@ html {
 pre {
 	background: #eee;
 	padding-left: 24px;
+	tab-size: 4;
 }
 
 ul {

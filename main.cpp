@@ -48,11 +48,7 @@
 //			Open all files in the IDE
 //
 //		Elseif no files are specified on the command line
-//			if MacOS and openFile(s) message is sent from the Finder
-//				Restart program with files as command line parameters
-//
-//			Else
-//				Start IDE
+//			Start IDE
 //
 //	Else
 //		If one file is specified on the command line

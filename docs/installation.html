@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <title>ObjectTalk Installation Guide</title>
@@ -90,9 +90,8 @@
             <h1 class="pb-2">Installation</h1>
             <p>
               The ObjectTalk package is written in C++ and can be compiled on
-              MacOS, Linux (Ubuntu and Alpine are tested) and Windows. To
-              simplify the build process,
-              <a href="https://cmake.org">Cmake</a> is used to deal with
+              MacOS, Linux and Windows. To simplify the build process,
+              <a href="https://cmake.org">CMake</a> is used to deal with
               cross-platform challenges. Right now, all platforms support the
               build process from the command line using very simple
               instructions. MacOS and Windows also support using visual
@@ -100,7 +99,7 @@
             </p>
             <p>
               ObjectTalk uses a large number of 3rd party Open Source packages.
-              The Cmake process automatically loads the correct versions,
+              The CMake process automatically loads the correct versions,
               compiles them and links them into the ObjectTalk executable
               (simply named <strong>ot</strong>). No endless downloads,
               frustrations over each package's peculiarities or countless Google
@@ -114,9 +113,9 @@
           <div id="macos">
             <h1 class="pb-2">Build and Install on MacOS</h1>
             <p>
-              ObjectTalk is supported on Sonoma (MacOS 14), Ventura (MacOS 13),
-              Monterey (MacOS 12) and Big Sur (MacOS 11). There are 4 simple
-              requirements to get your machine ready for ObjectTalk development:
+              ObjectTalk is supported on Sequoia (MacOS 15), Sonoma (MacOS
+              14)and Ventura (MacOS 13). There are 4 simple requirements to get
+              your machine ready for ObjectTalk development:
             </p>
             <ul>
               <li>Install Xcode from the App Store</li>
@@ -129,7 +128,7 @@
                 command line
               </li>
               <li>
-                Install Cmake using <strong>brew install cmake</strong> from the
+                Install CMake using <strong>brew install cmake</strong> from the
                 command line
               </li>
               <li>
@@ -300,50 +299,89 @@
             <h1 class="pb-2">Running ObjectTalk</h1>
             <p>
               Once you have compiled ObjectTalk, you end up with a single
-              executable the is either in the <strong>debug/bin</strong>,
-              <strong>debug/release</strong>, <strong>debug/xcode</strong> or
-              <strong>debug/vs</strong> directories depending on the platform or
-              the method used. This executable can be moved anywhere and in the
-              future is will be distributed in a package suitable for the
-              platform.
+              executable in one of the build directories depending on the
+              platform or the method used. This executable can be moved
+              anywhere.
             </p>
+            <ul>
+              <li>
+                Executable locations:
+                <ul>
+                  <li>
+                    <strong>Command line (MacOS Debug)</strong>:
+                    ./build/Darwin/Debug/ot
+                  </li>
+                  <li>
+                    <strong>Command line (MacOS Release)</strong>:
+                    ./build/Darwin/Release/ot
+                  </li>
+                  <li><strong>Xcode</strong>: ./build/xcode/Release/ot</li>
+                  <li>
+                    <strong>Command line (Linux Debug)</strong>:
+                    ./build/Linux/Debug/ot
+                  </li>
+                  <li>
+                    <strong>Command line (Linux Release)</strong>:
+                    ./build/Linux/Release/ot
+                  </li>
+                  <li>
+                    <strong>Windows (Debug)</strong>: ./build/vs/Debug/ot.exe
+                  </li>
+                  <li>
+                    <strong>Windows (Release)</strong>:
+                    ./build/vs/Release/ot.exe
+                  </li>
+                </ul>
+              </li>
+            </ul>
             <p>
               In priciple, the ObjectTalk executable (<strong>ot</strong>) is a
               command line tool that takes parameters. Here is the help you get
               when you run <strong>ot -h</strong>:
             </p>
-            <pre><code>Usage: ot [options] scripts
+            <pre><code>Usage: ot [--help] [--version] [--child] [--log filename] [files]...
 
 Positional arguments:
-scripts      	scripts to execute
+files               files to process [nargs: 0 or more]
 
 Optional arguments:
--h --help    	shows help message and exits
--v --version 	prints version information and exits
--i --ide     	edit code instead of running it [default: false]
+-h --help			shows help message and exits
+-v --version		prints version information and exits
+-c, --child         run as an IDE child process (internal use only)
+-l, --log filename  specify a file to send log to
 </code></pre>
-            <p>So for example:</p>
-            <ul>
-              <li>
-                Just running the executable without parameters launches an
-                Integrated Development Environment (IDE) that allow you to edit
-                ObjectTalk scripts, scenes, boards, GUIs or node-based logic.
-              </li>
-              <li>
-                You can directly run an ObjectTalk script using
-                <strong>ot [script name]</strong>
-              </li>
-              <li>
-                you can also open a script directly in the IDE by using
-                <strong>ot -i [script name]</strong>
-              </li>
-            </ul>
+            <p>Startup logic:</p>
+            <pre><code>If compiled with UI
+	If one file is specified on the command line
+		do the following based on file extension
+			.ot  - compile and run script
+			.ots - run scene file
+			.otn - open nodes in IDE
+			.* - open file in IDE
+
+	Elseif more than one files is specified on the command line
+		Open all files in the IDE
+
+	Elseif no files are specified on the command line
+		Start IDE
+
+	Else
+	If one file is specified on the command line
+		If file is .ot
+			compile and run script
+
+		Else
+			Exit with error
+
+	Else
+		Exit with error
+</code></pre>
           </div>
         </div>
       </div>
       <div class="row flex-shrink-0 py-1 manual-footer" id="copyright">
         <p class="mx-auto py-0 my-0 small">
-          Copyright (c) 1993-2023 Johan A. Goossens. All rights reserved.
+          Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
         </p>
       </div>
     </div>

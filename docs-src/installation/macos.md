@@ -1,11 +1,10 @@
-ObjectTalk is supported on Sonoma (MacOS 14), Ventura (MacOS 13),
-Monterey (MacOS 12) and Big Sur (MacOS 11). There are 4 simple requirements
-to get your machine ready for ObjectTalk development:
+ObjectTalk is supported on Sequoia (MacOS 15), Sonoma (MacOS 14)and Ventura (MacOS 13).
+There are 4 simple requirements to get your machine ready for ObjectTalk development:
 
 * Install Xcode from the App Store
 * Install **homebrew** using the instructions at [https://brew.sh](https://brew.sh)
 * Install git using **brew install git** from the command line
-* Install Cmake using **brew install cmake** from the command line
+* Install CMake using **brew install cmake** from the command line
 * Install Ninja using **brew install ninja** from the command line
 
 To build ObjectTalk, do the following from the command line:

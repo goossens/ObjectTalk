@@ -72,7 +72,7 @@ manages graphical resources (e.g. shaders, buffers, uniforms, textures
 and other assets) and is multithreaded. It also contains cross platform
 libraries to implement canvases, filters, generators, vector displays,
 font management, asynchronous asset loading in a variety of formats,
-2D/3D geometric primitives and 2D path manipulation.
+2D/3D geometric primitives, manifold definitions and 2D path manipulation.
 
 Some of its capabilities are already exposed to the scripting language
 and the examples folder shows how to use it to create simple GUIs,
@@ -127,7 +127,7 @@ Both of these a driven by script components. The jungle and island examples
 use nodes to procedurally create terrain and asset instances.
 
 To round it all out, modern engine features like geometry/model importing,
-support for animated models, deferred rendering, Physically Based Rendering (PBR),
+support for animation, deferred rendering, Physically Based Rendering (PBR),
 particle systems, Image Based Lighting (IBL), Cascaded Shadow Maps (CSMs) and
 post processing with Fog, Bloom, God Rays, Fast Approximate Anti-Aliasing (FXAA),
 Exposure/Contrast correction and Tone Mapping are also available.
@@ -146,7 +146,7 @@ environment that allows editing and execution of the ObjectTalk elements:
 	- A visual debugger is also available.
 
 - **Node editor**
-	- This editor allows the creation of node graphs.
+	- This editor allows the visual creation of node graphs.
 	- The editor has full undo capabilities.
 	- The editor automatically evaluates graphs so it can be used for realtime visual programming (e.g. image processing or asset generation).
 
@@ -161,8 +161,7 @@ environment that allows editing and execution of the ObjectTalk elements:
 
 ## Building and Installing ObjectTalk
 
-Instructions for building and installing ObjectTalk on various
-platforms can be found in the
+Instructions for building and installing ObjectTalk on various platforms can be found in the
 [installation manual](https://goossens.github.io/ObjectTalk/installation.html).
 Currently, instructions are available for MacOS, Linux and Windows.
 

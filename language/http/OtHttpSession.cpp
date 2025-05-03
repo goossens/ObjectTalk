@@ -130,7 +130,6 @@ bool OtHttpSessionClass::isAlive() {
 		return false;
 
 	} else if (!uv_is_active((uv_handle_t*) &uv_client)) {
-		OtLogWarning("funny session case");
 		active = false;
 		return false;
 

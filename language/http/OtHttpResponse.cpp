@@ -364,8 +364,8 @@ OtType OtHttpResponseClass::getMeta() {
 		type->set("end", OtFunction::create(&OtHttpResponseClass::end));
 		type->set("send", OtFunction::create(&OtHttpResponseClass::send));
 		type->set("sendFile", OtFunction::create(&OtHttpResponseClass::sendFile));
+		type->set("sendJson", OtFunction::create(&OtHttpResponseClass::sendJson));
 		type->set("download", OtFunction::create(&OtHttpResponseClass::download));
-		type->set("json", OtFunction::create(&OtHttpResponseClass::json));
 	}
 
 	return type;

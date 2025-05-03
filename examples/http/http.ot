@@ -23,7 +23,7 @@ var router = http.Router()
 	})
 
 	.get("/info2", function(req, res, next) {
-		res.json({
+		res.sendJson({
 			"id": 12,
 			"name": "john",
 			"amount": 12.3,
@@ -32,7 +32,7 @@ var router = http.Router()
 	})
 
 	.get("/info3", function(req, res, next) {
-		res.json(req.getHeaders());
+		res.sendJson(req.getHeaders());
 	})
 
 	.get("/info4", function(req, res, next) {

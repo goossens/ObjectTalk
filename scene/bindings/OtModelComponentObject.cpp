@@ -138,6 +138,32 @@ bool OtModelComponentObjectClass::isAnimating() {
 
 
 //
+//	OtModelComponentObjectClass::setAnimationSpeed
+//
+
+void OtModelComponentObjectClass::setAnimationSpeed(const std::string& name, float speed) {
+	if (model->model->isReady()) {
+		model->model->getModel().setAnimationSpeed(name, speed);
+	}
+}
+
+
+//
+//	OtModelComponentObjectClass::getAnimationSpeed
+//
+
+float OtModelComponentObjectClass::getAnimationSpeed() {
+	if (model->model->isReady()) {
+		return model->model->getModel().getAnimationSpeed();
+
+	} else {
+		return 0.0f;
+	}
+
+}
+
+
+//
 //	OtModelComponentObjectClass::getMeta
 //
 
@@ -158,6 +184,9 @@ OtType OtModelComponentObjectClass::getMeta() {
 		type->set("stopAnimation", OtFunction::create(&OtModelComponentObjectClass::stopAnimation));
 		type->set("fadeToAnimation", OtFunction::create(&OtModelComponentObjectClass::fadeToAnimation));
 		type->set("isAnimating", OtFunction::create(&OtModelComponentObjectClass::isAnimating));
+
+		type->set("setAnimationSpeed", OtFunction::create(&OtModelComponentObjectClass::setAnimationSpeed));
+		type->set("getAnimationSpeed", OtFunction::create(&OtModelComponentObjectClass::getAnimationSpeed));
 	}
 
 	return type;

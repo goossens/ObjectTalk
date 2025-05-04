@@ -35,11 +35,13 @@ public:
 	std::string getAnimationName(size_t index);
 	OtObject getAnimations();
 
-	// set animations
+	// access animations
 	void startAnimation(const std::string& name);
 	void stopAnimation();
 	void fadeToAnimation(const std::string& name, float duration);
 	bool isAnimating();
+	void setAnimationSpeed(const std::string& name, float speed);
+	float getAnimationSpeed();
 
 	// get type definition
 	static OtType getMeta();

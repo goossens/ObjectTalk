@@ -13,9 +13,11 @@
 #include "OtFunction.h"
 
 #include "OtEntityObject.h"
+#include "OtMaterialComponentObject.h"
 #include "OtMessageComponentObject.h"
 #include "OtModelComponentObject.h"
 #include "OtTransformComponentObject.h"
+#include "OtSceneObject.h"
 
 
 //
@@ -25,6 +27,15 @@
 void OtEntityObjectClass::linkToECS(OtScene* s, OtEntity e) {
 	scene = s;
 	entity = e;
+}
+
+
+//
+//	OtEntityObjectClass::getScene
+//
+
+OtObject OtEntityObjectClass::getScene() {
+	return OtSceneObject::create(scene);
 }
 
 
@@ -65,6 +76,24 @@ OtObject OtEntityObjectClass::getTransformComponent() {
 
 
 //
+//	OtEntityObjectClass::hasMaterialComponent
+//
+
+bool OtEntityObjectClass::hasMaterialComponent() {
+	return scene->hasComponent<OtMaterialComponent>(entity);
+}
+
+
+//
+//	OtEntityObjectClass::getMaterialeComponent
+//
+
+OtObject OtEntityObjectClass::getMaterialComponent() {
+	return OtMaterialComponentObject::create(&scene->getComponent<OtMaterialComponent>(entity));
+}
+
+
+//
 //	OtEntityObjectClass::hasMessageComponent
 //
 
@@ -91,12 +120,16 @@ OtType OtEntityObjectClass::getMeta() {
 
 	if (!type) {
 		type = OtType::create<OtEntityObjectClass>("Entity", OtObjectClass::getMeta());
+		type->set("getScene", OtFunction::create(&OtEntityObjectClass::getScene));
 
 		type->set("hasModelComponent", OtFunction::create(&OtEntityObjectClass::hasModelComponent));
 		type->set("getModelComponent", OtFunction::create(&OtEntityObjectClass::getModelComponent));
 
 		type->set("hasTransformComponent", OtFunction::create(&OtEntityObjectClass::hasTransformComponent));
 		type->set("getTransformComponent", OtFunction::create(&OtEntityObjectClass::getTransformComponent));
+
+		type->set("hasMaterialComponent", OtFunction::create(&OtEntityObjectClass::hasMaterialComponent));
+		type->set("getMaterialComponent", OtFunction::create(&OtEntityObjectClass::getMaterialComponent));
 
 		type->set("hasMessageComponent", OtFunction::create(&OtEntityObjectClass::hasMessageComponent));
 		type->set("getMessageComponent", OtFunction::create(&OtEntityObjectClass::getMessageComponent));

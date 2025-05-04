@@ -30,12 +30,18 @@ public:
 	// link object to ECS
 	void linkToECS(OtScene* scene, OtEntity entity);
 
+	// get parent scene
+	OtObject getScene();
+
 	// access components
 	bool hasModelComponent();
 	OtObject getModelComponent();
 
 	bool hasTransformComponent();
 	OtObject getTransformComponent();
+
+	bool hasMaterialComponent();
+	OtObject getMaterialComponent();
 
 	bool hasMessageComponent();
 	OtObject getMessageComponent();

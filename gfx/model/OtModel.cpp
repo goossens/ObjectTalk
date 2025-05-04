@@ -16,6 +16,7 @@
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
+#include "fmt/format.h"
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
@@ -143,6 +144,7 @@ void OtModel::update() {
 				currentAnimationDuration = nextAnimationDuration;
 				animations[currentAnimation].update(currentAnimationTime, nodes, 0);
 				nodes.updateAnimationTransforms();
+				animationSpeed = animations[currentAnimation].getSpeed();
 
 				if (animationStack.empty()) {
 					isTransitioningAnimation = false;
@@ -169,6 +171,11 @@ void OtModel::update() {
 				animations[currentAnimation].update(currentAnimationTime, nodes, 0);
 				animations[nextAnimation].update(nextAnimationTime, nodes, 1);
 				nodes.updateAnimationTransforms(ratio);
+
+				animationSpeed = glm::mix(
+					animations[currentAnimation].getSpeed(),
+					animations[nextAnimation].getSpeed(),
+					ratio);
 			}
 
 		} else {
@@ -221,8 +228,8 @@ void OtModel::renderDetails() {
 		}
 
 		if (ImGui::BeginTabItem("Animations")) {
-			ImGui::EndTabItem();
 			renderAnimations();
+			ImGui::EndTabItem();
 		}
 
 		ImGui::EndTabBar();
@@ -304,11 +311,6 @@ void OtModel::loadModel(const std::string& modelPath) {
 	// ensure model was loaded correctly
 	if (scene == nullptr) {
 		OtLogError("Unable to load model [{}], error: {}", modelPath, importer.GetErrorString());
-	}
-
-	// ensure scene is complete
-	if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
-		OtLogError("Incomplete model [{}]", modelPath);
 	}
 
 	// load the node hierarchy
@@ -620,9 +622,50 @@ void OtModel::renderAnimations() {
 			ImGui::TableNextColumn();
 			ImGui::TextUnformatted(std::to_string(animations[i].duration).c_str());
 			ImGui::TableNextColumn();
-			ImGui::TextUnformatted(std::to_string(animations[i].channels.size()).c_str());
+
+			std::string label = fmt::format("{}##{}",i, animations[i].channels.size());
+
+			if (ImGui::Button(label.c_str(), ImVec2(ImGui::CalcItemWidth(), 0.0f))) {
+				ImGui::OpenPopup("AnimationChannelsPopup");
+			}
+
+			if (ImGui::BeginPopup("AnimationChannelsPopup")) {
+				renderAnimationChannels(i);
+				ImGui::EndPopup();
+			}
 		}
 
 		ImGui::EndTable();
 	}
+}
+
+
+//
+//	OtModel::renderAnimationChannels
+//
+
+void OtModel::renderAnimationChannels(size_t animationID) {
+	auto& channels = animations[animationID].channels;
+	auto lineHeight = ImGui::GetTextLineHeightWithSpacing();
+	auto& style = ImGui::GetStyle();
+
+	ImU32 lineColor = ImGui::ColorConvertFloat4ToU32(style.Colors[ImGuiCol_Button]);
+	// ImU32 eventColor = ImGui::ColorConvertFloat4ToU32(style.Colors[ImGuiCol_ButtonHovered]);
+
+	ImGui::BeginChild("Channels", ImVec2(800.0f, 600.0f));
+	auto drawList = ImGui::GetWindowDrawList();
+	auto left = lineHeight * 2.0f;
+	auto right = 780.0f;
+
+	for (auto& channel : channels) {
+		ImVec2 pos = ImGui::GetCursorScreenPos();
+		ImGui::Spacing();
+		ImGui::TextUnformatted(std::to_string(channel.node).c_str());
+
+		drawList->AddLine(ImVec2(pos.x + left, pos.y + lineHeight * 0.3f), ImVec2(pos.x + right, pos.y + lineHeight * 0.3f), lineColor);
+		drawList->AddLine(ImVec2(pos.x + left, pos.y + lineHeight * 0.6f), ImVec2(pos.x + right, pos.y + lineHeight * 0.6f), lineColor);
+		drawList->AddLine(ImVec2(pos.x + left, pos.y + lineHeight * 0.9f), ImVec2(pos.x + right, pos.y + lineHeight * 0.9f), lineColor);
+	}
+
+	ImGui::EndChild();
 }

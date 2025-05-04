@@ -11,10 +11,19 @@ var scene = import("scene");
 
 class controller : scene.Entity {
 	function create(this) {
+		this.state = "Idle";
 		this.rotation = 0.0;
 		this.degreesPerSecond = 120.0;
+
 		this.model = this.getModelComponent();
-		this.state = "Idle";
+
+		this.floor = this.getScene().getEntity("Floor").getMaterialComponent();
+		this.floorOffsetX = 0.0;
+		this.floorOffsetY = 0.0;
+
+		this.model.startAnimation(this.state);
+		this.model.setAnimationSpeed("Walk", 0.7);
+		this.model.setAnimationSpeed("Run", 1.5);
 	}
 
 	function update(this) {
@@ -51,11 +60,11 @@ class controller : scene.Entity {
 				}
 
 				if (rotation - this.rotation != 0.0) {
-					if (this.has("animation") && this.animation.isRunning()) {
-						this.animation.stop();
+					if (this.has("turnAnimation") && this.turnAnimation.isRunning()) {
+						this.turnAnimation.stop();
 					}
 
-					this.animation = animation.Animation()
+					this.turnAnimation = animation.Animation()
 						.from(this.rotation)
 						.to(rotation)
 						.during((rotation - this.rotation).abs() / this.degreesPerSecond)
@@ -102,5 +111,13 @@ class controller : scene.Entity {
 				this.model.fadeToAnimation(this.state = "Walk", 0.5);
 			}
 		}
+
+		var rotation = this.rotation.radians();
+		var speed = this.model.getAnimationSpeed() / input.getFrameRate();
+
+		this.floorOffsetX = (this.floorOffsetX - rotation.sin() * speed) % 1.0;
+		this.floorOffsetY = (this.floorOffsetY + rotation.cos() * speed) % 1.0;
+
+		this.floor.setTextureOffset(math.Vec2(this.floorOffsetX, this.floorOffsetY));
 	}
 }

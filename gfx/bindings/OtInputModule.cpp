@@ -215,6 +215,10 @@ static OtObject getMouseDrag() {
 	return OtVec2::create(drag.x, drag.y);
 }
 
+static OtObject getFrameRate() {
+	return OtReal::create(1.0f / ImGui::GetIO().DeltaTime);
+}
+
 static OtObject getDeltaTime() {
 	return OtReal::create(ImGui::GetIO().DeltaTime);
 }
@@ -241,6 +245,7 @@ static OtModuleRegistration registration{"input", [](OtModule module) {
 	module->set("getMousePos", OtFunction::create(&getMousePos));
 	module->set("getMouseDrag", OtFunction::create(&getMouseDrag));
 
+	module->set("getFrameRate", OtFunction::create(&getFrameRate));
 	module->set("getDeltaTime", OtFunction::create(&getDeltaTime));
 	module->set("getTime", OtFunction::create(&getTime));
 }};

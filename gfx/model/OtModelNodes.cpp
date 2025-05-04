@@ -69,9 +69,7 @@ void OtModelNodes::clear() {
 
 void OtModelNodes::resetAnimationTransforms() {
 	for (auto& node : nodes) {
-		node.animationTransform = node.localTransform;
-		node.transformParts[0].available = false;
-		node.transformParts[1].available = false;
+		node.resetAnimationTransform();
 	}
 }
 
@@ -81,11 +79,7 @@ void OtModelNodes::resetAnimationTransforms() {
 //
 
 void OtModelNodes::setAnimationTransformParts(size_t nodeID, size_t slot, const glm::vec3& position, const glm::quat& rotation, const glm::vec3& scale) {
-	auto& transformParts = nodes.at(nodeID).transformParts[slot];
-	transformParts.available = true;
-	transformParts.position = position;
-	transformParts.rotation = rotation;
-	transformParts.scale = scale;
+	nodes.at(nodeID).setAnimationTransformParts(slot, position, rotation, scale);
 }
 
 

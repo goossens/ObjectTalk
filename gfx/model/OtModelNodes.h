@@ -63,6 +63,19 @@ public:
 		TransformParts transformParts[2];
 
 		inline bool hasParent() { return parent != std::numeric_limits<size_t>::max(); }
+
+		inline void resetAnimationTransform() {
+			animationTransform = localTransform;
+			transformParts[0].available = false;
+			transformParts[1].available = false;
+		}
+
+		inline void setAnimationTransformParts(size_t slot, const glm::vec3& position, const glm::quat& rotation, const glm::vec3& scale) {
+			transformParts[slot].available = true;
+			transformParts[slot].position = position;
+			transformParts[slot].rotation = rotation;
+			transformParts[slot].scale = scale;
+		}
 	};
 
 	// access nodes
@@ -72,7 +85,7 @@ public:
 	inline size_t getNodeID(const std::string& name) { return index[name]; }
 	inline std::vector<Node>& getNodes() { return nodes; }
 
-	private:
+private:
 	// properties
 	std::vector<Node> nodes;
 	std::unordered_map<std::string, size_t> index;

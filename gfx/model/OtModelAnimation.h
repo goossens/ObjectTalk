@@ -37,6 +37,8 @@ public:
 	// access properties
 	inline std::string getName() { return name; }
 	inline float getDuration() { return duration; }
+	inline void setSpeed(float s) { speed = s; }
+	inline float getSpeed() { return speed; }
 
 private:
 	friend class OtModel;
@@ -45,6 +47,7 @@ private:
 	std::string name;
 	float duration;
 	float ticksPerSecond;
+	float speed = 0.0f;
 
 	class Channel {
 	public:

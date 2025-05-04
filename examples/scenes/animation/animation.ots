@@ -44,7 +44,7 @@
 				},
 				{
 					"component": "Camera",
-					"far": 100.0,
+					"far": 9.0,
 					"fov": 60.0,
 					"mainCamera": false,
 					"near": 1.0
@@ -178,7 +178,7 @@
 	],
 	"metadata": {
 		"camera": {
-			"far": 100.0,
+			"far": 9.0,
 			"fov": 60.0,
 			"near": 1.0,
 			"pitch": -26.962533950805664,
@@ -216,7 +216,7 @@
 			0.08927872031927109,
 			0.10619467496871948
 		],
-		"fogDensity": 12.0,
+		"fogDensity": 17.0,
 		"fxaa": true,
 		"godrays": false,
 		"tonemap": 3

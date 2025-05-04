@@ -17,6 +17,8 @@
 #include <utility>
 #include <vector>
 
+#include "glm/glm.hpp"
+
 #include "OtAABB.h"
 
 #include "OtModelAnimation.h"
@@ -47,6 +49,8 @@ public:
 	void stopAnimation();
 	void fadeToAnimation(const std::string& name, float duration);
 	inline bool isAnimating() { return runningAnimation; }
+	inline void setAnimationSpeed(const std::string& name, float speed) { animations[animationIndex[name]].setSpeed(speed); }
+	inline float getAnimationSpeed() { return animationSpeed; }
 
 	// get bounding box
 	inline OtAABB& getAABB() { return aabb; }
@@ -97,6 +101,8 @@ private:
 	float animationTransionTime;
 	float animationTransionDuration;
 
+	float animationSpeed = 0.0f;
+
 	// rendering support
 	OtAABB aabb;
 	std::vector<RenderCommand> renderList;
@@ -116,6 +122,7 @@ private:
 	void renderNode(size_t nodeID);
 	void renderNodeTransforms(size_t nodeID);
 	void renderAnimations();
+	void renderAnimationChannels(size_t animationID);
 
 	// rendering flags
 	static constexpr ImGuiTableFlags tableFlags =

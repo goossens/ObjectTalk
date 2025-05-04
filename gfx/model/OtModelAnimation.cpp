@@ -83,9 +83,9 @@ void OtModelAnimation::load(const aiAnimation* animation, OtModelNodes& nodes) {
 
 		if (channel.rotations.empty()) {
 			channel.rotationTimestamps.emplace_back(0.0f);
-			channel.rotations.emplace_back(glm::quat{1.0f, 0.0f, 0.0f, 0.0f});
+			channel.rotations.emplace_back(glm::identity<glm::quat>());
 			channel.rotationTimestamps.emplace_back(duration);
-			channel.rotations.emplace_back(glm::quat{1.0f, 0.0f, 0.0f, 0.0f});
+			channel.rotations.emplace_back(glm::identity<glm::quat>());
 
 		} else if (channel.rotationTimestamps.back() < duration) {
 			channel.rotationTimestamps.emplace_back(duration);

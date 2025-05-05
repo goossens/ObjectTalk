@@ -101,18 +101,22 @@ void OtMap::render(OtImage& image, int size, bool biome) {
 
 	for (auto& region : map->regions) {
 		if (biome) {
-			canvas.fillColor(colors[static_cast<size_t>(region.biome)]);
+			auto color = colors[static_cast<size_t>(region.biome)];
+			canvas.strokeColor(color);
+			canvas.fillColor(color);
 
 		} else {
 			if (region.ocean) {
-				canvas.fillColor(
-					0.25f * (1.0f + region.elevation),
-					0.25f * (1.0f + region.elevation),
-					0.5f * (1.0f + region.elevation),
-					1.0f);
+				auto red = 0.25f * (1.0f + region.elevation);
+				auto green = 0.25f * (1.0f + region.elevation);
+				auto blue = 0.5f * (1.0f + region.elevation);
+				canvas.strokeColor(red, green, blue, 1.0f);
+				canvas.fillColor(red, green, blue, 1.0f);
 
 			} else if (region.water) {
-				canvas.fillColor(colors[static_cast<size_t>(region.biome)]);
+				auto color = colors[static_cast<size_t>(region.biome)];
+				canvas.strokeColor(color);
+				canvas.fillColor(color);
 
 			} else {
 				auto white = (1.0f - region.temperature) * (1.0f - region.temperature);
@@ -120,6 +124,7 @@ void OtMap::render(OtImage& image, int size, bool biome) {
 				auto red = white + (0.85f - 0.39f * moisture) * (1.0f - white);
 				auto green = white + (0.73f - 0.18f * moisture) * (1.0f - white);
 				auto blue = white + (0.55f - 0.18f * moisture) * (1.0f - white);
+				canvas.strokeColor(red, green, blue, 1.0f);
 				canvas.fillColor(red, green, blue, 1.0f);
 			}
 		}
@@ -132,7 +137,7 @@ void OtMap::render(OtImage& image, int size, bool biome) {
 		}
 
 		canvas.closePath();
-		canvas.fill();
+		canvas.strokeAndFill();
 	}
 
 	canvas.render(image);
@@ -148,44 +153,6 @@ void OtMap::renderHeightMap(OtFrameBuffer& framebuffer, int size) {
 	renderImage(framebuffer, size, [](float elevation) {
 		return static_cast<uint32_t>(std::max(elevation, 0.0f) * 255.0f);
 	});
-}
-
-
-//
-//	OtMap::createGeometry
-//
-
-OtGeometry OtMap::createGeometry(float scale) {
-	auto mesh = std::make_shared<OtMesh>();
-
-	for (auto& corner : map->corners) {
-		mesh->addVertex(OtVertex(glm::vec3(
-			corner.position.x,
-			corner.elevation * scale,
-			corner.position.y)));
-	}
-
-	for (auto& region : map->regions) {
-		auto corners = region.corners.size();
-		auto center = mesh->getVertexCount();
-
-		mesh->addVertex(OtVertex(glm::vec3(
-			region.center.x,
-			region.elevation * scale,
-			region.center.y)));
-
-		for (size_t i = 0; i < corners; i++) {
-			mesh->addTriangle(
-				static_cast<uint32_t>(region.corners[(i + 1) % corners]),
-				static_cast<uint32_t>(region.corners[i]),
-				static_cast<uint32_t>(center));
-		}
-	}
-
-	mesh->generateNormals();
-	mesh->generateTangents();
-
-	return OtGeometry(mesh);
 }
 
 
@@ -226,12 +193,12 @@ void OtMap::generateRegions() {
 	// create ghost regions
 	for (auto x = -1; x <= map->size + 1; x++) {
 		addGhostRegion(step * static_cast<float>(x), -10.0f);
-		addGhostRegion(step * static_cast<float>(x), step * static_cast<float>(map->size + 11));
+		addGhostRegion(step * static_cast<float>(x), step * static_cast<float>(map->size + 2));
 	}
 
 	for (auto y = 0; y <= map->size; y++) {
 		addGhostRegion(step * -10.0f, step * static_cast<float>(y));
-		addGhostRegion(step * static_cast<float>(map->size + 11), step * static_cast<float>(y));
+		addGhostRegion(step * static_cast<float>(map->size + 2), step * static_cast<float>(y));
 	}
 
 	// perform Delaunay triangulation on regions

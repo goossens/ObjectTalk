@@ -31,16 +31,6 @@
 			"to": 3545046684
 		},
 		{
-			"from": 468368962,
-			"id": 599782987,
-			"to": 3147366629
-		},
-		{
-			"from": 2322904493,
-			"id": 1308259675,
-			"to": 66424996
-		},
-		{
 			"from": 591397593,
 			"id": 303502022,
 			"to": 1852624315
@@ -109,7 +99,7 @@
 					"id": 3956068435,
 					"name": "Size",
 					"type": "int",
-					"value": 256
+					"value": 512
 				}
 			],
 			"outputs": [
@@ -151,7 +141,7 @@
 					"id": 1030008575,
 					"name": "Size",
 					"type": "int",
-					"value": 512
+					"value": 1024
 				},
 				{
 					"id": 103489925,
@@ -281,8 +271,8 @@
 			"y": 447.0
 		},
 		{
-			"azimuth": 30.574609756469727,
-			"elevation": 16.1879940032959,
+			"azimuth": 33.04972839355469,
+			"elevation": 14.023672103881836,
 			"id": 1546965795,
 			"inputs": [
 				{
@@ -310,62 +300,6 @@
 			"zoom": 1.833551287651062
 		},
 		{
-			"id": 1794172824,
-			"inputs": [
-				{
-					"id": 3147366629,
-					"name": "Map",
-					"type": "map"
-				},
-				{
-					"id": 2919420984,
-					"name": "Scale",
-					"type": "float",
-					"value": 10.0
-				}
-			],
-			"outputs": [
-				{
-					"id": 2322904493,
-					"name": "Geometry",
-					"type": "geometry"
-				}
-			],
-			"title": "Map to Geometry",
-			"type": "Map to Geometry",
-			"x": 305.0,
-			"y": 646.0
-		},
-		{
-			"azimuth": 5.34827995300293,
-			"elevation": 36.798858642578125,
-			"id": 1920751800,
-			"inputs": [
-				{
-					"id": 66424996,
-					"name": "Geometry",
-					"type": "geometry"
-				}
-			],
-			"lightColor": [
-				1.0,
-				1.0,
-				1.0
-			],
-			"meshColor": [
-				1.0,
-				0.8500000238418579,
-				0.0
-			],
-			"outputs": [],
-			"title": "Geometry Probe",
-			"type": "Geometry Probe",
-			"wireframe": false,
-			"x": 516.0,
-			"y": 589.0,
-			"zoom": 1.5397131443023682
-		},
-		{
 			"id": 1962373291,
 			"inputs": [
 				{
@@ -377,7 +311,7 @@
 					"id": 2481129995,
 					"name": "Size",
 					"type": "int",
-					"value": 512
+					"value": 1024
 				},
 				{
 					"id": 760579038,

@@ -66,6 +66,7 @@ public:
 	// render path
 	inline void stroke() { plutovg_canvas_stroke(canvas); }
 	inline void fill() { plutovg_canvas_fill(canvas); }
+	inline void strokeAndFill() { plutovg_canvas_stroke_preserve(canvas); plutovg_canvas_fill(canvas); }
 
 	// render canvas to image
 	void render(OtImage& image);

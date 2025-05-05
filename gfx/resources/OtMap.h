@@ -23,7 +23,6 @@
 #include "glm/glm.hpp"
 
 #include "OtFrameBuffer.h"
-#include "OtGeometry.h"
 #include "OtImage.h"
 #include "OtShaderProgram.h"
 
@@ -72,9 +71,6 @@ public:
 
 	// render map to framebuffer
 	void renderHeightMap(OtFrameBuffer& framebuffer, int size);
-
-	// convert to geometry
-	OtGeometry createGeometry(float scale);
 
 	// version management
 	inline void setVersion(int v) { version = v; }

@@ -430,7 +430,7 @@ void OtModel::traverseMeshes(size_t nodeID, const glm::mat4& modelTransform) {
 		auto& cmd = renderList.emplace_back();
 		cmd.mesh = &mesh;
 		cmd.material = materials[mesh.getMaterialIndex()].getMaterial();
-		cmd.animation = animations.size() && bones > 0;
+		cmd.animation = runningAnimation && bones > 0;
 
 		if (cmd.animation) {
 			cmd.transforms.reserve(bones);

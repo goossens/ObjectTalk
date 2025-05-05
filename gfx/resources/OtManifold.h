@@ -55,11 +55,11 @@
 //	models back into 2D paths.
 //
 //	Another difference between Manifolds and Geometries is their coordinate system. In ObjectTalk,
-//	a classic right-handed coordinate system is used where the positive X-axis points to the right,
-//	the positive Y-axis points up, and the positive Z-axis points out of the screen towards the viewer.
-//	This is called a right-handed Y-up coordinate system. CAD programs and therefore Manifolds use a
-//	left-handed Z-up cooridinate system where the positive X-axis points to the right, the positive
-//	Y-axis points away, and the positive Z-axis points up.
+//	a classic coordinate system is used where the positive X-axis points to the right, the positive Y-axis
+//	points up, and the positive Z-axis points out of the screen towards the viewer. This is called a
+//	right-handed Y-up coordinate system. CAD programs and therefore Manifolds typically use a left-handed
+//	Z-up cooridinate system where the positive X-axis points to the right, the positive Y-axis points away,
+//	and the positive Z-axis points up.
 //
 //	So when creating a Manifold, it must be done in the left-handed Z-up cooridinate system. When converting
 //	to a Mesh or Geometry, this class automativally converts the vertex coordinates to the right-handed

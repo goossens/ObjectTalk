@@ -31,7 +31,6 @@ void OtStaticBodyClass::init(OtObject w) {
 }
 
 
-
 //
 //	OtStaticBodyClass::getMeta
 //

@@ -13,7 +13,6 @@
 #include "OtObjectTalkLanguage.h"
 
 
-
 //
 //	OtObjectTalkEditor::OtObjectTalkEditor
 //

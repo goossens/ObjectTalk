@@ -24,8 +24,6 @@
 #include "OtText.h"
 
 
-
-
 //
 //	describeObject
 //

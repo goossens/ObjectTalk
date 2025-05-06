@@ -19,7 +19,6 @@
 #include "OtNode.h"
 
 
-
 //
 //	OtCutNodesTask
 //

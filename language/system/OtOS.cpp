@@ -25,7 +25,6 @@
 #include "OtOS.h"
 
 
-
 //
 //	OtOSClass::hasenv
 //

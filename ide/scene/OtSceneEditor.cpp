@@ -391,7 +391,6 @@ void OtSceneEditor::handleShortcuts() {
 }
 
 
-
 //
 //	OtSceneEditor::renderEditor
 //

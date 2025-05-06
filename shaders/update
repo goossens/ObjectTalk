@@ -206,7 +206,6 @@ cat <<END | sed -e 's/\\n/\n/g' -e 's/\\t/\t/g' >OtShaders.cpp
 #include "OtShaders.h"
 ${SHADER_INCLUDES}
 
-
 //
 //	Globals
 //

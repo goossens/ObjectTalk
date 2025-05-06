@@ -31,7 +31,6 @@ void OtKinematicBodyClass::init(OtObject w) {
 }
 
 
-
 //
 //	OtKinematicBodyClass::getMeta
 //

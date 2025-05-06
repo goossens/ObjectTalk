@@ -35,7 +35,6 @@ void OtDynamicBodyClass::init(OtObject w) {
 }
 
 
-
 //
 //	OtDynamicBodyClass::getMeta
 //

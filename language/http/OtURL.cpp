@@ -12,22 +12,12 @@
 #include <cctype>
 #include <regex>
 
-#include "OtFunction.h"
+#include "fmt/format.h"
+#include "httplib.h"
+
 #include "OtLog.h"
-#include "OtURL.h"
-
-
-//
-//	OtURLClass::init
-//
-
-void OtURLClass::init(size_t count, OtObject* parameters) {
-	if (count != 1) {
-		OtLogError("URL initializer expected 1 parameter not [{}]", count);
-	}
-
-	parse(parameters[0]->operator std::string());
-}
+#include "OtText.h"
+#include "OtUrl.h"
 
 
 //
@@ -41,14 +31,14 @@ static std::string submatch(const std::smatch& match, int index) {
 
 
 //
-//	OtURLClass::parse
+//	OtUrl::parse
 //
 
 static char myToLower(char ch) {
     return static_cast<char>(std::tolower(static_cast<int>(ch)));
 }
 
-void OtURLClass::parse(const std::string& urlString) {
+void OtUrl::parse(const std::string& urlString) {
 	url = urlString;
 
 	static std::regex urlRegex(
@@ -136,35 +126,30 @@ void OtURLClass::parse(const std::string& urlString) {
 
 
 //
-//	OtURLClass::getMeta
+//	OtUrl::doGet
 //
 
-OtType OtURLClass::getMeta() {
-	static OtType type;
+void OtUrl::doGet() {
+	auto schemeHostPort = fmt::format("{}://{}", scheme, host);
 
-	if (!type) {
-		type = OtType::create<OtURLClass>("URL", OtHttpClass::getMeta());
-		type->set("__init__", OtFunction::create(&OtURLClass::init));
+	if (port != 80) {
+		schemeHostPort += fmt::format(":{}", port);
 
-		type->set("url", OtFunction::create(&OtURLClass::getURL));
-		type->set("scheme", OtFunction::create(&OtURLClass::getScheme));
-		type->set("authority", OtFunction::create(&OtURLClass::getAuthority));
-		type->set("user", OtFunction::create(&OtURLClass::getUsername));
-		type->set("password", OtFunction::create(&OtURLClass::getPassword));
-		type->set("host", OtFunction::create(&OtURLClass::getHost));
-		type->set("port", OtFunction::create(&OtURLClass::getPort));
-		type->set("path", OtFunction::create(&OtURLClass::getPath));
-		type->set("directory", OtFunction::create(&OtURLClass::getDirectory));
-		type->set("filename", OtFunction::create(&OtURLClass::getFilename));
-		type->set("stem", OtFunction::create(&OtURLClass::getStem));
-		type->set("extension", OtFunction::create(&OtURLClass::getExtension));
-		type->set("query", OtFunction::create(&OtURLClass::getQuery));
-		type->set("fragment", OtFunction::create(&OtURLClass::getFragment));
-
-		type->set("hasParam", OtFunction::create(&OtURLClass::hasParam));
-		type->set("getParam", OtFunction::create(&OtURLClass::getParam));
-		type->set("getParamWithDefault", OtFunction::create(&OtURLClass::getParamWithDefault));
 	}
 
-	return type;
+	httplib::Headers headers = {
+		{ "User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0" }
+	};
+
+	httplib::Client client(schemeHostPort);
+	auto result = client.Get(path, headers);
+	status = result->status;
+
+	if (status == httplib::StatusCode::OK_200) {
+		data = result->body;
+
+	} else {
+		data.clear();
+		OtLogError("Can't get [{}]: {}", url, httplib::status_message(status));
+	}
 }

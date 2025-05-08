@@ -16,6 +16,7 @@ endfunction()
 process(argparse)
 process(fmt)
 process(libuv)
+process(httplib)
 process(json)
 
 if(OT_INCLUDE_UI)

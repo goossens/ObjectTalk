@@ -28,6 +28,6 @@ if (UNIX)
 endif()
 
 target_include_directories(language PUBLIC ${LANGUAGE_INCLUDE_DIRS})
-target_link_libraries(language PUBLIC uv_a json fmt isocline multipart llhttp ${LANGUAGE_EXTRA_LIBS})
+target_link_libraries(language PUBLIC uv_a httplib json fmt isocline multipart llhttp ${LANGUAGE_EXTRA_LIBS})
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${LANGUAGE_INCLUDES} ${LANGUAGE_SOURCES})

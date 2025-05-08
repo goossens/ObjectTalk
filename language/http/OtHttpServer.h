@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 
+#include "OtHttp.h"
 #include "OtHttpRouter.h"
 #include "OtHttpRequest.h"
 #include "OtHttpResponse.h"

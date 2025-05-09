@@ -24,6 +24,7 @@
 #include "OtImage.h"
 #include "OtFrameworkAtExit.h"
 #include "OtPath.h"
+#include "OtUrl.h"
 
 
 //
@@ -79,11 +80,11 @@ void OtImage::update(int width, int height, int format) {
 
 
 //
-//	OtImage::load
+//	OtImage::loadFromFile
 //
 
-void OtImage::load(const std::string& path, bool powerof2, bool square) {
-	// get image data
+void OtImage::loadFromFile(const std::string& path) {
+	// get image data from file
 	if (!OtPath::exists(path) || !OtPath::isRegularFile(path)) {
 		OtLogError("Can't open image in [{}]", path);
 	}
@@ -101,36 +102,55 @@ void OtImage::load(const std::string& path, bool powerof2, bool square) {
 	auto imageContainer = bimg::imageParse(&allocator, buffer, static_cast<uint32_t>(filesize));
 	delete [] buffer;
 
-	if (!imageContainer) {
-		OtLogFatal("Internal error: function [bimg::imageParse] failed");
-	}
-
+	// sanity check
 	if (!imageContainer) {
 		OtLogError("Can't process image in [{}]", path);
 	}
 
-	// validate sides are power of 2 (if required)
-	if (powerof2 && !(bx::isPowerOf2(imageContainer->m_width))) {
-		int width = imageContainer->m_width;
-		bimg::imageFree(imageContainer);
-		OtLogError("Image width {} is not a power of 2", width);
+	assignImageContainer(imageContainer);
+}
+
+
+//
+//	OtImage::loadFromUrl
+//
+
+void OtImage::loadFromUrl(const std::string& address) {
+	OtUrl url(address);
+	url.doGet();
+	load(url.getDownloadedData(), url.getDownloadedSize());
+}
+
+
+//
+//	OtImage::load
+//
+
+void OtImage::load(const std::string& address, bool powerof2, bool square) {
+	// do we have a URL?
+	if (OtText::startsWith(address, "http:") || OtText::startsWith(address, "https:")) {
+		loadFromUrl(address);
+
+	} else {
+		loadFromFile(address);
 	}
 
-	if (powerof2 && !(bx::isPowerOf2(imageContainer->m_height))) {
-		int height = imageContainer->m_height;
-		bimg::imageFree(imageContainer);
-		OtLogError("Image height {} is not a power of 2", height);
+	// validate sides are power of 2 (if required)
+	if (powerof2 && !(bx::isPowerOf2(image->m_width))) {
+		clear();
+		OtLogError("Image width {} is not a power of 2", image->m_width);
+	}
+
+	if (powerof2 && !(bx::isPowerOf2(image->m_height))) {
+		clear();
+		OtLogError("Image height {} is not a power of 2", image->m_height);
 	}
 
 	// validate squareness (if required)
-	if (square && imageContainer->m_width != imageContainer->m_height) {
-		int width = imageContainer->m_width;
-		int height = imageContainer->m_height;
-		bimg::imageFree(imageContainer);
-		OtLogError("Image must be square not {} by {}", width, height);
+	if (square && image->m_width != image->m_height) {
+		clear();
+		OtLogError("Image must be square not {} by {}", image->m_width, image->m_height);
 	}
-
-	assignImageContainer(imageContainer);
 }
 
 
@@ -151,9 +171,9 @@ static bimg::ImageContainer* convertImage(bimg::ImageContainer& input, bimg::Tex
 //	OtImage::loadAsGrayscale
 //
 
-void OtImage::loadAsGrayscale(const std::string& path, bool powerof2, bool square) {
+void OtImage::loadAsGrayscale(const std::string& address, bool powerof2, bool square) {
 	// load the image
-	load(path, powerof2, square);
+	load(address, powerof2, square);
 
 	// convert image (if required)
 	if (image->m_format != bimg::TextureFormat::R32F) {
@@ -166,9 +186,9 @@ void OtImage::loadAsGrayscale(const std::string& path, bool powerof2, bool squar
 //	OtImage::loadAsRGBA
 //
 
-void OtImage::loadAsRGBA(const std::string& path, bool powerof2, bool square) {
+void OtImage::loadAsRGBA(const std::string& address, bool powerof2, bool square) {
 	// load the image
-	load(path, powerof2, square);
+	load(address, powerof2, square);
 
 	// convert image (if required)
 	if (image->m_format != bimg::TextureFormat::RGBA8) {
@@ -178,10 +198,10 @@ void OtImage::loadAsRGBA(const std::string& path, bool powerof2, bool square) {
 
 
 //
-//	OtImage::loadFromMemory
+//	OtImage::load
 //
 
-void OtImage::loadFromMemory(int width, int height, int format, void* pixels) {
+void OtImage::load(int width, int height, int format, void* pixels) {
 	// create new image
 	auto imageContainer = bimg::imageAlloc(
 		&allocator,
@@ -203,12 +223,12 @@ void OtImage::loadFromMemory(int width, int height, int format, void* pixels) {
 
 
 //
-//	OtImage::loadFromFileInMemory
+//	OtImage::load
 //
 
-void OtImage::loadFromFileInMemory(void* data, uint32_t size) {
+void OtImage::load(void* data, size_t size) {
 	// create the image
-	auto imageContainer = bimg::imageParse(&allocator, data, size);
+	auto imageContainer = bimg::imageParse(&allocator, data, static_cast<uint32_t>(size));
 
 	// check for errors
 	if (!imageContainer) {

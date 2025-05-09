@@ -36,7 +36,7 @@ public:
 		auto fieldWidth = 170.0f;
 
 		if (image.isValid()) {
-			texture.loadFromImage(image);
+			texture.load(image);
 			customW = std::min(fieldWidth, static_cast<float>(image.getWidth()));
 			customH = customW * image.getHeight() / image.getWidth();
 

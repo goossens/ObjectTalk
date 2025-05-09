@@ -74,17 +74,11 @@ public:
 	// create an empty texture
 	void create(int width, int height, int format, uint64_t flags = linearSampling | repeatSampling);
 
-	// load from image
-	void loadFromImage(OtImage& image);
-
-	// load from file
-	void loadFromFile(const std::string& path, bool async=false);
-
-	// load from memory
-	void loadFromMemory(int width, int height, int format, void* pixels, bool async=false);
-
-	// load from file in memory
-	void loadFromFileInMemory(void* data, uint32_t size, bool async=false);
+	// load texture
+	void load(OtImage& image);
+	void load(const std::string& address, bool async=false);
+	void load(int width, int height, int format, void* pixels, bool async=false);
+	void load(void* data, size_t size, bool async=false);
 
 	// update (part of) texture
 	void update(int x, int y, int width, int height, void* pixels);

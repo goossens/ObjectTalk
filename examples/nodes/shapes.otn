@@ -6,16 +6,6 @@
 			"to": 4119941361
 		},
 		{
-			"from": 2333964214,
-			"id": 2362660478,
-			"to": 3009524288
-		},
-		{
-			"from": 1392188781,
-			"id": 716929858,
-			"to": 1934493382
-		},
-		{
 			"from": 3119975211,
 			"id": 3469349317,
 			"to": 2764411236
@@ -49,11 +39,6 @@
 			"from": 2554285984,
 			"id": 1939937135,
 			"to": 2241928552
-		},
-		{
-			"from": 1857944008,
-			"id": 4246858360,
-			"to": 3857878709
 		}
 	],
 	"metadata": {},
@@ -73,60 +58,6 @@
 			"type": "Shape Generator",
 			"x": 43.0,
 			"y": 125.0
-		},
-		{
-			"id": 2527335152,
-			"inputs": [],
-			"outputs": [
-				{
-					"id": 1857944008,
-					"name": "Value",
-					"type": "vector2"
-				}
-			],
-			"title": "Translate",
-			"type": "Vector2 Input",
-			"value": [
-				100.0,
-				0.0
-			],
-			"x": 43.0,
-			"y": 353.0
-		},
-		{
-			"id": 970149316,
-			"inputs": [],
-			"outputs": [
-				{
-					"id": 2333964214,
-					"name": "Value",
-					"type": "float"
-				}
-			],
-			"title": "Rotate",
-			"type": "Float Input",
-			"value": 0.0,
-			"x": 43.0,
-			"y": 442.0
-		},
-		{
-			"id": 1183663906,
-			"inputs": [],
-			"outputs": [
-				{
-					"id": 1392188781,
-					"name": "Value",
-					"type": "vector2"
-				}
-			],
-			"title": "Scale",
-			"type": "Vector2 Input",
-			"value": [
-				2.0,
-				2.0
-			],
-			"x": 43.0,
-			"y": 529.0
 		},
 		{
 			"id": 1273660806,
@@ -181,17 +112,26 @@
 				{
 					"id": 3857878709,
 					"name": "Translate",
-					"type": "vector2"
+					"type": "vector2",
+					"value": [
+						100.0,
+						0.0
+					]
 				},
 				{
 					"id": 3009524288,
 					"name": "Rotate",
-					"type": "float"
+					"type": "float",
+					"value": 0.0
 				},
 				{
 					"id": 1934493382,
 					"name": "Scale",
-					"type": "vector2"
+					"type": "vector2",
+					"value": [
+						2.0,
+						2.0
+					]
 				}
 			],
 			"outputs": [

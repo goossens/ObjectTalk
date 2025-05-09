@@ -111,10 +111,10 @@ static bgfx::TextureHandle createMipmapTexture(bimg::ImageContainer* image) {
 
 
 //
-//	OtTexture::loadFromImage
+//	OtTexture::load
 //
 
-void OtTexture::loadFromImage(OtImage& image) {
+void OtTexture::load(OtImage& image) {
 	// get the image data
 	bimg::ImageContainer* container = image.getContainer();
 
@@ -135,10 +135,10 @@ void OtTexture::loadFromImage(OtImage& image) {
 
 
 //
-//	OtTexture::loadFromFile
+//	OtTexture::load
 //
 
-void OtTexture::loadFromFile(const std::string& path, bool async) {
+void OtTexture::load(const std::string& path, bool async) {
 	if (async) {
 		// get image and schedule an asynchronous load to the GPU
 		asyncImage = std::make_shared<OtImage>(path);
@@ -147,47 +147,47 @@ void OtTexture::loadFromFile(const std::string& path, bool async) {
 	} else {
 		// get the image
 		OtImage image(path);
-		loadFromImage(image);
+		load(image);
 	}
 }
 
 
 //
-//	OtTexture::loadFromMemory
+//	OtTexture::load
 //
 
-void OtTexture::loadFromMemory(int w, int h, int f, void* pixels, bool async) {
+void OtTexture::load(int w, int h, int f, void* pixels, bool async) {
 	if (async) {
 		// get image and schedule an asynchronous load to the GPU
 		asyncImage = std::make_shared<OtImage>();
-		asyncImage->loadFromMemory(w, h, f, pixels);
+		asyncImage->load(w, h, f, pixels);
 		loadAsync();
 
 	} else {
 		// get the image
 		OtImage image;
-		image.loadFromMemory(w, h, f, pixels);
-		loadFromImage(image);
+		image.load(w, h, f, pixels);
+		load(image);
 	}
 }
 
 
 //
-//	OtTexture::loadFromFileInMemory
+//	OtTexture::load
 //
 
-void OtTexture::loadFromFileInMemory(void* data, uint32_t size, bool async) {
+void OtTexture::load(void* data, size_t size, bool async) {
 	if (async) {
 		// get image and schedule an asynchronous load to the GPU
 		asyncImage = std::make_shared<OtImage>();
-		asyncImage->loadFromFileInMemory(data, size);
+		asyncImage->load(data, size);
 		loadAsync();
 
 	} else {
 		// get the image
 		OtImage image;
-		image.loadFromFileInMemory(data, size);
-		loadFromImage(image);
+		image.load(data, size);
+		load(image);
 	}
 }
 
@@ -265,15 +265,15 @@ bgfx::TextureHandle OtTexture::getHandle() {
 
 void OtTexture::loadAsync() {
 	// schedule a task to upload image to texture
-	// we can't do that here as loading is done in a seperate thread
-	// the callback below will be called in the main thread
+	// we can't do that here as loading is done in a seperate thread (where there is no GPU context)
+	// the callback below will be called in the main thread (where we have a GPU context)
 	asyncHandle = new uv_async_t;
 	asyncHandle->data = this;
 
 	auto status = uv_async_init(uv_default_loop(), asyncHandle, [](uv_async_t* handle){
 		// load image to texture
 		auto texture = (OtTexture*) handle->data;
-		texture->loadFromImage(*texture->asyncImage);
+		texture->load(*texture->asyncImage);
 		texture->asyncImage = nullptr;
 
 		// cleanup

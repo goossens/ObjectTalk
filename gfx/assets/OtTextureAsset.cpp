@@ -22,7 +22,7 @@
 OtAssetBase::State OtTextureAsset::load() {
 	try {
 		// try to load the texture
-		texture.loadFromFile(path, true);
+		texture.load(path, true);
 
 		// create an event handler to check on the status every frame
 		asyncHandle = new uv_async_t;

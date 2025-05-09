@@ -38,7 +38,7 @@ public:
 
 		if (shape.isValid()) {
 			shape.renderFill(image, OtColor(1.0, 1.0, 1.0, 1.0));
-			texture.loadFromImage(image);
+			texture.load(image);
 			customW = std::min(fieldWidth, static_cast<float>(image.getWidth()));
 			customH = customW * image.getHeight() / image.getWidth();
 

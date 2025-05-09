@@ -30,7 +30,7 @@ public:
 	// when the input changes, we write the image to the GPUs texture
 	inline void onExecute() override {
 		if (image.isValid()) {
-			texture.loadFromImage(image);
+			texture.load(image);
 
 		} else {
 			texture.clear();

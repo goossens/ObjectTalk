@@ -47,16 +47,12 @@ public:
 	// create/update an image
 	void update(int width, int height, int format);
 
-	// load the image from disk
-	void load(const std::string& path, bool powerof2=false, bool square=false);
-	void loadAsGrayscale(const std::string& path, bool powerof2=false, bool square=false);
-	void loadAsRGBA(const std::string& path, bool powerof2=false, bool square=false);
-
-	// load from memory
-	void loadFromMemory(int width, int height, int format, void* pixels);
-
-	// load the image from a file in memory
-	void loadFromFileInMemory(void* data, uint32_t size);
+	// load image
+	void load(const std::string& address, bool powerof2=false, bool square=false);
+	void loadAsGrayscale(const std::string& address, bool powerof2=false, bool square=false);
+	void loadAsRGBA(const std::string& address, bool powerof2=false, bool square=false);
+	void load(int width, int height, int format, void* pixels);
+	void load(void* data, size_t size);
 
 	// save the image to disk
 	void saveToPNG(const std::string& path);
@@ -100,4 +96,7 @@ private:
 
 	// assign a new image container to the shared pointer
 	void assignImageContainer(bimg::ImageContainer* container);
+
+	void loadFromFile(const std::string& path);
+	void loadFromUrl(const std::string& url);
 };

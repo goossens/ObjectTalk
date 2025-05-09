@@ -6810,7 +6810,7 @@ uint16_t OtLogo::getTextureIndex() {
 	// create texture (if required)
 	if (!texture.isValid()) {
 		// load it from memory (to keep ot as a single file)
-		texture.loadFromFileInMemory((void*) &OtLogoData, sizeof(OtLogoData));
+		texture.load((void*) &OtLogoData, sizeof(OtLogoData));
 	}
 
 	return texture.getIndex();

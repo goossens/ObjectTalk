@@ -284,7 +284,7 @@ void OtOscilloscope::render(OtFrameBuffer& framebuffer) {
 			}
 		}
 
-		brush.loadFromMemory(brushSize, brushSize, OtTexture::rgba8Texture, pixels);
+		brush.load(brushSize, brushSize, OtTexture::rgba8Texture, pixels);
 	}
 
 	OtPass pass;

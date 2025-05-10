@@ -9,6 +9,7 @@ been a lot harder to implement the project.
 * [{fmt}](https://github.com/fmtlib/fmt) - open-source formatting library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [JSON for Modern C++](https://github.com/nlohmann/json) - JSON creation/parsing library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [argparse](https://github.com/p-ranav/argparse) - command line argument parser released under the [MIT license](https://opensource.org/licenses/MIT).
+* [cpp-httplib](https://github.com/yhirose/cpp-httplib) - cross platform HTTP/HTTPS library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [llhttp](https://llhttp.org) - HTTP protocol parser released under the [MIT license](https://opensource.org/licenses/MIT).
 * [multipart-parser](https://github.com/francoiscolas/multipart-parser) - HTTP multipart body parser released under the [MIT license](https://opensource.org/licenses/MIT).
 * [isocline](https://github.com/daanx/isocline) - cross-platform library that can be used as an alternative to the GNU readline library released under the [MIT license](https://opensource.org/licenses/MIT).

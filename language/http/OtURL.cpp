@@ -101,7 +101,7 @@ void OtUrl::parse(const std::string& urlString) {
 
 		} else {
 			stem = filename.substr(0, period);
-			extension = filename.substr(period + 1);
+			extension = filename.substr(period);
 			std::transform(extension.begin(), extension.end(), extension.begin(), myToLower);
 		}
 	}
@@ -137,19 +137,16 @@ void OtUrl::doGet() {
 
 	}
 
-	httplib::Headers headers = {
-		{ "User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0" }
-	};
-
+	httplib::Headers headers = {{"User-Agent", "ObjectTalk/0.4"}};
 	httplib::Client client(schemeHostPort);
-	auto result = client.Get(path, headers);
-	status = result->status;
 
-	if (status == httplib::StatusCode::OK_200) {
+	auto result = client.Get(path, headers);
+
+	if (result) {
 		data = result->body;
 
 	} else {
 		data.clear();
-		OtLogError("Can't get [{}]: {}", url, httplib::status_message(status));
+		OtLogError("Can't get [{}]: {}", url,  httplib::to_string(result.error()));
 	}
 }

@@ -24,6 +24,7 @@
 #include "OtLog.h"
 #include "OtSingleton.h"
 #include "OtText.h"
+#include "OtUrl.h"
 
 #include "OtAssetBase.h"
 #include "OtPath.h"
@@ -84,6 +85,19 @@ public:
 			if (OtText::startsWith(path, "virtual:")) {
 				// yes, just mark it as missing for now
 				asset->state = OtAssetBase::State::missing;
+
+			} else if (OtText::startsWith(path, "http:") || OtText::startsWith(path, "https:")) {
+				// ensure file extension is supported by asset type
+				OtUrl url(path);
+
+				if (asset->supportsFileType(url.getExtension())) {
+					// asset loading is asynchronous
+					manager->scheduleLoad(asset);
+
+				} else {
+					OtLogWarning("Asset [{}] refers to unsupported type, expected [{}]", path, asset->getSupportedFileTypes());
+					asset->state = OtAssetBase::State::invalid;
+				}
 
 			} else {
 				// ensure path exists

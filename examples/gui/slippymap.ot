@@ -1,0 +1,20 @@
+#!/usr/local/bin/ot
+
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+var gui = import("gui");
+
+class MyApp : gui.App {
+	function setup(this) {
+		this.map = gui.SlippyMap();
+		this.map.addOsmLayer("localhost:8010");
+		this.add(this.map);
+	}
+}
+
+var app = MyApp();
+app.run();

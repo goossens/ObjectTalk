@@ -29,6 +29,7 @@
 #include "OtProperties.h"
 #include "OtRealSlider.h"
 #include "OtRows.h"
+#include "OtSlippyMapWidget.h"
 #include "OtTab.h"
 #include "OtTabBar.h"
 #include "OtTextEditorWidget.h"
@@ -61,6 +62,7 @@ static OtModuleRegistration registration{"gui", [](OtModule module) {
 	module->set("Properties", OtClass::create(OtPropertiesClass::getMeta()));
 	module->set("RealSlider", OtClass::create(OtRealSliderClass::getMeta()));
 	module->set("Rows", OtClass::create(OtRowsClass::getMeta()));
+	module->set("SlippyMap", OtClass::create(OtSlippyMapWidgetClass::getMeta()));
 	module->set("Tab", OtClass::create(OtTabClass::getMeta()));
 	module->set("TabBar", OtClass::create(OtTabBarClass::getMeta()));
 	module->set("TextEditor", OtClass::create(OtTextEditorWidgetClass::getMeta()));

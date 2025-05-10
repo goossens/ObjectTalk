@@ -12,6 +12,10 @@
 #include <cstring>
 #include <string>
 
+#ifndef _WIN32
+#include <signal.h>
+#endif
+
 #include <argparse/argparse.hpp>
 
 #include "OtConfig.h"
@@ -64,8 +68,14 @@
 
 
 int main(int argc, char* argv[]) {
+#ifndef _WIN32
+	// disable signal handler for SIGPIPE on UNIX type systems
+	// we handle EPIPE errors instead
+	signal(SIGPIPE, SIG_IGN);
+#endif
+
 	// parse all command line parameters
-	argparse::ArgumentParser program(argv[0], "0.3");
+	argparse::ArgumentParser program(argv[0], "0.4");
 	bool childProcessFlag = false;
 	std::string logFile;
 

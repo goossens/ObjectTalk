@@ -13,6 +13,7 @@
 
 #include "fmt/format.h"
 
+#include "OtFramework.h"
 #include "OtMapTile.h"
 #include "OtTileLayer.h"
 
@@ -55,6 +56,29 @@ void OtTileLayer::render(ImDrawList* drawlist, OtProjector& projector) {
 	for (auto i = tiles.rbegin(); i != tiles.rend(); i++) {
 		(*i)->render(drawlist, projector);
 	}
+
+	// render copyright notice
+	static constexpr const char* copyright = "© OpenStreetMap";
+	static constexpr float margin = 3.0f;
+
+	auto windowSize = projector.getWindowSize();
+	auto windowOffset = projector.getWindowOffset();
+	auto textSize = ImGui::CalcTextSize(copyright) + ImVec2(margin * 2.0f, margin * 2.0f);
+	ImVec2 textOffset = windowOffset + windowSize - textSize;
+
+	auto pos = ImGui::GetCursorScreenPos();
+	ImGui::SetCursorScreenPos(textOffset);
+
+	if (ImGui::InvisibleButton("Copyright", textSize)) {
+		OtFramework::openURL("https://www.openstreetmap.org/copyright");
+	}
+
+	drawlist->AddRectFilled(textOffset, windowOffset + windowSize, IM_COL32(255, 255, 255, 160));
+	drawlist->AddText(textOffset + ImVec2(margin, margin), IM_COL32(0, 0, 238, 255), copyright);
+
+	// DUmmy is require to avoid Dear ImGui error (see https://github.com/ocornut/imgui/issues/5548)
+	ImGui::SetCursorScreenPos(pos);
+	ImGui::Dummy(ImVec2());
 }
 
 

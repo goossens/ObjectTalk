@@ -143,7 +143,13 @@ void OtUrl::doGet() {
 	auto result = client.Get(path, headers);
 
 	if (result) {
-		data = result->body;
+		if (result->status == httplib::StatusCode::OK_200) {
+			data = result->body;
+
+		} else {
+			data.clear();
+			OtLogError("Can't get [{}]: HTTP status {} ({})", url,  result->status, httplib::status_message(result->status));
+		}
 
 	} else {
 		data.clear();

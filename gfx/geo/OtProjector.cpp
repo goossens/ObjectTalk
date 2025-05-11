@@ -90,8 +90,10 @@ OtMapTile OtProjector::rasterToTile(OtMapRaster raster, int zm) {
 //
 
 OtLatLon OtProjector::screenToLatLon(ImVec2 screen) {
-	auto pos = screen - offset - ImVec2(size.x / 2.0f, size.y / 2.0f);
-	return rasterToLatLon(OtMapRaster(static_cast<double>(pos.x) * resolution, static_cast<double>(pos.y) * resolution));
+	auto screenOffset = screen - offset - ImVec2(size.x / 2.0f, size.y / 2.0f);
+	OtMapRaster rasterOffset(static_cast<double>(screenOffset.x) * resolution, static_cast<double>(screenOffset.y) * resolution);
+	auto rasterCenter = latLonToRaster(center);
+	return rasterToLatLon(rasterCenter + rasterOffset);
 }
 
 

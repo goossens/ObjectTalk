@@ -20,6 +20,9 @@
 //
 
 void OtSlippyMap::render(const char* label, OtLatLon& center, double& resolution, ImVec2 size) {
+	// start a child window to enable clipping
+	ImGui::BeginChild("SlippyMap");
+
 	// use all available space by default
 	if (size.x == 0.0f || size.y == 0.0f) {
 		size = ImGui::GetContentRegionAvail();
@@ -31,8 +34,9 @@ void OtSlippyMap::render(const char* label, OtLatLon& center, double& resolution
 	}
 
 	// setup screen context
-	ImVec2 p = ImGui::GetCursorScreenPos();
+	ImVec2 pos = ImGui::GetCursorScreenPos();
 	ImDrawList* drawlist = ImGui::GetWindowDrawList();
+	ImGui::SetNextItemAllowOverlap();
 	ImGui::InvisibleButton(label, size);
 	ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY);
 
@@ -63,7 +67,7 @@ void OtSlippyMap::render(const char* label, OtLatLon& center, double& resolution
 
 	// update projector
 	projector.setWindowSize(size);
-	projector.setWindowOffset(p);
+	projector.setWindowOffset(pos);
 
 	projector.setCenter(center);
 	projector.setResolution(resolution);
@@ -72,54 +76,6 @@ void OtSlippyMap::render(const char* label, OtLatLon& center, double& resolution
 	for (auto& layer : layers) {
 		layer->render(drawlist, projector);
 	}
+
+	ImGui::EndChild();
 }
-
-
-// //
-// //  MtMap::onDoubleTouchGesture
-// //
-
-// void MtMap::onDoubleTouchGesture(int id, const MtPoint& touch)
-// {
-// 	// animate map pan and zoom
-// 	glm::vec2 cen = projector.latLonToRaster(projector.getCenter());
-// 	double resolution = projector.getResolution();
-// 	cen.x += touch.x * resolution;
-// 	cen.y += touch.y * resolution;
-// 	projector.flyTo(projector.rasterToLatLon(cen), projector.getResolution() / 2.0);
-// }
-
-
-// //
-// //  MtMap::onMoveGesture
-// //
-
-// void MtMap::onMoveGesture(int id, const MtPoint& touch, const MtPoint& delta)
-// {
-// 	// determine new map center
-// 	glm::vec2 cen = projector.latLonToRaster(projector.getCenter());
-// 	double resolution = projector.getResolution();
-// 	cen.x -= delta.x * resolution;
-// 	cen.y -= delta.y * resolution;
-// 	projector.setCenter(projector.rasterToLatLon(cen));
-// }
-
-
-// //
-// //  MtMap::onInertiaGesture
-// //
-
-// void MtMap::onInertiaGesture(int id, const MtPoint& touch, const MtPoint& delta)
-// {
-// 	onMoveGesture(id, touch, delta);
-// }
-
-
-// //
-// //  MtMap::onZoomRotateGesture
-// //
-
-// void MtMap::onZoomRotateGesture(int id, const MtPoint& delta, float scale, float rotation)
-// {
-// 		projector.setResolution(projector.getResolution() / scale);
-// }

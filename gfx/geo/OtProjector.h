@@ -43,7 +43,9 @@ class OtProjector {
 public:
 	// access properties
 	inline void setWindowSize(ImVec2 s) { size = s; calculate(); }
+	inline ImVec2 getWindowSize() { return size; }
 	inline void setWindowOffset(ImVec2 o) { offset = o; calculate(); }
+	inline ImVec2 getWindowOffset() { return offset; }
 
 	inline void setCenter(OtLatLon c) { center = c; calculate(); }
 	inline OtLatLon getCenter() { return center; }

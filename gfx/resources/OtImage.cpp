@@ -18,6 +18,7 @@
 #include "bimg/encode.h"
 
 #include "OtAssert.h"
+#include "OtException.h"
 #include "OtLog.h"
 #include "OtNumbers.h"
 
@@ -118,7 +119,13 @@ void OtImage::loadFromFile(const std::string& path) {
 void OtImage::loadFromUrl(const std::string& address) {
 	OtUrl url(address);
 	url.doGet();
-	load(url.getDownloadedData(), url.getDownloadedSize());
+
+	try {
+		load(url.getDownloadedData(), url.getDownloadedSize());
+
+	} catch (OtException& e) {
+		OtLogError("Can't load image from [{}]", address);
+	}
 }
 
 

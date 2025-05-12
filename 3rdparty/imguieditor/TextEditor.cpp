@@ -79,7 +79,6 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	auto region = ImGui::GetContentRegionAvail();
 	auto visibleSize = ImGui::CalcItemSize(size, region.x, region.y); // messing with Dear ImGui internals
 
-
 	// see if we have scrollbars
 	float scrollbarSize = ImGui::GetStyle().ScrollbarSize;
 	verticalScrollBarSize = (totalSize.y > visibleSize.y) ? scrollbarSize : 0.0f;

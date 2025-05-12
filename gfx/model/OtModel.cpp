@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <algorithm>
 #include <atomic>
 #include <cmath>
 #include <cstdint>
@@ -18,6 +19,7 @@
 #include "assimp/postprocess.h"
 #include "fmt/format.h"
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "nlohmann/json.hpp"
 
 #include "OtLog.h"
@@ -645,26 +647,51 @@ void OtModel::renderAnimations() {
 //
 
 void OtModel::renderAnimationChannels(size_t animationID) {
-	auto& channels = animations[animationID].channels;
+	auto& animation = animations[animationID];
+	auto& channels =animation.channels;
+	auto duration = animation.duration;
 	auto lineHeight = ImGui::GetTextLineHeightWithSpacing();
 	auto& style = ImGui::GetStyle();
 
+
 	ImU32 lineColor = ImGui::ColorConvertFloat4ToU32(style.Colors[ImGuiCol_Button]);
-	// ImU32 eventColor = ImGui::ColorConvertFloat4ToU32(style.Colors[ImGuiCol_ButtonHovered]);
+	ImU32 eventColor = ImGui::ColorConvertFloat4ToU32(style.Colors[ImGuiCol_ButtonHovered]);
 
 	ImGui::BeginChild("Channels", ImVec2(800.0f, 600.0f));
 	auto drawList = ImGui::GetWindowDrawList();
-	auto left = lineHeight * 2.0f;
-	auto right = 780.0f;
+	auto left = ImGui::GetCursorScreenPos().x + lineHeight * 2.0f;
+	auto right = left + 800.0f - lineHeight * 4.0f;
+	auto width = right - left;
 
-	for (auto& channel : channels) {
+	auto region = ImGui::GetContentRegionAvail();
+	auto visibleSize = ImGui::CalcItemSize(ImVec2(), region.x, region.y); // messing with Dear ImGui internals
+	auto firstVisibleChannel = std::max(static_cast<int>(std::floor(ImGui::GetScrollY() / lineHeight)), 0);
+	auto lastVisibleChannel = std::min(static_cast<int>(std::floor((ImGui::GetScrollY() + visibleSize.y) / lineHeight)), static_cast<int>(channels.size() - 1));
+
+	for (auto c = firstVisibleChannel; c <= lastVisibleChannel; c++) {
+		auto& channel = channels[c];
 		ImVec2 pos = ImGui::GetCursorScreenPos();
 		ImGui::Spacing();
 		ImGui::TextUnformatted(std::to_string(channel.node).c_str());
 
-		drawList->AddLine(ImVec2(pos.x + left, pos.y + lineHeight * 0.3f), ImVec2(pos.x + right, pos.y + lineHeight * 0.3f), lineColor);
-		drawList->AddLine(ImVec2(pos.x + left, pos.y + lineHeight * 0.6f), ImVec2(pos.x + right, pos.y + lineHeight * 0.6f), lineColor);
-		drawList->AddLine(ImVec2(pos.x + left, pos.y + lineHeight * 0.9f), ImVec2(pos.x + right, pos.y + lineHeight * 0.9f), lineColor);
+		drawList->AddLine(ImVec2(left, pos.y + lineHeight * 0.3f), ImVec2(right, pos.y + lineHeight * 0.3f), lineColor);
+		drawList->AddLine(ImVec2(left, pos.y + lineHeight * 0.6f), ImVec2(right, pos.y + lineHeight * 0.6f), lineColor);
+		drawList->AddLine(ImVec2(left, pos.y + lineHeight * 0.9f), ImVec2(right, pos.y + lineHeight * 0.9f), lineColor);
+
+		for (auto time : channel.positionTimestamps) {
+			ImVec2 center(left + width * time / duration,  pos.y + lineHeight * 0.3f);
+			drawList->AddRectFilled(center - ImVec2(1.0f, 1.0f), center + ImVec2(1.0f, 1.0f), eventColor);
+		}
+
+		for (auto time : channel.rotationTimestamps) {
+			ImVec2 center(left + width * time / duration,  pos.y + lineHeight * 0.6f);
+			drawList->AddRectFilled(center - ImVec2(1.0f, 1.0f), center + ImVec2(1.0f, 1.0f), eventColor);
+		}
+
+		for (auto time : channel.scaleTimestamps) {
+			ImVec2 center(left + width * time / duration,  pos.y + lineHeight * 0.9f);
+			drawList->AddRectFilled(center - ImVec2(1.0f, 1.0f), center + ImVec2(1.0f, 1.0f), eventColor);
+		}
 	}
 
 	ImGui::EndChild();

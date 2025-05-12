@@ -512,8 +512,8 @@ void OtFramework::endFrameIMGUI() {
 //
 
 void OtFramework::endIMGUI() {
-	// we have to manually clear our resources since it's too late to let the destructors
-	// do it since they run after we shutdown the libraries (causing 'memory leaks')
+	// we have to manually clear our resources since it's too late to let the destructor
+	// do it as it runs after we shutdown the library (causing 'memory leaks')
 	imguiFontTexture.clear();
 	imguiFontSampler.clear();
 	imguiShaderProgram.clear();

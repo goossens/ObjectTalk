@@ -95,7 +95,7 @@ void OtFilmStripClass::render() {
 		auto size = ImVec2(w * scale, h * scale);
 		ImGui::Dummy(ImVec2(0.0f, ImGui::GetStyle().FramePadding.y));
 		OtUi::align(size, horizontalAlign, verticalAlign);
-		auto pos = ImGui::GetCursorPos();
+		auto pos = ImGui::GetCursorScreenPos();
 
 		// render frame
 		ImGui::Image((ImTextureID)(intptr_t) texture.getIndex(), size, tl, br);
@@ -104,7 +104,7 @@ void OtFilmStripClass::render() {
 		if (callback) {
 			ImGui::PushID(this);
 			ImGuiIO& io = ImGui::GetIO();
-			ImGui::SetCursorPos(pos);
+			ImGui::SetCursorScreenPos(pos);
 			ImGui::InvisibleButton("", size, 0);
 
 			if (ImGui::IsItemActive() && io.MouseDelta.y != 0.0) {

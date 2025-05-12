@@ -33,7 +33,7 @@
 
 void OtUi::align(ImVec2 size, Alignment horizontal, Alignment vertical) {
 	// get current position and available space
-	auto pos = ImGui::GetCursorPos();
+	auto pos = ImGui::GetCursorScreenPos();
 	auto available = ImGui::GetContentRegionAvail();
 
 	// handle horizontal alignment (if required)
@@ -52,7 +52,7 @@ void OtUi::align(ImVec2 size, Alignment horizontal, Alignment vertical) {
 		pos.y += available.y - size.y;
 	}
 
-	ImGui::SetCursorPos(pos);
+	ImGui::SetCursorScreenPos(pos);
 }
 
 
@@ -452,7 +452,7 @@ void OtUi::viewVecX(const char* labelPlusID, const float* value, int components)
 		const ImVec2 max = ImGui::GetItemRectMax();
 		window->DrawList->AddLine(ImVec2(min.x, max.y - 1.0f), ImVec2(max.x, max.y - 1.0f), colors[i]);
 
-		ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x);
+		ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
 		ImGui::PopID();
 		ImGui::PopItemWidth();
 	}
@@ -493,7 +493,7 @@ bool OtUi::editVecX(const char* labelPlusID, float* value, int components, float
 		const ImVec2 max = ImGui::GetItemRectMax();
 		window->DrawList->AddLine(ImVec2(min.x, max.y - 1.0f), ImVec2(max.x, max.y - 1.0f), colors[i]);
 
-		ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x);
+		ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
 		ImGui::PopID();
 		ImGui::PopItemWidth();
 	}

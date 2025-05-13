@@ -9,7 +9,25 @@ include /manual.pug
 				include:markdown main/toc.md
 
 			+manual-content()
-				+manual-chapter("intro", "")
-					include:markdown main/intro.md
+				+manual-chapter("introduction", "Introduction")
+					include:markdown main/introduction.md
+
+				+manual-chapter("background", "Background")
+					include:markdown main/background.md
+
+				+manual-chapter("language", "Language")
+					include:markdown main/language.md
+
+				+manual-chapter("graphics", "Graphics")
+					include:markdown main/graphics.md
+
+				+manual-chapter("nodes", "Nodes")
+					include:markdown main/nodes.md
+
+				+manual-chapter("scenes", "Scenes")
+					include:markdown main/scenes.md
+
+				+manual-chapter("ide", "IDE")
+					include:markdown main/ide.md
 
 		include common/footer.pug

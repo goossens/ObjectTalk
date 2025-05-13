@@ -26,6 +26,7 @@ meaning that the extremes are -9,223,372,036,854,775,808 and
 | \_\_bxor__(integer) | Perform a bitwise logical exclusive OR between object's value and integer and return result. This member function is called when you use the **bitwise exclusive or** (^) operator. |
 | \_\_bnot__() | Perform logical negation of each bit in object's value and return result. This member function is called when you use the **bitwise not** (~) operator. |
 | \_\_neg__() | Perform a unary negation of object's value and return result. This member function is called when you use the **unary negation** (-) operator. |
+| \_\_plus__() | Perform a unary plus on object's value and return result. This member function is called when you use the **unary plus** (+) operator. |
 | abs() | Return absolute value of object's value.
 | sign() | Return sign (-1, 0 or 1) of object's value.
 | min(integer) | Return the minimum of integer and the object's value.

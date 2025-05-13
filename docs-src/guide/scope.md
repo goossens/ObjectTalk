@@ -42,5 +42,5 @@ are stored on the stack as the are also very short lived.
 ObjectTalk does have a mechanism to capture variables from a parent
 scope using a closure mechanism. The special mechanism which is often
 required in lambda function or just because functions are first class
-citizens in ObjectTalk, is described in in the [closure](#closures)
+citizens in ObjectTalk, is described in the [closures](#closures)
 section.

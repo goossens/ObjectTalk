@@ -1,5 +1,5 @@
 The ObjectTalk ecosystem was designed as a cross-platform capability. Today, ObjectTalk
-runs on MacOS, Windows and Linux thanks to a large number of great open source packages.
+runs on MacOS, Linux and Windows thanks to a large number of great open source packages.
 
 The ObjectTalk ecosystem is contained in a single executable that embeds all modules and
 their resources into one unit. Originally, the design called for a small executable that would

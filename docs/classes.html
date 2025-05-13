@@ -37,33 +37,81 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link page-scroll" href="installation.html"
-                >Installation</a
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="General"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >General</a
               >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link page-scroll" href="tour.html">Tour</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link page-scroll" href="guide.html">Guide</a>
+              <div class="dropdown-menu" aria-labelledby="General">
+                <a class="nav-link page-scroll" href="index.html"
+                  >Introduction</a
+                ><a class="nav-link page-scroll" href="architecture.html"
+                  >Architecture</a
+                ><a class="nav-link page-scroll" href="installation.html"
+                  >Installation</a
+                >
+              </div>
             </li>
             <li class="nav-item dropdown">
               <a
                 class="nav-link dropdown-toggle"
                 href="#"
-                id="Reference"
+                id="Language"
                 role="button"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
-                >Reference</a
+                >Language</a
               >
-              <div class="dropdown-menu" aria-labelledby="Reference">
-                <a class="nav-link page-scroll" href="language.html">Language</a
-                ><a class="nav-link page-scroll" href="classes.html">Classes</a
-                ><a class="nav-link page-scroll" href="architecture.html"
-                  >Architecture</a
+              <div class="dropdown-menu" aria-labelledby="Language">
+                <a class="nav-link page-scroll" href="tour.html">Tour</a
+                ><a class="nav-link page-scroll" href="guide.html">Guide</a
+                ><a class="nav-link page-scroll" href="language.html"
+                  >Language</a
+                ><a class="nav-link page-scroll" href="classes.html">Classes</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Nodes"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Nodes</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Nodes">
+                <a class="nav-link page-scroll" href="nodes-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="nodes-reference.html"
+                  >Reference</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Scenes"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Scenes</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Scenes">
+                <a class="nav-link page-scroll" href="scenes-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="scenes-reference.html"
+                  >Reference</a
                 >
               </div>
             </li>
@@ -723,6 +771,14 @@ assert(b.dosomething() == &quot;I did it&quot;);
                   </td>
                 </tr>
                 <tr>
+                  <td>__plus__()</td>
+                  <td>
+                    Perform a unary plus on object's value and return result.
+                    This member function is called when you use the
+                    <strong>unary plus</strong> (+) operator.
+                  </td>
+                </tr>
+                <tr>
                   <td>abs()</td>
                   <td>Return absolute value of object's value.</td>
                 </tr>
@@ -873,6 +929,14 @@ assert(b.dosomething() == &quot;I did it&quot;);
                     Perform a unary negation of object's value and return
                     result. This member function is called when you use the
                     <strong>unary negation</strong> (-) operator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>__plus__()</td>
+                  <td>
+                    Perform a unary plus on object's value and return result.
+                    This member function is called when you use the
+                    <strong>unary plus</strong> (+) operator.
                   </td>
                 </tr>
                 <tr>
@@ -1755,8 +1819,8 @@ assert(set.subtract(set2) == Set(2, 5));
                   <td>Clear (empty) the set.</td>
                 </tr>
                 <tr>
-                  <td>add(object)</td>
-                  <td>Add object to the set.</td>
+                  <td>insert(object)</td>
+                  <td>Insert object into the set.</td>
                 </tr>
                 <tr>
                   <td>erase(object)</td>
@@ -1900,6 +1964,12 @@ assert(set.subtract(set2) == Set(2, 5));
                   </td>
                 </tr>
                 <tr>
+                  <td>join()</td>
+                  <td>
+                    Append elements to the path with a directory separator.
+                  </td>
+                </tr>
+                <tr>
                   <td>clear()</td>
                   <td>Erase the contents of the path.</td>
                 </tr>
@@ -2009,6 +2079,14 @@ assert(set.subtract(set2) == Set(2, 5));
                 <tr>
                   <td>hasStem()</td>
                   <td>Check if the stem element of the path is not empty.</td>
+                </tr>
+                <tr>
+                  <td>relative()</td>
+                  <td>Return path relative to the specifed base.</td>
+                </tr>
+                <tr>
+                  <td>canonical()</td>
+                  <td>Return the canonical absolute path.</td>
                 </tr>
               </tbody>
             </table>
@@ -2170,14 +2248,6 @@ assert(set.subtract(set2) == Set(2, 5));
                 <tr>
                   <td>stopServer()</td>
                   <td>Stop the event loop for a server app.</td>
-                </tr>
-                <tr>
-                  <td>runGUI()</td>
-                  <td>Run the event loop for a GUI app.</td>
-                </tr>
-                <tr>
-                  <td>stopGUI()</td>
-                  <td>Stop the event loop for a GUI app.</td>
                 </tr>
               </tbody>
             </table>

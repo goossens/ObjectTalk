@@ -1,26 +1,13 @@
 body {
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-	color: #000;
 	background-color: #fff;
-}
-
-html {
+	color: #000;
 }
 
 pre {
 	background: #eee;
 	padding-left: 24px;
 	tab-size: 4;
-}
-
-ul {
-	list-style-position: inside;
-	margin-bottom: 0px;
-	padding-inline-start: 8px;
-}
-
-div > ul {
-	margin-bottom: 16px;
 }
 
 .manual-header {
@@ -32,10 +19,16 @@ div > ul {
 	border-right: 2px solid #ddd;
 }
 
-.manual-content {
+.manual-toc ul {
+	list-style-position: inside;
+	padding-inline-start: 8px;
+}
+
+.manual-content ul p {
+	margin-bottom: 0px;
 }
 
 .manual-footer {
-	color: #555;
 	border-top: 1px solid #ddd;
+	color: #555;
 }

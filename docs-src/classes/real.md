@@ -17,6 +17,7 @@ systems, Reals are implemented using 8 bytes and have a range of
 | \_\_mod__(real) | Divide object's value by real and return leftover. This member function is called when you use the **modulo** (%) operator. |
 | \_\_pow__(real) | Raise object's value to the power of real and return result. This member function is called when you use the **exponent** (\*\*) operator. |
 | \_\_neg__() | Perform a unary negation of object's value and return result. This member function is called when you use the **unary negation** (-) operator. |
+| \_\_plus__() | Perform a unary plus on object's value and return result. This member function is called when you use the **unary plus** (+) operator. |
 | abs() | Return absolute value of object's value.
 | sign() | Return sign (-1, 0 or 1) of object's value.
 | round() | Returns integer that is nearest to object's value, with halfway cases rounded away from zero.

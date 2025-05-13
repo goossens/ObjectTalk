@@ -1,0 +1,15 @@
+include /manual.pug
+
++page("Nodes Overview")
+	+manual()
+		include common/header.pug
+
+		+manual-body()
+			+manual-toc()
+				include:markdown nodes-overview/toc.md
+
+			+manual-content()
+				+manual-chapter("overview",  "Nodes Overview")
+					include:markdown nodes-overview/overview.md
+
+		include common/footer.pug

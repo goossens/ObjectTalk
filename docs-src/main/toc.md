@@ -1,9 +1,8 @@
 **Overview**
-* [Installation](installation.html)
-* [Tour](tour.html)
-* [Guide](guide.html)
-
-**References**
-* [Language](language.html)
-* [Classes](classes.html)
-* [Architecture](architecture.html)
+* [Introduction](#introduction)
+* [Background](#background)
+* [Language](#language)
+* [Graphics](#graphics)
+* [Nodes](#nodes)
+* [Scenes](#scenes)
+* [IDE](#ide)

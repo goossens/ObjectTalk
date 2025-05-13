@@ -37,33 +37,81 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link page-scroll" href="installation.html"
-                >Installation</a
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="General"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >General</a
               >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link page-scroll" href="tour.html">Tour</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link page-scroll" href="guide.html">Guide</a>
+              <div class="dropdown-menu" aria-labelledby="General">
+                <a class="nav-link page-scroll" href="index.html"
+                  >Introduction</a
+                ><a class="nav-link page-scroll" href="architecture.html"
+                  >Architecture</a
+                ><a class="nav-link page-scroll" href="installation.html"
+                  >Installation</a
+                >
+              </div>
             </li>
             <li class="nav-item dropdown">
               <a
                 class="nav-link dropdown-toggle"
                 href="#"
-                id="Reference"
+                id="Language"
                 role="button"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
-                >Reference</a
+                >Language</a
               >
-              <div class="dropdown-menu" aria-labelledby="Reference">
-                <a class="nav-link page-scroll" href="language.html">Language</a
-                ><a class="nav-link page-scroll" href="classes.html">Classes</a
-                ><a class="nav-link page-scroll" href="architecture.html"
-                  >Architecture</a
+              <div class="dropdown-menu" aria-labelledby="Language">
+                <a class="nav-link page-scroll" href="tour.html">Tour</a
+                ><a class="nav-link page-scroll" href="guide.html">Guide</a
+                ><a class="nav-link page-scroll" href="language.html"
+                  >Language</a
+                ><a class="nav-link page-scroll" href="classes.html">Classes</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Nodes"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Nodes</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Nodes">
+                <a class="nav-link page-scroll" href="nodes-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="nodes-reference.html"
+                  >Reference</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Scenes"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Scenes</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Scenes">
+                <a class="nav-link page-scroll" href="scenes-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="scenes-reference.html"
+                  >Reference</a
                 >
               </div>
             </li>
@@ -107,7 +155,7 @@
         </div>
         <div class="col mh-100 overflow-auto py-2 manual-content">
           <div id="overview">
-            <h1 class="pb-2">overview</h1>
+            <h1 class="pb-2">Language Definition</h1>
             <p>
               Below is a formal expression of the ObjectTalk scripting language
               in Extended Backus–Naur Form (EBNF). You can read more about this
@@ -239,7 +287,7 @@
             <pre><code>multiplication ::= prefix (&quot;*&quot; prefix | &quot;/&quot; prefix | &quot;%&quot; prefix)*
 </code></pre>
           </div>
-          <div id="postfix">
+          <div id="prefix">
             <h1 class="pb-2">prefix</h1>
             <p><img src="img/prefix.png" alt="Railroad Diagram" /></p>
             <pre><code>prefix ::= (&quot;-&quot; | &quot;!&quot; | &quot;^&quot; | &quot;++&quot; | &quot;--&quot;)? postfix

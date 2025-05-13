@@ -37,33 +37,81 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link page-scroll" href="installation.html"
-                >Installation</a
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="General"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >General</a
               >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link page-scroll" href="tour.html">Tour</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link page-scroll" href="guide.html">Guide</a>
+              <div class="dropdown-menu" aria-labelledby="General">
+                <a class="nav-link page-scroll" href="index.html"
+                  >Introduction</a
+                ><a class="nav-link page-scroll" href="architecture.html"
+                  >Architecture</a
+                ><a class="nav-link page-scroll" href="installation.html"
+                  >Installation</a
+                >
+              </div>
             </li>
             <li class="nav-item dropdown">
               <a
                 class="nav-link dropdown-toggle"
                 href="#"
-                id="Reference"
+                id="Language"
                 role="button"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
-                >Reference</a
+                >Language</a
               >
-              <div class="dropdown-menu" aria-labelledby="Reference">
-                <a class="nav-link page-scroll" href="language.html">Language</a
-                ><a class="nav-link page-scroll" href="classes.html">Classes</a
-                ><a class="nav-link page-scroll" href="architecture.html"
-                  >Architecture</a
+              <div class="dropdown-menu" aria-labelledby="Language">
+                <a class="nav-link page-scroll" href="tour.html">Tour</a
+                ><a class="nav-link page-scroll" href="guide.html">Guide</a
+                ><a class="nav-link page-scroll" href="language.html"
+                  >Language</a
+                ><a class="nav-link page-scroll" href="classes.html">Classes</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Nodes"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Nodes</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Nodes">
+                <a class="nav-link page-scroll" href="nodes-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="nodes-reference.html"
+                  >Reference</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Scenes"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Scenes</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Scenes">
+                <a class="nav-link page-scroll" href="scenes-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="scenes-reference.html"
+                  >Reference</a
                 >
               </div>
             </li>
@@ -82,9 +130,16 @@
             <li><a class="page-scroll" href="#modules">Modules</a></li>
             <li><a class="page-scroll" href="#classes">Classes</a></li>
             <li><a class="page-scroll" href="#functions">Functions</a></li>
+            <li><a class="page-scroll" href="#closures">Closures</a></li>
           </ul>
         </div>
         <div class="col mh-100 overflow-auto py-2 manual-content">
+          <div id="overview">
+            <h1 class="pb-2">ObjectTalk Language Guide</h1>
+            <p>
+              Below is a reference guide artculating key concepts in ObjectTalk.
+            </p>
+          </div>
           <div id="basics">
             <h1 class="pb-2">The Basics</h1>
             <p>
@@ -1604,8 +1659,7 @@ for number in range(10, 6, -2) {
               parent scope using a closure mechanism. The special mechanism
               which is often required in lambda function or just because
               functions are first class citizens in ObjectTalk, is described in
-              in the
-              <a class="page-scroll" href="#closures">closure</a> section.
+              the <a class="page-scroll" href="#closures">closures</a> section.
             </p>
           </div>
           <div id="modules">
@@ -2215,6 +2269,48 @@ print(&quot;zero!&quot;);
 // -1...
 // zero!
 </code></pre>
+          </div>
+          <div id="closures">
+            <h1 class="pb-2">Closures</h1>
+            <p>
+              A closure is a function that captures and retains its surrounding
+              environment's state, including variables. This captured
+              environment allows the closure to access and modify those values
+              even after the enclosing function has completed execution. Capture
+              is the mechanism by which closures &quot;remember&quot; and access
+              their surrounding context.
+            </p>
+            <p>
+              When a closure is created, it captures any variables or constants
+              defined in the surrounding scope that it uses within its own body.
+              These captured variables are effectively &quot;remembered&quot; by
+              the closure. Even after the enclosing function has finished
+              running, the closure's captured variables remain available to it.
+            </p>
+            <p>
+              In a simple case, a closure might capture a variable from its
+              parent function and increment it each time it is called,
+              maintaining a state across multiple calls. In another case, a
+              closure can also capture objects or functions from its surrounding
+              context and use them later, even after the context has been
+              deallocated.
+            </p>
+            <pre><code>function f(x) {
+	return function(y) {
+		x + y;
+	}
+}
+
+var g = f(1);
+assert(g(5) == 6);
+
+var h = f(10);
+assert(h(5) == 15);
+</code></pre>
+            <p>
+              In the example above, f returns a function that captures the value
+              for x which is then used later when the function is executed.
+            </p>
           </div>
         </div>
       </div>

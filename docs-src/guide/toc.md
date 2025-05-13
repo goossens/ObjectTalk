@@ -8,3 +8,4 @@
 * [Modules](#modules)
 * [Classes](#classes)
 * [Functions](#functions)
+* [Closures](#closures)

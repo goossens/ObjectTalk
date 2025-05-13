@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ObjectTalk Tour</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/theme.css" />
+  </head>
+  <body id="page-top">
+    <div
+      class="container-fluid d-flex flex-column flex-grow-1 vh-100 overflow-hidden"
+    >
+      <nav
+        class="navbar navbar-expand px-0 pt-1 pb-0 flex-shrink-0 manual-header"
+      >
+        <a class="navbar-brand" href="index.html"
+          ><img src="img/icon.png" height="40" alt="" /><span class="ml-2"
+            >Documentation</span
+          ></a
+        ><button
+          class="navbar-toggler navbar-toggler-right"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          type="button"
+          data-toogle="collapse"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="General"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >General</a
+              >
+              <div class="dropdown-menu" aria-labelledby="General">
+                <a class="nav-link page-scroll" href="index.html"
+                  >Introduction</a
+                ><a class="nav-link page-scroll" href="architecture.html"
+                  >Architecture</a
+                ><a class="nav-link page-scroll" href="installation.html"
+                  >Installation</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Language"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Language</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Language">
+                <a class="nav-link page-scroll" href="tour.html">Tour</a
+                ><a class="nav-link page-scroll" href="guide.html">Guide</a
+                ><a class="nav-link page-scroll" href="language.html"
+                  >Language</a
+                ><a class="nav-link page-scroll" href="classes.html">Classes</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Nodes"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Nodes</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Nodes">
+                <a class="nav-link page-scroll" href="nodes-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="nodes.html">Nodes</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Scenes"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Scenes</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Scenes">
+                <a class="nav-link page-scroll" href="scenes-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="components.html"
+                  >Components</a
+                ><a class="nav-link page-scroll" href="scenes-classes.html"
+                  >Classes</a
+                >
+              </div>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div class="row flex-grow-1 overflow-hidden vh-100">
+        <div class="col-2 mh-100 overflow-auto py-2 manual-toc">
+          <p><strong>Overview</strong></p>
+          <ul>
+            <li>
+              <a class="page-scroll" href="#introduction">Introduction</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col mh-100 overflow-auto py-2 manual-content">
+          <div id="about">
+            <h1 class="pb-2">Nodes Reference</h1>
+            <p><img src="img/logo-small.png" alt="Logo" /></p>
+            <p>
+              ObjectTalk is a simple object-oriented scripting language that has
+              evolved over decades and was heavily influenced by other
+              languages. As a long time IT professional, I've seen a lot of
+              software development with all its greatness and flaws. ObjectTalk
+              represents what I think is a well-balanced scripting language that
+              is easy to learn and can make even a novice look good quickly. If
+              you are interested in how I got to where we are today, please see
+              the <a class="page-scroll" href="#history">history</a> section
+              below for the story behind ObjectTalk.
+            </p>
+            <p>
+              So before continuing, let me address the elephant in the room. Why
+              the heck would the world need another scripting language? Well,
+              the simple answer is: it doesn't!! We already have more than
+              enough of them. I wouldn't even suggest ObjectTalk is a language
+              for serious software development. If you need to deploy mission
+              critical code, look elsewhere. ObjectTalk is however a good
+              starting point to learn programming and it's also good if you want
+              to learn language development. Those of you who have ever looked
+              at the code for compilers and interpreters for populars languages
+              will probably know what I mean.
+            </p>
+            <p>The objectives for the development of ObjectTalk are:</p>
+            <ul>
+              <li>Learn computer language development.</li>
+              <li>
+                Learn how to write a lexical scanner and language compiler.
+              </li>
+              <li>
+                Learn how to implement a simple stack-based virtual machine.
+              </li>
+              <li>
+                Learn how to develop a language that is:
+                <ul>
+                  <li>Fully object-oriented.</li>
+                  <li>Dynamically typed.</li>
+                  <li>Lexically scoped.</li>
+                  <li>Closure/capture aware.</li>
+                </ul>
+              </li>
+              <li>
+                Learn C++17 as that is the language the ObjectTalk engine is
+                written in.
+              </li>
+              <li>
+                Keep the code multi-platform to support reuse and maximum
+                outreach.
+              </li>
+              <li>
+                Don't over-optimize to keep the code readable (so others can
+                learn).
+              </li>
+              <li>End up with something that can be used for simple tasks.</li>
+              <li>
+                Have enough capability to create simple applications like:
+                <ul>
+                  <li>Web servers based on a few lines of code.</li>
+                  <li>
+                    Cool looking desktop applications including 2D/3D games.
+                  </li>
+                </ul>
+              </li>
+              <li>Have fun.</li>
+            </ul>
+            <p>
+              So I believe (and yes, I might be a little biased), that
+              ObjectTalk is meeting the objectives above and will provide others
+              the ability to learn from this as well. If you agree with me, feel
+              free to reuse and contribute. Collective learning is a great
+              thing.
+            </p>
+            <p>
+              So what's good about ObjectTalk? Well, typically it is a very
+              personal as to what is good or bad about a computer language. Many
+              religious wars have been waged over the years when it comes to
+              good and bad in Computerland. Those that have strong opinions
+              about computer languages will have the same views about
+              ObjectTalk. I'm wide open to ObjectTalk improvements but they'll
+              have to be within the context of the objectives above.
+              Constructive advice is very welcome. Bullies, meanies and
+              know-it-alls will be ignored and are advised to develop their own
+              language.
+            </p>
+            <p>So what makes ObjectTalk great (at least in my little mind)?</p>
+            <ul>
+              <li>
+                It's easy to learn (simple yet consistent grammar and no
+                &quot;over-the-top, you'll-never-use-it but
+                look-at-how-smart-I-am language creep&quot;).
+              </li>
+              <li>
+                It is truly object-oriented as everything is an object (even
+                numbers, strings and functions) with members and member
+                functions.
+              </li>
+              <li>
+                The language will feel comfortable to everyone who has worked on
+                C-derived languages.
+              </li>
+              <li>
+                Variables are dynamically typed and primitive objects like
+                Booleans, Integers, Reals and Strings are automatically
+                converted when required.
+              </li>
+              <li>
+                Functions are first class citizens and can be passed as
+                arguments or bound to an object as member functions.
+              </li>
+              <li>
+                Variables are lexically scoped and must be declared before use.
+              </li>
+              <li>
+                Variables are automatically captured in closures if required.
+              </li>
+              <li>Variables are always initialized before use.</li>
+              <li>Memory is managed automatically.</li>
+              <li>A single pass compiler generates simple bytecode.</li>
+              <li>A simple optimizer improves the generated bytecode.</li>
+              <li>
+                A simple stack-based Virtual Machine (VM) executes the bytecode.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="row flex-shrink-0 py-1 manual-footer" id="copyright">
+        <p class="mx-auto py-0 my-0 small">
+          Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+        </p>
+      </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/theme.js"></script>
+  </body>
+</html>

@@ -9,6 +9,9 @@ include /manual.pug
 				include:markdown guide/toc.md
 
 			+manual-content()
+				+manual-chapter("overview",  " ObjectTalk Language Guide")
+					include:markdown guide/overview.md
+
 				+manual-chapter("basics", "The Basics")
 					include:markdown guide/basics.md
 
@@ -32,5 +35,8 @@ include /manual.pug
 
 				+manual-chapter("functions", "Functions")
 					include:markdown guide/functions.md
+
+				+manual-chapter("closures", "Closures")
+					include:markdown guide/closures.md
 
 		include common/footer.pug

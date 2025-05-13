@@ -35,6 +35,7 @@ to resolve to a file name.
 | \_\_add__(operand) | Concatenate two paths without introducing a directory separator. |
 | \_\_div__(operand) | Append elements to the path with a directory separator. |
 | \_\_iter__() | Return a [PathIterator](#pathiterator) object to iterate through the directories in a path. This member function is called when you use the **for in** statement. You typically don't call this member function directly. |
+| join() | Append elements to the path with a directory separator. |
 | clear() | Erase the contents of the path. |
 | exists() | See if the path exists on this system. |
 | isAbsolute() | Check whether the path is absolute. |
@@ -59,6 +60,8 @@ to resolve to a file name.
 | hasRootName() | Check if the root name element of the path is not empty. |
 | hasRootPath() | Check if the root path element of the path is not empty. |
 | hasStem() | Check if the stem element of the path is not empty. |
+| relative() | Return path relative to the specifed base. |
+| canonical() | Return the canonical absolute path. |
 
 **Overrides**
 

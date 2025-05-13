@@ -11,7 +11,7 @@ var gui = import("gui");
 class MyApp : gui.App {
 	function setup(this) {
 		this.map = gui.SlippyMap();
-		this.map.addOsmLayer("localhost:8010");
+		this.map.addOsmLayer("server1.local:8010");
 		this.add(this.map);
 	}
 }

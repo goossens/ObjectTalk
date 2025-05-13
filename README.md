@@ -26,7 +26,7 @@ Late 2020, I retired after a 40+ year career in the software and
 system development business. Starting as a programmer/analyst and later
 moving up the ladder to management, international standardization
 and geopolitics, I was exposed to lots of technologies including operating
-systems, computer language development, military command and control
+systems design, computer language development, military command and control
 systems, web application design, data science and what we now call
 artificial intelligence. You can read my full bio on
 [my website](https://goossens.github.io).

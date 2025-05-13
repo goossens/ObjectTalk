@@ -1,0 +1,15 @@
+include /manual.pug
+
++page("ObjectTalk Tour")
+	+manual()
+		include common/header.pug
+
+		+manual-body()
+			+manual-toc()
+				include:markdown nodes-reference/toc.md
+
+			+manual-content()
+				+manual-chapter("reference", "Nodes Reference")
+					include:markdown nodes-reference/nodes.md
+
+		include common/footer.pug

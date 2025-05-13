@@ -27,7 +27,7 @@ a set or to perform set operations (e.g. union, difference).
 | clone() | Return a clone of the set. |
 | merge() | Merge two sets and return a new one. |
 | clear() | Clear (empty) the set. |
-| add(object) | Add object to the set. |
+| insert(object) | Insert object into the set. |
 | erase(object) | Remove object from the set. |
 | intersection(set) | Return a new set with only the values common to both sets. |
 | difference(set) | Return a new set with values in either set, but not both. |

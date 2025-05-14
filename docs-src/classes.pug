@@ -1,6 +1,6 @@
 include /manual.pug
 
-+page("ObjectTalk Reference")
++page("ObjectTalk Classes")
 	+manual()
 		include common/header.pug
 
@@ -45,6 +45,15 @@ include /manual.pug
 				+manual-chapter("set", "Set Class")
 					include:markdown classes/set.md
 
+				+manual-chapter("stream", "Stream Class")
+					include:markdown classes/system.md
+
+				+manual-chapter("cout", "Cout Class")
+					include:markdown classes/cout.md
+
+				+manual-chapter("cerr", "Cerr Class")
+					include:markdown classes/cerr.md
+
 				+manual-chapter("system", "System Class")
 					include:markdown classes/system.md
 
@@ -56,5 +65,8 @@ include /manual.pug
 
 				+manual-chapter("fs", "FS Class")
 					include:markdown classes/fs.md
+
+				+manual-chapter("io", "IO Class")
+					include:markdown classes/io.md
 
 		include common/footer.pug

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>ObjectTalk Reference</title>
+    <title>ObjectTalk Classes</title>
     <meta charset="utf-8" />
     <meta
       name="viewport"
@@ -115,6 +115,9 @@
                 >
               </div>
             </li>
+            <li class="nav-item">
+              <a class="nav-link page-scroll" href="ide.html">IDE</a>
+            </li>
           </ul>
         </div>
       </nav>
@@ -166,73 +169,6 @@
                   <ul>
                     <li><a class="page-scroll" href="#class">Class</a></li>
                     <li><a class="page-scroll" href="#global">Global</a></li>
-                    <li><a class="page-scroll" href="#module">Module</a></li>
-                    <li>
-                      <a class="page-scroll" href="#boundfunction"
-                        >BoundFunction</a
-                      >
-                    </li>
-                    <li>
-                      <a class="page-scroll" href="#bytecodefunction"
-                        >ByteCodeFunction</a
-                      >
-                    </li>
-                    <li><a class="page-scroll" href="#Throw">Throw</a></li>
-                    <li>
-                      <a class="page-scroll" href="#reference">Reference</a>
-                      <ul>
-                        <li>
-                          <a class="page-scroll" href="#arrayreference"
-                            >ArrayReference</a
-                          >
-                        </li>
-                        <li>
-                          <a class="page-scroll" href="#capturereference"
-                            >CaptureReference</a
-                          >
-                        </li>
-                        <li>
-                          <a class="page-scroll" href="#dictreference"
-                            >DictReference</a
-                          >
-                        </li>
-                        <li>
-                          <a class="page-scroll" href="#memberreference"
-                            >MemberReference</a
-                          >
-                        </li>
-                        <li>
-                          <a class="page-scroll" href="#stackreference"
-                            >StackReference</a
-                          >
-                        </li>
-                        <li>
-                          <a class="page-scroll" href="#stringreference"
-                            >StringReference</a
-                          >
-                        </li>
-                      </ul>
-                    </li>
-                    <li>
-                      <a class="page-scroll" href="#iterator">Iterator</a>
-                      <ul>
-                        <li>
-                          <a class="page-scroll" href="#arrayiterator"
-                            >ArrayIterator</a
-                          >
-                        </li>
-                        <li>
-                          <a class="page-scroll" href="#dictiterator"
-                            >DictIterator</a
-                          >
-                        </li>
-                        <li>
-                          <a class="page-scroll" href="#setiterator"
-                            >SetIterator</a
-                          >
-                        </li>
-                      </ul>
-                    </li>
                   </ul>
                 </li>
               </ul>
@@ -1859,13 +1795,72 @@ assert(set.subtract(set2) == Set(2, 5));
               <li>string</li>
             </ul>
           </div>
+          <div id="stream">
+            <h1 class="pb-2">Stream Class</h1>
+            <p>
+              The System class is an abstract class without any functionality
+              derived from <a href="Object.md">Object</a>. The purpose of it in
+              ObjectTalk is simply to group all operating system classes.
+            </p>
+          </div>
+          <div id="cout">
+            <h1 class="pb-2">Cout Class</h1>
+            <p>
+              The Cout class represents the stdout interface and allow you to
+              send text to the console. The
+              <a class="page-scroll" href="#global">Global</a> scope predefines
+              an Cout instance under the name <strong>cout</strong>. Example:
+            </p>
+            <pre><code>cout &lt;&lt; &quot;Hello World&quot;;
+</code></pre>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>__lshift__(operand)</td>
+                  <td>Convert operand to a string and send it to stdout.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="cerr">
+            <h1 class="pb-2">Cerr Class</h1>
+            <p>
+              The Cerr class represents the stderr stream and allow you to send
+              text to the console. The
+              <a class="page-scroll" href="#global">Global</a> scope predefines
+              an Cerr instance under the name <strong>cerr</strong>. Example:
+            </p>
+            <pre><code>cerr &lt;&lt; &quot;Hello World&quot;;
+</code></pre>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>__lshift__(operand)</td>
+                  <td>Convert operand to a string and send it to stderr.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <div id="system">
             <h1 class="pb-2">System Class</h1>
             <p>
               The System class is an abstract class without any functionality
               derived from <a href="Object.md">Object</a>. The purpose of it in
-              ObjectTalk is simply to group all operating and file system
-              classes.
+              ObjectTalk is simply to group all operating system classes.
             </p>
           </div>
           <div id="path">
@@ -2256,7 +2251,9 @@ assert(set.subtract(set2) == Set(2, 5));
             <h1 class="pb-2">FS Class</h1>
             <p>
               The FS (File System) class encapsulates an interface to the native
-              file system.
+              file system. The
+              <a class="page-scroll" href="#global">Global</a> scope predefines
+              an FS instance under the name <strong>fs</strong>.
             </p>
             <p><strong>Member Functions</strong></p>
             <table class="table table-striped">
@@ -2389,6 +2386,49 @@ assert(set.subtract(set2) == Set(2, 5));
                   <td>
                     Touch a file by updating its last access time without
                     changing the contents.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="io">
+            <h1 class="pb-2">IO Class</h1>
+            <p>
+              The IO class provides methods to read and write object and text to
+              and from a file. The
+              <a class="page-scroll" href="#global">Global</a> scope predefines
+              an IO instance under the name <strong>io</strong>.
+            </p>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>readJSON(file)</td>
+                  <td>
+                    Read a specified JSON file and return ObjectTalk objects.
+                  </td>
+                </tr>
+                <tr>
+                  <td>writeJSON(file, object)</td>
+                  <td>Write ObjectTalk object to a specified JSON file.</td>
+                </tr>
+                <tr>
+                  <td>readText(file)</td>
+                  <td>
+                    Read the specified file and return it as a String object.
+                  </td>
+                </tr>
+                <tr>
+                  <td>writeText(file, object)</td>
+                  <td>
+                    Convert the specified object to a String and write it to the
+                    specified file.
                   </td>
                 </tr>
               </tbody>

@@ -22,21 +22,6 @@
 	* [Internal](#internal)
 		* [Class](#class)
 		* [Global](#global)
-		* [Module](#module)
-		* [BoundFunction](#boundfunction)
-		* [ByteCodeFunction](#bytecodefunction)
-		* [Throw](#Throw)
-		* [Reference](#reference)
-			* [ArrayReference](#arrayreference)
-			* [CaptureReference](#capturereference)
-			* [DictReference](#dictreference)
-			* [MemberReference](#memberreference)
-			* [StackReference](#stackreference)
-			* [StringReference](#stringreference)
-		* [Iterator](#iterator)
-			* [ArrayIterator](#arrayiterator)
-			* [DictIterator](#dictiterator)
-			* [SetIterator](#setiterator)
 
 **HTTP Classes**
 

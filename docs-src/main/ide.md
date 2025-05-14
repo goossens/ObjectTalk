@@ -21,3 +21,5 @@ execution of the ObjectTalk elements:
 
 - **Miscellaneous editors**
 	- The IDE is also capable of editing pure text, JSON and Markdown files (complete with syntax highlighting).
+
+![IDE](img/ide.png)

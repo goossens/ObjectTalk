@@ -1,0 +1,27 @@
+include /manual.pug
+
++page("Integrated Development Environment (IDE)")
+	+manual()
+		include common/header.pug
+
+		+manual-body()
+			+manual-toc()
+				include:markdown ide/toc.md
+
+			+manual-content()
+				+manual-chapter("overview", "IDE Overview")
+					include:markdown ide/overview.md
+
+				+manual-chapter("script", "Script Editor")
+					include:markdown ide/script.md
+
+				+manual-chapter("nodes", "Nodes Editor")
+					include:markdown ide/overview.md
+
+				+manual-chapter("scenes", "Scene Editor")
+					include:markdown ide/scenes.md
+
+				+manual-chapter("text", "Text Editor")
+					include:markdown ide/text.md
+
+		include common/footer.pug

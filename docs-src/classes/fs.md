@@ -1,5 +1,5 @@
-The FS (File System) class encapsulates an interface to
-the native file system.
+The FS (File System) class encapsulates an interface to the native file system.
+The [Global](#global) scope predefines an FS instance under the name **fs**.
 
 **Member Functions**
 

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Integrated Development Environment (IDE)</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/theme.css" />
+  </head>
+  <body id="page-top">
+    <div
+      class="container-fluid d-flex flex-column flex-grow-1 vh-100 overflow-hidden"
+    >
+      <nav
+        class="navbar navbar-expand px-0 pt-1 pb-0 flex-shrink-0 manual-header"
+      >
+        <a class="navbar-brand" href="index.html"
+          ><img src="img/icon.png" height="40" alt="" /><span class="ml-2"
+            >Documentation</span
+          ></a
+        ><button
+          class="navbar-toggler navbar-toggler-right"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          type="button"
+          data-toogle="collapse"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="General"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >General</a
+              >
+              <div class="dropdown-menu" aria-labelledby="General">
+                <a class="nav-link page-scroll" href="index.html"
+                  >Introduction</a
+                ><a class="nav-link page-scroll" href="architecture.html"
+                  >Architecture</a
+                ><a class="nav-link page-scroll" href="installation.html"
+                  >Installation</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Language"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Language</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Language">
+                <a class="nav-link page-scroll" href="tour.html">Tour</a
+                ><a class="nav-link page-scroll" href="guide.html">Guide</a
+                ><a class="nav-link page-scroll" href="language.html"
+                  >Language</a
+                ><a class="nav-link page-scroll" href="classes.html">Classes</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Nodes"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Nodes</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Nodes">
+                <a class="nav-link page-scroll" href="nodes-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="nodes-reference.html"
+                  >Reference</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Scenes"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Scenes</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Scenes">
+                <a class="nav-link page-scroll" href="scenes-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="scenes-reference.html"
+                  >Reference</a
+                >
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link page-scroll" href="ide.html">IDE</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div class="row flex-grow-1 overflow-hidden vh-100">
+        <div class="col-2 mh-100 overflow-auto py-2 manual-toc">
+          <p><strong>ObjectTalk Guide</strong></p>
+          <ul>
+            <li><a class="page-scroll" href="#overview">Overview</a></li>
+            <li><a class="page-scroll" href="#script">Script Editor</a></li>
+            <li><a class="page-scroll" href="#nodes">Nodes Editor</a></li>
+            <li><a class="page-scroll" href="#scenes">Scenes Editor</a></li>
+            <li><a class="page-scroll" href="#text">Text Editor</a></li>
+          </ul>
+        </div>
+        <div class="col mh-100 overflow-auto py-2 manual-content">
+          <div id="overview">
+            <h1 class="pb-2">IDE Overview</h1>
+            <p>
+              ObjectTalk comes with a builtin development environment that
+              allows editing, debugging and execution of ObjectTalk elements.
+            </p>
+            <p><img src="img/ide.png" alt="IDE" /></p>
+            <h2>General Features</h2>
+          </div>
+          <div id="script">
+            <h1 class="pb-2">Script Editor</h1>
+            <p>
+              The ObjectTalk script editor provides a powerful syntax
+              highlighting capability modeled after a subset of Visual Studio
+              Code. The editor has full undo capabilities and works with UTF-8
+              encoded text. The editor can launch ObjectTalk scripts and has a
+              console for output and highlighting for errors. A visual debugger
+              is also available.
+            </p>
+            <h3>Additional Features</h3>
+            <ul>
+              <li>
+                Has find/replace user interface and API with full undo/redo.
+              </li>
+              <li>
+                Find has options for whole word and/or case-sensitive searches.
+              </li>
+              <li>
+                Has optional scrollbar minimap to render cursor, selection and
+                marker locations.
+              </li>
+              <li>
+                Provides middle-mouse pan and scroll functions like CAD programs
+                and browsers.
+              </li>
+              <li>
+                Provides auto completion for paired glyphs ([, {, (, &quot;, ')
+                (can be turned on and off).
+              </li>
+              <li>
+                If auto complete is turned on, accidentally typed closing glyphs
+                are ignored.
+              </li>
+              <li>
+                If auto complete is turned on, selections can be surrounded by
+                paired glyphs.
+              </li>
+              <li>
+                Allows bracket matching and coloring (similar to Visual Studio
+                Code) to be turned on and off.
+              </li>
+              <li>Supports multiple cursors and multiple selections.</li>
+              <li>
+                Auto indent with simplified implementation (can be turned on and
+                off).
+              </li>
+              <li>Tabs to Space (and visa versa).</li>
+              <li>Strip trailing whitespaces on save.</li>
+              <li>
+                Whitespace indicators for tabs and spaces (can be turned on and
+                off).
+              </li>
+              <li>Shows source code differences since last save.</li>
+            </ul>
+            <h3>Default Keyboard and Mouse Actions</h3>
+            <ul>
+              <li>
+                <p>
+                  In the mappings listed below, the following modifier keys are
+                  used:
+                </p>
+                <ul>
+                  <li>
+                    Super: this refers to the Control key on MacOS (Dear ImGui
+                    reverses Command and Control key on that platform).
+                  </li>
+                  <li>
+                    Ctrl: this refers to the Command key on MacOS and the
+                    Control key on Linux and Windows.
+                  </li>
+                  <li>
+                    Alt: this refers to the Option key on MacOS and the Alt key
+                    on Linux and Windows.
+                  </li>
+                  <li>Shift: as you would expect on all platforms.</li>
+                  <li>
+                    If a keyboard has a left and right version of these
+                    modifiers, the meaning is not different.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <p>Cursor movements:</p>
+                <ul>
+                  <li>Single left mouse click moves the cursor.</li>
+                  <li>Arrow keys move cursor left, right, up and down.</li>
+                  <li>PageUp and PageDown do what you expect.</li>
+                  <li>
+                    Ctrl-UpArrow and Ctrl-DownArrow move to the start/end of the
+                    document.
+                  </li>
+                  <li>Home and End keys move to the start/end of the line.</li>
+                  <li>
+                    Holding down the Shift key extends the current selection(s).
+                  </li>
+                  <li>
+                    Holding down the Alt key with the left or right arrow moves
+                    a whole word on MacOS.
+                  </li>
+                  <li>
+                    Holding down the Ctrl key with the left or right arrow moves
+                    a whole word on Linux and Windows.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <p>Panning and scrolling:</p>
+                <ul>
+                  <li>
+                    The text scrolls automatically when you move the cursor
+                    through keyboard actions.
+                  </li>
+                  <li>
+                    Mouse actions that extend the selections also apply auto
+                    scrolling.
+                  </li>
+                  <li>
+                    The text in the editor can still be scrolled using those
+                    bars that were invented in the 1970's.
+                  </li>
+                  <li>
+                    Devices with scroll wheels or those that simulated vertical
+                    and horizontal scroll wheels (like a touch pad, a mouse with
+                    a builtin touch pad or a pen) can also scroll the text. This
+                    is actually implemented in Dear ImGui (and used by the
+                    editor) and must be supported by your backend.
+                  </li>
+                  <li>
+                    The middle mouse button on a three-button mouse (or whatever
+                    is reported by your OS as a middle mouse button event)
+                    enters pan or scroll mode mode depending on the
+                    configuration. Pan mode is the default and you can switch
+                    this to Scroll mode by calling SetMiddleMouseScrollMode().
+                    Calling SetMiddleMousePanMode() switches it back. The
+                    example application uses a menu option to toggle modes.
+                  </li>
+                  <li>
+                    In pan mode, the text is grabbed and dragged as the cursor
+                    moves and as long as the middle mouse button is down.
+                  </li>
+                  <li>
+                    When you mouse approaches the edges of the editor window, it
+                    enters continuous panning mode and the further you move away
+                    form the window, the faster it pans.
+                  </li>
+                  <li>
+                    Panning as described above is typical in CAD or 3D type
+                    applications.
+                  </li>
+                  <li>
+                    In scroll mode, you can release the middle mouse button and
+                    scroll the text just like you can in some browsers.
+                  </li>
+                  <li>
+                    Scroll mode is ended by any clicking any mouse button.
+                  </li>
+                  <li>
+                    Panning and scrolling operate in opposite directions as they
+                    are different paradigms.
+                  </li>
+                  <li>
+                    An optional indicator (default is on) is shown in the center
+                    of the editor window when entering pan/scroll mode. If
+                    anybody finds this annoying, it can be turned off through an
+                    API by calling SetShowPanScrollIndicatorEnabled(false).
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <p>Cursors and selections:</p>
+                <ul>
+                  <li>
+                    Alt with single left mouse click creates a new cursor on
+                    MacOS.
+                  </li>
+                  <li>
+                    Ctrl with single left mouse click creates a new cursor on
+                    Linux and Windows.
+                  </li>
+                  <li>Ctrl-A select all text.</li>
+                  <li>
+                    Ctrl-D creates a new cursor and selects the next instance of
+                    the current selection.
+                  </li>
+                  <li>
+                    Double left mouse clicks on a curly bracket select the
+                    content of the relevant block and replaces all previous
+                    cursors.
+                  </li>
+                  <li>
+                    Shift + Double left mouse clicks on a curly bracket select
+                    the content of the relevant block including the brackets and
+                    replaces all previous cursors.
+                  </li>
+                  <li>
+                    Double left mouse clicks not on a bracket or parenthesis,
+                    select a word. Adding Shift extends current selection.
+                  </li>
+                  <li>
+                    Triple left mouse clicks select a line. Adding Shift extends
+                    current selection.
+                  </li>
+                  <li>
+                    Dragging mouse with left mouse button selects text. Shift
+                    extends current selection.
+                  </li>
+                  <li>
+                    Alt-Shift-RightArrow (on MacOS) and Ctrl-Shift-RightArrow
+                    (on Linux and Windows) grows all selections to outer blocks.
+                    First just the content of the block, than including the
+                    curly brackets. Continuously hitting the key combination
+                    keeps growing the selections.
+                  </li>
+                  <li>
+                    Alt-Shift-LeftArrow (on MacOS) and Ctrl-Shift-LeftArrow (on
+                    Linux and Windows) shrinks all selections to inner blocks.
+                    First including the curly brackets, that just the content of
+                    the block. Continuously hitting the key combination keeps
+                    shrinking the selections.
+                  </li>
+                  <li>
+                    Left mouse clicking or dragging over line numbers select
+                    line(s).
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <p>Clipboard Operations:</p>
+                <ul>
+                  <li>
+                    Ctrl-X or Shift-Delete cuts selected text or current line if
+                    no selection.
+                  </li>
+                  <li>
+                    Ctrl-C or Ctrl-Insert copies selected text or current line
+                    if no selection.
+                  </li>
+                  <li>Ctrl-V or Shift-Insert pastes clipboard content.</li>
+                  <li>Ctrl-Z undos the last action.</li>
+                  <li>Shift-Ctrl-Z or Ctrl-Y redos the last undone action.</li>
+                </ul>
+              </li>
+              <li>
+                <p>Insert Text:</p>
+                <ul>
+                  <li>Ctrl-Enter adds line below.</li>
+                  <li>Ctrl-Shift-Enter adds line above.</li>
+                </ul>
+              </li>
+              <li>
+                <p>Delete Text:</p>
+                <ul>
+                  <li>
+                    Backspace deletes character to the left of cursor or deletes
+                    selection(s).
+                  </li>
+                  <li>
+                    Delete deletes character to the right of cursor or deletes
+                    selection(s).
+                  </li>
+                  <li>Ctrl-Shift-K deletes all selected lines.</li>
+                </ul>
+              </li>
+              <li>
+                <p>Text Manipulation:</p>
+                <ul>
+                  <li>Ctrl-] indents current line or current lines.</li>
+                  <li>Ctrl-[ de-indents current line or current lines.</li>
+                  <li>
+                    Tab with selection indents current line or current lines.
+                  </li>
+                  <li>Ctrl-UpArrow moves current or all selected lines up.</li>
+                  <li>
+                    Ctrl-DownArrow moves current or all selected lines down.
+                  </li>
+                  <li>
+                    Ctrl-/ toggles comments if language with single line
+                    comments is specified.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <p>Find &amp; Replace:</p>
+                <ul>
+                  <li>Ctrl-f opens the find and replace window.</li>
+                  <li>
+                    Shift-Ctrl-f finds all instances and makes them separate
+                    cursors.
+                  </li>
+                  <li>Ctrl-g finds next instance of search text.</li>
+                </ul>
+              </li>
+              <li>
+                <p>Other:</p>
+                <ul>
+                  <li>
+                    Insert key toggles between insert (default) and overwrite
+                    modes.
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div id="nodes">
+            <h1 class="pb-2">Nodes Editor</h1>
+            <p>
+              ObjectTalk comes with a builtin development environment that
+              allows editing, debugging and execution of ObjectTalk elements.
+            </p>
+            <p><img src="img/ide.png" alt="IDE" /></p>
+            <h2>General Features</h2>
+          </div>
+          <div id="scenes">
+            <h1 class="pb-2">Scene Editor</h1>
+            <p>TBD</p>
+          </div>
+          <div id="text">
+            <h1 class="pb-2">Text Editor</h1>
+            <p>TBD</p>
+          </div>
+        </div>
+      </div>
+      <div class="row flex-shrink-0 py-1 manual-footer" id="copyright">
+        <p class="mx-auto py-0 my-0 small">
+          Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+        </p>
+      </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/theme.js"></script>
+  </body>
+</html>

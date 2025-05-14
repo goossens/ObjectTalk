@@ -137,7 +137,7 @@ Exposure/Contrast correction and Tone Mapping are also available.
 ## Integrated Development Environment
 
 To round it all out, the ObjectTalk executable comes with a builtin development
-environment that allows editing and execution of the ObjectTalk elements:
+environment that allows editing, debugging and execution of ObjectTalk elements:
 
 - **ObjectTalk script editor**
 	- This editor provides a powerful syntax highlighting capability modeled after a subset of Visual Studio Code.

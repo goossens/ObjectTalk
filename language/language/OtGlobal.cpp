@@ -194,7 +194,7 @@ OtObject OtGlobalClass::members(OtObject object) {
 	OtArray array = OtArray::create();
 
 	// special treatment for class objects
-	if (object.isKindOf<OtClass>()) {
+	if (object.isKindOf<OtClassClass>()) {
 		OtClass(object)->getClassType()->eachMemberID([&](OtID id) {
 			array->append(OtString::create(OtIdentifier::name(id)));
 		});

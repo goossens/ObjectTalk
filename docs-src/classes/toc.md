@@ -22,17 +22,4 @@
 	* [Internal](#internal)
 		* [Class](#class)
 		* [Global](#global)
-
-**HTTP Classes**
-
-* [Object](#object)
-	* [Http](#http)
-		* [URI](#uri)
-		* [HttpServer](#httpserver)
-		* [HttpRouter](#httprouter)
-		* [HttpRequest](#httprequest)
-		* [HttpResponse](#httpresponse)
-	* [Internal](#internal)
-		* [HttpNext](#httpnext)
-		* [HttpNotFound](#httpnotfound)
-		* [HttpTimer](#httptimer)
+		* [Debugger](#debugger)

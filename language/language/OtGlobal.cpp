@@ -16,24 +16,20 @@
 
 #include "OtGlobal.h"
 
-#include "OtPrimitive.h"
 #include "OtBoolean.h"
 #include "OtInteger.h"
 #include "OtReal.h"
 #include "OtFunction.h"
 
-#include "OtCollection.h"
 #include "OtArray.h"
 #include "OtDict.h"
 #include "OtSet.h"
 
-#include "OtSystem.h"
 #include "OtPathObject.h"
 #include "OtIO.h"
 #include "OtOS.h"
 #include "OtFS.h"
 
-#include "OtStream.h"
 #include "OtCout.h"
 #include "OtCerr.h"
 
@@ -55,38 +51,33 @@ OtGlobalClass::OtGlobalClass() {
 	set("true", OtBoolean::create(true));
 	set("false", OtBoolean::create(false));
 	set("pi", OtReal::create(std::numbers::pi));
-	set("e", OtReal::create(std::numbers::e));
 
 	// add default functions
 	set("assert", OtFunction::create(&OtGlobalClass::doAssert));
-	set("range", OtFunction::create(&OtGlobalClass::range));
 	set("addImportPath", OtFunction::create(&OtGlobalClass::addImportPath));
 	set("import", OtFunction::create(&OtGlobalClass::import));
+	set("range", OtFunction::create(&OtGlobalClass::range));
 	set("print", OtFunction::create(&OtGlobalClass::print));
 	set("members", OtFunction::create(&OtGlobalClass::members));
 
 	// add default classes
 	set("Object", OtClass::create(OtObjectClass::getMeta()));
 
-	set("Primitive", OtClass::create(OtPrimitiveClass::getMeta()));
 	set("Boolean", OtClass::create(OtBooleanClass::getMeta()));
 	set("Integer", OtClass::create(OtIntegerClass::getMeta()));
 	set("Real", OtClass::create(OtRealClass::getMeta()));
 	set("String", OtClass::create(OtStringClass::getMeta()));
 	set("Function", OtClass::create(OtFunctionClass::getMeta()));
 
-	set("Collection", OtClass::create(OtCollectionClass::getMeta()));
 	set("Array", OtClass::create(OtArrayClass::getMeta()));
 	set("Dict", OtClass::create(OtDictClass::getMeta()));
 	set("Set", OtClass::create(OtSetClass::getMeta()));
 
-	set("System", OtClass::create(OtSystemClass::getMeta()));
 	set("Path", OtClass::create(OtPathObjectClass::getMeta()));
 	set("IO", OtClass::create(OtIOClass::getMeta()));
 	set("OS", OtClass::create(OtOSClass::getMeta()));
 	set("FS", OtClass::create(OtFSClass::getMeta()));
 
-	set("Stream", OtClass::create(OtStreamClass::getMeta()));
 	set("Cout", OtClass::create(OtCoutClass::getMeta()));
 	set("Cerr", OtClass::create(OtCerrClass::getMeta()));
 

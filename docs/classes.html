@@ -169,49 +169,8 @@
                   <ul>
                     <li><a class="page-scroll" href="#class">Class</a></li>
                     <li><a class="page-scroll" href="#global">Global</a></li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-          </ul>
-          <p><strong>HTTP Classes</strong></p>
-          <ul>
-            <li>
-              <a class="page-scroll" href="#object">Object</a>
-              <ul>
-                <li>
-                  <a class="page-scroll" href="#http">Http</a>
-                  <ul>
-                    <li><a class="page-scroll" href="#uri">URI</a></li>
                     <li>
-                      <a class="page-scroll" href="#httpserver">HttpServer</a>
-                    </li>
-                    <li>
-                      <a class="page-scroll" href="#httprouter">HttpRouter</a>
-                    </li>
-                    <li>
-                      <a class="page-scroll" href="#httprequest">HttpRequest</a>
-                    </li>
-                    <li>
-                      <a class="page-scroll" href="#httpresponse"
-                        >HttpResponse</a
-                      >
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <a class="page-scroll" href="#internal">Internal</a>
-                  <ul>
-                    <li>
-                      <a class="page-scroll" href="#httpnext">HttpNext</a>
-                    </li>
-                    <li>
-                      <a class="page-scroll" href="#httpnotfound"
-                        >HttpNotFound</a
-                      >
-                    </li>
-                    <li>
-                      <a class="page-scroll" href="#httptimer">HttpTimer</a>
+                      <a class="page-scroll" href="#debugger">Debugger</a>
                     </li>
                   </ul>
                 </li>
@@ -2429,6 +2388,244 @@ assert(set.subtract(set2) == Set(2, 5));
                   <td>
                     Convert the specified object to a String and write it to the
                     specified file.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="internal">
+            <h1 class="pb-2">Internal Class</h1>
+            <p>
+              The Internal class is an abstract class without any functionality
+              derived from <a href="Object.md">Object</a>. The purpose of it in
+              ObjectTalk is simply to group all internal classes and to provide
+              a common base class for them.
+            </p>
+            <p>
+              Internal classes can't be instantiated directly and are simply
+              there to help ObjectTalk internally. Classes like iterators,
+              references and others are used internally to ensure the entire
+              engine is object based. These classes are never exposed to the
+              user. Three internally classes are the exception.
+              <strong>Class</strong>, <strong>Global</strong> and debugger can't
+              be instantiated but users can interact with these classes.
+            </p>
+          </div>
+          <div id="class">
+            <h1 class="pb-2">Class Class</h1>
+            <p>
+              The <strong>Class</strong> class is an internal class that
+              provides information about another class. This class can't be
+              instantiated but users can request access to this class by using
+              the <strong>getClass</strong> member function on any object.
+            </p>
+            <pre><code>var object = &quot;dsfdsfdsf&quot;;
+var class = object.getClass();
+print(class.getName());
+</code></pre>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>getName()</td>
+                  <td>Returns the name of the class.</td>
+                </tr>
+                <tr>
+                  <td>hasParent()</td>
+                  <td>
+                    Returns a Boolean to indocate if the class has a parent
+                    class..
+                  </td>
+                </tr>
+                <tr>
+                  <td>getParent()</td>
+                  <td>Returns the parent class.</td>
+                </tr>
+                <tr>
+                  <td>isKindOf(className)</td>
+                  <td>
+                    Returns a Boolean indicating if the class is derived from
+                    another class.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="global">
+            <h1 class="pb-2">Global Class</h1>
+            <p>
+              The <strong>Global</strong> class can't be instantiated but is
+              created by the ObjectTalk runtime and it represents the top-level
+              or root scope. Members of the <strong>Global</strong> class can be
+              accessed anywhere in the ObjectTalk runtime. Right now, the global
+              scope contains frequently used constants, global functions, class
+              definitions for the core classes and instances of core classes as
+              a convininiece.
+            </p>
+            <p><strong>Global Constants</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>null</td>
+                  <td>
+                    Instance of the <strong>Object</strong> class representing
+                    the null value.
+                  </td>
+                </tr>
+                <tr>
+                  <td>true</td>
+                  <td><strong>Boolean</strong> true.</td>
+                </tr>
+                <tr>
+                  <td>false</td>
+                  <td><strong>Boolean</strong> false.</td>
+                </tr>
+                <tr>
+                  <td>pi</td>
+                  <td><strong>Real</strong> value of PI.</td>
+                </tr>
+              </tbody>
+            </table>
+            <p><strong>Global Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>assert(expression)</td>
+                  <td>
+                    Evaluates the expression and terminates the program with an
+                    error if false.
+                  </td>
+                </tr>
+                <tr>
+                  <td>addImportPath(path)</td>
+                  <td>
+                    Add the specified path to the import search path. Helpful to
+                    find module in non-standard locations
+                  </td>
+                </tr>
+                <tr>
+                  <td>import(module)</td>
+                  <td>
+                    Import a module into the current context. The module can
+                    refer to an internal module are a path to a user module.
+                  </td>
+                </tr>
+                <tr>
+                  <td>range()</td>
+                  <td>
+                    Returns a number interator. If called with one parameter,
+                    the iterator yields to number from 0 to n-1. If called with
+                    two parameters, the iterator yields number from the first to
+                    the last. If called with three parameters, the first
+                    indicates the start, the second indicates the end and the
+                    third indicates the step. Step in this case may be a
+                    negative number to create a reverse number iterator.
+                  </td>
+                </tr>
+                <tr>
+                  <td>print(text[, ...])</td>
+                  <td>Prints each value to stdout as well as a linefeed.</td>
+                </tr>
+                <tr>
+                  <td>members()</td>
+                  <td>
+                    Returns the members of an object. If the object is a
+                    <strong>Class</strong> class, it returns the class members.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p><strong>Global Classes</strong></p>
+            <p>
+              The global scope contains all the core classes so core objects can
+              be easilly instantiated. The following classes are predefined:
+            </p>
+            <ul>
+              <li>
+                <strong>Primitives:</strong> Object, Boolean, Integer, Real,
+                String, Function
+              </li>
+              <li><strong>Collections:</strong> Array, Dict, Set</li>
+              <li><strong>System:</strong> Path, IO, OS, FS</li>
+              <li><strong>Streams:</strong> Cout, Cerr</li>
+            </ul>
+            <p><strong>Global Instances</strong></p>
+            <p>
+              As a convinience, the following classes have instances in the
+              global scope:
+            </p>
+            <ul>
+              <li><strong>io:</strong> IO instance</li>
+              <li><strong>os:</strong> OS instance</li>
+              <li><strong>fs:</strong> FS instance</li>
+              <li><strong>cout:</strong> Cout instance</li>
+              <li><strong>cerr:</strong> Cerr instance</li>
+              <li><strong>debug:</strong> Debugger instance</li>
+            </ul>
+          </div>
+          <div id="debugger">
+            <h1 class="pb-2">Debugger Class</h1>
+            <p>
+              The <strong>Debugger</strong> class allows user to debug an
+              ObjectTalk script. The class is instantiated in the golbal context
+              (under the name <strong>debug</strong>) and can be used to enter
+              the debugger or get state information while running.
+            </p>
+            <pre><code>debug(); // enter the inteactive debugger.
+</code></pre>
+            <p>
+              When the interactive debugger state in entered, it depends on the
+              script launch method to determine what happens next. If a script
+              was started from the command line, a command line based debugger
+              is activated. If the script was launched from the IDE, a visual
+              debugger is activated.
+            </p>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>debug()</td>
+                  <td>Enter the interactive debugger.</td>
+                </tr>
+                <tr>
+                  <td>where()</td>
+                  <td>Return the current execution location as a string.</td>
+                </tr>
+                <tr>
+                  <td>disassemble()</td>
+                  <td>
+                    Disassemble the current function and return it as a string.
+                  </td>
+                </tr>
+                <tr>
+                  <td>getVariableNames()</td>
+                  <td>
+                    Return the variable in use at the current context as an
+                    array of strings.
                   </td>
                 </tr>
               </tbody>

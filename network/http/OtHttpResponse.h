@@ -61,8 +61,8 @@ public:
 	// handle file read events
 	void onFileRead(ssize_t size);
 
-	// download user file
-	OtObject download(const std::string& name);
+	// send a file as the response
+	OtObject sendFileToDownload(const std::string& name);
 
 	// get type definition
 	static OtType getMeta();

@@ -39,6 +39,7 @@ target_include_directories(gfx PUBLIC ${GFX_INCLUDE_DIRS})
 
 target_link_libraries(gfx PUBLIC
 	language
+	network
 	shaders
 	SDL3-static
 	bgfx

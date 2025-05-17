@@ -8,10 +8,11 @@ core classes and instances of core classes as a convininiece.
 
 | Variable | Description |
 | ------ | ----------- |
-| null | Instance of the **Object** class representing the null value. |
-| true | **Boolean** true. |
-| false | **Boolean** false. |
-| pi | **Real** value of PI. |
+| null | Instance of the **Object** class representing a none (null) value. |
+| true | Boolean true. |
+| false | Boolean false. |
+| pi | Mathematical constant that is the ratio of a circle's circumference to its diameter. |
+| e | Mathematical constant that is the base of the natural logarithm and exponential function. |
 
 **Global Functions**
 

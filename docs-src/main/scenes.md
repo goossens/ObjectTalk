@@ -26,4 +26,8 @@ particle systems, Image Based Lighting (IBL), Cascaded Shadow Maps (CSMs) and
 post processing with Fog, Bloom, God Rays, Fast Approximate Anti-Aliasing (FXAA),
 Exposure/Contrast correction and Tone Mapping are also available.
 
+<div align="center">
+
 ![Scenes](img/scenes.png)
+
+</div>

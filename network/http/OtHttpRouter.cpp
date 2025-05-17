@@ -251,9 +251,9 @@ OtObject OtHttpRouterClass::call(OtObject req, OtObject res, OtObject next) {
 //	OtHttpRouterClass::timer
 //
 
-OtObject OtHttpRouterClass::timer(int64_t wait, int64_t repeat, OtObject callback) {
+OtObject OtHttpRouterClass::timer(int64_t interval, OtObject callback) {
 	OtCallbackValidate(callback, 0);
-	return OtHttpTimer::create(wait, repeat, callback);
+	return OtHttpTimer::create(interval, callback);
 }
 
 

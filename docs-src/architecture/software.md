@@ -3,7 +3,11 @@ As mentioned above, the four boxes on the right are available on both ObjectTalk
 configurations whereas the five boxes on the left are only available when the
 host operating system offers GUI libraries.
 
+<div align="center">
+
 ![Software Architecture](img/software-architecture.png)
+
+</div>
 
 **Operating System Foundation**
 
@@ -33,14 +37,18 @@ runs in a single thread, a replacement shared pointer class is included that is 
 makes ObjectTalk twice as fast. Off course I argue that I would have used the standard library
 if it only had included a fast non-thread safe smart pointer.
 
-**ObjectTalk Language Engine**
+**Language Engine**
 
 The language engine uses some simple components to implement ObjectTalk. A lexical scanner turns
-source code into tokens, the compiler translates these tokens to bytecode for a platform-independent
-imaginary CPU, an optimizer turns simple code sequences into super instructions and the stack-based
-virtual machine executes this bytecode.
+source code into tokens, the single-pass compiler translates these tokens to bytecode for a
+platform-independent imaginary CPU, an optimizer turns simple code sequences into super instructions
+and the stack-based virtual machine executes this bytecode.
+
+<div align="center">
 
 ![Language Architecture](img/language-architecture.png)
+
+</div>
 
 **Core Classes**
 
@@ -51,8 +59,9 @@ provides fundamental classes for primitives (booleans, integers, reals, strings 
 collections (arrays, dictionaries and sets) as well as a set of operating system, filesystem and
 stream classes.
 
-**Asynchronous I/O**
+**Network Framework**
 
+These classes provide asynchronous access to network functions.
 When implementing servers or I/O heavy applications, you typically have two options. Firstly,
 you can go multithreaded and use many threads and thread pools to handle I/O request.
 This approach however has proven not to be too scaleable and most web servers today don’t use it
@@ -63,10 +72,10 @@ operating system events whenever they happen. ObjectTalk uses this last approach
 solutions. Libuv was originally developed for [Node.js](https://nodejs.org/) and is still in use
 there. This means that it is well tested and maintained.
 
-**HTTP Server**
+**Network Classes**
 
 ObjectTalk provides a number of classes that make it easy to implement a web server on top of
-the Async I/O library. For those familiar with [Node.js](https://nodejs.org/) and the
+the network framework. For those familiar with [Node.js](https://nodejs.org/) and the
 [Express package](https://expressjs.com), you will recognize the similarities. If you need an
 operational asynchronous web server, use [Node.js](https://nodejs.org/). If you want to use a
 simple server using a few lines of code, this ObjectTalk library might be the ticket.
@@ -93,13 +102,14 @@ as an architectural pattern to represent the elements of the scene. The IDE prov
 editor for ECS data which is easy to use. To make 3D scenes scriptable, a basic ObjetcTalk scripting
 component is available.
 
-**GUI Framework**
+**Graphics Classes**
 
+These classes provide scripting access to the graphics framework as well components to build GUIs.
 ObjectTalk has a rich set of platform independent widgets that can be used to create user interfaces and apps.
 In the included examples, the gui, arcade and pacman folders contain sample scripts to showcase
-the power of this framework.
+the power of these classes.
 
-**Nodes Engine**
+**Node Engine**
 
 Many years ago, I developed a graphical node-based editor to configure computer I/O systems complete
 with stream processing and protocol conversion. This worked really well and it allowed non-programmers

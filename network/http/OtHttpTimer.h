@@ -42,7 +42,7 @@ protected:
 	// constructor
 	friend class OtObjectPointer<OtHttpTimerClass>;
 	OtHttpTimerClass() = default;
-	OtHttpTimerClass(int64_t wait, int64_t repeat, OtObject cb) : callback(cb) {
+	OtHttpTimerClass(int64_t interval, OtObject cb) : callback(cb) {
 		// sanity check
 		OtCallbackValidate(callback, 0);
 
@@ -52,7 +52,7 @@ protected:
 		uv_timer_start(&uv_timer, [](uv_timer_t* handle) {
 			OtHttpTimerClass* timer = (OtHttpTimerClass*) (handle->data);
 			OtVM::callMemberFunction(timer->callback, "__call__");
-		}, wait, repeat);
+		}, interval, 1);
 	}
 
 private:

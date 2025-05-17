@@ -472,6 +472,28 @@ const std::string& OtHttpRequestClass::getParam(const std::string& param) {
 
 
 //
+//	OtHttpRequestClass::getParams
+//
+
+OtObject OtHttpRequestClass::getParams() {
+	OtDict dict = OtDict::create();
+
+	for (auto i = params.begin(); i != params.end(); i++) {
+		if (dict->contains(i->first)) {
+			std::string value = dict->getEntry(i->first)->operator std::string();
+			value += "; " + i->second;
+			dict->setEntry(i->first, OtString::create(value));
+
+		} else {
+			dict->setEntry(i->first, OtString::create(i->second));
+		}
+	}
+
+	return dict;
+}
+
+
+//
 //	OtHttpRequestClass::setCookie
 //
 
@@ -563,6 +585,7 @@ OtType OtHttpRequestClass::getMeta() {
 
 		type->set("hasParam", OtFunction::create(&OtHttpRequestClass::hasParam));
 		type->set("getParam", OtFunction::create(&OtHttpRequestClass::getParam));
+		type->set("getParams", OtFunction::create(&OtHttpRequestClass::getParams));
 
 		type->set("hasCookie", OtFunction::create(&OtHttpRequestClass::hasCookie));
 		type->set("getCookie", OtFunction::create(&OtHttpRequestClass::getCookie));

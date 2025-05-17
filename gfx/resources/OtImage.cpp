@@ -118,7 +118,7 @@ void OtImage::loadFromFile(const std::string& path) {
 
 void OtImage::loadFromUrl(const std::string& address) {
 	OtUrl url(address);
-	url.doGet();
+	url.download();
 
 	try {
 		load(url.getDownloadedData(), url.getDownloadedSize());

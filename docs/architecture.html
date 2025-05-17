@@ -74,7 +74,24 @@
                 ><a class="nav-link page-scroll" href="guide.html">Guide</a
                 ><a class="nav-link page-scroll" href="language.html"
                   >Language</a
-                ><a class="nav-link page-scroll" href="classes.html">Classes</a>
+                ><a class="nav-link page-scroll" href="classes.html"
+                  >Core Classes</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Modules"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Modules</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Modules">
+                <a class="nav-link page-scroll" href="http.html">HTTP</a>
               </div>
             </li>
             <li class="nav-item dropdown">
@@ -192,12 +209,14 @@
               five boxes on the left are only available when the host operating
               system offers GUI libraries.
             </p>
-            <p>
-              <img
-                src="img/software-architecture.png"
-                alt="Software Architecture"
-              />
-            </p>
+            <div align="center">
+              <p>
+                <img
+                  src="img/software-architecture.png"
+                  alt="Software Architecture"
+                />
+              </p>
+            </div>
             <p><strong>Operating System Foundation</strong></p>
             <p>
               ObjectTalk currently runs on MacOS, Linux and Windows. In general,
@@ -239,21 +258,23 @@
               course I argue that I would have used the standard library if it
               only had included a fast non-thread safe smart pointer.
             </p>
-            <p><strong>ObjectTalk Language Engine</strong></p>
+            <p><strong>Language Engine</strong></p>
             <p>
               The language engine uses some simple components to implement
               ObjectTalk. A lexical scanner turns source code into tokens, the
-              compiler translates these tokens to bytecode for a
+              single-pass compiler translates these tokens to bytecode for a
               platform-independent imaginary CPU, an optimizer turns simple code
               sequences into super instructions and the stack-based virtual
               machine executes this bytecode.
             </p>
-            <p>
-              <img
-                src="img/language-architecture.png"
-                alt="Language Architecture"
-              />
-            </p>
+            <div align="center">
+              <p>
+                <img
+                  src="img/language-architecture.png"
+                  alt="Language Architecture"
+                />
+              </p>
+            </div>
             <p><strong>Core Classes</strong></p>
             <p>
               Given that ObjectTalk’s virtual machine only understands a stack
@@ -265,8 +286,9 @@
               collections (arrays, dictionaries and sets) as well as a set of
               operating system, filesystem and stream classes.
             </p>
-            <p><strong>Asynchronous I/O</strong></p>
+            <p><strong>Network Framework</strong></p>
             <p>
+              These classes provide asynchronous access to network functions.
               When implementing servers or I/O heavy applications, you typically
               have two options. Firstly, you can go multithreaded and use many
               threads and thread pools to handle I/O request. This approach
@@ -282,10 +304,10 @@
               <a href="https://nodejs.org/">Node.js</a> and is still in use
               there. This means that it is well tested and maintained.
             </p>
-            <p><strong>HTTP Server</strong></p>
+            <p><strong>Network Classes</strong></p>
             <p>
               ObjectTalk provides a number of classes that make it easy to
-              implement a web server on top of the Async I/O library. For those
+              implement a web server on top of the network framework. For those
               familiar with <a href="https://nodejs.org/">Node.js</a> and the
               <a href="https://expressjs.com">Express package</a>, you will
               recognize the similarities. If you need an operational
@@ -330,14 +352,16 @@
               to use. To make 3D scenes scriptable, a basic ObjetcTalk scripting
               component is available.
             </p>
-            <p><strong>GUI Framework</strong></p>
+            <p><strong>Graphics Classes</strong></p>
             <p>
-              ObjectTalk has a rich set of platform independent widgets that can
-              be used to create user interfaces and apps. In the included
-              examples, the gui, arcade and pacman folders contain sample
-              scripts to showcase the power of this framework.
+              These classes provide scripting access to the graphics framework
+              as well components to build GUIs. ObjectTalk has a rich set of
+              platform independent widgets that can be used to create user
+              interfaces and apps. In the included examples, the gui, arcade and
+              pacman folders contain sample scripts to showcase the power of
+              these classes.
             </p>
-            <p><strong>Nodes Engine</strong></p>
+            <p><strong>Node Engine</strong></p>
             <p>
               Many years ago, I developed a graphical node-based editor to
               configure computer I/O systems complete with stream processing and

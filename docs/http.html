@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>HTTP Module</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/theme.css" />
+  </head>
+  <body id="page-top">
+    <div
+      class="container-fluid d-flex flex-column flex-grow-1 vh-100 overflow-hidden"
+    >
+      <nav
+        class="navbar navbar-expand px-0 pt-1 pb-0 flex-shrink-0 manual-header"
+      >
+        <a class="navbar-brand" href="index.html"
+          ><img src="img/icon.png" height="40" alt="" /><span class="ml-2"
+            >Documentation</span
+          ></a
+        ><button
+          class="navbar-toggler navbar-toggler-right"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          type="button"
+          data-toogle="collapse"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="General"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >General</a
+              >
+              <div class="dropdown-menu" aria-labelledby="General">
+                <a class="nav-link page-scroll" href="index.html"
+                  >Introduction</a
+                ><a class="nav-link page-scroll" href="architecture.html"
+                  >Architecture</a
+                ><a class="nav-link page-scroll" href="installation.html"
+                  >Installation</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Language"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Language</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Language">
+                <a class="nav-link page-scroll" href="tour.html">Tour</a
+                ><a class="nav-link page-scroll" href="guide.html">Guide</a
+                ><a class="nav-link page-scroll" href="language.html"
+                  >Language</a
+                ><a class="nav-link page-scroll" href="classes.html"
+                  >Core Classes</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Modules"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Modules</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Modules">
+                <a class="nav-link page-scroll" href="http.html">HTTP</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Nodes"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Nodes</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Nodes">
+                <a class="nav-link page-scroll" href="nodes-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="nodes-reference.html"
+                  >Reference</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Scenes"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Scenes</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Scenes">
+                <a class="nav-link page-scroll" href="scenes-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="scenes-reference.html"
+                  >Reference</a
+                >
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link page-scroll" href="ide.html">IDE</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div class="row flex-grow-1 overflow-hidden vh-100">
+        <div class="col-2 mh-100 overflow-auto py-2 manual-toc">
+          <p><strong>HTTP Module</strong></p>
+          <ul>
+            <li><a class="page-scroll" href="#overview">Overview</a></li>
+            <li><a class="page-scroll" href="#url">URL</a></li>
+            <li><a class="page-scroll" href="#server">Server</a></li>
+            <li><a class="page-scroll" href="#router">Router</a></li>
+            <li><a class="page-scroll" href="#request">Request</a></li>
+            <li><a class="page-scroll" href="#response">Response</a></li>
+          </ul>
+        </div>
+        <div class="col mh-100 overflow-auto py-2 manual-content">
+          <div id="overview">
+            <h1 class="pb-2">HTTP Module</h1>
+            <p>
+              The http module provides HTTP protocol support for clients and
+              servers. With a few lines of ObjectTalk an HTTP server can be
+              setup to serve static and dynamic content based on specified
+              routing rules. A class is also avaible to decompose and compose
+              URLs which can also be used to download resources as a client.
+            </p>
+          </div>
+          <div id="url">
+            <h1 class="pb-2">URL</h1>
+            <p>
+              The <strong>http.Url</strong> class provides support for URL
+              parsing and resource downloading. The parser is compliant with RFC
+              1738 and understands the following syntax:
+            </p>
+            <p><strong>URL:</strong></p>
+            <p><img src="img/url.png" alt="URL" /></p>
+            <pre><code>URL ::= scheme &quot;:&quot; authority? path (&quot;?&quot; query)? (&quot;#&quot; fragment)?
+</code></pre>
+            <p><strong>Authority:</strong></p>
+            <p><img src="img/authority.png" alt="Authority" /></p>
+            <pre><code>authority ::= &quot;//&quot; (username (&quot;:&quot; password)? &quot;@&quot;)? host (&quot;:&quot; port)?
+</code></pre>
+            <p>
+              To use the <strong>http.Url</strong> class to download resources,
+              it is as simple as:
+            </p>
+            <pre><code>var http = import(&quot;http&quot;);
+var url = http.Url(&quot;http://host.name/resource-path&quot;);
+var content = url.download();
+
+// or as a one-liner
+var content = import(&quot;http&quot;).Url(&quot;http://host.name/resource-path&quot;).download();
+</code></pre>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>__init__(url)</td>
+                  <td>Create a URL object form the provided string.</td>
+                </tr>
+                <tr>
+                  <td>url()</td>
+                  <td>
+                    Return the full URL as a string. Returns &quot;&quot; if not
+                    specified.
+                  </td>
+                </tr>
+                <tr>
+                  <td>scheme()</td>
+                  <td>
+                    Return the scheme part as a string. Returns &quot;&quot; if
+                    not specified.
+                  </td>
+                </tr>
+                <tr>
+                  <td>authority()</td>
+                  <td>
+                    Return the authority part as a string. Returns &quot;&quot;
+                    if not specified.
+                  </td>
+                </tr>
+                <tr>
+                  <td>user()</td>
+                  <td>
+                    Return the user part as a string. Returns &quot;&quot; if
+                    not specified.
+                  </td>
+                </tr>
+                <tr>
+                  <td>password()</td>
+                  <td>
+                    Return the password part as a string. Returns &quot;&quot;
+                    if not specified.
+                  </td>
+                </tr>
+                <tr>
+                  <td>host()</td>
+                  <td>
+                    Return the host part as a string. Returns &quot;&quot; if
+                    not specified.
+                  </td>
+                </tr>
+                <tr>
+                  <td>port()</td>
+                  <td>
+                    Return the port part as an integer. Returns 80 if not
+                    specified.
+                  </td>
+                </tr>
+                <tr>
+                  <td>path()</td>
+                  <td>
+                    Return the path part as a string. Returns &quot;&quot; if
+                    not specified.
+                  </td>
+                </tr>
+                <tr>
+                  <td>directory()</td>
+                  <td>
+                    Return the directory part of the path as a string. Returns
+                    &quot;&quot; if not specified.
+                  </td>
+                </tr>
+                <tr>
+                  <td>filename()</td>
+                  <td>
+                    Return the filename part of the path as a string. Returns
+                    &quot;&quot; if not specified.
+                  </td>
+                </tr>
+                <tr>
+                  <td>stem()</td>
+                  <td>
+                    Return the stem part of the filename as a string. Returns
+                    &quot;&quot; if not specified.
+                  </td>
+                </tr>
+                <tr>
+                  <td>extension()</td>
+                  <td>
+                    Return the extension part of the filename as a string.
+                    Returns &quot;&quot; if not specified.
+                  </td>
+                </tr>
+                <tr>
+                  <td>query()</td>
+                  <td>
+                    Return the query part as a string. Returns &quot;&quot; if
+                    not specified.
+                  </td>
+                </tr>
+                <tr>
+                  <td>fragment()</td>
+                  <td>
+                    Return the fragment part as a string. Returns &quot;&quot;
+                    if not specified.
+                  </td>
+                </tr>
+                <tr>
+                  <td>hasParam(parameter)</td>
+                  <td>
+                    Determines if the query part contains the specified
+                    parameter.
+                  </td>
+                </tr>
+                <tr>
+                  <td>getParam(parameter)</td>
+                  <td>
+                    Return the specified parameter as a string. Returns
+                    &quot;&quot; if not specified.
+                  </td>
+                </tr>
+                <tr>
+                  <td>getParamWithDefault(parameter, default)</td>
+                  <td>
+                    Return the specified parameter as a string. Returns provided
+                    default if not specified.
+                  </td>
+                </tr>
+                <tr>
+                  <td>download()</td>
+                  <td>
+                    Download the resource addressed by the URL and return it as
+                    a string. If something goes wrong, an exception is raised.
+                  </td>
+                </tr>
+                <tr>
+                  <td>getStatus()</td>
+                  <td>
+                    Return the HTTP status code from the last download request.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="server">
+            <h1 class="pb-2">Server</h1>
+            <p>
+              The <strong>http.Server</strong> class instantiates a web server
+              on a specified port using a specified request router. Those of you
+              familiar with NodeJS or Python's Twisted Framework will probably
+              recognize the inspiration for these ObjectTalk classes. In
+              general, the ObjectTalk web server is a lot simpler as the
+              aforementioned packages but the purpose of the ObjectTalk classes
+              is not to compete buth rather to educate and provide simple
+              solution to non-complex problems.
+            </p>
+            <p>
+              As an example, here is a simple &quot;Hello World&quot; web server
+              in ObjectTalk. It runs on port 80 and responds with &quot;Hello
+              World&quot; to every HTTP GET request on all URLs.
+            </p>
+            <pre><code>var http = import(&quot;http&quot;);
+
+var router = http.Router()
+	.get(&quot;*&quot;, function(req, res, next) {
+		res.send(&quot;Hello World&quot;);
+	});
+
+var server = http.Server(router).listen(&quot;0.0.0.0&quot;, 80);
+os.runServer();
+</code></pre>
+            <p>
+              The <strong>http.Server</strong> server uses a request router to
+              process all incoming requests. The <strong>listen</strong> member
+              function starts the server on the speficied port using the
+              specified host. In the example above, requests can come from any
+              host.
+            </p>
+            <p>
+              The <strong>http.Server</strong> class does not have its own event
+              loop. If a server is running from the command line, an event loop
+              must be created using the <strong>os.runServer();</strong> command
+              as in the example above. If the server in running in a GUI
+              application (yes, that's possible), you don't have to do anything
+              as every GUI appication already has an event loop. By not
+              including an event loop in the <strong>http.Server</strong> class,
+              the possibility exists to run multiple network servers in a single
+              ObjectTalk instance.
+            </p>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>__init__(router)</td>
+                  <td>
+                    Create an HTTP server using the specified HTTP
+                    <strong>Router</strong> for processing requests.
+                  </td>
+                </tr>
+                <tr>
+                  <td>listen(host, port)</td>
+                  <td>
+                    Start the HTTP server using the specified host and port
+                    specification.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="router">
+            <h1 class="pb-2">Router</h1>
+            <p>
+              The <strong>http.Router</strong> class provides routing mechanisms
+              to let a web server's endpoints (URLs) respond to client requests.
+              Routing is achieved by using methods of the
+              <strong>http.Router</strong> class. For instance,
+              <strong>http.Router.get</strong> handles an HTTP GET request and
+              <strong>http.Router.post</strong> handles an HTTP POST request.
+              You can find a list below of all the request types. You can also
+              use <strong>http.Router.all</strong> to handle all HTTP methods
+              and use <strong>http.Router.use</strong> to specify middleware as
+              the callback function.
+            </p>
+            <p>
+              All routing methods specify a callback function (sometimes called
+              “handler functions”) called when the web server receives a request
+              to the specified route (endpoint) and HTTP method. In other words,
+              the web server “listens” for requests that match the specified
+              route(s) and method(s), and when it detects a match, it calls the
+              specified callback function.
+            </p>
+            <p>The following code is an example of a very basic route:</p>
+            <pre><code>var http = import(&quot;http&quot;);
+var router = http.Router();
+
+// respond with &quot;Hello World&quot; when a GET request is made to the homepage
+router.get(&quot;/&quot;, function(req, res, next) {
+	res.send(&quot;Hello World&quot;);
+});
+</code></pre>
+            <p><strong>Route Methods</strong></p>
+            <p>
+              A route method is derived from one of the HTTP methods, and is
+              attached to an instance of the <strong>http.Router</strong> class.
+              The following code is an example of routes that are defined for
+              the GET and the POST methods to the root of the web server.
+            </p>
+            <pre><code>// GET method route
+router.get(&quot;/&quot;, function(req, res, next) {
+	res.send(&quot;GET request to the homepage&quot;);
+});
+
+// POST method route
+router.post(&quot;/&quot;, function(req, res, next) {
+	res.send(&quot;POST request to the homepage&quot;);
+});
+</code></pre>
+            <p>
+              The <strong>http.Router</strong> class supports methods that
+              correspond to all HTTP request methods: get, post, and so on. For
+              a full list, see below. There is a special routing method,
+              <strong>http.Router.all</strong>, used to load middleware
+              functions at a path for all HTTP request methods. For example, the
+              following handler is executed for requests to the route
+              &quot;/secret&quot; whether using GET, POST, PUT, DELETE, or any
+              other HTTP request method.
+            </p>
+            <pre><code>router.all(&quot;/secret/*&quot;, function(req, res, next) {
+	print(&quot;Accessing the secret section ...&quot;);
+	next(); // pass control to the next handler
+});
+</code></pre>
+            <p><strong>Route Paths</strong></p>
+            <p>
+              Route paths, in combination with a request method, define the
+              endpoints at which requests can be made. Route paths can be
+              strings, string patterns, or regular expressions. In case the
+              pattern is a string, the pattern will only match if the string and
+              path are identical.
+            </p>
+            <pre><code>// matches root route
+router.get(&quot;/&quot;, function(req, res, next) {
+	res.send(&quot;root&quot;);
+});
+
+// matches /about route
+router.get(&quot;/about&quot;, function(req, res, next) {
+	res.send(&quot;about&quot;);
+});
+
+// matches /random.text route
+router.get(&quot;/random.text&quot;, function(req, res, next) {
+	res.send(&quot;random.text&quot;);
+});
+</code></pre>
+            <p>
+              A string pattern ends with a * character (the wild card) and all
+              paths that start with the same character sequence
+            </p>
+            <pre><code>// matches all paths that start with &quot;/secret/&quot;
+router.all(&quot;/secret/*&quot;, function(req, res, next) {
+	res.send(&quot;in secret area&quot;);
+});
+</code></pre>
+            <p>
+              Path matching based on regular express is still on the TODO list.
+            </p>
+            <p><strong>Route Parameters</strong></p>
+            <p>
+              Route parameters are named URL segments that are used to capture
+              the values specified at their position in the URL. The captured
+              values are populated in the req object, with the name of the route
+              parameter specified in the path as their respective keys.
+            </p>
+            <pre><code>Route path: /users/:userId/books/:bookId
+Request URL: http://localhost:3000/users/34/books/8989
+req.getParams(): { &quot;userId&quot;: &quot;34&quot;, &quot;bookId&quot;: &quot;8989&quot; }
+</code></pre>
+            <p>
+              To define routes with route parameters, simply specify the route
+              parameters in the path of the route as shown below.
+            </p>
+            <pre><code>router.all(&quot;/users/:userId/books/:bookId&quot;, function(req, res, next) {
+	res.send(req.params);
+});
+</code></pre>
+            <p><strong>Route Handlers</strong></p>
+            <p>
+              A route handler or callback is a function that must accept three
+              parameters: req(uest), res(pond) and next. The first is the
+              request object (which is an instance of
+              <strong>http.Request</strong>) containing details about the
+              request. The second is the respond object (which is an instance of
+              <strong>http.Respond</strong>) which is used to tell the web
+              server what to send back. The third is the next object which must
+              be executed to pass the request to the next route handler.
+            </p>
+            <p><strong>Static Handler</strong></p>
+            <p>
+              To serve static content, a static handler can be attached to a
+              route. This handler matches the start of a URL path to a
+              filesystem path. This makes it quick to serve up hierarchies of
+              files using a UNIX mount style approach.
+            </p>
+            <pre><code>// serve up the contents of the local 'static' directory under the /static HTTP path
+router.static(&quot;/static&quot;, __DIR__.join(&quot;static&quot;));
+</code></pre>
+            <p>
+              The static handler protects against con-artist that try to escape
+              from the specified directory by using &quot;..&quot; path
+              segments.
+            </p>
+            <p><strong>Timer Handler</strong></p>
+            <p>
+              The <strong>http.Router</strong> class also provides a timer
+              handler which is called at a specified interval. This can be
+              useful for dynamic web servers that have to update state after
+              certain time intervals.
+            </p>
+            <pre><code>// run function every 10 seconds
+router.timer(10000, function() {
+	// update state
+});
+</code></pre>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>use(handler)</td>
+                  <td>Respond to all HTTP request.</td>
+                </tr>
+                <tr>
+                  <td>all(path, handler)</td>
+                  <td>Respond to all HTTP methods for specified path.</td>
+                </tr>
+                <tr>
+                  <td>get(path, handler)</td>
+                  <td>Respond to HTTP GET methods for specified path.</td>
+                </tr>
+                <tr>
+                  <td>put(path, handler)</td>
+                  <td>Respond to HTTP PUT methods for specified path.</td>
+                </tr>
+                <tr>
+                  <td>post(path, handler)</td>
+                  <td>Respond to HTTP POST methods for specified path.</td>
+                </tr>
+                <tr>
+                  <td>delete(path, handler)</td>
+                  <td>Respond to HTTP DELETE methods for specified path.</td>
+                </tr>
+                <tr>
+                  <td>static(path, ospath)</td>
+                  <td>Mount specified OS path at specified URL path.</td>
+                </tr>
+                <tr>
+                  <td>timer(interval, callback)</td>
+                  <td>
+                    Call specified callback after specified interval (in
+                    milliseconds).
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="request">
+            <h1 class="pb-2">Request</h1>
+            <p>
+              The <strong>http.Request</strong> class contains information on
+              the current HTTP request and it's passed to a route handler by the
+              <strong>http.Router</strong>.
+            </p>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>getMethod()</td>
+                  <td>Return the request's HTTP method.</td>
+                </tr>
+                <tr>
+                  <td>getURL()</td>
+                  <td>Return the request's URL.</td>
+                </tr>
+                <tr>
+                  <td>getPath()</td>
+                  <td>Return the request's path.</td>
+                </tr>
+                <tr>
+                  <td>getVersion()</td>
+                  <td>Return the HTTP protocol version.</td>
+                </tr>
+                <tr>
+                  <td>hasHeader(name)</td>
+                  <td>Determine if specified header was provided by client.</td>
+                </tr>
+                <tr>
+                  <td>headerIs(name, value)</td>
+                  <td>Determine if specified header has specified value.</td>
+                </tr>
+                <tr>
+                  <td>getHeader(name)</td>
+                  <td>
+                    Return specified header as a string. Returns &quot;&quot; if
+                    not found.
+                  </td>
+                </tr>
+                <tr>
+                  <td>getHeaders(name)</td>
+                  <td>Return all headers as a dictionary.</td>
+                </tr>
+                <tr>
+                  <td>hasParam(name)</td>
+                  <td>
+                    Determine if specified parameter was provided by client.
+                  </td>
+                </tr>
+                <tr>
+                  <td>getParam(name)</td>
+                  <td>
+                    Return specified parameter as a string. Returns &quot;&quot;
+                    if not found.
+                  </td>
+                </tr>
+                <tr>
+                  <td>getParams(name)</td>
+                  <td>Return all parameters as a dictionary.</td>
+                </tr>
+                <tr>
+                  <td>hasCookie(name)</td>
+                  <td>Determine if specified cookie was provided by client.</td>
+                </tr>
+                <tr>
+                  <td>getCookie(name)</td>
+                  <td>
+                    Return specified cookie as a string. Returns &quot;&quot; if
+                    not found.
+                  </td>
+                </tr>
+                <tr>
+                  <td>getBody()</td>
+                  <td>Return body of request as string.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="response">
+            <h1 class="pb-2">Response</h1>
+            <p>
+              The <strong>http.Response</strong> class provides an interface to
+              respond to HTTP requests and it's passed to a route handler by the
+              <strong>http.Router</strong>.
+            </p>
+            <p><strong>Member Functions</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>setStatus(status)</td>
+                  <td>Set the HTTP respose status.</td>
+                </tr>
+                <tr>
+                  <td>setHeader(name, value)</td>
+                  <td>Set the value of a specified HTTP respose header.</td>
+                </tr>
+                <tr>
+                  <td>hasHeader(name)</td>
+                  <td>
+                    Determine if a specified HTTP respose header is already set.
+                  </td>
+                </tr>
+                <tr>
+                  <td>end()</td>
+                  <td>End the response. Useful for empty responses.</td>
+                </tr>
+                <tr>
+                  <td>send(text)</td>
+                  <td>Send the specified response to the client.</td>
+                </tr>
+                <tr>
+                  <td>sendJson(json)</td>
+                  <td>Send the specified JSON text to the client.</td>
+                </tr>
+                <tr>
+                  <td>sendFile(filepath)</td>
+                  <td>Send the specified file to the client.</td>
+                </tr>
+                <tr>
+                  <td>sendFileToDownload(filepath)</td>
+                  <td>
+                    Send the specified file to the client's download folder.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="row flex-shrink-0 py-1 manual-footer" id="copyright">
+        <p class="mx-auto py-0 my-0 small">
+          Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+        </p>
+      </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/theme.js"></script>
+  </body>
+</html>

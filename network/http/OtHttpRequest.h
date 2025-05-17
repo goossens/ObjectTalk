@@ -67,6 +67,7 @@ public:
 	void setParam(const std::string& name, const std::string& value);
 	bool hasParam(const std::string& param);
 	const std::string& getParam(const std::string& param);
+	OtObject getParams();
 
 	// access cookies
 	void setCookie(const std::string& name, const std::string& value);

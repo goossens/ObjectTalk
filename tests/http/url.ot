@@ -19,7 +19,7 @@ assert(url.path() == "/a/b/c/d/test.txt");
 assert(url.directory() == "/a/b/c/d");
 assert(url.filename() == "test.txt");
 assert(url.stem() == "test");
-assert(url.extension() == "txt");
+assert(url.extension() == ".txt");
 assert(url.query() == "a=1&b=2");
 assert(url.fragment() == "frag");
 assert(url.hasParam("a") == true);

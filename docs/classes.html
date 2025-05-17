@@ -74,7 +74,24 @@
                 ><a class="nav-link page-scroll" href="guide.html">Guide</a
                 ><a class="nav-link page-scroll" href="language.html"
                   >Language</a
-                ><a class="nav-link page-scroll" href="classes.html">Classes</a>
+                ><a class="nav-link page-scroll" href="classes.html"
+                  >Core Classes</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Modules"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Modules</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Modules">
+                <a class="nav-link page-scroll" href="http.html">HTTP</a>
               </div>
             </li>
             <li class="nav-item dropdown">
@@ -180,7 +197,7 @@
         </div>
         <div class="col mh-100 overflow-auto py-2 manual-content">
           <div id="classes">
-            <h1 class="pb-2">ObjectTalk Classes</h1>
+            <h1 class="pb-2">Core Classes</h1>
             <p>
               Below is the reference documentation for all classes included in
               the ObjectTalk runtime.
@@ -2480,21 +2497,31 @@ print(class.getName());
                 <tr>
                   <td>null</td>
                   <td>
-                    Instance of the <strong>Object</strong> class representing
-                    the null value.
+                    Instance of the <strong>Object</strong> class representing a
+                    none (null) value.
                   </td>
                 </tr>
                 <tr>
                   <td>true</td>
-                  <td><strong>Boolean</strong> true.</td>
+                  <td>Boolean true.</td>
                 </tr>
                 <tr>
                   <td>false</td>
-                  <td><strong>Boolean</strong> false.</td>
+                  <td>Boolean false.</td>
                 </tr>
                 <tr>
                   <td>pi</td>
-                  <td><strong>Real</strong> value of PI.</td>
+                  <td>
+                    Mathematical constant that is the ratio of a circle's
+                    circumference to its diameter.
+                  </td>
+                </tr>
+                <tr>
+                  <td>e</td>
+                  <td>
+                    Mathematical constant that is the base of the natural
+                    logarithm and exponential function.
+                  </td>
                 </tr>
               </tbody>
             </table>

@@ -126,15 +126,14 @@ void OtUrl::parse(const std::string& urlString) {
 
 
 //
-//	OtUrl::doGet
+//	OtUrl::download
 //
 
-void OtUrl::doGet() {
+const std::string& OtUrl::download() {
 	auto schemeHostPort = fmt::format("{}://{}", scheme, host);
 
 	if (port != 80) {
 		schemeHostPort += fmt::format(":{}", port);
-
 	}
 
 	httplib::Headers headers = {{"User-Agent", "ObjectTalk/0.4"}};
@@ -143,16 +142,21 @@ void OtUrl::doGet() {
 	auto result = client.Get(path, headers);
 
 	if (result) {
-		if (result->status == httplib::StatusCode::OK_200) {
+		status = result->status;
+
+		if (status == httplib::StatusCode::OK_200) {
 			data = result->body;
 
 		} else {
 			data.clear();
-			OtLogError("Can't get [{}]: HTTP status {} ({})", url,  result->status, httplib::status_message(result->status));
+			OtLogError("Can't get [{}]: HTTP status {} ({})", url,  status, httplib::status_message(status));
 		}
 
 	} else {
 		data.clear();
+		status = httplib::StatusCode::InternalServerError_500;
 		OtLogError("Can't get [{}]: {}", url,  httplib::to_string(result.error()));
 	}
+
+	return data;
 }

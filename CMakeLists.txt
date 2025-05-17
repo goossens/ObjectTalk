@@ -31,6 +31,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 add_subdirectory(deps)
 add_subdirectory(3rdparty)
 add_subdirectory(language)
+add_subdirectory(network)
 
 if(OT_INCLUDE_UI)
 	add_subdirectory(shaders)
@@ -49,7 +50,7 @@ if(CMAKE_GENERATOR STREQUAL Xcode)
 endif()
 
 add_executable(ot main.cpp ${OT_RESOURCES})
-target_link_libraries(ot language argparse)
+target_link_libraries(ot language network argparse)
 
 if(OT_INCLUDE_UI)
 	target_compile_definitions(ot PRIVATE OT_INCLUDE_UI)

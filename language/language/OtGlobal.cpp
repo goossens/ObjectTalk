@@ -51,6 +51,7 @@ OtGlobalClass::OtGlobalClass() {
 	set("true", OtBoolean::create(true));
 	set("false", OtBoolean::create(false));
 	set("pi", OtReal::create(std::numbers::pi));
+	set("e", OtReal::create(std::numbers::e));
 
 	// add default functions
 	set("assert", OtFunction::create(&OtGlobalClass::doAssert));

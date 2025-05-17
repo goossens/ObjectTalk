@@ -68,9 +68,8 @@ public:
 	}
 
 	// download the data
-	inline void doGet() { url.doGet(); }
+	inline const std::string& download() { return url.download(); }
 	inline int getStatus() { return url.getStatus(); }
-	inline const std::string& getDownloadedText() { return url.getDownloadedText(); }
 
 	// get type definition
 	static OtType getMeta() {
@@ -99,9 +98,8 @@ public:
 			type->set("getParam", OtFunction::create(&OtUrlClass::getParam));
 			type->set("getParamWithDefault", OtFunction::create(&OtUrlClass::getParamWithDefault));
 
-			type->set("doGet", OtFunction::create(&OtUrlClass::doGet));
+			type->set("download", OtFunction::create(&OtUrlClass::download));
 			type->set("getStatus", OtFunction::create(&OtUrlClass::getStatus));
-			type->set("getDownloadedText", OtFunction::create(&OtUrlClass::getDownloadedText));
 		}
 
 		return type;

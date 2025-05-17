@@ -340,10 +340,10 @@ void OtHttpResponseClass::onFileRead(ssize_t size) {
 
 
 //
-//	OtHttpResponseClass::download
+//	OtHttpResponseClass::sendFileToDownload
 //
 
-OtObject OtHttpResponseClass::download(const std::string& name) {
+OtObject OtHttpResponseClass::sendFileToDownload(const std::string& name) {
 	headers.emplace("Content-Disposition", "attachment; filename=" + name);
 	return sendFile(name);
 }
@@ -363,9 +363,9 @@ OtType OtHttpResponseClass::getMeta() {
 		type->set("hasHeader", OtFunction::create(&OtHttpResponseClass::hasHeader));
 		type->set("end", OtFunction::create(&OtHttpResponseClass::end));
 		type->set("send", OtFunction::create(&OtHttpResponseClass::send));
-		type->set("sendFile", OtFunction::create(&OtHttpResponseClass::sendFile));
 		type->set("sendJson", OtFunction::create(&OtHttpResponseClass::sendJson));
-		type->set("download", OtFunction::create(&OtHttpResponseClass::download));
+		type->set("sendFile", OtFunction::create(&OtHttpResponseClass::sendFile));
+		type->set("sendFileToDownload", OtFunction::create(&OtHttpResponseClass::sendFileToDownload));
 	}
 
 	return type;

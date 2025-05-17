@@ -22,4 +22,8 @@ executable with no runtime dependencies and is functional on MacOS, Linux
 and Windows. It basically is a playground to learn and have fun.
 Think of it as a educational jack of all trades, master of none.
 
+<div align="center">
+
 ![Screenshots](img/screenshots.png)
+
+</div>

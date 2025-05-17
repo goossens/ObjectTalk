@@ -56,9 +56,8 @@ public:
 	}
 
 	// access the data
-	void doGet();
+	const std::string& download();
 	inline int getStatus() { return status; }
-	inline const std::string& getDownloadedText() { return data; }
 	inline void* getDownloadedData() { return data.data(); }
 	inline size_t getDownloadedSize() { return data.size(); }
 

@@ -1,5 +1,5 @@
 The IO class provides methods to read and write object and text to and from a file.
-The [Global](#global) scope predefines an IO instance under the name **io**.
+The [Global](#global) scope pre-defines an IO instance under the name **io**.
 
 **Member Functions**
 

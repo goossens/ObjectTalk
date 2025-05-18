@@ -60,7 +60,7 @@ to resolve to a file name.
 | hasRootName() | Check if the root name element of the path is not empty. |
 | hasRootPath() | Check if the root path element of the path is not empty. |
 | hasStem() | Check if the stem element of the path is not empty. |
-| relative() | Return path relative to the specifed base. |
+| relative() | Return path relative to the specified base. |
 | canonical() | Return the canonical absolute path. |
 
 **Overrides**

@@ -71,7 +71,7 @@ has a console for output and highlighting for errors. A visual debugger is also 
 	- Ctrl-X or Shift-Delete cuts selected text or current line if no selection.
 	- Ctrl-C or Ctrl-Insert copies selected text or current line if no selection.
 	- Ctrl-V or Shift-Insert pastes clipboard content.
-	- Ctrl-Z undos the last action.
+	- Ctrl-Z undoes the last action.
 	- Shift-Ctrl-Z or Ctrl-Y redos the last undone action.
 
 - Insert Text:

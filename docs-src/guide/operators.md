@@ -18,7 +18,8 @@ because they appear in between their two targets.
 * **Ternary operators** operate on three targets. Like C, ObjectTalk
 has only one ternary operator, the ternary conditional operator (a ? b : c).
 
-The values that operators affect are operands. In the expression 1 + 2, the + symbol is a binary operator and its two operands are the values 1 and 2.
+The values that operators affect are operands. In the expression 1 + 2,
+the + symbol is a binary operator and its two operands are the values 1 and 2.
 
 **Assignment Operator**
 
@@ -192,8 +193,8 @@ C-based languages:
 * Logical OR (a || b)
 
 Please note that the logical AND and OR operators use short-circuit evaluation
-meaning that of the left side of AND eveluates to false or the left side
-of OR eveluates to true, the right side is not evaluated as the result
+meaning that of the left side of AND evaluates to false or the left side
+of OR evaluates to true, the right side is not evaluated as the result
 is already known. You can read more about this on
 [Wikipedia](https://en.wikipedia.org/wiki/Short-circuit_evaluation).
 

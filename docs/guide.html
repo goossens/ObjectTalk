@@ -157,7 +157,8 @@
           <div id="overview">
             <h1 class="pb-2">ObjectTalk Language Guide</h1>
             <p>
-              Below is a reference guide artculating key concepts in ObjectTalk.
+              Below is a reference guide articulating key concepts in
+              ObjectTalk.
             </p>
           </div>
           <div id="basics">
@@ -326,7 +327,7 @@ var hexadecimalInteger = 0x11;     // 17 in hexadecimal notation
 var exponentDouble = -1.21875e1;
 </code></pre>
             <p>
-              The default global language context predefines the variable
+              The default global language context pre-defines the variable
               <strong>pi</strong> (3.14...) and <strong>e</strong> (2.71...) as
               a convenience.
             </p>
@@ -452,7 +453,7 @@ for item in array {
               <strong>rsort</strong> and <strong>csort</strong> member
               functions. <strong>sort</strong> puts the array elements in
               ascending order, <strong>rsort</strong> is a reverse sort putting
-              the elements in a decending order and <strong>csort</strong> is a
+              the elements in a descending order and <strong>csort</strong> is a
               custom sort that allows you to provide a function to determine the
               order.
             </p>
@@ -818,7 +819,7 @@ if hasHeader {
             <p>
               Please note that the logical AND and OR operators use
               short-circuit evaluation meaning that of the left side of AND
-              eveluates to false or the left side of OR eveluates to true, the
+              evaluates to false or the left side of OR evaluates to true, the
               right side is not evaluated as the result is already known. You
               can read more about this on
               <a href="https://en.wikipedia.org/wiki/Short-circuit_evaluation"
@@ -2208,7 +2209,7 @@ function stepBackward(input) {
             <p>
               Here’s a function called chooseStepFunction() which returns the
               stepForward() function or the stepBackward() function based on a
-              Boolean arameter called backward:
+              Boolean parameter called backward:
             </p>
             <pre><code>function chooseStepFunction(backward) {
 	return backward ? stepBackward : stepForward;

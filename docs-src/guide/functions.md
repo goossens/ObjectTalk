@@ -32,11 +32,13 @@ Member Functions are covered in the [Classes](#classes) section.
 When you define a function, you can optionally define one or more named,
 values that the function takes as input, known as parameters.
 Function parameters and return values are extremely flexible in ObjectTalk.
-You can define anything from a simple utility function with a single parameter to a complex function with expressive parameters.
+You can define anything from a simple utility function with a single
+parameter to a complex function with expressive parameters.
 
 **Functions Without Parameters**
 
-Functions aren’t required to define input parameters. Here’s a function with no input parameters, which always returns the same String message whenever it’s called:
+Functions aren’t required to define input parameters. Here’s a function with
+no input parameters, which always returns the same String message whenever it’s called:
 
 	function sayHelloWorld() {
 		return "hello, world";
@@ -83,7 +85,8 @@ returning it:
 	// Prints "Hello, Dave!"
 
 Strictly speaking, this version of the greet() function does still return
-a value, even though no return value is defined. Functions without a defined return will automatically return **null**.
+a value, even though no return value is defined. Functions without a defined
+return will automatically return **null**.
 
 **Functions as Return Value**
 
@@ -101,8 +104,8 @@ than its input value.
 		return input - 1;
 	}
 
-Here’s a function called chooseStepFunction() which returns the stepForward() function or the stepBackward() function based on a Boolean
- arameter called backward:
+Here’s a function called chooseStepFunction() which returns the stepForward()
+function or the stepBackward() function based on a Boolean parameter called backward:
 
 	function chooseStepFunction(backward) {
 		return backward ? stepBackward : stepForward;

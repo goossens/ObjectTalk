@@ -21,7 +21,7 @@ on all URLs.
 	os.runServer();
 
 The **http.Server** server uses a request router to process all incoming requests.
-The **listen** member function starts the server on the speficied port
+The **listen** member function starts the server on the specified port
 using the specified host. In the example above, requests can come from any host.
 
 The **http.Server** class does not have its own event loop. If a server is running from the

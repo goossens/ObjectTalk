@@ -143,7 +143,7 @@ Real literals can be written as a floating point number with or without an expon
 	var decimalDouble = 12.1875;
 	var exponentDouble = -1.21875e1;
 
-The default global language context predefines the variable **pi**
+The default global language context pre-defines the variable **pi**
 (3.14...) and **e** (2.71...) as a convenience.
 
 **Strings**

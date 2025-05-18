@@ -12,7 +12,7 @@ where data flows from one node to another.
 </div>
 
 A node represents a small function that transforms inputs into outputs,
-optioanlly using additional parameters. In ObjectTalk, nodes are visually represented
+optionally using additional parameters. In ObjectTalk, nodes are visually represented
 by rectangles displaying a title at the top, inputs displayed on the left and
 outputs on the rights. Inputs and outputs are referred to as pins that can be connected
 and can carry only one datatype.

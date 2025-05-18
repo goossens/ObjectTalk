@@ -10,7 +10,7 @@ pieces. Today, the ObjectTalk ecosystem compiles into that single unit that cont
 The file called “ot” can be moved around with easy and will always be complete, coherent and in sync.
 
 During the compilation of ObjectTalk it is decided whether some user interface subsystems are
-included. On headless Linux systems, the Graphical User Inteface (GUI) is omitted and
+included. On headless Linux systems, the Graphical User Interface (GUI) is omitted and
 the “ot” executable can only run command line scripts or simple servers like a web server.
 When the GUI libraries are available on the host system, “ot” is compiled to offer all subsystems.
 On MacOS and Windows this is the default but even here a stripped-down version can be compiled

@@ -1784,7 +1784,7 @@ assert(set.subtract(set2) == Set(2, 5));
             <p>
               The Cout class represents the stdout interface and allow you to
               send text to the console. The
-              <a class="page-scroll" href="#global">Global</a> scope predefines
+              <a class="page-scroll" href="#global">Global</a> scope pre-defines
               an Cout instance under the name <strong>cout</strong>. Example:
             </p>
             <pre><code>cout &lt;&lt; &quot;Hello World&quot;;
@@ -1810,7 +1810,7 @@ assert(set.subtract(set2) == Set(2, 5));
             <p>
               The Cerr class represents the stderr stream and allow you to send
               text to the console. The
-              <a class="page-scroll" href="#global">Global</a> scope predefines
+              <a class="page-scroll" href="#global">Global</a> scope pre-defines
               an Cerr instance under the name <strong>cerr</strong>. Example:
             </p>
             <pre><code>cerr &lt;&lt; &quot;Hello World&quot;;
@@ -2053,7 +2053,7 @@ assert(set.subtract(set2) == Set(2, 5));
                 </tr>
                 <tr>
                   <td>relative()</td>
-                  <td>Return path relative to the specifed base.</td>
+                  <td>Return path relative to the specified base.</td>
                 </tr>
                 <tr>
                   <td>canonical()</td>
@@ -2079,7 +2079,7 @@ assert(set.subtract(set2) == Set(2, 5));
               native operating system. Filesystem operations are not included as
               they are covered by the
               <a class="page-scroll" href="#fs">FS (File System)</a> class. The
-              <a class="page-scroll" href="#global">Global</a> scope predefines
+              <a class="page-scroll" href="#global">Global</a> scope pre-defines
               an OS instance under the name <strong>os</strong>.
             </p>
             <p><strong>Member Functions</strong></p>
@@ -2228,7 +2228,7 @@ assert(set.subtract(set2) == Set(2, 5));
             <p>
               The FS (File System) class encapsulates an interface to the native
               file system. The
-              <a class="page-scroll" href="#global">Global</a> scope predefines
+              <a class="page-scroll" href="#global">Global</a> scope pre-defines
               an FS instance under the name <strong>fs</strong>.
             </p>
             <p><strong>Member Functions</strong></p>
@@ -2372,7 +2372,7 @@ assert(set.subtract(set2) == Set(2, 5));
             <p>
               The IO class provides methods to read and write object and text to
               and from a file. The
-              <a class="page-scroll" href="#global">Global</a> scope predefines
+              <a class="page-scroll" href="#global">Global</a> scope pre-defines
               an IO instance under the name <strong>io</strong>.
             </p>
             <p><strong>Member Functions</strong></p>
@@ -2456,7 +2456,7 @@ print(class.getName());
                 <tr>
                   <td>hasParent()</td>
                   <td>
-                    Returns a Boolean to indocate if the class has a parent
+                    Returns a Boolean to indicate if the class has a parent
                     class..
                   </td>
                 </tr>
@@ -2483,7 +2483,7 @@ print(class.getName());
               accessed anywhere in the ObjectTalk runtime. Right now, the global
               scope contains frequently used constants, global functions, class
               definitions for the core classes and instances of core classes as
-              a convininiece.
+              a convenience.
             </p>
             <p><strong>Global Constants</strong></p>
             <table class="table table-striped">
@@ -2558,13 +2558,13 @@ print(class.getName());
                 <tr>
                   <td>range()</td>
                   <td>
-                    Returns a number interator. If called with one parameter,
-                    the iterator yields to number from 0 to n-1. If called with
-                    two parameters, the iterator yields number from the first to
-                    the last. If called with three parameters, the first
-                    indicates the start, the second indicates the end and the
-                    third indicates the step. Step in this case may be a
-                    negative number to create a reverse number iterator.
+                    Returns a number iterator. If called with one parameter, the
+                    iterator yields to number from 0 to n-1. If called with two
+                    parameters, the iterator yields number from the first to the
+                    last. If called with three parameters, the first indicates
+                    the start, the second indicates the end and the third
+                    indicates the step. Step in this case may be a negative
+                    number to create a reverse number iterator.
                   </td>
                 </tr>
                 <tr>
@@ -2583,7 +2583,7 @@ print(class.getName());
             <p><strong>Global Classes</strong></p>
             <p>
               The global scope contains all the core classes so core objects can
-              be easilly instantiated. The following classes are predefined:
+              be easily instantiated. The following classes are predefined:
             </p>
             <ul>
               <li>
@@ -2596,7 +2596,7 @@ print(class.getName());
             </ul>
             <p><strong>Global Instances</strong></p>
             <p>
-              As a convinience, the following classes have instances in the
+              As a convenience, the following classes have instances in the
               global scope:
             </p>
             <ul>
@@ -2612,7 +2612,7 @@ print(class.getName());
             <h1 class="pb-2">Debugger Class</h1>
             <p>
               The <strong>Debugger</strong> class allows user to debug an
-              ObjectTalk script. The class is instantiated in the golbal context
+              ObjectTalk script. The class is instantiated in the global context
               (under the name <strong>debug</strong>) and can be used to enter
               the debugger or get state information while running.
             </p>

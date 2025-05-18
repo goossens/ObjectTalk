@@ -12,6 +12,6 @@ function on any object.
 | Function | Description |
 | ------ | ----------- |
 | getName() | Returns the name of the class. |
-| hasParent() | Returns a Boolean to indocate if the class has a parent class.. |
+| hasParent() | Returns a Boolean to indicate if the class has a parent class.. |
 | getParent() | Returns the parent class. |
 | isKindOf(className) | Returns a Boolean indicating if the class is derived from another class. |

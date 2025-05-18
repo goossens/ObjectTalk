@@ -69,7 +69,7 @@ You can iterate over the entire set of values in an array with the
 You can sort an array using the **sort**, **rsort** and **csort**
 member functions. **sort** puts the array elements in ascending
 order, **rsort** is a reverse sort putting the elements in a
-decending order and **csort** is a custom sort that allows you to
+descending order and **csort** is a custom sort that allows you to
 provide a function to determine the order.
 
 	var array = [1, 2, 3, 4];

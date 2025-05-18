@@ -1,5 +1,5 @@
 The **Debugger** class allows user to debug an ObjectTalk script.
-The class is instantiated in the golbal context (under the name **debug**)
+The class is instantiated in the global context (under the name **debug**)
 and can be used to enter the debugger or get state information while running.
 
 	debug(); // enter the inteactive debugger.

@@ -17,7 +17,7 @@ development. If you need to deploy mission critical code, look elsewhere.
 ObjectTalk is however a good starting point to learn programming and
 it's also good if you want to learn language development. Those of you
 who have ever looked at the code for compilers and interpreters for
-populars languages will probably know what I mean.
+popular languages will probably know what I mean.
 
 The objectives for the development of ObjectTalk are:
 

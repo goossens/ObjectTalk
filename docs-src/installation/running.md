@@ -12,7 +12,7 @@ This executable can be moved anywhere.
 	* **Windows (Debug)**: ./build/vs/Debug/ot.exe
 	* **Windows (Release)**: ./build/vs/Release/ot.exe
 
-In priciple, the ObjectTalk executable (**ot**) is a
+In principle, the ObjectTalk executable (**ot**) is a
 command line tool that takes parameters. Here is the
 help you get when you run **ot -h**:
 

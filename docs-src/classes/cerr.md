@@ -1,5 +1,5 @@
 The Cerr class represents the stderr stream and allow you to send text to the console.
-The [Global](#global) scope predefines an Cerr instance under the name **cerr**. Example:
+The [Global](#global) scope pre-defines an Cerr instance under the name **cerr**. Example:
 
 	cerr << "Hello World";
 

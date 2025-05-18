@@ -1,5 +1,5 @@
 The Cout class represents the stdout interface and allow you to send text to the console.
-The [Global](#global) scope predefines an Cout instance under the name **cout**. Example:
+The [Global](#global) scope pre-defines an Cout instance under the name **cout**. Example:
 
 	cout << "Hello World";
 

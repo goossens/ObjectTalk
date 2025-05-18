@@ -29,7 +29,7 @@ I know there are lot of people out there that believe they can do better than th
 (and they might be right) but the time required to optimize on multiple platforms is not worth it.
 I’m old enough to have written operating systems in assembler and had to maintain C libraries
 for even the most simple memory management or data structures. These days, I gladly take free
-cross platform solutions and sacrifice a few CPU cycles (I have more of those than braincells).
+cross platform solutions and sacrifice a few CPU cycles (I have more of those than brain cells).
 
 To prove that I'm a hypocrite, the one exception to the rule is shared pointers. The version
 included in the standard library is thread safe and therefore slow. Given that ObjectTalk always
@@ -64,7 +64,7 @@ stream classes.
 These classes provide asynchronous access to network functions.
 When implementing servers or I/O heavy applications, you typically have two options. Firstly,
 you can go multithreaded and use many threads and thread pools to handle I/O request.
-This approach however has proven not to be too scaleable and most web servers today don’t use it
+This approach however has proven not to be too scalable and most web servers today don’t use it
 or have complicated strategies to deal with performance and bottlenecks. The other approach is
 to use a single thread with an event loop that runs as fast as possible and simply responds to
 operating system events whenever they happen. ObjectTalk uses this last approach based on the
@@ -99,7 +99,7 @@ In fact, the ratio between construction code and functionality was so bad that a
 Today, the framework uses a variety of technics. A purely ObjectTalk driven approach is still
 available to implement simple GUIs or 2D games. For 3D scenes, an Entity Component System (ECS)
 as an architectural pattern to represent the elements of the scene. The IDE provides a visual
-editor for ECS data which is easy to use. To make 3D scenes scriptable, a basic ObjetcTalk scripting
+editor for ECS data which is easy to use. To make 3D scenes scriptable, a basic ObjectTalk scripting
 component is available.
 
 **Graphics Classes**

@@ -1,1 +1,1 @@
-Below is a reference guide artculating key concepts in ObjectTalk.
+Below is a reference guide articulating key concepts in ObjectTalk.

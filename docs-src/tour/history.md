@@ -43,7 +43,7 @@ done this later, we might have picked Python or Lua but those languages
 have also become complex (but at least, bindings are easy).
 
 As I started to move up the management chain, I got further and further
-away from programing and at the end, I spent more time in international
+away from programming and at the end, I spent more time in international
 politics than thinking about technology or innovations. So to challenge
 my brain, I continued tinkering with a number of things in my private
 time and that's how ObjectTalk was born. Initially, I made Talk

@@ -1,7 +1,7 @@
 The OS (Operating System) class encapsulates an interface to
 the native operating system. Filesystem operations are not
 included as they are covered by the [FS (File System)](#fs) class.
-The [Global](#global) scope predefines an OS instance under the
+The [Global](#global) scope pre-defines an OS instance under the
 name **os**.
 
 **Member Functions**

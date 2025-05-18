@@ -1,0 +1,91 @@
+{
+	"links": [
+		{
+			"from": 659516771,
+			"id": 3280109299,
+			"to": 1727556437
+		},
+		{
+			"from": 659516771,
+			"id": 2783352905,
+			"to": 2383649165
+		}
+	],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 1220227969,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 659516771,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"primitive": {
+				"phiLength": 360.0,
+				"phiSegments": 32,
+				"phiStart": 0.0,
+				"thetaLength": 180.0,
+				"thetaSegments": 64,
+				"thetaStart": 0.0,
+				"type": "Sphere"
+			},
+			"title": "Geometry Generator",
+			"type": "Geometry Generator",
+			"x": 284.0,
+			"y": 248.0
+		},
+		{
+			"azimuth": 0.0,
+			"elevation": 0.0,
+			"id": 2283969055,
+			"inputs": [
+				{
+					"id": 1727556437,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"lightColor": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"meshColor": [
+				1.0,
+				0.8500000238418579,
+				0.0
+			],
+			"outputs": [],
+			"title": "Geometry Probe",
+			"type": "Geometry Probe",
+			"wireframe": false,
+			"x": 631.0,
+			"y": 3.0,
+			"zoom": 0.949999988079071
+		},
+		{
+			"id": 1406278348,
+			"inputs": [
+				{
+					"id": 2383649165,
+					"name": "Input",
+					"type": "geometry"
+				},
+				{
+					"id": 3992481832,
+					"name": "Name",
+					"type": "string",
+					"value": "sphere"
+				}
+			],
+			"outputs": [],
+			"title": "Save Geometry To Virtual",
+			"type": "Save Geometry To Virtual",
+			"x": 634.0,
+			"y": 272.0
+		}
+	]
+}

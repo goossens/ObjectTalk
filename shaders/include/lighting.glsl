@@ -36,15 +36,14 @@ struct DirectionalLight {
 
 // point light data
 struct PointLight {
+	vec3 L; // direction to light
 	float radius;
 	vec3 color;
 	float attenuation;
-	vec3 L; // direction to light
 };
 
-// only for point lights
+// inverse square falloff
 float distanceAttenuation(float distance) {
-	// inverse square falloff
 	return 1.0 / max(distance * distance, 0.01 * 0.01);
 }
 

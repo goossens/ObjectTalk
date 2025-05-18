@@ -1,0 +1,1802 @@
+{
+	"entities": [
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Camera",
+					"uuid": 2061878630
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"scale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"translation": [
+						0.0,
+						0.0,
+						15.0
+					]
+				},
+				{
+					"component": "Camera",
+					"far": 100.0,
+					"fov": 60.0,
+					"mainCamera": false,
+					"near": 0.10000000149011612
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Light",
+					"uuid": 1109438121
+				},
+				{
+					"ambient": 0.05000000074505806,
+					"azimuth": 180.0,
+					"castShadow": false,
+					"color": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"component": "Directional Light",
+					"elevation": 0.0
+				}
+			]
+		},
+		{
+			"children": [
+				{
+					"children": [
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 1",
+									"uuid": 896018481
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										-6.0,
+										6.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.0,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.0,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 2",
+									"uuid": 3310563505
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										-3.0,
+										6.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.25,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.0,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 3",
+									"uuid": 3148818883
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										0.0,
+										6.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.5,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.0,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 4",
+									"uuid": 3575136150
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										3.0,
+										6.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.75,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.0,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 5",
+									"uuid": 3261325932
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										6.0,
+										6.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 1.0,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.0,
+										"scale": 1.0
+									}
+								}
+							]
+						}
+					],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Row 1",
+							"uuid": 397582232
+						}
+					]
+				},
+				{
+					"children": [
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 1",
+									"uuid": 1712554274
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										-6.0,
+										3.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.0,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.25,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 2",
+									"uuid": 1196108197
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										-3.0,
+										3.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.25,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.25,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 3",
+									"uuid": 4067535935
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										0.0,
+										3.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.5,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.25,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 4",
+									"uuid": 3770259776
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										3.0,
+										3.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.75,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.25,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 5",
+									"uuid": 2875615996
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										6.0,
+										3.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 1.0,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.25,
+										"scale": 1.0
+									}
+								}
+							]
+						}
+					],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Row 2",
+							"uuid": 2352734365
+						}
+					]
+				},
+				{
+					"children": [
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 1",
+									"uuid": 2670094376
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										-6.0,
+										0.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.0,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.5,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 2",
+									"uuid": 1397563778
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										-3.0,
+										0.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.25,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.5,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 3",
+									"uuid": 634618039
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										0.0,
+										0.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.5,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.5,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 4",
+									"uuid": 4284596944
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										3.0,
+										0.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.75,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.5,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 5",
+									"uuid": 1170902570
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										6.0,
+										0.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 1.0,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.5,
+										"scale": 1.0
+									}
+								}
+							]
+						}
+					],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Row 3",
+							"uuid": 1278263635
+						}
+					]
+				},
+				{
+					"children": [
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 1",
+									"uuid": 4108912923
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										-6.0,
+										-3.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.0,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.75,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 2",
+									"uuid": 3424007282
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										-3.0,
+										-3.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.25,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.75,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 3",
+									"uuid": 3099228208
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										0.0,
+										-3.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.5,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.75,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 4",
+									"uuid": 2692134844
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										3.0,
+										-3.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.75,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.75,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 5",
+									"uuid": 2207847740
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										6.0,
+										-3.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 1.0,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 0.75,
+										"scale": 1.0
+									}
+								}
+							]
+						}
+					],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Row 4",
+							"uuid": 4109495591
+						}
+					]
+				},
+				{
+					"children": [
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 1",
+									"uuid": 947835398
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										-6.0,
+										-6.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.0,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 1.0,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 2",
+									"uuid": 1518790650
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										-3.0,
+										-6.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.25,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 1.0,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 3",
+									"uuid": 340951184
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										0.0,
+										-6.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.5,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 1.0,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 4",
+									"uuid": 3347460772
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										3.0,
+										-6.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 0.75,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 1.0,
+										"scale": 1.0
+									}
+								}
+							]
+						},
+						{
+							"children": [],
+							"components": [
+								{
+									"component": "Core",
+									"tag": "Sphere 5",
+									"uuid": 1643060276
+								},
+								{
+									"castShadow": true,
+									"component": "Geometry",
+									"cullback": true,
+									"path": "virtual:sphere",
+									"transparent": false,
+									"wireframe": false
+								},
+								{
+									"component": "Transform",
+									"rotation": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"translation": [
+										6.0,
+										-6.0,
+										0.0
+									]
+								},
+								{
+									"component": "Material",
+									"material": {
+										"albedo": [
+											1.0,
+											1.0,
+											1.0,
+											1.0
+										],
+										"albedoTexture": "",
+										"ao": 1.0,
+										"aoTexture": "",
+										"emissive": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissiveTexture": "",
+										"metallic": 1.0,
+										"metallicRoughnessTexture": "",
+										"normalTexture": "",
+										"offset": [
+											0.0,
+											0.0
+										],
+										"roughness": 1.0,
+										"scale": 1.0
+									}
+								}
+							]
+						}
+					],
+					"components": [
+						{
+							"component": "Core",
+							"tag": "Row 5",
+							"uuid": 2025539657
+						}
+					]
+				}
+			],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Spheres",
+					"uuid": 3151592815
+				},
+				{
+					"component": "Nodes",
+					"path": "assets/sphere.otn",
+					"settings": {}
+				}
+			]
+		}
+	],
+	"metadata": {
+		"camera": {
+			"far": 100.0,
+			"fov": 60.0,
+			"near": 0.10000000149011612,
+			"pitch": 0.0,
+			"position": [
+				0.0,
+				0.0,
+				15.0
+			],
+			"speed": 3.0,
+			"yaw": 0.0
+		},
+		"gizmo": {
+			"enabled": false,
+			"mode": 7,
+			"snapInterval": [
+				0.10000000149011612,
+				0.10000000149011612,
+				0.10000000149011612
+			],
+			"snapping": false
+		},
+		"grid": {
+			"enabled": false,
+			"scale": 1.0
+		},
+		"type": "scene"
+	},
+	"processing": {
+		"bloomIntensity": 0.0,
+		"contrast": 1.0,
+		"exposure": 1.0,
+		"fog": false,
+		"fogColor": [
+			0.4000000059604645,
+			0.5,
+			0.800000011920929
+		],
+		"fogDensity": 0.10000000149011612,
+		"fxaa": false,
+		"godrays": false,
+		"tonemap": 3
+	}
+}

@@ -53,7 +53,7 @@ rtest: release
 
 .PHONY: docs
 docs:
-	pugger --theme manual --assets --out docs docs-src
+	pugger --recursive --theme manual --assets --out docs docs-src
 
 .PHONY: cleanup
 cleanup:

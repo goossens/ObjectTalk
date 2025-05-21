@@ -5,11 +5,7 @@ and they are linked together to create
 [Directed Acyclic Graph (DAG)](https://en.wikipedia.org/wiki/Directed_acyclic_graph),
 where data flows from one node to another.
 
-<div align="center">
-
-![Nodes](img/nodes.png)
-
-</div>
+![Nodes](img/nodes.png#center)
 
 A node represents a small function that transforms inputs into outputs,
 optionally using additional parameters. In ObjectTalk, nodes are visually represented

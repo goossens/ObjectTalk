@@ -12,4 +12,19 @@ include /manual.pug
 				+manual-chapter("reference", "Nodes Reference")
 					include:markdown nodes-reference/nodes.md
 
+				+manual-chapter("field", "Field Nodes")
+					include:markdown nodes-reference/field/doc.md
+
+				+manual-chapter("filter", "Filter Nodes")
+					include:markdown nodes-reference/filter/doc.md
+
+				+manual-chapter("generator", "Generator Nodes")
+					include:markdown nodes-reference/generator/doc.md
+
+				+manual-chapter("geometry", "Geometry Nodes")
+					include:markdown nodes-reference/geometry/doc.md
+
+				+manual-chapter("input", "Input Nodes")
+					include:markdown nodes-reference/input/doc.md
+
 		include common/footer.pug

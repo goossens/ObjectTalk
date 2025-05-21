@@ -1,0 +1,268 @@
+{
+	"links": [],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 3041897242,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 397792127,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"primitive": {
+				"type": "Cube",
+				"xsegments": 1,
+				"ysegments": 1,
+				"zsegments": 1
+			},
+			"title": "Geometry Generator",
+			"type": "Geometry Generator",
+			"x": 114.0,
+			"y": 57.0
+		},
+		{
+			"id": 3187067158,
+			"inputs": [
+				{
+					"id": 2793320078,
+					"name": "Input",
+					"type": "geometry"
+				},
+				{
+					"id": 2908273338,
+					"name": "Translate",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 1624677432,
+					"name": "Rotate",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 169255949,
+					"name": "Scale",
+					"type": "vector3",
+					"value": [
+						1.0,
+						1.0,
+						1.0
+					]
+				}
+			],
+			"outputs": [
+				{
+					"id": 1691463402,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Geometry Transform",
+			"type": "Geometry Transform",
+			"x": 344.0,
+			"y": 65.0
+		},
+		{
+			"id": 1149512029,
+			"inputs": [
+				{
+					"id": 2631537727,
+					"name": "Input",
+					"type": "instances"
+				},
+				{
+					"id": 641907804,
+					"name": "Translate",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 1555267227,
+					"name": "Rotate",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 984233088,
+					"name": "Scale",
+					"type": "vector3",
+					"value": [
+						1.0,
+						1.0,
+						1.0
+					]
+				}
+			],
+			"outputs": [
+				{
+					"id": 1994016390,
+					"name": "Output",
+					"type": "instances"
+				}
+			],
+			"title": "Instances Transform",
+			"type": "Instances Transform",
+			"x": 99.0,
+			"y": 280.0
+		},
+		{
+			"id": 2493519124,
+			"inputs": [
+				{
+					"id": 1248021102,
+					"name": "Geometry",
+					"type": "geometry"
+				},
+				{
+					"id": 2360620334,
+					"name": "Seed",
+					"type": "int",
+					"value": 0
+				},
+				{
+					"id": 2434550414,
+					"name": "Instance Count",
+					"type": "int",
+					"value": 16
+				},
+				{
+					"id": 3790548676,
+					"name": "Selection",
+					"type": "bool",
+					"value": true
+				},
+				{
+					"id": 2689643770,
+					"name": "Rotate to Normals",
+					"type": "bool",
+					"value": false
+				},
+				{
+					"id": 3290957747,
+					"name": "Rotation",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 470743987,
+					"name": "Scale",
+					"type": "vector3",
+					"value": [
+						1.0,
+						1.0,
+						1.0
+					]
+				}
+			],
+			"outputs": [
+				{
+					"id": 3699906417,
+					"name": "Instances",
+					"type": "instances"
+				}
+			],
+			"title": "Instances on Faces",
+			"type": "Instances on Faces",
+			"x": 460.0,
+			"y": 287.0
+		},
+		{
+			"id": 873091240,
+			"inputs": [
+				{
+					"id": 485128425,
+					"name": "Geometry",
+					"type": "geometry"
+				},
+				{
+					"id": 192768045,
+					"name": "Selection",
+					"type": "bool",
+					"value": true
+				},
+				{
+					"id": 3814540534,
+					"name": "Rotate to Normals",
+					"type": "bool",
+					"value": false
+				},
+				{
+					"id": 2177121546,
+					"name": "Rotation",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 791020155,
+					"name": "Scale",
+					"type": "vector3",
+					"value": [
+						1.0,
+						1.0,
+						1.0
+					]
+				}
+			],
+			"outputs": [
+				{
+					"id": 2166932299,
+					"name": "Instances",
+					"type": "instances"
+				}
+			],
+			"title": "Instances on Vertices",
+			"type": "Instances on Vertices",
+			"x": 806.0,
+			"y": 293.0
+		},
+		{
+			"id": 1532857196,
+			"inputs": [
+				{
+					"id": 2367113270,
+					"name": "Input",
+					"type": "image"
+				}
+			],
+			"outputs": [
+				{
+					"id": 2957609625,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Terrain Builder",
+			"type": "Terrain Builder",
+			"x": 113.0,
+			"y": 606.0
+		}
+	]
+}

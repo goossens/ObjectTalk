@@ -3,11 +3,7 @@ As mentioned above, the four boxes on the right are available on both ObjectTalk
 configurations whereas the five boxes on the left are only available when the
 host operating system offers GUI libraries.
 
-<div align="center">
-
-![Software Architecture](img/software-architecture.png)
-
-</div>
+![Software Architecture](img/software-architecture.png#center)
 
 **Operating System Foundation**
 
@@ -44,11 +40,7 @@ source code into tokens, the single-pass compiler translates these tokens to byt
 platform-independent imaginary CPU, an optimizer turns simple code sequences into super instructions
 and the stack-based virtual machine executes this bytecode.
 
-<div align="center">
-
-![Language Architecture](img/language-architecture.png)
-
-</div>
+![Language Architecture](img/language-architecture.png#center)
 
 **Core Classes**
 

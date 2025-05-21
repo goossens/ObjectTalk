@@ -12,8 +12,4 @@ and the examples folder shows how to use it to create simple GUIs,
 run some games in a vintage vector display or implement a simple
 version of Pac-Man.
 
-<div align="center">
-
-![Graphics](img/graphics.png)
-
-</div>
+![Graphics](img/graphics.png#center)

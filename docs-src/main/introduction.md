@@ -1,8 +1,4 @@
-<div align="center">
-
-![Logo](img/logo-small.png)
-
-</div>
+![Logo](img/logo-small.png#center)
 
 Welcome to the documentation for ObjectTalk, a object-oriented
 Swiss Army Knife providing a Scripting Language, 2D/3D Graphics Engine,

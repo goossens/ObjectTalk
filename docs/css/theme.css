@@ -4,10 +4,29 @@ body {
 	color: #000;
 }
 
+:is(h1, h2, h3, h4, h5, h6) {
+	clear: both;
+}
+
 pre {
 	background: #eee;
 	padding-left: 24px;
 	tab-size: 4;
+}
+
+img[src*="#left"] {
+	float: left;
+	margin-right: 20px;
+}
+
+img[src*="#right"] {
+	float: right;
+	margin-left: 20px;
+}
+
+img[src*="#center"] {
+	display: block;
+	margin: auto;
 }
 
 .manual-header {

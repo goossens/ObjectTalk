@@ -32,6 +32,9 @@ public:
 	// readback the specified texture
 	void readback(OtTexture& texture, std::function<void()> callback=nullptr);
 
+	// readback part of the specified texture
+	void readback(OtTexture& texture, int x, int y, int w, int h, std::function<void()> callback=nullptr);
+
 	// get properties
 	inline OtImage& getImage() { return image; }
 

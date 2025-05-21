@@ -15,8 +15,4 @@ are used in the scene examples to process images or create geometry.
 ObjectTalk already has over 50 nodes already and many will follow
 depending on my needs.
 
-<div align="center">
-
-![Nodes](img/nodes.png)
-
-</div>
+![Nodes](img/nodes.png#center)

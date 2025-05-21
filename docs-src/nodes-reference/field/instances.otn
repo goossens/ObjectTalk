@@ -1,0 +1,91 @@
+{
+	"links": [],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 3238832384,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 801813282,
+					"name": "Index",
+					"type": "int"
+				}
+			],
+			"title": "Index Field",
+			"type": "Index Field",
+			"x": 155.0,
+			"y": 176.0
+		},
+		{
+			"id": 3671712728,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 3633937112,
+					"name": "X",
+					"type": "float"
+				},
+				{
+					"id": 4228627109,
+					"name": "Y",
+					"type": "float"
+				},
+				{
+					"id": 2326347586,
+					"name": "Z",
+					"type": "float"
+				}
+			],
+			"title": "Normal Field",
+			"type": "Normal Field",
+			"x": 355.0,
+			"y": 175.0
+		},
+		{
+			"id": 3214861011,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2701759339,
+					"name": "X",
+					"type": "float"
+				},
+				{
+					"id": 2542408792,
+					"name": "Y",
+					"type": "float"
+				},
+				{
+					"id": 2373039340,
+					"name": "Z",
+					"type": "float"
+				}
+			],
+			"title": "Position Field",
+			"type": "Position Field",
+			"x": 546.0,
+			"y": 176.0
+		},
+		{
+			"id": 377829224,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 956298369,
+					"name": "U",
+					"type": "float"
+				},
+				{
+					"id": 1621492525,
+					"name": "V",
+					"type": "float"
+				}
+			],
+			"title": "UV Field",
+			"type": "UV Field",
+			"x": 736.0,
+			"y": 179.0
+		}
+	]
+}

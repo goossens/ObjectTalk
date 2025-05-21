@@ -22,8 +22,4 @@ execution of the ObjectTalk elements:
 - **Miscellaneous editors**
 	- The IDE is also capable of editing pure text, JSON and Markdown files (complete with syntax highlighting).
 
-<div align="center">
-
-![IDE](img/ide.png)
-
-</div>
+![IDE](img/ide.png#center#center)

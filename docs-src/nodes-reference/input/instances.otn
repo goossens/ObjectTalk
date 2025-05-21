@@ -1,0 +1,226 @@
+{
+	"links": [],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 1394883276,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 3129163959,
+					"name": "Value",
+					"type": "bool"
+				}
+			],
+			"title": "Boolean Input",
+			"type": "Boolean Input",
+			"value": false,
+			"x": 77.0,
+			"y": 63.0
+		},
+		{
+			"id": 1661290529,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 267016090,
+					"name": "Value",
+					"type": "float"
+				}
+			],
+			"title": "Float Input",
+			"type": "Float Input",
+			"value": 0.0,
+			"x": 261.0,
+			"y": 64.0
+		},
+		{
+			"id": 2754260914,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2337895283,
+					"name": "Font",
+					"type": "font"
+				}
+			],
+			"path": "",
+			"title": "Font Input",
+			"type": "Font Input",
+			"x": 449.0,
+			"y": 69.0
+		},
+		{
+			"id": 74113226,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 205049105,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"path": "",
+			"title": "Geometry Input",
+			"type": "Geometry Input",
+			"x": 689.0,
+			"y": 64.0
+		},
+		{
+			"id": 1989363958,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 48874141,
+					"name": "Image",
+					"type": "image"
+				}
+			],
+			"path": "",
+			"title": "Image Input",
+			"type": "Image Input",
+			"x": 942.0,
+			"y": 65.0
+		},
+		{
+			"id": 3757392542,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 3220829753,
+					"name": "Instances",
+					"type": "instances"
+				}
+			],
+			"path": "",
+			"title": "Instances Input",
+			"type": "Instances Input",
+			"x": 70.0,
+			"y": 189.0
+		},
+		{
+			"id": 1701963825,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 3081757491,
+					"name": "Value",
+					"type": "int"
+				}
+			],
+			"title": "Integer Input",
+			"type": "Integer Input",
+			"value": 0,
+			"x": 328.0,
+			"y": 190.0
+		},
+		{
+			"id": 2734979118,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 936582737,
+					"name": "Shape",
+					"type": "shape"
+				}
+			],
+			"path": "",
+			"title": "Shape Input",
+			"type": "Shape Input",
+			"x": 525.0,
+			"y": 191.0
+		},
+		{
+			"id": 2093530680,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 3591350743,
+					"name": "Value",
+					"type": "string"
+				}
+			],
+			"title": "String Input",
+			"type": "String Input",
+			"value": "",
+			"x": 776.0,
+			"y": 195.0
+		},
+		{
+			"id": 2723543157,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2669947539,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"path": "",
+			"title": "Texture Input",
+			"type": "Texture Input",
+			"x": 1059.0,
+			"y": 192.0
+		},
+		{
+			"id": 2201931389,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 875094311,
+					"name": "Value",
+					"type": "vector2"
+				}
+			],
+			"title": "Vector2 Input",
+			"type": "Vector2 Input",
+			"value": [
+				0.0,
+				0.0
+			],
+			"x": 62.0,
+			"y": 318.0
+		},
+		{
+			"id": 2662742050,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2129862472,
+					"name": "Value",
+					"type": "vector3"
+				}
+			],
+			"title": "Vector3 Input",
+			"type": "Vector3 Input",
+			"value": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"x": 287.0,
+			"y": 322.0
+		},
+		{
+			"id": 2224189497,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 380814199,
+					"name": "Value",
+					"type": "vector4"
+				}
+			],
+			"title": "Vector4 Input",
+			"type": "Vector4 Input",
+			"value": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"x": 589.0,
+			"y": 326.0
+		}
+	]
+}

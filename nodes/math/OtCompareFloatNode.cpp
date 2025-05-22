@@ -68,11 +68,11 @@ public:
 			case Operator::less: result = (a < b); break;
 			case Operator::lessEqual: result = (a <= b); break;
 			case Operator::greater: result = (a > b); break;
-			case Operator::greatertEqual: result = (a >= b); break;
+			case Operator::greaterEqual: result = (a >= b); break;
 		}
 	}
 
-	static constexpr const char* nodeName = "Compare";
+	static constexpr const char* nodeName = "Compare Float";
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::math;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::flexible;
 
@@ -83,7 +83,7 @@ protected:
 		less,
 		lessEqual,
 		greater,
-		greatertEqual
+		greaterEqual
 	};
 
 	static constexpr const char* operators[] = {

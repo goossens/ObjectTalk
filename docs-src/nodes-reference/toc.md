@@ -5,3 +5,6 @@
 * [Generator Nodes](#generator)
 * [Geometry Nodes](#geometry)
 * [Input Nodes](#input)
+* [Manifold Nodes](#manifold)
+* [Map Nodes](#map)
+* [Math Nodes](#math)

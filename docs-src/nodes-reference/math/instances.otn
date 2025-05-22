@@ -1,0 +1,121 @@
+{
+	"links": [],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 4108848364,
+			"inputs": [
+				{
+					"id": 293713565,
+					"name": "A",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 458417248,
+					"name": "B",
+					"type": "float",
+					"value": 0.0
+				}
+			],
+			"operator": 0,
+			"outputs": [
+				{
+					"id": 97307077,
+					"name": "Result",
+					"type": "float"
+				}
+			],
+			"title": "Binary Float",
+			"type": "Binary Float",
+			"x": 472.0,
+			"y": 200.0
+		},
+		{
+			"id": 1912147722,
+			"inputs": [
+				{
+					"id": 1224691798,
+					"name": "A",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 854198757,
+					"name": "B",
+					"type": "float",
+					"value": 0.0
+				}
+			],
+			"operator": 0,
+			"outputs": [
+				{
+					"id": 1538689640,
+					"name": "Result",
+					"type": "bool"
+				}
+			],
+			"title": "Compare Float",
+			"type": "Compare Float",
+			"x": 688.0,
+			"y": 205.0
+		},
+		{
+			"id": 1056192014,
+			"inputs": [
+				{
+					"id": 2726628038,
+					"name": "A",
+					"type": "float",
+					"value": 0.0
+				}
+			],
+			"operator": 0,
+			"outputs": [
+				{
+					"id": 103379847,
+					"name": "Result",
+					"type": "float"
+				}
+			],
+			"title": "Unary Float",
+			"type": "Unary Float",
+			"x": 275.0,
+			"y": 199.0
+		},
+		{
+			"id": 606928029,
+			"inputs": [
+				{
+					"id": 1609155043,
+					"name": "Seed",
+					"type": "int",
+					"value": 1
+				},
+				{
+					"id": 1604114925,
+					"name": "Min",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 2328633093,
+					"name": "Max",
+					"type": "float",
+					"value": 1.0
+				}
+			],
+			"outputs": [
+				{
+					"id": 2100778193,
+					"name": "Value",
+					"type": "float"
+				}
+			],
+			"title": "Random Float",
+			"type": "Random Float",
+			"x": 957.0,
+			"y": 221.0
+		}
+	]
+}

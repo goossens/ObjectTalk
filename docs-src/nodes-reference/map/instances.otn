@@ -1,0 +1,100 @@
+{
+	"links": [],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 3092292534,
+			"inputs": [
+				{
+					"id": 1607446832,
+					"name": "Size",
+					"type": "int",
+					"value": 32
+				},
+				{
+					"id": 863994069,
+					"name": "Seed",
+					"type": "int",
+					"value": 1
+				},
+				{
+					"id": 613566171,
+					"name": "Ruggedness",
+					"type": "float",
+					"value": 0.5
+				}
+			],
+			"outputs": [
+				{
+					"id": 1197100068,
+					"name": "Map",
+					"type": "map"
+				}
+			],
+			"title": "Map Generator",
+			"type": "Map Generator",
+			"x": 231.0,
+			"y": 148.0
+		},
+		{
+			"id": 145984474,
+			"inputs": [
+				{
+					"id": 286410418,
+					"name": "Map",
+					"type": "map"
+				},
+				{
+					"id": 3658080589,
+					"name": "Size",
+					"type": "int",
+					"value": 32
+				}
+			],
+			"outputs": [
+				{
+					"id": 1474650429,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"title": "Map to HeightMap",
+			"type": "Map to HeightMap",
+			"x": 502.0,
+			"y": 155.0
+		},
+		{
+			"id": 3782547564,
+			"inputs": [
+				{
+					"id": 1587833024,
+					"name": "Map",
+					"type": "map"
+				},
+				{
+					"id": 1188443633,
+					"name": "Size",
+					"type": "int",
+					"value": 32
+				},
+				{
+					"id": 1363584450,
+					"name": "Biome",
+					"type": "bool",
+					"value": false
+				}
+			],
+			"outputs": [
+				{
+					"id": 364300180,
+					"name": "Image",
+					"type": "image"
+				}
+			],
+			"title": "Map to Image",
+			"type": "Map to Image",
+			"x": 751.0,
+			"y": 163.0
+		}
+	]
+}

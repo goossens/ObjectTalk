@@ -370,8 +370,8 @@
 					"type": "bool"
 				}
 			],
-			"title": "Compare",
-			"type": "Compare",
+			"title": "Compare Float",
+			"type": "Compare Float",
 			"x": 729.0,
 			"y": 189.0
 		},
@@ -547,8 +547,8 @@
 					"type": "bool"
 				}
 			],
-			"title": "Compare",
-			"type": "Compare",
+			"title": "Compare Float",
+			"type": "Compare Float",
 			"x": 729.0,
 			"y": 510.0
 		},

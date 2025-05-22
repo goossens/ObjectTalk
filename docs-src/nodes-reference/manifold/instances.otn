@@ -1,0 +1,355 @@
+{
+	"links": [],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 3129059497,
+			"inputs": [
+				{
+					"id": 2580266203,
+					"name": "Width",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 2449714033,
+					"name": "Height",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 1409792212,
+					"name": "Depth",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 937491919,
+					"name": "Center",
+					"type": "bool",
+					"value": false
+				}
+			],
+			"outputs": [
+				{
+					"id": 3367470796,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"title": "Cube Manifold",
+			"type": "Cube Manifold",
+			"x": 316.0,
+			"y": 35.0
+		},
+		{
+			"id": 415259765,
+			"inputs": [
+				{
+					"id": 4062867685,
+					"name": "Height",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 2507481249,
+					"name": "Top Radius",
+					"type": "float",
+					"value": 0.5
+				},
+				{
+					"id": 1765398350,
+					"name": "Bottom Radius",
+					"type": "float",
+					"value": 0.5
+				},
+				{
+					"id": 2803401221,
+					"name": "Segments",
+					"type": "int",
+					"value": 32
+				},
+				{
+					"id": 3755493658,
+					"name": "Center",
+					"type": "bool",
+					"value": false
+				}
+			],
+			"outputs": [
+				{
+					"id": 611846768,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"title": "Cylinder Manifold",
+			"type": "Cylinder Manifold",
+			"x": 521.0,
+			"y": 20.0
+		},
+		{
+			"id": 168690672,
+			"inputs": [
+				{
+					"id": 2687106417,
+					"name": "Radius",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 3798872333,
+					"name": "Segments",
+					"type": "int",
+					"value": 32
+				}
+			],
+			"outputs": [
+				{
+					"id": 3442608920,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"title": "Sphere Manifold",
+			"type": "Sphere Manifold",
+			"x": 755.0,
+			"y": 28.0
+		},
+		{
+			"id": 2194179693,
+			"inputs": [
+				{
+					"id": 1172835211,
+					"name": "A",
+					"type": "manifold"
+				},
+				{
+					"id": 2934897257,
+					"name": "B",
+					"type": "manifold"
+				}
+			],
+			"outputs": [
+				{
+					"id": 1028649782,
+					"name": "Result",
+					"type": "manifold"
+				}
+			],
+			"title": "Manifold Difference",
+			"type": "Manifold Difference",
+			"x": 60.0,
+			"y": 264.0
+		},
+		{
+			"id": 2088507965,
+			"inputs": [
+				{
+					"id": 449389711,
+					"name": "Shape",
+					"type": "shape"
+				},
+				{
+					"id": 1505786082,
+					"name": "Height",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 1938599932,
+					"name": "Divisions",
+					"type": "int",
+					"value": 0
+				},
+				{
+					"id": 42333713,
+					"name": "Twist Degrees",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 1223178854,
+					"name": "Scale Top",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 456014941,
+					"name": "Tolerance",
+					"type": "float",
+					"value": 0.25
+				}
+			],
+			"outputs": [
+				{
+					"id": 3894079873,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"title": "Manifold Extrude",
+			"type": "Manifold Extrude",
+			"x": 63.0,
+			"y": 491.0
+		},
+		{
+			"id": 2958413241,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 67877274,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"path": "",
+			"title": "Manifold Generator",
+			"type": "Manifold Generator",
+			"x": 44.0,
+			"y": 41.0
+		},
+		{
+			"id": 558825074,
+			"inputs": [
+				{
+					"id": 919888772,
+					"name": "A",
+					"type": "manifold"
+				},
+				{
+					"id": 1333737556,
+					"name": "B",
+					"type": "manifold"
+				}
+			],
+			"outputs": [
+				{
+					"id": 3595190116,
+					"name": "Result",
+					"type": "manifold"
+				}
+			],
+			"title": "Manifold Intersect",
+			"type": "Manifold Intersect",
+			"x": 278.0,
+			"y": 267.0
+		},
+		{
+			"id": 3549256741,
+			"inputs": [
+				{
+					"id": 4197677289,
+					"name": "Shape",
+					"type": "shape"
+				},
+				{
+					"id": 3015016075,
+					"name": "Segments",
+					"type": "int",
+					"value": 128
+				},
+				{
+					"id": 4193921555,
+					"name": "revolveDegrees",
+					"type": "float",
+					"value": 360.0
+				},
+				{
+					"id": 3847455983,
+					"name": "Tolerance",
+					"type": "float",
+					"value": 0.25
+				}
+			],
+			"outputs": [
+				{
+					"id": 184313590,
+					"name": "Manifold",
+					"type": "manifold"
+				}
+			],
+			"title": "Manifold Revolve",
+			"type": "Manifold Revolve",
+			"x": 303.0,
+			"y": 476.0
+		},
+		{
+			"id": 4213799972,
+			"inputs": [
+				{
+					"id": 2846592988,
+					"name": "A",
+					"type": "manifold"
+				},
+				{
+					"id": 1987450780,
+					"name": "B",
+					"type": "manifold"
+				}
+			],
+			"outputs": [
+				{
+					"id": 3422176296,
+					"name": "Result",
+					"type": "manifold"
+				}
+			],
+			"title": "Manifold Union",
+			"type": "Manifold Union",
+			"x": 509.0,
+			"y": 271.0
+		},
+		{
+			"id": 1386629320,
+			"inputs": [
+				{
+					"id": 2968225651,
+					"name": "Input",
+					"type": "manifold"
+				},
+				{
+					"id": 336471566,
+					"name": "Translate",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 3534724723,
+					"name": "Rotate",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 70028698,
+					"name": "Scale",
+					"type": "vector3",
+					"value": [
+						1.0,
+						1.0,
+						1.0
+					]
+				}
+			],
+			"outputs": [
+				{
+					"id": 1167691679,
+					"name": "Output",
+					"type": "manifold"
+				}
+			],
+			"title": "Manifold Transform",
+			"type": "Manifold Transform",
+			"x": 712.0,
+			"y": 266.0
+		}
+	]
+}

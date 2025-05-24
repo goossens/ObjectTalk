@@ -17,26 +17,26 @@
 
 
 //
-//	OtFloatProbeNode
+//	OtBooleanProbeNode
 //
 
-class OtFloatProbeNode : public OtNodeClass {
+class OtBooleanProbeNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
 		addInputPin("Value", value)->addCustomRenderer([&](float width) {
 			ImGui::SetNextItemWidth(width);
-			OtUi::readonlyFloat("##value", value);
+			OtUi::readonlyBool("##value", value);
 		}, 100.0f);
 	}
 
-	static constexpr const char* nodeName = "Float Probe";
+	static constexpr const char* nodeName = "Boolean Probe";
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::probe;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
-	float value = 0.0f;
+	bool value = false;
 };
 
 
-static OtNodesFactoryRegister<OtFloatProbeNode> registration;
+static OtNodesFactoryRegister<OtBooleanProbeNode> registration;

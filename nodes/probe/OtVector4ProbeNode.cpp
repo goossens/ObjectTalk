@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include "glm/glm.hpp"
 #include "imgui.h"
 
 #include "OtUi.h"
@@ -17,26 +18,26 @@
 
 
 //
-//	OtFloatProbeNode
+//	OtVector4ProbeNode
 //
 
-class OtFloatProbeNode : public OtNodeClass {
+class OtVector4ProbeNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
 		addInputPin("Value", value)->addCustomRenderer([&](float width) {
 			ImGui::SetNextItemWidth(width);
-			OtUi::readonlyFloat("##value", value);
-		}, 100.0f);
+			OtUi::viewVec4("##value", value);
+		}, 260.0f);
 	}
 
-	static constexpr const char* nodeName = "Float Probe";
+	static constexpr const char* nodeName = "Vector4 Probe";
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::probe;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
-	float value = 0.0f;
+	glm::vec4 value{0.0f};
 };
 
 
-static OtNodesFactoryRegister<OtFloatProbeNode> registration;
+static OtNodesFactoryRegister<OtVector4ProbeNode> registration;

@@ -245,6 +245,16 @@ void OtUi::readonlyText(const char* label, const std::string& value) {
 
 
 //
+//	OtUi::readonlyBool
+//
+
+void OtUi::readonlyBool(const char* label, bool value) {
+	std::string text = value ? "true" : "false";
+	readonlyText(label, text);
+}
+
+
+//
 //	OtUi::readonlyInt
 //
 

@@ -1,0 +1,271 @@
+{
+	"links": [
+		{
+			"from": 2531265056,
+			"id": 1400343828,
+			"to": 385989824
+		},
+		{
+			"from": 4054046582,
+			"id": 3747432781,
+			"to": 1353421854
+		},
+		{
+			"from": 2888305774,
+			"id": 4131909122,
+			"to": 3006353448
+		},
+		{
+			"from": 2153961998,
+			"id": 1935552001,
+			"to": 3566648907
+		},
+		{
+			"from": 1954983758,
+			"id": 3128026580,
+			"to": 356553766
+		},
+		{
+			"from": 303108968,
+			"id": 1290264646,
+			"to": 2068223712
+		},
+		{
+			"from": 2379493559,
+			"id": 2580185019,
+			"to": 3499004792
+		}
+	],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 1488400170,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2531265056,
+					"name": "Value",
+					"type": "vector2"
+				}
+			],
+			"title": "Vector2 Input",
+			"type": "Vector2 Input",
+			"value": [
+				-0.36000001430511475,
+				0.36000001430511475
+			],
+			"x": 179.0,
+			"y": 448.0
+		},
+		{
+			"id": 3796040888,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 4054046582,
+					"name": "Value",
+					"type": "vector3"
+				}
+			],
+			"title": "Vector3 Input",
+			"type": "Vector3 Input",
+			"value": [
+				0.0,
+				0.1599999964237213,
+				0.0
+			],
+			"x": 179.0,
+			"y": 554.0
+		},
+		{
+			"id": 3806888721,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2888305774,
+					"name": "Value",
+					"type": "vector4"
+				}
+			],
+			"title": "Vector4 Input",
+			"type": "Vector4 Input",
+			"value": [
+				0.0,
+				-0.15000000596046448,
+				0.0,
+				1.0
+			],
+			"x": 179.0,
+			"y": 657.0
+		},
+		{
+			"id": 1275448103,
+			"inputs": [
+				{
+					"id": 385989824,
+					"name": "Value",
+					"type": "vector2"
+				}
+			],
+			"outputs": [],
+			"title": "Vector2 Probe",
+			"type": "Vector2 Probe",
+			"x": 712.0,
+			"y": 448.0
+		},
+		{
+			"id": 1133519503,
+			"inputs": [
+				{
+					"id": 1353421854,
+					"name": "Value",
+					"type": "vector3"
+				}
+			],
+			"outputs": [],
+			"title": "Vector3 Probe",
+			"type": "Vector3 Probe",
+			"x": 642.0,
+			"y": 554.0
+		},
+		{
+			"id": 2697774183,
+			"inputs": [
+				{
+					"id": 3006353448,
+					"name": "Value",
+					"type": "vector4"
+				}
+			],
+			"outputs": [],
+			"title": "Vector4 Probe",
+			"type": "Vector4 Probe",
+			"x": 582.0,
+			"y": 657.0
+		},
+		{
+			"id": 112901250,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2379493559,
+					"name": "Value",
+					"type": "bool"
+				}
+			],
+			"title": "Boolean Input",
+			"type": "Boolean Input",
+			"value": false,
+			"x": 179.0,
+			"y": 79.0
+		},
+		{
+			"id": 2685376079,
+			"inputs": [
+				{
+					"id": 3499004792,
+					"name": "Value",
+					"type": "bool"
+				}
+			],
+			"outputs": [],
+			"title": "Boolean Probe",
+			"type": "Boolean Probe",
+			"x": 738.0,
+			"y": 79.0
+		},
+		{
+			"id": 3497994428,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2153961998,
+					"name": "Value",
+					"type": "string"
+				}
+			],
+			"title": "String Input",
+			"type": "String Input",
+			"value": "test",
+			"x": 179.0,
+			"y": 350.0
+		},
+		{
+			"id": 46672537,
+			"inputs": [
+				{
+					"id": 3566648907,
+					"name": "Value",
+					"type": "string"
+				}
+			],
+			"outputs": [],
+			"title": "String Probe",
+			"type": "String Probe",
+			"x": 662.0,
+			"y": 350.0
+		},
+		{
+			"id": 1003873756,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 303108968,
+					"name": "Value",
+					"type": "int"
+				}
+			],
+			"title": "Integer Input",
+			"type": "Integer Input",
+			"value": -1,
+			"x": 179.0,
+			"y": 167.0
+		},
+		{
+			"id": 605438935,
+			"inputs": [
+				{
+					"id": 2068223712,
+					"name": "Value",
+					"type": "int"
+				}
+			],
+			"outputs": [],
+			"title": "Integer Probe",
+			"type": "Integer Probe",
+			"x": 738.0,
+			"y": 167.0
+		},
+		{
+			"id": 205845151,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 1954983758,
+					"name": "Value",
+					"type": "float"
+				}
+			],
+			"title": "Float Input",
+			"type": "Float Input",
+			"value": 3.140000104904175,
+			"x": 179.0,
+			"y": 259.0
+		},
+		{
+			"id": 1912524835,
+			"inputs": [
+				{
+					"id": 356553766,
+					"name": "Value",
+					"type": "float"
+				}
+			],
+			"outputs": [],
+			"title": "Float Probe",
+			"type": "Float Probe",
+			"x": 742.0,
+			"y": 259.0
+		}
+	]
+}

@@ -28,7 +28,6 @@
 
 **Outputs**
 
-
 # Random Float
 
 ![screenshot](img/random-float.png#right)

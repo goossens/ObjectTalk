@@ -123,8 +123,8 @@ void OtImage::loadFromUrl(const std::string& address) {
 	try {
 		load(url.getDownloadedData(), url.getDownloadedSize());
 
-	} catch (OtException& e) {
-		OtLogError("Can't load image from [{}]", address);
+	} catch (OtException&) {
+		OtLogError("Can't process image loaded from [{}]", address);
 	}
 }
 

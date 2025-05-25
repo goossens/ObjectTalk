@@ -34,7 +34,7 @@ public:
 	void init(size_t count, OtObject* parameters);
 
 	// add OpenStreetMap layer
-	inline void addOsmLayer(const std::string& host) { map.addOsmLayer(host); }
+	inline void addOsmLayer(const std::string& hostname) { map.addOsmLayer(hostname); }
 
 	// render content
 	void render() override;

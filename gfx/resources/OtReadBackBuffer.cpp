@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <algorithm>
+
 #include "bimg/bimg.h"
 
 #include "OtFrameworkAtFrame.h"

@@ -357,8 +357,8 @@
 				}
 			],
 			"outputs": [],
-			"title": "Save Image To Virtual",
-			"type": "Save Image To Virtual",
+			"title": "Save Image to Virtual",
+			"type": "Save Image to Virtual",
 			"x": 1032.0,
 			"y": 17.0
 		},
@@ -430,8 +430,8 @@
 				}
 			],
 			"outputs": [],
-			"title": "Save Texture To Virtual",
-			"type": "Save Texture To Virtual",
+			"title": "Save Texture to Virtual",
+			"type": "Save Texture to Virtual",
 			"x": 1032.0,
 			"y": 144.0
 		}

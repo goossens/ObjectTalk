@@ -1,0 +1,111 @@
+{
+	"links": [],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 3245051688,
+			"inputs": [
+				{
+					"id": 3855511466,
+					"name": "Input",
+					"type": "geometry"
+				},
+				{
+					"id": 2924635384,
+					"name": "Name",
+					"type": "string",
+					"value": ""
+				}
+			],
+			"outputs": [],
+			"title": "Save Geometry to Virtual",
+			"type": "Save Geometry to Virtual",
+			"x": 324.0,
+			"y": 266.0
+		},
+		{
+			"id": 3506462001,
+			"inputs": [
+				{
+					"id": 1813756485,
+					"name": "Input",
+					"type": "image"
+				},
+				{
+					"id": 1441791462,
+					"name": "Name",
+					"type": "string",
+					"value": ""
+				}
+			],
+			"outputs": [],
+			"title": "Save Image to Virtual",
+			"type": "Save Image to Virtual",
+			"x": 327.0,
+			"y": 108.0
+		},
+		{
+			"id": 328539449,
+			"inputs": [
+				{
+					"id": 2918022485,
+					"name": "Input",
+					"type": "texture"
+				},
+				{
+					"id": 1242934429,
+					"name": "Name",
+					"type": "string",
+					"value": ""
+				}
+			],
+			"outputs": [],
+			"title": "Save Texture to Virtual",
+			"type": "Save Texture to Virtual",
+			"x": 600.0,
+			"y": 108.0
+		},
+		{
+			"id": 2491496804,
+			"inputs": [
+				{
+					"id": 4212281640,
+					"name": "Input",
+					"type": "shape"
+				},
+				{
+					"id": 4224056768,
+					"name": "Name",
+					"type": "string",
+					"value": ""
+				}
+			],
+			"outputs": [],
+			"title": "Save Shape to Virtual",
+			"type": "Save Shape to Virtual",
+			"x": 617.0,
+			"y": 266.0
+		},
+		{
+			"id": 2030379659,
+			"inputs": [
+				{
+					"id": 1875994428,
+					"name": "Input",
+					"type": "instances"
+				},
+				{
+					"id": 1599723227,
+					"name": "Name",
+					"type": "string",
+					"value": ""
+				}
+			],
+			"outputs": [],
+			"title": "Save Instances to Virtual",
+			"type": "Save Instances to Virtual",
+			"x": 893.0,
+			"y": 266.0
+		}
+	]
+}

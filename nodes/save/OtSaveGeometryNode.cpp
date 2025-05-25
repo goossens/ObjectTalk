@@ -68,7 +68,7 @@ public:
 		});
 	}
 
-	static constexpr const char* nodeName = "Save Geometry To File";
+	static constexpr const char* nodeName = "Save Geometry to File";
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::save;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 

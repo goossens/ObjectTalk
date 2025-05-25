@@ -1,0 +1,203 @@
+{
+	"links": [],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 1973734847,
+			"inputs": [
+				{
+					"id": 2606550943,
+					"name": "Shape",
+					"type": "shape"
+				},
+				{
+					"id": 2571617633,
+					"name": "Depth",
+					"type": "float",
+					"value": 1.0
+				},
+				{
+					"id": 1994232283,
+					"name": "Tolerance",
+					"type": "float",
+					"value": 0.25
+				}
+			],
+			"outputs": [
+				{
+					"id": 3682179401,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"title": "Extrude Shape",
+			"type": "Extrude Shape",
+			"x": 631.0,
+			"y": 306.0
+		},
+		{
+			"id": 2535259453,
+			"inputs": [
+				{
+					"id": 325394149,
+					"name": "A",
+					"type": "shape"
+				},
+				{
+					"id": 3469851233,
+					"name": "B",
+					"type": "shape"
+				}
+			],
+			"outputs": [
+				{
+					"id": 2628418908,
+					"name": "Output",
+					"type": "shape"
+				}
+			],
+			"title": "Merge Shapes",
+			"type": "Merge Shapes",
+			"x": 412.0,
+			"y": 323.0
+		},
+		{
+			"id": 3027409657,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 375509538,
+					"name": "Shape",
+					"type": "shape"
+				}
+			],
+			"path": "",
+			"title": "Shape Generator",
+			"type": "Shape Generator",
+			"x": 124.0,
+			"y": 50.0
+		},
+		{
+			"id": 471789786,
+			"inputs": [
+				{
+					"id": 407645591,
+					"name": "Input",
+					"type": "shape"
+				},
+				{
+					"id": 659661859,
+					"name": "Translate",
+					"type": "vector2",
+					"value": [
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 3650790286,
+					"name": "Rotate",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 136652376,
+					"name": "Scale",
+					"type": "vector2",
+					"value": [
+						1.0,
+						1.0
+					]
+				}
+			],
+			"outputs": [
+				{
+					"id": 521678597,
+					"name": "Output",
+					"type": "shape"
+				}
+			],
+			"title": "Shape Transform",
+			"type": "Shape Transform",
+			"x": 116.0,
+			"y": 277.0
+		},
+		{
+			"id": 1151498624,
+			"inputs": [
+				{
+					"id": 1003282039,
+					"name": "Font",
+					"type": "font"
+				},
+				{
+					"id": 3122256073,
+					"name": "Text",
+					"type": "string",
+					"value": ""
+				},
+				{
+					"id": 3563257971,
+					"name": "Size",
+					"type": "float",
+					"value": 12.0
+				},
+				{
+					"id": 4279252072,
+					"name": "Center",
+					"type": "bool",
+					"value": true
+				}
+			],
+			"outputs": [
+				{
+					"id": 2115846589,
+					"name": "Shape",
+					"type": "shape"
+				}
+			],
+			"title": "Text to Shape",
+			"type": "Text to Shape",
+			"x": 416.0,
+			"y": 49.0
+		},
+		{
+			"id": 3048737460,
+			"inputs": [
+				{
+					"id": 1897597315,
+					"name": "Shape",
+					"type": "shape"
+				},
+				{
+					"id": 3625286405,
+					"name": "Color",
+					"type": "color",
+					"value": [
+						1.0,
+						0.0,
+						0.0,
+						1.0
+					]
+				},
+				{
+					"id": 3053082291,
+					"name": "Outline",
+					"type": "bool",
+					"value": false
+				}
+			],
+			"outputs": [
+				{
+					"id": 690809451,
+					"name": "Image",
+					"type": "image"
+				}
+			],
+			"title": "Shape to Image",
+			"type": "Shape to Image",
+			"x": 886.0,
+			"y": 307.0
+		}
+	]
+}

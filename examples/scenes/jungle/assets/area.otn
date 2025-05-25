@@ -174,8 +174,8 @@
 				}
 			],
 			"outputs": [],
-			"title": "Save Geometry To Virtual",
-			"type": "Save Geometry To Virtual",
+			"title": "Save Geometry to Virtual",
+			"type": "Save Geometry to Virtual",
 			"x": 937.0,
 			"y": 71.0
 		}

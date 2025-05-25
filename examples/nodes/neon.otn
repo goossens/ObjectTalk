@@ -603,8 +603,8 @@
 				}
 			],
 			"outputs": [],
-			"title": "Save Image To File",
-			"type": "Save Image To File",
+			"title": "Save Image to File",
+			"type": "Save Image to File",
 			"x": 1365.0,
 			"y": 190.0
 		}

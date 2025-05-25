@@ -49,7 +49,7 @@ public:
 		}
 	}
 
-	static constexpr const char* nodeName = "Save Shape To Virtual";
+	static constexpr const char* nodeName = "Save Shape to Virtual";
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::virtualize;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 

@@ -15,12 +15,6 @@ include /manual.pug
 				+manual-chapter("field", "Field Nodes")
 					include:markdown nodes-reference/field/doc.md
 
-				+manual-chapter("filter", "Filter Nodes")
-					include:markdown nodes-reference/filter/doc.md
-
-				+manual-chapter("generator", "Generator Nodes")
-					include:markdown nodes-reference/generator/doc.md
-
 				+manual-chapter("geometry", "Geometry Nodes")
 					include:markdown nodes-reference/geometry/doc.md
 
@@ -38,5 +32,17 @@ include /manual.pug
 
 				+manual-chapter("probe", "Probe Nodes")
 					include:markdown nodes-reference/probe/doc.md
+
+				+manual-chapter("save", "Save Nodes")
+					include:markdown nodes-reference/save/doc.md
+
+				+manual-chapter("shape", "Shape Nodes")
+					include:markdown nodes-reference/shape/doc.md
+
+				+manual-chapter("texture", "Texture Nodes")
+					include:markdown nodes-reference/texture/doc.md
+
+				+manual-chapter("virtualize", "Virtualize Nodes")
+					include:markdown nodes-reference/virtualize/doc.md
 
 		include common/footer.pug

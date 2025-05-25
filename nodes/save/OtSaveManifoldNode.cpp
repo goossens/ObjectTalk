@@ -92,7 +92,7 @@ public:
 		});
 	}
 
-	static constexpr const char* nodeName = "Save Manifold To File";
+	static constexpr const char* nodeName = "Save Manifold to File";
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::save;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 

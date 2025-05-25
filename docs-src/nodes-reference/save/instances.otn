@@ -1,0 +1,81 @@
+{
+	"links": [],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 3365654379,
+			"inputs": [
+				{
+					"id": 3005441111,
+					"name": "Input",
+					"type": "geometry"
+				}
+			],
+			"outputs": [],
+			"title": "Save Geometry to File",
+			"type": "Save Geometry to File",
+			"x": 762.0,
+			"y": 219.0
+		},
+		{
+			"id": 3614851485,
+			"inputs": [
+				{
+					"id": 1651035494,
+					"name": "Input",
+					"type": "image"
+				}
+			],
+			"outputs": [],
+			"title": "Save Image to File",
+			"type": "Save Image to File",
+			"x": 767.0,
+			"y": 94.0
+		},
+		{
+			"id": 4206616732,
+			"inputs": [
+				{
+					"id": 2034698089,
+					"name": "Input",
+					"type": "instances"
+				}
+			],
+			"outputs": [],
+			"title": "Save Instances to File",
+			"type": "Save Instances to File",
+			"x": 759.0,
+			"y": 448.0
+		},
+		{
+			"id": 1781918542,
+			"inputs": [
+				{
+					"id": 1107198109,
+					"name": "Input",
+					"type": "manifold"
+				}
+			],
+			"outputs": [],
+			"title": "Save Manifold to File",
+			"type": "Save Manifold to File",
+			"x": 760.0,
+			"y": 333.0
+		},
+		{
+			"id": 1080097940,
+			"inputs": [
+				{
+					"id": 555674259,
+					"name": "Input",
+					"type": "shape"
+				}
+			],
+			"outputs": [],
+			"title": "Save Shape to File",
+			"type": "Save Shape to File",
+			"x": 765.0,
+			"y": 570.0
+		}
+	]
+}

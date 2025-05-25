@@ -29,7 +29,7 @@
 //
 
 struct OtNodeVaryingContext {
-	// contructors
+	// constructors
 	OtNodeVaryingContext() : index(0), hasVertex(false), hasInstance(false) {}
 	OtNodeVaryingContext(size_t i, const OtVertex& v) : index(i), hasVertex(true), hasInstance(false), vertex(v) {}
 	OtNodeVaryingContext(size_t i, const glm::mat4& in) : index(i), hasVertex(false), hasInstance(true), instance(in) {}
@@ -58,9 +58,8 @@ public:
 		output,
 		field,
 		math,
-		generate,
-		filter,
-		transform,
+		image,
+		texture,
 		shape,
 		geometry,
 		manifold,
@@ -75,9 +74,8 @@ public:
 		"Output",
 		"Field",
 		"Math",
-		"Generate",
-		"Filter",
-		"Transform",
+		"Image",
+		"Texture",
 		"Shape",
 		"Geometry",
 		"Manifold",

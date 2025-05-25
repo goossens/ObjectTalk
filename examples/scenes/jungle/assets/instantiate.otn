@@ -494,8 +494,8 @@
 				}
 			],
 			"outputs": [],
-			"title": "Save Instances To Virtual",
-			"type": "Save Instances To Virtual",
+			"title": "Save Instances to Virtual",
+			"type": "Save Instances to Virtual",
 			"x": 1139.0,
 			"y": 586.0
 		}

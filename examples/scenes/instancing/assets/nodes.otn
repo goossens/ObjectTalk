@@ -220,8 +220,8 @@
 				}
 			],
 			"outputs": [],
-			"title": "Save Geometry To Virtual",
-			"type": "Save Geometry To Virtual",
+			"title": "Save Geometry to Virtual",
+			"type": "Save Geometry to Virtual",
 			"x": 1304.0,
 			"y": 36.0
 		},
@@ -317,8 +317,8 @@
 				}
 			],
 			"outputs": [],
-			"title": "Save Geometry To Virtual",
-			"type": "Save Geometry To Virtual",
+			"title": "Save Geometry to Virtual",
+			"type": "Save Geometry to Virtual",
 			"x": 1304.0,
 			"y": 622.0
 		},
@@ -443,8 +443,8 @@
 				}
 			],
 			"outputs": [],
-			"title": "Save Instances To Virtual",
-			"type": "Save Instances To Virtual",
+			"title": "Save Instances to Virtual",
+			"type": "Save Instances to Virtual",
 			"x": 1296.0,
 			"y": 134.0
 		},
@@ -632,8 +632,8 @@
 				}
 			],
 			"outputs": [],
-			"title": "Save Instances To Virtual",
-			"type": "Save Instances To Virtual",
+			"title": "Save Instances to Virtual",
+			"type": "Save Instances to Virtual",
 			"x": 1296.0,
 			"y": 359.0
 		},
@@ -653,8 +653,8 @@
 				}
 			],
 			"outputs": [],
-			"title": "Save Geometry To Virtual",
-			"type": "Save Geometry To Virtual",
+			"title": "Save Geometry to Virtual",
+			"type": "Save Geometry to Virtual",
 			"x": 1304.0,
 			"y": 252.0
 		}

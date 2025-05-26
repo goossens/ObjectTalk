@@ -19,15 +19,24 @@ IDE has an node editor that allows you to setup nodes and connect them
 into a graph. These graphs are automatically reevaluated when values
 change. The examples folder contains image processing chains and nodes
 are used in the scene examples to process images or create geometry.
-ObjectTalk already has over 50 nodes already and many will follow
+ObjectTalk already has over 90 nodes already and many will follow
 depending on my needs.
 
 Users can draw connections between nodes (called links) and the editor ensures
-that output and input nodes have compatible datatypes, that inputs have a maximum
+that output and input nodes have compatible data types, that inputs have a maximum
 of one connection and that the created graph does not include recursion (i.e
 stays acyclic). As links are created/moved/deleted or values entered, the editor
 automatically (re-)evaluates the graphs given the user a realtime programming
 experience.
 
-**Anatomy of a Node**
+#### Anatomy of a Node
 
+![screenshot](img/node-anatomy.png#right)
+
+#### Node Categories
+
+![screenshot](img/node-categories.png#left)
+
+#### Pin Types
+
+![screenshot](img/pin-types.png#left)

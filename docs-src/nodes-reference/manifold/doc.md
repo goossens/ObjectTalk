@@ -1,4 +1,4 @@
-### Manifold Generator
+#### Manifold Generator
 
 ![screenshot](img/manifold-generator.png#right)
 
@@ -6,7 +6,7 @@
 
 **Outputs**
 
-### Cube Manifold
+#### Cube Manifold
 
 ![screenshot](img/cube-manifold.png#right)
 
@@ -14,7 +14,7 @@
 
 **Outputs**
 
-### Cylinder Manifold
+#### Cylinder Manifold
 
 ![screenshot](img/cylinder-manifold.png#right)
 
@@ -22,7 +22,7 @@
 
 **Outputs**
 
-### Sphere Manifold
+#### Sphere Manifold
 
 ![screenshot](img/sphere-manifold.png#right)
 
@@ -30,7 +30,7 @@
 
 **Outputs**
 
-### Manifold Difference
+#### Manifold Difference
 
 ![screenshot](img/manifold-difference.png#right)
 
@@ -38,7 +38,7 @@
 
 **Outputs**
 
-### Manifold Intersect
+#### Manifold Intersect
 
 ![screenshot](img/manifold-intersect.png#right)
 
@@ -46,7 +46,7 @@
 
 **Outputs**
 
-### Manifold Union
+#### Manifold Union
 
 ![screenshot](img/manifold-union.png#right)
 
@@ -54,7 +54,7 @@
 
 **Outputs**
 
-### Manifold Transform
+#### Manifold Transform
 
 ![screenshot](img/manifold-transform.png#right)
 
@@ -62,7 +62,7 @@
 
 **Outputs**
 
-### Manifold Extrude
+#### Manifold Extrude
 
 ![screenshot](img/manifold-extrude.png#right)
 
@@ -70,7 +70,7 @@
 
 **Outputs**
 
-### Manifold Revolve
+#### Manifold Revolve
 
 ![screenshot](img/manifold-revolve.png#right)
 

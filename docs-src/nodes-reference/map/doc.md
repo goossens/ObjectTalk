@@ -1,4 +1,4 @@
-## Map Generator
+#### Map Generator
 
 ![screenshot](img/map-generator.png#right)
 
@@ -6,7 +6,7 @@
 
 **Outputs**
 
-## Map to Heightmap
+#### Map to Heightmap
 
 ![screenshot](img/map-to-heightmap.png#right)
 
@@ -14,7 +14,7 @@
 
 **Outputs**
 
-## Map to Image
+#### Map to Image
 
 ![screenshot](img/map-to-image.png#right)
 

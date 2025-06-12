@@ -25,18 +25,6 @@ depending on my needs.
 Users can draw connections between nodes (called links) and the editor ensures
 that output and input nodes have compatible data types, that inputs have a maximum
 of one connection and that the created graph does not include recursion (i.e
-stays acyclic). As links are created/moved/deleted or values entered, the editor
+stays acyclic). As links are created/moved/deleted or values altered, the editor
 automatically (re-)evaluates the graphs given the user a realtime programming
 experience.
-
-#### Anatomy of a Node
-
-![screenshot](img/node-anatomy.png#right)
-
-#### Node Categories
-
-![screenshot](img/node-categories.png#left)
-
-#### Pin Types
-
-![screenshot](img/pin-types.png#left)

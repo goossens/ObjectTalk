@@ -145,6 +145,13 @@
             <li>
               <a class="page-scroll" href="#introduction">Introduction</a>
             </li>
+            <li>
+              <a class="page-scroll" href="#node-anatomy">Node Anatomy</a>
+            </li>
+            <li>
+              <a class="page-scroll" href="#node-categories">Node Categories</a>
+            </li>
+            <li><a class="page-scroll" href="#pin-types">Pin Type</a></li>
           </ul>
         </div>
         <div class="col mh-100 overflow-auto py-2 manual-content">
@@ -184,16 +191,137 @@
               editor ensures that output and input nodes have compatible data
               types, that inputs have a maximum of one connection and that the
               created graph does not include recursion (i.e stays acyclic). As
-              links are created/moved/deleted or values entered, the editor
+              links are created/moved/deleted or values altered, the editor
               automatically (re-)evaluates the graphs given the user a realtime
               programming experience.
             </p>
-            <h4>Anatomy of a Node</h4>
+          </div>
+          <div id="node-anatomy">
+            <h1 class="pb-2">Node Anatomy</h1>
             <p><img src="img/node-anatomy.png#right" alt="screenshot" /></p>
-            <h4>Node Categories</h4>
-            <p><img src="img/node-categories.png#left" alt="screenshot" /></p>
-            <h4>Pin Types</h4>
-            <p><img src="img/pin-types.png#left" alt="screenshot" /></p>
+            <p>
+              A node is depicted as a rounded rectangle with a title bar at the
+              top, optional inputs on the left, optional outputs on the right
+              and optional parameters in the middle of the rectangle.
+            </p>
+            <p><strong>Title Bar</strong></p>
+            <p>
+              At the top of the node is a title bar which by default contains
+              the name of the node. By double clicking on the title, users can
+              name a node anything they want to better express its function in a
+              graph. The background of the title bar is color coded to represent
+              the category of the node (see below).
+            </p>
+            <p><strong>Input Pins</strong></p>
+            <p>
+              Optional inputs to a node are represented on the left side of that
+              node by what's called pins. Each pin represents an input with a
+              specified type that is color coded (see pin types below). Input
+              pins can only receive data from one output pin. and the pin data
+              types have to match (which is enforced by the IDE).
+            </p>
+            <p>
+              If an input pin is not connected and the data types allows easy
+              specification by the user, a field will be visible to the right of
+              the pin's name to allow the user to specify a value.
+            </p>
+            <p><strong>Output Pins</strong></p>
+            <p>
+              Optional output from a node are represented on the right side of
+              the node by pins. Each pin represents an output with a specified
+              type that is color coded (see pin types below). Output pins can be
+              connected to multiple input pins as long as the data types match
+              (also enforced by th IDE).
+            </p>
+            <p><strong>Node Parameters</strong></p>
+            <p>
+              Some nodes also might have additional parameters or visualizations
+              to help the node perform its function. The node parameters are
+              rendered in the middle of the node.
+            </p>
+          </div>
+          <div id="node-categories">
+            <h1 class="pb-2">Node Categories</h1>
+            <p>
+              Nodes are grouped in categories that make it easier to find them
+              and recognize them in a graph. Each category has a unique color as
+              shown on the right below.
+            </p>
+            <p><img src="img/node-categories.png#right" alt="screenshot" /></p>
+            <ul>
+              <li>
+                <strong>Input Nodes</strong> - These nodes enable users to input
+                values or select assets (e.g. images, textures, geometries). If
+                a nodes graph is used in another object (e.g. a 3D scene), input
+                fields enable users to interact with the graph's functionality
+                without having the understand the full logic. This in essence
+                makes a nodes graph a macro somewhere else.
+              </li>
+              <li><strong>Field Nodes</strong> - These nodes</li>
+              <li>
+                <strong>Math Nodes</strong> - These nodes perform mathematical
+                operations on primitive (integer, real) and composite (vector)
+                values.
+              </li>
+              <li>
+                <strong>Probe Nodes</strong> - These nodes provide debugging
+                support by visualizing various data types.
+              </li>
+              <li>
+                <strong>Save Nodes</strong> - These nodes enable the user to
+                save various data type to a specified file.
+              </li>
+              <li>
+                <strong>Virtualize Nodes</strong> - These nodes save data types
+                to the internal virtual (memory-based) file system. This allows
+                assets to be created dynamically with nodes and then be used in
+                for instance 3D scenes.
+              </li>
+              <li>
+                <strong>Image Nodes</strong> - These nodes create, process,
+                filter or transform images. In ObjectTalk, images are pictures
+                that live on the CPU.
+              </li>
+              <li>
+                <strong>Texture Nodes</strong> - These nodes create, process,
+                filter or transform textures. In ObjectTalk, textures are
+                pictures that live on the GPU. In general, texture nodes are
+                faster than image nodes as all processing is GPU accelerated.
+              </li>
+              <li>
+                <strong>Shape Nodes</strong> - These nodes generate, process or
+                convert 2D vector shapes that are created with paths.
+              </li>
+              <li>
+                <strong>Geometry Nodes</strong> - These nodes generate,
+                manipulate and convert geometries which consist of one or more
+                3D meshes. In ObjectTalk, a geometry is a 3D object made up of
+                meshes which are a collection of interconnected triangles
+                (faces). These triangles are formed by connecting vertices
+                (points) with straight edges. The mesh defines the surface of
+                the 3D object, but not its interior volume.
+              </li>
+              <li>
+                <strong>Manifold Nodes</strong> - These nodes operate on
+                manifolds. In ObjectTalk, manifolds are specializations of
+                geometries. A manifold mesh is watertight and contains no holes
+                or missing faces that would cause leaks into the interior of the
+                shape's volume. For a mesh to be manifold, every edge must have
+                exactly two adjacent faces. Geometries do not have this
+                constraint. Manifolds are often used in CAD applications to
+                create 3D models through Constructive Solid Geometry. You can
+                combined or subtract solid shapes, transform them, extrude them
+                from 2D shapes or slice 3D models back into 2D shapes.
+              </li>
+              <li>
+                <strong>Map Nodes</strong> - These nodes work on geospatial data
+                (either real or fictitious).
+              </li>
+            </ul>
+          </div>
+          <div id="pin-types">
+            <h1 class="pb-2">Pin Types</h1>
+            <p><img src="img/pin-types.png#right" alt="screenshot" /></p>
           </div>
         </div>
       </div>

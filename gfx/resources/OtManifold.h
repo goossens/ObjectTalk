@@ -58,11 +58,11 @@
 //	a classic coordinate system is used where the positive X-axis points to the right, the positive Y-axis
 //	points up, and the positive Z-axis points out of the screen towards the viewer. This is called a
 //	right-handed Y-up coordinate system. CAD programs and therefore Manifolds typically use a left-handed
-//	Z-up cooridinate system where the positive X-axis points to the right, the positive Y-axis points away,
+//	Z-up coordinate system where the positive X-axis points to the right, the positive Y-axis points away,
 //	and the positive Z-axis points up.
 //
-//	So when creating a Manifold, it must be done in the left-handed Z-up cooridinate system. When converting
-//	to a Mesh or Geometry, this class automativally converts the vertex coordinates to the right-handed
+//	So when creating a Manifold, it must be done in the left-handed Z-up coordinate system. When converting
+//	to a Mesh or Geometry, this class automatically converts the vertex coordinates to the right-handed
 //	Y-up coordinate system.
 //
 //	In ObjectTalk, Manifolds are used in Nodes to interactively create models that can be rendered.

@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Populate(clipper2 QUIET GIT_REPOSITORY "https://github.com/AngusJohnson/Clipper2" GIT_TAG "Clipper2_1.5.2")
+FetchContent_Populate(clipper2 QUIET GIT_REPOSITORY "https://github.com/AngusJohnson/Clipper2" GIT_TAG "Clipper2_1.5.4")
 
 file(GLOB CLIPPER2_SOURCES
 	${clipper2_SOURCE_DIR}/CPP/Clipper2Lib/src/*.cpp

@@ -53,7 +53,7 @@ public:
 
 	static constexpr const char* nodeName = "Random Float";
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::math;
-	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::flexible;
+	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::varying;
 
 protected:
 	size_t id = 0;

@@ -126,8 +126,12 @@ void OtNodesWidget::render(OtNodes* n) {
 	ImDrawList* drawlist = ImGui::GetWindowDrawList();
 	widgetOffset = ImGui::GetCursorScreenPos();
 
-	// render the grid and rubberband
-	renderGrid(drawlist);
+	// render the grid
+	if (renderingGrid) {
+		renderGrid(drawlist);
+	}
+
+	// render rubber band
 	renderRubberBand(drawlist);
 
 	// render each node
@@ -312,7 +316,7 @@ void OtNodesWidget::renderGrid(ImDrawList* drawlist) {
 //
 
 void OtNodesWidget::renderRubberBand(ImDrawList* drawlist) {
-	// render rubberband
+	// render rubber band
 	if (interactionState == InteractionState::rubberBand) {
 		drawlist->AddRectFilled(widgetOffset + rubberBandTopLeft, widgetOffset + rubberBandBottomRight, rubberBandBackgroundColor);
 		drawlist->AddRect(widgetOffset + rubberBandTopLeft, widgetOffset + rubberBandBottomRight, rubberBandOutlineColor);
@@ -754,7 +758,7 @@ void OtNodesWidget::handleInteractions() {
 			interactionState = InteractionState::none;
 		}
 
-	// handle rubberband state
+	// handle rubber band state
 	} else if (interactionState == InteractionState::rubberBand) {
 		if (ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
 			rubberBandTopLeft = ImVec2(

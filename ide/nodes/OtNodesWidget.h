@@ -29,6 +29,10 @@ public:
 	// render widget
 	void render(OtNodes* nodes);
 
+	// access render options
+	inline void setGridRendering(bool flag) { renderingGrid = flag; }
+	inline bool isRenderingGrid() { return renderingGrid; }
+
 	// check for interactions
 	bool isNodeEdited(uint32_t& node);
 	bool isCreatingLink(uint32_t& from, uint32_t& to);
@@ -52,6 +56,9 @@ private:
 
 	// target nodes
 	OtNodes* nodes;
+
+	// rendering options
+	bool renderingGrid = true;
 
 	// positional properties
 	ImVec2 widgetOffset;

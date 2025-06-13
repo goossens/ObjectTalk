@@ -154,6 +154,12 @@ void OtNodesEditor::renderMenus() {
 		ImGui::EndMenu();
 	}
 
+	if (ImGui::BeginMenu("View")) {
+		bool flag;
+		flag = widget.isRenderingGrid(); if (ImGui::MenuItem("Show Grid", nullptr, &flag)) { widget.setGridRendering(flag); };
+		ImGui::EndMenu();
+	}
+
 	if (ImGui::BeginMenu("Align")) {
 		if (ImGui::MenuItem("Left", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::left); }
 		if (ImGui::MenuItem("Center", nullptr, nullptr, multipleSelected)) { alignSelectedNodes(OtAlignNodesTask::Alignment::center); }

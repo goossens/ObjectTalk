@@ -152,6 +152,9 @@
               <a class="page-scroll" href="#node-categories">Node Categories</a>
             </li>
             <li><a class="page-scroll" href="#pin-types">Pin Type</a></li>
+            <li>
+              <a class="page-scroll" href="#data-flows">Dat Flows Type</a>
+            </li>
           </ul>
         </div>
         <div class="col mh-100 overflow-auto py-2 manual-content">
@@ -170,21 +173,21 @@
             <p>
               A node represents a small function that transforms inputs into
               outputs, optionally using additional parameters. In ObjectTalk,
-              nodes are visually represented by rectangles displaying a title at
-              the top, inputs displayed on the left and outputs on the rights.
-              Inputs and outputs are referred to as pins that can be connected
-              and can carry only one datatype.
+              nodes are visually represented by rounded rectangles displaying a
+              title at the top, inputs displayed on the left and outputs on the
+              rights. Inputs and outputs are referred to as pins that can be
+              connected and can carry only one datatype.
             </p>
             <p>
               Each node really feels like an object instance and drawing
               connections between them is akin to visual programming. Today, in
               ObjectTalk, the IDE has an node editor that allows you to setup
               nodes and connect them into a graph. These graphs are
-              automatically reevaluated when values change. The examples folder
-              contains image processing chains and nodes are used in the scene
-              examples to process images or create geometry. ObjectTalk already
-              has over 90 nodes already and many will follow depending on my
-              needs.
+              automatically reevaluated when values change or connections are
+              made/removed. The examples folder contains image processing chains
+              and nodes are used in the scene examples to process images or
+              create geometry. ObjectTalk already has over 90 nodes already and
+              many will follow depending on my needs.
             </p>
             <p>
               Users can draw connections between nodes (called links) and the
@@ -210,20 +213,20 @@
               the name of the node. By double clicking on the title, users can
               name a node anything they want to better express its function in a
               graph. The background of the title bar is color coded to represent
-              the category of the node (see below).
+              the category of the node (see Node Categories below).
             </p>
             <p><strong>Input Pins</strong></p>
             <p>
               Optional inputs to a node are represented on the left side of that
               node by what's called pins. Each pin represents an input with a
-              specified type that is color coded (see pin types below). Input
+              specified type that is color coded (see Pin Types below). Input
               pins can only receive data from one output pin. and the pin data
               types have to match (which is enforced by the IDE).
             </p>
             <p>
               If an input pin is not connected and the data types allows easy
               specification by the user, a field will be visible to the right of
-              the pin's name to allow the user to specify a value.
+              the pin's name to allow the user to specify a static value.
             </p>
             <p><strong>Output Pins</strong></p>
             <p>
@@ -255,9 +258,14 @@
                 a nodes graph is used in another object (e.g. a 3D scene), input
                 fields enable users to interact with the graph's functionality
                 without having the understand the full logic. This in essence
-                makes a nodes graph a macro somewhere else.
+                makes a nodes graph a macro or sub-function somewhere else.
               </li>
-              <li><strong>Field Nodes</strong> - These nodes</li>
+              <li>
+                <strong>Field Nodes</strong> - These nodes provides values in
+                the context of a graph and are only useful if there is a node
+                upstream that operates on multiple values. See section below on
+                variable data flows.
+              </li>
               <li>
                 <strong>Math Nodes</strong> - These nodes perform mathematical
                 operations on primitive (integer, real) and composite (vector)
@@ -272,10 +280,10 @@
                 save various data types to specified files.
               </li>
               <li>
-                <strong>Virtualize Nodes</strong> - These nodes save data types
-                to the internal virtual (memory-based) file system. This allows
-                assets to be created dynamically with nodes and then be used in
-                for instance 3D scenes.
+                <strong>Virtualize Nodes</strong> - These nodes save data to the
+                internal virtual (memory-based) file system. This allows assets
+                to be created or transformed dynamically with nodes and then be
+                used in for instance 3D scenes.
               </li>
               <li>
                 <strong>Image Nodes</strong> - These nodes create, process,
@@ -291,7 +299,8 @@
               </li>
               <li>
                 <strong>Shape Nodes</strong> - These nodes generate, process or
-                convert 2D vector shapes that are created with paths.
+                convert 2D vector shapes that are created with one or more
+                paths.
               </li>
               <li>
                 <strong>Geometry Nodes</strong> - These nodes generate,
@@ -322,7 +331,110 @@
           </div>
           <div id="pin-types">
             <h1 class="pb-2">Pin Types</h1>
+            <p>
+              The input and output pins of a node can only carry one specific
+              data type. Each of these types is color coded and the IDE ensures
+              links are only created using compatible types. Below are all the
+              data types used by pins:
+            </p>
             <p><img src="img/pin-types.png#right" alt="screenshot" /></p>
+            <ul>
+              <li>
+                <strong>Boolean Pins</strong> - Booleans can only hold two
+                values: true and false.
+              </li>
+              <li>
+                <strong>Integer Pins</strong> - Integers represent negative and
+                positive whole numbers.
+              </li>
+              <li>
+                <strong>Float Pins</strong> - Floats are double-precision
+                floating point numbers.
+              </li>
+              <li>
+                <strong>String Pins</strong> - Strings are sequences of UTF-8
+                encoded characters.
+              </li>
+              <li>
+                <strong>VectorX Pins</strong> - Vectors (2D, 3D or 4D) represent
+                a quantity with both magnitude and direction expressed as
+                coordinates along the dimensional axis.
+              </li>
+              <li>
+                <strong>Color Pins</strong> - Colors are represented by their
+                RGBA values.
+              </li>
+              <li>
+                <strong>Font Pins</strong> - Fonts are a set of printed letters,
+                numbers, and other symbols of the same style.
+              </li>
+              <li>
+                <strong>Image Pins</strong> - Images are a visual representation
+                of something (a picture) that lives on the CPU.
+              </li>
+              <li>
+                <strong>Texture Pins</strong> - Textures are a visual
+                representation of something (a picture) that lives on the GPU.
+              </li>
+              <li>
+                <strong>Shape Pins</strong> - Shapes define the outline or shape
+                of an object using one or more paths.
+              </li>
+              <li>
+                <strong>Geometry Pins</strong> - Geometries are three
+                dimensional objects consisting of triangular faces that connect
+                vertices.
+              </li>
+              <li>
+                <strong>Manifold Pins</strong> - Manifolds are specializations
+                of geometries. A manifold mesh is watertight and contains no
+                holes or missing faces that would cause leaks into the interior
+                of the shape's volume. For a mesh to be manifold, every edge
+                must have exactly two adjacent faces. Geometries do not have
+                this constraint.
+              </li>
+              <li>
+                <strong>Map Pins</strong> - Maps describe geospatial geometries
+                (either real or fictitious) including properties of the faces
+                (e.g. biome type).
+              </li>
+              <li>
+                <strong>Instances Pins</strong> -Instances describe the
+                transforms applied to a numbers of 3D geometry instances.
+              </li>
+            </ul>
+          </div>
+          <div id="data-flows">
+            <h1 class="pb-2">Data Flows</h1>
+            <p>
+              In ObjectTalk, nodes can support different data flows. Most nodes
+              process &quot;fixed&quot; flows that act as simple functions
+              taking the provided inputs (with optional node parameters), apply
+              a one time algorithm and produce outputs.
+            </p>
+            <p>
+              Some nodes (e.g. Instances on Faces) run the algorithm on each
+              element of the input (e.g. faces in a geometry). Those nodes
+              create a context and evaluate each input once per element. If a
+              downstream input node is a &quot;varying&quot; node, the context
+              is accessed and the correct value provided. This allows processing
+              of composite data (e.g. geometries) by evaluating each element
+              (e.g. vertex or face).
+            </p>
+            <p>
+              Some nodes are chameleons (e.g. math nodes) and they can operate
+              on &quot;fixed&quot; and &quot;varying&quot; flows. The nodes are
+              considered &quot;flexible&quot;. The node reference documentation
+              highlights whether a node is considered &quot;fixed&quot;,
+              &quot;varying&quot; or &quot;flexible&quot;.
+            </p>
+            <p>
+              Input and output pins visualize their mode by drawing a circle in
+              &quot;fixed&quot; mode and a diamond in &quot;varying&quot; mode .
+              Link are drawn with a solid line for &quot;fixed&quot; connections
+              and with dashed lines for &quot;varying&quot; connections.
+            </p>
+            <p><img src="img/data-flows.png#center" alt="screenshot" /></p>
           </div>
         </div>
       </div>

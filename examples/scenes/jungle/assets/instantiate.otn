@@ -106,8 +106,8 @@
 			"path": "",
 			"title": "Geometry",
 			"type": "Geometry Input",
-			"x": 31.0,
-			"y": 12.0
+			"x": 131.0,
+			"y": 11.0
 		},
 		{
 			"id": 2964941285,
@@ -156,8 +156,8 @@
 			"title": "Scale",
 			"type": "Float Input",
 			"value": 1.0,
-			"x": 33.0,
-			"y": 546.0
+			"x": 131.0,
+			"y": 545.0
 		},
 		{
 			"id": 2136221550,
@@ -266,8 +266,8 @@
 			"path": "",
 			"title": "Instance Mask",
 			"type": "Image Input",
-			"x": 28.0,
-			"y": 201.0
+			"x": 131.0,
+			"y": 200.0
 		},
 		{
 			"id": 3530977512,
@@ -361,8 +361,8 @@
 			"title": "Instance Count",
 			"type": "Integer Input",
 			"value": 200,
-			"x": 30.0,
-			"y": 137.0
+			"x": 131.0,
+			"y": 136.0
 		},
 		{
 			"id": 3405945509,
@@ -377,8 +377,8 @@
 			"title": "Random Seed",
 			"type": "Integer Input",
 			"value": 0,
-			"x": 31.0,
-			"y": 74.0
+			"x": 131.0,
+			"y": 73.0
 		},
 		{
 			"id": 3138945819,
@@ -476,8 +476,8 @@
 			"title": "Instances Name",
 			"type": "String Input",
 			"value": "",
-			"x": 34.0,
-			"y": 612.0
+			"x": 131.0,
+			"y": 611.0
 		},
 		{
 			"id": 3047086596,

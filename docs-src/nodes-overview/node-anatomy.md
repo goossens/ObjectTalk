@@ -8,21 +8,21 @@ optional parameters in the middle of the rectangle.
 
 At the top of the node is a title bar which by default contains
 the name of the node. By double clicking on the title, users can
-name a node anything they want to better express its function 
+name a node anything they want to better express its function
 in a graph. The background of the title bar is color coded to
-represent the category of the node (see below).
+represent the category of the node (see Node Categories below).
 
 **Input Pins**
 
 Optional inputs to a node are represented on the left side of that node by
 what's called pins. Each pin represents an input with a specified type
-that is color coded (see pin types below). Input pins can only receive
+that is color coded (see Pin Types below). Input pins can only receive
 data from one output pin. and the pin data types have to match (which
 is enforced by the IDE).
 
 If an input pin is not connected and the data types allows easy
 specification by the user, a field will be visible to the right
-of the pin's name to allow the user to specify a value.
+of the pin's name to allow the user to specify a static value.
 
 **Output Pins**
 

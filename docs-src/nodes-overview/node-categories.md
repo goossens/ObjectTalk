@@ -9,17 +9,21 @@ select assets (e.g. images, textures, geometries). If a nodes graph
 is used in another object (e.g. a 3D scene), input fields enable
 users to interact with the graph's functionality without having the
 understand the full logic. This in essence makes a nodes graph
-a macro somewhere else.
-- **Field Nodes** - These nodes
+a macro or sub-function somewhere else.
+- **Field Nodes** - These nodes provides values in the context of
+a graph and are only useful if there is a node upstream that
+operates on multiple values. See section below on variable data
+flows.
 - **Math Nodes** - These nodes perform mathematical operations
 on primitive (integer, real) and composite (vector) values.
 - **Probe Nodes** - These nodes provide debugging support by
 visualizing various data types.
 - **Save Nodes** - These nodes enable the user to save various
 data types to specified files.
-- **Virtualize Nodes** - These nodes save data types to the internal
+- **Virtualize Nodes** - These nodes save data to the internal
 virtual (memory-based) file system. This allows assets to be created
-dynamically with nodes and then be used in for instance 3D scenes.
+or transformed dynamically with nodes and then be used in
+for instance 3D scenes.
 - **Image Nodes** - These nodes create, process, filter or transform
 images. In ObjectTalk, images are pictures that live on the CPU.
 - **Texture Nodes** - These nodes create, process, filter or transform
@@ -28,13 +32,13 @@ In general, texture nodes are faster than image nodes as all processing
 is GPU accelerated. Nodes are available to convert between images
 and textures.
 - **Shape Nodes** - These nodes generate, process or convert 2D
-vector shapes that are created with paths.
+vector shapes that are created with one or more paths.
 - **Geometry Nodes** - These nodes generate, manipulate and convert
 geometries which consist of one or more 3D meshes. In ObjectTalk,
 a geometry is a 3D object made up of meshes which are a collection of
 interconnected triangles (faces). These triangles are formed by connecting
 vertices (points) with straight edges. The mesh defines the surface of the
-3D object, but not its interior volume. 
+3D object, but not its interior volume.
 - **Manifold Nodes** - These nodes operate on manifolds. In ObjectTalk,
 manifolds are specializations of geometries. A manifold mesh is watertight
 and contains no holes or missing faces that would cause leaks into the

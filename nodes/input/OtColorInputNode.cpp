@@ -12,16 +12,16 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtUi.h"
+#include "OtColor.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtBooleanInputNode
+//	OtColorInputNode
 //
 
-class OtBooleanInputNode : public OtNodeClass {
+class OtColorInputNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
@@ -37,13 +37,18 @@ public:
 					needsSaving = true;
 				}
 			}
-		}, 100.0f);
+		}, 50.0f);
 	}
 
 	// special rendering for input nodes
 	inline bool customInputRendering(float width) override {
+		ImGuiColorEditFlags flags =
+			ImGuiColorEditFlags_Float |
+			ImGuiColorEditFlags_NoInputs |
+			ImGuiColorEditFlags_AlphaBar;
+
 		ImGui::SetNextItemWidth(width);
-		return OtUi::toggleButton("##value", &value);
+		return ImGui::ColorEdit4("##value", value.data(), flags);
 	}
 
 	// (de)serialize node
@@ -52,15 +57,15 @@ public:
 	}
 
 	inline void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
-		value = data->value("value", false);
+		value = data->value("value", OtColor(0.0f));
 	}
 
-	static constexpr const char* nodeName = "Boolean Input";
+	static constexpr const char* nodeName = "Color Input";
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::input;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 protected:
-	bool value = false;
+	OtColor value{0.0f};
 };
 
-static OtNodesFactoryRegister<OtBooleanInputNode> registration;
+static OtNodesFactoryRegister<OtColorInputNode> registration;

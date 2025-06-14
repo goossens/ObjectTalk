@@ -4,6 +4,12 @@
 
 **Outputs**
 
+#### Color Input
+
+![screenshot](img/color-input.png#right)
+
+**Outputs**
+
 #### Float Input
 
 ![screenshot](img/float-input.png#right)

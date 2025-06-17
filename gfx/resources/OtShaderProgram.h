@@ -22,7 +22,7 @@
 
 
 //
-//	Rendering state synonymns (to keep BGFX out of other modules)
+//	Rendering state synonyms (to keep BGFX out of other modules)
 //
 
 static constexpr uint64_t OtStateWriteRgb = BGFX_STATE_WRITE_RGB;
@@ -68,6 +68,8 @@ public:
 	inline void setState(uint64_t state) { bgfx::setState(state); }
 	inline void setTransform(const glm::mat4& transform) { bgfx::setTransform(glm::value_ptr(transform)); }
 	inline void setTransforms(const glm::mat4* transforms, size_t count) { bgfx::setTransform(transforms, static_cast<uint16_t>(count)); }
+	inline void setVertexCount(size_t count) { bgfx::setVertexCount(static_cast<uint32_t>(count)); }
+	inline void setInstanceCount(size_t count) { bgfx::setInstanceCount(static_cast<uint32_t>(count)); }
 
 	// run program in the specified view on the GPU
 	void submit(bgfx::ViewId view);

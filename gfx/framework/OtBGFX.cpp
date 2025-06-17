@@ -119,6 +119,10 @@ void OtFramework::initBGFX() {
 		OtLogFatal("Your system/graphics card does not support compute shaders");
 	}
 
+	if (!(caps->supported & BGFX_CAPS_VERTEX_ID)) {
+		OtLogFatal("Your system/graphics card does not support gl_VertexID/gl_InstanceID");
+	}
+
 	// start loop timer
 	lastTime = std::chrono::high_resolution_clock::now();
 }

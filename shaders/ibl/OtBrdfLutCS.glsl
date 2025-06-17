@@ -24,7 +24,7 @@ vec2 integrateBRDF(float roughness, float NoV) {
 
 	for (uint i = 0u; i < numSamples; i++) {
 		vec2 Xi = hammersley(i, numSamples);
-		//sSample microfacet direction
+		// sample microfacet direction
 		vec3 H = importanceSampleGGX(Xi, roughness, N);
 
 		// get the light direction

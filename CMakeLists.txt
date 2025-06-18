@@ -64,6 +64,8 @@ endif()
 add_custom_command(TARGET ot POST_BUILD COMMAND $<$<CONFIG:release>:${CMAKE_STRIP}> ARGS ${CMAKE_BINARY_DIR}/Release/ot)
 
 if(CMAKE_GENERATOR STREQUAL Xcode)
+	set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0")
+	set_target_properties(ot PROPERTIES OUTPUT_NAME "ObjectTalk")
 	set_target_properties(ot PROPERTIES OUTPUT_NAME "ObjectTalk")
 	set_target_properties(ot PROPERTIES MACOSX_BUNDLE ON)
 	set_target_properties(ot PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/resources/info.plist)

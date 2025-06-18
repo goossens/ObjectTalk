@@ -38,7 +38,7 @@ public:
 	// listen for requests on specified IP address and port
 	OtObject listen(const std::string& ip, int port);
 
-	// cleaup connections
+	// cleanup connections
 	void cleanup();
 
 	// get type definition

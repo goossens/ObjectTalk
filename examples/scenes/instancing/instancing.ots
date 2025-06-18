@@ -84,7 +84,7 @@
 						},
 						{
 							"component": "Geometry",
-							"cullback": true,
+							"cullBack": true,
 							"path": "virtual:parentV",
 							"transparent": false,
 							"wireframe": true
@@ -126,7 +126,7 @@
 						},
 						{
 							"component": "Geometry",
-							"cullback": true,
+							"cullBack": true,
 							"path": "virtual:child",
 							"transparent": false,
 							"wireframe": false
@@ -183,7 +183,7 @@
 						},
 						{
 							"component": "Geometry",
-							"cullback": true,
+							"cullBack": true,
 							"path": "virtual:parentF",
 							"transparent": false,
 							"wireframe": true
@@ -225,7 +225,7 @@
 						},
 						{
 							"component": "Geometry",
-							"cullback": true,
+							"cullBack": true,
 							"path": "virtual:child",
 							"transparent": false,
 							"wireframe": false

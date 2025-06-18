@@ -123,8 +123,7 @@ void OtSceneRenderEntitiesPass::renderOpaqueGeometry(OtSceneRendererContext& ctx
 	bool visible = false;
 	OtShaderProgram* program = nullptr;
 
-	// get camera frustum and geometry AABB
-	auto& frustum = ctx.camera.frustum;
+	// get geometry AABB
 	auto& aabb = geometry.asset->getGeometry().getAABB();
 
 	// is this a case of instancing?
@@ -132,14 +131,14 @@ void OtSceneRenderEntitiesPass::renderOpaqueGeometry(OtSceneRendererContext& ctx
 		// only render instances if we have a valid asset and at least one instance is visible
 		auto& instancing = ctx.scene->getComponent<OtInstancingComponent>(entity);
 
-		if (!instancing.asset.isNull() && instancing.asset->getInstances().submit(frustum, aabb)) {
+		if (!instancing.asset.isNull() && instancing.asset->getInstances().submit(ctx.camera, aabb)) {
 			visible = true;
 			program = getInstancedOpaqueProgram();
 		}
 
 	} else {
 		// see if geometry is visible
-		if (frustum.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
+		if (ctx.camera.frustum.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
 			visible = true;
 			program = getOpaqueProgram();
 		}
@@ -173,8 +172,8 @@ void OtSceneRenderEntitiesPass::renderOpaqueGeometry(OtSceneRendererContext& ctx
 		if (geometry.wireframe) {
 			program->setState(getWireframeState());
 
-		} else if (geometry.cullback) {
-			program->setState(getCullbackState());
+		} else if (geometry.cullBack) {
+			program->setState(getCullBackState());
 
 		} else {
 			program->setState(getNormalState());
@@ -198,8 +197,7 @@ void OtSceneRenderEntitiesPass::renderOpaqueModel(OtSceneRendererContext& ctx, O
 	bool visible = false;
 	OtShaderProgram* program = nullptr;
 
-	// get camera frustum and geometry AABB
-	auto& frustum = ctx.camera.frustum;
+	// get geometry AABB
 	auto& model = component.model->getModel();
 	auto globalTransform = ctx.scene->getGlobalTransform(entity);
 	auto aabb = model.getAABB().transform(globalTransform);
@@ -209,14 +207,14 @@ void OtSceneRenderEntitiesPass::renderOpaqueModel(OtSceneRendererContext& ctx, O
 		// only render instances if we have a valid asset and at least one instance is visible
 		auto& instancing = ctx.scene->getComponent<OtInstancingComponent>(entity);
 
-		if (!instancing.asset.isNull() && instancing.asset->getInstances().submit(frustum, aabb)) {
+		if (!instancing.asset.isNull() && instancing.asset->getInstances().submit(ctx.camera, aabb)) {
 			visible = true;
 			program = getInstancedOpaqueProgram();
 		}
 
 	} else {
 		// see if model is visible
-		if (frustum.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
+		if (ctx.camera.frustum.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
 			visible = true;
 			program = getOpaqueProgram();
 		}
@@ -235,7 +233,7 @@ void OtSceneRenderEntitiesPass::renderOpaqueModel(OtSceneRendererContext& ctx, O
 			cmd.mesh->submitTriangles();
 
 			// run the program
-			program->setState(getCullbackState());
+			program->setState(getCullBackState());
 
 			if (cmd.animation) {
 				program->setTransforms(cmd.transforms.data(), cmd.transforms.size());
@@ -276,7 +274,7 @@ void OtSceneRenderEntitiesPass::renderTerrain(OtSceneRendererContext& ctx, OtEnt
 
 		// set the program state
 		auto program = getTerrainProgram();
-		program->setState(terrain->isWireframe() ? getWireframeState() : getCullbackState());
+		program->setState(terrain->isWireframe() ? getWireframeState() : getCullBackState());
 		program->setTransform(mesh.transform);
 
 		// run the program
@@ -294,8 +292,7 @@ void OtSceneRenderEntitiesPass::renderTransparentGeometry(OtSceneRendererContext
 	bool visible = false;
 	OtShaderProgram* program = nullptr;
 
-	// get camera frustum and geometry AABB
-	auto& frustum = ctx.camera.frustum;
+	// get geometry AABB
 	auto& aabb =  geometry.asset->getGeometry().getAABB();
 
 	// is this a case of instancing?
@@ -303,14 +300,14 @@ void OtSceneRenderEntitiesPass::renderTransparentGeometry(OtSceneRendererContext
 		// only render instances if we have a valid asset and at least one instance is visible
 		auto& instancing = ctx.scene->getComponent<OtInstancingComponent>(entity);
 
-		if (!instancing.asset.isNull() && instancing.asset->getInstances().submit(frustum, aabb)) {
+		if (!instancing.asset.isNull() && instancing.asset->getInstances().submit(ctx.camera, aabb)) {
 			visible = true;
 			program = getInstancedTransparentProgram();
 		}
 
 	} else {
 		// see if geometry is visible
-		if (frustum.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
+		if (ctx.camera.frustum.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
 			visible = true;
 			program = getTransparentProgram();
 		}
@@ -344,8 +341,8 @@ void OtSceneRenderEntitiesPass::renderTransparentGeometry(OtSceneRendererContext
 		if (geometry.wireframe) {
 			program->setState(getWireframeState());
 
-		} else if (geometry.cullback) {
-			program->setState(getCullbackState());
+		} else if (geometry.cullBack) {
+			program->setState(getCullBackState());
 
 		} else {
 			program->setState(getNormalState());

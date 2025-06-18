@@ -80,6 +80,6 @@ private:
 	// time of last action
 	std::chrono::time_point<std::chrono::system_clock> last;
 
-	// currently basedlined version (to support "dirty" tracking)
+	// currently baselined version (to support "dirty" tracking)
 	size_t baselineMarker = 0;
 };

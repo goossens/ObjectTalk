@@ -121,7 +121,7 @@
 						{
 							"castShadow": true,
 							"component": "Geometry",
-							"cullback": false,
+							"cullBack": false,
 							"path": "virtual:sphere",
 							"transparent": true,
 							"wireframe": false
@@ -186,7 +186,7 @@
 						{
 							"castShadow": true,
 							"component": "Geometry",
-							"cullback": false,
+							"cullBack": false,
 							"path": "virtual:sphere",
 							"transparent": true,
 							"wireframe": false
@@ -251,7 +251,7 @@
 						{
 							"castShadow": true,
 							"component": "Geometry",
-							"cullback": false,
+							"cullBack": false,
 							"path": "virtual:sphere",
 							"transparent": true,
 							"wireframe": false

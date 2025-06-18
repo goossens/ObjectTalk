@@ -137,8 +137,8 @@ void OtModel::update() {
 		nodes.resetAnimationTransforms();
 
 		if (isTransitioningAnimation) {
-			animationTransionTime += dt;
-			auto ratio = animationTransionTime / animationTransionDuration;
+			animationTransitionTime += dt;
+			auto ratio = animationTransitionTime / animationTransitionDuration;
 
 			if (ratio >= 1.0f) {
 				currentAnimation = nextAnimation;
@@ -413,8 +413,8 @@ void OtModel::startAnimationFade(size_t animation, float duration) {
 	nextAnimation = animation;
 	nextAnimationDuration = animations[animation].getDuration();
 	nextAnimationTime = currentAnimationTime / currentAnimationDuration * nextAnimationDuration;
-	animationTransionTime = 0.0f;
-	animationTransionDuration = duration;
+	animationTransitionTime = 0.0f;
+	animationTransitionDuration = duration;
 	isTransitioningAnimation = true;
 }
 

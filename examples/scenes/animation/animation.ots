@@ -84,7 +84,7 @@
 				{
 					"castShadow": false,
 					"component": "Geometry",
-					"cullback": false,
+					"cullBack": false,
 					"path": "assets/grid.obj",
 					"transparent": false,
 					"wireframe": false

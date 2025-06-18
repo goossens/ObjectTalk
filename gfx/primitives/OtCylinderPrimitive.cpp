@@ -51,7 +51,7 @@ void OtCylinderPrimitive::generateTorso(OtMesh* mesh) {
 		auto v = static_cast<float>(y) / heightSegments;
 		auto radius = v * (bottomRadius - topRadius) + topRadius;
 
-		// generate each radial egment
+		// generate each radial segment
 		for (auto x = 0; x <= radialSegments; x++) {
 			auto u = static_cast<float>(x) / radialSegments;
 			auto theta = glm::radians(u * thetaLength + thetaStart);
@@ -59,7 +59,7 @@ void OtCylinderPrimitive::generateTorso(OtMesh* mesh) {
 			auto sinTheta = std::sin(theta);
 			auto cosTheta = std::cos(theta);
 
-			// add a new vertice
+			// add a new vertex
 			mesh->addVertex(OtVertex(
 				glm::vec3(radius * sinTheta, -v + 0.5f, radius * cosTheta),
 				glm::normalize(glm::vec3(sinTheta, slope, cosTheta)),

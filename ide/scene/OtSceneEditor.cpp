@@ -973,7 +973,7 @@ void OtSceneEditor::renderComponent() {
 			ImGui::TreePop();
 		}
 
-		// render a seperator line
+		// render a separator line
 		ImGui::Separator();
 
 		// remove component (if required)

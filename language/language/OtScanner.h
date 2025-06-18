@@ -132,7 +132,7 @@ public:
 	inline std::string getString() { return stringValue; }
 	inline OtID getID() { return OtIdentifier::create(getText()); }
 
-	// throw an exection
+	// throw an exception
 	void error(std::string message);
 
 	// see if the current token is equal to the specified token

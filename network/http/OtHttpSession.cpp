@@ -170,7 +170,7 @@ void OtHttpSessionClass::onMessageComplete() {
 	// dispatch request
 	router->call(request, response, OtHttpNotFound::create(response));
 
-	// track last reuest time
+	// track last request time
 	lastRequest = uv_now(uv_default_loop());
 }
 

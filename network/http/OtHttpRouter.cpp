@@ -219,10 +219,10 @@ OtObject OtHttpRouterClass::postHandler(const std::string& path, OtObject callba
 
 
 //
-//	OtHttpRouterClass::deleleteHandler
+//	OtHttpRouterClass::deleteHandler
 //
 
-OtObject OtHttpRouterClass::deleleteHandler(const std::string& path, OtObject callback) {
+OtObject OtHttpRouterClass::deleteHandler(const std::string& path, OtObject callback) {
 	return addHandler("DELETE", path, callback);
 }
 
@@ -271,7 +271,7 @@ OtType OtHttpRouterClass::getMeta() {
 		type->set("get", OtFunction::create(&OtHttpRouterClass::getHandler));
 		type->set("put", OtFunction::create(&OtHttpRouterClass::putHandler));
 		type->set("post", OtFunction::create(&OtHttpRouterClass::postHandler));
-		type->set("delete", OtFunction::create(&OtHttpRouterClass::deleleteHandler));
+		type->set("delete", OtFunction::create(&OtHttpRouterClass::deleteHandler));
 		type->set("static", OtFunction::create(&OtHttpRouterClass::staticFiles));
 		type->set("timer", OtFunction::create(&OtHttpRouterClass::timer));
 		type->set("__call__", OtFunction::create(&OtHttpRouterClass::call));

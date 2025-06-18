@@ -82,7 +82,7 @@
 				},
 				{
 					"component": "Geometry",
-					"cullback": true,
+					"cullBack": true,
 					"path": "virtual:cube",
 					"transparent": false,
 					"wireframe": false
@@ -146,7 +146,7 @@
 				},
 				{
 					"component": "Geometry",
-					"cullback": true,
+					"cullBack": true,
 					"path": "virtual:cube",
 					"transparent": false,
 					"wireframe": false
@@ -210,7 +210,7 @@
 				},
 				{
 					"component": "Geometry",
-					"cullback": true,
+					"cullBack": true,
 					"path": "virtual:cube",
 					"transparent": false,
 					"wireframe": false

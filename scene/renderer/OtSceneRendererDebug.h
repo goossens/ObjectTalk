@@ -47,7 +47,7 @@ private:
 	void renderGbuffer(OtSceneRenderer& renderer);
 	void renderShadowMaps(OtSceneRenderer& renderer);
 	void renderReflection(OtSceneRenderer& renderer);
-	void renderOclussion(OtSceneRenderer& renderer);
+	void renderOcclusion(OtSceneRenderer& renderer);
 	void renderTimings(OtSceneRenderer& renderer);
 	void renderAssets();
 

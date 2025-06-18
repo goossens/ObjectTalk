@@ -67,7 +67,7 @@
 				},
 				{
 					"component": "Geometry",
-					"cullback": false,
+					"cullBack": false,
 					"path": "virtual:island",
 					"transparent": false,
 					"wireframe": false

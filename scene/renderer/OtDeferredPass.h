@@ -193,7 +193,7 @@ protected:
 			OtStateDepthTestLess;
 	}
 
-	inline uint64_t getCullbackState() override {
+	inline uint64_t getCullBackState() override {
 		return
 			OtStateWriteRgb |
 			OtStateWriteA |

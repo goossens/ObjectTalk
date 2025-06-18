@@ -38,7 +38,7 @@ public:
 	// clear the resources
 	void clear();
 
-	// see if unifirm is valid
+	// see if uniform is valid
 	inline bool isValid() { return uniform.isValid(); }
 
 	// get access to values

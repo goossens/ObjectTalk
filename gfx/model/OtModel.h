@@ -98,8 +98,8 @@ private:
 	float nextAnimationDuration;
 
 	bool isTransitioningAnimation = false;
-	float animationTransionTime;
-	float animationTransionDuration;
+	float animationTransitionTime;
+	float animationTransitionDuration;
 
 	float animationSpeed = 0.0f;
 

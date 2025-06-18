@@ -86,7 +86,7 @@ public:
 	OtEntity restoreEntity(const std::string& data, std::string* basedir=nullptr);
 	OtEntity duplicateEntity(const std::string& data, std::string* basedir=nullptr);
 
-	// get the composite worldspace transform for the specified entity
+	// get the composite world space transform for the specified entity
 	glm::mat4 getGlobalTransform(OtEntity entity);
 
 	// post processing access

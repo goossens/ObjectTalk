@@ -131,7 +131,7 @@ void OtColumnsClass::render() {
 		renderChild(children[i]);
 		ImGui::EndChild();
 
-		// render seperator (if required)
+		// render separator (if required)
 		if (i < visibleColumns - 1) {
 			if (resizable) {
 				float newSize = screenWidths[i];

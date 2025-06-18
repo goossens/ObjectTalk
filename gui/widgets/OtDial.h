@@ -117,7 +117,7 @@ private:
 	float maxValue = 1.0f;
 	float value = 0.0f;
 
-	// work valiables
+	// work variables
 	OtFrameBuffer framebuffer{OtTexture::rgba8Texture};
 	OtSampler sampler{"s_texture", OtTexture::pointSampling | OtTexture::clampSampling};
 	OtShaderProgram program{"OtDialVS", "OtDialFS"};

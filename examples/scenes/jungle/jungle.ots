@@ -190,7 +190,7 @@
 				{
 					"castShadow": true,
 					"component": "Geometry",
-					"cullback": false,
+					"cullBack": false,
 					"path": "assets/hightree.obj",
 					"transparent": true,
 					"wireframe": false
@@ -261,7 +261,7 @@
 				{
 					"castShadow": true,
 					"component": "Geometry",
-					"cullback": false,
+					"cullBack": false,
 					"path": "assets/palmtree.obj",
 					"transparent": false,
 					"wireframe": false
@@ -332,7 +332,7 @@
 				{
 					"castShadow": true,
 					"component": "Geometry",
-					"cullback": false,
+					"cullBack": false,
 					"path": "assets/bamboopalm.obj",
 					"transparent": true,
 					"wireframe": false
@@ -403,7 +403,7 @@
 				{
 					"castShadow": true,
 					"component": "Geometry",
-					"cullback": false,
+					"cullBack": false,
 					"path": "assets/groundpalm.obj",
 					"transparent": true,
 					"wireframe": false
@@ -474,7 +474,7 @@
 				{
 					"castShadow": true,
 					"component": "Geometry",
-					"cullback": false,
+					"cullBack": false,
 					"path": "assets/bush.obj",
 					"transparent": true,
 					"wireframe": false
@@ -545,7 +545,7 @@
 				{
 					"castShadow": true,
 					"component": "Geometry",
-					"cullback": true,
+					"cullBack": true,
 					"path": "assets/rock.obj",
 					"transparent": false,
 					"wireframe": false

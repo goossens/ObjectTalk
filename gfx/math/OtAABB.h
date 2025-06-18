@@ -16,7 +16,7 @@
 
 
 //
-//	OtAABB (Axis-Alligned bounding box)
+//	OtAABB (Axis-Aligned Bounding Box)
 //
 
 class OtAABB {

@@ -36,7 +36,7 @@ protected:
 	virtual OtShaderProgram* getTerrainProgram() = 0;
 
 	virtual uint64_t getNormalState() = 0;
-	virtual uint64_t getCullbackState() = 0;
+	virtual uint64_t getCullBackState() = 0;
 	virtual uint64_t getWireframeState() = 0;
 
 	struct Scope {

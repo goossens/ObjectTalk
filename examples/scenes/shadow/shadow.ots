@@ -68,7 +68,7 @@
 				{
 					"castShadow": false,
 					"component": "Geometry",
-					"cullback": true,
+					"cullBack": true,
 					"path": "assets/grid.obj",
 					"transparent": false,
 					"wireframe": false
@@ -129,7 +129,7 @@
 				{
 					"castShadow": true,
 					"component": "Geometry",
-					"cullback": true,
+					"cullBack": true,
 					"path": "assets/sphere.obj",
 					"transparent": false,
 					"wireframe": false

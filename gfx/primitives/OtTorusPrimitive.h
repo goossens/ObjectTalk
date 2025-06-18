@@ -37,7 +37,7 @@ public:
 	inline float getTubeRadius() { return tubeRadius; }
 	inline int getRadialSegments() { return radialSegments; }
 	inline int getTubularSegments() { return tubularSegments; }
-	inline float getRadialtStart() { return radialStart; }
+	inline float getRadialStart() { return radialStart; }
 	inline float getRadialLength() { return radialLength; }
 	inline float getTubularStart() { return tubularStart; }
 	inline float getTubularLength() { return tubularLength; }

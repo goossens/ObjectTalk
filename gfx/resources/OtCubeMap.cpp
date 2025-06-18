@@ -186,7 +186,7 @@ void OtCubeMap::loadJSON(const std::string& path, bool async) {
 
 	if (async) {
 		// schedule a task to upload images to texture
-		// we can't do that here as loading is done in a seperate thread
+		// we can't do that here as loading is done in a separate thread
 		// the callback below will be called in the main thread
 		asyncHandle = new uv_async_t;
 		asyncHandle->data = this;
@@ -229,7 +229,7 @@ void OtCubeMap::loadCubemapImage(const std::string& path, bool async) {
 
 	if (async) {
 		// schedule a task to upload image to texture
-		// we can't do that here as loading is done in a seperate thread
+		// we can't do that here as loading is done in a separate thread
 		// the callback below will be called in the main thread
 		asyncHandle = new uv_async_t;
 		asyncHandle->data = this;
@@ -267,7 +267,7 @@ void OtCubeMap::loadHdrImage(const std::string& path, bool async) {
 
 	if (async) {
 		// schedule a task to upload and convert image to texture
-		// we can't do that here as loading is done in a seperate thread
+		// we can't do that here as loading is done in a separate thread
 		// the callback below will be called in the main thread
 		asyncHandle = new uv_async_t;
 		asyncHandle->data = this;

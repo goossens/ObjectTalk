@@ -68,7 +68,7 @@ public:
 	// get specified plane
 	inline OtPlane getPlane(size_t plane) const { return planes[plane]; }
 
-	// get AABB (Axis-Alligned bounding box)
+	// get AABB (Axis-Aligned Bounding Box)
 	OtAABB getAABB();
 
 	// debugging support

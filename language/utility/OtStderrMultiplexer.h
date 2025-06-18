@@ -32,15 +32,15 @@ public:
 	static inline void multiplex(const std::string& message) { send(MessageType::debuggerMessage, message); }
 	static inline void multiplex(OtException& exception) { send(MessageType::exceptionMessage, exception.serialize()); }
 
-	// demultiplex stderr stream
-	static inline void demuliplex(
+	// de-multiplex stderr stream
+	static inline void deMultiplex(
 		std::string input,
 		std::function<void(const std::string& message)> normal,
 		std::function<void(OtLog::Type type, const std::string& message)> log,
 		std::function<void(const std::string& message)> debugger,
 		std::function<void(OtException& e)> except) {
 
-		instance().demuliplexInput(input, normal, log, debugger, except);
+		instance().deMultiplexInput(input, normal, log, debugger, except);
 	}
 
 private:
@@ -60,8 +60,8 @@ private:
 		std::cerr << '\x02' <<  static_cast<char>(type) << message << '\x03' << std::flush;
 	}
 
-	// demultiplex stderr stream
-	void demuliplexInput(
+	// de-multiplex stderr stream
+	void deMultiplexInput(
 		std::string input,
 		std::function<void(const std::string& message)> normal,
 		std::function<void(OtLog::Type type, const std::string& message)> log,

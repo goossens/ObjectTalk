@@ -26,7 +26,7 @@ using OtFS = OtObjectPointer<OtFSClass>;
 
 class OtFSClass : public OtSystemClass {
 public:
-	// get currrent user's home directory
+	// get current user's home directory
 	OtObject gethome();
 
 	// get temporary directory

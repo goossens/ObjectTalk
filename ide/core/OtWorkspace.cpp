@@ -151,10 +151,10 @@ void OtWorkspace::onMessage(const std::string& msg) {
 			closeFile();
 
 		} else if (command == "windowfy") {
-			windifyAllEditors();
+			windowfyAllEditors();
 
 		} else if (command == "tabify") {
-			TabifyAllEditors();
+			tabifyAllEditors();
 
 		} else if (command == "toggleconsole") {
 			consoleAsPanel = !consoleAsPanel;
@@ -443,7 +443,7 @@ void OtWorkspace::runFile() {
 		},
 
 		[this](const std::string& text) {
-			OtStderrMultiplexer::demuliplex(
+			OtStderrMultiplexer::deMultiplex(
 				text,
 				[this](const std::string& message) {
 					console.writeError(message);
@@ -463,10 +463,10 @@ void OtWorkspace::runFile() {
 
 
 //
-//	OtWorkspace::windifyAllEditors
+//	OtWorkspace::windowfyAllEditors
 //
 
-void OtWorkspace::windifyAllEditors() {
+void OtWorkspace::windowfyAllEditors() {
 	for (auto& editor : editors) {
 		editor->setVisualState(OtEditor::VisualState::inWindow);
 	}
@@ -474,10 +474,10 @@ void OtWorkspace::windifyAllEditors() {
 
 
 //
-//	OtWorkspace::TabifyAllEditors
+//	OtWorkspace::tabifyAllEditors
 //
 
-void OtWorkspace::TabifyAllEditors() {
+void OtWorkspace::tabifyAllEditors() {
 	for (auto& editor : editors) {
 		editor->setVisualState(OtEditor::VisualState::inTab);
 	}
@@ -725,7 +725,7 @@ void OtWorkspace::renderWindowedEditors() {
 			ImGui::SetNextWindowPos(ImVec2(size.x / 6.0f + offset, size.y / 6.0f + offset), ImGuiCond_Once);
 			ImGui::SetNextWindowSize(ImVec2(size.x * 0.6f, size.y * 0.6f), ImGuiCond_Once);
 
-			// render editor in seperate window
+			// render editor in separate window
 			bool open = true;
 			ImGui::Begin(OtPath::getFilename(editor->getPath()).c_str(), &open, flags);
 			editor->renderMenuBar(!subprocess.isRunning());

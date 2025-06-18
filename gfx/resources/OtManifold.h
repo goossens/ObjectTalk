@@ -83,7 +83,7 @@ public:
 	// clear the manifold
 	void clear();
 
-	// see if anifold is valid
+	// see if manifold is valid
 	inline bool isValid() { return manifold != nullptr && !manifold->IsEmpty(); }
 
 	// manifold I/O

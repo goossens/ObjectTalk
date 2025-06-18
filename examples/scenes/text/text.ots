@@ -67,7 +67,7 @@
 				},
 				{
 					"component": "Geometry",
-					"cullback": false,
+					"cullBack": false,
 					"path": "virtual:text",
 					"transparent": false,
 					"wireframe": false

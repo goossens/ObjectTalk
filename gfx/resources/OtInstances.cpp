@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <algorithm>
 #include <cstdint>
 #include <cstring>
 
@@ -99,27 +100,40 @@ void OtInstances::add(const glm::mat4 &instance, bool updateVersion) {
 //	OtInstances::submit
 //
 
-bool OtInstances::submit(OtFrustum& frustum, OtAABB& aabb) {
+bool OtInstances::submit(OtCamera& camera, OtAABB& aabb) {
 	if (instances->size()) {
 		// filter instances based on visibility
 		std::vector<glm::mat4> tmp;
+		std::vector<float> distances;
 
 		for (auto& instance : *instances) {
-			if (frustum.isVisibleAABB(aabb.transform(instance))) {
+			auto instanceAabb = aabb.transform(instance);
+
+			if (camera.frustum.isVisibleAABB(instanceAabb)) {
 				tmp.emplace_back(instance);
+				distances.emplace_back(glm::distance(camera.position, instanceAabb.getCenter()));
 			}
 		}
 
-		// get number of instances and size of instance data
-		uint32_t count = static_cast<uint32_t>(tmp.size());
-		uint16_t stride = sizeof(glm::mat4);
+		if (tmp.size()) {
+			// sort instances by distance to camera
+			std::vector<size_t> index(distances.size());
+			std::iota(index.begin(), index.end(), 0);
 
-		if (count) {
+			std::sort(index.begin(), index.end(), [&](size_t i, size_t j) {
+				return distances[i] < distances[j];
+			});
+
 			// create instance data buffer and submit it to the GPU
 			bgfx::InstanceDataBuffer idb;
-			count = bgfx::getAvailInstanceDataBuffer(count, stride);
-			bgfx::allocInstanceDataBuffer(&idb, count, stride);
-			std::memcpy(idb.data, tmp.data(), idb.size);
+			uint32_t count = bgfx::getAvailInstanceDataBuffer(static_cast<uint32_t>(tmp.size()), sizeof(glm::mat4));
+			bgfx::allocInstanceDataBuffer(&idb, count, sizeof(glm::mat4));
+			glm::mat4* p = static_cast<glm::mat4*>((void*) idb.data);
+
+			for (uint32_t i = 0; i < count; i++) {
+				*p++ = tmp[index[i]];
+			}
+
 			bgfx::setInstanceDataBuffer(&idb);
 			return true;
 

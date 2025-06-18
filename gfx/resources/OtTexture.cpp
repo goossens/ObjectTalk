@@ -265,7 +265,7 @@ bgfx::TextureHandle OtTexture::getHandle() {
 
 void OtTexture::loadAsync() {
 	// schedule a task to upload image to texture
-	// we can't do that here as loading is done in a seperate thread (where there is no GPU context)
+	// we can't do that here as loading is done in a separate thread (where there is no GPU context)
 	// the callback below will be called in the main thread (where we have a GPU context)
 	asyncHandle = new uv_async_t;
 	asyncHandle->data = this;

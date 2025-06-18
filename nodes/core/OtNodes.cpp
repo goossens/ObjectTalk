@@ -673,7 +673,7 @@ bool OtNodes::sortNodesTopologically() {
 		}
 	}
 
-	// sort was succesful
+	// sort was successful
 	nodes.swap(sortedNodes);
 	return true;
 }

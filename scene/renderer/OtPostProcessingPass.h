@@ -178,7 +178,7 @@ public:
 			bloomBuffer[i].update(ctx.camera.width >> (i + 1), ctx.camera.height >> (i + 1));
 		}
 
-		// downsample
+		// down sample
 		for (auto i = 0; i < bloomDepth; i++) {
 			// setup pass
 			int sw = ctx.camera.width >> i;
@@ -207,7 +207,7 @@ public:
 			pass.runShaderProgram(bloomDownSampleProgram);
 		}
 
-		// upsample
+		// up sample
 		for (auto i = bloomDepth - 1; i > 0; i--) {
 			// setup pass
 			int dw = ctx.camera.width >> i;

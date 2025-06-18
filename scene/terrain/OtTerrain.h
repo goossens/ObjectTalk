@@ -50,7 +50,7 @@ public:
 	// are we rendering a wireframe
 	inline bool isWireframe() { return wireframe; }
 
-	// is the terain castign a shadow
+	// is the terrain casting a shadow
 	inline bool isCastingShadow() { return castShadow; }
 
 	private:

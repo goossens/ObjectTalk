@@ -56,8 +56,8 @@ void OtImageBasedLighting::update(OtIblComponent& component) {
 			int mipSize = environmentSize / (1 << mipLevel);
 			float roughness = float(mipLevel) / float(environmentMipLevels);
 
-			iblEnviromentUniform.setValue(0, roughness, float(mipLevel), float(environmentSize), 0.0f);
-			iblEnviromentUniform.submit();
+			iblEnvironmentUniform.setValue(0, roughness, float(mipLevel), float(environmentSize), 0.0f);
+			iblEnvironmentUniform.submit();
 			cubemapSampler.submit(0, cubemap);
 			pass.setImage(1, iblEnvironmentMap, mipLevel, OtPass::writeAccess);
 			pass.runComputeProgram(envmapProgram, mipSize / threadCount, mipSize / threadCount, 1);

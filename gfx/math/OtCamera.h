@@ -67,7 +67,7 @@ public:
 		update();
 	}
 
-	// get the near and far value fron the projection matrix
+	// get the near and far value from the projection matrix
 	inline void getNearFar(float& nearPlane, float& farPlane) {
 		if (OtGpuHasHomogeneousDepth()) {
 			nearPlane = (2.0f * projectionMatrix[3][2]) / (2.0f * projectionMatrix[2][2] - 2.0f);
@@ -87,7 +87,7 @@ public:
 		// determine view/projection matrix
 		viewProjectionMatrix = projectionMatrix * viewMatrix;
 
-		// determine the camera's frustum in worldspace
+		// determine the camera's frustum in world space
 		frustum = OtFrustum(viewProjectionMatrix);
 	}
 

@@ -39,7 +39,7 @@ public:
 	// stored properties
 	OtAsset<OtGeometryAsset> asset;
 	bool transparent = false;
-	bool cullback = true;
+	bool cullBack = true;
 	bool castShadow = true;
 	bool wireframe = false;
 };

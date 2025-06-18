@@ -35,7 +35,7 @@ public:
 	OtObject getHandler(const std::string& path, OtObject callback);
 	OtObject putHandler(const std::string& path, OtObject callback);
 	OtObject postHandler(const std::string& path, OtObject callback);
-	OtObject deleleteHandler(const std::string& path, OtObject callback);
+	OtObject deleteHandler(const std::string& path, OtObject callback);
 	OtObject staticFiles(const std::string& serverPath, const std::string& filePath);
 
 	// dispatch requests

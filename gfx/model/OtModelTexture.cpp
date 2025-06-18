@@ -19,10 +19,10 @@
 //
 
 void OtModelTexture::load(size_t modelID, size_t textureID, const aiTexture* texture) {
-	// create a virual asset for the texture
+	// create a virtual asset for the texture
 	asset = fmt::format("virtual:model{}.{}", modelID, textureID);
 
-	// create texture from embedded image (loading is asynchronous as models are loaded in seperate thread)
+	// create texture from embedded image (loading is asynchronous as models are loaded in separate thread)
 	if (texture->mHeight == 0) {
 		// image is compressed
 		asset->getTexture().load(texture->pcData, static_cast<size_t>(texture->mWidth), true);

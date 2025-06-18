@@ -66,21 +66,21 @@ private:
 
 	inline OtID get(const std::string_view text) {
 		// see if this id was already created
-		if (indentifierIndex.count(text)) {
-			return indentifierIndex[text];
+		if (identifierIndex.count(text)) {
+			return identifierIndex[text];
 
 		} else {
-			OtID id = (OtID) indentifiers.size();
+			OtID id = (OtID) identifiers.size();
 			auto name = saveIdentifier(text);
-			indentifiers.emplace_back(name);
-			indentifierIndex[name] = id;
+			identifiers.emplace_back(name);
+			identifierIndex[name] = id;
 			return id;
 		}
 	}
 
 	// get the string associated with the id
 	inline const std::string_view get(OtID id) {
-		return indentifiers[id];
+		return identifiers[id];
 	}
 
 	// buffer to store text chunks
@@ -117,7 +117,7 @@ private:
 	// properties
 	std::list<Buffer> buffers;
 
-	// list of indentifiers already in use
-	std::vector<std::string_view> indentifiers;
-	std::unordered_map<std::string_view, OtID> indentifierIndex;
+	// list of identifiers already in use
+	std::vector<std::string_view> identifiers;
+	std::unordered_map<std::string_view, OtID> identifierIndex;
 };

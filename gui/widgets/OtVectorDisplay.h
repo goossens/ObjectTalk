@@ -42,7 +42,7 @@ public:
 	OtObject setTopLeftOrigin() ;
 	OtObject setBottomLeftOrigin();
 	OtObject setCenterOrigin();
-	OtObject setDecay(int steps, float staty, float value);
+	OtObject setDecay(int steps, float start, float value);
 
 	inline float getScale() { return scale; }
 
@@ -56,7 +56,7 @@ public:
 		return OtWidget(this);
 	}
 
-	// style releated methods
+	// style related methods
 	OtObject setColor(const std::string& color);
 	OtObject setAlpha(float alpha);
 	OtObject setWidth(float width);

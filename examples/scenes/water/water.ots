@@ -96,7 +96,7 @@
 				},
 				{
 					"component": "Geometry",
-					"cullback": true,
+					"cullBack": true,
 					"path": "virtual:ball",
 					"transparent": false,
 					"wireframe": false

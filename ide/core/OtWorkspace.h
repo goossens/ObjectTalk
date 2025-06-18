@@ -60,8 +60,8 @@ public:
 	void runFile();
 
 	// move all editors to floating window or tabs
-	void windifyAllEditors();
-	void TabifyAllEditors();
+	void windowfyAllEditors();
+	void tabifyAllEditors();
 
 	// delete a specified editor
 	void deleteEditor(std::shared_ptr<OtEditor> editor);

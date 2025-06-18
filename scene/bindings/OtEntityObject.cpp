@@ -85,7 +85,7 @@ bool OtEntityObjectClass::hasMaterialComponent() {
 
 
 //
-//	OtEntityObjectClass::getMaterialeComponent
+//	OtEntityObjectClass::getMaterialComponent
 //
 
 OtObject OtEntityObjectClass::getMaterialComponent() {

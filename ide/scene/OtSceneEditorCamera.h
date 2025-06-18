@@ -32,7 +32,7 @@ public:
 	nlohmann::json serialize(std::string* basedir);
 	void deserialize(nlohmann::json data, std::string* basedir);
 
-	// process posible camera inputs
+	// process possible camera inputs
 	void handleKeyboardAndMouse();
 
 	// property setters

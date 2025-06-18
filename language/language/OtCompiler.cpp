@@ -1334,7 +1334,7 @@ bool OtCompiler::expression(OtByteCode bytecode) {
 //
 
 size_t OtCompiler::expressions(OtByteCode bytecode) {
-	// process comma seperated list of expressions
+	// process comma separated list of expressions
 	size_t count = 1;
 
 	if (expression(bytecode)) {

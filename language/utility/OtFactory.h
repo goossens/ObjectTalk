@@ -57,7 +57,7 @@ public:
 		return map.find(name) != map.cend();
 	}
 
-	// interate through the type names
+	// iterate through the type names
 	inline void each(std::function<void(const char* name)> callback) {
 		for(const auto& entry : list) {
 			callback(entry.data());

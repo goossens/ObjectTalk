@@ -51,7 +51,7 @@ protected:
 	OtShaderProgram* getTerrainProgram() override { return &terrainProgram; }
 
 	inline uint64_t getNormalState() override { return OtStateWriteRgb; }
-	inline uint64_t getCullbackState() override { return OtStateWriteRgb | OtStateCullCw; };
+	inline uint64_t getCullBackState() override { return OtStateWriteRgb | OtStateCullCw; };
 	inline uint64_t getWireframeState() override { return OtStateWriteRgb | OtStateLines; };
 
 	inline void submitUniforms(OtSceneRendererContext& /* ctx */, Scope& scope) override {

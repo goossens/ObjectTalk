@@ -136,7 +136,7 @@ void OtRowsClass::render() {
 		ImGui::EndChild();
 		ImGui::PopStyleVar();
 
-		// render seperator (if required)
+		// render separator (if required)
 		if (i < visibleRows - 1) {
 			if (resizable) {
 				float newSize = screenHeights[i];

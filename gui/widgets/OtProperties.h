@@ -48,6 +48,6 @@ protected:
 	OtPropertiesClass() = default;
 
 private:
-	// propertoes
+	// properties
 	float split = 0.5f;
 };

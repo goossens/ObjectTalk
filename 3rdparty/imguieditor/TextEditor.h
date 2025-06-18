@@ -790,10 +790,10 @@ protected:
 		// add a transaction to the list, execute it and make it undoable
 		void add(std::shared_ptr<Transaction> transaction);
 
-		// undo the last transction
+		// undo the last transaction
 		void undo(Document& document, Cursors& cursors);
 
-		// redo the last undone transction;
+		// redo the last undone transaction;
 		void redo(Document& document, Cursors& cursors);
 
 		// get status information
@@ -821,7 +821,7 @@ protected:
 		// see if string matches part of line
 		bool matches(Line::iterator start, Line::iterator end, const std::string_view& text);
 
-		// set color fofr specified range of glyphs
+		// set color for specified range of glyphs
 		inline void setColor(Line::iterator start, Line::iterator end, Color color) { while (start < end) (start++)->color = color; }
 	} colorizer;
 

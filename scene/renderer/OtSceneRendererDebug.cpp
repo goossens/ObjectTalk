@@ -40,7 +40,7 @@ void OtSceneRendererDebug::render(OtSceneRenderer& renderer) {
 	renderGbuffer(renderer);
 	renderShadowMaps(renderer);
 	renderReflection(renderer);
-	renderOclussion(renderer);
+	renderOcclusion(renderer);
 	renderTimings(renderer);
 	renderAssets();
 	ImGui::End();
@@ -57,7 +57,7 @@ void OtSceneRendererDebug::renderIbl(OtSceneRenderer& renderer) {
 
 		if (ibl.iblEnvironmentMap.isValid()) {
 			if (ibl.iblSkyMap->isValid()) { renderCubeMap("Sky Map", *ibl.iblSkyMap, iblSkyMapDebug); }
-			if (ibl.iblIrradianceMap.isValid()) { renderCubeMap("Irrandiance Map", ibl.iblIrradianceMap, iblIrradianceDebug); }
+			if (ibl.iblIrradianceMap.isValid()) { renderCubeMap("Irradiance Map", ibl.iblIrradianceMap, iblIrradianceDebug); }
 			if (ibl.iblEnvironmentMap.isValid()) { renderCubeMap("Environment Map", ibl.iblEnvironmentMap, iblEnvironmentDebug); }
 			if (ibl.iblBrdfLut.isValid()) { renderTexture("BRDF LUT", ibl.iblBrdfLut); }
 
@@ -144,16 +144,16 @@ void OtSceneRendererDebug::renderReflection(OtSceneRenderer& renderer) {
 
 
 //
-//	OtSceneRendererDebug::renderOclussion
+//	OtSceneRendererDebug::renderOcclusion
 //
 
-void OtSceneRendererDebug::renderOclussion(OtSceneRenderer& renderer) {
-	if (ImGui::CollapsingHeader("Oclussion")) {
+void OtSceneRendererDebug::renderOcclusion(OtSceneRenderer& renderer) {
+	if (ImGui::CollapsingHeader("Occlusion")) {
 		auto& postProcessor = renderer.postProcessingPass;
 
 		if (postProcessor.occlusionBuffer.isValid()) {
 			auto texture = postProcessor.occlusionBuffer.getColorTexture();
-			renderTexture("Oclussion Buffer", texture);
+			renderTexture("Occlusion Buffer", texture);
 
 		} else {
 			ImGui::SeparatorText("No Data");
@@ -172,7 +172,7 @@ void OtSceneRendererDebug::renderTimings(OtSceneRenderer& renderer) {
 		OtUi::readonlyFloat("Shadow pass", renderer.shadowPassTime);
 		OtUi::readonlyFloat("Background pass", renderer.backgroundPassTime);
 		OtUi::readonlyFloat("Opaque pass", renderer.opaquePassTime);
-		OtUi::readonlyFloat("Tranparent pass", renderer.transparentPassTime);
+		OtUi::readonlyFloat("Transparent pass", renderer.transparentPassTime);
 		OtUi::readonlyFloat("Water pass", renderer.waterPassTime);
 		OtUi::readonlyFloat("Particle pass", renderer.particlePassTime);
 		OtUi::readonlyFloat("Editor pass", renderer.editorPassTime);
@@ -304,7 +304,7 @@ void OtSceneRendererDebug::renderCubeMapAsCross(OtCubeMap& cubemap, CubeMapDebug
 
 	static constexpr size_t crossIndexCount = sizeof(crossIndices) / sizeof(*crossIndices);
 
-	// set framebufer size
+	// set framebuffer size
 	static constexpr int width = 600;
 	static constexpr int height = width * 4 / 6;
 	debug.framebuffer.update(width, height);

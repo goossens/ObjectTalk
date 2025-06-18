@@ -69,7 +69,7 @@
 						},
 						{
 							"component": "Geometry",
-							"cullback": true,
+							"cullBack": true,
 							"path": "virtual:wall",
 							"transparent": false,
 							"wireframe": false
@@ -129,7 +129,7 @@
 						},
 						{
 							"component": "Geometry",
-							"cullback": true,
+							"cullBack": true,
 							"path": "virtual:wall",
 							"transparent": false,
 							"wireframe": false
@@ -189,7 +189,7 @@
 						},
 						{
 							"component": "Geometry",
-							"cullback": true,
+							"cullBack": true,
 							"path": "virtual:wall",
 							"transparent": false,
 							"wireframe": false
@@ -249,7 +249,7 @@
 						},
 						{
 							"component": "Geometry",
-							"cullback": true,
+							"cullBack": true,
 							"path": "virtual:wall",
 							"transparent": false,
 							"wireframe": false

@@ -31,10 +31,10 @@ void OtStderrMultiplexer::multiplex(OtLog::Type type, const std::string& message
 
 
 //
-//	OtStderrMultiplexer::demuliplexInput
+//	OtStderrMultiplexer::deMultiplexInput
 //
 
-void OtStderrMultiplexer::demuliplexInput(
+void OtStderrMultiplexer::deMultiplexInput(
 	std::string input,
 	std::function<void(const std::string& message)> normal,
 	std::function<void(OtLog::Type type, const std::string& message)> log,

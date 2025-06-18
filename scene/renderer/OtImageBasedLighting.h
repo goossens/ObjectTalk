@@ -40,7 +40,7 @@ public:
 
 private:
 	// uniforms
-	OtUniformVec4 iblEnviromentUniform{"u_iblEnvironment", 1};
+	OtUniformVec4 iblEnvironmentUniform{"u_iblEnvironment", 1};
 
 	// samplers
 	OtSampler cubemapSampler{"s_cubemap"};

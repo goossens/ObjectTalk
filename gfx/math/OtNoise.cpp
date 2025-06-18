@@ -189,14 +189,14 @@ float OtNoise::perlin(float x, float y, float z) {
 	static float F3 = 1.0f / 3.0f;
 	static float G3 = 1.0f / 6.0f;
 
-	// Skew the input space to determine which simplex cell we're in
+	// skew the input space to determine which simplex cell we're in
 	float s = (x + y + z) * F3;
 	int i = fastfloor(x + s);
 	int j = fastfloor(y + s);
 	int k = fastfloor(z + s);
 	float t = (i + j + k) * G3;
 
-	// Uunskew the cell origin back to (x,y,z) space
+	// unskew the cell origin back to (x,y,z) space
 	float X0 = i - t;
 	float Y0 = j - t;
 	float Z0 = k - t;

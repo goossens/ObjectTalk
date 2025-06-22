@@ -99,8 +99,9 @@ private:
 		(renderComponent<T>(), ...);
 	}
 
-	// save editor camera to scene camera
+	// save/load editor camera to/from scene camera
 	void saveEditorCamera(OtEntity entity);
+	void loadEditorCamera(OtEntity entity);
 
 	// the scene being edited
 	OtScene scene;

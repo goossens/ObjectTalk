@@ -235,7 +235,7 @@ void OtSceneEditor::renderMenus() {
 			ImGui::EndMenu();
 		}
 
-		// allow editor camera settings to be transferred to scene camera
+		// allow editor camera settings to be saved to a scene camera
 		if (ImGui::BeginMenu("Save Editor Camera To")) {
 			// get a list of cameras
 			OtEntity list[9];
@@ -245,6 +245,22 @@ void OtSceneEditor::renderMenus() {
 			for (auto i = 0; i < entries; i++) {
 				if (ImGui::MenuItem(scene.getTag(list[i]).c_str())) {
 					saveEditorCamera(list[i]);
+				}
+			}
+
+			ImGui::EndMenu();
+		}
+
+		// allow editor camera settings to be loaded from a scene camera
+		if (ImGui::BeginMenu("Load Editor Camera From")) {
+			// get a list of cameras
+			OtEntity list[9];
+			int entries = 0;
+			makeCameraList(&scene, scene.getRootEntity(), list, entries);
+
+			for (auto i = 0; i < entries; i++) {
+				if (ImGui::MenuItem(scene.getTag(list[i]).c_str())) {
+					loadEditorCamera(list[i]);
 				}
 			}
 
@@ -1055,6 +1071,25 @@ void OtSceneEditor::saveEditorCamera(OtEntity entity) {
 	auto newCamera = camera.serialize(nullptr).dump();
 	auto newTransform = transform.serialize(nullptr).dump();
 	nextTask = std::make_shared<OtSaveEditorCameraTask>(&scene, entity, oldCamera, oldTransform, newCamera, newTransform);
+}
+
+
+//
+//	OtSceneEditor::loadEditorCamera
+//
+
+void OtSceneEditor::loadEditorCamera(OtEntity entity) {
+	// get camera components
+	auto& camera = scene.getComponent<OtCameraComponent>(entity);
+	auto& transform = scene.getComponent<OtTransformComponent>(entity);
+
+	// transfer values
+	editorCamera.setFov(camera.fov);
+	editorCamera.setNearPlane(camera.nearPlane);
+	editorCamera.setFarPlane(camera.farPlane);
+	editorCamera.setPosition(transform.translation);
+	editorCamera.setPitch(transform.rotation.x);
+	editorCamera.setYaw(transform.rotation.y);
 }
 
 

@@ -89,7 +89,7 @@ public:
 		}
 
 		// render and apply bloom (if required)
-		if (settings.bloomIntensity > 0.0f) {
+		if (settings.bloom) {
 			// render bloom by down and up-sampling
 			renderBloom(ctx, input, output, settings.bloomIntensity);
 			swap();

@@ -11,8 +11,8 @@
 				{
 					"component": "Transform",
 					"rotation": [
-						0.0,
-						0.0,
+						-45.0,
+						30.0,
 						0.0
 					],
 					"scale": [
@@ -21,9 +21,9 @@
 						1.0
 					],
 					"translation": [
-						0.0,
-						0.0,
-						0.0
+						0.8999999761581421,
+						1.5,
+						1.600000023841858
 					]
 				},
 				{
@@ -40,20 +40,90 @@
 			"components": [
 				{
 					"component": "Core",
-					"tag": "Sky",
-					"uuid": 2291234021
+					"tag": "Light",
+					"uuid": 2412049699
 				},
 				{
-					"azimuth": 23.0,
+					"ambient": 0.30000001192092896,
+					"azimuth": 120.0,
 					"castShadow": true,
-					"cirrus": 0.4000000059604645,
-					"component": "Sky",
-					"cumulus": 0.800000011920929,
-					"elevation": 9.800000190734863,
-					"mieCoefficient": 5.0,
-					"mieScattering": 0.9900000095367432,
-					"rayleighCoefficient": 3.5,
-					"speed": 2.0
+					"color": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"component": "Directional Light",
+					"elevation": 52.70000076293945
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Ground",
+					"uuid": 2485643096
+				},
+				{
+					"castShadow": false,
+					"component": "Geometry",
+					"cullBack": true,
+					"path": "virtual:ground",
+					"transparent": false,
+					"wireframe": false
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"scale": [
+						2.0,
+						2.0,
+						2.0
+					],
+					"translation": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"component": "Material",
+					"material": {
+						"albedo": [
+							1.0,
+							1.0,
+							1.0,
+							1.0
+						],
+						"albedoTexture": "assets/brown_mud_leaves_01_diff_1k.jpg",
+						"ao": 1.0,
+						"aoTexture": "",
+						"emissive": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"emissiveTexture": "",
+						"metallic": 0.5,
+						"metallicRoughnessTexture": "",
+						"normalTexture": "",
+						"offset": [
+							0.0,
+							0.0
+						],
+						"roughness": 0.5,
+						"scale": 1.0
+					}
+				},
+				{
+					"component": "Nodes",
+					"path": "assets/ground.otn",
+					"settings": {}
 				}
 			]
 		}
@@ -63,14 +133,14 @@
 			"far": 100.0,
 			"fov": 60.0,
 			"near": 0.10000000149011612,
-			"pitch": 12.313719749450684,
+			"pitch": -45.0,
 			"position": [
-				0.0,
-				2.0,
-				5.0
+				0.8999999761581421,
+				1.5,
+				1.600000023841858
 			],
 			"speed": 3.0,
-			"yaw": 2.1615700721740723
+			"yaw": 30.0
 		},
 		"gizmo": {
 			"enabled": false,
@@ -89,6 +159,7 @@
 		"type": "scene"
 	},
 	"processing": {
+		"bloom": true,
 		"bloomIntensity": 0.800000011920929,
 		"contrast": 1.0,
 		"exposure": 1.0,

@@ -183,6 +183,7 @@
 		"type": "scene"
 	},
 	"processing": {
+		"bloom": true,
 		"bloomIntensity": 0.5699999928474426,
 		"contrast": 1.0700000524520874,
 		"exposure": 0.8999999761581421,

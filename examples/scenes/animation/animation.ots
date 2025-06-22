@@ -207,6 +207,7 @@
 		"type": "scene"
 	},
 	"processing": {
+		"bloom": false,
 		"bloomIntensity": 0.0,
 		"contrast": 1.0,
 		"exposure": 2.0,

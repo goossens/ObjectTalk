@@ -78,7 +78,7 @@
 						"persistence": 0.5,
 						"size": 256
 					},
-					"lods": 3,
+					"lod": 3,
 					"material": {
 						"region1Color": [
 							0.9649999737739563,

@@ -1,0 +1,106 @@
+{
+	"entities": [
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Camera",
+					"uuid": 3605789201
+				},
+				{
+					"component": "Transform",
+					"rotation": [
+						0.0,
+						0.0,
+						0.0
+					],
+					"scale": [
+						1.0,
+						1.0,
+						1.0
+					],
+					"translation": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"component": "Camera",
+					"far": 100.0,
+					"fov": 60.0,
+					"mainCamera": true,
+					"near": 0.10000000149011612
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Sky",
+					"uuid": 2291234021
+				},
+				{
+					"azimuth": 23.0,
+					"castShadow": true,
+					"cirrus": 0.4000000059604645,
+					"component": "Sky",
+					"cumulus": 0.800000011920929,
+					"elevation": 9.800000190734863,
+					"mieCoefficient": 5.0,
+					"mieScattering": 0.9900000095367432,
+					"rayleighCoefficient": 3.5,
+					"speed": 2.0
+				}
+			]
+		}
+	],
+	"metadata": {
+		"camera": {
+			"far": 100.0,
+			"fov": 60.0,
+			"near": 0.10000000149011612,
+			"pitch": 12.313719749450684,
+			"position": [
+				0.0,
+				2.0,
+				5.0
+			],
+			"speed": 3.0,
+			"yaw": 2.1615700721740723
+		},
+		"gizmo": {
+			"enabled": false,
+			"mode": 7,
+			"snapInterval": [
+				0.10000000149011612,
+				0.10000000149011612,
+				0.10000000149011612
+			],
+			"snapping": false
+		},
+		"grid": {
+			"enabled": false,
+			"scale": 1.0
+		},
+		"type": "scene"
+	},
+	"processing": {
+		"bloomIntensity": 0.800000011920929,
+		"contrast": 1.0,
+		"exposure": 1.0,
+		"fog": false,
+		"fogColor": [
+			0.4000000059604645,
+			0.5,
+			0.800000011920929
+		],
+		"fogDensity": 0.10000000149011612,
+		"fxaa": false,
+		"godrays": false,
+		"tonemap": 3
+	}
+}

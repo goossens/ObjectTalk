@@ -21,11 +21,11 @@
 
 
 //
-//	Geo clipmap structure
+//	Geo clip map structure
 //
 //	C = center tile
 //	R = ring tile
-//	R1..N = subsequent rings with lower levels of detail (LOD)
+//	R1..N = subsequent rings with lower Levels Of Detail (LOD)
 //
 //	    |               |               |
 //	    |               |               |
@@ -57,7 +57,7 @@
 bool OtTerrain::renderUI() {
 	bool changed = false;
 	changed |= OtUi::selectorPowerOfTwo("Tile Size", &tileSize, 4, 64);
-	changed |= OtUi::dragInt("Levels of Detail", &lods, 1, 10);
+	changed |= OtUi::dragInt("Levels of Detail", &lod, 1, 10);
 
 	if (changed) {
 		clear();
@@ -86,7 +86,7 @@ bool OtTerrain::renderUI() {
 nlohmann::json OtTerrain::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["tileSize"] = tileSize;
-	data["lods"] = lods;
+	data["lod"] = lod;
 	data["hScale"] = hScale;
 	data["vScale"] = vScale;
 	data["vOffset"] = vOffset;
@@ -104,7 +104,7 @@ nlohmann::json OtTerrain::serialize(std::string* basedir) {
 
 void OtTerrain::deserialize(nlohmann::json data, std::string* basedir) {
 	tileSize = data.value("tileSize", 32);
-	lods = data.value("lods", 4);
+	lod = data.value("lod", 4);
 	hScale = data.value("hScale", 1.0f);
 	vScale = data.value("vScale", 1.0f);
 	vOffset = data.value("vOffset", 0.5f);
@@ -127,7 +127,7 @@ void OtTerrain::deserialize(nlohmann::json data, std::string* basedir) {
 //	OtTerrain::getMeshes
 //
 
-std::vector<OtTerrainMesh>& OtTerrain::getMeshes(OtFrustum& frustum, const glm::vec3& camera) {
+std::vector<OtTerrainMesh>& OtTerrain::getMeshes(OtCamera& camera) {
 	// update heights (if required)
 	if (heights.dirty) {
 		heights.update(tileableFbm, normalMapper);
@@ -141,29 +141,29 @@ std::vector<OtTerrainMesh>& OtTerrain::getMeshes(OtFrustum& frustum, const glm::
 	// clear list of visible meshes
 	meshes.clear();
 
-	// determine center of terrain's geoclipmap
+	// determine center of terrain's geoClipMap
 	float factor = 16.0f * hScale;
-	centerX = std::floor(camera.x / factor) * factor;
-	centerZ = std::floor(camera.z / factor) * factor;
+	centerX = std::floor(camera.position.x / factor) * factor;
+	centerZ = std::floor(camera.position.z / factor) * factor;
 
 	// lambda function to process a single tile
-	auto processTile = [&](OtTerrainTile& tile, OtFrustum& frustum, int lod) {
+	auto processTile = [&](OtTerrainTile& tile, OtCamera& camera, int lod) {
 		OtTerrainMesh mesh(tile, float(tileSize), centerX, vOffset, centerZ, hScale * (1 << lod), vScale);
 
-		if (frustum.isVisibleAABB(mesh.aabb)) {
+		if (camera.isVisibleAABB(mesh.aabb)) {
 			meshes.push_back(mesh);
 		}
 	};
 
 	// process the four center tiles
 	for (auto& tile: centerTiles) {
-		processTile(tile, frustum, 0);
+		processTile(tile, camera, 0);
 	}
 
-	// process the rings for LODs 0..N
-	for (auto i = 0; i < lods; i++) {
+	// process the rings for LOD 0..N
+	for (auto i = 0; i < lod; i++) {
 		for (auto& tile: ringTiles) {
-			processTile(tile, frustum, i);
+			processTile(tile, camera, i);
 		}
 	}
 
@@ -301,7 +301,7 @@ void OtTerrain::createTiles() {
 	centerTiles.emplace_back(vertices, fullTriangles, fullLines, 0.0f, 0.0f, 180.0f);
 	centerTiles.emplace_back(vertices, fullTriangles, fullLines, 0.0f, 0.0f, 270.0f);
 
-	// create the 12 ring tiles for LODs 1..N
+	// create the 12 ring tiles for LOD 1..N
 	float size = float(tileSize);
 
 	// top

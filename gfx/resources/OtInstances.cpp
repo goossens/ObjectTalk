@@ -103,25 +103,26 @@ void OtInstances::add(const glm::mat4 &instance, bool updateVersion) {
 bool OtInstances::submit(OtCamera& camera, OtAABB& aabb) {
 	if (instances->size()) {
 		// filter instances based on visibility
-		std::vector<glm::mat4> tmp;
-		std::vector<float> distances;
+		struct Instance {
+			Instance(const glm::mat4& m, float d) : matrix(m), distance(d) {}
+			glm::mat4 matrix;
+			float distance;
+		};
+
+		std::vector<Instance> tmp;
 
 		for (auto& instance : *instances) {
 			auto instanceAabb = aabb.transform(instance);
 
-			if (camera.frustum.isVisibleAABB(instanceAabb)) {
-				tmp.emplace_back(instance);
-				distances.emplace_back(glm::distance(camera.position, instanceAabb.getCenter()));
+			if (camera.isVisibleAABB(instanceAabb)) {
+				tmp.emplace_back(instance, glm::distance(camera.position, instanceAabb.getCenter()));
 			}
 		}
 
 		if (tmp.size()) {
 			// sort instances by distance to camera
-			std::vector<size_t> index(distances.size());
-			std::iota(index.begin(), index.end(), 0);
-
-			std::sort(index.begin(), index.end(), [&](size_t i, size_t j) {
-				return distances[i] < distances[j];
+			std::sort(tmp.begin(), tmp.end(), [&](const Instance& i1, const Instance& i2) {
+				return i1.distance < i2.distance;
 			});
 
 			// create instance data buffer and submit it to the GPU
@@ -131,7 +132,7 @@ bool OtInstances::submit(OtCamera& camera, OtAABB& aabb) {
 			glm::mat4* p = static_cast<glm::mat4*>((void*) idb.data);
 
 			for (uint32_t i = 0; i < count; i++) {
-				*p++ = tmp[index[i]];
+				*p++ = tmp[i].matrix;
 			}
 
 			bgfx::setInstanceDataBuffer(&idb);

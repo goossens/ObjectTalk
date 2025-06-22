@@ -138,7 +138,7 @@ void OtSceneRenderEntitiesPass::renderOpaqueGeometry(OtSceneRendererContext& ctx
 
 	} else {
 		// see if geometry is visible
-		if (ctx.camera.frustum.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
+		if (ctx.camera.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
 			visible = true;
 			program = getOpaqueProgram();
 		}
@@ -214,7 +214,7 @@ void OtSceneRenderEntitiesPass::renderOpaqueModel(OtSceneRendererContext& ctx, O
 
 	} else {
 		// see if model is visible
-		if (ctx.camera.frustum.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
+		if (ctx.camera.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
 			visible = true;
 			program = getOpaqueProgram();
 		}
@@ -256,7 +256,7 @@ void OtSceneRenderEntitiesPass::renderTerrain(OtSceneRendererContext& ctx, OtEnt
 	// process all the terrain meshes
 	auto terrain = component.terrain;
 
-	for (auto& mesh : terrain->getMeshes(ctx.camera.frustum, ctx.camera.position)) {
+	for (auto& mesh : terrain->getMeshes(ctx.camera)) {
 		// submit the geometry
 		mesh.tile.vertices.submit();
 
@@ -307,7 +307,7 @@ void OtSceneRenderEntitiesPass::renderTransparentGeometry(OtSceneRendererContext
 
 	} else {
 		// see if geometry is visible
-		if (ctx.camera.frustum.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
+		if (ctx.camera.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
 			visible = true;
 			program = getTransparentProgram();
 		}

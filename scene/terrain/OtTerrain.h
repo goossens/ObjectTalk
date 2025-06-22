@@ -19,7 +19,7 @@
 #include "nlohmann/json_fwd.hpp"
 
 #include "OtAABB.h"
-#include "OtFrustum.h"
+#include "OtCamera.h"
 #include "OtIndexBuffer.h"
 #include "OtNormalMapper.h"
 #include "OtTileableFbm.h"
@@ -45,7 +45,7 @@ public:
 	void deserialize(nlohmann::json data, std::string* basedir);
 
 	// access the meshes
-	std::vector<OtTerrainMesh>& getMeshes(OtFrustum& frustum, const glm::vec3& camera);
+	std::vector<OtTerrainMesh>& getMeshes(OtCamera& camera);
 
 	// are we rendering a wireframe
 	inline bool isWireframe() { return wireframe; }
@@ -59,7 +59,7 @@ public:
 
 	// terrain properties
 	int tileSize = 32;
-	int lods = 4;
+	int lod = 4;
 	float hScale = 1.0f;
 	float vScale = 1.0f;
 	float vOffset = 0.5f;
@@ -85,7 +85,7 @@ public:
 	OtTileableFbm tileableFbm;
 	OtNormalMapper normalMapper;
 
-	// current geoclipmap center
+	// current geoClipMap center
 	float centerX;
 	float centerZ;
 

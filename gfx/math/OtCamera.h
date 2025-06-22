@@ -15,6 +15,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "OtAABB.h"
 #include "OtFrustum.h"
 #include "OtGpu.h"
 
@@ -90,6 +91,9 @@ public:
 		// determine the camera's frustum in world space
 		frustum = OtFrustum(viewProjectionMatrix);
 	}
+
+	// see if an AABB box is visible
+	bool isVisibleAABB(const OtAABB& aabb) { return frustum.isVisibleAABB(aabb); }
 
 	// properties
 	int width = 0;

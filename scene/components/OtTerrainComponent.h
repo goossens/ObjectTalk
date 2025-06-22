@@ -17,8 +17,6 @@
 #include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtFrustum.h"
-
 #include "OtTerrain.h"
 
 

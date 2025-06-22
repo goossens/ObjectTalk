@@ -22,7 +22,7 @@ In case User Interface (UI) modules are included, we also use:
 * [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) - file selection dialog for Dear ImGui released under the [MIT license](https://opensource.org/licenses/MIT).
 * [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) - Gizmo to visually manipulate 4x4 matrices released under the [MIT license](https://opensource.org/licenses/MIT).
 * [glm](https://github.com/g-truc/glm) - mathematics library for graphics software released under the [MIT license](https://opensource.org/licenses/MIT).
-* [libtess2](https://github.com/memononen/libtess2) - library to convert (tesssallate) polygons into triangles by [Mikko Mononen](https://github.com/memononen) released under the [SGI Free Sofware License B, version 2](https://directory.fsf.org/wiki/License:SGI-B-2.0)
+* [libtess2](https://github.com/memononen/libtess2) - library to convert (tessellate) polygons into triangles by [Mikko Mononen](https://github.com/memononen) released under the [SGI Free Software License B, version 2](https://directory.fsf.org/wiki/License:SGI-B-2.0)
 * [PlutoVG](https://github.com/sammycage/plutovg) - standalone 2D vector graphics library in C released under the [MIT license](https://opensource.org/licenses/MIT).
 * [LunaSVG](https://github.com/sammycage/lunasvg) - SVG rendering library designed to be lightweight and portable, offering efficient rendering and manipulation released under the [MIT license](https://opensource.org/licenses/MIT).
 * [EnTT](https://github.com/skypjack/entt) - Entity Component System (ECS) by [Michele Caini](https://github.com/skypjack) released under the [MIT license](https://opensource.org/licenses/MIT).
@@ -40,13 +40,13 @@ In case User Interface (UI) modules are included, we also use:
 * Some of the shaders use code snippets from the [LYGIA Shader Library](https://github.com/patriciogonzalezvivo/lygia) released under the [Prosperity Public License](https://prosperitylicense.com/versions/3.0.0).
 * The sky shader is based on a [GitHub project](https://github.com/shff/opengl_sky) released under the [MIT License](https://opensource.org/licenses/MIT).
 * The Image Based Lighting (IBL) shaders are based on an article by [Bruno Opsenica](https://bruop.github.io/ibl/).
-* The Fast Approximate Anti-Aliasing (FXAA) post-processing shader was originally developped by Timothy Lottes at Nvidia. It was released under a public domain license. A later version is released under a [3-clause BSD license](https://opensource.org/license/bsd-3-clause).
+* The Fast Approximate Anti-Aliasing (FXAA) post-processing shader was originally developed by Timothy Lottes at Nvidia. It was released under a public domain license. A later version is released under a [3-clause BSD license](https://opensource.org/license/bsd-3-clause).
 * Some shaders and shader ideas are based on [JungleIN](https://github.com/BKcore/JungleIN), an OpenGL jungle viewer written as part of a scholar project, released under the [MIT license](https://opensource.org/licenses/MIT).
 
 ## Fonts
 
 * [BitStream Vera Mono Font](https://en.wikipedia.org/wiki/Bitstream_Vera) is extracted from
-[here](https://download.gnome.org/sources/ttf-bitstream-vera/1.10/) and it was released onder a
+[here](https://download.gnome.org/sources/ttf-bitstream-vera/1.10/) and it was released under a
 [generous license](https://raw.githubusercontent.com/goossens/ObjectTalk/master/gfx/framework/OtBitstreamVeraMono.lic)
 similar to the [SIL Open Font License](https://openfontlicense.org/documents/OFL.txt).
 * Simple Font is extracted from the [Hershey Fonts](https://github.com/kamalmostafa/hershey-fonts)
@@ -80,5 +80,5 @@ what applies where.
 
 ## Assets
 
-Some examples use a number of assetts (e.g. fonts, images and models) that were reused from other projects.
+Some examples use a number of assets (e.g. fonts, images and models) that were reused from other projects.
 A full list with links and licenses can be found in the appropriate asset folders.

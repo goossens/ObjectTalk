@@ -51,6 +51,9 @@ public:
 	float getNearPlane() { return nearPlane; }
 	float getFarPlane() { return farPlane; }
 
+	// set view direction
+	void pointAt(const glm::vec3& target);
+
 	// get derived information
 	glm::mat4 getViewMatrix();
 

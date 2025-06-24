@@ -70,7 +70,7 @@ public:
 
 	// get core information about entity
 	inline uint32_t getUuid(OtEntity entity) { return getComponent<OtCoreComponent>(entity).uuid; }
-	inline std::string getTag(OtEntity entity) { return getComponent<OtCoreComponent>(entity).tag; }
+	inline std::string& getTag(OtEntity entity) { return getComponent<OtCoreComponent>(entity).tag; }
 	inline OtEntity getParent(OtEntity entity) { return getComponent<OtCoreComponent>(entity).parent; }
 	inline OtEntity getFirstChild(OtEntity entity) { return getComponent<OtCoreComponent>(entity).firstChild; }
 	inline OtEntity getLastChild(OtEntity entity) { return getComponent<OtCoreComponent>(entity).lastChild; }

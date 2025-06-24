@@ -40,6 +40,6 @@ public:
 	static constexpr char const* name = "Model";
 
 	// stored properties
-	OtAsset<OtModelAsset> model;
+	OtAsset<OtModelAsset> asset;
 	bool castShadow = true;
 };

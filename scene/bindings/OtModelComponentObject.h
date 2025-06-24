@@ -27,7 +27,7 @@ using OtModelComponentObject = OtObjectPointer<OtModelComponentObjectClass>;
 class OtModelComponentObjectClass : public OtObjectClass {
 public:
 	// see if model is ready
-	inline bool isReady() { return model->model->isReady(); }
+	inline bool isReady() { return model->asset->isReady(); }
 
 	// access animations
 	bool hasAnimation(const std::string& name);

@@ -37,7 +37,7 @@ void OtSceneRenderEntitiesPass::renderEntities(OtSceneRendererContext& ctx, OtPa
 		// render models
 		if (ctx.hasOpaqueModels) {
 			ctx.scene->view<OtModelComponent>().each([&](auto entity, auto& model) {
-				if (model.model.isReady()) {
+				if (model.asset.isReady()) {
 					if (!ctx.renderingShadow || model.castShadow) {
 						renderOpaqueModel(ctx, entity, model);
 					}
@@ -96,7 +96,7 @@ void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtPass
 	if (ctx.scene->hasComponent<OtModelComponent>(entity)) {
 		auto& model = ctx.scene->getComponent<OtModelComponent>(entity);
 
-		if (isRenderingOpaque() && model.model.isReady()) {
+		if (isRenderingOpaque() && model.asset.isReady()) {
 			if (!ctx.renderingShadow || model.castShadow) {
 				renderOpaqueModel(ctx, entity, model);
 			}
@@ -198,7 +198,7 @@ void OtSceneRenderEntitiesPass::renderOpaqueModel(OtSceneRendererContext& ctx, O
 	OtShaderProgram* program = nullptr;
 
 	// get geometry AABB
-	auto& model = component.model->getModel();
+	auto& model = component.asset->getModel();
 	auto globalTransform = ctx.scene->getGlobalTransform(entity);
 	auto aabb = model.getAABB().transform(globalTransform);
 

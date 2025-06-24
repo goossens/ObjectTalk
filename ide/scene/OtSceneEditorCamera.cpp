@@ -204,6 +204,21 @@ void OtSceneEditorCamera::handleKeyboardAndMouse() {
 
 
 //
+//	OtSceneEditorCamera::pointAt
+//
+
+void OtSceneEditorCamera::pointAt(const glm::vec3& target) {
+	// determine direction of view
+	auto direction = target - position;
+
+	// determine yaw and pitch
+	yaw = glm::degrees(std::atan2(-direction.x, -direction.z));
+	auto d = std::sqrt(direction.x * direction.x + direction.z * direction.z);
+    pitch = glm::degrees(std::atan2(direction.y, d));
+}
+
+
+//
 //	OtSceneEditorCamera::getViewMatrix
 //
 

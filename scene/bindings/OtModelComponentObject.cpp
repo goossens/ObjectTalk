@@ -21,8 +21,8 @@
 //
 
 bool OtModelComponentObjectClass::hasAnimation(const std::string& name) {
-	if (model->model->isReady()) {
-		return model->model->getModel().hasAnimation(name);
+	if (model->asset->isReady()) {
+		return model->asset->getModel().hasAnimation(name);
 
 	} else {
 		return false;
@@ -35,8 +35,8 @@ bool OtModelComponentObjectClass::hasAnimation(const std::string& name) {
 //
 
 size_t OtModelComponentObjectClass::getAnimationCount() {
-	if (model->model->isReady()) {
-		return model->model->getModel().getAnimationCount();
+	if (model->asset->isReady()) {
+		return model->asset->getModel().getAnimationCount();
 
 	} else {
 		return 0;
@@ -49,9 +49,9 @@ size_t OtModelComponentObjectClass::getAnimationCount() {
 //
 
 std::string OtModelComponentObjectClass::getAnimationName(size_t index) {
-	if (model->model->isReady()) {
-		if (index < model->model->getModel().getAnimationCount()) {
-			return model->model->getModel().getAnimationName(index);
+	if (model->asset->isReady()) {
+		if (index < model->asset->getModel().getAnimationCount()) {
+			return model->asset->getModel().getAnimationName(index);
 
 		} else {
 			OtLogError("Invalid animation index");
@@ -72,11 +72,11 @@ std::string OtModelComponentObjectClass::getAnimationName(size_t index) {
 OtObject OtModelComponentObjectClass::getAnimations() {
 	OtArray result = OtArray::create();
 
-	if (model->model->isReady()) {
-		auto models = model->model->getModel().getAnimationCount();
+	if (model->asset->isReady()) {
+		auto models = model->asset->getModel().getAnimationCount();
 
 		for (size_t i = 0; i < models; i++) {
-			result->append(OtString::create(model->model->getModel().getAnimationName(i)));
+			result->append(OtString::create(model->asset->getModel().getAnimationName(i)));
 		}
 	}
 
@@ -89,8 +89,8 @@ OtObject OtModelComponentObjectClass::getAnimations() {
 //
 
 void OtModelComponentObjectClass::startAnimation(const std::string& name) {
-	if (model->model->isReady()) {
-		model->model->getModel().startAnimation(name);
+	if (model->asset->isReady()) {
+		model->asset->getModel().startAnimation(name);
 
 	} else {
 		OtLogError("Can't animate model that is not ready");
@@ -103,8 +103,8 @@ void OtModelComponentObjectClass::startAnimation(const std::string& name) {
 //
 
 void OtModelComponentObjectClass::fadeToAnimation(const std::string& name, float duration) {
-	if (model->model->isReady()) {
-		model->model->getModel().fadeToAnimation(name, duration);
+	if (model->asset->isReady()) {
+		model->asset->getModel().fadeToAnimation(name, duration);
 
 	} else {
 		OtLogError("Can't animate model that is not ready");
@@ -117,8 +117,8 @@ void OtModelComponentObjectClass::fadeToAnimation(const std::string& name, float
 //
 
 void OtModelComponentObjectClass::stopAnimation() {
-	if (model->model->isReady()) {
-		model->model->getModel().stopAnimation();
+	if (model->asset->isReady()) {
+		model->asset->getModel().stopAnimation();
 	}
 }
 
@@ -128,8 +128,8 @@ void OtModelComponentObjectClass::stopAnimation() {
 //
 
 bool OtModelComponentObjectClass::isAnimating() {
-	if (model->model->isReady()) {
-		return model->model->getModel().isAnimating();
+	if (model->asset->isReady()) {
+		return model->asset->getModel().isAnimating();
 
 	} else {
 		return false;
@@ -142,8 +142,8 @@ bool OtModelComponentObjectClass::isAnimating() {
 //
 
 void OtModelComponentObjectClass::setAnimationSpeed(const std::string& name, float speed) {
-	if (model->model->isReady()) {
-		model->model->getModel().setAnimationSpeed(name, speed);
+	if (model->asset->isReady()) {
+		model->asset->getModel().setAnimationSpeed(name, speed);
 	}
 }
 
@@ -153,8 +153,8 @@ void OtModelComponentObjectClass::setAnimationSpeed(const std::string& name, flo
 //
 
 float OtModelComponentObjectClass::getAnimationSpeed() {
-	if (model->model->isReady()) {
-		return model->model->getModel().getAnimationSpeed();
+	if (model->asset->isReady()) {
+		return model->asset->getModel().getAnimationSpeed();
 
 	} else {
 		return 0.0f;

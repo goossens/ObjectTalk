@@ -170,7 +170,7 @@ void OtSceneEditor::setSceneCamera(int cameraNumber) {
 	int entries = 1;
 	makeCameraList(&scene, scene.getRootEntity(), list, entries);
 
-	// see if selected camera is avalable
+	// see if selected camera is available
 	if (cameraNumber < entries) {
 		selectedCamera = list[cameraNumber];
 
@@ -235,6 +235,39 @@ void OtSceneEditor::renderMenus() {
 			ImGui::EndMenu();
 		}
 
+		// point editor camera at objects
+		if (ImGui::BeginMenu("Point Editor Camera At")) {
+			scene.eachEntityBreadthFirst([&](OtEntity entity) {
+				if (scene.hasComponent<OtTransformComponent>(entity)) {
+					auto globalTransform = scene.getGlobalTransform(entity);
+
+					if (scene.hasComponent<OtGeometryComponent>(entity)) {
+						auto& geometry = scene.getComponent<OtGeometryComponent>(entity);
+
+						if (geometry.asset.isReady()) {
+							if (ImGui::MenuItem(scene.getTag(entity).c_str())) {
+								glm::vec3 center = geometry.asset->getGeometry().getAABB().transform(globalTransform).getCenter();
+								editorCamera.pointAt(center);
+							}
+						}
+					}
+
+					if (scene.hasComponent<OtModelComponent>(entity)) {
+						auto& model = scene.getComponent<OtModelComponent>(entity);
+
+						if (model.asset.isReady()) {
+							if (ImGui::MenuItem(scene.getTag(entity).c_str())) {
+								glm::vec3 center = model.asset->getModel().getAABB().transform(globalTransform).getCenter();
+								editorCamera.pointAt(center);
+							}
+						}
+					}
+				}
+			});
+
+			ImGui::EndMenu();
+		}
+
 		// allow editor camera settings to be saved to a scene camera
 		if (ImGui::BeginMenu("Save Editor Camera To")) {
 			// get a list of cameras
@@ -296,7 +329,7 @@ void OtSceneEditor::renderMenus() {
 
 		// render snap control
 		if (ImGui::BeginMenu("Gizmo Snap", guizmoEnabled)) {
-			OtUi::toggleButton("Snaping", &guizmoSnapping);
+			OtUi::toggleButton("Snapping", &guizmoSnapping);
 			OtUi::editVec3("##Interval", &guizmoSnapInterval, 0.0f, 0.1f);
 			ImGui::EndMenu();
 		}
@@ -309,7 +342,7 @@ void OtSceneEditor::renderMenus() {
 		auto& processor = scene.getPostProcessing();
 		auto oldValue = processor.serialize(nullptr).dump();
 
-		OtUi::header("Post Proceessing Settings");
+		OtUi::header("Post Processing Settings");
 		ImGui::Dummy(ImVec2(0.0f, 0.0f));
 
 		if (processor.renderUI()) {
@@ -531,7 +564,7 @@ void OtSceneEditor::renderViewPort() {
 		selectedEntity = OtEntityNull;
 	}
 
-	// ensure we still have a valid selected camera (no valid scene camera means we use the editor camara)
+	// ensure we still have a valid selected camera (no valid scene camera means we use the editor camera)
 	if (scene.isValidEntity(selectedCamera)) {
 		if (!scene.hasComponent<OtCameraComponent>(selectedCamera) || !scene.hasComponent<OtTransformComponent>(selectedCamera)) {
 			selectedCamera = OtEntityNull;

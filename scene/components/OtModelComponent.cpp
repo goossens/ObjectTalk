@@ -23,16 +23,16 @@
 
 bool OtModelComponent::renderUI() {
 	bool changed = false;
-	changed |= model.renderUI("Model");
+	changed |= asset.renderUI("Model");
 	changed |= OtUi::toggleButton("Cast shadow", &castShadow);
 
-	if (model.isReady()) {
+	if (asset.isReady()) {
 		if (ImGui::Button("Open Details", ImVec2(ImGui::CalcItemWidth(), 0.0f))) {
 			ImGui::OpenPopup("ModelPopup");
 		}
 
 		if (ImGui::BeginPopup("ModelPopup")) {
-			model->getModel().renderDetails();
+			asset->getModel().renderDetails();
 			ImGui::EndPopup();
 		}
 	}
@@ -46,8 +46,8 @@ bool OtModelComponent::renderUI() {
 //
 
 void OtModelComponent::update() {
-	if (model.isReady()) {
-		model->getModel().update();
+	if (asset.isReady()) {
+		asset->getModel().update();
 	}
 }
 
@@ -59,7 +59,7 @@ void OtModelComponent::update() {
 nlohmann::json OtModelComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["component"] = name;
-	data["model"] = OtAssetSerialize(model.getPath(), basedir);
+	data["model"] = OtAssetSerialize(asset.getPath(), basedir);
 	data["castShadow"] = castShadow;
 	return data;
 }
@@ -70,6 +70,6 @@ nlohmann::json OtModelComponent::serialize(std::string* basedir) {
 //
 
 void OtModelComponent::deserialize(nlohmann::json data, std::string* basedir) {
-	model = OtAssetDeserialize(&data, "model", basedir);
+	asset = OtAssetDeserialize(&data, "model", basedir);
 	castShadow = data.value("castShadow", true);
 }

@@ -242,22 +242,22 @@ void OtSceneEditor::renderMenus() {
 					auto globalTransform = scene.getGlobalTransform(entity);
 
 					if (scene.hasComponent<OtGeometryComponent>(entity)) {
-						auto& geometry = scene.getComponent<OtGeometryComponent>(entity);
+						auto& component = scene.getComponent<OtGeometryComponent>(entity);
 
-						if (geometry.asset.isReady()) {
+						if (component.asset.isReady()) {
 							if (ImGui::MenuItem(scene.getTag(entity).c_str())) {
-								glm::vec3 center = geometry.asset->getGeometry().getAABB().transform(globalTransform).getCenter();
+								glm::vec3 center = component.asset->getGeometry().getAABB().transform(globalTransform).getCenter();
 								editorCamera.pointAt(center);
 							}
 						}
 					}
 
 					if (scene.hasComponent<OtModelComponent>(entity)) {
-						auto& model = scene.getComponent<OtModelComponent>(entity);
+						auto& component = scene.getComponent<OtModelComponent>(entity);
 
-						if (model.asset.isReady()) {
+						if (component.asset.isReady()) {
 							if (ImGui::MenuItem(scene.getTag(entity).c_str())) {
-								glm::vec3 center = model.asset->getModel().getAABB().transform(globalTransform).getCenter();
+								glm::vec3 center = component.asset->getModel().getAABB().transform(globalTransform).getCenter();
 								editorCamera.pointAt(center);
 							}
 						}

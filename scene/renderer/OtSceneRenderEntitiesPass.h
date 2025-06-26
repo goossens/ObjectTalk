@@ -56,10 +56,10 @@ protected:
 
 private:
 	// private methods to better structure rendering pipeline
-	void renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry);
-	void renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& model);
-	void renderTerrain(OtSceneRendererContext& ctx, OtEntity entity, OtTerrainComponent& terrain);
-	void renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry);
+	void renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& component);
+	void renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& component);
+	void renderTerrain(OtSceneRendererContext& ctx, OtEntity entity, OtTerrainComponent& component);
+	void renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& component);
 
 	// private properties
 	OtUniformVec4 clipUniforms{"u_clip", 1};

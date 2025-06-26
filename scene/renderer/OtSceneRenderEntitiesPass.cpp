@@ -24,11 +24,11 @@ void OtSceneRenderEntitiesPass::renderEntities(OtSceneRendererContext& ctx, OtPa
 	if (isRenderingOpaque() && ctx.hasOpaqueEntities) {
 		// render geometries
 		if (ctx.hasOpaqueGeometries) {
-			ctx.scene->view<OtGeometryComponent>().each([&](auto entity, auto& geometry) {
+			ctx.scene->view<OtGeometryComponent>().each([&](auto entity, auto& component) {
 				// ensure geometry is ready to be rendered
-				if (!geometry.transparent && geometry.asset.isReady()) {
-					if (!ctx.renderingShadow || geometry.castShadow) {
-						renderOpaqueGeometry(ctx, entity, geometry);
+				if (!component.transparent && component.asset.isReady()) {
+					if (!ctx.renderingShadow || component.castShadow) {
+						renderOpaqueGeometry(ctx, entity, component);
 					}
 				}
 			});
@@ -36,10 +36,10 @@ void OtSceneRenderEntitiesPass::renderEntities(OtSceneRendererContext& ctx, OtPa
 
 		// render models
 		if (ctx.hasOpaqueModels) {
-			ctx.scene->view<OtModelComponent>().each([&](auto entity, auto& model) {
-				if (model.asset.isReady()) {
-					if (!ctx.renderingShadow || model.castShadow) {
-						renderOpaqueModel(ctx, entity, model);
+			ctx.scene->view<OtModelComponent>().each([&](auto entity, auto& component) {
+				if (component.asset.isReady()) {
+					if (!ctx.renderingShadow || component.castShadow) {
+						renderOpaqueModel(ctx, entity, component);
 					}
 				}
 			});
@@ -57,10 +57,10 @@ void OtSceneRenderEntitiesPass::renderEntities(OtSceneRendererContext& ctx, OtPa
 
 	// render all transparent geometries
 	if (isRenderingTransparent() && ctx.hasTransparentEntities) {
-		ctx.scene->view<OtGeometryComponent>().each([&](auto entity, auto& geometry) {
-			if (geometry.transparent && geometry.asset.isReady()) {
-				if (!ctx.renderingShadow || geometry.castShadow) {
-					renderTransparentGeometry(ctx, entity, geometry);
+		ctx.scene->view<OtGeometryComponent>().each([&](auto entity, auto& component) {
+			if (component.transparent && component.asset.isReady()) {
+				if (!ctx.renderingShadow || component.castShadow) {
+					renderTransparentGeometry(ctx, entity, component);
 				}
 			}
 		});
@@ -78,15 +78,15 @@ void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtPass
 
 	// render geometry (if required)
 	if (ctx.scene->hasComponent<OtGeometryComponent>(entity)) {
-		auto& geometry = ctx.scene->getComponent<OtGeometryComponent>(entity);
+		auto& component = ctx.scene->getComponent<OtGeometryComponent>(entity);
 
-		if (geometry.asset.isReady()) {
-			if (!ctx.renderingShadow || geometry.castShadow) {
-				if (isRenderingOpaque() && !geometry.transparent) {
-					renderOpaqueGeometry(ctx, entity, geometry);
+		if (component.asset.isReady()) {
+			if (!ctx.renderingShadow || component.castShadow) {
+				if (isRenderingOpaque() && !component.transparent) {
+					renderOpaqueGeometry(ctx, entity, component);
 
-				} else if (isRenderingTransparent() && geometry.transparent) {
-					renderTransparentGeometry(ctx, entity, geometry);
+				} else if (isRenderingTransparent() && component.transparent) {
+					renderTransparentGeometry(ctx, entity, component);
 				}
 			}
 		}
@@ -94,11 +94,11 @@ void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtPass
 
 	// render model (if required)
 	if (ctx.scene->hasComponent<OtModelComponent>(entity)) {
-		auto& model = ctx.scene->getComponent<OtModelComponent>(entity);
+		auto& component = ctx.scene->getComponent<OtModelComponent>(entity);
 
-		if (isRenderingOpaque() && model.asset.isReady()) {
-			if (!ctx.renderingShadow || model.castShadow) {
-				renderOpaqueModel(ctx, entity, model);
+		if (isRenderingOpaque() && component.asset.isReady()) {
+			if (!ctx.renderingShadow || component.castShadow) {
+				renderOpaqueModel(ctx, entity, component);
 			}
 		}
 	}
@@ -118,13 +118,13 @@ void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtPass
 //	OtSceneRenderEntitiesPass::renderOpaqueGeometry
 //
 
-void OtSceneRenderEntitiesPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) {
+void OtSceneRenderEntitiesPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& component) {
 	// visibility flag and target program
 	bool visible = false;
 	OtShaderProgram* program = nullptr;
 
 	// get geometry AABB
-	auto& aabb = geometry.asset->getGeometry().getAABB();
+	auto& aabb = component.asset->getGeometry().getAABB();
 
 	// is this a case of instancing?
 	if (ctx.scene->hasComponent<OtInstancingComponent>(entity)) {
@@ -161,18 +161,18 @@ void OtSceneRenderEntitiesPass::renderOpaqueGeometry(OtSceneRendererContext& ctx
 		submitUniforms(ctx, scope);
 
 		// submit the geometry
-		if (geometry.wireframe) {
-			geometry.asset->getGeometry().submitLines();
+		if (component.wireframe) {
+			component.asset->getGeometry().submitLines();
 
 		} else {
-			geometry.asset->getGeometry().submitTriangles();
+			component.asset->getGeometry().submitTriangles();
 		}
 
 		// set the program state
-		if (geometry.wireframe) {
+		if (component.wireframe) {
 			program->setState(getWireframeState());
 
-		} else if (geometry.cullBack) {
+		} else if (component.cullBack) {
 			program->setState(getCullBackState());
 
 		} else {
@@ -287,13 +287,13 @@ void OtSceneRenderEntitiesPass::renderTerrain(OtSceneRendererContext& ctx, OtEnt
 //	OtSceneRenderEntitiesPass::renderTransparentGeometry
 //
 
-void OtSceneRenderEntitiesPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) {
+void OtSceneRenderEntitiesPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& component) {
 	// visibility flag and target program
 	bool visible = false;
 	OtShaderProgram* program = nullptr;
 
 	// get geometry AABB
-	auto& aabb =  geometry.asset->getGeometry().getAABB();
+	auto& aabb =  component.asset->getGeometry().getAABB();
 
 	// is this a case of instancing?
 	if (ctx.scene->hasComponent<OtInstancingComponent>(entity)) {
@@ -330,18 +330,18 @@ void OtSceneRenderEntitiesPass::renderTransparentGeometry(OtSceneRendererContext
 		submitUniforms(ctx, scope);
 
 		// submit the geometry
-		if (geometry.wireframe) {
-			geometry.asset->getGeometry().submitLines();
+		if (component.wireframe) {
+			component.asset->getGeometry().submitLines();
 
 		} else {
-			geometry.asset->getGeometry().submitTriangles();
+			component.asset->getGeometry().submitTriangles();
 		}
 
 		// set the program state
-		if (geometry.wireframe) {
+		if (component.wireframe) {
 			program->setState(getWireframeState());
 
-		} else if (geometry.cullBack) {
+		} else if (component.cullBack) {
 			program->setState(getCullBackState());
 
 		} else {

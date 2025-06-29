@@ -161,7 +161,7 @@ void OtTextEditor::handleShortcuts() {
 
 void OtTextEditor::renderEditor() {
 	// render the text editor
-	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[static_cast<size_t>(OtUi::Font::editor)]);
+	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[static_cast<size_t>(OtUi::Font::editor)], 0.0f);
 	editor.Render("TextEditor");
 	ImGui::PopFont();
 

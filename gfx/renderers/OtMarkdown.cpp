@@ -407,7 +407,7 @@ void OtMarkdown::imgSpan(const MD_SPAN_IMG_DETAIL* detail, bool enter) {
 		imageInfo info;
 
 		if (getImage(info)) {
-			const float scale = ImGui::GetIO().FontGlobalScale;
+			const float scale = ImGui::GetStyle().FontScaleMain;
 			info.size.x *= scale;
 			info.size.y *= scale;
 			ImVec2 const csz = ImGui::GetContentRegionAvail();
@@ -553,7 +553,7 @@ int OtMarkdown::text(MD_TEXTTYPE type, const char* text, const char* end) {
 //
 
 void OtMarkdown::renderText(const char* text, const char* end) {
-	float scale = ImGui::GetIO().FontGlobalScale;
+	float scale = ImGui::GetStyle().FontScaleMain;
 	ImGuiStyle& s = ImGui::GetStyle();
 	bool isLF = false;
 
@@ -568,7 +568,8 @@ void OtMarkdown::renderText(const char* text, const char* end) {
 				wl -= ImGui::GetCursorPosX();
 			}
 
-			te = ImGui::GetFont()->CalcWordWrapPositionA( scale, text, end, wl);
+			auto font = ImGui::GetFont();
+			te = font->CalcWordWrapPosition(font->LegacySize * scale, text, end, wl);
 
 			if (te == text) {
 				te++;
@@ -726,7 +727,7 @@ ImFont* OtMarkdown::getFont() {
 
 void OtMarkdown::setFont(bool enter) {
 	if (enter) {
-		ImGui::PushFont(getFont());
+		ImGui::PushFont(getFont(), 0.0f);
 
 	} else {
 		ImGui::PopFont();
@@ -781,7 +782,7 @@ void OtMarkdown::setHref(bool enter, const MD_ATTRIBUTE& src) {
 //
 
 bool OtMarkdown::getImage(imageInfo& info) {
-	info.id = ImGui::GetIO().Fonts->TexID;
+//	info.id = ImGui::GetIO().Fonts->TexID;
 	info.size = {100.0f, 50.0f};
 	return true;
 }

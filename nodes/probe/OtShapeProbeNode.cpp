@@ -54,7 +54,7 @@ public:
 	inline void customRendering(float itemWidth) override {
 		if (shape.isValid()) {
 			OtUi::hSpacer((itemWidth - customW) / 2.0f);
-			ImGui::Image((ImTextureID)(intptr_t) texture.getIndex(), ImVec2(customW, customH));
+			ImGui::Image(texture.getTextureID(), ImVec2(customW, customH));
 
 			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiPopupFlags_MouseButtonLeft)) {
 				ImGui::OpenPopup("Shape Popup");
@@ -63,7 +63,7 @@ public:
 			if (ImGui::BeginPopup("Shape Popup")) {
 				auto size = ImGui::GetMainViewport()->WorkSize;
 				auto scale = std::min(size.x * 0.75f / customW, size.y * 0.75f / customH);
-				ImGui::Image((ImTextureID)(intptr_t) texture.getIndex(), ImVec2(scale * customW, scale * customH));
+				ImGui::Image(texture.getTextureID(), ImVec2(scale * customW, scale * customH));
 				ImGui::EndPopup();
 			}
 

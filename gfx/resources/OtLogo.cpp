@@ -6803,15 +6803,15 @@ const uint8_t OtLogoData[74578] = {
 
 
 //
-//	OtLogo::getTextureIndex
+//	OtLogo::getTextureID
 //
 
-uint16_t OtLogo::getTextureIndex() {
+ImTextureID OtLogo::getTextureID() {
 	// create texture (if required)
 	if (!texture.isValid()) {
 		// load it from memory (to keep ot as a single file)
 		texture.load((void*) &OtLogoData, sizeof(OtLogoData));
 	}
 
-	return texture.getIndex();
+	return texture.getTextureID();
 }

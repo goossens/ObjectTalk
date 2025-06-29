@@ -139,7 +139,7 @@ void OtDialClass::render() {
 
 		auto size = ImVec2(framebuffer.getWidth() * scale, framebuffer.getHeight() * scale);
 		OtUi::align(size, horizontalAlign, verticalAlign);
-		ImGui::Image((ImTextureID)(intptr_t) framebuffer.getColorTextureIndex(), size);
+		ImGui::Image(framebuffer.getColorTextureID(), size);
 	}
 }
 

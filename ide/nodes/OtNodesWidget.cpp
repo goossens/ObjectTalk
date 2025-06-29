@@ -122,7 +122,7 @@ void OtNodesWidget::render(OtNodes* n) {
 
 	ImGui::SetNextWindowContentSize(ImVec2(width, height));
 	ImGui::BeginChild("nodes", ImVec2(), ImGuiChildFlags_None, flags);
-	pinOffset = ImGui::GetStyle().FramePadding.y + ImGui::GetFont()->Ascent - pinRadius + 1.0f;
+	pinOffset = ImGui::GetStyle().FramePadding.y + ImGui::GetFontBaked()->Ascent - pinRadius + 1.0f;
 	ImDrawList* drawlist = ImGui::GetWindowDrawList();
 	widgetOffset = ImGui::GetCursorScreenPos();
 

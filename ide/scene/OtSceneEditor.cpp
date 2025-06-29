@@ -620,14 +620,14 @@ void OtSceneEditor::renderViewPort() {
 	OtCamera camera{int(size.x), int(size.y), nearPlane, farPlane, fov, cameraViewMatrix};
 	renderer->setGridScale(gridEnabled ? gridScale : 0.0f);
 	renderer->setSelectedEntity(selectedEntity);
-	auto textureIndex = renderer->render(camera, &scene);
+	auto textureID = static_cast<ImTextureID>(renderer->render(camera, &scene));
 
 	// show it on the screen
 	if (OtGpuHasOriginBottomLeft()) {
-		ImGui::Image((ImTextureID)(intptr_t) textureIndex, size, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+		ImGui::Image(textureID, size, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
 
 	} else {
-		ImGui::Image((ImTextureID)(intptr_t) textureIndex, size);
+		ImGui::Image(textureID, size);
 	}
 
 	// only show guizmo if it's enabled and the selected entity has a transform

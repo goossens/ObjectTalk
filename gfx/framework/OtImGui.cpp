@@ -185,12 +185,13 @@ void OtFramework::initIMGUI() {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 
-	// deactiviate Dear ImGui automatic .ini file handling
+	// deactivate Dear ImGui automatic .ini file handling
 	ImGuiIO& io = ImGui::GetIO();
 	io.IniFilename = nullptr;
 
 	// setup backend metadata
  	io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
+ 	io.BackendFlags |= ImGuiBackendFlags_RendererHasTextures;
  	io.BackendPlatformName = "ObjectTalk";
 	io.BackendRendererName = "SDL3/BGFX";
 
@@ -250,7 +251,7 @@ void OtFramework::initIMGUI() {
 		0x1e00, 0x1eff, // latin extended additional
 		0x20a0, 0x21cf, // currency symbols
 		0x2190, 0x21ff, // arrows
-		0x2300, 0x23fa, // miscellanious technical
+		0x2300, 0x23fa, // miscellaneous technical
 		0x25a0, 0x25ff, // geometric shapes
 		0x2700, 0x27ef,	// digbats
 		0
@@ -269,13 +270,6 @@ void OtFramework::initIMGUI() {
 		17.0,
 		&config,
 		unicodeRanges);
-
-	// setup font atlas in texture
-	unsigned char* pixels;
-	int fw, fh;
-	io.Fonts->GetTexDataAsRGBA32(&pixels, &fw, &fh);
-	imguiFontTexture.load(fw, fh, OtTexture::rgba8Texture, pixels);
-	io.Fonts->TexID = (ImTextureID)(intptr_t) imguiFontTexture.getIndex();
 
 	// setup vertex declaration
 	imguiVertexLayout
@@ -418,6 +412,52 @@ void OtFramework::startFrameIMGUI() {
 
 
 //
+//	OtFramework::updateTextureIMGUI
+//
+
+void OtFramework::updateTextureIMGUI(ImTextureData* texture) {
+	// create a new texture
+	if (texture->Status == ImTextureStatus_WantCreate) {
+		// determine texture details
+		auto w = static_cast<uint16_t>(texture->Width);
+		auto h = static_cast<uint16_t>(texture->Height);
+		auto format = texture->Format == ImTextureFormat_RGBA32 ? bgfx::TextureFormat::Enum::RGBA8 : bgfx::TextureFormat::Enum::A8;
+
+		// create texture
+		auto handle = bgfx::createTexture2D(w, h, false, 1, format);
+
+		// set texture pixels and status
+		auto size = bimg::imageGetSize(nullptr, w, h, 1, false, false, 1, bimg::TextureFormat::Enum(format));
+		bgfx::updateTexture2D(handle, 0, 0, 0, 0, w, h, bgfx::makeRef(texture->GetPixels(), size));
+		texture->SetTexID(static_cast<ImTextureID>(handle.idx));
+		texture->SetStatus(ImTextureStatus_OK);
+
+	// update existing texture
+	} else if (texture->Status == ImTextureStatus_WantUpdates) {
+		// determine texture details
+		// determine update details
+		auto w = static_cast<uint16_t>(texture->Width);
+		auto h = static_cast<uint16_t>(texture->Height);
+		auto format = texture->Format == ImTextureFormat_RGBA32 ? bgfx::TextureFormat::Enum::RGBA8 : bgfx::TextureFormat::Enum::A8;
+
+		// update pixels in texture
+		auto size = bimg::imageGetSize(nullptr, w, h, 1, false, false, 1, bimg::TextureFormat::Enum(format));
+		bgfx::TextureHandle handle = {static_cast<uint16_t>(texture->GetTexID())};
+		bgfx::updateTexture2D(handle, 0, 0, 0, 0, w, h, bgfx::makeRef(texture->GetPixels(), size));
+		texture->SetStatus(ImTextureStatus_OK);
+
+	// remove existing texture
+	} else if (texture->Status == ImTextureStatus_WantDestroy && texture->UnusedFrames > 0) {
+		// destroy texture
+		bgfx::TextureHandle handle = {static_cast<uint16_t>(texture->GetTexID())};
+		bgfx::destroy(handle);
+		texture->SetTexID(ImTextureID_Invalid);
+		texture->SetStatus(ImTextureStatus_Destroyed);
+	}
+}
+
+
+//
 //	OtFramework::endFrameIMGUI
 //
 
@@ -441,6 +481,15 @@ void OtFramework::endFrameIMGUI() {
 
 	if (w == 0 || h == 0) {
 		return;
+	}
+
+	// process texture protocol
+	if (drawData->Textures != nullptr) {
+		for (auto texture : *drawData->Textures) {
+			if (texture->Status != ImTextureStatus_OK) {
+				updateTextureIMGUI(texture);
+			}
+		}
 	}
 
 	// scale coordinates for retina displays (screen size != framebuffer size)
@@ -496,8 +545,8 @@ void OtFramework::endFrameIMGUI() {
 					static_cast<uint16_t>(std::min(cmd->ClipRect.z, 65535.0f) - xx),
 					static_cast<uint16_t>(std::min(cmd->ClipRect.w, 65535.0f) - yy));
 
-				bgfx::TextureHandle texture = { (uint16_t)((intptr_t) cmd->TextureId & 0xffff) };
-				imguiFontSampler.submit(0, texture);
+				bgfx::TextureHandle handle = { static_cast<uint16_t>(cmd->TexRef.GetTexID()) };
+				imguiFontSampler.submit(0, handle);
 				bgfx::setVertexBuffer(0, &tvb);
 				bgfx::setIndexBuffer(&tib, cmd->IdxOffset, cmd->ElemCount);
 				imguiShaderProgram.submit(255);
@@ -514,7 +563,13 @@ void OtFramework::endFrameIMGUI() {
 void OtFramework::endIMGUI() {
 	// we have to manually clear our resources since it's too late to let the destructor
 	// do it as it runs after we shutdown the library (causing 'memory leaks')
-	imguiFontTexture.clear();
+	for (ImTextureData* texture : ImGui::GetPlatformIO().Textures) {
+		if (texture->RefCount == 1) {
+			bgfx::TextureHandle handle = {static_cast<uint16_t>(texture->GetTexID())};
+			bgfx::destroy(handle);
+		}
+	}
+
 	imguiFontSampler.clear();
 	imguiShaderProgram.clear();
 	ImGui::DestroyContext();

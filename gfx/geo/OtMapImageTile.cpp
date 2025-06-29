@@ -25,6 +25,6 @@ void OtMapImageTile::render(ImDrawList* drawlist, OtProjector& projector) {
 	projector.tileScreenBoundaries(tile, tl, br);
 
 	if (texture->isReady()) {
-		drawlist->AddImage((ImTextureID)(intptr_t) texture->getTexture().getIndex(), tl, br);
+		drawlist->AddImage(texture->getTexture().getTextureID(), tl, br);
 	}
 }

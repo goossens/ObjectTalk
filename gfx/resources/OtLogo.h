@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include <cstddef>
+#include "imgui.h"
 
 #include "OtTexture.h"
 
@@ -24,11 +24,12 @@
 class OtLogo {
 public:
 	// get logo information
-	uint16_t getTextureIndex();
+	ImTextureID getTextureID();
 
 	// get logo size
 	inline size_t getWidth() { return 429; }
 	inline size_t getHeight() { return 350; }
+	inline ImVec2 getSize() { return ImVec2(static_cast<float>(getWidth()), static_cast<float>(getHeight())); }
 
 private:
 	// the logo as a texture

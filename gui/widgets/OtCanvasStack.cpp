@@ -164,7 +164,7 @@ void OtCanvasStackClass::render() {
 
 	ImGui::PushID(this);
 	OtUi::align(size, horizontalAlign, verticalAlign);
-	ImGui::Image((ImTextureID)(intptr_t) texture.getIndex(), size);
+	ImGui::Image(texture.getTextureID(), size);
 	ImGui::PopID();
 }
 

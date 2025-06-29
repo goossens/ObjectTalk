@@ -229,7 +229,7 @@ void OtSceneRendererDebug::renderAssets() {
 void OtSceneRendererDebug::renderTexture(const char* title, uint16_t index, int width, int height) {
 	if (ImGui::TreeNode(title)) {
 		auto size = ImGui::GetContentRegionAvail().x;
-		ImGui::Image((ImTextureID)(intptr_t) index, ImVec2(size, size * height / width));
+		ImGui::Image(static_cast<ImTextureID>(index), ImVec2(size, size * height / width));
 		ImGui::TreePop();
 	}
 }
@@ -239,7 +239,7 @@ void OtSceneRendererDebug::renderTexture(const char* title, OtTexture& texture) 
 		auto size = ImGui::GetContentRegionAvail().x;
 		int width = texture.getWidth();
 		int height = texture.getHeight();
-		ImGui::Image((ImTextureID)(intptr_t) texture.getIndex(), ImVec2(size, size * height / width));
+		ImGui::Image(texture.getTextureID(), ImVec2(size, size * height / width));
 		ImGui::TreePop();
 	}
 }
@@ -258,8 +258,7 @@ void OtSceneRendererDebug::renderCubeMap(const char* title, OtCubeMap& cubemap, 
 		}
 
 		auto size = ImGui::GetContentRegionAvail().x;
-		uint16_t index = debug.framebuffer.getColorTexture().getIndex();
-		ImGui::Image((ImTextureID)(intptr_t) index, ImVec2(size, size * 3.0f / 4.0f));
+		ImGui::Image(debug.framebuffer.getColorTextureID(), ImVec2(size, size * 3.0f / 4.0f));
 		ImGui::TreePop();
 	}
 }

@@ -93,9 +93,7 @@ void OtMeshPreview::render(int width, int height, OtMesh& mesh, Context& context
 	pass.runShaderProgram(program);
 
 	// show the mesh
-	ImGui::Image(
-		(ImTextureID)(intptr_t) framebuffer.getColorTextureIndex(),
-		ImVec2(static_cast<float>(width), static_cast<float>(height)));
+	ImGui::Image(framebuffer.getColorTextureID(), ImVec2(static_cast<float>(width), static_cast<float>(height)));
 
 	if (ImGui::IsItemHovered()) {
 		// process left-mouse drag events (if required)

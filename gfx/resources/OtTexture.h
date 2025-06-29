@@ -16,6 +16,8 @@
 #include <memory>
 #include <string>
 
+#include "imgui.h"
+
 #include "OtLibuv.h"
 
 #include "OtBgfxHandle.h"
@@ -88,6 +90,9 @@ public:
 
 	// return texture index
 	inline uint16_t getIndex() { return isValid() ? texture.getIndex() : bgfx::kInvalidHandle; }
+
+	// return texture ID (for Dear ImGUI use)
+	inline ImTextureID getTextureID() { return isValid() ? static_cast<ImTextureID>(texture.getIndex()) : ImTextureID_Invalid; }
 
 	// get texture properties
 	inline int getWidth() { return width; }

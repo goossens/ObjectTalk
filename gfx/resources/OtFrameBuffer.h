@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include "imgui.h"
+
 #include "OtBgfxHandle.h"
 
 #include "OtSampler.h"
@@ -64,6 +66,10 @@ public:
 	// get texture indices
 	inline uint16_t getColorTextureIndex() { return colorTexture.getIndex(); }
 	inline uint16_t getDepthTextureIndex() { return depthTexture.getIndex(); }
+
+	// get texture IDs (for Dear ImGUI use)
+	inline ImTextureID getColorTextureID() { return colorTexture.isValid() ? static_cast<ImTextureID>(colorTexture.getIndex()) : ImTextureID_Invalid; }
+	inline ImTextureID getDepthTextureID() { return depthTexture.isValid() ? static_cast<ImTextureID>(depthTexture.getIndex()) : ImTextureID_Invalid; }
 
 	// bind textures
 	void bindColorTexture(OtSampler& sampler, int unit);

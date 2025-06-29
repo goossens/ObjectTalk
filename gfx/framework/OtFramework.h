@@ -61,7 +61,6 @@ private:
 	// initialize, run and terminate libraries
 	void initSDL();
 	void eventsSDL();
-	void bridgeSDL();
 	void endSDL();
 
 	void initBGFX();
@@ -72,6 +71,7 @@ private:
 	void initIMGUI();
 	void eventIMGUI(SDL_Event& event);
 	void startFrameIMGUI();
+	void updateTextureIMGUI(ImTextureData* texture);
 	void endFrameIMGUI();
 	void endIMGUI();
 
@@ -93,7 +93,6 @@ private:
 
 	// support Dear ImGui
 	bgfx::VertexLayout imguiVertexLayout;
-	OtTexture imguiFontTexture;
 	OtSampler imguiFontSampler{"s_imguiFontAtlas"};
 	OtShaderProgram imguiShaderProgram{"OtImGuiVS", "OtImGuiFS"};
 

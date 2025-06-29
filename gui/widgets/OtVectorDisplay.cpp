@@ -620,7 +620,7 @@ void OtVectorDisplayClass::render() {
 	// render scope frame, align it and put it on the screen
 	scope.render(framebuffer);
 	OtUi::align(size, horizontalAlign, verticalAlign);
-	ImGui::Image((ImTextureID)(intptr_t) framebuffer.getColorTextureIndex(), size);
+	ImGui::Image(framebuffer.getColorTextureID(), size);
 }
 
 

@@ -29,9 +29,9 @@
 void OtSceneEditorCamera::update() {
 	// calculate the new forward vector
 	forward = glm::normalize(glm::vec3(
-		std::cos(glm::radians(pitch)) * -std::sin(glm::radians(yaw)),
+		std::cos(glm::radians(pitch)) * std::cos(glm::radians(yaw - 90.0f)),
 		std::sin(glm::radians(pitch)),
-		std::cos(glm::radians(pitch)) * -std::cos(glm::radians(yaw))));
+		std::cos(glm::radians(pitch)) * std::sin(glm::radians(yaw - 90.0f))));
 
 	// also re-calculate the right and up vector
 	right = glm::normalize(glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f)));
@@ -155,7 +155,7 @@ void OtSceneEditorCamera::handleKeyboardAndMouse() {
 
 		if (drag.x != 0.0f || drag.y != 0.0f) {
 			pitch += drag.y * maxRotationPerSecond * delta / 2.0f;
-			yaw += drag.x * maxRotationPerSecond * delta;
+			yaw -= drag.x * maxRotationPerSecond * delta;
 			ImGui::ResetMouseDragDelta();
 		}
 
@@ -193,9 +193,8 @@ void OtSceneEditorCamera::handleKeyboardAndMouse() {
 
 	if (yaw < -360.0f) {
 		yaw += 360.0f;
-	}
 
-	if (yaw > 360.0f) {
+	} else if (yaw > 360.0f) {
 		yaw -= 360.0f;
 	}
 

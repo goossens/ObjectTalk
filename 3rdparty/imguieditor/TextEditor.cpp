@@ -443,18 +443,15 @@ void TextEditor::renderCursors() {
 		}
 
 		// notify OS of text input position for advanced Input Method Editor (IME)
-		// this is very hackish but required for the SDL3 backend as it will not report
-		// text input events unless we do this
+		// this is required for the SDL3 backend as it will not report text input events unless we do this
+		// see https://github.com/ocornut/imgui/issues/8584 for details
 		if (!readOnly) {
-			auto pos = cursors.getCurrent().getInteractiveEnd();
-			auto x = cursorScreenPos.x + textOffset + pos.column * glyphSize.x - 1;
-			auto y = cursorScreenPos.y + pos.line * glyphSize.y;
-
-			// messing with Dear ImGui internals
 			auto context = ImGui::GetCurrentContext();
 			context->PlatformImeData.WantVisible = true;
-			context->PlatformImeData.InputPos = ImVec2(x, y);
-			context->PlatformImeData.InputLineHeight = glyphSize.y;
+			context->PlatformImeData.WantTextInput = true;
+			context->PlatformImeData.InputPos = ImVec2(cursorScreenPos.x - 1.0f, cursorScreenPos.y - context->FontSize);
+			context->PlatformImeData.InputLineHeight = context->FontSize;
+			context->PlatformImeData.ViewportId = ImGui::GetCurrentWindow()->Viewport->ID;
 		}
 	}
 }

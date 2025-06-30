@@ -186,10 +186,10 @@ void OtFramework::initIMGUI() {
 	ImGui::CreateContext();
 
 	// deactivate Dear ImGui automatic .ini file handling
-	ImGuiIO& io = ImGui::GetIO();
+	auto& io = ImGui::GetIO();
 	io.IniFilename = nullptr;
 
-	// setup backend metadata
+	// setup backend metadata and features
  	io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
  	io.BackendFlags |= ImGuiBackendFlags_RendererHasTextures;
  	io.BackendPlatformName = "ObjectTalk";
@@ -237,39 +237,13 @@ void OtFramework::initIMGUI() {
 		}
 	};
 
-	// add custom fonts
+	// add custom font
 	ImFontConfig config;
+	std::strncpy(config.Name, "DejaVu", sizeof(config.Name));
 	config.FontDataOwnedByAtlas = false;
 	config.OversampleH = 1;
 	config.OversampleV = 1;
-
-	static const ImWchar unicodeRanges[] = {
-		0x0020, 0x007f, // basic latin
-		0x0080, 0x00ff, // latin supplement
-		0x0100, 0x017f, // latin extended A
-		0x0180, 0x024f, // latin extended B
-		0x1e00, 0x1eff, // latin extended additional
-		0x20a0, 0x21cf, // currency symbols
-		0x2190, 0x21ff, // arrows
-		0x2300, 0x23fa, // miscellaneous technical
-		0x25a0, 0x25ff, // geometric shapes
-		0x2700, 0x27ef,	// digbats
-		0
-	};
-
-	io.Fonts->AddFontFromMemoryCompressedTTF(
-		(void*) &OtDejaVu,
-		OtDejaVuSize,
-		15.0,
-		&config,
-		unicodeRanges);
-
-	io.Fonts->AddFontFromMemoryCompressedTTF(
-		(void*) &OtDejaVu,
-		OtDejaVuSize,
-		17.0,
-		&config,
-		unicodeRanges);
+	io.Fonts->AddFontFromMemoryCompressedTTF((void*) &OtDejaVu, OtDejaVuSize, 15.0f, &config);
 
 	// setup vertex declaration
 	imguiVertexLayout
@@ -296,7 +270,7 @@ void OtFramework::initIMGUI() {
 //
 
 void OtFramework::eventIMGUI(SDL_Event& event) {
-	ImGuiIO& io = ImGui::GetIO();
+	auto& io = ImGui::GetIO();
 
 	switch (event.type) {
 		case SDL_EVENT_MOUSE_MOTION: {
@@ -368,7 +342,7 @@ void OtFramework::eventIMGUI(SDL_Event& event) {
 
 void OtFramework::startFrameIMGUI() {
 	// update Dear ImGui state
-	ImGuiIO& io = ImGui::GetIO();
+	auto& io = ImGui::GetIO();
 	io.DeltaTime = loopDuration / 1000.0f;
 
 	int w, h;

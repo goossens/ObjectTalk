@@ -103,7 +103,7 @@ void OtFilmStripClass::render() {
 		// handle user interaction (if required)
 		if (callback) {
 			ImGui::PushID(this);
-			ImGuiIO& io = ImGui::GetIO();
+			auto& io = ImGui::GetIO();
 			ImGui::SetCursorScreenPos(pos);
 			ImGui::InvisibleButton("", size, 0);
 

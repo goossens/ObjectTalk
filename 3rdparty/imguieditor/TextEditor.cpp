@@ -815,7 +815,7 @@ void TextEditor::renderFindReplace(ImVec2 pos, float width) {
 
 void TextEditor::handleKeyboardInputs() {
 	if (ImGui::IsWindowFocused()) {
-		ImGuiIO& io = ImGui::GetIO();
+		auto& io = ImGui::GetIO();
 		io.WantCaptureKeyboard = true;
 		io.WantTextInput = true;
 

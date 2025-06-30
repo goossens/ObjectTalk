@@ -9,9 +9,6 @@
 //	Include files
 //
 
-#include <algorithm>
-#include <map>
-
 #include "imgui.h"
 
 #include "OtText.h"
@@ -121,6 +118,10 @@ void OtTextEditor::renderMenus() {
 	}
 
 	if (ImGui::BeginMenu("View")) {
+		if (ImGui::MenuItem("Zoom In", " " OT_UI_SHORTCUT "+")) { zoomIn(); }
+		if (ImGui::MenuItem("Zoom Out", " " OT_UI_SHORTCUT "-")) { zoomOut(); }
+		ImGui::Separator();
+
 		bool flag;
 		flag = editor.IsShowWhitespacesEnabled(); if (ImGui::MenuItem("Show Whitespaces", nullptr, &flag)) { editor.SetShowWhitespacesEnabled(flag); };
 		flag = editor.IsShowLineNumbersEnabled(); if (ImGui::MenuItem("Show Line Numbers", nullptr, &flag)) { editor.SetShowLineNumbersEnabled(flag); };
@@ -151,6 +152,8 @@ void OtTextEditor::renderMenus() {
 void OtTextEditor::handleShortcuts() {
 	if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
 		if (ImGui::IsKeyPressed(ImGuiKey_I)) { showDiff(); }
+		else if (ImGui::IsKeyPressed(ImGuiKey_Equal)) { zoomIn(); }
+		else if (ImGui::IsKeyPressed(ImGuiKey_Minus)) { zoomOut(); }
 	}
 }
 
@@ -161,7 +164,7 @@ void OtTextEditor::handleShortcuts() {
 
 void OtTextEditor::renderEditor() {
 	// render the text editor
-	ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[static_cast<size_t>(OtUi::Font::editor)], 0.0f);
+	ImGui::PushFont(nullptr, fontSize);
 	editor.Render("TextEditor");
 	ImGui::PopFont();
 

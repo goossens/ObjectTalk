@@ -211,7 +211,7 @@ void TextDiff::renderSideBySide(const char* title, const ImVec2& size, bool bord
 	// get font information
 	font = ImGui::GetFont();
 	fontSize = ImGui::GetFontSize();
-	glyphSize = ImVec2(font->CalcTextSizeA(fontSize, FLT_MAX, -1.0f, "#").x, ImGui::GetTextLineHeightWithSpacing() * lineSpacing);
+	glyphSize = ImVec2(ImGui::CalcTextSize("#").x, ImGui::GetTextLineHeightWithSpacing() * lineSpacing);
 
 	// scroll to specified line (if required)
 	if (scrollToLineNumber >= 0) {

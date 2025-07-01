@@ -29,7 +29,7 @@ has a console for output and highlighting for errors. A visual debugger is also 
 	- Shift: as you would expect on all platforms.
 	- If a keyboard has a left and right version of these modifiers, the meaning is not different.
 
-- Cursor movements:
+- Cursor Movements:
 	- Single left mouse click moves the cursor.
 	- Arrow keys move cursor left, right, up and down.
 	- PageUp and PageDown do what you expect.
@@ -39,7 +39,7 @@ has a console for output and highlighting for errors. A visual debugger is also 
 	- Holding down the Alt key with the left or right arrow moves a whole word on MacOS.
 	- Holding down the Ctrl key with the left or right arrow moves a whole word on Linux and Windows.
 
-- Panning and scrolling:
+- Panning and Scrolling:
 	- The text scrolls automatically when you move the cursor through keyboard actions.
 	- Mouse actions that extend the selections also apply auto scrolling.
 	- The text in the editor can still be scrolled using those bars that were invented in the 1970's.
@@ -53,7 +53,7 @@ has a console for output and highlighting for errors. A visual debugger is also 
 	- Panning and scrolling operate in opposite directions as they are different paradigms.
 	- An optional indicator (default is on) is shown in the center of the editor window when entering pan/scroll mode. If anybody finds this annoying, it can be turned off through an API by calling SetShowPanScrollIndicatorEnabled(false).
 
-- Cursors and selections:
+- Cursors and Selections:
 	- Alt with single left mouse click creates a new cursor on MacOS.
 	- Ctrl with single left mouse click creates a new cursor on Linux and Windows.
 	- Ctrl-A select all text.
@@ -95,6 +95,10 @@ has a console for output and highlighting for errors. A visual debugger is also 
 	- Ctrl-f opens the find and replace window.
 	- Shift-Ctrl-f finds all instances and makes them separate cursors.
 	- Ctrl-g finds next instance of search text.
+
+- Font Size:
+	- Ctrl-plus increases the font size.
+	- Ctrl-minus decreases the font size.
 
 - Other:
 	- Insert key toggles between insert (default) and overwrite modes.

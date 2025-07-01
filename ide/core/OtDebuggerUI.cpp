@@ -139,7 +139,7 @@ void OtDebuggerUI::renderSourceCode() {
 		sourceCode.SetLanguage(OtObjectTalkLanguage::getDefinition());
 		sourceCode.SetText(OtText::load(currentDebuggable));
 
-		float width = ImGui::GetFont()->CalcTextSizeA(ImGui::GetFontSize(), FLT_MAX, -1.0f, "#").x;
+		float width = ImGui::CalcTextSize("#").x;
 
 		sourceCode.SetLineDecorator(width, [this](TextEditor::Decorator& decorator) {
 			renderDecorations(decorator);

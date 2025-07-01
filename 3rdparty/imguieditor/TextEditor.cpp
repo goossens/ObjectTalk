@@ -50,7 +50,7 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	// get font information and determine horizontal offsets for line numbers, decorations and text
 	font = ImGui::GetFont();
 	fontSize = ImGui::GetFontSize();
-	glyphSize = ImVec2(font->CalcTextSizeA(fontSize, FLT_MAX, -1.0f, "#").x, ImGui::GetTextLineHeightWithSpacing() * lineSpacing);
+	glyphSize = ImVec2(ImGui::CalcTextSize("#").x, ImGui::GetTextLineHeightWithSpacing() * lineSpacing);
 	lineNumberLeftOffset = leftMargin * glyphSize.x;
 
 	if (showLineNumbers) {

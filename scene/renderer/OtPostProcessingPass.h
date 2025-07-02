@@ -312,9 +312,9 @@ private:
 	OtUniformMat4 invProjUniform{"u_invProjUniform", 1};
 
 	OtSampler postProcessSampler{"s_postProcessTexture", OtTexture::pointSampling | OtTexture::clampSampling};
-	OtSampler depthSampler{"s_depthTexture"};
-	OtSampler bloomSampler{"s_bloomTexture"};
-	OtSampler occlusionSampler{"s_occlusionTexture"};
+	OtSampler depthSampler{"s_depthTexture", OtTexture::pointSampling | OtTexture::clampSampling};
+	OtSampler bloomSampler{"s_bloomTexture", OtTexture::pointSampling | OtTexture::clampSampling};
+	OtSampler occlusionSampler{"s_occlusionTexture", OtTexture::pointSampling | OtTexture::clampSampling};
 
 	OtShaderProgram fxaaProgram{"OtFilterVS", "OtFxaaFS"};
 	OtShaderProgram fogProgram{"OtFilterVS", "OtFogFS"};

@@ -239,7 +239,7 @@ void OtFramework::initIMGUI() {
 
 	// add custom font
 	ImFontConfig config;
-	std::strncpy(config.Name, "DejaVu", sizeof(config.Name));
+	std::memcpy(config.Name, "DejaVu", 7);
 	config.FontDataOwnedByAtlas = false;
 	config.OversampleH = 1;
 	config.OversampleV = 1;

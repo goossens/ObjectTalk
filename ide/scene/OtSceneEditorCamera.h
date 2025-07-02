@@ -22,9 +22,6 @@
 
 class OtSceneEditorCamera {
 public:
-	// update the camera (called each frame)
-	void update();
-
 	// render a user interface for the camera
 	bool renderUI();
 
@@ -36,20 +33,23 @@ public:
 	void handleKeyboardAndMouse();
 
 	// property setters
-	void setPosition(const glm::vec3& p) { position = p; };
-	void setPitch(float p) { pitch = p; };
-	void setYaw(float y) { yaw = y; };
-	void setFov(float f) { fov = f; };
-	void setNearPlane(float n) { nearPlane = n; };
-	void setFarPlane(float f) { farPlane = f; };
+	inline void setPosition(const glm::vec3& p) { position = p; };
+	inline void setPitch(float p) { pitch = p; };
+	inline void setYaw(float y) { yaw = y; };
+	inline void setFov(float f) { fov = f; };
+	inline void setNearPlane(float n) { nearPlane = n; };
+	inline void setFarPlane(float f) { farPlane = f; };
 
 	// property getters
-	glm::vec3 getPosition() { return position; }
-	float getPitch() { return pitch; }
-	float getYaw() { return yaw; }
-	float getFov() { return fov; }
-	float getNearPlane() { return nearPlane; }
-	float getFarPlane() { return farPlane; }
+	inline glm::vec3 getPosition() { return position; }
+	inline float getPitch() { return pitch; }
+	inline float getYaw() { return yaw; }
+	inline float getFov() { return fov; }
+	inline float getNearPlane() { return nearPlane; }
+	inline float getFarPlane() { return farPlane; }
+
+	// update the camera (called each frame)
+	void update();
 
 	// set view direction
 	void pointAt(const glm::vec3& target);

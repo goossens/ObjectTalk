@@ -12,6 +12,7 @@
 #include <algorithm>
 
 #include "glm/gtc/matrix_transform.hpp"
+#include <glm/gtc/quaternion.hpp>
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
@@ -20,23 +21,6 @@
 #include "OtUi.h"
 
 #include "OtSceneEditorCamera.h"
-
-
-//
-//	OtSceneEditorCamera::update
-//
-
-void OtSceneEditorCamera::update() {
-	// calculate the new forward vector
-	forward = glm::normalize(glm::vec3(
-		std::cos(glm::radians(pitch)) * std::cos(glm::radians(yaw - 90.0f)),
-		std::sin(glm::radians(pitch)),
-		std::cos(glm::radians(pitch)) * std::sin(glm::radians(yaw - 90.0f))));
-
-	// also re-calculate the right and up vector
-	right = glm::normalize(glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f)));
-	up = glm::normalize(glm::cross(right, forward));
-}
 
 
 //
@@ -203,17 +187,29 @@ void OtSceneEditorCamera::handleKeyboardAndMouse() {
 
 
 //
+//	OtSceneEditorCamera::update
+//
+
+void OtSceneEditorCamera::update() {
+	auto orientation = glm::quat(glm::radians(glm::vec3(pitch, -yaw, 0.0f)));
+	forward = glm::rotate(orientation, glm::vec3(0.0f, 0.0f, -1.0f));
+	right = glm::rotate(orientation, glm::vec3(1.0f, 0.0f, 0.0f));
+	up = glm::rotate(orientation, glm::vec3(0.0f, 1.0f, 0.0f));
+}
+
+
+//
 //	OtSceneEditorCamera::pointAt
 //
 
 void OtSceneEditorCamera::pointAt(const glm::vec3& target) {
-	// determine direction of view
-	auto direction = target - position;
+	// determine new pitch and yaw
+	auto angles = glm::eulerAngles(glm::rotation(
+		glm::vec3(0.0f, 0.0f, -1.0f),
+		glm::normalize(target - position)));
 
-	// determine yaw and pitch
-	yaw = glm::degrees(std::atan2(-direction.x, -direction.z));
-	auto d = std::sqrt(direction.x * direction.x + direction.z * direction.z);
-    pitch = glm::degrees(std::atan2(direction.y, d));
+	pitch = glm::degrees(angles.x);
+	yaw = -glm::degrees(angles.y);
 }
 
 

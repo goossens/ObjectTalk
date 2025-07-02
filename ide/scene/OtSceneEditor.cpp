@@ -1098,7 +1098,7 @@ void OtSceneEditor::saveEditorCamera(OtEntity entity) {
 	camera.farPlane = editorCamera.getFarPlane();
 
 	transform.translation = editorCamera.getPosition();
-	transform.rotation = glm::vec3(editorCamera.getPitch(), editorCamera.getYaw(), 0.0f);
+	transform.rotation = glm::vec3(editorCamera.getPitch(), -editorCamera.getYaw(), 0.0f);
 
 	// create an edit task so this can be undone
 	auto newCamera = camera.serialize(nullptr).dump();
@@ -1122,7 +1122,7 @@ void OtSceneEditor::loadEditorCamera(OtEntity entity) {
 	editorCamera.setFarPlane(camera.farPlane);
 	editorCamera.setPosition(transform.translation);
 	editorCamera.setPitch(transform.rotation.x);
-	editorCamera.setYaw(transform.rotation.y);
+	editorCamera.setYaw(-transform.rotation.y);
 }
 
 

@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Populate(manifold QUIET GIT_REPOSITORY "https://github.com/elalish/manifold" GIT_TAG "1d18e60")
+FetchContent_Populate(manifold QUIET GIT_REPOSITORY "https://github.com/elalish/manifold" GIT_TAG "da4997b")
 
 file(GLOB MANIFOLD_SOURCES
 	${manifold_SOURCE_DIR}/src/*.cpp

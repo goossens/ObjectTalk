@@ -34,7 +34,7 @@ public:
 	OtParticlesPass(OtFrameBuffer& fb) : framebuffer(fb) {}
 
 	// render the pass
-	void render(OtSceneRendererContext& ctx) {
+	inline void render(OtSceneRendererContext& ctx) {
 		// determine view matrix for billboards (by removing rotation)
 		auto view = ctx.camera.viewMatrix;
 		view[0][0] = 1.0f;

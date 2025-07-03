@@ -35,7 +35,7 @@ public:
 	OtSkyPass(OtFrameBuffer& fb) : framebuffer(fb) {}
 
 	// render the pass
-	void render(OtSceneRendererContext& ctx) {
+	inline void render(OtSceneRendererContext& ctx) {
 		// get the camera's view matrix and decompose it
 		glm::vec3 scale;
 		glm::quat rotate;
@@ -68,7 +68,7 @@ public:
 	}
 
 	// render procedural sky
-	void renderSky(OtPass& pass, OtSkyComponent& component) {
+	inline void renderSky(OtPass& pass, OtSkyComponent& component) {
 		// set the uniform values
 		static float time = 0.0f;
 		time += ImGui::GetIO().DeltaTime;
@@ -101,7 +101,7 @@ public:
 	}
 
 	// render skybox
-	void renderSkyBox(OtPass& pass, OtSkyBoxComponent& component) {
+	inline void renderSkyBox(OtPass& pass, OtSkyBoxComponent& component) {
 		// set the uniform values
 		skyUniforms.setValue(0, component.brightness, component.gamma, 0.0f, 0.0f);
 		skyUniforms.submit();

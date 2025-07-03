@@ -60,10 +60,10 @@ private:
 	OtSampler emissiveSampler{"s_emissiveTexture"};
 	OtSampler aoSampler{"s_aoTexture"};
 
-	OtSampler shadowMap0Sampler{"s_shadowMap0"};
-	OtSampler shadowMap1Sampler{"s_shadowMap1"};
-	OtSampler shadowMap2Sampler{"s_shadowMap2"};
-	OtSampler shadowMap3Sampler{"s_shadowMap3"};
+	OtSampler shadowMap0Sampler{"s_shadowMap0", OtTexture::pointSampling | OtTexture::clampSampling};
+	OtSampler shadowMap1Sampler{"s_shadowMap1", OtTexture::pointSampling | OtTexture::clampSampling};
+	OtSampler shadowMap2Sampler{"s_shadowMap2", OtTexture::pointSampling | OtTexture::clampSampling};
+	OtSampler shadowMap3Sampler{"s_shadowMap3", OtTexture::pointSampling | OtTexture::clampSampling};
 
 	OtSampler region1Sampler{"s_region1Texture"};
 	OtSampler region2Sampler{"s_region2Texture"};

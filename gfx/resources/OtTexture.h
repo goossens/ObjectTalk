@@ -64,7 +64,7 @@ public:
 
 	// constructors
 	OtTexture() = default;
-	OtTexture(int w, int h, int f, uint64_t flgs = linearSampling | repeatSampling) { create(w, h, f, flgs); }
+	OtTexture(int w, int h, int f, uint64_t flags = linearSampling | repeatSampling) { create(w, h, f, flags); }
 	OtTexture(OtBgfxHandle<bgfx::TextureHandle> t, int w, int h, int f) : texture(t), width(w), height(h), format(f) {}
 
 	// clear the resources

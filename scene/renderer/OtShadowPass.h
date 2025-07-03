@@ -24,7 +24,7 @@
 class OtShadowPass : public OtSceneRenderEntitiesPass {
 public:
 	// render the pass
-	void render(OtSceneRendererContext& ctx) {
+	inline void render(OtSceneRendererContext& ctx) {
 		// update shadowmaps
 		ctx.csm->update(ctx.camera, ctx.directionalLightDirection);
 

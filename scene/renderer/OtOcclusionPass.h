@@ -27,7 +27,7 @@ public:
 	OtOcclusionPass(OtFrameBuffer& fb) : framebuffer(fb) {}
 
 	// render the pass
-	void render(OtSceneRendererContext& ctx) {
+	inline void render(OtSceneRendererContext& ctx) {
 		// setup the rendering pass
 		OtPass pass;
 		pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);

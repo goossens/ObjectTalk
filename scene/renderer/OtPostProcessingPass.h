@@ -33,7 +33,7 @@ public:
 	OtPostProcessingPass(OtFrameBuffer& fb) : framebuffer(fb) {}
 
 	// render the pass
-	int render(OtSceneRendererContext& ctx) {
+	inline int render(OtSceneRendererContext& ctx) {
 		// setup buffers
 		postProcessBuffer1.update(ctx.camera.width, ctx.camera.height);
 		postProcessBuffer2.update(ctx.camera.width, ctx.camera.height);
@@ -122,7 +122,7 @@ public:
 	}
 
 	// apply FXAA (Fast Approximate Anti-Aliasing) filter
-	void renderFxaa(OtSceneRendererContext& ctx, OtFrameBuffer* input, OtFrameBuffer* output) {
+	inline void renderFxaa(OtSceneRendererContext& ctx, OtFrameBuffer* input, OtFrameBuffer* output) {
 		// setup pass
 		OtPass pass;
 		pass.setFrameBuffer(*output);
@@ -141,7 +141,7 @@ public:
 	}
 
 	// apply fog
-	void renderFog(OtSceneRendererContext& ctx, OtFrameBuffer* input, OtFrameBuffer* output, float fogDensity, glm::vec3& fogColor) {
+	inline void renderFog(OtSceneRendererContext& ctx, OtFrameBuffer* input, OtFrameBuffer* output, float fogDensity, glm::vec3& fogColor) {
 		// setup pass
 		OtPass pass;
 		pass.setFrameBuffer(*output);
@@ -165,7 +165,7 @@ public:
 	}
 
 	// apply bloom
-	void renderBloom(OtSceneRendererContext& ctx, OtFrameBuffer* input, OtFrameBuffer* output, float bloomIntensity) {
+	inline void renderBloom(OtSceneRendererContext& ctx, OtFrameBuffer* input, OtFrameBuffer* output, float bloomIntensity) {
 		// initialize bloom buffers (if required)
 		if (!bloomBuffer[0].isValid()) {
 			for (auto i = 0; i < bloomDepth; i++) {
@@ -245,7 +245,7 @@ public:
 		pass.runShaderProgram(bloomApplyProgram);
 	}
 
-	void renderGodrays(OtSceneRendererContext& ctx, OtFrameBuffer* input, OtFrameBuffer* output, glm::vec2& uv) {
+	inline void renderGodrays(OtSceneRendererContext& ctx, OtFrameBuffer* input, OtFrameBuffer* output, glm::vec2& uv) {
 		// update occlusion buffer
 		int width = ctx.camera.width / 2;
 		int height = ctx.camera.height / 2;

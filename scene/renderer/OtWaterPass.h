@@ -41,7 +41,7 @@ public:
 	OtWaterPass(OtFrameBuffer& fb) : framebuffer(fb) {}
 
 	// render the pass
-	void render(OtSceneRendererContext& ctx) {
+	inline void render(OtSceneRendererContext& ctx) {
 		// update the buffers
 		width = ctx.camera.width;
 		height = ctx.camera.height;
@@ -58,7 +58,7 @@ public:
 	}
 
 	// render the water's reflection
-	void renderReflection(OtSceneRendererContext& ctx, OtWaterComponent& water) {
+	inline void renderReflection(OtSceneRendererContext& ctx, OtWaterComponent& water) {
 		// determine new view matrix
 		// see http://khayyam.kaplinski.com/2011/09/reflective-water-with-glsl-part-i.html
 		// and http://bcnine.com/articles/water/water.md.html
@@ -98,7 +98,7 @@ public:
 	}
 
 	// render the water's refraction
-	void renderRefraction(OtSceneRendererContext& ctx, OtWaterComponent& water) {
+	inline void renderRefraction(OtSceneRendererContext& ctx, OtWaterComponent& water) {
 		// setup the refraction camera
 		OtCamera refractionCamera{width, height, ctx.camera.projectionMatrix, ctx.camera.viewMatrix};
 
@@ -115,7 +115,7 @@ public:
 	}
 
 	// render the actual water
-	void renderWater(OtSceneRendererContext& ctx, OtWaterComponent& water) {
+	inline void renderWater(OtSceneRendererContext& ctx, OtWaterComponent& water) {
 		// setup the rendering pass
 		OtPass pass;
 		pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);

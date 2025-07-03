@@ -25,7 +25,6 @@
 #include "OtGpu.h"
 #include "OtPass.h"
 #include "OtReadBackBuffer.h"
-#include "OtSampler.h"
 #include "OtShaderProgram.h"
 #include "OtUniformVec4.h"
 
@@ -39,7 +38,7 @@
 class OtPickingPass : public OtSceneRenderEntitiesPass {
 public:
 	// render the pass
-	void render(OtSceneRendererContext& ctx, glm::vec2 ndc, std::function<void(OtEntity)> callback) {
+	inline void render(OtSceneRendererContext& ctx, glm::vec2 ndc, std::function<void(OtEntity)> callback) {
 		// sanity check
 		OtAssert(!picking);
 		picking = true;

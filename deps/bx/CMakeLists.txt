@@ -31,6 +31,7 @@ elseif(UNIX AND NOT APPLE)
 
 elseif(APPLE)
 	target_include_directories(bx PUBLIC ${bx_SOURCE_DIR}/include/compat/osx)
+	target_compile_options(bx PRIVATE -Wall -Wno-unused -Wno-shorten-64-to-32)
 endif()
 
 set_target_properties(bx PROPERTIES FOLDER deps)

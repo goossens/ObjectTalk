@@ -14,4 +14,8 @@ add_library(plutovg STATIC ${PLUTOVG_SOURCES})
 target_compile_definitions(plutovg PUBLIC "PLUTOVG_BUILD_STATIC")
 target_include_directories(plutovg PUBLIC ${plutovg_SOURCE_DIR}/include)
 
+target_compile_options(plutovg PRIVATE
+	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Werror -Wall -Wno-shorten-64-to-32>
+	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/wd4267>)
+
 set_target_properties(plutovg PROPERTIES FOLDER "deps")

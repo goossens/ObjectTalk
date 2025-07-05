@@ -44,6 +44,8 @@ list(REMOVE_ITEM BIMG_SOURCES ${bimg_SOURCE_DIR}/3rdparty/astc-encoder/source/as
 
 add_library(bimg STATIC ${BIMG_SOURCES})
 
+target_compile_options(bimg PRIVATE $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wall -Wno-unused -Wno-shorten-64-to-32>)
+
 target_include_directories(bimg PUBLIC
 	${bimg_SOURCE_DIR}/include
 	${bimg_SOURCE_DIR}/3rdparty

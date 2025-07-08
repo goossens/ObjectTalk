@@ -30,7 +30,7 @@
 					"component": "Camera",
 					"far": 500.0,
 					"fov": 50.0,
-					"mainCamera": false,
+					"mainCamera": true,
 					"near": 1.0
 				}
 			]
@@ -66,6 +66,7 @@
 					"uuid": 449063505
 				},
 				{
+					"castShadow": true,
 					"component": "Geometry",
 					"cullBack": false,
 					"path": "virtual:heart",
@@ -111,6 +112,10 @@
 						"metallic": 0.8299999833106995,
 						"metallicRoughnessTexture": "",
 						"normalTexture": "",
+						"offset": [
+							0.0,
+							0.0
+						],
 						"roughness": 0.5600000023841858,
 						"scale": 1.0
 					}
@@ -142,7 +147,7 @@
 				120.0
 			],
 			"speed": 3.0,
-			"yaw": -13.199999809265137
+			"yaw": 13.199999809265137
 		},
 		"gizmo": {
 			"enabled": false,

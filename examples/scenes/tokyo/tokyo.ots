@@ -30,7 +30,7 @@
 					"component": "Camera",
 					"far": 100.0,
 					"fov": 60.0,
-					"mainCamera": false,
+					"mainCamera": true,
 					"near": 0.10000000149011612
 				}
 			]
@@ -107,7 +107,7 @@
 				6.81071138381958
 			],
 			"speed": 3.0,
-			"yaw": 10.801462173461914
+			"yaw": -10.801462173461914
 		},
 		"gizmo": {
 			"enabled": false,

@@ -1,7 +1,7 @@
 var shape = import("shape");
 
 class Generator : shape.Shape {
-	function render(this) {
+	function generate(this) {
 		this.moveTo(25, 25);
 		this.bezierCurveTo(25, 25, 20, 50, 0, 50);
 		this.bezierCurveTo(-30, 50, -30, 15, -30, 15);

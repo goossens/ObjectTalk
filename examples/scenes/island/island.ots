@@ -66,6 +66,7 @@
 					"uuid": 2028805799
 				},
 				{
+					"castShadow": true,
 					"component": "Geometry",
 					"cullBack": false,
 					"path": "virtual:island",
@@ -93,6 +94,10 @@
 						"metallic": 0.5,
 						"metallicRoughnessTexture": "",
 						"normalTexture": "",
+						"offset": [
+							0.0,
+							0.0
+						],
 						"roughness": 0.5,
 						"scale": 15.100000381469727
 					}
@@ -122,7 +127,7 @@
 							]
 						},
 						"2842695751": {
-							"value": 7.0
+							"value": 7
 						},
 						"2893673049": {
 							"value": 0.5
@@ -160,6 +165,7 @@
 						0.8539823293685913
 					],
 					"component": "Water",
+					"depthFactor": 1.0,
 					"distance": 500.0,
 					"level": 15.0,
 					"metallic": 0.10000000149011612,
@@ -216,6 +222,7 @@
 		],
 		"fogDensity": 0.10000000149011612,
 		"fxaa": true,
-		"godrays": false
+		"godrays": false,
+		"tonemap": 3
 	}
 }

@@ -68,6 +68,7 @@
 							"uuid": 2396579673
 						},
 						{
+							"castShadow": true,
 							"component": "Geometry",
 							"cullBack": true,
 							"path": "virtual:wall",
@@ -113,6 +114,10 @@
 								"metallic": 0.0,
 								"metallicRoughnessTexture": "",
 								"normalTexture": "assets/wall/normals.jpg",
+								"offset": [
+									0.0,
+									0.0
+								],
 								"roughness": 1.0,
 								"scale": 1.0
 							}
@@ -128,6 +133,7 @@
 							"uuid": 634174959
 						},
 						{
+							"castShadow": true,
 							"component": "Geometry",
 							"cullBack": true,
 							"path": "virtual:wall",
@@ -173,6 +179,10 @@
 								"metallic": 0.0,
 								"metallicRoughnessTexture": "",
 								"normalTexture": "assets/wall/normals.jpg",
+								"offset": [
+									0.0,
+									0.0
+								],
 								"roughness": 1.0,
 								"scale": 1.0
 							}
@@ -188,6 +198,7 @@
 							"uuid": 1401126317
 						},
 						{
+							"castShadow": true,
 							"component": "Geometry",
 							"cullBack": true,
 							"path": "virtual:wall",
@@ -233,6 +244,10 @@
 								"metallic": 0.0,
 								"metallicRoughnessTexture": "",
 								"normalTexture": "assets/wall/normals.jpg",
+								"offset": [
+									0.0,
+									0.0
+								],
 								"roughness": 1.0,
 								"scale": 1.0
 							}
@@ -248,6 +263,7 @@
 							"uuid": 1238961594
 						},
 						{
+							"castShadow": true,
 							"component": "Geometry",
 							"cullBack": true,
 							"path": "virtual:wall",
@@ -293,6 +309,10 @@
 								"metallic": 0.0,
 								"metallicRoughnessTexture": "",
 								"normalTexture": "assets/wall/normals.jpg",
+								"offset": [
+									0.0,
+									0.0
+								],
 								"roughness": 1.0,
 								"scale": 1.0
 							}
@@ -324,6 +344,7 @@
 							"uuid": 2618592115
 						},
 						{
+							"castShadow": true,
 							"component": "Model",
 							"model": "assets/firewood/Firewood1.gltf"
 						},
@@ -671,6 +692,7 @@
 									"uuid": 2634288849
 								},
 								{
+									"castShadow": true,
 									"component": "Model",
 									"model": "assets/torch/Torch.gltf"
 								},
@@ -838,6 +860,7 @@
 									"uuid": 236632611
 								},
 								{
+									"castShadow": true,
 									"component": "Model",
 									"model": "assets/torch/Torch.gltf"
 								},

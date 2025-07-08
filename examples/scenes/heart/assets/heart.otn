@@ -19,6 +19,16 @@
 			"from": 109698154,
 			"id": 457562317,
 			"to": 2781239163
+		},
+		{
+			"from": 2873823255,
+			"id": 1092189974,
+			"to": 2568282755
+		},
+		{
+			"from": 839890254,
+			"id": 256052837,
+			"to": 1362177060
 		}
 	],
 	"metadata": {},
@@ -122,6 +132,50 @@
 			"type": "Save Geometry to Virtual",
 			"x": 655.0,
 			"y": 91.0
+		},
+		{
+			"azimuth": 0.0,
+			"elevation": 0.0,
+			"id": 61776391,
+			"inputs": [
+				{
+					"id": 2568282755,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"lightColor": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"meshColor": [
+				1.0,
+				0.8500000238418579,
+				0.0
+			],
+			"outputs": [],
+			"title": "Geometry Probe",
+			"type": "Geometry Probe",
+			"wireframe": false,
+			"x": 638.0,
+			"y": 226.0,
+			"zoom": 0.949999988079071
+		},
+		{
+			"id": 4036007695,
+			"inputs": [
+				{
+					"id": 1362177060,
+					"name": "Shape",
+					"type": "shape"
+				}
+			],
+			"outputs": [],
+			"title": "Shape Probe",
+			"type": "Shape Probe",
+			"x": 379.0,
+			"y": 318.0
 		}
 	]
 }

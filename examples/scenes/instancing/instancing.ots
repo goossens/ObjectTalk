@@ -30,7 +30,7 @@
 					"component": "Camera",
 					"far": 100.0,
 					"fov": 60.0,
-					"mainCamera": false,
+					"mainCamera": true,
 					"near": 0.10000000149011612
 				}
 			]
@@ -83,6 +83,7 @@
 							"uuid": 2807222734
 						},
 						{
+							"castShadow": true,
 							"component": "Geometry",
 							"cullBack": true,
 							"path": "virtual:parentV",
@@ -110,6 +111,10 @@
 								"metallic": 0.5,
 								"metallicRoughnessTexture": "",
 								"normalTexture": "",
+								"offset": [
+									0.0,
+									0.0
+								],
 								"roughness": 0.5,
 								"scale": 1.0
 							}
@@ -125,6 +130,7 @@
 							"uuid": 1880476020
 						},
 						{
+							"castShadow": true,
 							"component": "Geometry",
 							"cullBack": true,
 							"path": "virtual:child",
@@ -156,6 +162,10 @@
 								"metallic": 0.7900000214576721,
 								"metallicRoughnessTexture": "",
 								"normalTexture": "",
+								"offset": [
+									0.0,
+									0.0
+								],
 								"roughness": 0.3400000035762787,
 								"scale": 1.0
 							}
@@ -182,6 +192,7 @@
 							"uuid": 2741517982
 						},
 						{
+							"castShadow": true,
 							"component": "Geometry",
 							"cullBack": true,
 							"path": "virtual:parentF",
@@ -209,6 +220,10 @@
 								"metallic": 0.5,
 								"metallicRoughnessTexture": "",
 								"normalTexture": "",
+								"offset": [
+									0.0,
+									0.0
+								],
 								"roughness": 0.5,
 								"scale": 1.0
 							}
@@ -224,6 +239,7 @@
 							"uuid": 898881119
 						},
 						{
+							"castShadow": true,
 							"component": "Geometry",
 							"cullBack": true,
 							"path": "virtual:child",
@@ -255,6 +271,10 @@
 								"metallic": 1.0,
 								"metallicRoughnessTexture": "",
 								"normalTexture": "",
+								"offset": [
+									0.0,
+									0.0
+								],
 								"roughness": 0.36000001430511475,
 								"scale": 1.0
 							}

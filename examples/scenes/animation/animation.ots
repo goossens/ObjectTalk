@@ -46,7 +46,7 @@
 					"component": "Camera",
 					"far": 9.0,
 					"fov": 60.0,
-					"mainCamera": false,
+					"mainCamera": true,
 					"near": 1.0
 				}
 			]

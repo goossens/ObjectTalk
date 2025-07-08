@@ -95,6 +95,7 @@
 					"uuid": 2553736312
 				},
 				{
+					"castShadow": true,
 					"component": "Geometry",
 					"cullBack": true,
 					"path": "virtual:ball",
@@ -140,6 +141,10 @@
 						"metallic": 0.44999998807907104,
 						"metallicRoughnessTexture": "",
 						"normalTexture": "",
+						"offset": [
+							0.0,
+							0.0
+						],
 						"roughness": 0.4000000059604645,
 						"scale": 1.0
 					}
@@ -154,17 +159,17 @@
 	],
 	"metadata": {
 		"camera": {
-			"far": 5000.0,
-			"fov": 60.0,
+			"far": 528.0,
+			"fov": 70.0,
 			"near": 1.0,
-			"pitch": -20.0,
+			"pitch": -5.0,
 			"position": [
 				0.0,
 				50.0,
 				500.0
 			],
 			"speed": 3.0,
-			"yaw": 0.0
+			"yaw": -0.0
 		},
 		"gizmo": {
 			"enabled": false,

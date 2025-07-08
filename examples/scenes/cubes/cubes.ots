@@ -81,6 +81,7 @@
 					"uuid": 2430172498
 				},
 				{
+					"castShadow": true,
 					"component": "Geometry",
 					"cullBack": true,
 					"path": "virtual:cube",
@@ -126,6 +127,10 @@
 						"metallic": 0.5,
 						"metallicRoughnessTexture": "",
 						"normalTexture": "",
+						"offset": [
+							0.0,
+							0.0
+						],
 						"roughness": 0.5,
 						"scale": 1.0
 					}
@@ -145,6 +150,7 @@
 					"uuid": 2633785743
 				},
 				{
+					"castShadow": true,
 					"component": "Geometry",
 					"cullBack": true,
 					"path": "virtual:cube",
@@ -190,6 +196,10 @@
 						"metallic": 0.5,
 						"metallicRoughnessTexture": "",
 						"normalTexture": "",
+						"offset": [
+							0.0,
+							0.0
+						],
 						"roughness": 0.5,
 						"scale": 1.0
 					}
@@ -209,6 +219,7 @@
 					"uuid": 3742618790
 				},
 				{
+					"castShadow": true,
 					"component": "Geometry",
 					"cullBack": true,
 					"path": "virtual:cube",
@@ -254,6 +265,10 @@
 						"metallic": 0.5,
 						"metallicRoughnessTexture": "",
 						"normalTexture": "",
+						"offset": [
+							0.0,
+							0.0
+						],
 						"roughness": 0.5,
 						"scale": 1.0
 					}

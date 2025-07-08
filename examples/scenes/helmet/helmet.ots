@@ -74,6 +74,7 @@
 					"uuid": 1501969473
 				},
 				{
+					"castShadow": true,
 					"component": "Model",
 					"model": "assets/DamagedHelmet.gltf"
 				},

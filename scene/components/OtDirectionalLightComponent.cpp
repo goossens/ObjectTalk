@@ -40,7 +40,6 @@ bool OtDirectionalLightComponent::renderUI() {
 
 nlohmann::json OtDirectionalLightComponent::serialize(std::string* /* basedir */) {
 	auto data = nlohmann::json::object();
-	data["component"] = name;
 	data["elevation"] = elevation;
 	data["azimuth"] = azimuth;
 	data["color"] = color;

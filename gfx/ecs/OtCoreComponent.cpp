@@ -55,7 +55,6 @@ void OtCoreComponent::assignNewUuid() {
 
 nlohmann::json OtCoreComponent::serialize(std::string* /* basedir */) {
 	auto data = nlohmann::json::object();
-	data["component"] = name;
 	data["uuid"] = uuid;
 	data["tag"] = tag;
 	return data;

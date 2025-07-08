@@ -38,7 +38,6 @@ bool OtPointLightComponent::renderUI() {
 
 nlohmann::json OtPointLightComponent::serialize(std::string* /* basedir */) {
 	auto data = nlohmann::json::object();
-	data["component"] = name;
 	data["offset"] = offset;
 	data["radius"] = radius;
 	data["color"] = color;

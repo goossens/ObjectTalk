@@ -58,7 +58,6 @@ void OtModelComponent::update() {
 
 nlohmann::json OtModelComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
-	data["component"] = name;
 	data["model"] = OtAssetSerialize(asset.getPath(), basedir);
 	data["castShadow"] = castShadow;
 	return data;

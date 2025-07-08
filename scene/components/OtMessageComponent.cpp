@@ -35,7 +35,6 @@ bool OtMessageComponent::renderUI() {
 
 nlohmann::json OtMessageComponent::serialize(std::string* /* basedir */) {
 	auto data = nlohmann::json::object();
-	data["component"] = name;
 	data["message"] = message;
 	data["visibleTime"] = visibleTime;
 	data["fadeTime"] = fadeTime;

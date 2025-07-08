@@ -117,7 +117,6 @@ bool OtNodesComponent::renderUI() {
 
 nlohmann::json OtNodesComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
-	data["component"] = name;
 	data["path"] = OtAssetSerialize(asset.getPath(), basedir);
 
 	auto settings = nlohmann::json::object();

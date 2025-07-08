@@ -43,7 +43,6 @@ bool OtMaterialComponent::renderUI() {
 
 nlohmann::json OtMaterialComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
-	data["component"] = name;
 	data["material"] = material->serialize(basedir);
 	return data;
 }

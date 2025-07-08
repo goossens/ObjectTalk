@@ -128,7 +128,9 @@ OtEntity OtScene::duplicateEntity(const std::string& json, std::string* basedir)
 template<typename T>
 static inline void serializeComponentToJson(nlohmann::json& json, OtScene* scene, OtEntity entity, std::string* basedir) {
 	if (scene->hasComponent<T>(entity)) {
-		json.push_back(scene->getComponent<T>(entity).serialize(basedir));
+		nlohmann::json data = scene->getComponent<T>(entity).serialize(basedir);
+		data["component"] = T::name;
+		json.push_back(data);
 	}
 }
 

@@ -37,7 +37,6 @@ bool OtSkyBoxComponent::renderUI() {
 
 nlohmann::json OtSkyBoxComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
-	data["component"] = name;
 	data["cubemap"] = OtAssetSerialize(cubemap.getPath(), basedir);
 	data["brightness"] = brightness;
 	data["gamma"] = gamma;

@@ -129,7 +129,6 @@ void OtScriptComponent::update() {
 
 nlohmann::json OtScriptComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
-	data["component"] = name;
 	data["path"] = OtAssetSerialize(script.getPath(), basedir);
 	return data;
 }

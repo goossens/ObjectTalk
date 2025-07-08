@@ -42,7 +42,6 @@ bool OtParticlesComponent::renderUI() {
 
 nlohmann::json OtParticlesComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
-	data["component"] = name;
 	data["settings"] = settings.serialize(basedir);
 	return data;
 }

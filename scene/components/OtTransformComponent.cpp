@@ -51,7 +51,6 @@ bool OtTransformComponent::renderUI() {
 
 nlohmann::json OtTransformComponent::serialize(std::string* /* basedir */) {
 	auto data = nlohmann::json::object();
-	data["component"] = name;
 	data["translation"] = translation;
 	data["rotation"] = rotation;
 	data["scale"] = scale;

@@ -33,7 +33,6 @@ bool OtIblComponent::renderUI() {
 
 nlohmann::json OtIblComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
-	data["component"] = name;
 	data["cubemap"] = OtAssetSerialize(cubemap.getPath(), basedir);
 	return data;
 }

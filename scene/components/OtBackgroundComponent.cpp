@@ -33,7 +33,6 @@ bool OtBackgroundComponent::renderUI() {
 
 nlohmann::json OtBackgroundComponent::serialize(std::string* /* basedir */) {
 	auto data = nlohmann::json::object();
-	data["component"] = name;
 	data["color"] = color;
 	return data;
 }

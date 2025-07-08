@@ -49,7 +49,6 @@ bool OtWaterComponent::renderUI() {
 
 nlohmann::json OtWaterComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
-	data["component"] = name;
 	data["level"] = level;
 	data["distance"] = distance;
 	data["useRefractance"] = useRefractance;

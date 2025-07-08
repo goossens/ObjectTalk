@@ -31,7 +31,6 @@ bool OtInstancingComponent::renderUI() {
 
 nlohmann::json OtInstancingComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
-	data["component"] = name;
 	data["path"] = OtAssetSerialize(asset.getPath(), basedir);
 	return data;
 }

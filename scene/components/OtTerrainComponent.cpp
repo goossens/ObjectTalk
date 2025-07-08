@@ -41,7 +41,6 @@ bool OtTerrainComponent::renderUI() {
 
 nlohmann::json OtTerrainComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
-	data["component"] = name;
 	data.update(terrain->serialize(basedir));
 	return data;
 }

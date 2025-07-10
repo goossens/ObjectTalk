@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "OtBgfxHandle.h"
 
 
@@ -25,7 +27,7 @@ public:
 	inline void clear() { indexBuffer.clear(); }
 
 	// set indices
-	void set(void* data, size_t count);
+	void set(uint32_t* data, size_t count);
 
 	// see if buffer is valid
 	inline bool isValid() { return indexBuffer.isValid(); }

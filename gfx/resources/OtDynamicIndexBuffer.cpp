@@ -20,7 +20,7 @@
 //	OtDynamicIndexBuffer::set
 //
 
-void OtDynamicIndexBuffer::set(void* data, size_t count) {
+void OtDynamicIndexBuffer::set(uint32_t* data, size_t count) {
 	if (!isValid()) {
 		indexBuffer = bgfx::createDynamicIndexBuffer(1000);
 	}

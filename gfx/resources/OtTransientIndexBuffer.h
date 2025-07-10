@@ -13,6 +13,7 @@
 //
 
 #include <cstddef>
+#include <cstdint>
 
 
 //
@@ -22,5 +23,5 @@
 class OtTransientIndexBuffer {
 public:
 	// submit to GPU
-	void submit(void* data, size_t count);
+	void submit(uint32_t* data, size_t count);
 };

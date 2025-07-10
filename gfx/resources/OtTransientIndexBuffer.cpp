@@ -22,7 +22,7 @@
 //	OtTransientIndexBuffer::submit
 //
 
-void OtTransientIndexBuffer::submit(void* data, size_t count) {
+void OtTransientIndexBuffer::submit(uint32_t* data, size_t count) {
 	// sanity check
 	if ((bgfx::getAvailTransientIndexBuffer(static_cast<uint32_t>(count)) != count)) {
 		OtLogFatal("Internal error: insufficient transient index buffer space");

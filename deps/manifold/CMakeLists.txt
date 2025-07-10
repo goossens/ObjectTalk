@@ -17,7 +17,7 @@ target_compile_definitions(manifold PUBLIC "MANIFOLD_PAR=-1")
 
 target_compile_options(manifold PRIVATE
 	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Wall -Wno-unknown-warning-option -Wno-unused -Wno-shorten-64-to-32>
-	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/wd4267>)
+	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/wd4244 /wd4267>)
 
 target_include_directories(manifold PUBLIC ${manifold_SOURCE_DIR}/include)
 target_link_libraries(manifold PUBLIC clipper2)

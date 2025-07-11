@@ -398,7 +398,7 @@ void OtFramework::updateTextureIMGUI(ImTextureData* texture) {
 		auto format = texture->Format == ImTextureFormat_RGBA32 ? bgfx::TextureFormat::Enum::RGBA8 : bgfx::TextureFormat::Enum::A8;
 
 		// create texture
-		auto handle = bgfx::createTexture2D(w, h, false, 1, format);
+		auto handle = bgfx::createTexture2D(w, h, false, 1, format, BGFX_SAMPLER_POINT | BGFX_SAMPLER_UVW_CLAMP);
 
 		// set texture pixels and status
 		auto size = bimg::imageGetSize(nullptr, w, h, 1, false, false, 1, bimg::TextureFormat::Enum(format));
@@ -467,20 +467,24 @@ void OtFramework::endFrameIMGUI() {
 	}
 
 	// scale coordinates for retina displays (screen size != framebuffer size)
-	drawData->ScaleClipRects(ImGui::GetIO().DisplayFramebufferScale);
+//	drawData->ScaleClipRects(ImGui::GetIO().DisplayFramebufferScale);
 
 	// setup orthographic projection matrix
 	glm::mat4 matrix = glm::ortho(0.0f, static_cast<float>(w), static_cast<float>(h), 0.0f);
 	bgfx::setViewTransform(255, nullptr, glm::value_ptr(matrix));
 	bgfx::setViewRect(255, 0, 0, static_cast<uint16_t>(w), static_cast<uint16_t>(h));
 
+	auto clipPos = drawData->DisplayPos;
+	auto clipScale = drawData->FramebufferScale;
+	auto dispWidth = drawData->DisplaySize.x * clipScale.x;
+	auto dispHeight = drawData->DisplaySize.y * clipScale.y;
+
 	// Render command lists
 	for (int n = 0; n < drawData->CmdListsCount; n++) {
-		const ImDrawList* cmdList = drawData->CmdLists[n];
-
 		bgfx::TransientVertexBuffer tvb;
 		bgfx::TransientIndexBuffer tib;
 
+		ImDrawList* cmdList = drawData->CmdLists[n];
 		uint32_t numVertices = static_cast<uint32_t>(cmdList->VtxBuffer.size());
 		uint32_t numIndices = static_cast<uint32_t>(cmdList->IdxBuffer.size());
 
@@ -491,39 +495,44 @@ void OtFramework::endFrameIMGUI() {
 		}
 
 		bgfx::allocTransientVertexBuffer(&tvb, numVertices, imguiVertexLayout);
+		memcpy(tvb.data, cmdList->VtxBuffer.begin(), numVertices * sizeof(ImDrawVert));
+
 		bgfx::allocTransientIndexBuffer(&tib, numIndices);
-
-		ImDrawVert* verts = (ImDrawVert*) tvb.data;
-		memcpy(verts, cmdList->VtxBuffer.begin(), numVertices * sizeof(ImDrawVert));
-
-		ImDrawIdx* indices = (ImDrawIdx*) tib.data;
-		memcpy(indices, cmdList->IdxBuffer.begin(), numIndices * sizeof(ImDrawIdx));
+		memcpy(tib.data, cmdList->IdxBuffer.begin(), numIndices * sizeof(ImDrawIdx));
 
 		for (auto i = 0; i < cmdList->CmdBuffer.Size; i++) {
-			const ImDrawCmd* cmd = &cmdList->CmdBuffer[i];
+			ImDrawCmd* cmd = &cmdList->CmdBuffer[i];
 
 			if (cmd->UserCallback) {
 				cmd->UserCallback(cmdList, cmd);
 
-			} else {
-				const uint16_t xx = static_cast<uint16_t>(std::max(cmd->ClipRect.x, 0.0f));
-				const uint16_t yy = static_cast<uint16_t>(std::max(cmd->ClipRect.y, 0.0f));
+			} else if (cmd->ElemCount != 0) {
+				ImVec4 clipRect;
+				clipRect.x = (cmd->ClipRect.x - clipPos.x) * clipScale.x;
+				clipRect.y = (cmd->ClipRect.y - clipPos.y) * clipScale.y;
+				clipRect.z = (cmd->ClipRect.z - clipPos.x) * clipScale.x;
+				clipRect.w = (cmd->ClipRect.w - clipPos.y) * clipScale.y;
 
-				bgfx::setState(
-					BGFX_STATE_WRITE_RGB |
-					BGFX_STATE_WRITE_A |
-					BGFX_STATE_BLEND_ALPHA);
+				if (clipRect.x < dispWidth && clipRect.y < dispHeight && clipRect.z >= 0.0f && clipRect.w >= 0.0f) {
+					bgfx::setState(
+						BGFX_STATE_WRITE_RGB |
+						BGFX_STATE_WRITE_A |
+						BGFX_STATE_BLEND_ALPHA);
 
-				bgfx::setScissor(
-					xx, yy,
-					static_cast<uint16_t>(std::min(cmd->ClipRect.z, 65535.0f) - xx),
-					static_cast<uint16_t>(std::min(cmd->ClipRect.w, 65535.0f) - yy));
+					uint16_t xx = static_cast<uint16_t>(std::max(clipRect.x, 0.0f));
+					uint16_t yy = static_cast<uint16_t>(std::max(clipRect.y, 0.0f));
 
-				bgfx::TextureHandle handle = { static_cast<uint16_t>(cmd->TexRef.GetTexID()) };
-				imguiFontSampler.submit(0, handle);
-				bgfx::setVertexBuffer(0, &tvb);
-				bgfx::setIndexBuffer(&tib, cmd->IdxOffset, cmd->ElemCount);
-				imguiShaderProgram.submit(255);
+					bgfx::setScissor(
+						xx, yy,
+						static_cast<uint16_t>(std::min(clipRect.z, 65535.0f) - xx),
+						static_cast<uint16_t>(std::min(clipRect.w, 65535.0f) - yy));
+
+					bgfx::TextureHandle handle = { static_cast<uint16_t>(cmd->TexRef.GetTexID()) };
+					imguiTextureSampler.submit(0, handle);
+					bgfx::setVertexBuffer(0, &tvb);
+					bgfx::setIndexBuffer(&tib, cmd->IdxOffset, cmd->ElemCount);
+					imguiShaderProgram.submit(255);
+				}
 			}
 		}
 	}
@@ -544,7 +553,7 @@ void OtFramework::endIMGUI() {
 		}
 	}
 
-	imguiFontSampler.clear();
+	imguiTextureSampler.clear();
 	imguiShaderProgram.clear();
 	ImGui::DestroyContext();
 }

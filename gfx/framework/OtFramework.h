@@ -93,7 +93,7 @@ private:
 
 	// support Dear ImGui
 	bgfx::VertexLayout imguiVertexLayout;
-	OtSampler imguiFontSampler{"s_imguiFontAtlas"};
+	OtSampler imguiTextureSampler{"s_imguiTexture", OtTexture::pointSampling | OtTexture::clampSampling};
 	OtShaderProgram imguiShaderProgram{"OtImGuiVS", "OtImGuiFS"};
 
 	// cursors

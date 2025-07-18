@@ -1,0 +1,123 @@
+{
+	"links": [
+		{
+			"from": 1547017727,
+			"id": 2964977187,
+			"to": 1631888896
+		},
+		{
+			"from": 4042769463,
+			"id": 1769493129,
+			"to": 1588825036
+		}
+	],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 2639533081,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 1547017727,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"primitive": {
+				"radialLength": 360.0,
+				"radialSegments": 32,
+				"radialStart": 0.0,
+				"radius": 1.0,
+				"tubeRadius": 0.5,
+				"tubularLength": 360.0,
+				"tubularSegments": 16,
+				"tubularStart": 0.0,
+				"type": "Torus"
+			},
+			"title": "Geometry Generator",
+			"type": "Geometry Generator",
+			"x": 325.0,
+			"y": 322.0
+		},
+		{
+			"id": 3423983873,
+			"inputs": [
+				{
+					"id": 1631888896,
+					"name": "Input",
+					"type": "geometry"
+				},
+				{
+					"id": 3637163203,
+					"name": "Translate",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 3385686453,
+					"name": "Rotate",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 2392317642,
+					"name": "Scale",
+					"type": "vector3",
+					"value": [
+						1.0,
+						1.0,
+						1.0
+					]
+				}
+			],
+			"outputs": [
+				{
+					"id": 4042769463,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Geometry Transform",
+			"type": "Geometry Transform",
+			"x": 586.0,
+			"y": 302.0
+		},
+		{
+			"azimuth": -24.649860382080078,
+			"elevation": 33.14503479003906,
+			"id": 3927789743,
+			"inputs": [
+				{
+					"id": 1588825036,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"lightColor": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"meshColor": [
+				1.0,
+				0.8500000238418579,
+				0.0
+			],
+			"outputs": [],
+			"title": "Geometry Probe",
+			"type": "Geometry Probe",
+			"wireframe": true,
+			"x": 1016.0,
+			"y": 250.0,
+			"zoom": 0.949999988079071
+		}
+	]
+}

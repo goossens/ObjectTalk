@@ -187,21 +187,72 @@
             <p>
               <img src="img/geometry-generator.png#right" alt="screenshot" />
             </p>
-            <p><strong>Inputs</strong></p>
+            <p>
+              The Geometry Generator node outputs a geometry based on the
+              specified properties/
+            </p>
             <p><strong>Properties</strong></p>
+            <ul>
+              <li>
+                Type - Specifies the type a standard geometry selected from a
+                list: Grid, Plan, Circle, Cube, Cylinder, Sphere, Torus,
+                Tetrahedron, Octahedron, Dodecahedron, Icosahedron and Spherical
+                cube.
+              </li>
+              <li>
+                The rest of the properties depend on the selected geometry type.
+              </li>
+            </ul>
             <p><strong>Outputs</strong></p>
+            <ul>
+              <li>Geometry - The specified geometry.</li>
+            </ul>
             <h4>Geometry Transform</h4>
             <p>
               <img src="img/geometry-transform.png#right" alt="screenshot" />
             </p>
+            <p>
+              The Geometry Transform node transforms a provided geometry based
+              on scaling, rotating and translating operations (which are
+              executed in that order). If you need a different order, you need
+              to use multiple Geometry Nodes in a sequence.
+            </p>
             <p><strong>Inputs</strong></p>
+            <ul>
+              <li>Input - The target geometry.</li>
+              <li>Translate - a 3D translation vector.</li>
+              <li>
+                Rotate - a 3D vector expressing the euler rotation angles in
+                degrees.
+              </li>
+              <li>Scale - a 3D scaling vector.</li>
+            </ul>
             <p><strong>Outputs</strong></p>
+            <ul>
+              <li>Output - The transformed geometry.</li>
+            </ul>
             <h4>Instances on Faces</h4>
             <p>
               <img src="img/instances-on-faces.png#right" alt="screenshot" />
             </p>
+            <p>
+              The Instances on Faces node generates a set of specified instances
+              based on the faces of an input geometry.
+            </p>
             <p><strong>Inputs</strong></p>
+            <ul>
+              <li>Geometry -</li>
+              <li>Seed -</li>
+              <li>Instance COunt -</li>
+              <li>Selection -</li>
+              <li>Rotate to Normals -</li>
+              <li>Rotation -</li>
+              <li>Scale -</li>
+            </ul>
             <p><strong>Outputs</strong></p>
+            <ul>
+              <li>Instances -</li>
+            </ul>
             <h4>Instances on Vertices</h4>
             <p>
               <img src="img/instances-on-vertices.png#right" alt="screenshot" />

@@ -192,7 +192,7 @@ private:
 
 	OtUniformVec4 waterUniforms{"u_water", 4};
 
-	OtSampler normalmapSampler{"s_normalmapTexture"};
+	OtSampler normalmapSampler{"s_normalMapTexture"};
 	OtSampler reflectionSampler{"s_reflectionTexture"};
 	OtSampler refractionSampler{"s_refractionTexture"};
 	OtSampler refractionDepthSampler{"s_refractionDepthTexture"};

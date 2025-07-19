@@ -34,6 +34,7 @@ protected:
 	virtual OtShaderProgram* getTransparentProgram() = 0;
 	virtual OtShaderProgram* getInstancedTransparentProgram() = 0;
 	virtual OtShaderProgram* getTerrainProgram() = 0;
+	virtual OtShaderProgram* getGrassProgram() = 0;
 
 	virtual uint64_t getNormalState() = 0;
 	virtual uint64_t getCullBackState() = 0;
@@ -59,6 +60,7 @@ private:
 	void renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& component);
 	void renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& component);
 	void renderTerrain(OtSceneRendererContext& ctx, OtEntity entity, OtTerrainComponent& component);
+	void renderGrass(OtSceneRendererContext& ctx, OtEntity entity, OtGrassComponent& component);
 	void renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& component);
 
 	// private properties
@@ -67,6 +69,7 @@ private:
 	OtUniformVec4 albedoUniforms{"u_albedo", 2};
 	OtUniformVec4 materialUniforms{"u_material", 5};
 	OtUniformVec4 terrainUniforms{"u_terrain", 9};
+	OtUniformVec4 grassUniforms{"u_grass", 6};
 
 	OtSampler iblBrdfLutSampler{"s_iblBrdfLut"};
 	OtSampler iblIrradianceMapSampler{"s_iblIrradianceMap"};
@@ -82,5 +85,5 @@ private:
 	OtSampler region2Sampler{"s_region2Texture"};
 	OtSampler region3Sampler{"s_region3Texture"};
 	OtSampler region4Sampler{"s_region4Texture"};
-	OtSampler normalmapSampler{"s_normalmapTexture"};
+	OtSampler normalmapSampler{"s_normalMapTexture"};
 };

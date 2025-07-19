@@ -69,5 +69,5 @@ private:
 	OtSampler region2Sampler{"s_region2Texture"};
 	OtSampler region3Sampler{"s_region3Texture"};
 	OtSampler region4Sampler{"s_region4Texture"};
-	OtSampler normalmapSampler{"s_normalmapTexture"};
+	OtSampler normalmapSampler{"s_normalMapTexture"};
 };

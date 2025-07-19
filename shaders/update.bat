@@ -57,6 +57,9 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f generator\OtTileableFbmFS.glsl -o generated\generator\OtTileableFbmFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtTileableFbmFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f godrays\OtGodraysVS.glsl -o generated\godrays\OtGodraysVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtGodraysVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f godrays\OtGodraysFS.glsl -o generated\godrays\OtGodraysFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtGodraysFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f grass\OtGrassSimpleVS.glsl -o generated\grass\OtGrassSimpleVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtGrassSimpleVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f grass\OtGrassVS.glsl -o generated\grass\OtGrassVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtGrassVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f grass\OtGrassFS.glsl -o generated\grass\OtGrassFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtGrassFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f grid\OtGridVS.glsl -o generated\grid\OtGridVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtGridVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f grid\OtGridFS.glsl -o generated\grid\OtGridFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtGridFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f highlight\OtOutlineVS.glsl -o generated\highlight\OtOutlineVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtOutlineVS_dx11

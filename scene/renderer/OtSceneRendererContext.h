@@ -67,6 +67,7 @@ public:
 	bool hasSkyEntities;
 	bool hasTransparentEntities;
 	bool hasWaterEntities;
+	bool hasGrassEntities;
 	bool hasParticlesEntities;
 	bool renderingShadow = false;
 

@@ -73,7 +73,7 @@ vec3 worldToClipSpace(vec3 pos) {
 	return p.xyz / p.w;
 }
 
-// determine UV screeninates from world screeninates
+// determine UV coordinates from world coordinates
 vec2 worldSpaceToUv(vec3 pos) {
 	return clipToUvSpace(worldToClipSpace(pos));
 }
@@ -120,13 +120,13 @@ vec3 screenToWorldSpace(vec4 screen) {
 	return world.xyz;
 }
 
-// premultiply color
-vec4 premultiplyAlpha(vec4 color) {
+// pre multiply color
+vec4 preMultiplyAlpha(vec4 color) {
 	return vec4(color.rgb * color.a, color.a);
 }
 
-// unpremultiply color
-vec4 unpremultiplyAlpha(vec4 color)  {
+// un pre multiply color
+vec4 unPreMultiplyAlpha(vec4 color)  {
 	if (color.a == 0.0) {
 		return vec4_splat(0.0);
 	}
@@ -134,5 +134,24 @@ vec4 unpremultiplyAlpha(vec4 color)  {
 	return vec4(color.rgb / color.a, color.a);
 }
 
+// support functions
+float inverseLerp(float value, float minValue, float maxValue) {
+  return (value - minValue) / (maxValue - minValue);
+}
+
+float remap(float value, float inMin, float inMax, float outMin, float outMax) {
+  return mix(outMin, outMax, inverseLerp(value, inMin, inMax));
+}
+
+float saturate(float x) {
+  return clamp(x, 0.0, 1.0);
+}
+
+// create matrices
+mat3 rotateY(float theta) {
+	float c = cos(theta);
+	float s = sin(theta);
+	return mat3(vec3(c, 0, s), vec3(0, 1, 0), vec3(-s, 0, c));
+}
 
 #endif

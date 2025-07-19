@@ -13,11 +13,11 @@ $output v_position, v_normal, v_texcoord0
 
 // functions
 void main() {
-	// determine heightmap coordinates
+	// determine height map coordinates
 	vec2 uv = mul(u_model[0], vec4(a_position, 1.0)).xz * u_hScale / u_heightMapSize;
 
 	// determine height and normal
-	vec4 sample = texture2DLod(s_normalmapTexture, uv, 1);
+	vec4 sample = texture2DLod(s_normalMapTexture, uv, 1);
 	float height = sample.w;
 
 	vec3 normal = sample.xzy;

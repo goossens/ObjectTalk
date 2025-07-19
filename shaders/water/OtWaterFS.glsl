@@ -32,7 +32,7 @@ uniform vec4 u_water[4];
 #define u_refractanceFlag bool(u_water[3].a)
 
 // texture samplers
-SAMPLER2D(s_normalmapTexture, 0);
+SAMPLER2D(s_normalMapTexture, 0);
 SAMPLER2D(s_reflectionTexture, 1);
 SAMPLER2D(s_refractionTexture, 2);
 SAMPLER2D(s_refractionDepthTexture, 3);
@@ -64,10 +64,10 @@ void main() {
 	vec2 uv4 = (uv / vec2(991.0, 877.0)) - vec2(u_time / 109.0, u_time / -113.0) + vec2_splat(0.71);
 
 	vec4 noise =
-		texture2D(s_normalmapTexture, uv1) +
-		texture2D(s_normalmapTexture, uv2) +
-		texture2D(s_normalmapTexture, uv3) +
-		texture2D(s_normalmapTexture, uv4);
+		texture2D(s_normalMapTexture, uv1) +
+		texture2D(s_normalMapTexture, uv2) +
+		texture2D(s_normalMapTexture, uv3) +
+		texture2D(s_normalMapTexture, uv4);
 
 	noise = noise * 0.5 - 1.0;
 

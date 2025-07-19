@@ -28,6 +28,7 @@ void OtSceneRendererContext::initialize() {
 	hasSkyEntities = false;
 	hasTransparentEntities = false;
 	hasWaterEntities = false;
+	hasGrassEntities = false;
 	hasParticlesEntities = false;
 
 	renderDirectionalLight = false;
@@ -103,6 +104,12 @@ void OtSceneRendererContext::initialize() {
 			hasTransparentEntities = true;
 			hasWaterEntities = true;
 			waterEntity = entity;
+		}
+
+		// process all grass entities
+		if (scene->hasComponent<OtGrassComponent>(entity)) {
+			hasOpaqueEntities = true;
+			hasGrassEntities = true;
 		}
 
 		// process all particle entities

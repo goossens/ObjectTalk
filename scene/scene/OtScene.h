@@ -22,6 +22,7 @@
 #include "OtCameraComponent.h"
 #include "OtDirectionalLightComponent.h"
 #include "OtGeometryComponent.h"
+#include "OtGrassComponent.h"
 #include "OtIblComponent.h"
 #include "OtInstancingComponent.h"
 #include "OtMaterialComponent.h"
@@ -61,6 +62,7 @@
 	OtSkyBoxComponent, \
 	OtParticlesComponent, \
 	OtWaterComponent, \
+	OtGrassComponent, \
 	OtMessageComponent
 
 

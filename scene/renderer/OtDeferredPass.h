@@ -184,6 +184,7 @@ protected:
 	OtShaderProgram* getTransparentProgram() override { return nullptr; }
 	OtShaderProgram* getInstancedTransparentProgram() override { return nullptr; }
 	OtShaderProgram* getTerrainProgram() override { return &terrainProgram; }
+	OtShaderProgram* getGrassProgram() override { return &grassProgram; }
 
 	inline uint64_t getNormalState() override {
 		return
@@ -239,6 +240,7 @@ private:
 	OtShaderProgram instancedOpaqueProgram{"OtDeferredInstancingVS", "OtDeferredPbrFS"};
 	OtShaderProgram animatedOpaqueProgram{"OtDeferredAnimatedVS", "OtDeferredPbrFS"};
 	OtShaderProgram terrainProgram{"OtTerrainVS", "OtTerrainFS"};
+	OtShaderProgram grassProgram{"OtGrassVS", "OtGrassFS"};
 
 	OtShaderProgram directionalLightProgram{"OtDeferredLightingVS", "OtDeferredLightingFS"};
 	OtShaderProgram pointLightProgram{"OtPointLightsVS", "OtPointLightsFS"};

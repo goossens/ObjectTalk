@@ -51,6 +51,7 @@ protected:
 	OtShaderProgram* getTransparentProgram() override { return &transparentProgram; }
 	OtShaderProgram* getInstancedTransparentProgram() override { return &instancedTransparentProgram; }
 	OtShaderProgram* getTerrainProgram() override { return nullptr; }
+	OtShaderProgram* getGrassProgram() override { return nullptr; }
 
 	inline uint64_t getNormalState() override {
 		return

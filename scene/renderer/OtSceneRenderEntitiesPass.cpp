@@ -9,6 +9,12 @@
 //	Include files
 //
 
+#include <vector>
+
+#include "imgui.h"
+
+#include "OtTransientIndexBuffer.h"
+
 #include "OtSceneRenderEntitiesPass.h"
 
 
@@ -50,6 +56,15 @@ void OtSceneRenderEntitiesPass::renderEntities(OtSceneRendererContext& ctx, OtPa
 			ctx.scene->view<OtTerrainComponent>().each([&](auto entity, auto& terrain) {
 				if (!ctx.renderingShadow || terrain.terrain->isCastingShadow()) {
 					renderTerrain(ctx, entity, terrain);
+				}
+			});
+		}
+
+		// render grass
+		if (ctx.hasGrassEntities) {
+			ctx.scene->view<OtGrassComponent>().each([&](auto entity, auto& grass) {
+				if (!ctx.renderingShadow || grass.castShadow) {
+					renderGrass(ctx, entity, grass);
 				}
 			});
 		}
@@ -280,6 +295,71 @@ void OtSceneRenderEntitiesPass::renderTerrain(OtSceneRendererContext& ctx, OtEnt
 		// run the program
 		ctx.pass->runShaderProgram(*program);
 	}
+}
+
+
+//
+//	OtSceneRenderEntitiesPass::renderGrass
+//
+
+void OtSceneRenderEntitiesPass::renderGrass(OtSceneRendererContext& ctx, OtEntity entity, OtGrassComponent& component) {
+	// get current material
+	std::shared_ptr<OtMaterial> material;
+
+	if (ctx.scene->hasComponent<OtMaterialComponent>(entity)) {
+		material = ctx.scene->getComponent<OtMaterialComponent>(entity).material;
+
+	} else {
+		material = std::make_shared<OtMaterial>();
+	}
+
+	// submit uniforms
+	Scope scope{entity, false, false, material, nullptr};
+	submitUniforms(ctx, scope);
+	grassUniforms.setValue(0, component.patchWidth, component.patchDepth, static_cast<float>(component.segments), static_cast<float>(component.blades));
+	grassUniforms.setValue(1, component.bladeWidth, component.bladeHeight, component.bladePointiness, 0.0f);
+	grassUniforms.setValue(2, static_cast<float>(ImGui::GetTime()), 0.0f, 0.0f, 0.0f);
+	grassUniforms.setValue(3, component.widthVariation, component.heightVariation, component.colorVariation, 0.0f);
+	grassUniforms.setValue(4, component.baseColor, 0.0f);
+	grassUniforms.setValue(5, component.tipColor, 0.0f);
+	grassUniforms.submit();
+
+	// submit geometry
+	std::vector<uint32_t> indices;
+	indices.resize(component.segments * 12);
+
+	for (auto i = 0; i < component.segments; i++) {
+		auto vi = i * 2;
+		indices[i * 12 +  0] = vi + 0;
+		indices[i * 12 +  1] = vi + 1;
+		indices[i * 12 +  2] = vi + 2;
+
+		indices[i * 12 +  3] = vi + 2;
+		indices[i * 12 +  4] = vi + 1;
+		indices[i * 12 +  5] = vi + 3;
+
+		vi += (component.segments + 1) * 2;
+		indices[i * 12 +  6] = vi + 2;
+		indices[i * 12 +  7] = vi + 1;
+		indices[i * 12 +  8] = vi + 0;
+
+		indices[i * 12 +  9] = vi + 3;
+		indices[i * 12 + 10] = vi + 1;
+		indices[i * 12 + 11] = vi + 2;
+	}
+
+	OtTransientIndexBuffer tib;
+	tib.submit(indices.data(), indices.size());
+
+	// set the program state
+	auto program = getGrassProgram();
+	program->setState(getCullBackState());
+	program->setTransform(ctx.scene->getGlobalTransform(entity));
+	program->setVertexCount((component.segments + 1) * 4);
+	program->setInstanceCount(component.blades);
+
+	// run the program
+	ctx.pass->runShaderProgram(*program);
 }
 
 

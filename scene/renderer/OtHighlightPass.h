@@ -117,6 +117,7 @@ protected:
 	OtShaderProgram* getTransparentProgram() override { return &transparentProgram; }
 	OtShaderProgram* getInstancedTransparentProgram() override { return &instancedTransparentProgram; }
 	OtShaderProgram* getTerrainProgram() override { return &terrainProgram; }
+	OtShaderProgram* getGrassProgram() override { return &grassProgram; }
 
 	inline uint64_t getNormalState() override { return OtStateWriteRgb; }
 	inline uint64_t getCullBackState() override { return OtStateWriteRgb; };
@@ -141,5 +142,6 @@ private:
 	OtShaderProgram transparentProgram{"OtSelectVS", "OtSelectTransparentFS"};
 	OtShaderProgram instancedTransparentProgram{"OtSelectInstancingVS", "OtSelectTransparentFS"};
 	OtShaderProgram terrainProgram{"OtTerrainSimpleVS", "OtSelectOpaqueFS"};
+	OtShaderProgram grassProgram{"OtGrassSimpleVS", "OtSelectOpaqueFS"};
 	OtShaderProgram outlineProgram{"OtOutlineVS", "OtOutlineFS"};
 };

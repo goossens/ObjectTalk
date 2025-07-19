@@ -164,6 +164,15 @@
 #include "generated/godrays/OtGodraysFS_mtl.h"
 #include "generated/godrays/OtGodraysFS_spv.h"
 #include "generated/godrays/OtGodraysFS_dx11.h"
+#include "generated/grass/OtGrassSimpleVS_mtl.h"
+#include "generated/grass/OtGrassSimpleVS_spv.h"
+#include "generated/grass/OtGrassSimpleVS_dx11.h"
+#include "generated/grass/OtGrassVS_mtl.h"
+#include "generated/grass/OtGrassVS_spv.h"
+#include "generated/grass/OtGrassVS_dx11.h"
+#include "generated/grass/OtGrassFS_mtl.h"
+#include "generated/grass/OtGrassFS_spv.h"
+#include "generated/grass/OtGrassFS_dx11.h"
 #include "generated/grid/OtGridVS_mtl.h"
 #include "generated/grid/OtGridVS_spv.h"
 #include "generated/grid/OtGridVS_dx11.h"
@@ -399,6 +408,12 @@ static const uint8_t OtGodraysVS_glsl[1] = {0};
 static const uint8_t OtGodraysVS_essl[1] = {0};
 static const uint8_t OtGodraysFS_glsl[1] = {0};
 static const uint8_t OtGodraysFS_essl[1] = {0};
+static const uint8_t OtGrassSimpleVS_glsl[1] = {0};
+static const uint8_t OtGrassSimpleVS_essl[1] = {0};
+static const uint8_t OtGrassVS_glsl[1] = {0};
+static const uint8_t OtGrassVS_essl[1] = {0};
+static const uint8_t OtGrassFS_glsl[1] = {0};
+static const uint8_t OtGrassFS_essl[1] = {0};
 static const uint8_t OtGridVS_glsl[1] = {0};
 static const uint8_t OtGridVS_essl[1] = {0};
 static const uint8_t OtGridFS_glsl[1] = {0};
@@ -538,6 +553,9 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtTileableFbmFS),
 	BGFX_EMBEDDED_SHADER(OtGodraysVS),
 	BGFX_EMBEDDED_SHADER(OtGodraysFS),
+	BGFX_EMBEDDED_SHADER(OtGrassSimpleVS),
+	BGFX_EMBEDDED_SHADER(OtGrassVS),
+	BGFX_EMBEDDED_SHADER(OtGrassFS),
 	BGFX_EMBEDDED_SHADER(OtGridVS),
 	BGFX_EMBEDDED_SHADER(OtGridFS),
 	BGFX_EMBEDDED_SHADER(OtOutlineVS),

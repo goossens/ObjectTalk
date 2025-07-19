@@ -24,7 +24,7 @@
 bool OtModelComponent::renderUI() {
 	bool changed = false;
 	changed |= asset.renderUI("Model");
-	changed |= OtUi::toggleButton("Cast shadow", &castShadow);
+	changed |= OtUi::toggleButton("Cast Shadow", &castShadow);
 
 	if (asset.isReady()) {
 		if (ImGui::Button("Open Details", ImVec2(ImGui::CalcItemWidth(), 0.0f))) {

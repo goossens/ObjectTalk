@@ -23,7 +23,7 @@ set(ASSIMP_INJECT_DEBUG_POSTFIX OFF CACHE BOOL "" FORCE)
 set(ASSIMP_INSTALL_PDB OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_ASSIMP_VIEW OFF CACHE BOOL "" FORCE)
 
-FetchContent_Declare(assimp GIT_REPOSITORY "https://github.com/assimp/assimp")
+FetchContent_Declare(assimp GIT_REPOSITORY "https://github.com/assimp/assimp" GIT_TAG "v6.0.2")
 FetchContent_MakeAvailable(assimp)
 
 if(APPLE)

@@ -58,26 +58,29 @@ vec3 bezierGrad(vec3 P0, vec3 P1, vec3 P2, vec3 P3, float t) {
 		3.0 * t * t * (P3 - P2);
 }
 
+float hash(vec3 p) {
+	return hash13(p) * 2.0 - 1.0;
+}
+
 float noise(vec3 p) {
 	vec3 i = floor(p);
 	vec3 f = fract(p);
 	vec3 u = f * f * (3.0 - 2.0 * f);
 
-	return mix(mix(mix(dot(hash13(i + vec3(0.0, 0.0, 0.0)), f - vec3(0.0, 0.0, 0.0)),
-					   dot(hash13(i + vec3(1.0, 0.0, 0.0)), f - vec3(1.0, 0.0, 0.0)), u.x),
-				   mix(dot(hash13(i + vec3(0.0, 1.0, 0.0)), f - vec3(0.0, 1.0, 0.0)),
-					   dot(hash13(i + vec3(1.0, 1.0, 0.0)), f - vec3(1.0, 1.0, 0.0)), u.x), u.y),
-			   mix(mix(dot(hash13(i + vec3(0.0, 0.0, 1.0)), f - vec3(0.0, 0.0, 1.0)),
-					   dot(hash13(i + vec3(1.0, 0.0, 1.0)), f - vec3(1.0, 0.0, 1.0)), u.x),
-				   mix(dot(hash13(i + vec3(0.0, 1.0, 1.0)), f - vec3(0.0, 1.0, 1.0)),
-					   dot(hash13(i + vec3(1.0, 1.0, 1.0)), f - vec3(1.0, 1.0, 1.0)), u.x), u.y), u.z);
+	return mix(mix(mix(dot(hash(i + vec3(0.0, 0.0, 0.0)), f - vec3(0.0, 0.0, 0.0)),
+					   dot(hash(i + vec3(1.0, 0.0, 0.0)), f - vec3(1.0, 0.0, 0.0)), u.x),
+				   mix(dot(hash(i + vec3(0.0, 1.0, 0.0)), f - vec3(0.0, 1.0, 0.0)),
+					   dot(hash(i + vec3(1.0, 1.0, 0.0)), f - vec3(1.0, 1.0, 0.0)), u.x), u.y),
+			   mix(mix(dot(hash(i + vec3(0.0, 0.0, 1.0)), f - vec3(0.0, 0.0, 1.0)),
+					   dot(hash(i + vec3(1.0, 0.0, 1.0)), f - vec3(1.0, 0.0, 1.0)), u.x),
+				   mix(dot(hash(i + vec3(0.0, 1.0, 1.0)), f - vec3(0.0, 1.0, 1.0)),
+					   dot(hash(i + vec3(1.0, 1.0, 1.0)), f - vec3(1.0, 1.0, 1.0)), u.x), u.y), u.z);
 }
 
 // determine vertex data
 Vertex getVertexData(int instanceID, int vertexID) {
-	Vertex vertex;
-
 	// determine vertex and instance derived values
+	Vertex vertex;
 	int verticesPerSide = (u_segments + 1) * 2;
 	vertex.x = float(vertexID & 0x1) - 0.5;
 	vertex.y = float((vertexID % verticesPerSide) / 2) / u_segments;

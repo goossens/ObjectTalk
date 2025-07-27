@@ -11,6 +11,7 @@
 
 #include <vector>
 
+#include "glm/glm.hpp"
 #include "imgui.h"
 
 #include "OtTransientIndexBuffer.h"
@@ -316,19 +317,19 @@ void OtSceneRenderEntitiesPass::renderGrass(OtSceneRendererContext& ctx, OtEntit
 	// submit uniforms
 	Scope scope{entity, false, false, material, nullptr};
 	submitUniforms(ctx, scope);
-	grassUniforms.setValue(0, component.patchWidth, component.patchDepth, static_cast<float>(component.segments), static_cast<float>(component.blades));
-	grassUniforms.setValue(1, component.bladeWidth, component.bladeHeight, component.bladePointiness, 0.0f);
-	grassUniforms.setValue(2, static_cast<float>(ImGui::GetTime()), 0.0f, 0.0f, 0.0f);
-	grassUniforms.setValue(3, component.widthVariation, component.heightVariation, component.colorVariation, 0.0f);
+	grassUniforms.setValue(0, component.patchWidth, component.patchDepth, static_cast<float>(component.bladeSegments), static_cast<float>(component.blades));
+	grassUniforms.setValue(1, component.bladeWidth, component.bladeHeight, component.bladePointiness, component.bladeCurve);
+	grassUniforms.setValue(2, static_cast<float>(ImGui::GetTime()), glm::radians(component.windDirection), component.windStrength, 0.0f);
+	grassUniforms.setValue(3, component.widthVariation, component.heightVariation, component.windVariation, component.colorVariation);
 	grassUniforms.setValue(4, component.baseColor, 0.0f);
 	grassUniforms.setValue(5, component.tipColor, 0.0f);
 	grassUniforms.submit();
 
 	// submit geometry
 	std::vector<uint32_t> indices;
-	indices.resize(component.segments * 12);
+	indices.resize(component.bladeSegments * 12);
 
-	for (auto i = 0; i < component.segments; i++) {
+	for (auto i = 0; i < component.bladeSegments; i++) {
 		auto vi = i * 2;
 		indices[i * 12 +  0] = vi + 0;
 		indices[i * 12 +  1] = vi + 1;
@@ -338,7 +339,7 @@ void OtSceneRenderEntitiesPass::renderGrass(OtSceneRendererContext& ctx, OtEntit
 		indices[i * 12 +  4] = vi + 1;
 		indices[i * 12 +  5] = vi + 3;
 
-		vi += (component.segments + 1) * 2;
+		vi += (component.bladeSegments + 1) * 2;
 		indices[i * 12 +  6] = vi + 2;
 		indices[i * 12 +  7] = vi + 1;
 		indices[i * 12 +  8] = vi + 0;
@@ -355,7 +356,7 @@ void OtSceneRenderEntitiesPass::renderGrass(OtSceneRendererContext& ctx, OtEntit
 	auto program = getGrassProgram();
 	program->setState(getCullBackState());
 	program->setTransform(ctx.scene->getGlobalTransform(entity));
-	program->setVertexCount((component.segments + 1) * 4);
+	program->setVertexCount((component.bladeSegments + 1) * 4);
 	program->setInstanceCount(component.blades);
 
 	// run the program

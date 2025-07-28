@@ -145,7 +145,7 @@
 					"bladeHeight": 0.3799999952316284,
 					"bladePointiness": 0.0,
 					"bladeSegments": 4,
-					"bladeWidth": 0.009999999776482582,
+					"bladeWidth": 0.014999999664723873,
 					"blades": 10000,
 					"castShadow": false,
 					"colorVariation": 0.5600000023841858,
@@ -159,9 +159,9 @@
 						0.15377084910869598
 					],
 					"widthVariation": 0.33000001311302185,
-					"windDirection": 180.0,
+					"windDirection": 90.0,
 					"windStrength": 0.20000000298023224,
-					"windVariation": 0.20000000298023224
+					"windVariation": 1.0
 				}
 			]
 		}

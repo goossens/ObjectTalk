@@ -98,9 +98,9 @@ Vertex getVertexData(int instanceID, int vertexID) {
 	// determine wind influence
 	float windDirection = u_windDirection + vertex.hash2.z * u_windVariation;
 	vec3 windAxis = vec3(cos(windDirection), 0.0, sin(windDirection));
-	float windVelocity = noise(vec3(offset.xz * 0.05, 0.0) + u_time) * u_windStrength;
+	float windVelocity = noise(vec3(vertex.hash1.x, vertex.hash1.y, 0.0) + u_time) * u_windStrength;
 	float windLean = windVelocity * vertex.y;
-	float randomWindLean = noise(vec3(offset.xz, u_time * 4.0)) * (windVelocity * 0.5 + 0.125);
+	float randomWindLean = noise(vec3(vertex.hash1.x, vertex.hash1.y, u_time * 4.0)) * (windVelocity * 0.5 + 0.125);
 	float leanFactor = vertex.hash1.w * u_BladeCurve * 2.0 + randomWindLean;
 
 	// determine bend for grass blade

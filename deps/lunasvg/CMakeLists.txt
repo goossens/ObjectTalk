@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Populate(lunasvg QUIET GIT_REPOSITORY "https://github.com/sammycage/lunasvg" GIT_TAG "v3.3.0")
+FetchContent_Populate(lunasvg QUIET GIT_REPOSITORY "https://github.com/sammycage/lunasvg" GIT_TAG "v3.4.0")
 
 file(GLOB LUNASVG_SOURCES
 	${lunasvg_SOURCE_DIR}/include/*.h

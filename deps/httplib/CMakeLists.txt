@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Populate(httplib QUIET GIT_REPOSITORY "https://github.com/yhirose/cpp-httplib" GIT_TAG "v0.22.0")
+FetchContent_Populate(httplib QUIET GIT_REPOSITORY "https://github.com/yhirose/cpp-httplib" GIT_TAG "v0.23.1")
 
 add_library(httplib INTERFACE)
 target_include_directories(httplib INTERFACE ${httplib_SOURCE_DIR})

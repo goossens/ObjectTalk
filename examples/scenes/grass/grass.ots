@@ -28,7 +28,7 @@
 				},
 				{
 					"component": "Camera",
-					"far": 100.0,
+					"far": 10.0,
 					"fov": 60.0,
 					"mainCamera": true,
 					"near": 0.10000000149011612
@@ -45,8 +45,8 @@
 				},
 				{
 					"ambient": 0.30000001192092896,
-					"azimuth": 120.0,
-					"castShadow": false,
+					"azimuth": 87.0,
+					"castShadow": true,
 					"color": [
 						1.0,
 						1.0,
@@ -141,13 +141,13 @@
 						0.32300883531570435,
 						0.09433001279830933
 					],
-					"bladeCurve": 0.5,
-					"bladeHeight": 0.3799999952316284,
+					"bladeCurve": 0.6499999761581421,
+					"bladeHeight": 0.4000000059604645,
 					"bladePointiness": 0.0,
 					"bladeSegments": 4,
-					"bladeWidth": 0.014999999664723873,
+					"bladeWidth": 0.017000000923871994,
 					"blades": 10000,
-					"castShadow": false,
+					"castShadow": true,
 					"colorVariation": 0.5600000023841858,
 					"component": "Grass",
 					"heightVariation": 0.3499999940395355,
@@ -160,15 +160,15 @@
 					],
 					"widthVariation": 0.33000001311302185,
 					"windDirection": 90.0,
-					"windStrength": 0.20000000298023224,
-					"windVariation": 1.0
+					"windStrength": 0.15000000596046448,
+					"windVariation": 0.20000000298023224
 				}
 			]
 		}
 	],
 	"metadata": {
 		"camera": {
-			"far": 100.0,
+			"far": 10.0,
 			"fov": 60.0,
 			"near": 0.10000000149011612,
 			"pitch": -30.0,

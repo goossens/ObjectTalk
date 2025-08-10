@@ -101,8 +101,6 @@ void OtFramework::initSDL() {
 		SDL_PROP_WINDOW_COCOA_WINDOW_POINTER,
 		nullptr));
 
-	createMetalLayer();
-
 #elif _WIN32
 	nativeWindowHandle = static_cast<void*>(SDL_GetPointerProperty(
 		SDL_GetWindowProperties(window),

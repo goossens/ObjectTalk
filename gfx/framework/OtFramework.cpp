@@ -99,7 +99,7 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 		OtPassReset();
 
 		// handle libuv events
-		// this is done at this point so asyncronous callbacks
+		// this is done at this point so asynchronous callbacks
 		// can take part in the rendering process and use the GPU
 		uv_run(uv_default_loop(), UV_RUN_NOWAIT);
 

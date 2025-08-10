@@ -38,22 +38,3 @@ void OtFramework::fixMenus() {
 	NSMenu* windowMenu = [[[NSApp mainMenu] itemAtIndex: 1] submenu];
 	[windowMenu removeItemAtIndex: 0];
 }
-
-
-//
-//	OtFramework::createMetalLayer
-//
-
-void OtFramework::createMetalLayer() {
-	// get content view
-	NSWindow* nsWindow = (NSWindow*) nativeWindowHandle;
-	NSView* contentView = [nsWindow contentView];
-
-	// create metal layer
-	[contentView setWantsLayer: YES];
-	CAMetalLayer* metalLayer = [CAMetalLayer layer];
-	[contentView setLayer:metalLayer];
-
-	// store metal layer for use in BGFX
-	nativeWindowHandle = (void*) metalLayer;
-}

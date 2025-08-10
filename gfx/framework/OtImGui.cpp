@@ -17,8 +17,6 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui.h"
 
-#include "OtInteger.h"
-
 #include "OtDejaVu.h"
 #include "OtFramework.h"
 

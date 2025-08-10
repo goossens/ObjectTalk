@@ -50,9 +50,6 @@ private:
 #if __APPLE__
 	// put the right app name in the menu and adjust windows menu
 	void fixMenus();
-
-	// create a Metal layer in the native window
-	void createMetalLayer();
 #endif
 
 	// render a debugging profiler
@@ -76,8 +73,8 @@ private:
 	void endIMGUI();
 
 	// main window
-	SDL_Window* window;
-	void* nativeWindowHandle;
+	SDL_Window* window = nullptr;
+	void* nativeWindowHandle = nullptr;
 	void* nativeDisplayType = nullptr;
 	int width;
 	int height;

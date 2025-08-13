@@ -4,8 +4,8 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-file(GLOB SCENE_INCLUDES */*.h)
-file(GLOB SCENE_SOURCES */*.cpp)
+file(GLOB SCENE_INCLUDES CONFIGURE_DEPENDS */*.h)
+file(GLOB SCENE_SOURCES CONFIGURE_DEPENDS */*.cpp)
 
 set(SCENE_INCLUDE_DIRS "")
 

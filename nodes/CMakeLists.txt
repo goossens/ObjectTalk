@@ -4,8 +4,8 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-file(GLOB GRAPH_INCLUDES */*.h)
-file(GLOB GRAPH_SOURCES */*.cpp)
+file(GLOB GRAPH_INCLUDES CONFIGURE_DEPENDS */*.h)
+file(GLOB GRAPH_SOURCES CONFIGURE_DEPENDS */*.cpp)
 
 set(GRAPH_INCLUDE_DIRS "")
 

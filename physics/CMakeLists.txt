@@ -4,8 +4,8 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-file(GLOB PHYSICS_INCLUDES */*.h)
-file(GLOB PHYSICS_SOURCES */*.cpp)
+file(GLOB PHYSICS_INCLUDES CONFIGURE_DEPENDS  */*.h)
+file(GLOB PHYSICS_SOURCES CONFIGURE_DEPENDS  */*.cpp)
 
 set(PHYSICS_INCLUDE_DIRS "")
 

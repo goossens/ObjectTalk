@@ -4,8 +4,8 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-file(GLOB NETWORK_INCLUDES */*.h)
-file(GLOB NETWORK_SOURCES */*.cpp)
+file(GLOB NETWORK_INCLUDES CONFIGURE_DEPENDS */*.h)
+file(GLOB NETWORK_SOURCES CONFIGURE_DEPENDS */*.cpp)
 
 set(NETWORK_INCLUDE_DIRS "")
 

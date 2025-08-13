@@ -4,8 +4,8 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-file(GLOB IDE_INCLUDES */*.h)
-file(GLOB IDE_SOURCES */*.cpp)
+file(GLOB IDE_INCLUDES CONFIGURE_DEPENDS */*.h)
+file(GLOB IDE_SOURCES CONFIGURE_DEPENDS */*.cpp)
 
 set(IDE_INCLUDE_DIRS "")
 

@@ -4,8 +4,8 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-file(GLOB GFX_INCLUDES */*.h)
-file(GLOB GFX_SOURCES */*.cpp)
+file(GLOB GFX_INCLUDES CONFIGURE_DEPENDS */*.h)
+file(GLOB GFX_SOURCES CONFIGURE_DEPENDS */*.cpp)
 
 if(APPLE)
 	list(APPEND GFX_SOURCES framework/OtMacos.mm)

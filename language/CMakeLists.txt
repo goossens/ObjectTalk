@@ -4,8 +4,8 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-file(GLOB LANGUAGE_INCLUDES */*.h)
-file(GLOB LANGUAGE_SOURCES */*.cpp)
+file(GLOB LANGUAGE_INCLUDES CONFIGURE_DEPENDS */*.h)
+file(GLOB LANGUAGE_SOURCES CONFIGURE_DEPENDS */*.cpp)
 
 set(LANGUAGE_INCLUDE_DIRS "")
 

@@ -4,8 +4,8 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-file(GLOB GUI_INCLUDES */*.h)
-file(GLOB GUI_SOURCES */*.cpp)
+file(GLOB GUI_INCLUDES CONFIGURE_DEPENDS */*.h)
+file(GLOB GUI_SOURCES CONFIGURE_DEPENDS */*.cpp)
 
 set(GUI_INCLUDE_DIRS "")
 

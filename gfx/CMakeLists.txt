@@ -50,7 +50,7 @@ target_link_libraries(gfx PUBLIC
 	delaunator
 	tess2
 	manifold
-	lunasvg
+	plutovg
 	entt
 	assimp
 	md4c

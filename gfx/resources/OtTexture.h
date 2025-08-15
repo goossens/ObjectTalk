@@ -36,18 +36,13 @@ public:
 	// texture types
 	static constexpr int noTexture = 0;
 	static constexpr int r8Texture = bgfx::TextureFormat::R8;
-	static constexpr int r16Texture = bgfx::TextureFormat::R16;
 	static constexpr int rFloat32Texture = bgfx::TextureFormat::R32F;
 	static constexpr int rgFloat16Texture = bgfx::TextureFormat::RG16F;
-	static constexpr int rgFloat32Texture = bgfx::TextureFormat::RG32F;
 	static constexpr int rgba8Texture = bgfx::TextureFormat::RGBA8;
-	static constexpr int rgba16Texture = bgfx::TextureFormat::RGBA16;
 	static constexpr int rgbaFloat16Texture = bgfx::TextureFormat::RGBA16F;
 	static constexpr int rgbaFloat32Texture = bgfx::TextureFormat::RGBA32F;
-	static constexpr int d16Texture = bgfx::TextureFormat::D16;
 	static constexpr int dFloatTexture = bgfx::TextureFormat::D32F;
 	static constexpr int d24s8Texture = bgfx::TextureFormat::D24S8;
-	static constexpr int d0s8Texture = bgfx::TextureFormat::D0S8;
 
 	// texture flags
 	static constexpr uint64_t defaultSampling = UINT32_MAX;

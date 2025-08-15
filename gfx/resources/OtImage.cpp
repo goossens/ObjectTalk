@@ -289,15 +289,7 @@ void OtImage::saveToPNG(const std::string& path) {
 	// sanity check
 	OtAssert(image);
 
-	if (image->m_format == r8Image) {
-		writeToPNG(path, *image);
-
-	} else if (image->m_format == r16Image || image->m_format == rFloat32Image) {
-		bimg::ImageContainer* newImage = convertImage(*image, bimg::TextureFormat::R8);
-		writeToPNG(path, *newImage);
-		bimg::imageFree(newImage);
-
-	} else if (image->m_format == rgba8Image) {
+	if (image->m_format == rgba8Image) {
 		writeToPNG(path, *image);
 
 	} else {
@@ -348,20 +340,7 @@ void OtImage::saveToDDS(const std::string& path) {
 	// sanity check
 	OtAssert(image);
 
-	if (image->m_format == r8Image) {
-		writeToDDS(path, *image);
-
-	} else if (image->m_format == r16Image) {
-		bimg::ImageContainer* newImage = convertImage(*image, bimg::TextureFormat::R16U);
-		writeToDDS(path, *newImage);
-		bimg::imageFree(newImage);
-
-	} else if (image->m_format == rFloat32Image) {
-		bimg::ImageContainer* newImage = convertImage(*image, bimg::TextureFormat::R32U);
-		writeToDDS(path, *newImage);
-		bimg::imageFree(newImage);
-
-	} else if (image->m_format == rgba8Image) {
+	if (image->m_format == rgba8Image) {
 		writeToDDS(path, *image);
 
 	} else {

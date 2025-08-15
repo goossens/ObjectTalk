@@ -27,14 +27,7 @@
 class OtImage {
 public:
 	// image types
-	static constexpr int r8Image = bimg::TextureFormat::R8;
-	static constexpr int r16Image = bimg::TextureFormat::R16;
-	static constexpr int rFloat32Image = bimg::TextureFormat::R32F;
-	static constexpr int rgFloat16Image = bimg::TextureFormat::RG16F;
-	static constexpr int rgFloat32Image = bimg::TextureFormat::RG32F;
 	static constexpr int rgba8Image = bimg::TextureFormat::RGBA8;
-	static constexpr int rgba16Image = bimg::TextureFormat::RGBA16;
-	static constexpr int rgbaFloat16Image = bimg::TextureFormat::RGBA16F;
 	static constexpr int rgbaFloat32Image = bimg::TextureFormat::RGBA32F;
 
 	// constructors

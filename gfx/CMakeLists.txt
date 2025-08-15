@@ -9,13 +9,6 @@ file(GLOB GFX_SOURCES CONFIGURE_DEPENDS */*.cpp)
 
 if(APPLE)
 	list(APPEND GFX_SOURCES framework/OtMacos.mm)
-
-	find_library(COCOA Cocoa REQUIRED)
-	find_library(QUARTZCORE QuartzCore REQUIRED)
-	find_library(METAL Metal REQUIRED)
-	find_library(METALKIT MetalKit REQUIRED)
-
-	set(GFX_LIBS ${COCOA} ${QUARTZCORE} ${METAL} ${METALKIT})
 endif()
 
 set(GFX_INCLUDE_DIRS "")
@@ -55,7 +48,6 @@ target_link_libraries(gfx PUBLIC
 	assimp
 	md4c
 	bsthreadpool
-	tweeny
-	${GFX_LIBS})
+	tweeny)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${GFX_INCLUDES} ${GFX_SOURCES})

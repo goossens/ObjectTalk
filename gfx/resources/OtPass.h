@@ -35,7 +35,7 @@ public:
 	// view modes
 	static constexpr int sequential = bgfx::ViewMode::Sequential;
 	static constexpr int depthAscending = bgfx::ViewMode::DepthAscending;
-	static constexpr int depthDecending = bgfx::ViewMode::DepthDescending;
+	static constexpr int depthDescending = bgfx::ViewMode::DepthDescending;
 
 	// access flags
 	static constexpr int readAccess = bgfx::Access::Read;

@@ -36,7 +36,7 @@
 #include "OtMeasure.h"
 #include "OtStderrMultiplexer.h"
 
-#include "OtAnimator.h"
+#include "OtAnimationModule.h"
 #include "OtAssetManager.h"
 #include "OtFramework.h"
 #include "OtFrameworkAtExit.h"
@@ -93,7 +93,7 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 		OtMessageBus::process();
 
 		// run all animations
-		OtAnimator::update();
+		OtAnimationClass::update();
 
 		// reset view ID
 		OtPassReset();

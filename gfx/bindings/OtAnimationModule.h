@@ -12,7 +12,9 @@
 //	Include files
 //
 
-#include <tweeny.h>
+#include <vector>
+
+#include "tweeny.h"
 
 #include "OtObject.h"
 
@@ -50,11 +52,14 @@ public:
 	// step forward in animation
 	void step(double seconds);
 
+	// update all current animations
+	static void update();
+
 	// get type definition
 	static OtType getMeta();
 
 private:
-	// our tweener
+	// the tweener object
 	tweeny::tween<double> tweener = tweeny::from(0.0);
 
 	// repeat counter
@@ -64,4 +69,7 @@ private:
 	bool forever = false;
 	bool running = false;
 	bool paused = false;
+
+	// list of current animations
+	static inline std::vector<OtAnimation> animations;
 };

@@ -140,7 +140,7 @@ private:
 	// data
 	glm::vec2 value = glm::vec2(1.0f);
 
-	// indentifiers
+	// identifiers
 	inline static OtID xID = OtIdentifier::create("x");
 	inline static OtID yID = OtIdentifier::create("y");
 };
@@ -277,7 +277,7 @@ private:
 	// data
 	glm::vec3 value = glm::vec3(1.0f);
 
-	// indentifiers
+	// identifiers
 	inline static OtID xID = OtIdentifier::create("x");
 	inline static OtID yID = OtIdentifier::create("y");
 	inline static OtID zID = OtIdentifier::create("z");
@@ -377,7 +377,7 @@ public:
 
 	inline float length() { return glm::length(value); }
 	inline float distance(glm::vec4 operand) { return glm::distance(value, operand); }
-	inline glm::vec4 homogonize() { return glm::vec4(value.x / value.w, value.y / value.w, value.z / value.w, 1.0f); }
+	inline glm::vec4 homogenize() { return glm::vec4(value.x / value.w, value.y / value.w, value.z / value.w, 1.0f); }
 
 	inline glm::vec4 min(glm::vec4 operand) { return glm::min(value, operand); }
 	inline glm::vec4 max(glm::vec4 operand) { return glm::max(value, operand); }
@@ -422,7 +422,7 @@ private:
 	// data
 	glm::vec4 value = glm::vec4(1.0f);
 
-	// indentifers
+	// identifiers
 	inline static OtID xID = OtIdentifier::create("x");
 	inline static OtID yID = OtIdentifier::create("y");
 	inline static OtID zID = OtIdentifier::create("z");

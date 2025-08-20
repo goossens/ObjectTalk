@@ -154,6 +154,36 @@ OtType OtVec3Class::getMeta() {
 
 
 //
+//	OtMat4Class::getMeta
+//
+
+OtType OtMat4Class::getMeta() {
+	static OtType type = nullptr;
+
+	if (!type) {
+		type = OtType::create<OtMat4Class>("Mat4", OtObjectClass::getMeta());
+		type->set("__init__", OtFunction::create(&OtMat4Class::init));
+
+		type->set("__add__", OtFunction::create(&OtMat4Class::add));
+		type->set("__sub__", OtFunction::create(&OtMat4Class::subtract));
+		type->set("__mul__", OtFunction::create(&OtMat4Class::multiply));
+
+		type->set("__eq__", OtFunction::create(&OtMat4Class::equal));
+		type->set("__ne__", OtFunction::create(&OtMat4Class::notEqual));
+
+		type->set("inverse", OtFunction::create(&OtMat4Class::inverse));
+		type->set("transpose", OtFunction::create(&OtMat4Class::transpose));
+
+		type->set("translate", OtFunction::create(&OtMat4Class::translate));
+		type->set("rotate", OtFunction::create(&OtMat4Class::rotate));
+		type->set("scale", OtFunction::create(&OtMat4Class::scale));
+	}
+
+	return type;
+}
+
+
+//
 //	Module registration
 //
 
@@ -161,4 +191,5 @@ static OtModuleRegistration registration{"math", [](OtModule module) {
 	module->set("Vec2", OtClass::create(OtVec2Class::getMeta()));
 	module->set("Vec3", OtClass::create(OtVec3Class::getMeta()));
 	module->set("Vec4", OtClass::create(OtVec4Class::getMeta()));
+	module->set("Mat4", OtClass::create(OtVec4Class::getMeta()));
 }};

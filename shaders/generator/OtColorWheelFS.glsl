@@ -9,10 +9,6 @@ $input v_texcoord0
 #include <bgfx_shader.glsl>
 #include <constants.glsl>
 
-// uniforms
-uniform vec4 u_checkerboard[1];
-#define u_repeat u_checkerboard[0].x
-
 vec3 colorPalette(float distance, float angle) {
 	float theta = mod(3.0 + 3.0 * angle / PI + 1.5, 6.0);
 	vec3 result = clamp(abs(mod(theta + vec3(0.0, 4.0, 2.0), 6.0) - 3.0) - 1.0, 0.0, 1.0);
@@ -27,6 +23,5 @@ void main() {
 	float angle = atan2(xy.x, xy.y);
 
 	vec3 color = (distance > 1.0) ? vec3_splat(0.0) : colorPalette(distance, angle);
-	color = mix(color, vec3_splat(0.0), 1.0 - smoothstep(0.0 ,0.01, distance));
 	gl_FragColor = vec4(color, 1.0);
 }

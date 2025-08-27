@@ -30,16 +30,10 @@ public:
 	// destructor
 	virtual inline ~OtGenerator() {}
 
-	// set rendering state
-	inline void setState(uint64_t s) { state = s; }
-
 	// run generator
 	void render(OtFrameBuffer& destination);
 
 private:
 	// execute generator
 	virtual void execute(OtPass& pass) = 0;
-
-	// rendering state
-	uint64_t state = BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A;
 };

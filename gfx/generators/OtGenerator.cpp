@@ -26,6 +26,6 @@ void OtGenerator::render(OtFrameBuffer& destination) {
 	pass.submitQuad(destination.getWidth(), destination.getHeight());
 
 	// execute generator
-	bgfx::setState(state);
+	bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A);
 	execute(pass);
 }

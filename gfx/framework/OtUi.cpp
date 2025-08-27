@@ -15,11 +15,9 @@
 
 #include "fmt/format.h"
 #include "glm/gtc/type_ptr.hpp"
-#include "nlohmann/json.hpp"
-
-#include "imgui.h"
 #include "imgui_internal.h"
 #include "ImGuiFileDialog.h"
+#include "nlohmann/json.hpp"
 
 #include "OtNumbers.h"
 

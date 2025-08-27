@@ -32,7 +32,6 @@ class OtCubeMap;
 
 class OtSampler {
 public:
-
 	// constructor/destructor
 	OtSampler() = default;
 	inline OtSampler(const char* n, uint64_t f=OtTexture::defaultSampling) : name(n), flags(f) {}

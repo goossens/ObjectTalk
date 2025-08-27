@@ -161,8 +161,8 @@ float gradientNoise(vec2 uv) {
 }
 
 float worleyNoise(vec2 p) {
-	vec2 n = floor( p );
-	vec2 f = fract( p );
+	vec2 n = floor(p);
+	vec2 f = fract(p);
 
 	float dis = 1.0;
 	for (int j = -1; j <= 1; j++) {

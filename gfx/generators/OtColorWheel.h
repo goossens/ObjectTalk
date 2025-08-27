@@ -12,18 +12,16 @@
 //	Include files
 //
 
-#include "glm/glm.hpp"
-
 #include "OtGenerator.h"
 #include "OtShaderProgram.h"
-#include "OtUniformVec4.h"
 
 
 //
 //	OtColorWheel
 //
 
-class OtColorWheel : public OtGenerator {private:
+class OtColorWheel : public OtGenerator {
+private:
 	// execute generator
 	void execute(OtPass& pass) override;
 

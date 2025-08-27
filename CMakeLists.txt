@@ -56,8 +56,10 @@ if(OT_INCLUDE_UI)
 	target_compile_definitions(ot PRIVATE OT_INCLUDE_UI)
 	target_link_libraries(ot shaders gfx gui nodes scene physics ide)
 
-	if(APPLE)
-		target_link_options(ot PRIVATE LINKER:-no_warn_duplicate_libraries)
+	if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang")
+		if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 15)
+			target_link_options(ot PRIVATE LINKER:-no_warn_duplicate_libraries)
+		endif()
 	endif()
 endif()
 

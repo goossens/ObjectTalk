@@ -40,7 +40,7 @@ public:
 	// generate simple primitives
 	void generateCube();
 
-	// load save a mesh
+	// load/save a mesh
 	void load(const std::string& path);
 	void save(const std::string& path);
 

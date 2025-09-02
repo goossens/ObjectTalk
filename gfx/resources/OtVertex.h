@@ -17,8 +17,6 @@
 #include "bgfx/bgfx.h"
 #include "glm/glm.hpp"
 
-#include "OtVertex.h"
-
 
 //
 //	OtVertex

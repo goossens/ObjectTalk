@@ -5,7 +5,6 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-set(ASSIMP_BUILD_ZLIB ON CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_ALL_EXPORTERS_BY_DEFAULT OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_FBX_IMPORTER ON CACHE BOOL "" FORCE)
@@ -25,9 +24,3 @@ set(ASSIMP_BUILD_ASSIMP_VIEW OFF CACHE BOOL "" FORCE)
 
 FetchContent_Declare(assimp GIT_REPOSITORY "https://github.com/assimp/assimp" GIT_TAG "v6.0.2")
 FetchContent_MakeAvailable(assimp)
-
-if(APPLE)
-	target_compile_options(zlibstatic PRIVATE -Wno-deprecated-non-prototype)
-endif()
-
-set_target_properties(assimp zlibstatic PROPERTIES FOLDER deps)

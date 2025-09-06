@@ -14,10 +14,9 @@ set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)
 FetchContent_Populate(libuv QUIET GIT_REPOSITORY "https://github.com/libuv/libuv" GIT_TAG "v1.51.0")
 add_subdirectory(${libuv_SOURCE_DIR} ${libuv_BINARY_DIR} EXCLUDE_FROM_ALL)
 
-if(WIN32)
-	target_compile_options(uv_a PRIVATE /wd4334 /wd4244 /wd4245 /wd4267 /wd4701 /wd4702)
-else()
-	target_compile_options(uv_a PRIVATE -Wall -Wno-shorten-64-to-32)
-endif()
+target_compile_options(uv_a PRIVATE
+	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wall -Wno-shorten-64-to-32>
+	$<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wno-format-truncation>
+	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/wd4334 /wd4244 /wd4245 /wd4267 /wd4701 /wd4702>)
 
 set_target_properties(uv_a PROPERTIES FOLDER deps/libuv)

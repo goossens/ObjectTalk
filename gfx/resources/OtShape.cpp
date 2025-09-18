@@ -253,7 +253,7 @@ void OtShape::getSegments(std::vector<glm::vec2>& points, std::vector<size_t>& s
 	points.clear();
 	sizes.clear();
 
-	// create configuration for traversor
+	// create configuration for traverser
 	struct Config {
 		std::vector<glm::vec2>* points;
 		std::vector<size_t>* sizes;

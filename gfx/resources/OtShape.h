@@ -27,12 +27,12 @@
 //
 //	OtShape
 //
-//	Shapes are like paths in a Scaleable Vector Graphic (SVG)
+//	Shapes are like paths in a Scalable Vector Graphic (SVG)
 //	The difference is that the coordinate system is mirrored
 //	on the y-axes. SVG has the positive y-axis going down.
 //	Shapes have the positive y-axis going up which ensures
 //	that extruded shapes are not shown upside down in a 3D
-//	renderering.
+//	rendering.
 //
 
 class OtShape {

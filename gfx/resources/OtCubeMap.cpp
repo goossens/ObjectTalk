@@ -76,14 +76,14 @@ void OtCubeMap::loadJSON(const std::string& path, bool async) {
 	auto basedir = OtPath::getParent(path);
 	auto data = nlohmann::json::parse(text);
 
-	auto negx = OtAssetDeserialize(&data, "negx", &basedir);
-	auto negy = OtAssetDeserialize(&data, "negy", &basedir);
-	auto negz = OtAssetDeserialize(&data, "negz", &basedir);
 	auto posx = OtAssetDeserialize(&data, "posx", &basedir);
+	auto negx = OtAssetDeserialize(&data, "negx", &basedir);
 	auto posy = OtAssetDeserialize(&data, "posy", &basedir);
+	auto negy = OtAssetDeserialize(&data, "negy", &basedir);
 	auto posz = OtAssetDeserialize(&data, "posz", &basedir);
+	auto negz = OtAssetDeserialize(&data, "negz", &basedir);
 
-	if (negx.empty() || negy.empty() || negz.empty() || posx.empty() || posy.empty() || posz.empty()) {
+	if (posx.empty() || negx.empty() || posy.empty() || negy.empty() || posz.empty() || negz.empty()) {
 		OtLogError("Incomplete CubeMap specification in [{}]", path);
 	}
 

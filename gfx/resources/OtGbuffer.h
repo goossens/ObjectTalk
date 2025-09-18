@@ -60,7 +60,7 @@ public:
 	void submit(bgfx::ViewId view);
 
 private:
-	// dimensions of framebuffer;
+	// dimensions of gbuffer
 	int width = -1;
 	int height = -1;
 

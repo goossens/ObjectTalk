@@ -60,10 +60,6 @@ public:
 		refreshLinesBuffer = true;
 	}
 
-	inline void addIndex(uint32_t p1, uint32_t p2, uint32_t p3) {
-		addTriangle(p1, p2, p3);
-	}
-
 	// quick way to add complete faces
 	void addFace(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c) {
 		auto n = glm::normalize(glm::cross(c - b, a - b));

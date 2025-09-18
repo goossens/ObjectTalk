@@ -179,7 +179,7 @@ void OtFramework::eventsSDL() {
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
 			case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
-				if (canQuit()) {
+				if (canClose()) {
 					stop();
 				}
 

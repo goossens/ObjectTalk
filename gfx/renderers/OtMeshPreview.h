@@ -48,5 +48,5 @@ private:
 	// rendering variables
 	OtUniformVec4 uniform = OtUniformVec4("u_preview", 4);
 	OtShaderProgram program = OtShaderProgram("OtPreviewVS", "OtPreviewFS");
-	OtFrameBuffer framebuffer{OtTexture::rgba8Texture, OtTexture::d24s8Texture};
+	OtFrameBuffer framebuffer{OtTexture::rgba8Texture, OtTexture::dFloatTexture};
 };

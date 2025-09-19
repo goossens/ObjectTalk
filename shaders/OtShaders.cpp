@@ -65,6 +65,9 @@
 #include "generated/filter/OtFilterVS_mtl.h"
 #include "generated/filter/OtFilterVS_spv.h"
 #include "generated/filter/OtFilterVS_dx11.h"
+#include "generated/filter/OtAlphaFS_mtl.h"
+#include "generated/filter/OtAlphaFS_spv.h"
+#include "generated/filter/OtAlphaFS_dx11.h"
 #include "generated/filter/OtAlphaOverFS_mtl.h"
 #include "generated/filter/OtAlphaOverFS_spv.h"
 #include "generated/filter/OtAlphaOverFS_dx11.h"
@@ -336,6 +339,8 @@ static const uint8_t OtDialFS_glsl[1] = {0};
 static const uint8_t OtDialFS_essl[1] = {0};
 static const uint8_t OtFilterVS_glsl[1] = {0};
 static const uint8_t OtFilterVS_essl[1] = {0};
+static const uint8_t OtAlphaFS_glsl[1] = {0};
+static const uint8_t OtAlphaFS_essl[1] = {0};
 static const uint8_t OtAlphaOverFS_glsl[1] = {0};
 static const uint8_t OtAlphaOverFS_essl[1] = {0};
 static const uint8_t OtBlitFS_glsl[1] = {0};
@@ -510,6 +515,7 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtDialVS),
 	BGFX_EMBEDDED_SHADER(OtDialFS),
 	BGFX_EMBEDDED_SHADER(OtFilterVS),
+	BGFX_EMBEDDED_SHADER(OtAlphaFS),
 	BGFX_EMBEDDED_SHADER(OtAlphaOverFS),
 	BGFX_EMBEDDED_SHADER(OtBlitFS),
 	BGFX_EMBEDDED_SHADER(OtBloomApplyFS),

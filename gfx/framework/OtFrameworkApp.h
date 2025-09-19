@@ -21,5 +21,6 @@ public:
 	virtual inline void onSetup() {}
 	virtual inline void onRender() {}
 	virtual inline void onTerminate() {}
+	virtual inline bool onCanClose() { return true; }
 	virtual inline bool onCanQuit() { return true; }
 };

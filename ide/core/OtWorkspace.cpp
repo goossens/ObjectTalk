@@ -228,6 +228,15 @@ void OtWorkspace::onTerminate() {
 
 
 //
+//	OtWorkspace::onCanClose
+//
+
+bool OtWorkspace::onCanClose() {
+	return editors.size() == 0;
+}
+
+
+//
 //	OtWorkspace::onCanQuit
 //
 

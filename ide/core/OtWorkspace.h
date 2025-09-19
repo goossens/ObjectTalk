@@ -83,6 +83,7 @@ private:
 	void onSetup() override;
 	void onRender() override;
 	void onTerminate() override;
+	bool onCanClose() override;
 	bool onCanQuit() override;
 
 	// create an editor by file extension

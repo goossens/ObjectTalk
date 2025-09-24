@@ -72,6 +72,7 @@ void OtFramework::initSDL() {
 	}
 
 	SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, "ObjectTalk");
+	SDL_SetBooleanProperty(props, SDL_HINT_QUIT_ON_LAST_WINDOW_CLOSE, false);
 	SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_RESIZABLE_BOOLEAN, true);
 	SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, width);
 	SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, height);
@@ -200,6 +201,11 @@ void OtFramework::eventsSDL() {
 				if ((event.key.mod & modifier) && event.key.key == SDLK_Q) {
 
 					if (canQuit()) {
+						stop();
+					}
+
+				} else if ((event.key.mod & modifier) && event.key.key == SDLK_W) {
+					if (canClose()) {
 						stop();
 					}
 				}

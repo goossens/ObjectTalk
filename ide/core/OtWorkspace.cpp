@@ -260,7 +260,7 @@ bool OtWorkspace::onCanQuit() {
 			}
 		}
 
-		// nothing stops us now from quiting
+		// nothing stops us now from quitting
 		return true;
 	}
 }

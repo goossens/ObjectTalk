@@ -122,7 +122,7 @@ int main(int argc, char* argv[]) {
 
 #if defined(OT_INCLUDE_UI)
 		//
-		// UI conguration
+		// UI configuration
 		//
 
 		if (files.size() == 1) {

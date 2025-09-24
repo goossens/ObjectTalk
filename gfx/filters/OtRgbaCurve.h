@@ -27,7 +27,7 @@
 class OtRgbaCurve : public OtFilter {
 public:
 	// curve types
-	enum class Curve {
+	enum class Mode {
 		rgb,
 		red,
 		green,
@@ -36,7 +36,7 @@ public:
 	};
 
 	// set properties
-	inline void setCurve(Curve c) { curve = c; }
+	inline void setMode(Mode m) { mode = m; }
 	inline void setLUT(OtTexture lut) { lutTexture = lut; }
 	inline void setBlackLevel(OtColor color) { blackLevel = color; }
 	inline void setWhiteLevel(OtColor color) { whiteLevel = color; }
@@ -46,7 +46,7 @@ private:
 	void execute(OtPass& pass) override;
 
 	// properties
-	Curve curve = Curve::rgb;
+	Mode mode = Mode::rgb;
 	OtColor blackLevel{0.0f, 0.0f, 0.0f};
 	OtColor whiteLevel{1.0f, 1.0f, 1.0f};
 

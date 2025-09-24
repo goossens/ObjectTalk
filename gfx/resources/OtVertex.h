@@ -55,7 +55,7 @@ struct OtVertex {
 
 
 //
-//	OtVertexPosUvCol2D
+//	OtVertexPosCol2D
 //
 
 struct OtVertexPosCol2D {

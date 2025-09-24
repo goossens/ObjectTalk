@@ -43,29 +43,29 @@ public:
 		auto old = serialize().dump();
 
 		ImGui::PushID("Mode");
-		changed |= OtUi::radioButton("RGB", &curve, OtRgbaCurve::Curve::rgb);
+		changed |= OtUi::radioButton("RGB", &mode, OtRgbaCurve::Mode::rgb);
 		ImGui::SameLine(0.0f, 5.0f);
-		changed |= OtUi::radioButton("R", &curve, OtRgbaCurve::Curve::red);
+		changed |= OtUi::radioButton("R", &mode, OtRgbaCurve::Mode::red);
 		ImGui::SameLine(0.0f, 0.0f);
-		changed |= OtUi::radioButton("G", &curve, OtRgbaCurve::Curve::green);
+		changed |= OtUi::radioButton("G", &mode, OtRgbaCurve::Mode::green);
 		ImGui::SameLine(0.0f, 0.0f);
-		changed |= OtUi::radioButton("B", &curve, OtRgbaCurve::Curve::blue);
+		changed |= OtUi::radioButton("B", &mode, OtRgbaCurve::Mode::blue);
 		ImGui::SameLine(0.0f, 0.0f);
-		changed |= OtUi::radioButton("A", &curve, OtRgbaCurve::Curve::alpha);
+		changed |= OtUi::radioButton("A", &mode, OtRgbaCurve::Mode::alpha);
 		ImGui::PopID();
 
 		ImVec2 size{itemWidth, getCustomRenderingWidth()};
-		const char* curveSelector = "";
+		const char* modeSelector = "";
 
-		switch (curve) {
-			case OtRgbaCurve::Curve::rgb: curveSelector = "RGB"; break;
-			case OtRgbaCurve::Curve::red: curveSelector = "Red"; break;
-			case OtRgbaCurve::Curve::green: curveSelector = "Green"; break;
-			case OtRgbaCurve::Curve::blue: curveSelector = "Blue"; break;
-			case OtRgbaCurve::Curve::alpha: curveSelector = "Alpha"; break;
+		switch (mode) {
+			case OtRgbaCurve::Mode::rgb: modeSelector = "RGB"; break;
+			case OtRgbaCurve::Mode::red: modeSelector = "Red"; break;
+			case OtRgbaCurve::Mode::green: modeSelector = "Green"; break;
+			case OtRgbaCurve::Mode::blue: modeSelector = "Blue"; break;
+			case OtRgbaCurve::Mode::alpha: modeSelector = "Alpha"; break;
 		}
 
-		changed |= ImGui::Curve(curveSelector, size, curvePoints, lut.data(), &lutSelection);
+		changed |= ImGui::Curve(modeSelector, size, curvePoints, lut.data(), &lutSelection);
 
 		if (changed) {
 			oldState = old;
@@ -86,12 +86,12 @@ public:
 	// (de)serialize node
 	inline void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
 
-		(*data)["curve"] = curve;
+		(*data)["mode"] = mode;
 		(*data)["lut"] = lut;
 	}
 
 	inline void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
-		curve = data->value("curve", OtRgbaCurve::Curve::rgb);
+		mode = data->value("mode", OtRgbaCurve::Mode::rgb);
 		lut = data->value("lut", std::array<ImVec2, curvePoints>{ImVec2(ImGui::CurveTerminator, 0.0f)});
 	}
 
@@ -110,7 +110,7 @@ public:
 
 		lutCurve.update(0, 0, 256, 1, lutValues);
 
-		rgbCurve.setCurve(curve);
+		rgbCurve.setMode(mode);
 		rgbCurve.setLUT(lutCurve);
 		rgbCurve.setBlackLevel(blackLevel);
 		rgbCurve.setWhiteLevel(whiteLevel);
@@ -122,7 +122,7 @@ public:
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 	// properties
-	OtRgbaCurve::Curve curve = OtRgbaCurve::Curve::rgb;
+	OtRgbaCurve::Mode mode = OtRgbaCurve::Mode::rgb;
 
 	static constexpr int curvePoints = 6;
 	std::array<ImVec2, curvePoints> lut{ImVec2(ImGui::CurveTerminator, 0.0f)};

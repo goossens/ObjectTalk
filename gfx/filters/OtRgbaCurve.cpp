@@ -17,7 +17,7 @@
 //
 
 void OtRgbaCurve::execute(OtPass& pass) {
-	uniform.setValue(0, float(curve), 0.0f, 0.0f, 0.0f);
+	uniform.setValue(0, float(mode), 0.0f, 0.0f, 0.0f);
 	uniform.setValue(1, blackLevel);
 	uniform.setValue(2, whiteLevel);
 	uniform.submit();

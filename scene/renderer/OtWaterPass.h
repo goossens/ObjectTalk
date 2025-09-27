@@ -169,7 +169,7 @@ public:
 		refractionBuffer.bindDepthTexture(refractionDepthSampler, 3);
 
 		// run the waterProgram
-		waterProgram.setState(
+		pass.setState(
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |

@@ -529,7 +529,7 @@ void OtFramework::endFrameIMGUI() {
 					imguiTextureSampler.submit(0, handle);
 					bgfx::setVertexBuffer(0, &tvb);
 					bgfx::setIndexBuffer(&tib, cmd->IdxOffset, cmd->ElemCount);
-					imguiShaderProgram.submit(255);
+					imguiShaderProgram.dispatch(255);
 				}
 			}
 		}

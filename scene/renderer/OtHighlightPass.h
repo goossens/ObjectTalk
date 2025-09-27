@@ -70,7 +70,7 @@ private:
 		outlineUniforms.submit();
 
 		selectedBuffer.bindColorTexture(selectedSampler, 0);
-		outlineProgram.setState(OtStateWriteRgb | OtStateWriteA | OtStateBlendAlpha);
+		pass.setState(OtStateWriteRgb | OtStateWriteA | OtStateBlendAlpha);
 		pass.runShaderProgram(outlineProgram);
 	}
 

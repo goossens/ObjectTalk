@@ -86,7 +86,7 @@ public:
 		gbuffer.bindDepthTexture(lightingDepthSampler, 4);
 
 		// run the program
-		directionalLightProgram.setState(
+		pass.setState(
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |
@@ -164,7 +164,7 @@ public:
 		gbuffer.bindDepthTexture(lightingDepthSampler, 3);
 
 		// run the program
-		pointLightProgram.setState(
+		pass.setState(
 			OtStateWriteRgb |
 			OtStateDepthTestGreaterEqual |
 			OtStateCullCcw |

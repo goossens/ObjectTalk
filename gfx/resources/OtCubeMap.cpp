@@ -436,7 +436,7 @@ void OtCubeMap::createCubemapFromHDR() {
 		// submit geometry
 		bgfx::setVertexBuffer(0, &tvb);
 
-		reprojectShader.setState(OtStateWriteRgb | OtStateWriteA | OtStateCullCcw);
+		pass.setState(OtStateWriteRgb | OtStateWriteA | OtStateCullCcw);
 		pass.runShaderProgram(reprojectShader);
 	}
 }

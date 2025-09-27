@@ -186,17 +186,17 @@ void OtSceneRenderEntitiesPass::renderOpaqueGeometry(OtSceneRendererContext& ctx
 
 		// set the program state
 		if (component.wireframe) {
-			program->setState(getWireframeState());
+			ctx.pass->setState(getWireframeState());
 
 		} else if (component.cullBack) {
-			program->setState(getCullBackState());
+			ctx.pass->setState(getCullBackState());
 
 		} else {
-			program->setState(getNormalState());
+			ctx.pass->setState(getNormalState());
 		}
 
 		// set the transform
-		program->setTransform(ctx.scene->getGlobalTransform(entity));
+		ctx.pass->setTransform(ctx.scene->getGlobalTransform(entity));
 
 		// run the program
 		ctx.pass->runShaderProgram(*program);
@@ -249,14 +249,14 @@ void OtSceneRenderEntitiesPass::renderOpaqueModel(OtSceneRendererContext& ctx, O
 			cmd.mesh->submitTriangles();
 
 			// run the program
-			program->setState(getCullBackState());
+			ctx.pass->setState(getCullBackState());
 
 			if (cmd.animation) {
-				program->setTransforms(cmd.transforms.data(), cmd.transforms.size());
+				ctx.pass->setTransforms(cmd.transforms.data(), cmd.transforms.size());
 				ctx.pass->runShaderProgram(*getAnimatedOpaqueProgram());
 
 			} else {
-				program->setTransform(cmd.transforms[0]);
+				ctx.pass->setTransform(cmd.transforms[0]);
 				ctx.pass->runShaderProgram(*program);
 			}
 		}
@@ -288,12 +288,10 @@ void OtSceneRenderEntitiesPass::renderTerrain(OtSceneRendererContext& ctx, OtEnt
 			mesh.tile.triangles.submit();
 		}
 
-		// set the program state
-		auto program = getTerrainProgram();
-		program->setState(terrain->isWireframe() ? getWireframeState() : getCullBackState());
-		program->setTransform(mesh.transform);
-
 		// run the program
+		ctx.pass->setState(terrain->isWireframe() ? getWireframeState() : getCullBackState());
+		ctx.pass->setTransform(mesh.transform);
+		auto program = getTerrainProgram();
 		ctx.pass->runShaderProgram(*program);
 	}
 }
@@ -352,14 +350,12 @@ void OtSceneRenderEntitiesPass::renderGrass(OtSceneRendererContext& ctx, OtEntit
 	OtTransientIndexBuffer tib;
 	tib.submit(indices.data(), indices.size());
 
-	// set the program state
-	auto program = getGrassProgram();
-	program->setState(getCullBackState());
-	program->setTransform(ctx.scene->getGlobalTransform(entity));
-	program->setVertexCount((component.bladeSegments + 1) * 4);
-	program->setInstanceCount(component.blades);
-
 	// run the program
+	ctx.pass->setState(getCullBackState());
+	ctx.pass->setTransform(ctx.scene->getGlobalTransform(entity));
+	ctx.pass->setVertexCount((component.bladeSegments + 1) * 4);
+	ctx.pass->setInstanceCount(component.blades);
+	auto program = getGrassProgram();
 	ctx.pass->runShaderProgram(*program);
 }
 
@@ -420,17 +416,17 @@ void OtSceneRenderEntitiesPass::renderTransparentGeometry(OtSceneRendererContext
 
 		// set the program state
 		if (component.wireframe) {
-			program->setState(getWireframeState());
+			ctx.pass->setState(getWireframeState());
 
 		} else if (component.cullBack) {
-			program->setState(getCullBackState());
+			ctx.pass->setState(getCullBackState());
 
 		} else {
-			program->setState(getNormalState());
+			ctx.pass->setState(getNormalState());
 		}
 
 		// run the program
-		program->setTransform(ctx.scene->getGlobalTransform(entity));
+		ctx.pass->setTransform(ctx.scene->getGlobalTransform(entity));
 		ctx.pass->runShaderProgram(*program);
 	}
 }

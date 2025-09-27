@@ -114,7 +114,7 @@ public:
 		input->bindColorTexture(postProcessSampler, 0);
 
 		// run the program
-		postProcessProgram.setState(OtStateWriteRgb | OtStateWriteA);
+		pass.setState(OtStateWriteRgb | OtStateWriteA);
 		pass.runShaderProgram(postProcessProgram);
 
 		// mark the right output buffer;
@@ -136,7 +136,7 @@ public:
 		fxaaUniforms.submit();
 
 		// run the program
-		fxaaProgram.setState(OtStateWriteRgb | OtStateWriteA);
+		pass.setState(OtStateWriteRgb | OtStateWriteA);
 		pass.runShaderProgram(fxaaProgram);
 	}
 
@@ -160,7 +160,7 @@ public:
 		invProjUniform.submit();
 
 		// run the program
-		fxaaProgram.setState(OtStateWriteRgb | OtStateWriteA);
+		pass.setState(OtStateWriteRgb | OtStateWriteA);
 		pass.runShaderProgram(fogProgram);
 	}
 
@@ -203,7 +203,7 @@ public:
 			}
 
 			// run the program
-			bloomDownSampleProgram.setState(OtStateWriteRgb | OtStateWriteA);
+			pass.setState(OtStateWriteRgb | OtStateWriteA);
 			pass.runShaderProgram(bloomDownSampleProgram);
 		}
 
@@ -227,7 +227,7 @@ public:
 			bloomBuffer[i].bindColorTexture(bloomSampler, 0);
 
 			// run the program
-			bloomUpSampleProgram.setState(OtStateWriteRgb | OtStateWriteA);
+			pass.setState(OtStateWriteRgb | OtStateWriteA);
 			pass.runShaderProgram(bloomUpSampleProgram);
 		}
 
@@ -241,7 +241,7 @@ public:
 		bloomBuffer[0].bindColorTexture(bloomSampler, 1);
 
 		// run the program
-		bloomApplyProgram.setState(OtStateWriteRgb | OtStateWriteA);
+		pass.setState(OtStateWriteRgb | OtStateWriteA);
 		pass.runShaderProgram(bloomApplyProgram);
 	}
 
@@ -283,7 +283,7 @@ public:
 		occlusionBuffer.bindColorTexture(occlusionSampler, 1);
 
 		// run the program
-		godrayProgram.setState(OtStateWriteRgb | OtStateWriteA);
+		pass.setState(OtStateWriteRgb | OtStateWriteA);
 		pass.runShaderProgram(godrayProgram);
 	}
 

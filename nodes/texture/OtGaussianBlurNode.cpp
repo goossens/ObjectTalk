@@ -53,7 +53,6 @@ public:
 
 			} else {
 				gaussian.render(temp2, temp1);
-
 			}
 
 			// run vertical blur
@@ -65,7 +64,6 @@ public:
 
 			} else {
 				gaussian.render(temp1, temp2);
-
 			}
 		}
 	}

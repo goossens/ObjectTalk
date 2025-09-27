@@ -91,7 +91,7 @@ public:
 		skyUniforms.submit();
 
 		// run the program
-		skyProgram.setState(
+		pass.setState(
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |
@@ -110,7 +110,7 @@ public:
 		skySampler.submit(0, component.cubemap->getCubeMap());
 
 		// run the program
-		skyBoxProgram.setState(
+		pass.setState(
 			OtStateWriteRgb |
 			OtStateWriteA |
 			OtStateWriteZ |

@@ -123,9 +123,9 @@ void OtDialClass::render() {
 				model = glm::scale(model, glm::vec3(w, h, 1.0f));
 
 				// run the program
-				program.setTransform(model);
+				pass.setTransform(model);
 
-				program.setState(
+				pass.setState(
 					OtStateWriteRgb |
 					OtStateWriteA |
 					OtStateBlendAlpha);

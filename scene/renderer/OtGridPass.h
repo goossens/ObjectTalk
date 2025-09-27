@@ -65,7 +65,7 @@ public:
 			uniforms.submit();
 
 			// run the program
-			program.setState(
+			pass.setState(
 				OtStateWriteRgb |
 				OtStateWriteA |
 				OtStateWriteZ |

@@ -35,10 +35,10 @@ void OtShaderProgram::initialize(const char* vertex, const char* fragment) {
 
 
 //
-//	OtShaderProgram::submit
+//	OtShaderProgram::dispatch
 //
 
-void OtShaderProgram::submit(bgfx::ViewId view) {
+void OtShaderProgram::dispatch(bgfx::ViewId view) {
 	if (!isValid()) {
 		if (vertexShaderName.size() && fragmentShaderName.size()) {
 			auto vertexShader = OtShaders::get(vertexShaderName);

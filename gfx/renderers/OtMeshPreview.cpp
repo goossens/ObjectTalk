@@ -75,21 +75,21 @@ void OtMeshPreview::render(int width, int height, OtMesh& mesh, Context& context
 
 	// render the mesh
 	if (context.wireframe) {
-		program.setState(
+		pass.setState(
 			OtStateWriteRgb |
 			OtStateWriteZ |
 			OtStateDepthTestLess |
 			OtStateLines);
 
 	} else {
-		program.setState(
+		pass.setState(
 			OtStateWriteRgb |
 			OtStateWriteZ |
 			OtStateDepthTestLess |
 			OtStateCullCw);
 	}
 
-	program.setTransform(model);
+	pass.setTransform(model);
 	pass.runShaderProgram(program);
 
 	// show the mesh

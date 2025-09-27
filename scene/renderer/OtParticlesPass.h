@@ -85,10 +85,10 @@ public:
 			submitTextureSampler(particlesSampler, 0, settings.atlas);
 
 			// set the model matrix
-			program.setTransform(ctx.scene->getGlobalTransform(entity));
+			pass.setTransform(ctx.scene->getGlobalTransform(entity));
 
 			// run the program
-			program.setState(
+			pass.setState(
 				OtStateWriteRgb |
 				OtStateWriteA |
 				OtStateWriteZ |

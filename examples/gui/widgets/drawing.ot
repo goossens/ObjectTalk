@@ -14,7 +14,7 @@ class Background : canvas.Canvas {
 
 	function render(this) {
 		this.beginPath();
-		this.roundedRect(120, 120, 200, 200, 10);
+		this.roundedRect(120, 100, 200, 200, 10);
 		this.fillColor("#ffc0ff");
 		this.fill();
 		this.strokeColor("#000000");
@@ -31,6 +31,30 @@ class Background : canvas.Canvas {
 		this.strokeColor("#000000");
 		this.strokeWidth(15);
 		this.stroke();
+
+		this.save();
+		this.translate(700, 200);
+		this.beginPath();
+
+		var outer = 100;
+		var inner = 50;
+
+		this.moveTo(0, -outer);
+
+		for i in range(1, 6) {
+			var outerAngle = (pi / 3) * i - (pi / 2);
+			var innerAngle = outerAngle - (pi / 6);
+			this.lineTo(innerAngle.cos() * inner, innerAngle.sin() * inner);
+			this.lineTo(outerAngle.cos() * outer, outerAngle.sin() * outer);
+		}
+
+		this.closePath();
+		this.fillColor("#50b050");
+		this.fill();
+		this.strokeColor("#ffffff");
+		this.strokeWidth(5);
+		this.stroke();
+		this.restore();
 
 		var w = this.getImageWidth(this.logo);
 		var h = this.getImageHeight(this.logo);

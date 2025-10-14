@@ -91,6 +91,7 @@ private:
 	float backgroundPassTime;
 	float opaquePassTime;
 	float transparentPassTime;
+	float skyPassTime;
 	float waterPassTime;
 	float particlePassTime;
 	float editorPassTime;

@@ -28,6 +28,10 @@ public:
 		// update shadowmaps
 		ctx.csm->update(ctx.camera, ctx.directionalLightDirection);
 
+		// save context part the we will temporarily overwrite
+		auto camera = ctx.camera;
+		auto renderingShadow = ctx.renderingShadow;
+
 		// render each cascade
 		for (size_t i = 0; i < OtCascadedShadowMap::maxCascades; i++) {
 
@@ -39,13 +43,16 @@ public:
 			pass.setTransform(ctx.csm->getCamera(i).viewMatrix, ctx.csm->getCamera(i).projectionMatrix);
 			pass.touch();
 
-			OtSceneRendererContext sctx{ctx};
-			sctx.camera = ctx.csm->getCamera(i);
-			sctx.renderingShadow = true;
+			ctx.camera = ctx.csm->getCamera(i);
+			ctx.renderingShadow = true;
 
 			// render all entities
-			renderEntities(sctx, pass);
+			renderEntities(ctx, pass);
 		}
+
+		// restore old rendering context
+		ctx.camera = camera;
+		ctx.renderingShadow = renderingShadow;
 	}
 
 protected:

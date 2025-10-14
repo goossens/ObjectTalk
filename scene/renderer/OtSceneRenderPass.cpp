@@ -69,10 +69,10 @@ void OtSceneRenderPass::submitShadowUniforms(OtSceneRendererContext& ctx) {
 	viewUniform.submit();
 
 	// submit the shadow samplers
-	ctx.csm->getFrameBuffer(0).bindDepthTexture(shadowMap0Sampler, 10);
-	ctx.csm->getFrameBuffer(1).bindDepthTexture(shadowMap1Sampler, 11);
-	ctx.csm->getFrameBuffer(2).bindDepthTexture(shadowMap2Sampler, 12);
-	ctx.csm->getFrameBuffer(3).bindDepthTexture(shadowMap3Sampler, 13);
+	ctx.csm->getFrameBuffer(0).bindDepthTexture(shadowMap0Sampler, 8);
+	ctx.csm->getFrameBuffer(1).bindDepthTexture(shadowMap1Sampler, 9);
+	ctx.csm->getFrameBuffer(2).bindDepthTexture(shadowMap2Sampler, 10);
+	ctx.csm->getFrameBuffer(3).bindDepthTexture(shadowMap3Sampler, 11);
 }
 
 

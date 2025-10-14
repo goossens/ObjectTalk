@@ -26,10 +26,10 @@ uniform vec4 u_shadow[2];
 
 uniform mat4 u_shadowViewProjTransform[4];
 
-SAMPLER2D(s_shadowMap0, 10);
-SAMPLER2D(s_shadowMap1, 11);
-SAMPLER2D(s_shadowMap2, 12);
-SAMPLER2D(s_shadowMap3, 13);
+SAMPLER2D(s_shadowMap0, 8);
+SAMPLER2D(s_shadowMap1, 9);
+SAMPLER2D(s_shadowMap2, 10);
+SAMPLER2D(s_shadowMap3, 11);
 
 // get hard shadow (on/off) at specified point
 float hardShadow(sampler2D shadowmap, vec2 shadowCoord, float depth, float bias) {

@@ -41,10 +41,6 @@ int OtSceneRenderer::render(OtCamera& camera, OtScene* scene) {
 	compositeBuffer.update(camera.width, camera.height);
 	backgroundPass.render(ctx);
 
-	if (ctx.hasSkyEntities) {
-		skyPass.render(ctx);
-	}
-
 	backgroundPassTime = stopwatch.lap();
 
 	// render opaque entities
@@ -62,7 +58,14 @@ int OtSceneRenderer::render(OtCamera& camera, OtScene* scene) {
 
 	transparentPassTime = stopwatch.lap();
 
-	// generate water (if required)
+	// render sky (if required)
+	if (ctx.hasSkyEntities) {
+		skyPass.render(ctx);
+	}
+
+	skyPassTime = stopwatch.lap();
+
+	// render water (if required)
 	if (ctx.hasWaterEntities) {
 		waterPass.render(ctx);
 	}

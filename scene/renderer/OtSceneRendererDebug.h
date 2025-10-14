@@ -12,8 +12,7 @@
 //	Include files
 //
 
-#include <array>
-#include <cstdint>
+#include "imgui.h"
 
 #include "OtCubeMap.h"
 #include "OtFrameBuffer.h"
@@ -51,7 +50,7 @@ private:
 	void renderTimings(OtSceneRenderer& renderer);
 	void renderAssets();
 
-	void renderTexture(const char* title, uint16_t index, int width, int height);
+	void renderTexture(const char* title, ImTextureID id, int width, int height);
 	void renderTexture(const char* title, OtTexture& texture);
 	void renderCubeMap(const char* title, OtCubeMap& cubemap, CubeMapDebug& debug);
 	void renderCubeMapAsCross(OtCubeMap& cubemap, CubeMapDebug& debug);

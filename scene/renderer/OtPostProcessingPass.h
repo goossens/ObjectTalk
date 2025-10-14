@@ -258,14 +258,15 @@ public:
 		renderLight.render(occlusionBuffer);
 
 		// create an occlusion camera
-		OtCamera camera{ctx.camera};
-		camera.width = width;
-		camera.height = height;
+		OtCamera occlusionCamera{ctx.camera};
+		occlusionCamera.width = width;
+		occlusionCamera.height = height;
 
 		// render all objects to the occlusion buffer
-		OtSceneRendererContext octx{ctx};
-		octx.camera = camera;
-		occlusionPass.render(octx);
+		auto camera = ctx.camera;
+		ctx.camera = occlusionCamera;
+		occlusionPass.render(ctx);
+		ctx.camera = camera;
 
 		// setup godray pass
 		OtPass pass;
@@ -311,10 +312,10 @@ private:
 
 	OtUniformMat4 invProjUniform{"u_invProjUniform", 1};
 
-	OtSampler postProcessSampler{"s_postProcessTexture", OtTexture::pointSampling | OtTexture::clampSampling};
-	OtSampler depthSampler{"s_depthTexture", OtTexture::pointSampling | OtTexture::clampSampling};
-	OtSampler bloomSampler{"s_bloomTexture", OtTexture::pointSampling | OtTexture::clampSampling};
-	OtSampler occlusionSampler{"s_occlusionTexture", OtTexture::pointSampling | OtTexture::clampSampling};
+	OtSampler postProcessSampler{"s_postProcessTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler depthSampler{"s_depthTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler bloomSampler{"s_bloomTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler occlusionSampler{"s_occlusionTexture", OtSampler::pointSampling | OtSampler::clampSampling};
 
 	OtShaderProgram fxaaProgram{"OtFilterVS", "OtFxaaFS"};
 	OtShaderProgram fogProgram{"OtFilterVS", "OtFogFS"};

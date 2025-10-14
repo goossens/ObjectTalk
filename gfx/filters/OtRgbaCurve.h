@@ -53,6 +53,6 @@ private:
 	// GPU assets
 	OtUniformVec4 uniform = OtUniformVec4("u_rbgcurves", 3);
 	OtTexture lutTexture;
-	OtSampler lutSampler{"s_lut", OtTexture::linearSampling | OtTexture::clampSampling};
+	OtSampler lutSampler{"s_lut", OtSampler::linearSampling | OtSampler::clampSampling};
 	OtShaderProgram program = OtShaderProgram("OtFilterVS", "OtRgbaCurvesFS");
 };

@@ -32,11 +32,11 @@ void OtSceneRenderPass::submitLightingUniforms(OtSceneRendererContext& ctx) {
 	uniforms[0] = glm::vec4(ctx.camera.position, float(ctx.hasDirectionalLighting));
 	uniforms[1] = glm::vec4(ctx.directionalLightDirection, 0.0f);
 	uniforms[2] = glm::vec4(ctx.directionalLightColor, ctx.directionalLightAmbient);
-	uniforms[3] = glm::vec4(float(ctx.hasImageBasedLighting), float(ctx.ibl ? ctx.ibl->maxEnvLevel : 0), 0.0f, 0.0f);
+	uniforms[3] = glm::vec4(float(ctx.hasImageBasedLighting), float(ctx.hasImageBasedLighting ? ctx.ibl->maxEnvLevel : 0), 0.0f, 0.0f);
 	lightingUniforms.submit();
 
 	// submit the IBL samplers
-	if (ctx.ibl) {
+	if (ctx.hasImageBasedLighting) {
 		iblBrdfLutSampler.submit(5, ctx.ibl->iblBrdfLut);
 		iblIrradianceMapSampler.submit(6, ctx.ibl->iblIrradianceMap);
 		iblEnvironmentMapSampler.submit(7, ctx.ibl->iblEnvironmentMap);
@@ -191,6 +191,21 @@ void OtSceneRenderPass::submitTerrainUniforms(OtTerrain& terrain) {
 	submitTextureSampler(region2Sampler, 2, material.region2Texture);
 	submitTextureSampler(region3Sampler, 3, material.region3Texture);
 	submitTextureSampler(region4Sampler, 4, material.region4Texture);
+}
+
+
+//
+//	OtSceneRenderPass::submitGrassUniforms
+//
+
+void OtSceneRenderPass::submitGrassUniforms(OtGrassComponent* grass) {
+	grassUniforms.setValue(0, grass->patchWidth, grass->patchDepth, static_cast<float>(grass->bladeSegments), static_cast<float>(grass->blades));
+	grassUniforms.setValue(1, grass->bladeWidth, grass->bladeHeight, grass->bladePointiness, grass->bladeCurve);
+	grassUniforms.setValue(2, static_cast<float>(ImGui::GetTime()), glm::radians(grass->windDirection), grass->windStrength, 0.0f);
+	grassUniforms.setValue(3, grass->widthVariation, grass->heightVariation, grass->windVariation, grass->colorVariation);
+	grassUniforms.setValue(4, grass->baseColor, 0.0f);
+	grassUniforms.setValue(5, grass->tipColor, 0.0f);
+	grassUniforms.submit();
 }
 
 

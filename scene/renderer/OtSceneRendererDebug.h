@@ -60,7 +60,7 @@ private:
 	CubeMapDebug iblIrradianceDebug;
 	CubeMapDebug iblEnvironmentDebug;
 
-	OtSampler crossSampler{"s_cubemap"};
+	OtSampler crossSampler{"s_cubemap", OtSampler::linearSampling | OtSampler::repeatSampling};
 	OtUniformVec4 crossUniform{"u_crossUniform", 1};
 	OtShaderProgram crossShader{"OtCubeMapCrossVS", "OtCubeMapCrossFS"};
 };

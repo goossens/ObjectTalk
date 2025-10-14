@@ -173,7 +173,7 @@ void OtSceneRenderEntitiesPass::renderOpaqueGeometry(OtSceneRendererContext& ctx
 		}
 
 		// submit uniforms
-		Scope scope{entity, false, false, material, nullptr};
+		Scope scope{entity, false, false, false, material, nullptr, nullptr};
 		submitUniforms(ctx, scope);
 
 		// submit the geometry
@@ -230,7 +230,7 @@ void OtSceneRenderEntitiesPass::renderOpaqueModel(OtSceneRendererContext& ctx, O
 
 	} else {
 		// see if model is visible
-		if (ctx.camera.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
+		if (ctx.camera.isVisibleAABB(aabb)) {
 			visible = true;
 			program = getOpaqueProgram();
 		}
@@ -242,7 +242,7 @@ void OtSceneRenderEntitiesPass::renderOpaqueModel(OtSceneRendererContext& ctx, O
 
 		for (auto& cmd : renderList) {
 			// submit uniforms
-			Scope scope{entity, false, false, cmd.material, nullptr};
+			Scope scope{entity, false, false, false, cmd.material, nullptr, nullptr};
 			submitUniforms(ctx, scope);
 
 			// submit the geometry
@@ -277,7 +277,7 @@ void OtSceneRenderEntitiesPass::renderTerrain(OtSceneRendererContext& ctx, OtEnt
 		mesh.tile.vertices.submit();
 
 		// submit uniforms
-		Scope scope{entity, false, true, nullptr, terrain};
+		Scope scope{entity, false, true, false, nullptr, terrain, nullptr};
 		submitUniforms(ctx, scope);
 
 		// submit the terrain
@@ -313,15 +313,9 @@ void OtSceneRenderEntitiesPass::renderGrass(OtSceneRendererContext& ctx, OtEntit
 	}
 
 	// submit uniforms
-	Scope scope{entity, false, false, material, nullptr};
+	Scope scope{entity, false, false, true, material, nullptr, &component};
 	submitUniforms(ctx, scope);
-	grassUniforms.setValue(0, component.patchWidth, component.patchDepth, static_cast<float>(component.bladeSegments), static_cast<float>(component.blades));
-	grassUniforms.setValue(1, component.bladeWidth, component.bladeHeight, component.bladePointiness, component.bladeCurve);
-	grassUniforms.setValue(2, static_cast<float>(ImGui::GetTime()), glm::radians(component.windDirection), component.windStrength, 0.0f);
-	grassUniforms.setValue(3, component.widthVariation, component.heightVariation, component.windVariation, component.colorVariation);
-	grassUniforms.setValue(4, component.baseColor, 0.0f);
-	grassUniforms.setValue(5, component.tipColor, 0.0f);
-	grassUniforms.submit();
+	submitGrassUniforms(&component);
 
 	// submit geometry
 	std::vector<uint32_t> indices;
@@ -403,7 +397,7 @@ void OtSceneRenderEntitiesPass::renderTransparentGeometry(OtSceneRendererContext
 		}
 
 		// submit uniforms
-		Scope scope{entity, true, false, material, nullptr};
+		Scope scope{entity, true, false, false, material, nullptr, nullptr};
 		submitUniforms(ctx, scope);
 
 		// submit the geometry

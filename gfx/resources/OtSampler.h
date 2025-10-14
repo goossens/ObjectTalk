@@ -32,18 +32,25 @@ class OtCubeMap;
 
 class OtSampler {
 public:
+	// sampler flags
+	static constexpr uint64_t linearSampling = BGFX_SAMPLER_NONE;
+	static constexpr uint64_t pointSampling = BGFX_SAMPLER_POINT;
+	static constexpr uint64_t anisotropicSampling = BGFX_SAMPLER_MIN_ANISOTROPIC | BGFX_SAMPLER_MAG_ANISOTROPIC;
+	static constexpr uint64_t repeatSampling = BGFX_SAMPLER_NONE;
+	static constexpr uint64_t clampSampling = BGFX_SAMPLER_UVW_CLAMP;
+	static constexpr uint64_t mirrorSampling = BGFX_SAMPLER_UVW_MIRROR;
+
 	// constructor/destructor
 	OtSampler() = default;
-	inline OtSampler(const char* n, uint64_t f=OtTexture::defaultSampling) : name(n), flags(f) {}
+	inline OtSampler(const char* n, uint64_t f) : name(n), flags(f) {}
 
 	// initialize sampler
-	void initialize(const char* name, uint64_t flags=OtTexture::defaultSampling);
+	void initialize(const char* name, uint64_t flags);
 
 	// clear the resources
 	void clear();
 
-	// (re)set/get the flags
-	inline void resetFlags() { flags = OtTexture::defaultSampling; }
+	// set/get the flags
 	inline void setFlags(uint64_t f) { flags = f; }
 	inline uint64_t getFlags() { return flags; }
 
@@ -64,7 +71,7 @@ private:
 
 	// properties
 	std::string name;
-	uint64_t flags = OtTexture::defaultSampling;
+	uint64_t flags;
 
 	// uniform
 	OtBgfxHandle<bgfx::UniformHandle> uniform;

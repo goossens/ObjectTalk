@@ -17,7 +17,7 @@
 //
 
 OtBlur::OtBlur() {
-	setFlags(OtTexture::clampSampling);
+	setFlags(OtSampler::clampSampling);
 }
 
 

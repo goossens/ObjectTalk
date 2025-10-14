@@ -30,12 +30,7 @@ void OtImageBasedLighting::update(OtIblComponent& component) {
 		static constexpr int environmentMipLevels = 8;
 
 		// generate the Smith BRDF LUT
-		uint64_t flags =
-			OtTexture::pointSampling |
-			OtTexture::clampSampling |
-			OtTexture::computeWrite;
-
-		iblBrdfLut.create(brdfLutSize, brdfLutSize, OtTexture::rgFloat16Texture, flags);
+		iblBrdfLut.create(brdfLutSize, brdfLutSize, OtTexture::rgFloat16Texture, OtTexture::computeWrite);
 
 		// our pass
 		OtPass pass;

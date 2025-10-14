@@ -54,24 +54,25 @@ public:
 		float nearPlane, farPlane;
 		ctx.camera.getNearFar(nearPlane, farPlane);
 
-		OtCamera camera{bufferSize, bufferSize, nearPlane, farPlane, 1.0f, eye, at};
+		OtCamera pickingCamera{bufferSize, bufferSize, nearPlane, farPlane, 1.0f, eye, at};
 
 		// setup pass to render entities as opaque blobs
 		OtPass pass;
 		pass.setRectangle(0, 0, bufferSize, bufferSize);
 		pass.setFrameBuffer(idBuffer);
 		pass.setClear(true, true);
-		pass.setTransform(camera.viewMatrix, camera.projectionMatrix);
+		pass.setTransform(pickingCamera.viewMatrix, pickingCamera.projectionMatrix);
 		pass.touch();
 
 		// create a new context
-		OtSceneRendererContext pctx{ctx};
-		pctx.camera = camera;
+		auto camera = ctx.camera;
+		ctx.camera = pickingCamera;
 
 		// render all entity IDs into buffer
 		entityMap.clear();
 		nextID = 1;
-		renderEntities(pctx, pass);
+		renderEntities(ctx, pass);
+		ctx.camera = camera;
 
 		// transfer ID buffer back to CPU (this takes 2 frames hence the callback)
 		auto texture = idBuffer.getColorTexture();

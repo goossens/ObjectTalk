@@ -126,7 +126,7 @@ private:
 	OtUniformMat4 skyInvViewProjUniform{"u_skyInvViewProjUniform", 1};
 	OtUniformVec4 skyUniforms{"u_sky", 3};
 
-	OtSampler skySampler{"s_skyTexture"};
+	OtSampler skySampler{"s_skyTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
 
 	OtShaderProgram skyProgram{"OtSkyVS", "OtSkyFS"};
 	OtShaderProgram skyBoxProgram{"OtSkyVS", "OtSkyBoxFS"};

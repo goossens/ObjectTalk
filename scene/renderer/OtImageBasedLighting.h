@@ -43,7 +43,7 @@ private:
 	OtUniformVec4 iblEnvironmentUniform{"u_iblEnvironment", 1};
 
 	// samplers
-	OtSampler cubemapSampler{"s_cubemap"};
+	OtSampler cubemapSampler{"s_cubemap", OtSampler::linearSampling | OtSampler::repeatSampling};
 
 	// compute programs
 	OtComputeProgram brdfLutProgram{"OtBrdfLutCS"};

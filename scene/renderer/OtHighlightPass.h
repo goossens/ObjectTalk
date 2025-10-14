@@ -134,7 +134,7 @@ private:
 
 	OtUniformVec4 outlineUniforms{"u_outline", 1};
 
-	OtSampler selectedSampler{"s_selectedTexture", OtTexture::pointSampling | OtTexture::clampSampling};
+	OtSampler selectedSampler{"s_selectedTexture", OtSampler::pointSampling | OtSampler::clampSampling};
 
 	OtShaderProgram opaqueProgram{"OtSelectVS", "OtSelectOpaqueFS"};
 	OtShaderProgram instancedOpaqueProgram{"OtSelectInstancingVS", "OtSelectOpaqueFS"};

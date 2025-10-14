@@ -88,7 +88,7 @@ private:
 
 	OtBgfxHandle<bgfx::TextureHandle> tmpTexture;
 	OtBgfxHandle<bgfx::FrameBufferHandle> framebuffers[6];
-	OtSampler remapSampler{"s_equirectangularMap"};
+	OtSampler remapSampler{"s_equirectangularMap", OtSampler::linearSampling | OtSampler::repeatSampling};
 	OtShaderProgram reprojectShader{"OtHdrReprojectVS", "OtHdrReprojectFS"};
 
 	// specific cubemap loaders

@@ -37,7 +37,6 @@ void OtSampler::initialize(const char* n, uint64_t f) {
 //
 
 void OtSampler::clear() {
-	flags = OtTexture::defaultSampling;
 	name.clear();
 	uniform.clear();
 }
@@ -52,7 +51,7 @@ void OtSampler::submit(int unit, OtTexture& texture, const char* samplerName) {
 	if (texture.isValid()) {
 		// initialize sampler if new name is provided
 		if (samplerName) {
-			initialize(samplerName);
+			initialize(samplerName, linearSampling | repeatSampling);
 		}
 
 		// generate resource (if required)
@@ -74,7 +73,7 @@ void OtSampler::submit(int unit, bgfx::TextureHandle texture, const char* sample
 	if (bgfx::isValid(texture)) {
 		// initialize sampler if new name is provided
 		if (samplerName) {
-			initialize(samplerName);
+			initialize(samplerName, linearSampling | repeatSampling);
 		}
 
 		// generate resource (if required)
@@ -95,7 +94,7 @@ void OtSampler::submit(int unit, OtCubeMap& cubemap, const char* samplerName) {
 	if (cubemap.isValid()) {
 		// initialize sampler if new name is provided
 		if (samplerName) {
-			initialize(samplerName);
+			initialize(samplerName, linearSampling | repeatSampling);
 		}
 
 		// generate resource (if required)
@@ -119,7 +118,7 @@ void OtSampler::submit(int unit, OtCubeMap& cubemap, const char* samplerName) {
 void OtSampler::submitDummyTexture(int unit, const char* samplerName) {
 	// initialize sampler if new name is provided
 	if (samplerName) {
-		initialize(samplerName);
+		initialize(samplerName, linearSampling | repeatSampling);
 	}
 
 	// generate resource (if required)
@@ -140,7 +139,7 @@ void OtSampler::submitDummyTexture(int unit, const char* samplerName) {
 void OtSampler::submitDummyCubeMap(int unit, const char* samplerName) {
 	// initialize sampler if new name is provided
 	if (samplerName) {
-		initialize(samplerName);
+		initialize(samplerName, linearSampling | repeatSampling);
 	}
 
 	// generate resource (if required)

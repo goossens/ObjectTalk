@@ -33,6 +33,6 @@ private:
 
 	// GPU assets
 	OtTexture overlayTexture;
-	OtSampler overlaySampler{"s_overlay", OtTexture::pointSampling | OtTexture::clampSampling};
+	OtSampler overlaySampler{"s_overlay", OtSampler::pointSampling | OtSampler::clampSampling};
 	OtShaderProgram program = OtShaderProgram("OtFilterVS", "OtAlphaOverFS");
 };

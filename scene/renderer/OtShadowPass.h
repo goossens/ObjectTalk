@@ -34,7 +34,6 @@ public:
 
 		// render each cascade
 		for (size_t i = 0; i < OtCascadedShadowMap::maxCascades; i++) {
-
 			// setup pass to render entities as opaque blobs
 			OtPass pass;
 			pass.setRectangle(0, 0, ctx.csm->getSize(), ctx.csm->getSize());

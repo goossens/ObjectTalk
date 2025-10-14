@@ -86,15 +86,19 @@ public:
 		OtCamera reflectionCamera{width, height, ctx.camera.projectionMatrix, reflectionViewMatrix};
 
 		// setup the renderer for the reflection
-		OtSceneRendererContext reflectionContext{ctx};
-		reflectionContext.camera = reflectionCamera;
-		reflectionContext.clippingPlane = glm::vec4(0.0f, 1.0f, 0.0f, -(water.level - 1.0f));
+		auto camera = ctx.camera;
+		auto clippingPlane = ctx.clippingPlane;
+		ctx.camera = reflectionCamera;
+		ctx.clippingPlane = glm::vec4(0.0f, 1.0f, 0.0f, -(water.level - 1.0f));
 
 		// render the scene
 		backgroundReflectionPass.render(ctx);
-		if (ctx.hasSkyEntities) { skyReflectionPass.render(reflectionContext); }
-		if (ctx.hasOpaqueEntities) { deferredReflectionPass.render(reflectionContext); }
-		if (ctx.hasTransparentEntities) { forwardReflectionPass.render(reflectionContext); }
+		if (ctx.hasSkyEntities) { skyReflectionPass.render(ctx); }
+		if (ctx.hasOpaqueEntities) { deferredReflectionPass.render(ctx); }
+		if (ctx.hasTransparentEntities) { forwardReflectionPass.render(ctx); }
+
+		ctx.camera = camera;
+		ctx.clippingPlane = clippingPlane;
 	}
 
 	// render the water's refraction
@@ -103,15 +107,19 @@ public:
 		OtCamera refractionCamera{width, height, ctx.camera.projectionMatrix, ctx.camera.viewMatrix};
 
 		// setup the renderer for the refraction
-		OtSceneRendererContext refractionContext{ctx};
-		refractionContext.camera = refractionCamera;
-		refractionContext.clippingPlane = glm::vec4(0.0f, -1.0f, 0.0f, water.level + 1.0f);
+		auto camera = ctx.camera;
+		auto clippingPlane = ctx.clippingPlane;
+		ctx.camera = refractionCamera;
+		ctx.clippingPlane = glm::vec4(0.0f, -1.0f, 0.0f, water.level + 1.0f);
 
 		// render the scene
 		backgroundRefractionPass.render(ctx);
-		if (ctx.hasSkyEntities) { skyRefractionPass.render(refractionContext); }
-		if (ctx.hasOpaqueEntities) { deferredRefractionPass.render(refractionContext); }
-		if (ctx.hasTransparentEntities) { forwardRefractionPass.render(refractionContext); }
+		if (ctx.hasSkyEntities) { skyRefractionPass.render(ctx); }
+		if (ctx.hasOpaqueEntities) { deferredRefractionPass.render(ctx); }
+		if (ctx.hasTransparentEntities) { forwardRefractionPass.render(ctx); }
+
+		ctx.camera = camera;
+		ctx.clippingPlane = clippingPlane;
 	}
 
 	// render the actual water
@@ -192,10 +200,10 @@ private:
 
 	OtUniformVec4 waterUniforms{"u_water", 4};
 
-	OtSampler normalmapSampler{"s_normalMapTexture"};
-	OtSampler reflectionSampler{"s_reflectionTexture"};
-	OtSampler refractionSampler{"s_refractionTexture"};
-	OtSampler refractionDepthSampler{"s_refractionDepthTexture"};
+	OtSampler normalmapSampler{"s_normalMapTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
+	OtSampler reflectionSampler{"s_reflectionTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
+	OtSampler refractionSampler{"s_refractionTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
+	OtSampler refractionDepthSampler{"s_refractionDepthTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
 
 	OtShaderProgram waterProgram{"OtWaterVS", "OtWaterFS"};
 

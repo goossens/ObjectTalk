@@ -119,7 +119,7 @@ private:
 
 	// work variables
 	OtFrameBuffer framebuffer{OtTexture::rgba8Texture};
-	OtSampler sampler{"s_texture", OtTexture::pointSampling | OtTexture::clampSampling};
+	OtSampler sampler{"s_texture", OtSampler::pointSampling | OtSampler::clampSampling};
 	OtShaderProgram program{"OtDialVS", "OtDialFS"};
 	bool redraw = true;
 };

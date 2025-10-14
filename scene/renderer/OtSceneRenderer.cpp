@@ -51,13 +51,6 @@ int OtSceneRenderer::render(OtCamera& camera, OtScene* scene) {
 
 	opaquePassTime = stopwatch.lap();
 
-	// render transparent entities
-	if (ctx.hasTransparentEntities) {
-		forwardPass.render(ctx);
-	}
-
-	transparentPassTime = stopwatch.lap();
-
 	// render sky (if required)
 	if (ctx.hasSkyEntities) {
 		skyPass.render(ctx);
@@ -78,6 +71,13 @@ int OtSceneRenderer::render(OtCamera& camera, OtScene* scene) {
 	}
 
 	particlePassTime = stopwatch.lap();
+
+	// render transparent entities
+	if (ctx.hasTransparentEntities) {
+		forwardPass.render(ctx);
+	}
+
+	transparentPassTime = stopwatch.lap();
 
 	// handle editor passes
 	gridPass.render(ctx);

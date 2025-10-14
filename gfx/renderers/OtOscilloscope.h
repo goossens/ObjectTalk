@@ -104,7 +104,7 @@ private:
 	OtFrameBuffer blur1{OtTexture::rgba8Texture};
 	OtFrameBuffer blur2{OtTexture::rgba8Texture};
 	OtUniformVec4 uniform = OtUniformVec4("u_params", 1);
-	OtSampler sampler = OtSampler("s_texture");
+	OtSampler sampler = OtSampler("s_texture", OtSampler::linearSampling | OtSampler::repeatSampling);
 	OtShaderProgram shader{"OtOscilloscopeVS", "OtOscilloscopeFS"};
 
 	OtTexture brush;

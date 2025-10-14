@@ -45,21 +45,13 @@ public:
 	static constexpr int d24s8Texture = bgfx::TextureFormat::D24S8;
 
 	// texture flags
-	static constexpr uint64_t defaultSampling = UINT32_MAX;
-	static constexpr uint64_t linearSampling = BGFX_SAMPLER_NONE;
-	static constexpr uint64_t pointSampling = BGFX_SAMPLER_POINT;
-	static constexpr uint64_t anisotropicSampling = BGFX_SAMPLER_MIN_ANISOTROPIC | BGFX_SAMPLER_MAG_ANISOTROPIC;
-	static constexpr uint64_t repeatSampling = BGFX_SAMPLER_NONE;
-	static constexpr uint64_t clampSampling = BGFX_SAMPLER_UVW_CLAMP;
-	static constexpr uint64_t mirrorSampling = BGFX_SAMPLER_UVW_MIRROR;
-
 	static constexpr uint64_t computeWrite = BGFX_TEXTURE_COMPUTE_WRITE;
 	static constexpr uint64_t blitDst = BGFX_TEXTURE_BLIT_DST;
 	static constexpr uint64_t readBack = BGFX_TEXTURE_READ_BACK;
 
 	// constructors
 	OtTexture() = default;
-	OtTexture(int w, int h, int f, uint64_t flags = linearSampling | repeatSampling) { create(w, h, f, flags); }
+	OtTexture(int w, int h, int f, uint64_t flags=0) { create(w, h, f, flags); }
 	OtTexture(OtBgfxHandle<bgfx::TextureHandle> t, int w, int h, int f) : texture(t), width(w), height(h), format(f) {}
 
 	// clear the resources
@@ -69,7 +61,7 @@ public:
 	inline bool isValid() { return texture.isValid(); }
 
 	// create an empty texture
-	void create(int width, int height, int format, uint64_t flags = linearSampling | repeatSampling);
+	void create(int width, int height, int format, uint64_t flags=0);
 
 	// load texture
 	void load(OtImage& image);

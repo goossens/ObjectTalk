@@ -103,5 +103,5 @@ private:
 	// properties
 	OtFrameBuffer& framebuffer;
 	OtShaderProgram program{"OtParticlesVS", "OtParticlesFS"};
-	OtSampler particlesSampler{"s_particlesTexture"};
+	OtSampler particlesSampler{"s_particlesTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
 };

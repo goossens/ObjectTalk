@@ -127,6 +127,15 @@ void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtPass
 			renderTerrain(ctx, entity, terrain);
 		}
 	}
+
+	// render grass
+	if (ctx.scene->hasComponent<OtGrassComponent>(entity)) {
+		auto& grass = ctx.scene->getComponent<OtGrassComponent>(entity);
+
+		if (!ctx.renderingShadow || grass.castShadow) {
+			renderGrass(ctx, entity, grass);
+		}
+	}
 }
 
 

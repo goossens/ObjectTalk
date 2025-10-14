@@ -94,6 +94,7 @@ private:
 			highlightable |= scene->hasComponent<OtGeometryComponent>(entity);
 			highlightable |= scene->hasComponent<OtModelComponent>(entity);
 			highlightable |= scene->hasComponent<OtTerrainComponent>(entity);
+			highlightable |= scene->hasComponent<OtGrassComponent>(entity);
 
 			OtEntity child = scene->getFirstChild(entity);
 
@@ -125,6 +126,7 @@ protected:
 
 	inline void submitUniforms(OtSceneRendererContext& /* ctx */, Scope& scope) override {
 		if (scope.isTransparent) { submitAlbedoUniforms(*scope.material); }
+		if (scope.isGrass) { submitGrassUniforms(scope.grass); }
 	}
 
 private:

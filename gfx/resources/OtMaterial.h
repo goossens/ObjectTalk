@@ -50,11 +50,7 @@ public:
 	void setEmissiveTexture(const std::string& path) { emissiveTexture = path; }
 	void setAoTexture(const std::string& path) { aoTexture = path; }
 
-private:
-	// the scene renderer needs access to our properties
-	friend class OtSceneRenderPass;
-
-	// stored properties
+	// material properties
 	glm::vec4 albedo{1.0f};
 	float metallic = 0.5f;
 	float roughness = 0.5f;

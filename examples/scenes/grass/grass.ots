@@ -136,32 +136,34 @@
 					"uuid": 2636405566
 				},
 				{
-					"baseColor": [
-						0.1324431598186493,
-						0.32300883531570435,
-						0.09433001279830933
-					],
-					"bladeCurve": 0.6499999761581421,
-					"bladeHeight": 0.4000000059604645,
-					"bladePointiness": 0.0,
-					"bladeSegments": 4,
-					"bladeWidth": 0.017000000923871994,
-					"blades": 10000,
-					"castShadow": true,
-					"colorVariation": 0.5600000023841858,
 					"component": "Grass",
-					"heightVariation": 0.3499999940395355,
-					"patchDepth": 4.0,
-					"patchWidth": 4.0,
-					"tipColor": [
-						0.48366275429725647,
-						0.5265486836433411,
-						0.15377084910869598
-					],
-					"widthVariation": 0.33000001311302185,
-					"windDirection": 90.0,
-					"windStrength": 0.15000000596046448,
-					"windVariation": 0.20000000298023224
+					"grass": {
+						"baseColor": [
+							0.1324431598186493,
+							0.32300883531570435,
+							0.09433001279830933
+						],
+						"bladeCurve": 0.6499999761581421,
+						"bladeHeight": 0.4000000059604645,
+						"bladePointiness": 0.0,
+						"bladeSegments": 4,
+						"bladeWidth": 0.017000000923871994,
+						"blades": 10000,
+						"castShadow": true,
+						"colorVariation": 0.5600000023841858,
+						"heightVariation": 0.3499999940395355,
+						"patchDepth": 4.0,
+						"patchWidth": 4.0,
+						"tipColor": [
+							0.48366275429725647,
+							0.5265486836433411,
+							0.15377084910869598
+						],
+						"widthVariation": 0.33000001311302185,
+						"windDirection": 90.0,
+						"windStrength": 0.15000000596046448,
+						"windVariation": 0.20000000298023224
+					}
 				}
 			]
 		}

@@ -24,61 +24,41 @@
 //
 
 void OtSceneRenderEntitiesPass::renderEntities(OtSceneRendererContext& ctx, OtPass& pass) {
-	// remember pass
-	ctx.pass = &pass;
-
 	// render all opaque entities
 	if (isRenderingOpaque() && ctx.hasOpaqueEntities) {
 		// render geometries
 		if (ctx.hasOpaqueGeometries) {
-			ctx.scene->view<OtGeometryComponent>().each([&](auto entity, auto& component) {
-				// ensure geometry is ready to be rendered
-				if (!component.transparent && component.asset.isReady()) {
-					if (!ctx.renderingShadow || component.castShadow) {
-						renderOpaqueGeometry(ctx, entity, component);
-					}
-				}
+			ctx.scene->view<OtGeometryComponent>().each([&](auto entity, auto&) {
+				renderEntity(ctx, pass, entity);
 			});
 		}
 
 		// render models
 		if (ctx.hasOpaqueModels) {
-			ctx.scene->view<OtModelComponent>().each([&](auto entity, auto& component) {
-				if (component.asset.isReady()) {
-					if (!ctx.renderingShadow || component.castShadow) {
-						renderOpaqueModel(ctx, entity, component);
-					}
-				}
+			ctx.scene->view<OtModelComponent>().each([&](auto entity, auto&) {
+				renderEntity(ctx, pass, entity);
 			});
 		}
 
 		// render terrain
 		if (ctx.hasTerrainEntities) {
-			ctx.scene->view<OtTerrainComponent>().each([&](auto entity, auto& terrain) {
-				if (!ctx.renderingShadow || terrain.terrain->isCastingShadow()) {
-					renderTerrain(ctx, entity, terrain);
-				}
+			ctx.scene->view<OtTerrainComponent>().each([&](auto entity, auto&) {
+				renderEntity(ctx, pass, entity);
 			});
 		}
 
 		// render grass
 		if (ctx.hasGrassEntities) {
-			ctx.scene->view<OtGrassComponent>().each([&](auto entity, auto& grass) {
-				if (!ctx.renderingShadow || grass.castShadow) {
-					renderGrass(ctx, entity, grass);
-				}
+			ctx.scene->view<OtGrassComponent>().each([&](auto entity, auto&) {
+				renderEntity(ctx, pass, entity);
 			});
 		}
 	}
 
 	// render all transparent geometries
 	if (isRenderingTransparent() && ctx.hasTransparentEntities) {
-		ctx.scene->view<OtGeometryComponent>().each([&](auto entity, auto& component) {
-			if (component.transparent && component.asset.isReady()) {
-				if (!ctx.renderingShadow || component.castShadow) {
-					renderTransparentGeometry(ctx, entity, component);
-				}
-			}
+		ctx.scene->view<OtGeometryComponent>().each([&](auto entity, auto&) {
+			renderEntity(ctx, pass, entity);
 		});
 	}
 }
@@ -86,7 +66,7 @@ void OtSceneRenderEntitiesPass::renderEntities(OtSceneRendererContext& ctx, OtPa
 
 //
 //	OtSceneRenderEntitiesPass::renderEntity
-///
+//
 
 void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity) {
 	// remember pass
@@ -94,15 +74,35 @@ void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtPass
 
 	// render geometry (if required)
 	if (ctx.scene->hasComponent<OtGeometryComponent>(entity)) {
-		auto& component = ctx.scene->getComponent<OtGeometryComponent>(entity);
+		auto& geometry = ctx.scene->getComponent<OtGeometryComponent>(entity);
 
-		if (component.asset.isReady()) {
-			if (!ctx.renderingShadow || component.castShadow) {
-				if (isRenderingOpaque() && !component.transparent) {
-					renderOpaqueGeometry(ctx, entity, component);
+		if (geometry.asset.isReady() && (!ctx.renderingShadow || geometry.castShadow)) {
+			// see if entity is visible
+			auto globalTransform = ctx.scene->getGlobalTransform(entity);
+			auto aabb = geometry.asset->getGeometry().getAABB().transform(globalTransform);
 
-				} else if (isRenderingTransparent() && component.transparent) {
-					renderTransparentGeometry(ctx, entity, component);
+			// is this a case of instancing?
+			if (ctx.scene->hasComponent<OtInstancingComponent>(entity)) {
+				auto& instancing = ctx.scene->getComponent<OtInstancingComponent>(entity);
+
+				if (!instancing.asset.isNull() && instancing.asset->getInstances().submit(ctx.camera, aabb)) {
+					if (geometry.transparent) {
+						renderTransparentGeometry(ctx, entity, geometry, true);
+
+					} else {
+						renderOpaqueGeometry(ctx, entity, geometry, true);
+					}
+				}
+
+			} else {
+				// see if geometry is visible
+				if (ctx.camera.isVisibleAABB(aabb)) {
+					if (geometry.transparent) {
+						renderTransparentGeometry(ctx, entity, geometry, false);
+
+					} else {
+						renderOpaqueGeometry(ctx, entity, geometry, false);
+					}
 				}
 			}
 		}
@@ -110,16 +110,31 @@ void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtPass
 
 	// render model (if required)
 	if (ctx.scene->hasComponent<OtModelComponent>(entity)) {
-		auto& component = ctx.scene->getComponent<OtModelComponent>(entity);
+		auto& model = ctx.scene->getComponent<OtModelComponent>(entity);
 
-		if (isRenderingOpaque() && component.asset.isReady()) {
-			if (!ctx.renderingShadow || component.castShadow) {
-				renderOpaqueModel(ctx, entity, component);
+		if (model.asset.isReady() && (!ctx.renderingShadow || model.castShadow)) {
+			// see if model is visible
+			auto globalTransform = ctx.scene->getGlobalTransform(entity);
+			auto aabb = model.asset->getModel().getAABB().transform(globalTransform);
+
+			// is this a case of instancing?
+			if (ctx.scene->hasComponent<OtInstancingComponent>(entity)) {
+				auto& instancing = ctx.scene->getComponent<OtInstancingComponent>(entity);
+
+				if (!instancing.asset.isNull() && instancing.asset->getInstances().submit(ctx.camera, aabb)) {
+					renderOpaqueModel(ctx, entity, model, true);
+				}
+
+			} else {
+				// see if model is visible
+				if (ctx.camera.isVisibleAABB(aabb)) {
+					renderOpaqueModel(ctx, entity, model, false);
+				}
 			}
 		}
 	}
 
-	// render terrain
+	// render terrain (if required)
 	if (ctx.scene->hasComponent<OtTerrainComponent>(entity)) {
 		auto& terrain = ctx.scene->getComponent<OtTerrainComponent>(entity);
 
@@ -128,11 +143,11 @@ void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtPass
 		}
 	}
 
-	// render grass
+	// render grass (if required)
 	if (ctx.scene->hasComponent<OtGrassComponent>(entity)) {
 		auto& grass = ctx.scene->getComponent<OtGrassComponent>(entity);
 
-		if (!ctx.renderingShadow || grass.castShadow) {
+		if (!ctx.renderingShadow || grass.grass->castShadow) {
 			renderGrass(ctx, entity, grass);
 		}
 	}
@@ -140,296 +155,193 @@ void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtPass
 
 
 //
-//	OtSceneRenderEntitiesPass::renderOpaqueGeometry
+//	OtSceneRenderEntitiesPass::renderOpaqueGeometryHelper
 //
 
-void OtSceneRenderEntitiesPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& component) {
-	// visibility flag and target program
-	bool visible = false;
-	OtShaderProgram* program = nullptr;
+void OtSceneRenderEntitiesPass::renderOpaqueGeometryHelper(
+	OtSceneRendererContext& ctx,
+	OtEntity entity,
+	OtGeometryComponent& geometry,
+	uint64_t wireframeState,
+	uint64_t solidState,
+	bool simpleMaterial,
+	OtShaderProgram& program) {
 
-	// get geometry AABB
-	auto& aabb = component.asset->getGeometry().getAABB();
-
-	// is this a case of instancing?
-	if (ctx.scene->hasComponent<OtInstancingComponent>(entity)) {
-		// only render instances if we have a valid asset and at least one instance is visible
-		auto& instancing = ctx.scene->getComponent<OtInstancingComponent>(entity);
-
-		if (!instancing.asset.isNull() && instancing.asset->getInstances().submit(ctx.camera, aabb)) {
-			visible = true;
-			program = getInstancedOpaqueProgram();
-		}
+	if (geometry.wireframe) {
+		geometry.asset->getGeometry().submitLines();
+		ctx.pass->setState(wireframeState);
 
 	} else {
-		// see if geometry is visible
-		if (ctx.camera.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
-			visible = true;
-			program = getOpaqueProgram();
-		}
+		geometry.asset->getGeometry().submitTriangles();
+		ctx.pass->setState(solidState);
 	}
 
-	// ensure geometry is visible
-	if (visible) {
-		// get current material
-		std::shared_ptr<OtMaterial> material;
+	auto material = ctx.scene->hasComponent<OtMaterialComponent>(entity)
+		? ctx.scene->getComponent<OtMaterialComponent>(entity).material
+		: std::make_shared<OtMaterial>();
 
-		if (ctx.scene->hasComponent<OtMaterialComponent>(entity)) {
-			material = ctx.scene->getComponent<OtMaterialComponent>(entity).material;
+	if (simpleMaterial) {
+		ctx.submitAlbedoUniforms(*material);
 
-		} else {
-			material = std::make_shared<OtMaterial>();
-		}
-
-		// submit uniforms
-		Scope scope{entity, false, false, false, material, nullptr, nullptr};
-		submitUniforms(ctx, scope);
-
-		// submit the geometry
-		if (component.wireframe) {
-			component.asset->getGeometry().submitLines();
-
-		} else {
-			component.asset->getGeometry().submitTriangles();
-		}
-
-		// set the program state
-		if (component.wireframe) {
-			ctx.pass->setState(getWireframeState());
-
-		} else if (component.cullBack) {
-			ctx.pass->setState(getCullBackState());
-
-		} else {
-			ctx.pass->setState(getNormalState());
-		}
-
-		// set the transform
-		ctx.pass->setTransform(ctx.scene->getGlobalTransform(entity));
-
-		// run the program
-		ctx.pass->runShaderProgram(*program);
+	} else {
+		ctx.submitMaterialUniforms(*material);
 	}
+
+	ctx.pass->setTransform(ctx.scene->getGlobalTransform(entity));
+	ctx.pass->runShaderProgram(program);
 }
 
 
 //
-//	OtSceneRenderEntitiesPass::renderOpaqueModel
+//	OtSceneRenderEntitiesPass::renderOpaqueModelHelper
 //
 
-void OtSceneRenderEntitiesPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& component) {
-	// visibility flag and target program
-	bool visible = false;
-	OtShaderProgram* program = nullptr;
+void OtSceneRenderEntitiesPass::renderOpaqueModelHelper(
+	OtSceneRendererContext& ctx,
+	OtEntity entity,
+	OtModelComponent& model,
+	uint64_t state,
+	bool simpleMaterial,
+	OtShaderProgram& animatedProgram,
+	OtShaderProgram& staticProgram) {
 
-	// get geometry AABB
-	auto& model = component.asset->getModel();
+	// run the program
+	ctx.pass->setState(state);
+
+	// process all render commands
 	auto globalTransform = ctx.scene->getGlobalTransform(entity);
-	auto aabb = model.getAABB().transform(globalTransform);
+	auto renderList = model.asset->getModel().getRenderList(globalTransform);
 
-	// is this a case of instancing?
-	if (ctx.scene->hasComponent<OtInstancingComponent>(entity)) {
-		// only render instances if we have a valid asset and at least one instance is visible
-		auto& instancing = ctx.scene->getComponent<OtInstancingComponent>(entity);
+	for (auto& cmd : renderList) {
+		// submit the geometry
+		cmd.mesh->submitTriangles();
 
-		if (!instancing.asset.isNull() && instancing.asset->getInstances().submit(ctx.camera, aabb)) {
-			visible = true;
-			program = getInstancedOpaqueProgram();
+		// set the uniforms
+		if (simpleMaterial) {
+			ctx.submitAlbedoUniforms(*cmd.material);
+
+		} else {
+			ctx.submitMaterialUniforms(*cmd.material);
 		}
 
-	} else {
-		// see if model is visible
-		if (ctx.camera.isVisibleAABB(aabb)) {
-			visible = true;
-			program = getOpaqueProgram();
+		// don't discard instancing and uniform data after shader run
+		static constexpr uint8_t discard = OtDiscardIndexBuffer | OtDiscardVertexStreams;
+
+		// handle animations
+		if (cmd.animation) {
+			ctx.pass->setTransforms(cmd.transforms.data(), cmd.transforms.size());
+			ctx.pass->runShaderProgram(animatedProgram, discard);
+
+		} else {
+			ctx.pass->setTransform(cmd.transforms[0]);
+			ctx.pass->runShaderProgram(staticProgram, discard);
 		}
 	}
 
-	if (visible) {
-		// process all render commands
-		auto renderList = model.getRenderList(globalTransform);
-
-		for (auto& cmd : renderList) {
-			// submit uniforms
-			Scope scope{entity, false, false, false, cmd.material, nullptr, nullptr};
-			submitUniforms(ctx, scope);
-
-			// submit the geometry
-			cmd.mesh->submitTriangles();
-
-			// run the program
-			ctx.pass->setState(getCullBackState());
-
-			if (cmd.animation) {
-				ctx.pass->setTransforms(cmd.transforms.data(), cmd.transforms.size());
-				ctx.pass->runShaderProgram(*getAnimatedOpaqueProgram());
-
-			} else {
-				ctx.pass->setTransform(cmd.transforms[0]);
-				ctx.pass->runShaderProgram(*program);
-			}
-		}
-	 }
+	// cleanup (now we can discard instancing and uniform data)
+	ctx.pass->discard();
 }
 
 
 //
-//	OtSceneRenderEntitiesPass::renderTerrain
+//	OtSceneRenderEntitiesPass::renderTerrainHelper
 //
 
-void OtSceneRenderEntitiesPass::renderTerrain(OtSceneRendererContext& ctx, OtEntity entity, OtTerrainComponent& component) {
-	// process all the terrain meshes
-	auto terrain = component.terrain;
+void OtSceneRenderEntitiesPass::renderTerrainHelper(
+	OtSceneRendererContext& ctx,
+	OtTerrainComponent& terrain,
+	uint64_t wireframeState,
+	uint64_t solidState,
+	OtShaderProgram& program) {
 
-	for (auto& mesh : terrain->getMeshes(ctx.camera)) {
+	// process all the terrain meshes
+	for (auto& mesh : terrain.terrain->getMeshes(ctx.camera)) {
 		// submit the geometry
 		mesh.tile.vertices.submit();
 
-		// submit uniforms
-		Scope scope{entity, false, true, false, nullptr, terrain, nullptr};
-		submitUniforms(ctx, scope);
-
 		// submit the terrain
-		if (terrain->isWireframe()) {
+		if (terrain.terrain->isWireframe()) {
 			mesh.tile.lines.submit();
+			ctx.pass->setState(wireframeState);
 
 		} else {
 			mesh.tile.triangles.submit();
-		}
-
-		// run the program
-		ctx.pass->setState(terrain->isWireframe() ? getWireframeState() : getCullBackState());
-		ctx.pass->setTransform(mesh.transform);
-		auto program = getTerrainProgram();
-		ctx.pass->runShaderProgram(*program);
-	}
-}
-
-
-//
-//	OtSceneRenderEntitiesPass::renderGrass
-//
-
-void OtSceneRenderEntitiesPass::renderGrass(OtSceneRendererContext& ctx, OtEntity entity, OtGrassComponent& component) {
-	// get current material
-	std::shared_ptr<OtMaterial> material;
-
-	if (ctx.scene->hasComponent<OtMaterialComponent>(entity)) {
-		material = ctx.scene->getComponent<OtMaterialComponent>(entity).material;
-
-	} else {
-		material = std::make_shared<OtMaterial>();
-	}
-
-	// submit uniforms
-	Scope scope{entity, false, false, true, material, nullptr, &component};
-	submitUniforms(ctx, scope);
-	submitGrassUniforms(&component);
-
-	// submit geometry
-	std::vector<uint32_t> indices;
-	indices.resize(component.bladeSegments * 12);
-
-	for (auto i = 0; i < component.bladeSegments; i++) {
-		auto vi = i * 2;
-		indices[i * 12 +  0] = vi + 0;
-		indices[i * 12 +  1] = vi + 1;
-		indices[i * 12 +  2] = vi + 2;
-
-		indices[i * 12 +  3] = vi + 2;
-		indices[i * 12 +  4] = vi + 1;
-		indices[i * 12 +  5] = vi + 3;
-
-		vi += (component.bladeSegments + 1) * 2;
-		indices[i * 12 +  6] = vi + 2;
-		indices[i * 12 +  7] = vi + 1;
-		indices[i * 12 +  8] = vi + 0;
-
-		indices[i * 12 +  9] = vi + 3;
-		indices[i * 12 + 10] = vi + 1;
-		indices[i * 12 + 11] = vi + 2;
-	}
-
-	OtTransientIndexBuffer tib;
-	tib.submit(indices.data(), indices.size());
-
-	// run the program
-	ctx.pass->setState(getCullBackState());
-	ctx.pass->setTransform(ctx.scene->getGlobalTransform(entity));
-	ctx.pass->setVertexCount((component.bladeSegments + 1) * 4);
-	ctx.pass->setInstanceCount(component.blades);
-	auto program = getGrassProgram();
-	ctx.pass->runShaderProgram(*program);
-}
-
-
-//
-//	OtSceneRenderEntitiesPass::renderTransparentGeometry
-//
-
-void OtSceneRenderEntitiesPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& component) {
-	// visibility flag and target program
-	bool visible = false;
-	OtShaderProgram* program = nullptr;
-
-	// get geometry AABB
-	auto& aabb =  component.asset->getGeometry().getAABB();
-
-	// is this a case of instancing?
-	if (ctx.scene->hasComponent<OtInstancingComponent>(entity)) {
-		// only render instances if we have a valid asset and at least one instance is visible
-		auto& instancing = ctx.scene->getComponent<OtInstancingComponent>(entity);
-
-		if (!instancing.asset.isNull() && instancing.asset->getInstances().submit(ctx.camera, aabb)) {
-			visible = true;
-			program = getInstancedTransparentProgram();
-		}
-
-	} else {
-		// see if geometry is visible
-		if (ctx.camera.isVisibleAABB(aabb.transform(ctx.scene->getGlobalTransform(entity)))) {
-			visible = true;
-			program = getTransparentProgram();
-		}
-	}
-
-	// ensure geometry is visible
-	if (visible) {
-		// get current material
-		std::shared_ptr<OtMaterial> material;
-
-		if (ctx.scene->hasComponent<OtMaterialComponent>(entity)) {
-			material = ctx.scene->getComponent<OtMaterialComponent>(entity).material;
-
-		} else {
-			material = std::make_shared<OtMaterial>();
+			ctx.pass->setState(solidState);
 		}
 
 		// submit uniforms
-		Scope scope{entity, true, false, false, material, nullptr, nullptr};
-		submitUniforms(ctx, scope);
+		ctx.submitTerrainUniforms(*terrain.terrain);
 
-		// submit the geometry
-		if (component.wireframe) {
-			component.asset->getGeometry().submitLines();
-
-		} else {
-			component.asset->getGeometry().submitTriangles();
-		}
-
-		// set the program state
-		if (component.wireframe) {
-			ctx.pass->setState(getWireframeState());
-
-		} else if (component.cullBack) {
-			ctx.pass->setState(getCullBackState());
-
-		} else {
-			ctx.pass->setState(getNormalState());
-		}
+		// don't discard uniform data and samplers after shader run
+		static constexpr uint8_t discard = OtDiscardIndexBuffer | OtDiscardVertexStreams;
 
 		// run the program
-		ctx.pass->setTransform(ctx.scene->getGlobalTransform(entity));
-		ctx.pass->runShaderProgram(*program);
+		ctx.pass->setTransform(mesh.transform);
+		ctx.pass->runShaderProgram(program, discard);
 	}
+
+	// cleanup (now we can discard uniform data)
+	ctx.pass->discard();
+}
+
+
+//
+//	OtSceneRenderEntitiesPass::renderGrassHelper
+//
+
+void OtSceneRenderEntitiesPass::renderGrassHelper(
+	OtSceneRendererContext& ctx,
+	OtEntity entity,
+	OtGrassComponent& grass,
+	uint64_t state,
+	OtShaderProgram& program) {
+
+	// submit geometry and uniforms
+	grass.grass->submit();
+	ctx.submitGrassUniforms(*grass.grass);
+
+	// run the program
+	ctx.pass->setState(state);
+	ctx.pass->setTransform(ctx.scene->getGlobalTransform(entity));
+	ctx.pass->setVertexCount((grass.grass->bladeSegments + 1) * 4);
+	ctx.pass->setInstanceCount(grass.grass->blades);
+	ctx.pass->runShaderProgram(program);
+}
+
+
+//
+//	OtSceneRenderEntitiesPass::renderTransparentGeometryHelper
+//
+
+void OtSceneRenderEntitiesPass::renderTransparentGeometryHelper(
+	OtSceneRendererContext& ctx,
+	OtEntity entity,
+	OtGeometryComponent& geometry,
+	uint64_t wireframeState,
+	uint64_t solidState,
+	bool simpleMaterial,
+	OtShaderProgram& program) {
+
+	if (geometry.wireframe) {
+		geometry.asset->getGeometry().submitLines();
+		ctx.pass->setState(wireframeState);
+
+	} else {
+		geometry.asset->getGeometry().submitTriangles();
+		ctx.pass->setState(solidState);
+	}
+
+	auto material = ctx.scene->hasComponent<OtMaterialComponent>(entity)
+		? ctx.scene->getComponent<OtMaterialComponent>(entity).material
+		: std::make_shared<OtMaterial>();
+
+	if (simpleMaterial) {
+		ctx.submitAlbedoUniforms(*material);
+
+	} else {
+		ctx.submitMaterialUniforms(*material);
+	}
+
+	ctx.pass->setTransform(ctx.scene->getGlobalTransform(entity));
+	ctx.pass->runShaderProgram(program);
 }

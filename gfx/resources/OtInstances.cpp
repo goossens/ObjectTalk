@@ -131,7 +131,7 @@ bool OtInstances::submit(OtCamera& camera, OtAABB& aabb) {
 			bgfx::allocInstanceDataBuffer(&idb, count, sizeof(glm::mat4));
 			glm::mat4* p = static_cast<glm::mat4*>((void*) idb.data);
 
-			for (uint32_t i = 0; i < count; i++) {
+			for (size_t i = 0; i < count; i++) {
 				*p++ = tmp[i].matrix;
 			}
 

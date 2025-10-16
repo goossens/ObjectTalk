@@ -19,8 +19,8 @@
 //
 
 int OtSceneRenderer::render(OtCamera& camera, OtScene* scene) {
-	// create rendering context
-	OtSceneRendererContext ctx{camera, scene, &ibl, &csm};
+	// reset rendering context
+	ctx.initialize(camera, scene, &ibl, &csm);
 	OtMeasureStopWatch stopwatch;
 
 	// update image based lighting (if required)
@@ -37,7 +37,7 @@ int OtSceneRenderer::render(OtCamera& camera, OtScene* scene) {
 
 	shadowPassTime = stopwatch.lap();
 
-	// render background items
+	// render background
 	compositeBuffer.update(camera.width, camera.height);
 	backgroundPass.render(ctx);
 

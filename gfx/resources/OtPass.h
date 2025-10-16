@@ -27,7 +27,7 @@
 
 
 //
-//	Rendering state synonyms (to keep BGFX out of other modules)
+//	Rendering synonyms (to keep BGFX out of other modules)
 //
 
 static constexpr uint64_t OtStateWriteRgb = BGFX_STATE_WRITE_RGB;
@@ -48,6 +48,15 @@ static constexpr uint64_t OtStateBlendAlpha = BGFX_STATE_BLEND_ALPHA;
 static constexpr uint64_t OtStateBlendAdd = BGFX_STATE_BLEND_ADD;
 
 static constexpr uint64_t OtStateMsaa = BGFX_STATE_MSAA;
+
+static constexpr uint8_t OtDiscardNone = BGFX_DISCARD_NONE;
+static constexpr uint8_t OtDiscardBindings = BGFX_DISCARD_BINDINGS;
+static constexpr uint8_t OtDiscardIndexBuffer = BGFX_DISCARD_INDEX_BUFFER;
+static constexpr uint8_t OtDiscardInstanceData = BGFX_DISCARD_INSTANCE_DATA;
+static constexpr uint8_t OtDiscardState = BGFX_DISCARD_STATE;
+static constexpr uint8_t OtDiscardTransform = BGFX_DISCARD_TRANSFORM;
+static constexpr uint8_t OtDiscardVertexStreams = BGFX_DISCARD_VERTEX_STREAMS;
+static constexpr uint8_t OtDiscardAll = BGFX_DISCARD_ALL;
 
 
 //
@@ -86,7 +95,11 @@ public:
 	void submitQuad(int w, int h);
 
 	inline void touch() { bgfx::touch(view); }
-	inline void runShaderProgram(OtShaderProgram& program) { program.dispatch(view); }
+	inline void discard(uint8_t flags=OtDiscardAll) { bgfx::discard(flags); }
+
+	inline void runShaderProgram(OtShaderProgram& program, uint8_t discard=OtDiscardAll) {
+		program.dispatch(view, discard);
+	}
 
 	// handle compute pass
 	inline void setImage(int stage, OtTexture& texture, int mip, int access) {
@@ -97,8 +110,8 @@ public:
 		bgfx::setImage(static_cast<uint8_t>(stage), cubemap.getHandle(), static_cast<uint8_t>(mip), bgfx::Access::Enum(access));
 	}
 
-	inline void runComputeProgram(OtComputeProgram& program, uint32_t x, uint32_t y, uint32_t z) {
-		program.dispatch(view, x, y, z);
+	inline void runComputeProgram(OtComputeProgram& program, uint32_t x, uint32_t y, uint32_t z, uint8_t discard=OtDiscardAll) {
+		program.dispatch(view, x, y, z, discard);
 	}
 
 	// handle blit pass

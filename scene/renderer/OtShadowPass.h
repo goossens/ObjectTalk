@@ -13,7 +13,9 @@
 //
 
 #include "OtCascadedShadowMap.h"
+#include "OtShaderProgram.h"
 
+#include "OtSceneRendererContext.h"
 #include "OtSceneRenderEntitiesPass.h"
 
 
@@ -24,57 +26,18 @@
 class OtShadowPass : public OtSceneRenderEntitiesPass {
 public:
 	// render the pass
-	inline void render(OtSceneRendererContext& ctx) {
-		// update shadowmaps
-		ctx.csm->update(ctx.camera, ctx.directionalLightDirection);
-
-		// save context part the we will temporarily overwrite
-		auto camera = ctx.camera;
-		auto renderingShadow = ctx.renderingShadow;
-
-		// render each cascade
-		for (size_t i = 0; i < OtCascadedShadowMap::maxCascades; i++) {
-			// setup pass to render entities as opaque blobs
-			OtPass pass;
-			pass.setRectangle(0, 0, ctx.csm->getSize(), ctx.csm->getSize());
-			pass.setFrameBuffer(ctx.csm->getFrameBuffer(i));
-			pass.setClear(false, true);
-			pass.setTransform(ctx.csm->getCamera(i).viewMatrix, ctx.csm->getCamera(i).projectionMatrix);
-			pass.touch();
-
-			ctx.camera = ctx.csm->getCamera(i);
-			ctx.renderingShadow = true;
-
-			// render all entities
-			renderEntities(ctx, pass);
-		}
-
-		// restore old rendering context
-		ctx.camera = camera;
-		ctx.renderingShadow = renderingShadow;
-	}
+	void render(OtSceneRendererContext& ctx);
 
 protected:
 	// methods that must be overriden by subclasses (when required)
 	bool isRenderingOpaque() override { return true; };
 	bool isRenderingTransparent() override { return true; };
 
-	OtShaderProgram* getOpaqueProgram() override { return &opaqueProgram; }
-	OtShaderProgram* getInstancedOpaqueProgram() override { return &instancedOpaqueProgram; }
-	OtShaderProgram* getAnimatedOpaqueProgram() override { return &animatedOpaqueProgram; }
-	OtShaderProgram* getTransparentProgram() override { return &transparentProgram; }
-	OtShaderProgram* getInstancedTransparentProgram() override { return &instancedTransparentProgram; }
-	OtShaderProgram* getTerrainProgram() override { return &terrainProgram; }
-	OtShaderProgram* getGrassProgram() override { return &grassProgram; }
-
-	inline uint64_t getNormalState() override { return OtStateWriteZ | OtStateDepthTestLess; }
-	inline uint64_t getCullBackState() override { return OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw; };
-	inline uint64_t getWireframeState() override { return OtStateWriteZ | OtStateDepthTestLess | OtStateLines; };
-
-	inline void submitUniforms(OtSceneRendererContext& /* ctx */, Scope& scope) override {
-		if (scope.isTransparent) { submitAlbedoUniforms(*scope.material); }
-		if (scope.isTerrain) { submitTerrainUniforms(*scope.terrain); }
-	}
+	void renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry, bool instancing) override;
+	void renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& model, bool instancing) override;
+	void renderTerrain(OtSceneRendererContext& ctx, OtEntity entity, OtTerrainComponent& terrain)  override;
+	void renderGrass(OtSceneRendererContext& ctx, OtEntity entity, OtGrassComponent& grass)  override;
+	void renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry, bool instancing) override;
 
 private:
 	// properties

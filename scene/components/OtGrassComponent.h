@@ -12,8 +12,11 @@
 //	Include files
 //
 
-#include "glm/glm.hpp"
+#include <memory>
+
 #include "nlohmann/json_fwd.hpp"
+
+#include "OtGrass.h"
 
 
 //
@@ -22,6 +25,9 @@
 
 class OtGrassComponent {
 public:
+	// constructor
+	OtGrassComponent();
+
 	// UI to change component properties
 	bool renderUI();
 
@@ -33,26 +39,5 @@ public:
 	static constexpr char const* name = "Grass";
 
 	// stored properties
-	float patchWidth = 1.0f;
-	float patchDepth = 1.0f;
-	int blades = 10;
-
-	int bladeSegments = 4;
-	float bladeWidth = 0.1f;
-	float bladeHeight = 1.0f;
-	float bladePointiness = 0.5f;
-	float bladeCurve = 0.5f;
-
-	float windDirection = 0.0f;
-	float windStrength = 0.2f;
-
-	glm::vec3 baseColor{0.1f, 0.4f, 0.04f};
-	glm::vec3 tipColor{0.4f, 0.6f, 0.2f};
-
-	float widthVariation = 0.2f;
-	float heightVariation = 0.2f;
-	float windVariation = 0.2f;
-	float colorVariation = 0.2f;
-
-	bool castShadow = true;
+	std::shared_ptr<OtGrass> grass;
 };

@@ -41,7 +41,7 @@ public:
 	inline bool isValid() { return program.isValid(); }
 
 	// run program in the specified view on the GPU
-	void dispatch(bgfx::ViewId view);
+	void dispatch(bgfx::ViewId view, uint8_t discard);
 
 private:
 	// shader names

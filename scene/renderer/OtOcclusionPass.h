@@ -13,8 +13,10 @@
 //
 
 #include "OtFrameBuffer.h"
+#include "OtShaderProgram.h"
 
 #include "OtSceneRenderEntitiesPass.h"
+#include "OtSceneRendererContext.h"
 
 
 //
@@ -27,38 +29,18 @@ public:
 	OtOcclusionPass(OtFrameBuffer& fb) : framebuffer(fb) {}
 
 	// render the pass
-	inline void render(OtSceneRendererContext& ctx) {
-		// setup the rendering pass
-		OtPass pass;
-		pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
-		pass.setTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
-		pass.setFrameBuffer(framebuffer);
-
-		// render all entities
-		renderEntities(ctx, pass);
-	}
+	void render(OtSceneRendererContext& ctx);
 
 protected:
 	// methods that must be overriden by subclasses (when required)
 	bool isRenderingOpaque() override { return true; };
 	bool isRenderingTransparent() override { return true; };
 
-	OtShaderProgram* getOpaqueProgram() override { return &opaqueProgram; }
-	OtShaderProgram* getInstancedOpaqueProgram() override { return &instancedOpaqueProgram; }
-	OtShaderProgram* getAnimatedOpaqueProgram() override { return &animatedOpaqueProgram; }
-	OtShaderProgram* getTransparentProgram() override { return &transparentProgram; }
-	OtShaderProgram* getInstancedTransparentProgram() override { return &instancedTransparentProgram; }
-	OtShaderProgram* getTerrainProgram() override { return &terrainProgram; }
-	OtShaderProgram* getGrassProgram() override { return &grassProgram; }
-
-	inline uint64_t getNormalState() override { return OtStateWriteRgb; }
-	inline uint64_t getCullBackState() override { return OtStateWriteRgb | OtStateCullCw; };
-	inline uint64_t getWireframeState() override { return OtStateWriteRgb | OtStateLines; };
-
-	inline void submitUniforms(OtSceneRendererContext& /* ctx */, Scope& scope) override {
-		if (scope.isTransparent) { submitAlbedoUniforms(*scope.material); }
-		if (scope.isTerrain) { submitTerrainUniforms(*scope.terrain); }
-	}
+	void renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry, bool instancing) override;
+	void renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& model, bool instancing) override;
+	void renderTerrain(OtSceneRendererContext& ctx, OtEntity entity, OtTerrainComponent& terrain)  override;
+	void renderGrass(OtSceneRendererContext& ctx, OtEntity entity, OtGrassComponent& grass)  override;
+	void renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry, bool instancing) override;
 
 private:
 	// properties

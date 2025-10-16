@@ -21,14 +21,12 @@
 #include "OtTransientVertexBuffer.h"
 #include "OtVertex.h"
 
-#include "OtSceneRenderPass.h"
-
 
 //
 //	OtParticlesPass
 //
 
-class OtParticlesPass : public OtSceneRenderPass {
+class OtParticlesPass {
 public:
 	// constructor
 	OtParticlesPass(OtFrameBuffer& fb) : framebuffer(fb) {}
@@ -82,7 +80,7 @@ public:
 			idb.submit(particles.getInstanceData(), particles.size(), particles.getInstanceStride());
 
 			// bind the particle texture atlas
-			submitTextureSampler(particlesSampler, 0, settings.atlas);
+			ctx.submitTextureSampler(particlesSampler, 0, settings.atlas);
 
 			// set the model matrix
 			pass.setTransform(ctx.scene->getGlobalTransform(entity));

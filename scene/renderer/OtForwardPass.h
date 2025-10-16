@@ -28,66 +28,14 @@ public:
 	OtForwardPass(OtFrameBuffer& fb) : framebuffer(fb) {}
 
 	// render the pass
-	void render(OtSceneRendererContext& ctx) {
-		// setup the rendering pass
-		OtPass pass;
-		pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
-		pass.setFrameBuffer(framebuffer);
-		pass.setTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
-		pass.touch();
-
-		// render all entities
-		renderEntities(ctx, pass);
-	}
+	void render(OtSceneRendererContext& ctx);
 
 protected:
 	// methods that must be overriden by subclasses (when required)
-	bool isRenderingOpaque() override { return false; };
-	bool isRenderingTransparent() override { return true; };
+	inline bool isRenderingOpaque() override { return false; };
+	inline bool isRenderingTransparent() override { return true; };
 
-	OtShaderProgram* getOpaqueProgram() override { return nullptr; }
-	OtShaderProgram* getInstancedOpaqueProgram() override { return nullptr; }
-	OtShaderProgram* getAnimatedOpaqueProgram() override { return nullptr; }
-	OtShaderProgram* getTransparentProgram() override { return &transparentProgram; }
-	OtShaderProgram* getInstancedTransparentProgram() override { return &instancedTransparentProgram; }
-	OtShaderProgram* getTerrainProgram() override { return nullptr; }
-	OtShaderProgram* getGrassProgram() override { return nullptr; }
-
-	inline uint64_t getNormalState() override {
-		return
-			OtStateWriteRgb |
-			OtStateWriteA |
-			OtStateWriteZ |
-			OtStateDepthTestLess |
-			OtStateBlendAlpha;
-	}
-
-	inline uint64_t getCullBackState() override {
-		return
-			OtStateWriteRgb |
-			OtStateWriteA |
-			OtStateWriteZ |
-			OtStateDepthTestLess |
-			OtStateCullCw |
-			OtStateBlendAlpha;
-	};
-
-	inline uint64_t getWireframeState() override {
-		return
-			OtStateWriteRgb |
-			OtStateWriteA |
-			OtStateWriteZ |
-			OtStateDepthTestLess |
-			OtStateLines |
-			OtStateBlendAlpha;
-	};
-
-	inline void submitUniforms(OtSceneRendererContext& ctx, Scope& scope) override {
-		submitClippingUniforms(ctx);
-		submitMaterialUniforms(*scope.material);
-		submitLightingUniforms(ctx);
-		submitShadowUniforms(ctx);
-	}
+	void renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry, bool instancing) override;
 
 private:
 	// properties

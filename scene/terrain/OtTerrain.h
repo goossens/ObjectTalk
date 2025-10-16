@@ -53,9 +53,8 @@ public:
 	// is the terrain casting a shadow
 	inline bool isCastingShadow() { return castShadow; }
 
-	private:
-	// the scene renderer needs access to our properties
-	friend class OtSceneRenderPass;
+private:
+	friend class OtSceneRendererContext;
 
 	// terrain properties
 	int tileSize = 32;

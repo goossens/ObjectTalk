@@ -37,7 +37,7 @@ void OtComputeProgram::initialize(const char* compute) {
 //	OtComputeProgram::dispatch
 //
 
-void OtComputeProgram::dispatch(bgfx::ViewId view, uint32_t x, uint32_t y, uint32_t z) {
+void OtComputeProgram::dispatch(bgfx::ViewId view, uint32_t x, uint32_t y, uint32_t z, uint8_t discard) {
 	if (!isValid()) {
 		if (computeShaderName.size()) {
 			auto computeShader = OtShaders::get(computeShaderName);
@@ -52,5 +52,5 @@ void OtComputeProgram::dispatch(bgfx::ViewId view, uint32_t x, uint32_t y, uint3
 		}
 	}
 
-	bgfx::dispatch(view, program.getHandle(), x, y, z);
+	bgfx::dispatch(view, program.getHandle(), x, y, z, discard);
 }

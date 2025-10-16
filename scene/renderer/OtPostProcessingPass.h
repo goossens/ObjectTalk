@@ -20,14 +20,13 @@
 #include "OtUniformVec4.h"
 
 #include "OtOcclusionPass.h"
-#include "OtSceneRenderPass.h"
 
 
 //
 //	OtPostProcessingPass
 //
 
-class OtPostProcessingPass : public OtSceneRenderPass {
+class OtPostProcessingPass {
 public:
 	// constructor
 	OtPostProcessingPass(OtFrameBuffer& fb) : framebuffer(fb) {}

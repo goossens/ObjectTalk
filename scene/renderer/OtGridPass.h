@@ -12,24 +12,18 @@
 //	Include files
 //
 
-#include <cstdint>
-
-#include "OtFrameBuffer.h"
 #include "OtPass.h"
+#include "OtFrameBuffer.h"
 #include "OtShaderProgram.h"
-#include "OtTransientIndexBuffer.h"
-#include "OtTransientVertexBuffer.h"
-#include "OtUniformVec4.h"
-#include "OtVertex.h"
 
-#include "OtSceneRenderPass.h"
+#include "OtSceneRendererContext.h"
 
 
 //
 //	OtGridPass
 //
 
-class OtGridPass : public OtSceneRenderPass {
+class OtGridPass {
 public:
 	// constructor
 	OtGridPass(OtFrameBuffer& fb) : framebuffer(fb) {}
@@ -38,43 +32,7 @@ public:
 	void setGridScale(float gs) { gridScale = gs; }
 
 	// render the pass
-	void render(OtSceneRendererContext& ctx) {
-		if (gridScale > 0.0f) {
-			// setup pass
-			OtPass pass;
-			pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
-			pass.setFrameBuffer(framebuffer);
-			pass.setTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
-
-			// send out geometry
-			static glm::vec3 vertices[] = {
-				glm::vec3{-1.0f, -1.0f, 0.0f},
-				glm::vec3{1.0f, -1.0f, 0.0f},
-				glm::vec3{1.0f, 1.0f, 0.0f},
-				glm::vec3{-1.0f, 1.0f, 0.0f}
-			};
-
-			static uint32_t indices[] = {0, 1, 2, 2, 3, 0};
-			OtTransientVertexBuffer vertexBuffer;
-			OtTransientIndexBuffer indexBuffer;
-			vertexBuffer.submit(vertices, 4, OtVertexPos::getLayout());
-			indexBuffer.submit(indices, 6);
-
-			// set uniforms
-			uniforms.setValue(0, gridScale, 0.0f, 0.0f, 0.0f);
-			uniforms.submit();
-
-			// run the program
-			pass.setState(
-				OtStateWriteRgb |
-				OtStateWriteA |
-				OtStateWriteZ |
-				OtStateDepthTestLess |
-				OtStateBlendAlpha);
-
-			pass.runShaderProgram(program);
-		}
-	}
+	void render(OtSceneRendererContext& ctx);
 
 private:
 	// grid scale (0.0 means no grid)
@@ -82,6 +40,5 @@ private:
 
 	// properties
 	OtFrameBuffer& framebuffer;
-	OtUniformVec4 uniforms{"u_grid", 1};
 	OtShaderProgram program{"OtGridVS", "OtGridFS"};
 };

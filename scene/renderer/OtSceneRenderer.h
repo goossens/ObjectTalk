@@ -65,6 +65,9 @@ private:
 	// give the debugger access to the inner circle
 	friend class OtSceneRendererDebug;
 
+	// rendering context
+	OtSceneRendererContext ctx;
+
 	// framebuffers
 	OtGbuffer deferredRenderingBuffer;
 	OtFrameBuffer compositeBuffer{OtTexture::rgbaFloat16Texture, OtTexture::dFloatTexture};

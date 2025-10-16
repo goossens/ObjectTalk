@@ -12,58 +12,73 @@
 //	Include files
 //
 
-#include "OtMaterial.h"
+#include <cstdint>
+
 #include "OtPass.h"
 
 #include "OtSceneRendererContext.h"
-#include "OtSceneRenderPass.h"
-#include "OtTerrain.h"
 
 
 //
 //	OtSceneRenderEntitiesPass
 //
 
-class OtSceneRenderEntitiesPass : public OtSceneRenderPass {
+class OtSceneRenderEntitiesPass {
 protected:
-	// methods that must be overriden by subclasses (when required)
-	virtual bool isRenderingOpaque() = 0;
-	virtual bool isRenderingTransparent() = 0;
-
-	virtual OtShaderProgram* getOpaqueProgram() = 0;
-	virtual OtShaderProgram* getInstancedOpaqueProgram() = 0;
-	virtual OtShaderProgram* getAnimatedOpaqueProgram() = 0;
-	virtual OtShaderProgram* getTransparentProgram() = 0;
-	virtual OtShaderProgram* getInstancedTransparentProgram() = 0;
-	virtual OtShaderProgram* getTerrainProgram() = 0;
-	virtual OtShaderProgram* getGrassProgram() = 0;
-
-	virtual uint64_t getNormalState() = 0;
-	virtual uint64_t getCullBackState() = 0;
-	virtual uint64_t getWireframeState() = 0;
-
-	struct Scope {
-		OtEntity entity;
-		bool isTransparent;
-		bool isTerrain;
-		bool isGrass;
-		std::shared_ptr<OtMaterial> material;
-		std::shared_ptr<OtTerrain> terrain;
-		OtGrassComponent* grass;
-	};
-
-	virtual void submitUniforms(OtSceneRendererContext& /* ctx */, Scope& /* scope */) {}
-
-protected:
-	// utility methods for subclasses
+	// render all entities in scene and call appropriate render functions (see below)
 	void renderEntities(OtSceneRendererContext& ctx, OtPass& pass);
 	void renderEntity(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity);
 
-private:
-	// private methods to better structure rendering pipeline
-	void renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& component);
-	void renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& component);
-	void renderTerrain(OtSceneRendererContext& ctx, OtEntity entity, OtTerrainComponent& component);
-	void renderGrass(OtSceneRendererContext& ctx, OtEntity entity, OtGrassComponent& component);
-	void renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& component);
+	virtual void renderOpaqueGeometry(OtSceneRendererContext&, OtEntity, OtGeometryComponent&, bool) {}
+	virtual void renderOpaqueModel(OtSceneRendererContext&, OtEntity, OtModelComponent&, bool) {}
+	virtual void renderTerrain(OtSceneRendererContext&, OtEntity, OtTerrainComponent&) {}
+	virtual void renderGrass(OtSceneRendererContext&, OtEntity, OtGrassComponent&) {}
+	virtual void renderTransparentGeometry(OtSceneRendererContext&, OtEntity, OtGeometryComponent&, bool) {}
+
+	// methods that must be overriden by subclasses
+	virtual bool isRenderingOpaque() = 0;
+	virtual bool isRenderingTransparent() = 0;
+
+	// helper functions
+	void renderOpaqueGeometryHelper(
+		OtSceneRendererContext& ctx,
+		OtEntity entity,
+		OtGeometryComponent& geometry,
+		uint64_t wireframeState,
+		uint64_t solidState,
+		bool simpleMaterial,
+		OtShaderProgram& program);
+
+	void renderOpaqueModelHelper(
+		OtSceneRendererContext& ctx,
+		OtEntity entity,
+		OtModelComponent& model,
+		uint64_t state,
+		bool simpleMaterial,
+		OtShaderProgram& animatedProgram,
+		OtShaderProgram& staticProgram);
+
+	void renderTerrainHelper(
+		OtSceneRendererContext& ctx,
+		OtTerrainComponent& terrain,
+		uint64_t wireframeState,
+		uint64_t solidState,
+		OtShaderProgram& program);
+
+	void renderGrassHelper(
+		OtSceneRendererContext& ctx,
+		OtEntity entity,
+		OtGrassComponent& grass,
+		uint64_t state,
+		OtShaderProgram& program);
+
+	void renderTransparentGeometryHelper(
+		OtSceneRendererContext& ctx,
+		OtEntity entity,
+		OtGeometryComponent& geometry,
+		uint64_t wireframeState,
+		uint64_t solidState,
+		bool simpleMaterial,
+		OtShaderProgram& program);
 };
+

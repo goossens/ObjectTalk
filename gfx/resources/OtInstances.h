@@ -49,7 +49,7 @@ public:
 	size_t size() { return instances->size(); }
 
 	// submit instances to GPU
-	bool submit(OtCamera& camera, OtAABB& aabb);
+	bool getVisible(OtCamera& camera, OtAABB& aabb, std::vector<glm::mat4>& visibleInstances);
 
 	// version management
 	inline void setVersion(int v) { version = v; }

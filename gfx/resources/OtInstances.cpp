@@ -97,45 +97,42 @@ void OtInstances::add(const glm::mat4 &instance, bool updateVersion) {
 
 
 //
-//	OtInstances::submit
+//	OtInstances::getVisible
 //
 
-bool OtInstances::submit(OtCamera& camera, OtAABB& aabb) {
+bool OtInstances::getVisible(OtCamera& camera, OtAABB& aabb, std::vector<glm::mat4>& visibleInstances) {
 	if (instances->size()) {
 		// filter instances based on visibility
-		struct Instance {
-			Instance(const glm::mat4& m, float d) : matrix(m), distance(d) {}
+		struct InstanceReference {
+			InstanceReference(size_t i, float d) : index(i), distance(d) {}
+			size_t index;
 			glm::mat4 matrix;
 			float distance;
 		};
 
-		std::vector<Instance> tmp;
+		std::vector<InstanceReference> instanceReferences;
 
-		for (auto& instance : *instances) {
-			auto instanceAabb = aabb.transform(instance);
+		for (size_t i = 0; i < instances->size(); i++) {
+			auto instanceAabb = aabb.transform(instances->at(i));
 
 			if (camera.isVisibleAABB(instanceAabb)) {
-				tmp.emplace_back(instance, glm::distance(camera.position, instanceAabb.getCenter()));
+				instanceReferences.emplace_back(i, glm::distance(camera.position, instanceAabb.getCenter()));
 			}
 		}
 
-		if (tmp.size()) {
+		if (instanceReferences.size()) {
 			// sort instances by distance to camera
-			std::sort(tmp.begin(), tmp.end(), [&](const Instance& i1, const Instance& i2) {
+			std::sort(instanceReferences.begin(), instanceReferences.end(), [&](const InstanceReference& i1, const InstanceReference& i2) {
 				return i1.distance < i2.distance;
 			});
 
-			// create instance data buffer and submit it to the GPU
-			bgfx::InstanceDataBuffer idb;
-			uint32_t count = bgfx::getAvailInstanceDataBuffer(static_cast<uint32_t>(tmp.size()), sizeof(glm::mat4));
-			bgfx::allocInstanceDataBuffer(&idb, count, sizeof(glm::mat4));
-			glm::mat4* p = static_cast<glm::mat4*>((void*) idb.data);
+			// extract list of matrices
+			visibleInstances.clear();
 
-			for (size_t i = 0; i < count; i++) {
-				*p++ = tmp[i].matrix;
+			for (auto& instanceReference : instanceReferences) {
+				visibleInstances.emplace_back(instances->at(instanceReference.index));
 			}
 
-			bgfx::setInstanceDataBuffer(&idb);
 			return true;
 
 		} else {

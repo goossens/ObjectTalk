@@ -38,7 +38,7 @@ public:
 	void renderReflection(OtSceneRendererContext& ctx, OtWaterComponent& water);
 
 	// render the water's refraction
-	void renderRefraction(OtSceneRendererContext& ctx, OtWaterComponent& water);
+	void renderRefraction(OtSceneRendererContext& ctx);
 
 	// render the actual water
 	void renderWater(OtSceneRendererContext& ctx, OtWaterComponent& water);

@@ -60,7 +60,7 @@ bool OtSceneRuntime::isReady() {
 //	OtSceneRuntime::render
 //
 
-int OtSceneRuntime::render(int width, int height) {
+ImTextureID OtSceneRuntime::render(int width, int height) {
 	// get our scene
 	auto scene = sceneAsset->getScene();
 

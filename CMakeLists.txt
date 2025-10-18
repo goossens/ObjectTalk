@@ -45,7 +45,7 @@ endif()
 
 add_subdirectory(examples)
 
-if(CMAKE_GENERATOR STREQUAL Xcode)
+if(CMAKE_GENERATOR STREQUAL "Xcode")
 	set(OT_RESOURCES resources/icon.icns)
 endif()
 
@@ -63,9 +63,11 @@ if(OT_INCLUDE_UI)
 	endif()
 endif()
 
-add_custom_command(TARGET ot POST_BUILD COMMAND $<$<CONFIG:release>:${CMAKE_STRIP}> ARGS ${CMAKE_BINARY_DIR}/Release/ot)
+if(NOT MSVC AND CMAKE_BUILD_TYPE STREQUAL "Release")
+	add_custom_command(TARGET ot POST_BUILD COMMAND strip -x $<TARGET_FILE:ot>)
+endif()
 
-if(CMAKE_GENERATOR STREQUAL Xcode)
+if(CMAKE_GENERATOR STREQUAL "Xcode")
 	set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0")
 	set_target_properties(ot PROPERTIES OUTPUT_NAME "ObjectTalk")
 	set_target_properties(ot PROPERTIES MACOSX_BUNDLE ON)

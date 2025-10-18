@@ -29,11 +29,11 @@ protected:
 	void renderEntities(OtSceneRendererContext& ctx, OtPass& pass);
 	void renderEntity(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity);
 
-	virtual void renderOpaqueGeometry(OtSceneRendererContext&, OtEntity, OtGeometryComponent&, bool) {}
-	virtual void renderOpaqueModel(OtSceneRendererContext&, OtEntity, OtModelComponent&, bool) {}
+	virtual void renderOpaqueGeometry(OtSceneRendererContext&, OtEntity, OtGeometryComponent&) {}
+	virtual void renderOpaqueModel(OtSceneRendererContext&, OtEntity, OtModelComponent&) {}
 	virtual void renderTerrain(OtSceneRendererContext&, OtEntity, OtTerrainComponent&) {}
 	virtual void renderGrass(OtSceneRendererContext&, OtEntity, OtGrassComponent&) {}
-	virtual void renderTransparentGeometry(OtSceneRendererContext&, OtEntity, OtGeometryComponent&, bool) {}
+	virtual void renderTransparentGeometry(OtSceneRendererContext&, OtEntity, OtGeometryComponent&) {}
 
 	// methods that must be overriden by subclasses
 	virtual bool isRenderingOpaque() = 0;
@@ -46,15 +46,14 @@ protected:
 		OtGeometryComponent& geometry,
 		uint64_t wireframeState,
 		uint64_t solidState,
-		bool simpleMaterial,
-		OtShaderProgram& program);
+		OtShaderProgram& singleProgram,
+		OtShaderProgram& instanceProgram);
 
 	void renderOpaqueModelHelper(
 		OtSceneRendererContext& ctx,
 		OtEntity entity,
 		OtModelComponent& model,
 		uint64_t state,
-		bool simpleMaterial,
 		OtShaderProgram& animatedProgram,
 		OtShaderProgram& staticProgram);
 
@@ -78,7 +77,7 @@ protected:
 		OtGeometryComponent& geometry,
 		uint64_t wireframeState,
 		uint64_t solidState,
-		bool simpleMaterial,
-		OtShaderProgram& program);
+		OtShaderProgram& singleProgram,
+		OtShaderProgram& instanceProgram);
 };
 

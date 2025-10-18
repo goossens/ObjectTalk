@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <vector>
+
 #include "glm/glm.hpp"
 
 #include "OtTextureAsset.h"
@@ -19,6 +21,7 @@
 #include "OtCamera.h"
 #include "OtCascadedShadowMap.h"
 #include "OtGrass.h"
+#include "OtInstanceDataBuffer.h"
 #include "OtMaterial.h"
 #include "OtPass.h"
 #include "OtSampler.h"
@@ -40,10 +43,8 @@ public:
 	void initialize(OtCamera c, OtScene* s, OtImageBasedLighting* i, OtCascadedShadowMap* sm);
 
 	// utility functions
-	void submitClippingUniforms();
 	void submitLightingUniforms();
 	void submitShadowUniforms();
-	void submitAlbedoUniforms(OtMaterial& material);
 	void submitMaterialUniforms(OtMaterial& material);
 	void submitTerrainUniforms(OtTerrain& terrain);
 	void submitGrassUniforms(OtGrass& grass);
@@ -64,8 +65,10 @@ public:
 	// shadows
 	OtCascadedShadowMap* csm;
 
-	// clipping plane
-	glm::vec4 clippingPlane;
+	// instances
+	bool hasInstances;
+	std::vector<glm::mat4> visibleInstances;
+	OtInstanceDataBuffer idb;
 
 	// rendering flags
 	bool hasImageBasedLighting;
@@ -97,7 +100,6 @@ public:
 	OtUniformVec4 clipUniforms{"u_clip", 1};
 	OtUniformVec4 lightingUniforms{"u_lighting", 4};
 	OtUniformVec4 shadowUniforms{"u_shadow", 2};
-	OtUniformVec4 albedoUniforms{"u_albedo", 2};
 	OtUniformVec4 materialUniforms{"u_material", 5};
 	OtUniformVec4 terrainUniforms{"u_terrain", 9};
 	OtUniformVec4 grassUniforms{"u_grass", 6};
@@ -143,9 +145,9 @@ public:
 	OtSampler skySampler{"s_skyTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
 
 	OtSampler waterNormalmapSampler{"s_waterNormalMapTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
-	OtSampler reflectionSampler{"s_reflectionTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
-	OtSampler refractionSampler{"s_refractionTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
-	OtSampler refractionDepthSampler{"s_refractionDepthTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
+	OtSampler reflectionSampler{"s_reflectionTexture", OtSampler::linearSampling | OtSampler::clampSampling};
+	OtSampler refractionSampler{"s_refractionTexture", OtSampler::linearSampling | OtSampler::clampSampling};
+	OtSampler refractionDepthSampler{"s_refractionDepthTexture", OtSampler::linearSampling | OtSampler::clampSampling};
 
 	OtSampler selectedSampler{"s_selectedTexture", OtSampler::pointSampling | OtSampler::clampSampling};
 };

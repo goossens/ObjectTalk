@@ -175,8 +175,9 @@ void OtSceneRendererDebug::renderTimings(OtSceneRenderer& renderer) {
 		OtUi::readonlyFloat("Sky pass", renderer.skyPassTime);
 		OtUi::readonlyFloat("Water pass", renderer.waterPassTime);
 		OtUi::readonlyFloat("Particle pass", renderer.particlePassTime);
-		OtUi::readonlyFloat("Editor pass", renderer.editorPassTime);
+		OtUi::readonlyFloat("Grid Pass", renderer.gridPassTime);
 		OtUi::readonlyFloat("Post Processing", renderer.postProcessingTime);
+		OtUi::readonlyFloat("Editor pass", renderer.editorPassTime);
 	}
 }
 

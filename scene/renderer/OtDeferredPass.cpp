@@ -175,17 +175,15 @@ void OtDeferredPass::renderPointLights(OtSceneRendererContext& ctx) {
 //	OtDeferredPass::renderOpaqueGeometry
 //
 
-void OtDeferredPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry, bool instancing) {
-	ctx.submitClippingUniforms();
-
+void OtDeferredPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) {
 	renderOpaqueGeometryHelper(
 		ctx,
 		entity,
 		geometry,
 		OtStateWriteRgb | OtStateWriteA | OtStateWriteZ | OtStateDepthTestLess | OtStateLines,
 		OtStateWriteRgb | OtStateWriteA | OtStateWriteZ | OtStateDepthTestLess | (geometry.cullBack ? OtStateCullCw : 0),
-		false,
-		instancing ? instancedOpaqueProgram : opaqueProgram);
+		opaqueProgram,
+		instancedOpaqueProgram);
 }
 
 
@@ -193,17 +191,14 @@ void OtDeferredPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity 
 //	OtDeferredPass::renderOpaqueModel
 //
 
-void OtDeferredPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& model, bool instancing) {
-	ctx.submitClippingUniforms();
-
+void OtDeferredPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& model) {
 	renderOpaqueModelHelper(
 		ctx,
 		entity,
 		model,
 		OtStateWriteRgb | OtStateWriteA | OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw,
-		false,
 		animatedOpaqueProgram,
-		instancing ? instancedOpaqueProgram : opaqueProgram);
+		opaqueProgram);
 }
 
 

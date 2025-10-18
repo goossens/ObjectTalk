@@ -24,7 +24,8 @@ void OtSceneRendererContext::initialize(OtCamera c, OtScene* s, OtImageBasedLigh
 	csm = sm;
 
 	// reset state
-	clippingPlane = glm::vec4(0.0f);
+	hasInstances = false;
+	visibleInstances.clear();
 
 	hasImageBasedLighting = false;
 	hasDirectionalLighting = false;
@@ -136,16 +137,6 @@ void OtSceneRendererContext::initialize(OtCamera c, OtScene* s, OtImageBasedLigh
 
 
 //
-//	OtSceneRendererContext::submitClippingUniforms
-//
-
-void OtSceneRendererContext::submitClippingUniforms() {
-	clipUniforms.setValue(0, clippingPlane);
-	clipUniforms.submit();
-}
-
-
-//
 //	OtSceneRendererContext::submitLightingUniforms
 //
 
@@ -196,21 +187,6 @@ void OtSceneRendererContext::submitShadowUniforms() {
 	csm->getFrameBuffer(1).bindDepthTexture(shadowMap1Sampler, 9);
 	csm->getFrameBuffer(2).bindDepthTexture(shadowMap2Sampler, 10);
 	csm->getFrameBuffer(3).bindDepthTexture(shadowMap3Sampler, 11);
-}
-
-
-//
-//	OtSceneRendererContext::submitAlbedoUniforms
-//
-
-void OtSceneRendererContext::submitAlbedoUniforms(OtMaterial& material) {
-	// set the uniform values
-	albedoUniforms.setValue(0, material.albedo);
-	albedoUniforms.setValue(1, material.albedoTexture.isReady(), material.scale, 0.0f, 0.0f);
-	albedoUniforms.submit();
-
-	// submit albedo texture (or dummy if it isn't set (yet))
-	submitTextureSampler(albedoSampler, 0, material.albedoTexture);
 }
 
 

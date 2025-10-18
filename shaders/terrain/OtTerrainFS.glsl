@@ -7,7 +7,6 @@
 $input v_position, v_normal, v_texcoord0
 
 #include <bgfx_shader.glsl>
-#include <clip.glsl>
 
 #include <OtTerrainUniforms.glsl>
 
@@ -20,9 +19,6 @@ vec3 getRegionColor(int region, sampler2D s, vec2 uv) {
 
 // main function
 void main() {
-	// apply clip plane
-	clipPlane(v_position);
-
 	// get parameters
 	vec2 uv1 = fract(v_position.xz / u_region1TextureSize * u_region1TextureScale);
 	vec2 uv2 = fract(v_position.xz / u_region2TextureSize * u_region2TextureScale);

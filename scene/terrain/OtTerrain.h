@@ -44,7 +44,8 @@ public:
 	nlohmann::json serialize(std::string* basedir);
 	void deserialize(nlohmann::json data, std::string* basedir);
 
-	// access the meshes
+	// access the members
+	OtVertexBuffer& getVertices();
 	std::vector<OtTerrainMesh>& getMeshes(OtCamera& camera);
 
 	// are we rendering a wireframe

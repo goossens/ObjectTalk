@@ -93,7 +93,7 @@ public:
 	}
 
 	// see if an AABB box is visible
-	bool isVisibleAABB(const OtAABB& aabb) { return frustum.isVisibleAABB(aabb); }
+	inline bool isVisibleAABB(const OtAABB& aabb) { return frustum.isVisibleAABB(aabb); }
 
 	// properties
 	int width = 0;

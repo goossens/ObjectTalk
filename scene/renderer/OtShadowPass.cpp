@@ -51,15 +51,15 @@ void OtShadowPass::render(OtSceneRendererContext& ctx) {
 //	OtShadowPass::renderOpaqueGeometry
 //
 
-void OtShadowPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry, bool instancing) {
+void OtShadowPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) {
 	renderOpaqueGeometryHelper(
 		ctx,
 		entity,
 		geometry,
 		OtStateWriteZ | OtStateDepthTestLess | OtStateLines,
 		OtStateWriteZ | OtStateDepthTestLess | (geometry.cullBack ? OtStateCullCw : 0),
-		true,
-		instancing ? instancedOpaqueProgram : opaqueProgram);
+		opaqueProgram,
+		instancedOpaqueProgram);
 }
 
 
@@ -67,15 +67,14 @@ void OtShadowPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity en
 //	OtShadowPass::renderOpaqueModel
 //
 
-void OtShadowPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& model, bool instancing) {
+void OtShadowPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& model) {
 	renderOpaqueModelHelper(
 		ctx,
 		entity,
 		model,
 		OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw,
-		true,
 		animatedOpaqueProgram,
-		instancing ? instancedOpaqueProgram : opaqueProgram);
+		opaqueProgram);
 }
 
 
@@ -112,13 +111,13 @@ void OtShadowPass::renderGrass(OtSceneRendererContext& ctx, OtEntity entity, OtG
 //	OtShadowPass::renderTransparentGeometry
 //
 
-void OtShadowPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry, bool instancing) {
+void OtShadowPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) {
 	renderTransparentGeometryHelper(
 		ctx,
 		entity,
 		geometry,
 		OtStateWriteZ | OtStateDepthTestLess | OtStateLines,
 		OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw,
-		true,
-		instancing ? instancedTransparentProgram : transparentProgram);
+		transparentProgram,
+		instancedTransparentProgram);
 }

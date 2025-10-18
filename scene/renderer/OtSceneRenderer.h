@@ -16,6 +16,7 @@
 #include <memory>
 
 #include "glm/glm.hpp"
+#include "imgui.h"
 
 #include "OtFrameBuffer.h"
 #include "OtGbuffer.h"
@@ -59,7 +60,7 @@ public:
 	inline bool isPicking() { return pickingPass.isPicking(); }
 
 	// render specified scene
-	int render(OtCamera& camera, OtScene* scene);
+	ImTextureID render(OtCamera& camera, OtScene* scene);
 
 private:
 	// give the debugger access to the inner circle
@@ -97,8 +98,9 @@ private:
 	float skyPassTime;
 	float waterPassTime;
 	float particlePassTime;
-	float editorPassTime;
+	float gridPassTime;
 	float postProcessingTime;
+	float editorPassTime;
 
 	// support for selected entities and entity picking
 	OtEntity selectedEntity = OtEntityNull;

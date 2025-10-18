@@ -33,8 +33,7 @@ void OtForwardPass::render(OtSceneRendererContext& ctx) {
 //	OtForwardPass::renderTransparentGeometry
 //
 
-void OtForwardPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry, bool instancing) {
-	ctx.submitClippingUniforms();
+void OtForwardPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) {
 	ctx.submitLightingUniforms();
 	ctx.submitShadowUniforms();
 
@@ -44,6 +43,6 @@ void OtForwardPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtEnt
 		geometry,
 		OtStateWriteRgb | OtStateWriteA | OtStateWriteZ | OtStateDepthTestLess | OtStateBlendAlpha | OtStateLines,
 		OtStateWriteRgb | OtStateWriteA | OtStateWriteZ | OtStateDepthTestLess | OtStateBlendAlpha | (geometry.cullBack ? OtStateCullCw : 0),
-		false,
-		instancing ? instancedTransparentProgram : transparentProgram);
+		transparentProgram,
+		instancedTransparentProgram);
 }

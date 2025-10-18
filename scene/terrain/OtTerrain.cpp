@@ -124,6 +124,20 @@ void OtTerrain::deserialize(nlohmann::json data, std::string* basedir) {
 
 
 //
+//	OtTerrain::getVertices
+//
+
+OtVertexBuffer& OtTerrain::getVertices() {
+	// initialize (if required)
+	if (!vertices.isValid()) {
+		initialize();
+	}
+
+	return vertices;
+}
+
+
+//
 //	OtTerrain::getMeshes
 //
 

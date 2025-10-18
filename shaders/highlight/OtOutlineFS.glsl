@@ -35,5 +35,5 @@ void main() {
 		value = 0.5 + value / 9.0;
 	}
 
-	gl_FragColor = vec4(1.0, 0.5, 0.0, value);
+	gl_FragColor = vec4(0.8, 0.8, 0.0, value);
 }

@@ -99,7 +99,7 @@ void OtPickingPass::render(OtSceneRendererContext& ctx, glm::vec2 ndc, std::func
 //	OtPickingPass::renderOpaqueGeometry
 //
 
-void OtPickingPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry, bool instancing) {
+void OtPickingPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) {
 	ctx.pickingUniforms.setValue(0, float(nextID) / 255.0f, 0.0f, 0.0f, 0.0f);
 	ctx.pickingUniforms.submit();
 	entityMap[nextID++] = entity;
@@ -110,8 +110,8 @@ void OtPickingPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity e
 		geometry,
 		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | OtStateLines,
 		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | (geometry.cullBack ? OtStateCullCw : 0),
-		true,
-		instancing ? instancedOpaqueProgram : opaqueProgram);
+		opaqueProgram,
+		instancedOpaqueProgram);
 }
 
 
@@ -119,7 +119,7 @@ void OtPickingPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity e
 //	OtPickingPass::renderOpaqueModel
 //
 
-void OtPickingPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& model, bool instancing) {
+void OtPickingPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& model) {
 	ctx.pickingUniforms.setValue(0, float(nextID) / 255.0f, 0.0f, 0.0f, 0.0f);
 	ctx.pickingUniforms.submit();
 	entityMap[nextID++] = entity;
@@ -129,9 +129,8 @@ void OtPickingPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity enti
 		entity,
 		model,
 		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw,
-		true,
 		animatedOpaqueProgram,
-		instancing ? instancedOpaqueProgram : opaqueProgram);
+		opaqueProgram);
 }
 
 
@@ -175,7 +174,7 @@ void OtPickingPass::renderGrass(OtSceneRendererContext& ctx, OtEntity entity, Ot
 //	OtPickingPass::renderTransparentGeometry
 //
 
-void OtPickingPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry, bool instancing) {
+void OtPickingPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) {
 	ctx.pickingUniforms.setValue(0, float(nextID) / 255.0f, 0.0f, 0.0f, 0.0f);
 	ctx.pickingUniforms.submit();
 	entityMap[nextID++] = entity;
@@ -186,6 +185,6 @@ void OtPickingPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtEnt
 		geometry,
 		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | OtStateLines,
 		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | (geometry.cullBack ? OtStateCullCw : 0),
-		true,
-		instancing ? instancedTransparentProgram : transparentProgram);
+		transparentProgram,
+		instancedTransparentProgram);
 }

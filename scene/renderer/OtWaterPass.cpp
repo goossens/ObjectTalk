@@ -25,8 +25,8 @@
 
 void OtWaterPass::render(OtSceneRendererContext& ctx) {
 	// update the buffers
-	width = ctx.camera.width;
-	height = ctx.camera.height;
+	width = ctx.camera.width / 2;
+	height = ctx.camera.height / 2;
 
 	renderingBuffer.update(width, height);
 	reflectionBuffer.update(width, height);
@@ -35,7 +35,7 @@ void OtWaterPass::render(OtSceneRendererContext& ctx) {
 	// render the three water passes
 	auto& water = ctx.scene->getComponent<OtWaterComponent>(ctx.waterEntity);
 	renderReflection(ctx, water);
-	renderRefraction(ctx, water);
+	renderRefraction(ctx);
 	renderWater(ctx, water);
 }
 
@@ -73,9 +73,7 @@ void OtWaterPass::renderReflection(OtSceneRendererContext& ctx, OtWaterComponent
 
 	// setup the renderer for the reflection
 	auto camera = ctx.camera;
-	auto clippingPlane = ctx.clippingPlane;
 	ctx.camera = reflectionCamera;
-	ctx.clippingPlane = glm::vec4(0.0f, 1.0f, 0.0f, -(water.level - 1.0f));
 
 	// render the scene
 	backgroundReflectionPass.render(ctx);
@@ -84,7 +82,6 @@ void OtWaterPass::renderReflection(OtSceneRendererContext& ctx, OtWaterComponent
 	if (ctx.hasSkyEntities) { skyReflectionPass.render(ctx); }
 
 	ctx.camera = camera;
-	ctx.clippingPlane = clippingPlane;
 }
 
 
@@ -92,15 +89,13 @@ void OtWaterPass::renderReflection(OtSceneRendererContext& ctx, OtWaterComponent
 //	OtWaterPass::renderRefraction
 //
 
-void OtWaterPass::renderRefraction(OtSceneRendererContext& ctx, OtWaterComponent& water) {
+void OtWaterPass::renderRefraction(OtSceneRendererContext& ctx) {
 	// setup the refraction camera
 	OtCamera refractionCamera{width, height, ctx.camera.projectionMatrix, ctx.camera.viewMatrix};
 
 	// setup the renderer for the refraction
 	auto camera = ctx.camera;
-	auto clippingPlane = ctx.clippingPlane;
 	ctx.camera = refractionCamera;
-	ctx.clippingPlane = glm::vec4(0.0f, -1.0f, 0.0f, water.level + 1.0f);
 
 	// render the scene
 	backgroundRefractionPass.render(ctx);
@@ -109,7 +104,6 @@ void OtWaterPass::renderRefraction(OtSceneRendererContext& ctx, OtWaterComponent
 	if (ctx.hasSkyEntities) { skyRefractionPass.render(ctx); }
 
 	ctx.camera = camera;
-	ctx.clippingPlane = clippingPlane;
 }
 
 

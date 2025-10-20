@@ -28,7 +28,13 @@ class OtSetClass : public OtCollectionClass {
 	friend class OtSetIteratorClass;
 
 public:
-	// convert set to string
+	// conversion operators
+	inline operator bool() override { return false; }
+	inline operator int() override { return 0; }
+	inline operator int64_t() override { return 0; }
+	inline operator size_t() override { return 0; }
+	inline operator float() override { return 0.0f; }
+	inline operator double() override { return 0.0; }
 	operator std::string() override;
 
 	// debugging support

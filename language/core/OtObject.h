@@ -58,7 +58,7 @@ public:
 	virtual inline operator float() { return 0.0f; }
 	virtual inline operator double() { return 0.0; }
 	virtual inline operator std::string() { return ""; }
-	virtual inline operator OtObject() { return OtObject(this); }
+	inline operator OtObject() { return OtObject(this); }
 
 	// get object's JSON representation
 	virtual inline std::string json() { return operator std::string(); }

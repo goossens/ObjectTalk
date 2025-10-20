@@ -44,12 +44,11 @@ protected:
 	void load() override;
 	void save() override;
 
-	void showDiff();
-
 	// visual text editor
 	TextEditor editor;
 	TextDiff diff;
 	std::string originalText;
+	bool openDiff = false;
 
 	float fontSize = 17.0f;
 	inline void zoomIn() { fontSize = std::clamp(fontSize + 1.0f, 8.0f, 24.0f); }

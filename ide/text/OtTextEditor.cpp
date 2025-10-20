@@ -90,9 +90,6 @@ void OtTextEditor::renderMenus() {
 		if (ImGui::MenuItem("Spaces To Tabs")) { editor.SpacesToTabs(); }
 		if (ImGui::MenuItem("Strip Trailing Whitespaces")) { editor.StripTrailingWhitespaces(); }
 
-		ImGui::Separator();
-		if (ImGui::MenuItem("Show Diff", " " OT_UI_SHORTCUT "I")) { showDiff(); }
-
 		ImGui::EndMenu();
 	}
 
@@ -131,6 +128,8 @@ void OtTextEditor::renderMenus() {
 		flag = editor.IsMiddleMousePanMode(); if (ImGui::MenuItem("Middle Mouse Pan Mode", nullptr, &flag)) { if (flag) editor.SetMiddleMousePanMode(); else editor.SetMiddleMouseScrollMode(); };
 
 		ImGui::Separator();
+		if (ImGui::MenuItem("Show Diff", " " OT_UI_SHORTCUT "I")) { openDiff = true; }
+
 		if (ImGui::MenuItem("Clear Errors", nullptr, nullptr, editor.HasMarkers())) { editor.ClearMarkers(); }
 		ImGui::EndMenu();
 	}
@@ -151,7 +150,7 @@ void OtTextEditor::renderMenus() {
 
 void OtTextEditor::handleShortcuts() {
 	if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
-		if (ImGui::IsKeyPressed(ImGuiKey_I)) { showDiff(); }
+		if (ImGui::IsKeyPressed(ImGuiKey_I)) { openDiff = true; }
 		else if (ImGui::IsKeyPressed(ImGuiKey_Equal)) { zoomIn(); }
 		else if (ImGui::IsKeyPressed(ImGuiKey_Minus)) { zoomOut(); }
 	}
@@ -168,8 +167,16 @@ void OtTextEditor::renderEditor() {
 	editor.Render("TextEditor");
 	ImGui::PopFont();
 
+	// handle diff popup window
+	if (openDiff) {
+		diff.SetLanguage(editor.GetLanguage());
+		diff.SetText(originalText, editor.GetText());
+		ImGui::OpenPopup("Changes since Opening File##diff");
+		openDiff = false;
+	}
+
 	auto viewport = ImGui::GetMainViewport();
-	ImVec2 center = viewport->GetCenter();
+	auto center = viewport->GetCenter();
 	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
 	if (ImGui::BeginPopupModal("Changes since Opening File##diff", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
@@ -192,14 +199,4 @@ void OtTextEditor::renderEditor() {
 
 		ImGui::EndPopup();
 	}
-}
-
-
-//
-//	OtTextEditor::showDiff
-//
-
-void OtTextEditor::showDiff() {
-	diff.SetText(originalText, editor.GetText());
-	ImGui::OpenPopup("Changes since Opening File##diff");
 }

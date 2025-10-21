@@ -52,7 +52,7 @@ void OtSceneRendererDebug::render(OtSceneRenderer& renderer) {
 
 void OtSceneRendererDebug::renderIbl(OtSceneRenderer& renderer) {
 	if (ImGui::CollapsingHeader("Image Based Lighting (IBL)")) {
-		auto& ibl = renderer.ibl;
+		auto& ibl = renderer.ctx.ibl;
 
 		if (ibl.iblEnvironmentMap.isValid()) {
 			if (ibl.iblSkyMap->isValid()) { renderCubeMap("Sky Map", *ibl.iblSkyMap, iblSkyMapDebug); }
@@ -101,12 +101,12 @@ void OtSceneRendererDebug::renderShadowMaps(OtSceneRenderer& renderer) {
 	// shadow maps are created using an orthographic projection
 	// this means the depth buffer is linear and doesn't need to be transformed
 	if (ImGui::CollapsingHeader("Cascaded Shadow Map")) {
-		if (renderer.csm.isValid()) {
-			auto size = renderer.csm.getSize();
+		if (renderer.ctx.csm.isValid()) {
+			auto size = renderer.ctx.csm.getSize();
 
 			for (size_t i = 0; i < OtCascadedShadowMap::maxCascades; i++) {
 				auto title = fmt::format("Cascade {}", i + 1);
-				renderTexture(title.c_str(), renderer.csm.getDepthTextureIndex(i), size, size);
+				renderTexture(title.c_str(), renderer.ctx.csm.getDepthTextureIndex(i), size, size);
 			}
 
 		} else {

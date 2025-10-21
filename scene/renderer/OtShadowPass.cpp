@@ -17,32 +17,31 @@
 //
 
 void OtShadowPass::render(OtSceneRendererContext& ctx) {
-	// update shadowmaps
-	ctx.csm->update(ctx.camera, ctx.directionalLightDirection);
-
 	// save context part the we will temporarily overwrite
 	auto camera = ctx.camera;
+	auto cameraID = ctx.cameraID;
 	auto renderingShadow = ctx.renderingShadow;
+	ctx.renderingShadow = true;
 
 	// render each cascade
 	for (size_t i = 0; i < OtCascadedShadowMap::maxCascades; i++) {
 		// setup pass to render entities as opaque blobs
 		OtPass pass;
-		pass.setRectangle(0, 0, ctx.csm->getSize(), ctx.csm->getSize());
-		pass.setFrameBuffer(ctx.csm->getFrameBuffer(i));
+		pass.setRectangle(0, 0, ctx.csm.getSize(), ctx.csm.getSize());
+		pass.setFrameBuffer(ctx.csm.getFrameBuffer(i));
 		pass.setClear(false, true);
-		pass.setTransform(ctx.csm->getCamera(i).viewMatrix, ctx.csm->getCamera(i).projectionMatrix);
+		pass.setTransform(ctx.csm.getCamera(i).viewMatrix, ctx.csm.getCamera(i).projectionMatrix);
 		pass.touch();
 
-		ctx.camera = ctx.csm->getCamera(i);
-		ctx.renderingShadow = true;
-
 		// render all entities
+		ctx.camera = ctx.csm.getCamera(i);
+		ctx.cameraID = OtSceneRendererContext::getShadowCameraID(i);
 		renderEntities(ctx, pass);
 	}
 
 	// restore old rendering context
 	ctx.camera = camera;
+	ctx.cameraID = cameraID;
 	ctx.renderingShadow = renderingShadow;
 }
 
@@ -51,13 +50,13 @@ void OtShadowPass::render(OtSceneRendererContext& ctx) {
 //	OtShadowPass::renderOpaqueGeometry
 //
 
-void OtShadowPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) {
+void OtShadowPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) {
 	renderOpaqueGeometryHelper(
 		ctx,
-		entity,
-		geometry,
+		grd,
 		OtStateWriteZ | OtStateDepthTestLess | OtStateLines,
-		OtStateWriteZ | OtStateDepthTestLess | (geometry.cullBack ? OtStateCullCw : 0),
+		OtStateWriteZ | OtStateDepthTestLess | (grd.component->cullBack ? OtStateCullCw : 0),
+		MaterialSubmission::none,
 		opaqueProgram,
 		instancedOpaqueProgram);
 }
@@ -67,12 +66,12 @@ void OtShadowPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity en
 //	OtShadowPass::renderOpaqueModel
 //
 
-void OtShadowPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& model) {
+void OtShadowPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtModelRenderData& mrd) {
 	renderOpaqueModelHelper(
 		ctx,
-		entity,
-		model,
+		mrd,
 		OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw,
+		MaterialSubmission::none,
 		animatedOpaqueProgram,
 		opaqueProgram);
 }
@@ -111,13 +110,13 @@ void OtShadowPass::renderGrass(OtSceneRendererContext& ctx, OtEntity entity, OtG
 //	OtShadowPass::renderTransparentGeometry
 //
 
-void OtShadowPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) {
+void OtShadowPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) {
 	renderTransparentGeometryHelper(
 		ctx,
-		entity,
-		geometry,
+		grd,
 		OtStateWriteZ | OtStateDepthTestLess | OtStateLines,
 		OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw,
+		MaterialSubmission::justAlbedo,
 		transparentProgram,
 		instancedTransparentProgram);
 }

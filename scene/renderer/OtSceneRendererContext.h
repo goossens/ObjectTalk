@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <unordered_map>
 #include <vector>
 
 #include "glm/glm.hpp"
@@ -21,6 +22,7 @@
 #include "OtCamera.h"
 #include "OtCascadedShadowMap.h"
 #include "OtGrass.h"
+#include "OtImageBasedLighting.h"
 #include "OtInstanceDataBuffer.h"
 #include "OtMaterial.h"
 #include "OtPass.h"
@@ -28,7 +30,9 @@
 #include "OtUniformMat4.h"
 #include "OtUniformVec4.h"
 
+#include "OtGeometryRenderData.h"
 #include "OtImageBasedLighting.h"
+#include "OtModelRenderData.h"
 #include "OtScene.h"
 #include "OtTerrain.h"
 
@@ -40,35 +44,39 @@
 class OtSceneRendererContext {
 public:
 	// initialize context
-	void initialize(OtCamera c, OtScene* s, OtImageBasedLighting* i, OtCascadedShadowMap* sm);
+	void initialize(OtScene* s, OtCamera& c);
 
 	// utility functions
 	void submitLightingUniforms();
 	void submitShadowUniforms();
 	void submitMaterialUniforms(OtMaterial& material);
+	void submitAlbedoUniforms(OtMaterial& material);
 	void submitTerrainUniforms(OtTerrain& terrain);
 	void submitGrassUniforms(OtGrass& grass);
 	void submitTextureSampler(OtSampler& sampler, int unit, OtAsset<OtTextureAsset>& texture);
 
 	// camera information
 	OtCamera camera;
+	OtCamera reflectionCamera;
+	OtCamera refractionCamera;
+
+	size_t cameraID;
+	static inline size_t getMainCameraID() { return 0; }
+	static inline size_t getReflectionCameraID() { return 1; }
+	static inline size_t getRefractionCameraID() { return 2; }
+	static inline size_t getShadowCameraID(size_t camera) { return 3 + camera; }
 
 	// scene to render
 	OtScene* scene;
 
-	// rendering pass
+	// current rendering pass
 	OtPass* pass;
 
 	// image base lighting
-	OtImageBasedLighting* ibl;
+	OtImageBasedLighting ibl;
 
 	// shadows
-	OtCascadedShadowMap* csm;
-
-	// instances
-	bool hasInstances;
-	std::vector<glm::mat4> visibleInstances;
-	OtInstanceDataBuffer idb;
+	OtCascadedShadowMap csm;
 
 	// rendering flags
 	bool hasImageBasedLighting;
@@ -79,11 +87,23 @@ public:
 	bool hasOpaqueModels;
 	bool hasTerrainEntities;
 	bool hasSkyEntities;
-	bool hasTransparentEntities;
+	bool hasTransparentGeometries;
 	bool hasWaterEntities;
 	bool hasGrassEntities;
 	bool hasParticlesEntities;
 	bool renderingShadow;
+
+	// visible entity lists and render information
+	std::vector<OtEntity> geometryEntities;
+	std::vector<OtEntity> modelEntities;
+
+	OtEntity iblEntity = OtEntityNull;
+	OtEntity waterEntity = OtEntityNull;
+
+	std::vector<OtEntity> opaqueGeometryEntities;
+	std::vector<OtEntity> transparentGeometryEntities;
+	std::unordered_map<OtEntity, OtGeometryRenderData> geometryRenderData;
+	std::unordered_map<OtEntity, OtModelRenderData> modelRenderData;
 
 	// directional light information
 	glm::vec3 directionalLightDirection;
@@ -92,15 +112,12 @@ public:
 	bool renderDirectionalLight;
 	bool castShadow;
 
-	// key entities
-	OtEntity iblEntity = OtEntityNull;
-	OtEntity waterEntity = OtEntityNull;
-
 	// uniforms
 	OtUniformVec4 clipUniforms{"u_clip", 1};
 	OtUniformVec4 lightingUniforms{"u_lighting", 4};
 	OtUniformVec4 shadowUniforms{"u_shadow", 2};
 	OtUniformVec4 materialUniforms{"u_material", 5};
+	OtUniformVec4 albedoUniforms{"u_albedo", 2};
 	OtUniformVec4 terrainUniforms{"u_terrain", 9};
 	OtUniformVec4 grassUniforms{"u_grass", 6};
 	OtUniformVec4 waterUniforms{"u_water", 4};
@@ -150,4 +167,6 @@ public:
 	OtSampler refractionDepthSampler{"s_refractionDepthTexture", OtSampler::linearSampling | OtSampler::clampSampling};
 
 	OtSampler selectedSampler{"s_selectedTexture", OtSampler::pointSampling | OtSampler::clampSampling};
+
+	OtInstanceDataBuffer idb;
 };

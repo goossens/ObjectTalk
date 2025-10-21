@@ -45,8 +45,8 @@ protected:
 	inline bool isRenderingOpaque() override { return true; };
 	inline bool isRenderingTransparent() override { return false; };
 
-	void renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) override;
-	void renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& model) override;
+	void renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) override;
+	void renderOpaqueModel(OtSceneRendererContext& ctx, OtModelRenderData& mrd) override;
 	void renderTerrain(OtSceneRendererContext& ctx, OtEntity entity, OtTerrainComponent& terrain)  override;
 	void renderGrass(OtSceneRendererContext& ctx, OtEntity entity, OtGrassComponent& grass)  override;
 

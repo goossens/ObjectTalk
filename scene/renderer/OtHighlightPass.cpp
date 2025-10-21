@@ -119,13 +119,13 @@ bool OtHighlightPass::isHighlightable(OtScene* scene, OtEntity entity) {
 //	OtHighlightPass::renderOpaqueGeometry
 //
 
-void OtHighlightPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) {
+void OtHighlightPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) {
 	renderOpaqueGeometryHelper(
 		ctx,
-		entity,
-		geometry,
+		grd,
 		OtStateWriteRgb | OtStateLines,
-		OtStateWriteRgb | (geometry.cullBack ? OtStateCullCw : 0),
+		OtStateWriteRgb | (grd.component->cullBack ? OtStateCullCw : 0),
+		MaterialSubmission::none,
 		opaqueProgram,
 		instancedOpaqueProgram);
 }
@@ -135,12 +135,12 @@ void OtHighlightPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity
 //	OtHighlightPass::renderOpaqueModel
 //
 
-void OtHighlightPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& model) {
+void OtHighlightPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtModelRenderData& mrd) {
 	renderOpaqueModelHelper(
 		ctx,
-		entity,
-		model,
+		mrd,
 		OtStateWriteRgb | OtStateCullCw,
+		MaterialSubmission::none,
 		animatedOpaqueProgram,
 		opaqueProgram);
 }
@@ -178,13 +178,13 @@ void OtHighlightPass::renderGrass(OtSceneRendererContext& ctx, OtEntity entity, 
 //	OtHighlightPass::renderTransparentGeometry
 //
 
-void OtHighlightPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) {
+void OtHighlightPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) {
 	renderTransparentGeometryHelper(
 		ctx,
-		entity,
-		geometry,
+		grd,
 		OtStateWriteRgb | OtStateLines,
-		OtStateWriteRgb | (geometry.cullBack ? OtStateCullCw : 0),
+		OtStateWriteRgb | (grd.component->cullBack ? OtStateCullCw : 0),
+		MaterialSubmission::justAlbedo,
 		transparentProgram,
 		instancedTransparentProgram);
 }

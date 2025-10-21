@@ -620,7 +620,7 @@ void OtSceneEditor::renderViewPort() {
 	OtCamera camera{int(size.x), int(size.y), nearPlane, farPlane, fov, cameraViewMatrix};
 	renderer->setGridScale(gridEnabled ? gridScale : 0.0f);
 	renderer->setSelectedEntity(selectedEntity);
-	auto textureID = static_cast<ImTextureID>(renderer->render(camera, &scene));
+	auto textureID = static_cast<ImTextureID>(renderer->render(&scene, camera));
 
 	// show it on the screen
 	if (OtGpuHasOriginBottomLeft()) {

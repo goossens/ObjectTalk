@@ -267,7 +267,7 @@
 					"component": "Geometry",
 					"cullBack": false,
 					"path": "assets/palmtree.obj",
-					"transparent": false,
+					"transparent": true,
 					"wireframe": false
 				},
 				{
@@ -567,7 +567,7 @@
 					"component": "Geometry",
 					"cullBack": true,
 					"path": "assets/rock.obj",
-					"transparent": false,
+					"transparent": true,
 					"wireframe": false
 				},
 				{

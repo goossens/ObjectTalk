@@ -34,13 +34,13 @@ void OtOcclusionPass::render(OtSceneRendererContext& ctx) {
 //	OtOcclusionPass::renderOpaqueGeometry
 //
 
-void OtOcclusionPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) {
+void OtOcclusionPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) {
 	renderOpaqueGeometryHelper(
 		ctx,
-		entity,
-		geometry,
+		grd,
 		OtStateWriteRgb | OtStateLines,
-		OtStateWriteRgb | (geometry.cullBack ? OtStateCullCw : 0),
+		OtStateWriteRgb | (grd.component->cullBack ? OtStateCullCw : 0),
+		MaterialSubmission::none,
 		opaqueProgram,
 		instancedOpaqueProgram);
 }
@@ -50,12 +50,12 @@ void OtOcclusionPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity
 //	OtOcclusionPass::renderOpaqueModel
 //
 
-void OtOcclusionPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& model) {
+void OtOcclusionPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtModelRenderData& mrd) {
 	renderOpaqueModelHelper(
 		ctx,
-		entity,
-		model,
+		mrd,
 		OtStateWriteRgb | OtStateCullCw,
+		MaterialSubmission::none,
 		animatedOpaqueProgram,
 		opaqueProgram);
 }
@@ -93,13 +93,13 @@ void OtOcclusionPass::renderGrass(OtSceneRendererContext& ctx, OtEntity entity, 
 //	OtOcclusionPass::renderTransparentGeometry
 //
 
-void OtOcclusionPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) {
+void OtOcclusionPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) {
 	renderTransparentGeometryHelper(
 		ctx,
-		entity,
-		geometry,
+		grd,
 		OtStateWriteRgb | OtStateLines,
-		OtStateWriteRgb | (geometry.cullBack ? OtStateCullCw : 0),
+		OtStateWriteRgb | (grd.component->cullBack ? OtStateCullCw : 0),
+		MaterialSubmission::justAlbedo,
 		transparentProgram,
 		instancedTransparentProgram);
 }

@@ -34,8 +34,12 @@ void OtWaterPass::render(OtSceneRendererContext& ctx) {
 
 	// render the three water passes
 	auto& water = ctx.scene->getComponent<OtWaterComponent>(ctx.waterEntity);
-	renderReflection(ctx, water);
-	renderRefraction(ctx);
+	renderReflection(ctx);
+
+	if (water.useRefractance) {
+		renderRefraction(ctx);
+	}
+
 	renderWater(ctx, water);
 }
 
@@ -44,44 +48,21 @@ void OtWaterPass::render(OtSceneRendererContext& ctx) {
 //	OtWaterPass::renderReflection
 //
 
-void OtWaterPass::renderReflection(OtSceneRendererContext& ctx, OtWaterComponent& water) {
-	// determine new view matrix
-	// see http://khayyam.kaplinski.com/2011/09/reflective-water-with-glsl-part-i.html
-	// and http://bcnine.com/articles/water/water.md.html
-	static const float flip[16] = { // these must be in column-wise order for glm library
-		1.0f,  0.0f, 0.0f, 0.0f,
-		0.0f, -1.0f, 0.0f, 0.0f,
-		0.0f,  0.0f, 1.0f, 0.0f,
-		0.0f,  0.0f, 0.0f, 1.0f
-	};
-
-	static float reflection[16] = { // these must be in column-wise order for glm library
-		1.0f,  0.0f, 0.0f, 0.0f,
-		0.0f, -1.0f, 0.0f, 0.0f,
-		0.0f,  0.0f, 1.0f, 0.0f,
-		0.0f,  0.0f, 0.0f, 1.0f
-	};
-
-	reflection[13] = 2.0f * water.level;
-
-	glm::mat4 sceneCameraMatrix = glm::inverse(ctx.camera.viewMatrix);
-	glm::mat4 reflectionCameraMatrix = glm::make_mat4(reflection) * sceneCameraMatrix * glm::make_mat4(flip);
-	glm::mat4 reflectionViewMatrix = glm::inverse(reflectionCameraMatrix);
-
-	// setup the reflection camera
-	OtCamera reflectionCamera{width, height, ctx.camera.projectionMatrix, reflectionViewMatrix};
-
+void OtWaterPass::renderReflection(OtSceneRendererContext& ctx) {
 	// setup the renderer for the reflection
 	auto camera = ctx.camera;
-	ctx.camera = reflectionCamera;
+	auto cameraID = ctx.cameraID;
+	ctx.camera = ctx.reflectionCamera;
+	ctx.cameraID = OtSceneRendererContext::getReflectionCameraID();
 
 	// render the scene
 	backgroundReflectionPass.render(ctx);
 	if (ctx.hasOpaqueEntities) { deferredReflectionPass.render(ctx); }
-	if (ctx.hasTransparentEntities) { forwardReflectionPass.render(ctx); }
+	if (ctx.hasTransparentGeometries) { forwardReflectionPass.render(ctx); }
 	if (ctx.hasSkyEntities) { skyReflectionPass.render(ctx); }
 
 	ctx.camera = camera;
+	ctx.cameraID = cameraID;
 }
 
 
@@ -90,20 +71,20 @@ void OtWaterPass::renderReflection(OtSceneRendererContext& ctx, OtWaterComponent
 //
 
 void OtWaterPass::renderRefraction(OtSceneRendererContext& ctx) {
-	// setup the refraction camera
-	OtCamera refractionCamera{width, height, ctx.camera.projectionMatrix, ctx.camera.viewMatrix};
-
 	// setup the renderer for the refraction
 	auto camera = ctx.camera;
-	ctx.camera = refractionCamera;
+	auto cameraID = ctx.cameraID;
+	ctx.camera = ctx.refractionCamera;
+	ctx.cameraID = OtSceneRendererContext::getRefractionCameraID();
 
 	// render the scene
 	backgroundRefractionPass.render(ctx);
 	if (ctx.hasOpaqueEntities) { deferredRefractionPass.render(ctx); }
-	if (ctx.hasTransparentEntities) { forwardRefractionPass.render(ctx); }
+	if (ctx.hasTransparentGeometries) { forwardRefractionPass.render(ctx); }
 	if (ctx.hasSkyEntities) { skyRefractionPass.render(ctx); }
 
 	ctx.camera = camera;
+	ctx.cameraID = cameraID;
 }
 
 

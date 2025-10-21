@@ -39,6 +39,6 @@ public:
 	// component name
 	static constexpr char const* name = "Terrain";
 
-	// the actual terrain
+	// stored properties
 	std::shared_ptr<OtTerrain> terrain;
 };

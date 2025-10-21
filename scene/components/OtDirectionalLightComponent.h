@@ -35,12 +35,11 @@ public:
 	// get the direction to the light
 	glm::vec3 getDirectionToLight();
 
-	// location of the light
-	float elevation = 25.0f;	// in degrees from XZ plane (positive is up)
+	// stored properties
+	float elevation = 25.0f;	// location of the light in degrees from XZ plane (positive is up)
 	float azimuth = 180.0f;		// in clockwise degrees from negative Z axis
 								// 0 = "north", 90 = "east", 180 = "south", 270 = "west"
 
-	// stored properties
 	glm::vec3 color{1.0f};
 	float ambient = 0.05f;
 	bool castShadow = false;

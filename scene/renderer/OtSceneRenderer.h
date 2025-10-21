@@ -25,7 +25,7 @@
 #include "OtEntity.h"
 #include "OtScene.h"
 
-#include "OtImageBasedLighting.h"
+#include "OtSceneRendererContext.h"
 
 #include "OtBackgroundPass.h"
 #include "OtDeferredPass.h"
@@ -59,8 +59,8 @@ public:
 
 	inline bool isPicking() { return pickingPass.isPicking(); }
 
-	// render specified scene
-	ImTextureID render(OtCamera& camera, OtScene* scene);
+	// render specified scene using provided camera (returns the ID of the resulting texture)
+	ImTextureID render(OtScene* scene, OtCamera& camera);
 
 private:
 	// give the debugger access to the inner circle
@@ -72,9 +72,6 @@ private:
 	// framebuffers
 	OtGbuffer deferredRenderingBuffer;
 	OtFrameBuffer compositeBuffer{OtTexture::rgbaFloat16Texture, OtTexture::dFloatTexture};
-
-	OtCascadedShadowMap csm;
-	OtImageBasedLighting ibl;
 
 	// rendering passes
 	OtShadowPass shadowPass;

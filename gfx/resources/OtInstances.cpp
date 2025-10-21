@@ -106,7 +106,6 @@ bool OtInstances::getVisible(OtCamera& camera, OtAABB& aabb, std::vector<glm::ma
 		struct InstanceReference {
 			InstanceReference(size_t i, float d) : index(i), distance(d) {}
 			size_t index;
-			glm::mat4 matrix;
 			float distance;
 		};
 
@@ -131,6 +130,43 @@ bool OtInstances::getVisible(OtCamera& camera, OtAABB& aabb, std::vector<glm::ma
 
 			for (auto& instanceReference : instanceReferences) {
 				visibleInstances.emplace_back(instances->at(instanceReference.index));
+			}
+
+			return true;
+
+		} else {
+			return false;
+		}
+
+	} else {
+		return false;
+	}
+}
+
+
+//
+//	OtInstances::getVisible
+//
+
+bool OtInstances::getVisible(OtFrustum& frustum, OtAABB& aabb, std::vector<glm::mat4>& visibleInstances) {
+	if (instances->size()) {
+		// filter instances based on visibility
+		std::vector<size_t> instanceReferences;
+
+		for (size_t i = 0; i < instances->size(); i++) {
+			auto instanceAabb = aabb.transform(instances->at(i));
+
+			if (frustum.isVisibleAABB(instanceAabb)) {
+				instanceReferences.emplace_back(i);
+			}
+		}
+
+		// extract list of matrices
+		visibleInstances.clear();
+
+		if (instanceReferences.size()) {
+			for (auto& instanceReference : instanceReferences) {
+				visibleInstances.emplace_back(instances->at(instanceReference));
 			}
 
 			return true;

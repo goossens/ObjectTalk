@@ -34,16 +34,12 @@ public:
 	// render the pass
 	void render(OtSceneRendererContext& ctx);
 
-	// render the water's reflection
-	void renderReflection(OtSceneRendererContext& ctx, OtWaterComponent& water);
-
-	// render the water's refraction
+private:
+	// support functions
+	void renderReflection(OtSceneRendererContext& ctx);
 	void renderRefraction(OtSceneRendererContext& ctx);
-
-	// render the actual water
 	void renderWater(OtSceneRendererContext& ctx, OtWaterComponent& water);
 
-private:
 	// give the debugger access to the inner circle
 	friend class OtSceneRendererDebug;
 

@@ -99,17 +99,17 @@ void OtPickingPass::render(OtSceneRendererContext& ctx, glm::vec2 ndc, std::func
 //	OtPickingPass::renderOpaqueGeometry
 //
 
-void OtPickingPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) {
+void OtPickingPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) {
 	ctx.pickingUniforms.setValue(0, float(nextID) / 255.0f, 0.0f, 0.0f, 0.0f);
 	ctx.pickingUniforms.submit();
-	entityMap[nextID++] = entity;
+	entityMap[nextID++] = grd.entity;
 
 	renderOpaqueGeometryHelper(
 		ctx,
-		entity,
-		geometry,
+		grd,
 		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | OtStateLines,
-		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | (geometry.cullBack ? OtStateCullCw : 0),
+		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | (grd.component->cullBack ? OtStateCullCw : 0),
+		MaterialSubmission::none,
 		opaqueProgram,
 		instancedOpaqueProgram);
 }
@@ -119,16 +119,16 @@ void OtPickingPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtEntity e
 //	OtPickingPass::renderOpaqueModel
 //
 
-void OtPickingPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtEntity entity, OtModelComponent& model) {
+void OtPickingPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtModelRenderData& mrd) {
 	ctx.pickingUniforms.setValue(0, float(nextID) / 255.0f, 0.0f, 0.0f, 0.0f);
 	ctx.pickingUniforms.submit();
-	entityMap[nextID++] = entity;
+	entityMap[nextID++] = mrd.entity;
 
 	renderOpaqueModelHelper(
 		ctx,
-		entity,
-		model,
+		mrd,
 		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw,
+		MaterialSubmission::none,
 		animatedOpaqueProgram,
 		opaqueProgram);
 }
@@ -174,17 +174,17 @@ void OtPickingPass::renderGrass(OtSceneRendererContext& ctx, OtEntity entity, Ot
 //	OtPickingPass::renderTransparentGeometry
 //
 
-void OtPickingPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtEntity entity, OtGeometryComponent& geometry) {
+void OtPickingPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) {
 	ctx.pickingUniforms.setValue(0, float(nextID) / 255.0f, 0.0f, 0.0f, 0.0f);
 	ctx.pickingUniforms.submit();
-	entityMap[nextID++] = entity;
+	entityMap[nextID++] = grd.entity;
 
 	renderTransparentGeometryHelper(
 		ctx,
-		entity,
-		geometry,
+		grd,
 		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | OtStateLines,
-		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | (geometry.cullBack ? OtStateCullCw : 0),
+		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | (grd.component->cullBack ? OtStateCullCw : 0),
+		MaterialSubmission::justAlbedo,
 		transparentProgram,
 		instancedTransparentProgram);
 }

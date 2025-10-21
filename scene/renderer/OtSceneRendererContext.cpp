@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <set>
+
 #include "OtSceneRendererContext.h"
 
 
@@ -16,17 +18,13 @@
 //	OtSceneRendererContext::initialize
 //
 
-void OtSceneRendererContext::initialize(OtCamera c, OtScene* s, OtImageBasedLighting* i, OtCascadedShadowMap* sm) {
+void OtSceneRendererContext::initialize(OtScene* s, OtCamera& c) {
 	// store provided properties
-	camera = c;
 	scene = s;
-	ibl = i;
-	csm = sm;
+	camera = c;
+	cameraID = getMainCameraID();
 
 	// reset state
-	hasInstances = false;
-	visibleInstances.clear();
-
 	hasImageBasedLighting = false;
 	hasDirectionalLighting = false;
 	hasPointLighting = false;
@@ -35,7 +33,7 @@ void OtSceneRendererContext::initialize(OtCamera c, OtScene* s, OtImageBasedLigh
 	hasOpaqueModels = false;
 	hasTerrainEntities = false;
 	hasSkyEntities = false;
-	hasTransparentEntities = false;
+	hasTransparentGeometries = false;
 	hasWaterEntities = false;
 	hasGrassEntities = false;
 	hasParticlesEntities = false;
@@ -50,8 +48,12 @@ void OtSceneRendererContext::initialize(OtCamera c, OtScene* s, OtImageBasedLigh
 	directionalLightColor = glm::vec3(0.0f);
 	directionalLightAmbient = 0.0f;
 	renderDirectionalLight = false;
-	castShadow = false;
 	renderingShadow = false;
+
+	geometryEntities.clear();
+	opaqueGeometryEntities.clear();
+	transparentGeometryEntities.clear();
+	modelEntities.clear();
 
 	// check entities, collect data and set flags
 	scene->eachEntityBreadthFirst([&](OtEntity entity) {
@@ -92,16 +94,35 @@ void OtSceneRendererContext::initialize(OtCamera c, OtScene* s, OtImageBasedLigh
 
 		// process all geometry entities
 		if (scene->hasComponent<OtGeometryComponent>(entity)) {
-			bool transparent = scene->getComponent<OtGeometryComponent>(entity).transparent;
-			hasOpaqueEntities |= !transparent;
-			hasOpaqueGeometries |= !transparent;
-			hasTransparentEntities |= transparent;
+			auto& geometry = scene->getComponent<OtGeometryComponent>(entity);
+
+			// ignore geometry if it is not ready yet
+			if (geometry.asset.isReady()) {
+				bool transparent = geometry.transparent;
+				hasOpaqueEntities |= !transparent;
+				hasOpaqueGeometries |= !transparent;
+				hasTransparentGeometries |= transparent;
+				geometryEntities.emplace_back(entity);
+
+				if (transparent) {
+					transparentGeometryEntities.emplace_back(entity);
+
+				} else {
+					opaqueGeometryEntities.emplace_back(entity);
+				}
+			}
 		}
 
 		// process all model entities
 		if (scene->hasComponent<OtModelComponent>(entity)) {
-			hasOpaqueEntities = true;
-			hasOpaqueModels = true;
+			// ignore model if it is not ready yet
+			auto& model = scene->getComponent<OtModelComponent>(entity);
+
+			if (model.asset.isReady()) {
+				hasOpaqueEntities = true;
+				hasOpaqueModels = true;
+				modelEntities.emplace_back(entity);
+			}
 		}
 
 		// process all terrain entities
@@ -117,7 +138,7 @@ void OtSceneRendererContext::initialize(OtCamera c, OtScene* s, OtImageBasedLigh
 
 		// process all water entities
 		if (scene->hasComponent<OtWaterComponent>(entity)) {
-			hasTransparentEntities = true;
+			hasTransparentGeometries = true;
 			hasWaterEntities = true;
 			waterEntity = entity;
 		}
@@ -133,6 +154,119 @@ void OtSceneRendererContext::initialize(OtCamera c, OtScene* s, OtImageBasedLigh
 			hasParticlesEntities = true;
 		}
 	});
+
+	// update image based lighting (if required)
+	if (hasImageBasedLighting) {
+		ibl.update(scene->getComponent<OtIblComponent>(iblEntity));
+	}
+
+	// update shadowmaps (if required)
+	if (castShadow) {
+		csm.update(camera, directionalLightDirection);
+	}
+
+	// create water cameras (if required)
+	if (waterEntity != OtEntityNull) {
+		// get water component
+		auto& water = scene->getComponent<OtWaterComponent>(waterEntity);
+
+		// determine new view matrix
+		// see http://khayyam.kaplinski.com/2011/09/reflective-water-with-glsl-part-i.html
+		// and http://bcnine.com/articles/water/water.md.html
+		static const float flip[16] = { // these must be in column-wise order for glm library
+			1.0f,  0.0f, 0.0f, 0.0f,
+			0.0f, -1.0f, 0.0f, 0.0f,
+			0.0f,  0.0f, 1.0f, 0.0f,
+			0.0f,  0.0f, 0.0f, 1.0f
+		};
+
+		static float reflection[16] = { // these must be in column-wise order for glm library
+			1.0f,  0.0f, 0.0f, 0.0f,
+			0.0f, -1.0f, 0.0f, 0.0f,
+			0.0f,  0.0f, 1.0f, 0.0f,
+			0.0f,  0.0f, 0.0f, 1.0f
+		};
+
+		reflection[13] = 2.0f * water.level;
+
+		glm::mat4 sceneCameraMatrix = glm::inverse(camera.viewMatrix);
+		glm::mat4 reflectionCameraMatrix = glm::make_mat4(reflection) * sceneCameraMatrix * glm::make_mat4(flip);
+		glm::mat4 reflectionViewMatrix = glm::inverse(reflectionCameraMatrix);
+
+		// setup the reflection camera
+		int width = camera.width / 2;
+		int height = camera.height / 2;
+		reflectionCamera = OtCamera{width, height, camera.projectionMatrix, reflectionViewMatrix};
+
+		// setup the refraction camera (if required)
+		if (water.useRefractance) {
+			refractionCamera = OtCamera{width, height, camera.projectionMatrix, camera.viewMatrix};
+		}
+	}
+
+	// update geometry render data
+	std::set<OtEntity> currentEntities;
+
+	for (auto entity : geometryEntities) {
+		auto& grd = geometryRenderData[entity];
+		grd.analyzeEntity(scene, entity);
+		grd.analyzeCamera(getMainCameraID(), camera.frustum);
+
+		if (castShadow) {
+			grd.analyzeCamera(getShadowCameraID(0), csm.getCamera(0).frustum);
+			grd.analyzeCamera(getShadowCameraID(1), csm.getCamera(1).frustum);
+			grd.analyzeCamera(getShadowCameraID(2), csm.getCamera(2).frustum);
+			grd.analyzeCamera(getShadowCameraID(3), csm.getCamera(3).frustum);
+		}
+
+		if (waterEntity != OtEntityNull) {
+			grd.analyzeCamera(getReflectionCameraID(), reflectionCamera.frustum);
+
+			if (scene->getComponent<OtWaterComponent>(waterEntity).useRefractance) {
+				grd.analyzeCamera(getRefractionCameraID(), refractionCamera.frustum);
+			}
+		}
+
+		currentEntities.emplace(entity);
+	}
+
+	// remove geometries that might have disappeared
+	for (auto i = geometryRenderData.begin(); i != geometryRenderData.end();) {
+		if (currentEntities.find(i->first) == currentEntities.end()) {
+			i = geometryRenderData.erase(i);
+
+		} else {
+			i++;
+		}
+	}
+
+	// update model render data
+	currentEntities.clear();
+
+	for (auto entity : modelEntities) {
+		auto& mrd = modelRenderData[entity];
+		mrd.analyzeEntity(scene, entity);
+		mrd.analyzeCamera(getMainCameraID(), camera.frustum);
+
+		if (castShadow) {
+			mrd.analyzeCamera(getShadowCameraID(0), csm.getCamera(0).frustum);
+			mrd.analyzeCamera(getShadowCameraID(1), csm.getCamera(1).frustum);
+			mrd.analyzeCamera(getShadowCameraID(2), csm.getCamera(2).frustum);
+			mrd.analyzeCamera(getShadowCameraID(3), csm.getCamera(3).frustum);
+		}
+
+		currentEntities.emplace(entity);
+	}
+
+	// remove models that might have disappeared
+	for (auto i = modelRenderData.begin(); i != modelRenderData.end();) {
+		if (currentEntities.find(i->first) == currentEntities.end()) {
+			i = modelRenderData.erase(i);
+
+		} else {
+			i++;
+		}
+	}
 }
 
 
@@ -146,14 +280,14 @@ void OtSceneRendererContext::submitLightingUniforms() {
 	uniforms[0] = glm::vec4(camera.position, float(hasDirectionalLighting));
 	uniforms[1] = glm::vec4(directionalLightDirection, 0.0f);
 	uniforms[2] = glm::vec4(directionalLightColor, directionalLightAmbient);
-	uniforms[3] = glm::vec4(float(hasImageBasedLighting), float(hasImageBasedLighting ? ibl->maxEnvLevel : 0), 0.0f, 0.0f);
+	uniforms[3] = glm::vec4(float(hasImageBasedLighting), float(hasImageBasedLighting ? ibl.maxEnvLevel : 0), 0.0f, 0.0f);
 	lightingUniforms.submit();
 
 	// submit the IBL samplers
 	if (hasImageBasedLighting) {
-		iblBrdfLutSampler.submit(5, ibl->iblBrdfLut);
-		iblIrradianceMapSampler.submit(6, ibl->iblIrradianceMap);
-		iblEnvironmentMapSampler.submit(7, ibl->iblEnvironmentMap);
+		iblBrdfLutSampler.submit(5, ibl.iblBrdfLut);
+		iblIrradianceMapSampler.submit(6, ibl.iblIrradianceMap);
+		iblEnvironmentMapSampler.submit(7, ibl.iblEnvironmentMap);
 
 	} else {
 		iblBrdfLutSampler.submitDummyTexture(5);
@@ -169,24 +303,24 @@ void OtSceneRendererContext::submitLightingUniforms() {
 
 void OtSceneRendererContext::submitShadowUniforms() {
 	// build and submit the shadow uniforms
-	shadowUniforms.setValue(0, float(castShadow), 1.0f / csm->getSize(), 0.0f, 0.0f);
-	shadowUniforms.setValue(1, csm->getDistance(0), csm->getDistance(1), csm->getDistance(2), csm->getDistance(3)),
+	shadowUniforms.setValue(0, float(castShadow), 1.0f / csm.getSize(), 0.0f, 0.0f);
+	shadowUniforms.setValue(1, csm.getDistance(0), csm.getDistance(1), csm.getDistance(2), csm.getDistance(3)),
 	shadowUniforms.submit();
 
-	shadowViewProjUniform.setValue(0, csm->getCamera(0).viewProjectionMatrix);
-	shadowViewProjUniform.setValue(1, csm->getCamera(1).viewProjectionMatrix);
-	shadowViewProjUniform.setValue(2, csm->getCamera(2).viewProjectionMatrix);
-	shadowViewProjUniform.setValue(3, csm->getCamera(3).viewProjectionMatrix);
+	shadowViewProjUniform.setValue(0, csm.getCamera(0).viewProjectionMatrix);
+	shadowViewProjUniform.setValue(1, csm.getCamera(1).viewProjectionMatrix);
+	shadowViewProjUniform.setValue(2, csm.getCamera(2).viewProjectionMatrix);
+	shadowViewProjUniform.setValue(3, csm.getCamera(3).viewProjectionMatrix);
 	shadowViewProjUniform.submit();
 
 	viewUniform.set(0, camera.viewMatrix);
 	viewUniform.submit();
 
 	// submit the shadow samplers
-	csm->getFrameBuffer(0).bindDepthTexture(shadowMap0Sampler, 8);
-	csm->getFrameBuffer(1).bindDepthTexture(shadowMap1Sampler, 9);
-	csm->getFrameBuffer(2).bindDepthTexture(shadowMap2Sampler, 10);
-	csm->getFrameBuffer(3).bindDepthTexture(shadowMap3Sampler, 11);
+	csm.getFrameBuffer(0).bindDepthTexture(shadowMap0Sampler, 8);
+	csm.getFrameBuffer(1).bindDepthTexture(shadowMap1Sampler, 9);
+	csm.getFrameBuffer(2).bindDepthTexture(shadowMap2Sampler, 10);
+	csm.getFrameBuffer(3).bindDepthTexture(shadowMap3Sampler, 11);
 }
 
 
@@ -229,6 +363,21 @@ void OtSceneRendererContext::submitMaterialUniforms(OtMaterial& material) {
 	submitTextureSampler(emissiveSampler, 2, material.emissiveTexture);
 	submitTextureSampler(aoSampler, 3, material.aoTexture);
 	submitTextureSampler(normalSampler, 4, material.normalTexture);
+}
+
+
+//
+//	OtSceneRendererContext::submitAlbedoUniforms
+//
+
+void OtSceneRendererContext::submitAlbedoUniforms(OtMaterial& material) {
+	// set the uniform values
+	albedoUniforms.setValue(0, material.albedo);
+	albedoUniforms.setValue(1, material.albedoTexture.isReady(), material.scale, 0.0f, 0.0f);
+	albedoUniforms.submit();
+
+	// submit albedo texture (or dummy if it isn't set (yet))
+	submitTextureSampler(albedoSampler, 0, material.albedoTexture);
 }
 
 

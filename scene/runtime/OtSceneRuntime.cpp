@@ -89,7 +89,7 @@ ImTextureID OtSceneRuntime::render(int width, int height) {
 		cameraViewMatrix};
 
 	// render the scene and return the ID of the generated texture
-	return renderer->render(camera, scene);
+	return renderer->render(scene, camera);
 }
 
 

@@ -71,6 +71,12 @@ public:
 	// get AABB (Axis-Aligned Bounding Box)
 	OtAABB getAABB();
 
+	// see if frustums are identical
+	inline bool operator==(OtFrustum& rhs) { return planes == rhs.planes; }
+	inline bool operator!=(OtFrustum& rhs) { return !operator==(rhs); }
+	inline bool operator==(const OtFrustum& rhs) const { return planes == rhs.planes; }
+	inline bool operator!=(const OtFrustum& rhs) const { return !operator==(rhs); }
+
 	// debugging support
 	void debugPlanes();
 	void debugPoints();

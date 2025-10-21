@@ -62,6 +62,12 @@ public:
 		return glm::dot(normal, p) + distanceToOrigin;
 	}
 
+	// see if planes are identical
+	inline bool operator==(OtPlane& rhs) { return normal == rhs.normal && distanceToOrigin == rhs.distanceToOrigin; }
+	inline bool operator!=(OtPlane& rhs) { return !operator==(rhs); }
+	inline bool operator==(const OtPlane& rhs) const { return normal == rhs.normal && distanceToOrigin == rhs.distanceToOrigin; }
+	inline bool operator!=(const OtPlane& rhs) const { return !operator==(rhs); }
+
 	// debugging support
 	void debug();
 

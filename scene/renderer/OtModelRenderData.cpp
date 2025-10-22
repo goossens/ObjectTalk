@@ -32,6 +32,6 @@ void OtModelRenderData::analyzeEntity(OtScene* scene, OtEntity ett) {
 //	OtModelRenderData::analyzeCamera
 //
 
-void OtModelRenderData::analyzeCamera(size_t type, OtFrustum& frustum) {
-	visible[type] = frustum.isVisibleAABB(worldAabb);
+void OtModelRenderData::analyzeCamera(size_t type, OtCamera& camera) {
+	visible[type] = camera.isVisibleAABB(worldAabb);
 }

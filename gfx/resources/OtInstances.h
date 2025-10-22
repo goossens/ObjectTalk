@@ -20,7 +20,6 @@
 
 #include "OtAABB.h"
 #include "OtCamera.h"
-#include "OtFrustum.h"
 
 
 //
@@ -51,7 +50,6 @@ public:
 
 	// get list of visible instances
 	bool getVisible(OtCamera& camera, OtAABB& aabb, std::vector<glm::mat4>& visibleInstances);
-	bool getVisible(OtFrustum& frustum, OtAABB& aabb, std::vector<glm::mat4>& visibleInstances);
 
 	// version management
 	inline void setVersion(int v) { version = v; }

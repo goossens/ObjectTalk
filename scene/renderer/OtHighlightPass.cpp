@@ -22,7 +22,7 @@
 //	OtHighlightPass::render
 //
 
-void OtHighlightPass::render(OtSceneRendererContext& ctx, OtEntity entity) {
+void OtHighlightPass::render(OtSceneRendererContext& ctx, OtFrameBuffer* framebuffer, OtEntity entity) {
 	// see if we have a "highlightable" entity
 	if (isHighlightable(ctx.scene, entity)) {
 		// update framebuffer size
@@ -30,7 +30,7 @@ void OtHighlightPass::render(OtSceneRendererContext& ctx, OtEntity entity) {
 
 		// run both passes
 		renderSelectedPass(ctx, entity);
-		renderHighlightPass(ctx);
+		renderHighlightPass(ctx, framebuffer);
 	}
 }
 
@@ -57,11 +57,11 @@ void OtHighlightPass::renderSelectedPass(OtSceneRendererContext& ctx, OtEntity e
 //	OtHighlightPass::renderHighlightPass
 //
 
-void OtHighlightPass::renderHighlightPass(OtSceneRendererContext& ctx) {
+void OtHighlightPass::renderHighlightPass(OtSceneRendererContext& ctx, OtFrameBuffer* framebuffer) {
 	// render the outline of the entity
 	OtPass pass;
 	pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
-	pass.setFrameBuffer(framebuffer);
+	pass.setFrameBuffer(*framebuffer);
 	pass.submitQuad(ctx.camera.width, ctx.camera.height);
 
 	ctx.highlightOutlineUniforms.setValue(0, 1.0f / ctx.camera.width, 1.0f / ctx.camera.height, 0.0f, 0.0f);

@@ -18,6 +18,7 @@
 #include "glm/glm.hpp"
 
 #include "OtAABB.h"
+#include "OtCamera.h"
 #include "OtCascadedShadowMap.h"
 #include "OtFrustum.h"
 #include "OtInstances.h"
@@ -38,7 +39,7 @@ public:
 	void analyzeEntity(OtScene *scene, OtEntity entity);
 
 	// analyze camera
-	void analyzeCamera(size_t type, OtFrustum& frustum);
+	void analyzeCamera(size_t type, OtCamera& camera);
 
 	// properties
 	OtEntity entity;

@@ -210,20 +210,20 @@ void OtSceneRendererContext::initialize(OtScene* s, OtCamera& c) {
 	for (auto entity : geometryEntities) {
 		auto& grd = geometryRenderData[entity];
 		grd.analyzeEntity(scene, entity);
-		grd.analyzeCamera(getMainCameraID(), camera.frustum);
+		grd.analyzeCamera(getMainCameraID(), camera);
 
 		if (castShadow) {
-			grd.analyzeCamera(getShadowCameraID(0), csm.getCamera(0).frustum);
-			grd.analyzeCamera(getShadowCameraID(1), csm.getCamera(1).frustum);
-			grd.analyzeCamera(getShadowCameraID(2), csm.getCamera(2).frustum);
-			grd.analyzeCamera(getShadowCameraID(3), csm.getCamera(3).frustum);
+			grd.analyzeCamera(getShadowCameraID(0), csm.getCamera(0));
+			grd.analyzeCamera(getShadowCameraID(1), csm.getCamera(1));
+			grd.analyzeCamera(getShadowCameraID(2), csm.getCamera(2));
+			grd.analyzeCamera(getShadowCameraID(3), csm.getCamera(3));
 		}
 
 		if (waterEntity != OtEntityNull) {
-			grd.analyzeCamera(getReflectionCameraID(), reflectionCamera.frustum);
+			grd.analyzeCamera(getReflectionCameraID(), reflectionCamera);
 
 			if (scene->getComponent<OtWaterComponent>(waterEntity).useRefractance) {
-				grd.analyzeCamera(getRefractionCameraID(), refractionCamera.frustum);
+				grd.analyzeCamera(getRefractionCameraID(), refractionCamera);
 			}
 		}
 
@@ -246,13 +246,13 @@ void OtSceneRendererContext::initialize(OtScene* s, OtCamera& c) {
 	for (auto entity : modelEntities) {
 		auto& mrd = modelRenderData[entity];
 		mrd.analyzeEntity(scene, entity);
-		mrd.analyzeCamera(getMainCameraID(), camera.frustum);
+		mrd.analyzeCamera(getMainCameraID(), camera);
 
 		if (castShadow) {
-			mrd.analyzeCamera(getShadowCameraID(0), csm.getCamera(0).frustum);
-			mrd.analyzeCamera(getShadowCameraID(1), csm.getCamera(1).frustum);
-			mrd.analyzeCamera(getShadowCameraID(2), csm.getCamera(2).frustum);
-			mrd.analyzeCamera(getShadowCameraID(3), csm.getCamera(3).frustum);
+			mrd.analyzeCamera(getShadowCameraID(0), csm.getCamera(0));
+			mrd.analyzeCamera(getShadowCameraID(1), csm.getCamera(1));
+			mrd.analyzeCamera(getShadowCameraID(2), csm.getCamera(2));
+			mrd.analyzeCamera(getShadowCameraID(3), csm.getCamera(3));
 		}
 
 		currentEntities.emplace(entity);

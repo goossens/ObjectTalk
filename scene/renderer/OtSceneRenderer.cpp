@@ -22,7 +22,7 @@ ImTextureID OtSceneRenderer::render(OtScene* scene, OtCamera& camera) {
 	// reset rendering context
 	OtMeasureStopWatch stopwatch;
 	ctx.initialize(scene, camera);
-	iblPassTime = stopwatch.lap();
+	ctxTime = stopwatch.lap();
 
 	// generate shadow maps (if required)
 	if (ctx.castShadow) {
@@ -73,16 +73,15 @@ ImTextureID OtSceneRenderer::render(OtScene* scene, OtCamera& camera) {
 
 	transparentPassTime = stopwatch.lap();
 
-	// render grid
-	gridPass.render(ctx);
-	gridPassTime = stopwatch.lap();
-
 	// post process frame
-	postProcessingPass.render(ctx);
+	auto output = postProcessingPass.render(ctx);
 	postProcessingTime = stopwatch.lap();
 
+	// handle editor passes
+	gridPass.render(ctx, output);
+
 	if (scene->isValidEntity(selectedEntity)) {
-		highlightPass.render(ctx, selectedEntity);
+		highlightPass.render(ctx, output, selectedEntity);
 	}
 
 	if (pickingCallback) {
@@ -91,5 +90,6 @@ ImTextureID OtSceneRenderer::render(OtScene* scene, OtCamera& camera) {
 	}
 
 	editorPassTime = stopwatch.lap();
-	return compositeBuffer.getColorTextureID();
+	renderTime = stopwatch.elapsed();
+	return output->getColorTextureID();
 }

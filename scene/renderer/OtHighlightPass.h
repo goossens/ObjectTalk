@@ -24,18 +24,15 @@
 
 class OtHighlightPass : public OtSceneRenderEntitiesPass {
 public:
-	// constructor
-	OtHighlightPass(OtFrameBuffer& fb) : framebuffer(fb) {}
-
 	// render the pass
-	void render(OtSceneRendererContext& ctx, OtEntity entity);
+	void render(OtSceneRendererContext& ctx, OtFrameBuffer* framebuffer, OtEntity entity);
 
 private:
 	// render entities as opaque blobs
 	void renderSelectedPass(OtSceneRendererContext& ctx, OtEntity entity);
 
 	// render the outline of the selected entity(s)
-	void renderHighlightPass(OtSceneRendererContext& ctx);
+	void renderHighlightPass(OtSceneRendererContext& ctx, OtFrameBuffer* framebuffer);
 
 	// recursive method to render an entity and it's children
 	void renderHighlight(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity);
@@ -56,7 +53,6 @@ protected:
 
 private:
 	// properties
-	OtFrameBuffer& framebuffer;
 	OtFrameBuffer selectedBuffer{OtTexture::r8Texture};
 
 	OtShaderProgram opaqueProgram{"OtSelectVS", "OtSelectOpaqueFS"};

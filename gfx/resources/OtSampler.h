@@ -39,31 +39,27 @@ public:
 	static constexpr uint64_t repeatSampling = BGFX_SAMPLER_NONE;
 	static constexpr uint64_t clampSampling = BGFX_SAMPLER_UVW_CLAMP;
 	static constexpr uint64_t mirrorSampling = BGFX_SAMPLER_UVW_MIRROR;
+	static constexpr uint64_t defaultSampling = linearSampling | repeatSampling;
 
-	// constructor/destructor
-	OtSampler() = default;
-	inline OtSampler(const char* n, uint64_t f) : name(n), flags(f) {}
-
-	// initialize sampler
-	void initialize(const char* name, uint64_t flags);
+	// constructor
+	inline OtSampler(const char* n, uint64_t f=defaultSampling) : name(n), flags(f) {}
 
 	// clear the resources
 	void clear();
 
-	// set/get the flags
-	inline void setFlags(uint64_t f) { flags = f; }
-	inline uint64_t getFlags() { return flags; }
+	// (re)set the flags
+	void setFlags(uint64_t f);
 
 	// see if sampler is valid
 	inline bool isValid() { return uniform.isValid(); }
 
 	// bind texture/cubemap to sampler and submit to GPU
-	void submit(int unit, OtTexture& texture, const char* name=nullptr);
-	void submit(int unit, bgfx::TextureHandle texture, const char* name=nullptr);
-	void submit(int unit, OtCubeMap& cubemap, const char* name=nullptr);
+	void submit(int unit, OtTexture& texture);
+	void submit(int unit, bgfx::TextureHandle texture);
+	void submit(int unit, OtCubeMap& cubemap);
 
-	void submitDummyTexture(int unit, const char* name=nullptr); // bind dummy texture
-	void submitDummyCubeMap(int unit, const char* name=nullptr); // bind dummy cubemap
+	void submitDummyTexture(int unit); // bind dummy texture
+	void submitDummyCubeMap(int unit); // bind dummy cubemap
 
 private:
 	// private method to create the uniform

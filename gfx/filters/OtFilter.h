@@ -44,7 +44,7 @@ private:
 	virtual void execute(OtPass& pass) = 0;
 
 	// the texture sampler
-	OtSampler textureSampler{"s_texture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler textureSampler{"s_texture"};
 
 	// rendering state
 	uint64_t flags = OtSampler::pointSampling | OtSampler::clampSampling;

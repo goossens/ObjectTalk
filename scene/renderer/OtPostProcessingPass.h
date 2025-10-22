@@ -31,7 +31,7 @@ public:
 	OtPostProcessingPass(OtFrameBuffer& fb) : framebuffer(fb) {}
 
 	// render the pass
-	void render(OtSceneRendererContext& ctx);
+	OtFrameBuffer* render(OtSceneRendererContext& ctx);
 
 private:
 	// give the debugger access to the inner circle

@@ -25,20 +25,16 @@
 
 class OtGridPass {
 public:
-	// constructor
-	OtGridPass(OtFrameBuffer& fb) : framebuffer(fb) {}
-
 	// access properties
 	void setGridScale(float gs) { gridScale = gs; }
 
 	// render the pass
-	void render(OtSceneRendererContext& ctx);
+	void render(OtSceneRendererContext& ctx, OtFrameBuffer* framebuffer);
 
 private:
 	// grid scale (0.0 means no grid)
 	float gridScale = 0.0f;
 
 	// properties
-	OtFrameBuffer& framebuffer;
 	OtShaderProgram program{"OtGridVS", "OtGridFS"};
 };

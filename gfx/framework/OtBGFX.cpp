@@ -178,8 +178,14 @@ void OtFramework::renderProfiler() {
 	float toMsGpu = 1000.0f / stats->gpuTimerFreq;
 	auto labelWith = ImGui::CalcTextSize("                         ").x;
 
+	ImGuiWindowFlags flags =
+		ImGuiWindowFlags_NoFocusOnAppearing |
+		ImGuiWindowFlags_NoNav |
+		ImGuiWindowFlags_NoCollapse |
+		ImGuiWindowFlags_AlwaysAutoResize;
+
 	ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), ImGuiCond_Once);
-	ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
+	ImGui::Begin("Profiler", nullptr, flags);
 	ImGui::Text("Framerate:"); ImGui::SameLine(labelWith); ImGui::Text("%.1f", 1000.0f / loopDuration);
 	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.2f", cpuTime);
 	ImGui::Text("GPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.2f", static_cast<float>((stats->gpuTimeEnd - stats->gpuTimeBegin)) * toMsGpu);

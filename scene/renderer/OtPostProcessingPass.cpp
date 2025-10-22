@@ -18,7 +18,7 @@
 //	OtPostProcessingPass::render
 //
 
-void OtPostProcessingPass::render(OtSceneRendererContext& ctx) {
+OtFrameBuffer* OtPostProcessingPass::render(OtSceneRendererContext& ctx) {
 	// setup buffers
 	postProcessBuffer1.update(ctx.camera.width, ctx.camera.height);
 	postProcessBuffer2.update(ctx.camera.width, ctx.camera.height);
@@ -88,7 +88,7 @@ void OtPostProcessingPass::render(OtSceneRendererContext& ctx) {
 
 	// combine all post-processing effects
 	OtPass pass;
-	pass.setFrameBuffer(framebuffer);
+	pass.setFrameBuffer(*output);
 	pass.submitQuad(ctx.camera.width, ctx.camera.height);
 
 	// set uniform
@@ -101,6 +101,7 @@ void OtPostProcessingPass::render(OtSceneRendererContext& ctx) {
 	// run the program
 	pass.setState(OtStateWriteRgb | OtStateWriteA);
 	pass.runShaderProgram(postProcessProgram);
+	return output;
 }
 
 

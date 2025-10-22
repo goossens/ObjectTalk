@@ -21,12 +21,12 @@
 //	OtGridPass::render
 //
 
-void OtGridPass::render(OtSceneRendererContext& ctx) {
+void OtGridPass::render(OtSceneRendererContext& ctx, OtFrameBuffer* framebuffer) {
 	if (gridScale > 0.0f) {
 		// setup pass
 		OtPass pass;
 		pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
-		pass.setFrameBuffer(framebuffer);
+		pass.setFrameBuffer(*framebuffer);
 		pass.setTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
 
 		// send out geometry

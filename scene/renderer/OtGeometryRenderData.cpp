@@ -66,7 +66,7 @@ void OtGeometryRenderData::analyzeEntity(OtScene* scene, OtEntity ett) {
 //	OtGeometryRenderData::analyzeCamera
 //
 
-void OtGeometryRenderData::analyzeCamera(size_t type, OtFrustum& frustum) {
+void OtGeometryRenderData::analyzeCamera(size_t type, OtCamera& camera) {
 	// track changes
 	bool updated = changed;
 
@@ -74,8 +74,8 @@ void OtGeometryRenderData::analyzeCamera(size_t type, OtFrustum& frustum) {
 	auto& view = cameras[type];
 
 	// see if camera/view frustum has changed
-	if (view.frustum != frustum) {
-		view.frustum = frustum;
+	if (view.frustum != camera.frustum) {
+		view.frustum = camera.frustum;
 		updated = true;
 	}
 
@@ -89,7 +89,7 @@ void OtGeometryRenderData::analyzeCamera(size_t type, OtFrustum& frustum) {
 
 		// update list of visible instances (if required)
 		if (updated) {
-			view.visible = instances->getVisible(frustum, worldAabb, view.visibleInstances);
+			view.visible = instances->getVisible(camera, worldAabb, view.visibleInstances);
 		}
 
 	} else {
@@ -97,7 +97,7 @@ void OtGeometryRenderData::analyzeCamera(size_t type, OtFrustum& frustum) {
 		view.visibleInstances.clear();
 
 		if (updated) {
-			view.visible = frustum.isVisibleAABB(worldAabb);
+			view.visible = camera.isVisibleAABB(worldAabb);
 		}
 	}
 }

@@ -167,7 +167,7 @@ void OtSceneRendererDebug::renderOcclusion(OtSceneRenderer& renderer) {
 
 void OtSceneRendererDebug::renderTimings(OtSceneRenderer& renderer) {
 	if (ImGui::CollapsingHeader("Timings")) {
-		OtUi::readonlyFloat("IBL pass", renderer.iblPassTime);
+		OtUi::readonlyFloat("Context setup", renderer.ctxTime);
 		OtUi::readonlyFloat("Shadow pass", renderer.shadowPassTime);
 		OtUi::readonlyFloat("Background pass", renderer.backgroundPassTime);
 		OtUi::readonlyFloat("Opaque pass", renderer.opaquePassTime);
@@ -175,9 +175,9 @@ void OtSceneRendererDebug::renderTimings(OtSceneRenderer& renderer) {
 		OtUi::readonlyFloat("Sky pass", renderer.skyPassTime);
 		OtUi::readonlyFloat("Water pass", renderer.waterPassTime);
 		OtUi::readonlyFloat("Particle pass", renderer.particlePassTime);
-		OtUi::readonlyFloat("Grid Pass", renderer.gridPassTime);
 		OtUi::readonlyFloat("Post Processing", renderer.postProcessingTime);
 		OtUi::readonlyFloat("Editor pass", renderer.editorPassTime);
+		OtUi::readonlyFloat("Total CPU time", renderer.renderTime);
 	}
 }
 

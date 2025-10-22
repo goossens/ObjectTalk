@@ -166,7 +166,7 @@ void OtSceneRendererDebug::renderOcclusion(OtSceneRenderer& renderer) {
 //
 
 void OtSceneRendererDebug::renderTimings(OtSceneRenderer& renderer) {
-	if (ImGui::CollapsingHeader("Timings")) {
+	if (ImGui::CollapsingHeader("Timings (ms)")) {
 		OtUi::readonlyFloat("Context setup", renderer.ctxTime);
 		OtUi::readonlyFloat("Shadow pass", renderer.shadowPassTime);
 		OtUi::readonlyFloat("Background pass", renderer.backgroundPassTime);

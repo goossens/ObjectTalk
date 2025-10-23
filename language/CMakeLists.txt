@@ -19,8 +19,8 @@ list(REMOVE_DUPLICATES LANGUAGE_INCLUDE_DIRS)
 add_library(language OBJECT ${LANGUAGE_INCLUDES} ${LANGUAGE_SOURCES})
 
 target_compile_options(language PRIVATE
-	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Werror -Wall -Wextra>
-	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wpedantic>
+	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Werror -Wall -Wextra -Wpedantic>
+	$<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Werror -Wall -Wextra -Wno-overloaded-virtual>
 	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4 /WX>)
 
 if (UNIX)

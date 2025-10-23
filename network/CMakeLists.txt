@@ -20,8 +20,8 @@ set(NETWORK_INCLUDE_DIRS ${NETWORK_INCLUDE_DIRS} PARENT_SCOPE)
 add_library(network OBJECT ${NETWORK_INCLUDES} ${NETWORK_SOURCES})
 
 target_compile_options(network PRIVATE
-	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang,GNU>:-Werror -Wall -Wextra>
-	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wpedantic>
+	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Werror -Wall -Wextra -Wpedantic>
+	$<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Werror -Wall -Wextra -Wno-overloaded-virtual>
 	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4 /WX>)
 
 target_include_directories(network PUBLIC ${NETWORK_INCLUDE_DIRS})

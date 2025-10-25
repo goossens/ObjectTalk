@@ -344,19 +344,26 @@ void OtFramework::startFrameIMGUI() {
 	io.DeltaTime = loopDuration / 1000.0f;
 
 	int w, h;
-	int displayW, displayH;
 	SDL_GetWindowSize(window, &w, &h);
-	SDL_GetWindowSizeInPixels(window, &displayW, &displayH);
 
 	if (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED) {
-		w = h = 0;
+		w = 0;
+		h = 0;
 	}
+
+#if defined(__APPLE__)
+	float scaleX = SDL_GetWindowDisplayScale(window);
+	float scaleY = scaleX;
+
+#else
+	int displayW, displayH;
+	SDL_GetWindowSizeInPixels(window, &displayW, &displayH);
+	float scaleX = (w > 0) ? static_cast<float>(displayW) / w : 1.0f;
+	float scaleY = (h > 0) ? static_cast<float>(displayH) / h : 1.0f;
+#endif
 
 	io.DisplaySize = ImVec2(static_cast<float>(w), static_cast<float>(h));
-
-	if (w > 0 && h > 0) {
-		io.DisplayFramebufferScale = ImVec2((float)displayW / w, (float)displayH / h);
-	}
+	io.DisplayFramebufferScale = ImVec2(scaleX, scaleY);
 
 	// update cursor
 	if (!(io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange)) {
@@ -396,7 +403,7 @@ void OtFramework::updateTextureIMGUI(ImTextureData* texture) {
 		auto format = texture->Format == ImTextureFormat_RGBA32 ? bgfx::TextureFormat::Enum::RGBA8 : bgfx::TextureFormat::Enum::A8;
 
 		// create texture
-		auto handle = bgfx::createTexture2D(w, h, false, 1, format, BGFX_SAMPLER_POINT | BGFX_SAMPLER_UVW_CLAMP);
+		auto handle = bgfx::createTexture2D(w, h, false, 1, format);
 
 		// set texture pixels and status
 		auto size = bimg::imageGetSize(nullptr, w, h, 1, false, false, 1, bimg::TextureFormat::Enum(format));
@@ -406,7 +413,6 @@ void OtFramework::updateTextureIMGUI(ImTextureData* texture) {
 
 	// update existing texture
 	} else if (texture->Status == ImTextureStatus_WantUpdates) {
-		// determine texture details
 		// determine update details
 		auto w = static_cast<uint16_t>(texture->Width);
 		auto h = static_cast<uint16_t>(texture->Height);
@@ -448,10 +454,10 @@ void OtFramework::endFrameIMGUI() {
 	ImDrawData* drawData = ImGui::GetDrawData();
 
 	// avoid rendering when minimized
-	int w, h;
-	SDL_GetWindowSizeInPixels(window, &w, &h);
+	auto framebufferWidth = drawData->DisplaySize.x * drawData->FramebufferScale.x;
+	auto framebufferHeight = drawData->DisplaySize.y * drawData->FramebufferScale.y;
 
-	if (w == 0 || h == 0) {
+	if (framebufferWidth == 0.0f || framebufferHeight == 0.0f) {
 		return;
 	}
 
@@ -464,18 +470,14 @@ void OtFramework::endFrameIMGUI() {
 		}
 	}
 
-	// scale coordinates for retina displays (screen size != framebuffer size)
-//	drawData->ScaleClipRects(ImGui::GetIO().DisplayFramebufferScale);
-
 	// setup orthographic projection matrix
-	glm::mat4 matrix = glm::ortho(0.0f, static_cast<float>(w), static_cast<float>(h), 0.0f);
+	glm::mat4 matrix = glm::ortho(0.0f, drawData->DisplaySize.x, drawData->DisplaySize.y, 0.0f);
 	bgfx::setViewTransform(255, nullptr, glm::value_ptr(matrix));
-	bgfx::setViewRect(255, 0, 0, static_cast<uint16_t>(w), static_cast<uint16_t>(h));
+	bgfx::setViewRect(255, 0, 0, static_cast<uint16_t>(drawData->DisplaySize.x), static_cast<uint16_t>(drawData->DisplaySize.y));
 
-	auto clipPos = drawData->DisplayPos;
-	auto clipScale = drawData->FramebufferScale;
-	auto dispWidth = drawData->DisplaySize.x * clipScale.x;
-	auto dispHeight = drawData->DisplaySize.y * clipScale.y;
+	auto clipOffset = drawData->DisplayPos;
+	auto clipScale = ImVec2(1.0f, 1.0f);
+	// auto clipScale = drawData->FramebufferScale;
 
 	// Render command lists
 	for (int n = 0; n < drawData->CmdListsCount; n++) {
@@ -505,25 +507,29 @@ void OtFramework::endFrameIMGUI() {
 				cmd->UserCallback(cmdList, cmd);
 
 			} else if (cmd->ElemCount != 0) {
-				ImVec4 clipRect;
-				clipRect.x = (cmd->ClipRect.x - clipPos.x) * clipScale.x;
-				clipRect.y = (cmd->ClipRect.y - clipPos.y) * clipScale.y;
-				clipRect.z = (cmd->ClipRect.z - clipPos.x) * clipScale.x;
-				clipRect.w = (cmd->ClipRect.w - clipPos.y) * clipScale.y;
+				// project scissor/clipping rectangles into framebuffer space
+				ImVec2 clipMin((cmd->ClipRect.x - clipOffset.x) * clipScale.x, (cmd->ClipRect.y - clipOffset.y) * clipScale.y);
+				ImVec2 clipMax((cmd->ClipRect.z - clipOffset.x) * clipScale.x, (cmd->ClipRect.w - clipOffset.y) * clipScale.y);
 
-				if (clipRect.x < dispWidth && clipRect.y < dispHeight && clipRect.z >= 0.0f && clipRect.w >= 0.0f) {
+				// clamp to viewport
+				if (clipMin.x < 0.0f) { clipMin.x = 0.0f; }
+				if (clipMin.y < 0.0f) { clipMin.y = 0.0f; }
+				if (clipMax.x > framebufferWidth) { clipMax.x = framebufferWidth; }
+				if (clipMax.y > framebufferHeight) { clipMax.y = framebufferHeight; }
+
+				if (clipMax.x > clipMin.x && clipMax.y > clipMin.y) {
 					bgfx::setState(
 						BGFX_STATE_WRITE_RGB |
 						BGFX_STATE_WRITE_A |
 						BGFX_STATE_BLEND_ALPHA);
 
-					uint16_t xx = static_cast<uint16_t>(std::max(clipRect.x, 0.0f));
-					uint16_t yy = static_cast<uint16_t>(std::max(clipRect.y, 0.0f));
+					uint16_t xx = static_cast<uint16_t>(clipMin.x);
+					uint16_t yy = static_cast<uint16_t>(clipMin.y);
 
 					bgfx::setScissor(
 						xx, yy,
-						static_cast<uint16_t>(std::min(clipRect.z, 65535.0f) - xx),
-						static_cast<uint16_t>(std::min(clipRect.w, 65535.0f) - yy));
+						static_cast<uint16_t>(clipMax.x) - xx,
+						static_cast<uint16_t>(clipMax.y) - yy);
 
 					bgfx::TextureHandle handle = { static_cast<uint16_t>(cmd->TexRef.GetTexID()) };
 					imguiTextureSampler.submit(0, handle);
@@ -543,7 +549,7 @@ void OtFramework::endFrameIMGUI() {
 
 void OtFramework::endIMGUI() {
 	// we have to manually clear our resources since it's too late to let the destructor
-	// do it as it runs after we shutdown the library (causing 'memory leaks')
+	// do it as it runs after we shutdown the BGFX library (causing 'memory leaks')
 	for (ImTextureData* texture : ImGui::GetPlatformIO().Textures) {
 		if (texture->RefCount == 1) {
 			bgfx::TextureHandle handle = {static_cast<uint16_t>(texture->GetTexID())};

@@ -36,7 +36,7 @@ void OtFramework::initSDL() {
 	}
 
 	SDL_Rect rect;
-	SDL_GetDisplayBounds(displays[0], &rect);
+	SDL_GetDisplayUsableBounds(displays[0], &rect);
 	SDL_free(displays);
 
 	if (rect.w >= 1600 && rect.h >= 900) {

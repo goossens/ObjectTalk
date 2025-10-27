@@ -9,10 +9,7 @@
 //	Include files
 //
 
-#include "bgfx/bgfx.h"
-
 #include "OtFilter.h"
-#include "OtPass.h"
 
 
 //
@@ -24,11 +21,11 @@ void OtFilter::render(OtTexture& origin, OtFrameBuffer& destination) {
 	OtPass pass;
 	pass.setFrameBuffer(destination);
 	pass.submitQuad(destination.getWidth(), destination.getHeight());
+	pass.setState(state);
 
 	// execute filter
 	textureSampler.setFlags(flags);
 	textureSampler.submit(0, origin);
-	bgfx::setState(state);
 	execute(pass);
 }
 

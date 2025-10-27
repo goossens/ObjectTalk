@@ -14,12 +14,10 @@
 
 #include <cstdint>
 
-#include "bgfx/bgfx.h"
-
 #include "OtFrameBuffer.h"
-#include "OtTexture.h"
-#include "OtSampler.h"
 #include "OtPass.h"
+#include "OtSampler.h"
+#include "OtTexture.h"
 
 
 //
@@ -48,5 +46,5 @@ private:
 
 	// rendering state
 	uint64_t flags = OtSampler::pointSampling | OtSampler::clampSampling;
-	uint64_t state = BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A;
+	uint64_t state = OtStateWriteRgb | OtStateWriteZ;
 };

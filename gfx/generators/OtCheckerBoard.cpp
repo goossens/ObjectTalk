@@ -13,13 +13,14 @@
 
 
 //
-//	OtCheckerBoard::execute
+//	OtCheckerBoard::preparePass
 //
 
-void OtCheckerBoard::execute(OtPass& pass) {
+OtComputeProgram& OtCheckerBoard::preparePass() {
 	uniform.setValue(0, repeat, 0.0f, 0.0f, 0.0f);
 	uniform.setValue(1, blackColor);
 	uniform.setValue(2, whiteColor);
 	uniform.submit();
-	pass.runShaderProgram(program);
+
+	return program;
 }

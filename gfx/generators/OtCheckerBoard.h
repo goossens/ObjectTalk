@@ -16,7 +16,6 @@
 
 #include "OtColor.h"
 #include "OtGenerator.h"
-#include "OtShaderProgram.h"
 #include "OtUniformVec4.h"
 
 
@@ -32,8 +31,8 @@ public:
 	inline void setWhiteColor(OtColor color) { whiteColor = color; }
 
 private:
-	// execute generator
-	void execute(OtPass& pass) override;
+	// prepare generator pass
+	OtComputeProgram& preparePass() override;
 
 	// properties
 	float repeat = 1.0f;
@@ -41,6 +40,6 @@ private:
 	OtColor whiteColor{1.0f, 1.0f, 1.0f};
 
 	// shader resources
-	OtShaderProgram program{"OtGeneratorVS", "OtCheckerBoardFS"};
+	OtComputeProgram program{"OtCheckerBoardCS"};
 	OtUniformVec4 uniform{"u_checkerboard", 3};
 };

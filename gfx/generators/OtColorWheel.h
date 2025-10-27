@@ -13,7 +13,6 @@
 //
 
 #include "OtGenerator.h"
-#include "OtShaderProgram.h"
 
 
 //
@@ -22,9 +21,9 @@
 
 class OtColorWheel : public OtGenerator {
 private:
-	// execute generator
-	void execute(OtPass& pass) override;
+	// prepare generator pass
+	OtComputeProgram& preparePass() override;
 
 	// shader resources
-	OtShaderProgram program{"OtGeneratorVS", "OtColorWheelFS"};
+	OtComputeProgram program{"OtColorWheelCS"};
 };

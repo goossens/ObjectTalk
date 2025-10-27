@@ -13,9 +13,9 @@
 
 
 //
-//	OtColorWheel::execute
+//	OtColorWheel::preparePass
 //
 
-void OtColorWheel::execute(OtPass& pass) {
-	pass.runShaderProgram(program);
+OtComputeProgram& OtColorWheel::preparePass() {
+	return program;
 }

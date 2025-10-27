@@ -110,12 +110,12 @@
 #include "generated/filter/OtPixelateFS_mtl.h"
 #include "generated/filter/OtPixelateFS_spv.h"
 #include "generated/filter/OtPixelateFS_dx11.h"
-#include "generated/filter/OtPostProcessFS_mtl.h"
-#include "generated/filter/OtPostProcessFS_spv.h"
-#include "generated/filter/OtPostProcessFS_dx11.h"
 #include "generated/filter/OtPosterizeFS_mtl.h"
 #include "generated/filter/OtPosterizeFS_spv.h"
 #include "generated/filter/OtPosterizeFS_dx11.h"
+#include "generated/filter/OtPostProcessFS_mtl.h"
+#include "generated/filter/OtPostProcessFS_spv.h"
+#include "generated/filter/OtPostProcessFS_dx11.h"
 #include "generated/filter/OtRgbaCurvesFS_mtl.h"
 #include "generated/filter/OtRgbaCurvesFS_spv.h"
 #include "generated/filter/OtRgbaCurvesFS_dx11.h"
@@ -137,24 +137,21 @@
 #include "generated/forward/OtForwardPbrFS_mtl.h"
 #include "generated/forward/OtForwardPbrFS_spv.h"
 #include "generated/forward/OtForwardPbrFS_dx11.h"
-#include "generated/generator/OtGeneratorVS_mtl.h"
-#include "generated/generator/OtGeneratorVS_spv.h"
-#include "generated/generator/OtGeneratorVS_dx11.h"
-#include "generated/generator/OtCheckerBoardFS_mtl.h"
-#include "generated/generator/OtCheckerBoardFS_spv.h"
-#include "generated/generator/OtCheckerBoardFS_dx11.h"
-#include "generated/generator/OtColorWheelFS_mtl.h"
-#include "generated/generator/OtColorWheelFS_spv.h"
-#include "generated/generator/OtColorWheelFS_dx11.h"
-#include "generated/generator/OtFbmFS_mtl.h"
-#include "generated/generator/OtFbmFS_spv.h"
-#include "generated/generator/OtFbmFS_dx11.h"
-#include "generated/generator/OtRenderLightFS_mtl.h"
-#include "generated/generator/OtRenderLightFS_spv.h"
-#include "generated/generator/OtRenderLightFS_dx11.h"
-#include "generated/generator/OtTileableFbmFS_mtl.h"
-#include "generated/generator/OtTileableFbmFS_spv.h"
-#include "generated/generator/OtTileableFbmFS_dx11.h"
+#include "generated/generator/OtCheckerBoardCS_mtl.h"
+#include "generated/generator/OtCheckerBoardCS_spv.h"
+#include "generated/generator/OtCheckerBoardCS_dx11.h"
+#include "generated/generator/OtColorWheelCS_mtl.h"
+#include "generated/generator/OtColorWheelCS_spv.h"
+#include "generated/generator/OtColorWheelCS_dx11.h"
+#include "generated/generator/OtFbmCS_mtl.h"
+#include "generated/generator/OtFbmCS_spv.h"
+#include "generated/generator/OtFbmCS_dx11.h"
+#include "generated/generator/OtRenderLightCS_mtl.h"
+#include "generated/generator/OtRenderLightCS_spv.h"
+#include "generated/generator/OtRenderLightCS_dx11.h"
+#include "generated/generator/OtTileableFbmCS_mtl.h"
+#include "generated/generator/OtTileableFbmCS_spv.h"
+#include "generated/generator/OtTileableFbmCS_dx11.h"
 #include "generated/godrays/OtGodraysVS_mtl.h"
 #include "generated/godrays/OtGodraysVS_spv.h"
 #include "generated/godrays/OtGodraysVS_dx11.h"
@@ -170,12 +167,12 @@
 #include "generated/grass/OtGrassFS_mtl.h"
 #include "generated/grass/OtGrassFS_spv.h"
 #include "generated/grass/OtGrassFS_dx11.h"
-#include "generated/grid/OtGridVS_mtl.h"
-#include "generated/grid/OtGridVS_spv.h"
-#include "generated/grid/OtGridVS_dx11.h"
-#include "generated/grid/OtGridFS_mtl.h"
-#include "generated/grid/OtGridFS_spv.h"
-#include "generated/grid/OtGridFS_dx11.h"
+#include "generated/Grid/OtGridVS_mtl.h"
+#include "generated/Grid/OtGridVS_spv.h"
+#include "generated/Grid/OtGridVS_dx11.h"
+#include "generated/Grid/OtGridFS_mtl.h"
+#include "generated/Grid/OtGridFS_spv.h"
+#include "generated/Grid/OtGridFS_dx11.h"
 #include "generated/highlight/OtOutlineVS_mtl.h"
 #include "generated/highlight/OtOutlineVS_spv.h"
 #include "generated/highlight/OtOutlineVS_dx11.h"
@@ -206,12 +203,12 @@
 #include "generated/ibl/OtIblIrradianceMapCS_mtl.h"
 #include "generated/ibl/OtIblIrradianceMapCS_spv.h"
 #include "generated/ibl/OtIblIrradianceMapCS_dx11.h"
-#include "generated/imgui/OtImGuiVS_mtl.h"
-#include "generated/imgui/OtImGuiVS_spv.h"
-#include "generated/imgui/OtImGuiVS_dx11.h"
-#include "generated/imgui/OtImGuiFS_mtl.h"
-#include "generated/imgui/OtImGuiFS_spv.h"
-#include "generated/imgui/OtImGuiFS_dx11.h"
+#include "generated/ImGui/OtImGuiVS_mtl.h"
+#include "generated/ImGui/OtImGuiVS_spv.h"
+#include "generated/ImGui/OtImGuiVS_dx11.h"
+#include "generated/ImGui/OtImGuiFS_mtl.h"
+#include "generated/ImGui/OtImGuiFS_spv.h"
+#include "generated/ImGui/OtImGuiFS_dx11.h"
 #include "generated/occlusion/OtOcclusionAnimatedVS_mtl.h"
 #include "generated/occlusion/OtOcclusionAnimatedVS_spv.h"
 #include "generated/occlusion/OtOcclusionAnimatedVS_dx11.h"
@@ -275,24 +272,24 @@
 #include "generated/shadow/OtShadowTransparentFS_mtl.h"
 #include "generated/shadow/OtShadowTransparentFS_spv.h"
 #include "generated/shadow/OtShadowTransparentFS_dx11.h"
-#include "generated/sky/OtSkyVS_mtl.h"
-#include "generated/sky/OtSkyVS_spv.h"
-#include "generated/sky/OtSkyVS_dx11.h"
-#include "generated/sky/OtSkyBoxFS_mtl.h"
-#include "generated/sky/OtSkyBoxFS_spv.h"
-#include "generated/sky/OtSkyBoxFS_dx11.h"
-#include "generated/sky/OtSkyFS_mtl.h"
-#include "generated/sky/OtSkyFS_spv.h"
-#include "generated/sky/OtSkyFS_dx11.h"
-#include "generated/terrain/OtTerrainSimpleVS_mtl.h"
-#include "generated/terrain/OtTerrainSimpleVS_spv.h"
-#include "generated/terrain/OtTerrainSimpleVS_dx11.h"
-#include "generated/terrain/OtTerrainVS_mtl.h"
-#include "generated/terrain/OtTerrainVS_spv.h"
-#include "generated/terrain/OtTerrainVS_dx11.h"
-#include "generated/terrain/OtTerrainFS_mtl.h"
-#include "generated/terrain/OtTerrainFS_spv.h"
-#include "generated/terrain/OtTerrainFS_dx11.h"
+#include "generated/Sky/OtSkyVS_mtl.h"
+#include "generated/Sky/OtSkyVS_spv.h"
+#include "generated/Sky/OtSkyVS_dx11.h"
+#include "generated/Sky/OtSkyBoxFS_mtl.h"
+#include "generated/Sky/OtSkyBoxFS_spv.h"
+#include "generated/Sky/OtSkyBoxFS_dx11.h"
+#include "generated/Sky/OtSkyFS_mtl.h"
+#include "generated/Sky/OtSkyFS_spv.h"
+#include "generated/Sky/OtSkyFS_dx11.h"
+#include "generated/Terrain/OtTerrainSimpleVS_mtl.h"
+#include "generated/Terrain/OtTerrainSimpleVS_spv.h"
+#include "generated/Terrain/OtTerrainSimpleVS_dx11.h"
+#include "generated/Terrain/OtTerrainVS_mtl.h"
+#include "generated/Terrain/OtTerrainVS_spv.h"
+#include "generated/Terrain/OtTerrainVS_dx11.h"
+#include "generated/Terrain/OtTerrainFS_mtl.h"
+#include "generated/Terrain/OtTerrainFS_spv.h"
+#include "generated/Terrain/OtTerrainFS_dx11.h"
 #include "generated/water/OtWaterVS_mtl.h"
 #include "generated/water/OtWaterVS_spv.h"
 #include "generated/water/OtWaterVS_dx11.h"
@@ -369,10 +366,10 @@ static const uint8_t OtNormalMapperFS_glsl[1] = {0};
 static const uint8_t OtNormalMapperFS_essl[1] = {0};
 static const uint8_t OtPixelateFS_glsl[1] = {0};
 static const uint8_t OtPixelateFS_essl[1] = {0};
-static const uint8_t OtPostProcessFS_glsl[1] = {0};
-static const uint8_t OtPostProcessFS_essl[1] = {0};
 static const uint8_t OtPosterizeFS_glsl[1] = {0};
 static const uint8_t OtPosterizeFS_essl[1] = {0};
+static const uint8_t OtPostProcessFS_glsl[1] = {0};
+static const uint8_t OtPostProcessFS_essl[1] = {0};
 static const uint8_t OtRgbaCurvesFS_glsl[1] = {0};
 static const uint8_t OtRgbaCurvesFS_essl[1] = {0};
 static const uint8_t OtRgbaFS_glsl[1] = {0};
@@ -387,18 +384,16 @@ static const uint8_t OtForwardVS_glsl[1] = {0};
 static const uint8_t OtForwardVS_essl[1] = {0};
 static const uint8_t OtForwardPbrFS_glsl[1] = {0};
 static const uint8_t OtForwardPbrFS_essl[1] = {0};
-static const uint8_t OtGeneratorVS_glsl[1] = {0};
-static const uint8_t OtGeneratorVS_essl[1] = {0};
-static const uint8_t OtCheckerBoardFS_glsl[1] = {0};
-static const uint8_t OtCheckerBoardFS_essl[1] = {0};
-static const uint8_t OtColorWheelFS_glsl[1] = {0};
-static const uint8_t OtColorWheelFS_essl[1] = {0};
-static const uint8_t OtFbmFS_glsl[1] = {0};
-static const uint8_t OtFbmFS_essl[1] = {0};
-static const uint8_t OtRenderLightFS_glsl[1] = {0};
-static const uint8_t OtRenderLightFS_essl[1] = {0};
-static const uint8_t OtTileableFbmFS_glsl[1] = {0};
-static const uint8_t OtTileableFbmFS_essl[1] = {0};
+static const uint8_t OtCheckerBoardCS_glsl[1] = {0};
+static const uint8_t OtCheckerBoardCS_essl[1] = {0};
+static const uint8_t OtColorWheelCS_glsl[1] = {0};
+static const uint8_t OtColorWheelCS_essl[1] = {0};
+static const uint8_t OtFbmCS_glsl[1] = {0};
+static const uint8_t OtFbmCS_essl[1] = {0};
+static const uint8_t OtRenderLightCS_glsl[1] = {0};
+static const uint8_t OtRenderLightCS_essl[1] = {0};
+static const uint8_t OtTileableFbmCS_glsl[1] = {0};
+static const uint8_t OtTileableFbmCS_essl[1] = {0};
 static const uint8_t OtGodraysVS_glsl[1] = {0};
 static const uint8_t OtGodraysVS_essl[1] = {0};
 static const uint8_t OtGodraysFS_glsl[1] = {0};
@@ -530,8 +525,8 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtIslandizerFS),
 	BGFX_EMBEDDED_SHADER(OtNormalMapperFS),
 	BGFX_EMBEDDED_SHADER(OtPixelateFS),
-	BGFX_EMBEDDED_SHADER(OtPostProcessFS),
 	BGFX_EMBEDDED_SHADER(OtPosterizeFS),
+	BGFX_EMBEDDED_SHADER(OtPostProcessFS),
 	BGFX_EMBEDDED_SHADER(OtRgbaCurvesFS),
 	BGFX_EMBEDDED_SHADER(OtRgbaFS),
 	BGFX_EMBEDDED_SHADER(OtSeamlessTileFS),
@@ -539,12 +534,11 @@ static const bgfx::EmbeddedShader embeddedShaders[] = {
 	BGFX_EMBEDDED_SHADER(OtForwardInstancingVS),
 	BGFX_EMBEDDED_SHADER(OtForwardVS),
 	BGFX_EMBEDDED_SHADER(OtForwardPbrFS),
-	BGFX_EMBEDDED_SHADER(OtGeneratorVS),
-	BGFX_EMBEDDED_SHADER(OtCheckerBoardFS),
-	BGFX_EMBEDDED_SHADER(OtColorWheelFS),
-	BGFX_EMBEDDED_SHADER(OtFbmFS),
-	BGFX_EMBEDDED_SHADER(OtRenderLightFS),
-	BGFX_EMBEDDED_SHADER(OtTileableFbmFS),
+	BGFX_EMBEDDED_SHADER(OtCheckerBoardCS),
+	BGFX_EMBEDDED_SHADER(OtColorWheelCS),
+	BGFX_EMBEDDED_SHADER(OtFbmCS),
+	BGFX_EMBEDDED_SHADER(OtRenderLightCS),
+	BGFX_EMBEDDED_SHADER(OtTileableFbmCS),
 	BGFX_EMBEDDED_SHADER(OtGodraysVS),
 	BGFX_EMBEDDED_SHADER(OtGodraysFS),
 	BGFX_EMBEDDED_SHADER(OtGrassSimpleVS),

@@ -12,13 +12,8 @@
 //	Include files
 //
 
-#include <cstdint>
-
-#include "bgfx/bgfx.h"
-
+#include "OtComputeProgram.h"
 #include "OtFrameBuffer.h"
-#include "OtSampler.h"
-#include "OtPass.h"
 
 
 //
@@ -34,6 +29,9 @@ public:
 	void render(OtFrameBuffer& destination);
 
 private:
-	// execute generator
-	virtual void execute(OtPass& pass) = 0;
+	// prepare generator pass
+	virtual OtComputeProgram& preparePass() = 0;
+
+	// number of GPU threads
+	static constexpr int threadCount = 8;
 };

@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "bgfx/bgfx.h"
-
 #include "OtGenerator.h"
 #include "OtPass.h"
 
@@ -22,10 +20,13 @@
 void OtGenerator::render(OtFrameBuffer& destination) {
 	// setup generator pass
 	OtPass pass;
-	pass.setFrameBuffer(destination);
-	pass.submitQuad(destination.getWidth(), destination.getHeight());
+	auto texture = destination.getColorTexture();
+	pass.setImage(0, texture, 0, OtPass::writeAccess);
 
 	// execute generator
-	bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A);
-	execute(pass);
+	pass.runComputeProgram(
+		preparePass(),
+		texture.getWidth() / threadCount,
+		texture.getHeight() / threadCount,
+		1);
 }

@@ -13,7 +13,6 @@
 //
 
 #include "OtGenerator.h"
-#include "OtShaderProgram.h"
 #include "OtUniformVec4.h"
 
 
@@ -31,8 +30,8 @@ public:
 	inline void setOctaves(int o) { octaves = o; }
 
 private:
-	// execute generator
-	void execute(OtPass& pass) override;
+	// prepare generator pass
+	OtComputeProgram& preparePass() override;
 
 	// properties
 	int frequency = 10;
@@ -42,6 +41,6 @@ private:
 	int octaves = 5;
 
 	// shader resources
-	OtShaderProgram program{"OtGeneratorVS", "OtTileableFbmFS"};
+	OtComputeProgram program{"OtTileableFbmCS"};
 	OtUniformVec4 uniform{"u_tileableFbm", 2};
 };

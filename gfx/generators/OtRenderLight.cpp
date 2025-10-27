@@ -13,12 +13,13 @@
 
 
 //
-//	OtRenderLight::execute
+//	OtRenderLight::preparePass
 //
 
-void OtRenderLight::execute(OtPass& pass) {
+OtComputeProgram& OtRenderLight::preparePass() {
 	uniform.setValue(0, center, size);
 	uniform.setValue(1, color, 0.0f);
 	uniform.submit();
-	pass.runShaderProgram(program);
+
+	return program;
 }

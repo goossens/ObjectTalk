@@ -13,7 +13,6 @@
 //
 
 #include "OtGenerator.h"
-#include "OtShaderProgram.h"
 #include "OtUniformVec4.h"
 
 
@@ -49,8 +48,8 @@ public:
 	inline void setNoiseType(NoiseType nt) { noiseType = nt; }
 
 private:
-	// execute generator
-	void execute(OtPass& pass) override;
+	// prepare generator pass
+	OtComputeProgram& preparePass() override;
 
 	// properties
 	int frequency = 1;
@@ -61,6 +60,6 @@ private:
 	NoiseType noiseType = NoiseType::simplex;
 
 	// shader resources
-	OtShaderProgram program{"OtGeneratorVS", "OtFbmFS"};
+	OtComputeProgram program{"OtFbmCS"};
 	OtUniformVec4 uniform{"u_fbm", 2};
 };

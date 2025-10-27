@@ -4,11 +4,11 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-//	Inspired by: https://www.shadertoy.com/view/4dlGW2
+#include "bgfx_compute.glsl"
 
-$input v_texcoord0
+#define THREADS 8
 
-#include <bgfx_shader.glsl>
+IMAGE2D_WO(outTexture, rgba8, 0);
 
 // uniforms
 uniform vec4 u_renderlight[2];
@@ -17,8 +17,18 @@ uniform vec4 u_renderlight[2];
 #define u_color u_renderlight[1].rgb
 
 // functions
+NUM_THREADS(THREADS, THREADS, 1)
 void main() {
-	float distance = length(abs(v_texcoord0 - u_center) / u_size);
+	ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = imageSize(outTexture);
+
+	if (coord.x >= size.x || coord.y >= size.y) {
+		return;
+	}
+
+	vec2 uv = (vec2(coord) + 0.5) / vec2(size);
+
+	float distance = length(abs(uv - u_center) / u_size);
 	float brightness = (1.0 - step(1.0, distance)) + (1.0 - smoothstep(1.0, 2.0, distance));
-	gl_FragColor = vec4(u_color * brightness, 1.0);
+	imageStore(outTexture, coord, vec4(u_color * brightness, 1.0));
 }

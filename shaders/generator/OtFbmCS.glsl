@@ -6,9 +6,11 @@
 
 //	Derived from: https://github.com/patriciogonzalezvivo/lygia
 
-$input v_texcoord0
+#include "bgfx_compute.glsl"
 
-#include <bgfx_shader.glsl>
+#define THREADS 8
+
+IMAGE2D_WO(outTexture, rgba8, 0);
 
 // constants
 #define simplexNoiseType 0
@@ -196,19 +198,29 @@ float noise(vec2 uv) {
 	}
 }
 
+NUM_THREADS(THREADS, THREADS, 1)
 void main() {
+	ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = imageSize(outTexture);
+
+	if (coord.x >= size.x || coord.y >= size.y) {
+		return;
+	}
+
+	vec2 uv = (vec2(coord) + 0.5) / vec2(size);
+
 	float sum = 0.0;
 	float denom = 0.0;
 	float frequency = u_frequency;
 	float amplitude = u_amplitude;
 
 	for (int i = 0; i < u_octaves; i++)	{
-		sum += amplitude * noise(frequency * v_texcoord0);
+		sum += amplitude * noise(frequency * uv);
 		denom += amplitude;
 
 		frequency *= u_lacunarity;
 		amplitude *= u_persistence;
 	}
 
-	gl_FragColor = vec4(sum / denom, 0.0, 0.0, 1.0);
+	imageStore(outTexture, coord, vec4(sum / denom, 0.0, 0.0, 1.0));
 }

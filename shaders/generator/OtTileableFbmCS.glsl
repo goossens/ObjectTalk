@@ -6,9 +6,11 @@
 
 //	Inspired by: https://www.shadertoy.com/view/4dlGW2
 
-$input v_texcoord0
+#include "bgfx_compute.glsl"
 
-#include <bgfx_shader.glsl>
+#define THREADS 8
+
+IMAGE2D_WO(outTexture, rgba8, 0);
 
 // uniforms
 uniform vec4 u_tileableFbm[2];
@@ -34,16 +36,26 @@ float tileableNoise(vec2 p, float scale) {
 		mix(hash(p + vec2(0.0, 1.0), scale), hash(p + vec2(1.0, 1.0), scale), f.x), f.y);
 }
 
+NUM_THREADS(THREADS, THREADS, 1)
 void main() {
+	ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = imageSize(outTexture);
+
+	if (coord.x >= size.x || coord.y >= size.y) {
+		return;
+	}
+
+	vec2 uv = (vec2(coord) + 0.5) / vec2(size);
+
 	float sum = 0.0;
 	float frequency = u_frequency;
 	float amplitude = u_amplitude;
 
 	for (int i = 0; i < u_octaves; i++)	{
-		sum += amplitude * tileableNoise(v_texcoord0, frequency);
+		sum += amplitude * tileableNoise(uv, frequency);
 		frequency *= u_lacunarity;
 		amplitude *= u_persistence;
 	}
 
-	gl_FragColor = vec4(sum, 0.0, 0.0, 1.0);
+	imageStore(outTexture, coord, vec4(sum, 0.0, 0.0, 1.0));
 }

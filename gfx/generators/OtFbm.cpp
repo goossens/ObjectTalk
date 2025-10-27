@@ -13,12 +13,13 @@
 
 
 //
-//	OtFbm::execute
+//	OtFbm::preparePass
 //
 
-void OtFbm::execute(OtPass& pass) {
+OtComputeProgram& OtFbm::preparePass() {
 	uniform.setValue(0, static_cast<float>(frequency), lacunarity, amplitude, persistence);
 	uniform.setValue(1, static_cast<float>(octaves), static_cast<float>(noiseType), 0.0f, 0.0f);
 	uniform.submit();
-	pass.runShaderProgram(program);
+
+	return program;
 }

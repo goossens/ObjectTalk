@@ -15,7 +15,6 @@
 #include "glm/glm.hpp"
 
 #include "OtGenerator.h"
-#include "OtShaderProgram.h"
 #include "OtUniformVec4.h"
 
 
@@ -31,8 +30,8 @@ public:
 	inline void setColor(const glm::vec3& c) { color = c; }
 
 private:
-	// execute generator
-	void execute(OtPass& pass) override;
+	// prepare generator pass
+	OtComputeProgram& preparePass() override;
 
 	// properties
 	glm::vec2 center{0.0f};
@@ -40,6 +39,6 @@ private:
 	glm::vec3 color{1.0f};
 
 	// shader resources
-	OtShaderProgram program{"OtGeneratorVS", "OtRenderLightFS"};
+	OtComputeProgram program{"OtRenderLightCS"};
 	OtUniformVec4 uniform{"u_renderlight", 2};
 };

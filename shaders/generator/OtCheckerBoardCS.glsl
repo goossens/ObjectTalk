@@ -6,19 +6,27 @@
 
 //	Derived from: https://github.com/patriciogonzalezvivo/lygia
 
-$input v_texcoord0
+#include "bgfx_compute.glsl"
 
-#include <bgfx_shader.glsl>
-#include <constants.glsl>
+#define THREADS 8
 
-// uniforms
+IMAGE2D_WO(outTexture, rgba8, 0);
+
 uniform vec4 u_checkerboard[3];
 #define u_repeat u_checkerboard[0].x
 #define u_black_color u_checkerboard[1]
 #define u_white_color u_checkerboard[2]
 
+NUM_THREADS(THREADS, THREADS, 1)
 void main() {
-	vec2 uv = fract(v_texcoord0 * u_repeat) - 0.5;
-	float ratio = step(uv.x * uv.y, 0.0);
-	gl_FragColor = u_white_color * ratio + u_black_color * (1.0 - ratio);
+	ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = imageSize(outTexture);
+
+	if (coord.x >= size.x || coord.y >= size.y) {
+		return;
+	}
+
+	vec2 uv = (vec2(coord) + 0.5) / vec2(size);
+	vec2 st = fract(uv * u_repeat) - 0.5;
+	imageStore(outTexture, coord, mix(u_black_color, u_white_color, step(st.x * st.y, 0.0)));
 }

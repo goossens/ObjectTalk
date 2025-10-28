@@ -76,17 +76,17 @@ void OtMeshPreview::render(int width, int height, OtMesh& mesh, Context& context
 	// render the mesh
 	if (context.wireframe) {
 		pass.setState(
-			OtStateWriteRgb |
-			OtStateWriteZ |
-			OtStateDepthTestLess |
-			OtStateLines);
+			OtPass::stateWriteRgb |
+			OtPass::stateWriteZ |
+			OtPass::stateDepthTestLess |
+			OtPass::stateLines);
 
 	} else {
 		pass.setState(
-			OtStateWriteRgb |
-			OtStateWriteZ |
-			OtStateDepthTestLess |
-			OtStateCullCw);
+			OtPass::stateWriteRgb |
+			OtPass::stateWriteZ |
+			OtPass::stateDepthTestLess |
+			OtPass::stateCullCw);
 	}
 
 	pass.setTransform(model);

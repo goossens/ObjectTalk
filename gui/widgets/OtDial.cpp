@@ -126,9 +126,9 @@ void OtDialClass::render() {
 				pass.setTransform(model);
 
 				pass.setState(
-					OtStateWriteRgb |
-					OtStateWriteA |
-					OtStateBlendAlpha);
+					OtPass::stateWriteRgb |
+					OtPass::stateWriteA |
+					OtPass::stateBlendAlpha);
 
 				pass.runShaderProgram(program);
 			}

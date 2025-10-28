@@ -107,8 +107,8 @@ void OtPickingPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeometry
 	renderOpaqueGeometryHelper(
 		ctx,
 		grd,
-		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | OtStateLines,
-		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | (grd.component->cullBack ? OtStateCullCw : 0),
+		OtPass::stateWriteRgb | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateLines,
+		OtPass::stateWriteRgb | OtPass::stateWriteZ | OtPass::stateDepthTestLess | (grd.component->cullBack ? OtPass::stateCullCw : 0),
 		MaterialSubmission::none,
 		opaqueProgram,
 		instancedOpaqueProgram);
@@ -127,7 +127,7 @@ void OtPickingPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtModelRender
 	renderOpaqueModelHelper(
 		ctx,
 		mrd,
-		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw,
+		OtPass::stateWriteRgb | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateCullCw,
 		MaterialSubmission::none,
 		animatedOpaqueProgram,
 		opaqueProgram);
@@ -146,8 +146,8 @@ void OtPickingPass::renderTerrain(OtSceneRendererContext& ctx, [[maybe_unused]] 
 	renderTerrainHelper(
 		ctx,
 		terrain,
-		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | OtStateLines,
-		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw,
+		OtPass::stateWriteRgb | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateLines,
+		OtPass::stateWriteRgb | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateCullCw,
 		terrainProgram);
 }
 
@@ -165,7 +165,7 @@ void OtPickingPass::renderGrass(OtSceneRendererContext& ctx, OtEntity entity, Ot
 		ctx,
 		entity,
 		grass,
-		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw,
+		OtPass::stateWriteRgb | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateCullCw,
 		grassProgram);
 }
 
@@ -182,8 +182,8 @@ void OtPickingPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtGeo
 	renderTransparentGeometryHelper(
 		ctx,
 		grd,
-		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | OtStateLines,
-		OtStateWriteRgb | OtStateWriteZ | OtStateDepthTestLess | (grd.component->cullBack ? OtStateCullCw : 0),
+		OtPass::stateWriteRgb | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateLines,
+		OtPass::stateWriteRgb | OtPass::stateWriteZ | OtPass::stateDepthTestLess | (grd.component->cullBack ? OtPass::stateCullCw : 0),
 		MaterialSubmission::justAlbedo,
 		transparentProgram,
 		instancedTransparentProgram);

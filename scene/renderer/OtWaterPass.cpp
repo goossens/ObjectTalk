@@ -147,11 +147,11 @@ void OtWaterPass::renderWater(OtSceneRendererContext& ctx, OtWaterComponent& wat
 
 	// run the waterProgram
 	pass.setState(
-		OtStateWriteRgb |
-		OtStateWriteA |
-		OtStateWriteZ |
-		OtStateDepthTestLess |
-		OtStateBlendAlpha);
+		OtPass::stateWriteRgb |
+		OtPass::stateWriteA |
+		OtPass::stateWriteZ |
+		OtPass::stateDepthTestLess |
+		OtPass::stateBlendAlpha);
 
 	pass.runShaderProgram(waterProgram);
 }

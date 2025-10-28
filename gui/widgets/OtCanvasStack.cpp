@@ -153,7 +153,7 @@ void OtCanvasStackClass::render() {
 
 				overlayPass.submitQuad(w, h);
 				sampler.submit(0, canvas.framebuffer.getColorTextureHandle());
-				overlayPass.setState(OtStateWriteRgb | OtStateWriteA | OtStateBlendAlpha);
+				overlayPass.setState(OtPass::stateWriteRgb | OtPass::stateWriteA | OtPass::stateBlendAlpha);
 				overlayPass.runShaderProgram(program);
 			}
 		}

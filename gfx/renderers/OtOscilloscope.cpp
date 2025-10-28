@@ -345,9 +345,9 @@ void OtOscilloscope::render(OtFrameBuffer& framebuffer) {
 			vertexBuffers[i].submit();
 
 			pass.setState(
-				OtStateWriteRgb |
-				OtStateWriteA |
-				OtStateBlendAlpha |
+				OtPass::stateWriteRgb |
+				OtPass::stateWriteA |
+				OtPass::stateBlendAlpha |
 				BGFX_STATE_BLEND_EQUATION_SEPARATE(BGFX_STATE_BLEND_EQUATION_ADD, BGFX_STATE_BLEND_EQUATION_MAX));
 
 			pass.runShaderProgram(shader);
@@ -372,9 +372,9 @@ void OtOscilloscope::render(OtFrameBuffer& framebuffer) {
 
 	// combine original rendering with glow
 	blit.setState(
-		OtStateWriteRgb |
-		OtStateWriteA |
-		OtStateBlendAdd);
+		OtPass::stateWriteRgb |
+		OtPass::stateWriteA |
+		OtPass::stateBlendAdd);
 
 	blit.setIntensity(1.25f + ((brightness - 1.0f) / 2.0f));
 	blit.render(blur2, framebuffer);

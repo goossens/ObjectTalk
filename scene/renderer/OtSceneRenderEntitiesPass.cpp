@@ -257,7 +257,7 @@ void OtSceneRenderEntitiesPass::renderTerrainHelper(
 
 		// run the program
 		ctx.pass->setTransform(mesh.transform);
-		ctx.pass->runShaderProgram(program, OtDiscardNone);
+		ctx.pass->runShaderProgram(program, OtPass::discardNone);
 	}
 
 	// cleanup

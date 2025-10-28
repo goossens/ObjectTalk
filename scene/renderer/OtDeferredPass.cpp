@@ -80,10 +80,10 @@ void OtDeferredPass::renderDirectionalLight(OtSceneRendererContext& ctx) {
 
 	// run the program
 	pass.setState(
-		OtStateWriteRgb |
-		OtStateWriteA |
-		OtStateWriteZ |
-		OtStateDepthTestLess);
+		OtPass::stateWriteRgb |
+		OtPass::stateWriteA |
+		OtPass::stateWriteZ |
+		OtPass::stateDepthTestLess);
 
 	pass.runShaderProgram(directionalLightProgram);
 }
@@ -162,10 +162,10 @@ void OtDeferredPass::renderPointLights(OtSceneRendererContext& ctx) {
 
 	// run the program
 	pass.setState(
-		OtStateWriteRgb |
-		OtStateDepthTestGreaterEqual |
-		OtStateCullCcw |
-		OtStateBlendAdd);
+		OtPass::stateWriteRgb |
+		OtPass::stateDepthTestGreaterEqual |
+		OtPass::stateCullCcw |
+		OtPass::stateBlendAdd);
 
 	pass.runShaderProgram(pointLightProgram);
 }
@@ -179,8 +179,8 @@ void OtDeferredPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeometr
 	renderOpaqueGeometryHelper(
 		ctx,
 		grd,
-		OtStateWriteRgb | OtStateWriteA | OtStateWriteZ | OtStateDepthTestLess | OtStateLines,
-		OtStateWriteRgb | OtStateWriteA | OtStateWriteZ | OtStateDepthTestLess | (grd.component->cullBack ? OtStateCullCw : 0),
+		OtPass::stateWriteRgb | OtPass::stateWriteA | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateLines,
+		OtPass::stateWriteRgb | OtPass::stateWriteA | OtPass::stateWriteZ | OtPass::stateDepthTestLess | (grd.component->cullBack ? OtPass::stateCullCw : 0),
 		MaterialSubmission::full,
 		opaqueProgram,
 		instancedOpaqueProgram);
@@ -195,7 +195,7 @@ void OtDeferredPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtModelRende
 	renderOpaqueModelHelper(
 		ctx,
 		mrd,
-		OtStateWriteRgb | OtStateWriteA | OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw,
+		OtPass::stateWriteRgb | OtPass::stateWriteA | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateCullCw,
 		MaterialSubmission::full,
 		animatedOpaqueProgram,
 		opaqueProgram);
@@ -210,8 +210,8 @@ void OtDeferredPass::renderTerrain(OtSceneRendererContext& ctx, [[maybe_unused]]
 	renderTerrainHelper(
 		ctx,
 		terrain,
-		OtStateWriteRgb | OtStateWriteA | OtStateWriteZ | OtStateDepthTestLess | OtStateLines,
-		OtStateWriteRgb | OtStateWriteA | OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw,
+		OtPass::stateWriteRgb | OtPass::stateWriteA | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateLines,
+		OtPass::stateWriteRgb | OtPass::stateWriteA | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateCullCw,
 		terrainProgram);
 }
 
@@ -225,6 +225,6 @@ void OtDeferredPass::renderGrass(OtSceneRendererContext& ctx, OtEntity entity, O
 		ctx,
 		entity,
 		grass,
-		OtStateWriteRgb | OtStateWriteA | OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw,
+		OtPass::stateWriteRgb | OtPass::stateWriteA | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateCullCw,
 		grassProgram);
 }

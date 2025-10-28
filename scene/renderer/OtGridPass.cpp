@@ -49,11 +49,11 @@ void OtGridPass::render(OtSceneRendererContext& ctx, OtFrameBuffer* framebuffer)
 
 		// run the program
 		pass.setState(
-			OtStateWriteRgb |
-			OtStateWriteA |
-			OtStateWriteZ |
-			OtStateDepthTestLess |
-			OtStateBlendAlpha);
+			OtPass::stateWriteRgb |
+			OtPass::stateWriteA |
+			OtPass::stateWriteZ |
+			OtPass::stateDepthTestLess |
+			OtPass::stateBlendAlpha);
 
 		pass.runShaderProgram(program);
 	}

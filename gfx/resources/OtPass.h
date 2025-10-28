@@ -27,44 +27,31 @@
 
 
 //
-//	Rendering synonyms (to keep BGFX out of other modules)
-//
-
-static constexpr uint64_t OtStateWriteRgb = BGFX_STATE_WRITE_RGB;
-static constexpr uint64_t OtStateWriteA = BGFX_STATE_WRITE_A;
-static constexpr uint64_t OtStateWriteZ = BGFX_STATE_WRITE_Z;
-
-static constexpr uint64_t OtStateDepthTestLess = BGFX_STATE_DEPTH_TEST_LESS;
-static constexpr uint64_t OtStateDepthTestLessEqual = BGFX_STATE_DEPTH_TEST_LEQUAL;
-static constexpr uint64_t OtStateDepthTestGreater = BGFX_STATE_DEPTH_TEST_GREATER;
-static constexpr uint64_t OtStateDepthTestGreaterEqual = BGFX_STATE_DEPTH_TEST_GEQUAL;
-
-static constexpr uint64_t OtStateCullCw = BGFX_STATE_CULL_CW;
-static constexpr uint64_t OtStateCullCcw = BGFX_STATE_CULL_CCW;
-
-static constexpr uint64_t OtStateLines = BGFX_STATE_PT_LINES;
-
-static constexpr uint64_t OtStateBlendAlpha = BGFX_STATE_BLEND_ALPHA;
-static constexpr uint64_t OtStateBlendAdd = BGFX_STATE_BLEND_ADD;
-
-static constexpr uint64_t OtStateMsaa = BGFX_STATE_MSAA;
-
-static constexpr uint8_t OtDiscardNone = BGFX_DISCARD_NONE;
-static constexpr uint8_t OtDiscardBindings = BGFX_DISCARD_BINDINGS;
-static constexpr uint8_t OtDiscardIndexBuffer = BGFX_DISCARD_INDEX_BUFFER;
-static constexpr uint8_t OtDiscardInstanceData = BGFX_DISCARD_INSTANCE_DATA;
-static constexpr uint8_t OtDiscardState = BGFX_DISCARD_STATE;
-static constexpr uint8_t OtDiscardTransform = BGFX_DISCARD_TRANSFORM;
-static constexpr uint8_t OtDiscardVertexStreams = BGFX_DISCARD_VERTEX_STREAMS;
-static constexpr uint8_t OtDiscardAll = BGFX_DISCARD_ALL;
-
-
-//
 //	OtPass
 //
 
 class OtPass {
 public:
+	// pipeline states
+	static constexpr uint64_t stateWriteRgb = BGFX_STATE_WRITE_RGB;
+	static constexpr uint64_t stateWriteA = BGFX_STATE_WRITE_A;
+	static constexpr uint64_t stateWriteZ = BGFX_STATE_WRITE_Z;
+
+	static constexpr uint64_t stateDepthTestLess = BGFX_STATE_DEPTH_TEST_LESS;
+	static constexpr uint64_t stateDepthTestLessEqual = BGFX_STATE_DEPTH_TEST_LEQUAL;
+	static constexpr uint64_t stateDepthTestGreater = BGFX_STATE_DEPTH_TEST_GREATER;
+	static constexpr uint64_t stateDepthTestGreaterEqual = BGFX_STATE_DEPTH_TEST_GEQUAL;
+
+	static constexpr uint64_t stateCullCw = BGFX_STATE_CULL_CW;
+	static constexpr uint64_t stateCullCcw = BGFX_STATE_CULL_CCW;
+
+	static constexpr uint64_t stateLines = BGFX_STATE_PT_LINES;
+
+	static constexpr uint64_t stateBlendAlpha = BGFX_STATE_BLEND_ALPHA;
+	static constexpr uint64_t stateBlendAdd = BGFX_STATE_BLEND_ADD;
+
+	static constexpr uint64_t stateMsaa = BGFX_STATE_MSAA;
+
 	// view modes
 	static constexpr int sequential = bgfx::ViewMode::Sequential;
 	static constexpr int depthAscending = bgfx::ViewMode::DepthAscending;
@@ -74,6 +61,15 @@ public:
 	static constexpr int readAccess = bgfx::Access::Read;
 	static constexpr int writeAccess = bgfx::Access::Write;
 	static constexpr int readWriteAccess = bgfx::Access::ReadWrite;
+
+	static constexpr uint8_t discardNone = BGFX_DISCARD_NONE;
+	static constexpr uint8_t discardBindings = BGFX_DISCARD_BINDINGS;
+	static constexpr uint8_t discardIndexBuffer = BGFX_DISCARD_INDEX_BUFFER;
+	static constexpr uint8_t discardInstanceData = BGFX_DISCARD_INSTANCE_DATA;
+	static constexpr uint8_t discardState = BGFX_DISCARD_STATE;
+	static constexpr uint8_t discardTransform = BGFX_DISCARD_TRANSFORM;
+	static constexpr uint8_t discardVertexStreams = BGFX_DISCARD_VERTEX_STREAMS;
+	static constexpr uint8_t discardAll = BGFX_DISCARD_ALL;
 
 	// constructor
 	OtPass();
@@ -95,9 +91,9 @@ public:
 	void submitQuad(int w, int h);
 
 	inline void touch() { bgfx::touch(view); }
-	inline void discard(uint8_t flags=OtDiscardAll) { bgfx::discard(flags); }
+	inline void discard(uint8_t flags=discardAll) { bgfx::discard(flags); }
 
-	inline void runShaderProgram(OtShaderProgram& program, uint8_t discard=OtDiscardAll) {
+	inline void runShaderProgram(OtShaderProgram& program, uint8_t discard=discardAll) {
 		program.dispatch(view, discard);
 	}
 
@@ -110,7 +106,7 @@ public:
 		bgfx::setImage(static_cast<uint8_t>(stage), cubemap.getHandle(), static_cast<uint8_t>(mip), bgfx::Access::Enum(access));
 	}
 
-	inline void runComputeProgram(OtComputeProgram& program, uint32_t x, uint32_t y, uint32_t z, uint8_t discard=OtDiscardAll) {
+	inline void runComputeProgram(OtComputeProgram& program, uint32_t x, uint32_t y, uint32_t z, uint8_t discard=discardAll) {
 		program.dispatch(view, x, y, z, discard);
 	}
 

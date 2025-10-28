@@ -712,6 +712,6 @@ void OtMap::renderImage(OtFrameBuffer& framebuffer, int size, std::function<uint
 	tib.submit(indices.data(), indices.size());
 
 	// run shader
-	pass.setState(OtStateWriteRgb);
+	pass.setState(OtPass::stateWriteRgb);
 	pass.runShaderProgram(program);
 }

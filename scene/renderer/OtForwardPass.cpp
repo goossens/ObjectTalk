@@ -40,8 +40,8 @@ void OtForwardPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtGeo
 	renderTransparentGeometryHelper(
 		ctx,
 		grd,
-		OtStateWriteRgb | OtStateWriteA | OtStateWriteZ | OtStateDepthTestLess | OtStateBlendAlpha | OtStateLines,
-		OtStateWriteRgb | OtStateWriteA | OtStateWriteZ | OtStateDepthTestLess | OtStateBlendAlpha | (grd.component->cullBack ? OtStateCullCw : 0),
+		OtPass::stateWriteRgb | OtPass::stateWriteA | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateBlendAlpha | OtPass::stateLines,
+		OtPass::stateWriteRgb | OtPass::stateWriteA | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateBlendAlpha | (grd.component->cullBack ? OtPass::stateCullCw : 0),
 		MaterialSubmission::full,
 		transparentProgram,
 		instancedTransparentProgram);

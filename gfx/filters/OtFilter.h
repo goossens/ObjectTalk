@@ -46,5 +46,5 @@ private:
 
 	// rendering state
 	uint64_t flags = OtSampler::pointSampling | OtSampler::clampSampling;
-	uint64_t state = OtStateWriteRgb | OtStateWriteZ;
+	uint64_t state = OtPass::stateWriteRgb | OtPass::stateWriteA;
 };

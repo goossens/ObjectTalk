@@ -68,7 +68,7 @@ void OtHighlightPass::renderHighlightPass(OtSceneRendererContext& ctx, OtFrameBu
 	ctx.highlightOutlineUniforms.submit();
 
 	selectedBuffer.bindColorTexture(ctx.selectedSampler, 0);
-	pass.setState(OtStateWriteRgb | OtStateWriteA | OtStateBlendAlpha);
+	pass.setState(OtPass::stateWriteRgb | OtPass::stateWriteA | OtPass::stateBlendAlpha);
 	pass.runShaderProgram(outlineProgram);
 }
 
@@ -123,8 +123,8 @@ void OtHighlightPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeomet
 	renderOpaqueGeometryHelper(
 		ctx,
 		grd,
-		OtStateWriteRgb | OtStateLines,
-		OtStateWriteRgb | (grd.component->cullBack ? OtStateCullCw : 0),
+		OtPass::stateWriteRgb | OtPass::stateLines,
+		OtPass::stateWriteRgb | (grd.component->cullBack ? OtPass::stateCullCw : 0),
 		MaterialSubmission::none,
 		opaqueProgram,
 		instancedOpaqueProgram);
@@ -139,7 +139,7 @@ void OtHighlightPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtModelRend
 	renderOpaqueModelHelper(
 		ctx,
 		mrd,
-		OtStateWriteRgb | OtStateCullCw,
+		OtPass::stateWriteRgb | OtPass::stateCullCw,
 		MaterialSubmission::none,
 		animatedOpaqueProgram,
 		opaqueProgram);
@@ -154,8 +154,8 @@ void OtHighlightPass::renderTerrain(OtSceneRendererContext& ctx, [[maybe_unused]
 	renderTerrainHelper(
 		ctx,
 		terrain,
-		OtStateWriteRgb | OtStateLines,
-		OtStateWriteRgb | OtStateCullCw,
+		OtPass::stateWriteRgb | OtPass::stateLines,
+		OtPass::stateWriteRgb | OtPass::stateCullCw,
 		terrainProgram);
 }
 
@@ -169,7 +169,7 @@ void OtHighlightPass::renderGrass(OtSceneRendererContext& ctx, OtEntity entity, 
 		ctx,
 		entity,
 		grass,
-		OtStateWriteRgb | OtStateCullCw,
+		OtPass::stateWriteRgb | OtPass::stateCullCw,
 		grassProgram);
 }
 
@@ -182,8 +182,8 @@ void OtHighlightPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtG
 	renderTransparentGeometryHelper(
 		ctx,
 		grd,
-		OtStateWriteRgb | OtStateLines,
-		OtStateWriteRgb | (grd.component->cullBack ? OtStateCullCw : 0),
+		OtPass::stateWriteRgb | OtPass::stateLines,
+		OtPass::stateWriteRgb | (grd.component->cullBack ? OtPass::stateCullCw : 0),
 		MaterialSubmission::justAlbedo,
 		transparentProgram,
 		instancedTransparentProgram);

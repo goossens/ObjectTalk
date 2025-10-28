@@ -99,7 +99,7 @@ OtFrameBuffer* OtPostProcessingPass::render(OtSceneRendererContext& ctx) {
 	input->bindColorTexture(postProcessSampler, 0);
 
 	// run the program
-	pass.setState(OtStateWriteRgb | OtStateWriteA);
+	pass.setState(OtPass::stateWriteRgb | OtPass::stateWriteA);
 	pass.runShaderProgram(postProcessProgram);
 	return output;
 }
@@ -124,7 +124,7 @@ void OtPostProcessingPass::renderFxaa(OtSceneRendererContext& ctx, OtFrameBuffer
 	fxaaUniforms.submit();
 
 	// run the program
-	pass.setState(OtStateWriteRgb | OtStateWriteA);
+	pass.setState(OtPass::stateWriteRgb | OtPass::stateWriteA);
 	pass.runShaderProgram(fxaaProgram);
 }
 
@@ -152,7 +152,7 @@ void OtPostProcessingPass::renderFog(OtSceneRendererContext& ctx, OtFrameBuffer*
 	invProjUniform.submit();
 
 	// run the program
-	pass.setState(OtStateWriteRgb | OtStateWriteA);
+	pass.setState(OtPass::stateWriteRgb | OtPass::stateWriteA);
 	pass.runShaderProgram(fogProgram);
 }
 
@@ -199,7 +199,7 @@ void OtPostProcessingPass::renderBloom(OtSceneRendererContext& ctx, OtFrameBuffe
 		}
 
 		// run the program
-		pass.setState(OtStateWriteRgb | OtStateWriteA);
+		pass.setState(OtPass::stateWriteRgb | OtPass::stateWriteA);
 		pass.runShaderProgram(bloomDownSampleProgram);
 	}
 
@@ -223,7 +223,7 @@ void OtPostProcessingPass::renderBloom(OtSceneRendererContext& ctx, OtFrameBuffe
 		bloomBuffer[i].bindColorTexture(bloomSampler, 0);
 
 		// run the program
-		pass.setState(OtStateWriteRgb | OtStateWriteA);
+		pass.setState(OtPass::stateWriteRgb | OtPass::stateWriteA);
 		pass.runShaderProgram(bloomUpSampleProgram);
 	}
 
@@ -237,7 +237,7 @@ void OtPostProcessingPass::renderBloom(OtSceneRendererContext& ctx, OtFrameBuffe
 	bloomBuffer[0].bindColorTexture(bloomSampler, 1);
 
 	// run the program
-	pass.setState(OtStateWriteRgb | OtStateWriteA);
+	pass.setState(OtPass::stateWriteRgb | OtPass::stateWriteA);
 	pass.runShaderProgram(bloomApplyProgram);
 }
 
@@ -285,6 +285,6 @@ void OtPostProcessingPass::renderGodrays(OtSceneRendererContext& ctx, OtFrameBuf
 	occlusionBuffer.bindColorTexture(occlusionSampler, 1);
 
 	// run the program
-	pass.setState(OtStateWriteRgb | OtStateWriteA);
+	pass.setState(OtPass::stateWriteRgb | OtPass::stateWriteA);
 	pass.runShaderProgram(godrayProgram);
 }

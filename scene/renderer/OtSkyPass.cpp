@@ -84,10 +84,10 @@ void OtSkyPass::renderSky(OtSceneRendererContext& ctx, OtPass& pass, OtSkyCompon
 
 	// run the program
 	pass.setState(
-		OtStateWriteRgb |
-		OtStateWriteA |
-		OtStateWriteZ |
-		OtStateDepthTestLessEqual);
+		OtPass::stateWriteRgb |
+		OtPass::stateWriteA |
+		OtPass::stateWriteZ |
+		OtPass::stateDepthTestLessEqual);
 
 	pass.runShaderProgram(skyProgram);
 }
@@ -107,10 +107,10 @@ void OtSkyPass::renderSkyBox(OtSceneRendererContext& ctx, OtPass& pass, OtSkyBox
 
 	// run the program
 	pass.setState(
-		OtStateWriteRgb |
-		OtStateWriteA |
-		OtStateWriteZ |
-		OtStateDepthTestLessEqual);
+		OtPass::stateWriteRgb |
+		OtPass::stateWriteA |
+		OtPass::stateWriteZ |
+		OtPass::stateDepthTestLessEqual);
 
 	pass.runShaderProgram(skyBoxProgram);
 }

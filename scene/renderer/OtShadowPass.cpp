@@ -54,8 +54,8 @@ void OtShadowPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeometryR
 	renderOpaqueGeometryHelper(
 		ctx,
 		grd,
-		OtStateWriteZ | OtStateDepthTestLess | OtStateLines,
-		OtStateWriteZ | OtStateDepthTestLess | (grd.component->cullBack ? OtStateCullCw : 0),
+		OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateLines,
+		OtPass::stateWriteZ | OtPass::stateDepthTestLess | (grd.component->cullBack ? OtPass::stateCullCw : 0),
 		MaterialSubmission::none,
 		opaqueProgram,
 		instancedOpaqueProgram);
@@ -70,7 +70,7 @@ void OtShadowPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtModelRenderD
 	renderOpaqueModelHelper(
 		ctx,
 		mrd,
-		OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw,
+		OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateCullCw,
 		MaterialSubmission::none,
 		animatedOpaqueProgram,
 		opaqueProgram);
@@ -85,8 +85,8 @@ void OtShadowPass::renderTerrain(OtSceneRendererContext& ctx, [[maybe_unused]] O
 	renderTerrainHelper(
 		ctx,
 		terrain,
-		OtStateWriteZ | OtStateDepthTestLess | OtStateLines,
-		OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw,
+		OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateLines,
+		OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateCullCw,
 		terrainProgram);
 }
 
@@ -100,7 +100,7 @@ void OtShadowPass::renderGrass(OtSceneRendererContext& ctx, OtEntity entity, OtG
 		ctx,
 		entity,
 		grass,
-		OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw,
+		OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateCullCw,
 		grassProgram);
 
 }
@@ -114,8 +114,8 @@ void OtShadowPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtGeom
 	renderTransparentGeometryHelper(
 		ctx,
 		grd,
-		OtStateWriteZ | OtStateDepthTestLess | OtStateLines,
-		OtStateWriteZ | OtStateDepthTestLess | OtStateCullCw,
+		OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateLines,
+		OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateCullCw,
 		MaterialSubmission::justAlbedo,
 		transparentProgram,
 		instancedTransparentProgram);

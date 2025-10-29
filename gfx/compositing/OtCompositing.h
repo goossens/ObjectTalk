@@ -15,35 +15,36 @@
 #include <cstdint>
 
 #include "OtFrameBuffer.h"
-#include "OtPass.h"
 #include "OtSampler.h"
+#include "OtShaderProgram.h"
 #include "OtTexture.h"
+#include "OtUniformVec4.h"
 
 
 //
-//	OtFilter
+//	OtCompositing
 //
 
-class OtFilter {
+class OtCompositing {
 public:
 	// destructor
-	virtual inline ~OtFilter() {}
+	virtual inline ~OtCompositing() {}
+
+	// set properties
+	inline void setBrightness(float value) { brightness = value; }
 
 	// render filter
 	void render(OtTexture& origin, OtFrameBuffer& destination);
 	void render(OtFrameBuffer& origin, OtFrameBuffer& destination);
 
-protected:
-	// sampling flags
-	uint64_t flags = OtSampler::pointSampling | OtSampler::clampSampling;
-
 private:
-	// execute filter
-	virtual void execute(OtPass& pass) = 0;
+	// get render state
+	virtual uint64_t getState() = 0;
 
-	// the texture sampler
-	OtSampler textureSampler{"s_texture"};
+	// GPU resourcess
+	float brightness = 1.0f;
 
-	// rendering state
-	uint64_t state = OtPass::stateWriteRgb | OtPass::stateWriteA;
+	OtSampler sampler{"s_texture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtUniformVec4 uniform = OtUniformVec4("u_compositing", 1);
+	OtShaderProgram program = OtShaderProgram("OtCompositingVS", "OtCompositingFS");
 };

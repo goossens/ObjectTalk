@@ -17,8 +17,8 @@
 
 #include "glm/glm.hpp"
 
-#include "OtBlit.h"
 #include "OtBlur.h"
+#include "OtCompositingAddOver.h"
 #include "OtDynamicVertexBuffer.h"
 #include "OtFrameBuffer.h"
 #include "OtSampler.h"
@@ -98,7 +98,7 @@ private:
 
 	// filters
 	OtBlur blur;
-	OtBlit blit;
+	OtCompositingAddOver compositor;
 
 	// GPU resources
 	OtFrameBuffer blur1{OtTexture::rgba8Texture};

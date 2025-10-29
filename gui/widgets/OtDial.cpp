@@ -15,7 +15,6 @@
 #include "OtFunction.h"
 #include "OtLog.h"
 
-#include "OtBlit.h"
 #include "OtPass.h"
 #include "OtTransientVertexBuffer.h"
 #include "OtUi.h"
@@ -76,9 +75,10 @@ void OtDialClass::render() {
 			framebuffer.update(w, h);
 
 			// render background
-			OtBlit blit;
-			blit.render(backgroundTexture, framebuffer);
-
+			OtPass backgroundPass;
+			auto target = framebuffer.getColorTexture();
+			backgroundPass.blit(target, backgroundTexture);
+\
 			// render needle (if required)
 			if (needle.isReady()) {
 				// determine needle rotation
@@ -86,11 +86,11 @@ void OtDialClass::render() {
 				auto rotation = minRotation + ratio * (maxRotation - minRotation);
 
 				// configure rendering pass
-				OtPass pass;
-				pass.setRectangle(0, 0, w, h);
-				pass.setFrameBuffer(framebuffer);
+				OtPass needlePass;
+				needlePass.setRectangle(0, 0, w, h);
+				needlePass.setFrameBuffer(framebuffer);
 				glm::mat4 projMatrix = glm::ortho(0.0f, static_cast<float>(w), static_cast<float>(h), 0.0f);
-				pass.setTransform(glm::mat4(1.0f), projMatrix);
+				needlePass.setTransform(glm::mat4(1.0f), projMatrix);
 
 				// render needle
 				auto& needleTexture = needle->getTexture();
@@ -123,14 +123,14 @@ void OtDialClass::render() {
 				model = glm::scale(model, glm::vec3(w, h, 1.0f));
 
 				// run the program
-				pass.setTransform(model);
+				needlePass.setTransform(model);
 
-				pass.setState(
+				needlePass.setState(
 					OtPass::stateWriteRgb |
 					OtPass::stateWriteA |
 					OtPass::stateBlendAlpha);
 
-				pass.runShaderProgram(program);
+				needlePass.runShaderProgram(program);
 			}
 
 			// reset flag

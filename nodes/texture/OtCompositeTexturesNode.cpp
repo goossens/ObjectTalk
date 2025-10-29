@@ -12,8 +12,7 @@
 #include <vector>
 #include <utility>
 
-#include "OtAlphaOver.h"
-#include "OtBlit.h"
+#include "OtCompositingAlphaOver.h"
 #include "OtFrameBuffer.h"
 #include "OtTexture.h"
 
@@ -58,41 +57,57 @@ public:
 			output.clear();
 
 		} else {
-			framebuffer.initialize(textures[0].getFormat());
+			framebuffer.initialize(textures[0].getFormat(), OtTexture::noTexture, 1, true);
 			framebuffer.update(textures[0].getWidth(), textures[0].getHeight());
+			auto target = framebuffer.getColorTexture();
 
-			if (count == 1) {
-				blit.render(textures[0], framebuffer);
+			OtPass pass;
+			pass.blit(target, textures[0]);
 
-			} else if (count == 2) {
-				alphaover.setOverlay(textures[1]);
-				alphaover.render(textures[0], framebuffer);
-
-			} else {
-				temp1.initialize(textures[0].getFormat());
-				temp1.update(textures[0].getWidth(), textures[0].getHeight());
-
-				temp2.initialize(textures[0].getFormat());
-				temp2.update(textures[0].getWidth(), textures[0].getHeight());
-
-				for (size_t i = 0; i < count - 1; i++) {
-					alphaover.setOverlay(textures[i + 1]);
-
-					if (i == 0) {
-						alphaover.render(textures[0], temp1);
-
-					} else if (i == count - 2) {
-						alphaover.render(temp1, framebuffer);
-
-					} else {
-						alphaover.render(temp1, temp2);
-						std::swap(temp1, temp2);
-					}
-				}
+			for (size_t i = 1; i < textures.size(); i++) {
+				alphaover.render(textures[i], framebuffer);
 			}
 
 			output = framebuffer.getColorTexture();
 			output.setVersion(version++);
+
+
+
+			// framebuffer.initialize(textures[0].getFormat());
+			// framebuffer.update(textures[0].getWidth(), textures[0].getHeight());
+
+			// if (count == 1) {
+			// 	blit.render(textures[0], framebuffer);
+
+			// } else if (count == 2) {
+			// 	alphaover.setOverlay(textures[1]);
+			// 	alphaover.render(textures[0], framebuffer);
+
+			// } else {
+			// 	temp1.initialize(textures[0].getFormat());
+			// 	temp1.update(textures[0].getWidth(), textures[0].getHeight());
+
+			// 	temp2.initialize(textures[0].getFormat());
+			// 	temp2.update(textures[0].getWidth(), textures[0].getHeight());
+
+			// 	for (size_t i = 0; i < count - 1; i++) {
+			// 		alphaover.setOverlay(textures[i + 1]);
+
+			// 		if (i == 0) {
+			// 			alphaover.render(textures[0], temp1);
+
+			// 		} else if (i == count - 2) {
+			// 			alphaover.render(temp1, framebuffer);
+
+			// 		} else {
+			// 			alphaover.render(temp1, temp2);
+			// 			std::swap(temp1, temp2);
+			// 		}
+			// 	}
+			// }
+
+			// output = framebuffer.getColorTexture();
+			// output.setVersion(version++);
 		}
 	}
 
@@ -114,10 +129,7 @@ protected:
 
 	// processing resources
 	OtFrameBuffer framebuffer;
-	OtFrameBuffer temp1;
-	OtFrameBuffer temp2;
-	OtAlphaOver alphaover;
-	OtBlit blit;
+	OtCompositingAlphaOver alphaover;
 	int version = 1;
 };
 

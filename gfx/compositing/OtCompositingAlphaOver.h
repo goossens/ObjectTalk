@@ -12,23 +12,21 @@
 //	Include files
 //
 
-#include "OtComputeProgram.h"
-#include "OtFrameBuffer.h"
+#include "OtCompositing.h"
+#include "OtPass.h"
 
 
 //
-//	OtGenerator
+//	OtCompositingAlphaOver
 //
 
-class OtGenerator {
-public:
-	// destructor
-	virtual inline ~OtGenerator() {}
-
-	// run generator
-	void render(OtFrameBuffer& destination);
-
+class OtCompositingAlphaOver : public OtCompositing {
 private:
-	// prepare generator pass
-	virtual OtComputeProgram& preparePass() = 0;
+	// get render state
+	uint64_t getState() override {
+		return
+			OtPass::stateWriteRgb |
+			OtPass::stateWriteA |
+			OtPass::stateBlendAlpha;
+	}
 };

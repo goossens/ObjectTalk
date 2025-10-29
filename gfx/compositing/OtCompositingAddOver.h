@@ -12,19 +12,21 @@
 //	Include files
 //
 
-#include "OtFilter.h"
-#include "OtShaderProgram.h"
+#include "OtCompositing.h"
+#include "OtPass.h"
 
 
 //
-//	OtBloom
+//	OtCompositingAddOver
 //
 
-class OtBloom : public OtFilter {
+class OtCompositingAddOver : public OtCompositing {
 private:
-	// execute filter
-	void execute(OtPass& pass) override;
-
-	// GPU assets
-	OtShaderProgram program = OtShaderProgram("OtFilterVS", "OtBloomFS");
+	// get render state
+	uint64_t getState() override {
+		return
+			OtPass::stateWriteRgb |
+			OtPass::stateWriteA |
+			OtPass::stateBlendAdd;
+	}
 };

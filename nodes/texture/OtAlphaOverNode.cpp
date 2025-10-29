@@ -9,8 +9,8 @@
 //	Include files
 //
 
-#include "OtAlphaOver.h"
-#include "OtBlit.h"
+#include "OtCompositingAlphaOver.h"
+#include "OtPass.h"
 
 #include "OtNodesFactory.h"
 #include "OtTextureFilterNode.h"
@@ -30,12 +30,11 @@ public:
 
 	// run filter
 	inline void onFilter(OtTexture& input, OtFrameBuffer& output) override {
-		if (overlayTexture.isValid()) {
-			alphaOver.setOverlay(overlayTexture);
-			alphaOver.render(input, output);
+		OtPass pass;
+		pass.blit(output.getColorTextureHandle(), 0, 0, input.getHandle());
 
-		} else {
-			blit.render(input, output);
+		if (overlayTexture.isValid()) {
+			alphaOver.render(overlayTexture, output);
 		}
 	}
 
@@ -44,8 +43,7 @@ public:
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 	// properties
-	OtBlit blit;
-	OtAlphaOver alphaOver;
+	OtCompositingAlphaOver alphaOver;
 	OtTexture overlayTexture;
 };
 

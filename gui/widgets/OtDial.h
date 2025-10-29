@@ -118,7 +118,7 @@ private:
 	float value = 0.0f;
 
 	// work variables
-	OtFrameBuffer framebuffer{OtTexture::rgba8Texture};
+	OtFrameBuffer framebuffer{OtTexture::rgba8Texture, OtTexture::noTexture, 1, true};
 	OtSampler sampler{"s_texture", OtSampler::pointSampling | OtSampler::clampSampling};
 	OtShaderProgram program{"OtDialVS", "OtDialFS"};
 	bool redraw = true;

@@ -4,18 +4,11 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
+$output v_texcoord0
 
-//
-//	Include files
-//
+#include <bgfx_shader.glsl>
 
-#include "OtBloom.h"
-
-
-//
-//	OtBloom::execute
-//
-
-void OtBloom::execute(OtPass& pass) {
-	pass.runShaderProgram(program);
+void main() {
+	v_texcoord0 = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2);
+	gl_Position = vec4(v_texcoord0 * vec2(2.0, -2.0) + vec2(-1.0, 1.0), 0.0, 1.0);
 }

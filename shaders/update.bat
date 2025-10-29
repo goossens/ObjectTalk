@@ -11,6 +11,8 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f canvas\OtOscilloscopeVS.glsl -o generated\canvas\OtOscilloscopeVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtOscilloscopeVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f canvas\OtMapFS.glsl -o generated\canvas\OtMapFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtMapFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f canvas\OtOscilloscopeFS.glsl -o generated\canvas\OtOscilloscopeFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtOscilloscopeFS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f compositing\OtCompositingVS.glsl -o generated\compositing\OtCompositingVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtCompositingVS_dx11
+%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f compositing\OtCompositingFS.glsl -o generated\compositing\OtCompositingFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtCompositingFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f cubemap\OtCubeMapCrossVS.glsl -o generated\cubemap\OtCubeMapCrossVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtCubeMapCrossVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f cubemap\OtHdrReprojectVS.glsl -o generated\cubemap\OtHdrReprojectVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtHdrReprojectVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f cubemap\OtCubeMapCrossFS.glsl -o generated\cubemap\OtCubeMapCrossFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtCubeMapCrossFS_dx11
@@ -24,12 +26,8 @@ pushd "%~dp0"
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f dial\OtDialVS.glsl -o generated\dial\OtDialVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtDialVS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f dial\OtDialFS.glsl -o generated\dial\OtDialFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtDialFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtFilterVS.glsl -o generated\filter\OtFilterVS_dx11.h -i include --type vertex --platform windows --profile s_5_0 -O 3 --bin2c OtFilterVS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtAlphaFS.glsl -o generated\filter\OtAlphaFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtAlphaFS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtAlphaOverFS.glsl -o generated\filter\OtAlphaOverFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtAlphaOverFS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtBlitFS.glsl -o generated\filter\OtBlitFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtBlitFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtBloomApplyFS.glsl -o generated\filter\OtBloomApplyFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtBloomApplyFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtBloomDownSampleFS.glsl -o generated\filter\OtBloomDownSampleFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtBloomDownSampleFS_dx11
-%HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtBloomFS.glsl -o generated\filter\OtBloomFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtBloomFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtBloomUpSampleFS.glsl -o generated\filter\OtBloomUpSampleFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtBloomUpSampleFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtBlurFS.glsl -o generated\filter\OtBlurFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtBlurFS_dx11
 %HOMEDRIVE%%HOMEPATH%\bin\shaderc -f filter\OtContrastSaturationBrightnessFS.glsl -o generated\filter\OtContrastSaturationBrightnessFS_dx11.h -i include --type fragment --platform windows --profile s_5_0 -O 3 --bin2c OtContrastSaturationBrightnessFS_dx11

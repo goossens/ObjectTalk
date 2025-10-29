@@ -30,7 +30,7 @@ OtFrameBuffer::OtFrameBuffer(int colorTextureType, int depthTextureType, int ant
 //
 
 void OtFrameBuffer::initialize(int c, int d, int a, bool b) {
-	if (colorTextureType != c || depthTextureType != d || antiAliasing != a || colorTextureType != c) {
+	if (colorTextureType != c || depthTextureType != d || antiAliasing != a || blitTarget != b) {
 		clear();
 		colorTextureType = c;
 		depthTextureType = d;

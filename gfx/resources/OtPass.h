@@ -121,6 +121,20 @@ public:
 		bgfx::blit(view, dest, dx, dy, src, sx, sy, sw, sh);
 	}
 
+	inline void blit(
+		OtTexture& dest,
+		uint16_t dx, uint16_t dy,
+		OtTexture& src,
+		uint16_t sx=0, uint16_t sy=0,
+		uint16_t sw=UINT16_MAX, uint16_t sh=UINT16_MAX) {
+
+		blit(dest.getHandle(), dx, dy, src.getHandle(), sx, sy, sw, sh);
+	}
+
+	inline void blit(OtTexture& dest, OtTexture& src) {
+		blit(dest, 0, 0, src);
+	}
+
 	// get view ID
 	inline bgfx::ViewId getViewId() { return view; }
 

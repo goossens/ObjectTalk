@@ -43,7 +43,7 @@ public:
 
 			// reinitialize framebuffer if format changed
 			if (format != framebuffer.getColorTextureType()) {
-				framebuffer.initialize(format);
+				framebuffer.initialize(format, OtTexture::noTexture, 1, true);
 			}
 
 			// ensure framebuffer has the right size

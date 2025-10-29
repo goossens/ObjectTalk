@@ -10,10 +10,10 @@ $input v_texcoord0
 
 SAMPLER2D(s_texture, 0);
 
-uniform vec4 u_blit;
-#define u_intensity u_blit.x
-#define u_alpha u_blit.y
+uniform vec4 u_compositing;
+#define u_brightness u_compositing.x
 
 void main() {
-	gl_FragColor = texture2D(s_texture, v_texcoord0) * vec4(u_intensity, u_intensity, u_intensity, u_intensity * u_alpha);
+	vec4 color = texture2D(s_texture, v_texcoord0);
+	gl_FragColor = vec4(color.rgb * u_brightness, color.a);
 }

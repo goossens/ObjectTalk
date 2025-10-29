@@ -17,7 +17,7 @@
 //
 
 OtBlur::OtBlur() {
-	setFlags(OtSampler::clampSampling);
+	flags = OtSampler::linearSampling | OtSampler::clampSampling;
 }
 
 

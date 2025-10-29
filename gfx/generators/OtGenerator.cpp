@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <cmath>
+
 #include "OtGenerator.h"
 #include "OtPass.h"
 
@@ -24,9 +26,11 @@ void OtGenerator::render(OtFrameBuffer& destination) {
 	pass.setImage(0, texture, 0, OtPass::writeAccess);
 
 	// execute generator
+	static constexpr float threadCount = 8.0f;
+
 	pass.runComputeProgram(
 		preparePass(),
-		texture.getWidth() / threadCount,
-		texture.getHeight() / threadCount,
+		static_cast<int>(std::ceil(texture.getWidth() / threadCount)),
+		static_cast<int>(std::ceil(texture.getHeight() / threadCount)),
 		1);
 }

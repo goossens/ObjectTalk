@@ -19,7 +19,7 @@
 //
 
 OtGaussian::OtGaussian() {
-	setFlags(OtSampler::linearSampling | OtSampler::clampSampling);
+	flags = OtSampler::linearSampling | OtSampler::clampSampling;
 }
 
 

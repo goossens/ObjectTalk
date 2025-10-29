@@ -371,13 +371,8 @@ void OtOscilloscope::render(OtFrameBuffer& framebuffer) {
 	}
 
 	// combine original rendering with glow
-	blit.setState(
-		OtPass::stateWriteRgb |
-		OtPass::stateWriteA |
-		OtPass::stateBlendAdd);
-
-	blit.setIntensity(1.25f + ((brightness - 1.0f) / 2.0f));
-	blit.render(blur2, framebuffer);
+	compositor.setBrightness(1.25f + ((brightness - 1.0f) / 2.0f));
+	compositor.render(blur2, framebuffer);
 }
 
 

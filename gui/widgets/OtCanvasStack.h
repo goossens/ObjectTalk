@@ -17,9 +17,9 @@
 #include "OtCallback.h"
 
 #include "OtCanvasModule.h"
+#include "OtCompositingAlphaOver.h"
 #include "OtFrameBuffer.h"
 #include "OtSampler.h"
-#include "OtShaderProgram.h"
 #include "OtUi.h"
 
 #include "OtWidget.h"
@@ -87,5 +87,5 @@ private:
 	// GPU resource
 	OtFrameBuffer framebuffer{OtTexture::rgba8Texture};
 	OtSampler sampler{"s_texture", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtShaderProgram program = OtShaderProgram("OtFilterVS", "OtAlphaFS");
+	OtCompositingAlphaOver alphaOver;
 };

@@ -22,10 +22,6 @@ void OtRgbaCurve::execute(OtPass& pass) {
 	uniform.setValue(2, whiteLevel);
 	uniform.submit();
 
-	if (!lutTexture.isValid()) {
-
-	}
-
 	lutSampler.submit(1, lutTexture);
 	pass.runShaderProgram(program);
 }

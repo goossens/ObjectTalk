@@ -137,6 +137,7 @@ void OtCanvasStackClass::render() {
 
 	// (re)-composite all layers (if required)
 	if (dirty) {
+		// resize framebuffer (if required) and clear it
 		framebuffer.update(w, h);
 
 		OtPass clearPass;
@@ -147,14 +148,7 @@ void OtCanvasStackClass::render() {
 
 		for (auto& canvas : canvases) {
 			if (OtCanvasObject(canvas.canvas)->isEnabled()) {
-				OtPass overlayPass;
-				overlayPass.setFrameBuffer(framebuffer);
-				overlayPass.setRectangle(0, 0, w, h);
-
-				overlayPass.submitQuad(w, h);
-				sampler.submit(0, canvas.framebuffer.getColorTextureHandle());
-				overlayPass.setState(OtPass::stateWriteRgb | OtPass::stateWriteA | OtPass::stateBlendAlpha);
-				overlayPass.runShaderProgram(program);
+				alphaOver.render(canvas.framebuffer, framebuffer);
 			}
 		}
 	}

@@ -35,11 +35,11 @@ target_include_directories(bgfx
 		${bgfx_SOURCE_DIR}/examples/common/nanovg)
 
 target_link_libraries(bgfx PUBLIC bx bimg)
-target_compile_options(bgfx PUBLIC $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-gnu-anonymous-struct -Wno-nested-anon-types>)
 target_compile_definitions(bgfx PRIVATE "BGFX_CONFIG_MULTITHREADED=0")
 
 if(APPLE)
 	target_compile_definitions(bgfx PRIVATE "BGFX_CONFIG_RENDERER_METAL=1")
+	target_compile_options(bgfx PUBLIC -Wno-gnu-anonymous-struct -Wno-nested-anon-types)
 	set_source_files_properties(${bgfx_SOURCE_DIR}/src/renderer_mtl.mm PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations")
 	set_source_files_properties(${bgfx_SOURCE_DIR}/src/renderer_vk.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif()

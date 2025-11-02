@@ -10,7 +10,8 @@ file(GLOB BX_SOURCES ${bx_SOURCE_DIR}/src/*.cpp ${bx_SOURCE_DIR}/include/bx/*.h 
 list(REMOVE_ITEM BX_SOURCES ${bx_SOURCE_DIR}/src/amalgamated.cpp)
 
 add_library(bx STATIC ${BX_SOURCES})
-target_compile_definitions(bx PUBLIC "BX_CONFIG_DEBUG=$<CONFIG:Debug>")
+# target_compile_definitions(bx PUBLIC "BX_CONFIG_DEBUG=$<CONFIG:Debug>")
+target_compile_definitions(bx PUBLIC "BX_CONFIG_DEBUG=0")
 target_compile_options(bx PUBLIC $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-gnu-zero-variadic-macro-arguments>)
 target_include_directories(bx PUBLIC ${bx_SOURCE_DIR}/include ${bx_SOURCE_DIR}/3rdparty)
 

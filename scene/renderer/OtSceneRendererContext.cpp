@@ -11,6 +11,8 @@
 
 #include <set>
 
+#include "glm/gtc/type_ptr.hpp"
+
 #include "OtSceneRendererContext.h"
 
 

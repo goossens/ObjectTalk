@@ -204,7 +204,7 @@ void OtSceneRenderEntitiesPass::renderOpaqueModelHelper(
 		// submit the geometry and uniforms
 		cmd.mesh->submitTriangles();
 
-		// submit material uniforms (if required)
+		// submit material uniforms
 		if (materialSubmission != MaterialSubmission::none) {
 			if (materialSubmission == MaterialSubmission::justAlbedo) {
 				ctx.submitAlbedoUniforms(*cmd.material);

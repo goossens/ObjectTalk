@@ -17,8 +17,10 @@
 #include "OtPass.h"
 
 #include "OtGeometryRenderData.h"
+#include "OtGrassComponent.h"
 #include "OtModelRenderData.h"
 #include "OtSceneRendererContext.h"
+#include "OtTerrainComponent.h"
 
 
 //

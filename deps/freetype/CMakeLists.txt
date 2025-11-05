@@ -14,4 +14,9 @@ set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)
 
 FetchContent_Declare(freetype GIT_REPOSITORY "https://github.com/freetype/freetype" GIT_TAG "VER-2-14-1")
 FetchContent_MakeAvailable(freetype)
+
+if(CMAKE_GENERATOR STREQUAL Xcode)
+	set_target_properties(freetype PROPERTIES XCODE_ATTRIBUTE_GCC_WARN_64_TO_32_BIT_CONVERSION "NO")
+endif()
+
 set_target_properties(freetype PROPERTIES FOLDER deps)

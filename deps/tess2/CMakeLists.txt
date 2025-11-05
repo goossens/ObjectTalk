@@ -13,4 +13,9 @@ file(GLOB TESS2_SOURCES
 
 add_library(tess2 STATIC ${TESS2_SOURCES})
 target_include_directories(tess2 PUBLIC ${tess2_SOURCE_DIR}/Include)
+
+if(CMAKE_GENERATOR STREQUAL Xcode)
+	set_target_properties(tess2 PROPERTIES XCODE_ATTRIBUTE_GCC_WARN_64_TO_32_BIT_CONVERSION "NO")
+endif()
+
 set_target_properties(tess2 PROPERTIES FOLDER deps)

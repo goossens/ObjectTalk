@@ -59,6 +59,12 @@ void OtGeometryRenderData::analyzeEntity(OtScene* scene, OtEntity ett) {
 	} else {
 		instances = nullptr;
 	}
+
+	// see if geometry casts a shadow
+	if (castShadow != component->castShadow) {
+		castShadow = component->castShadow;
+		changed = true;
+	}
 }
 
 
@@ -67,37 +73,43 @@ void OtGeometryRenderData::analyzeEntity(OtScene* scene, OtEntity ett) {
 //
 
 void OtGeometryRenderData::analyzeCamera(size_t type, OtCamera& camera) {
-	// track changes
-	bool updated = changed;
-
 	// find view
 	auto& view = cameras[type];
 
-	// see if camera/view frustum has changed
-	if (view.frustum != camera.frustum) {
-		view.frustum = camera.frustum;
-		updated = true;
-	}
+	// geometries that don't cast a shadow are ignored for shadow cameras
+	if (isShadowCamera(type) && !castShadow) {
+		view.visible = false;
 
-	// is this a case of instancing?
-	if (instances) {
-		// see if instances have changed
-		if (instances->getVersion() != view.instancesVersion) {
-			view.instancesVersion = instances->getVersion();
+	} else {
+		// track changes
+		bool updated = changed;
+
+		// see if camera/view frustum has changed
+		if (view.frustum != camera.frustum) {
+			view.frustum = camera.frustum;
 			updated = true;
 		}
 
-		// update list of visible instances (if required)
-		if (updated) {
-			view.visible = instances->getVisible(camera, worldAabb, view.visibleInstances);
-		}
+		// is this a case of instancing?
+		if (instances) {
+			// see if instances have changed
+			if (instances->getVersion() != view.instancesVersion) {
+				view.instancesVersion = instances->getVersion();
+				updated = true;
+			}
 
-	} else {
-		// update visibility (if required)
-		view.visibleInstances.clear();
+			// update list of visible instances (if required)
+			if (updated) {
+				view.visible = instances->getVisible(camera, worldAabb, view.visibleInstances);
+			}
 
-		if (updated) {
-			view.visible = camera.isVisibleAABB(worldAabb);
+		} else {
+			// update visibility (if required)
+			view.visibleInstances.clear();
+
+			if (updated) {
+				view.visible = camera.isVisibleAABB(worldAabb);
+			}
 		}
 	}
 }

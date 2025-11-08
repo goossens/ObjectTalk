@@ -25,6 +25,9 @@ void OtModelRenderData::analyzeEntity(OtScene* scene, OtEntity ett) {
 	// determine current AABB in world space
 	globalTransform = scene->getGlobalTransform(entity);
 	worldAabb = model->getAABB().transform(globalTransform);
+
+	// see if model casts a shadow
+	castShadow = component->castShadow;
 }
 
 
@@ -33,5 +36,11 @@ void OtModelRenderData::analyzeEntity(OtScene* scene, OtEntity ett) {
 //
 
 void OtModelRenderData::analyzeCamera(size_t type, OtCamera& camera) {
-	visible[type] = camera.isVisibleAABB(worldAabb);
+	// models that don't cast a shadow are ignored for shadow cameras
+	if (isShadowCamera(type) && !castShadow) {
+		visible[type] = false;
+
+	} else {
+		visible[type] = camera.isVisibleAABB(worldAabb);
+	}
 }

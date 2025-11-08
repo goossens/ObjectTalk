@@ -13,6 +13,8 @@
 
 #include "glm/gtc/type_ptr.hpp"
 
+#include "OtAssert.h"
+
 #include "OtSceneRendererContext.h"
 
 
@@ -215,10 +217,9 @@ void OtSceneRendererContext::initialize(OtScene* s, OtCamera& c) {
 		grd.analyzeCamera(getMainCameraID(), camera);
 
 		if (castShadow) {
-			grd.analyzeCamera(getShadowCameraID(0), csm.getCamera(0));
-			grd.analyzeCamera(getShadowCameraID(1), csm.getCamera(1));
-			grd.analyzeCamera(getShadowCameraID(2), csm.getCamera(2));
-			grd.analyzeCamera(getShadowCameraID(3), csm.getCamera(3));
+			for (size_t i = 0; i < OtCascadedShadowMap::maxCascades; i++) {
+				grd.analyzeCamera(getShadowCameraID(i), csm.getCamera(i));
+			}
 		}
 
 		if (waterEntity != OtEntityNull) {
@@ -251,10 +252,9 @@ void OtSceneRendererContext::initialize(OtScene* s, OtCamera& c) {
 		mrd.analyzeCamera(getMainCameraID(), camera);
 
 		if (castShadow) {
-			mrd.analyzeCamera(getShadowCameraID(0), csm.getCamera(0));
-			mrd.analyzeCamera(getShadowCameraID(1), csm.getCamera(1));
-			mrd.analyzeCamera(getShadowCameraID(2), csm.getCamera(2));
-			mrd.analyzeCamera(getShadowCameraID(3), csm.getCamera(3));
+			for (size_t i = 0; i < OtCascadedShadowMap::maxCascades; i++) {
+				mrd.analyzeCamera(getShadowCameraID(i), csm.getCamera(i));
+			}
 		}
 
 		currentEntities.emplace(entity);
@@ -305,6 +305,8 @@ void OtSceneRendererContext::submitLightingUniforms() {
 
 void OtSceneRendererContext::submitShadowUniforms() {
 	// build and submit the shadow uniforms
+	OtAssert(OtCascadedShadowMap::maxCascades == 4);
+
 	shadowUniforms.setValue(0, float(castShadow), 1.0f / csm.getSize(), 0.0f, 0.0f);
 	shadowUniforms.setValue(1, csm.getDistance(0), csm.getDistance(1), csm.getDistance(2), csm.getDistance(3)),
 	shadowUniforms.submit();

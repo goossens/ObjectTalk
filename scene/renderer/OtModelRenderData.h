@@ -47,5 +47,9 @@ public:
 	OtModel* model;
 	glm::mat4 globalTransform;
 	OtAABB worldAabb;
-	bool visible[OtCascadedShadowMap::maxCascades + 3];
+	bool castShadow;
+	bool visible[3 + OtCascadedShadowMap::maxCascades];
+
+	// support functions
+	inline bool isShadowCamera(size_t id) { return id >= 3; }
 };

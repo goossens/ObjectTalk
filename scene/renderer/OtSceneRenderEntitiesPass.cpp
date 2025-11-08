@@ -33,9 +33,8 @@ void OtSceneRenderEntitiesPass::renderEntities(OtSceneRendererContext& ctx, OtPa
 		if (ctx.hasOpaqueGeometries) {
 			for (auto entity : ctx.opaqueGeometryEntities) {
 				auto& grd = ctx.geometryRenderData[entity];
-				auto& camera = grd.cameras[ctx.cameraID];
 
-				if (camera.visible) {
+				if (grd.cameras[ctx.cameraID].visible) {
 					renderOpaqueGeometry(ctx, grd);
 				}
 			}
@@ -75,9 +74,8 @@ void OtSceneRenderEntitiesPass::renderEntities(OtSceneRendererContext& ctx, OtPa
 	if (isRenderingTransparent() && ctx.hasTransparentGeometries) {
 		for (auto entity : ctx.transparentGeometryEntities) {
 			auto& grd = ctx.geometryRenderData[entity];
-			auto& camera = grd.cameras[ctx.cameraID];
 
-			if (camera.visible) {
+			if (grd.cameras[ctx.cameraID].visible) {
 				renderTransparentGeometry(ctx, grd);
 			}
 		}
@@ -96,9 +94,8 @@ void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtPass
 	// render geometry (if required)
 	if (ctx.scene->hasComponent<OtGeometryComponent>(entity)) {
 		auto& grd = ctx.geometryRenderData[entity];
-		auto& camera = grd.cameras[ctx.cameraID];
 
-		if (camera.visible) {
+		if (grd.cameras[ctx.cameraID].visible) {
 			auto& geometry = ctx.scene->getComponent<OtGeometryComponent>(entity);
 
 			if (geometry.transparent) {
@@ -152,7 +149,7 @@ void OtSceneRenderEntitiesPass::renderOpaqueGeometryHelper(
 	OtShaderProgram& singleProgram,
 	OtShaderProgram& instanceProgram) {
 
-	// submit geometry
+	// submit geometry and set rendering state
 	if (grd.component->wireframe) {
 		grd.component->asset->getGeometry().submitLines();
 		ctx.pass->setState(wireframeState);
@@ -193,9 +190,6 @@ void OtSceneRenderEntitiesPass::renderOpaqueModelHelper(
 	OtShaderProgram& animatedProgram,
 	OtShaderProgram& staticProgram) {
 
-	// run the program
-	ctx.pass->setState(state);
-
 	// process all render commands
 	auto globalTransform = ctx.scene->getGlobalTransform(mrd.entity);
 	auto renderList = mrd.model->getRenderList(globalTransform);
@@ -213,6 +207,9 @@ void OtSceneRenderEntitiesPass::renderOpaqueModelHelper(
 				ctx.submitMaterialUniforms(*cmd.material);
 			}
 		}
+
+		// set the rendering state
+		ctx.pass->setState(state);
 
 		// handle animations
 		if (cmd.animation) {

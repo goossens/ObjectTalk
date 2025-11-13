@@ -15,3 +15,7 @@ Wrong pointer/reference alignment
 Open curly brackets at start of line
 ------------------------------------
 ^[ \\t]+\\{
+
+Fixed files with missing EOL at the end
+---------------------------------------
+[^\n]$(?!\n)

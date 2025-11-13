@@ -30,7 +30,6 @@
 #include "OtBackgroundPass.h"
 #include "OtDeferredPass.h"
 #include "OtForwardPass.h"
-#include "OtOcclusionPass.h"
 #include "OtParticlesPass.h"
 #include "OtShadowPass.h"
 #include "OtSkyPass.h"

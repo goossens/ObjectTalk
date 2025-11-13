@@ -34,7 +34,6 @@ ImTextureID OtSceneRenderer::render(OtScene* scene, OtCamera& camera) {
 	// render background
 	compositeBuffer.update(camera.width, camera.height);
 	backgroundPass.render(ctx);
-
 	backgroundPassTime = stopwatch.lap();
 
 	// render opaque entities
@@ -45,19 +44,19 @@ ImTextureID OtSceneRenderer::render(OtScene* scene, OtCamera& camera) {
 
 	opaquePassTime = stopwatch.lap();
 
-	// render sky (if required)
-	if (ctx.hasSkyEntities) {
-		skyPass.render(ctx);
-	}
-
-	skyPassTime = stopwatch.lap();
-
 	// render water (if required)
 	if (ctx.hasWaterEntities) {
 		waterPass.render(ctx);
 	}
 
 	waterPassTime = stopwatch.lap();
+
+	// render sky (if required)
+	if (ctx.hasSkyEntities) {
+		skyPass.render(ctx);
+	}
+
+	skyPassTime = stopwatch.lap();
 
 	// render particles
 	if (ctx.hasParticlesEntities) {

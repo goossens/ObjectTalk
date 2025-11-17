@@ -80,11 +80,11 @@ public:
 	inline void setFrameBuffer(bgfx::FrameBufferHandle framebuffer) { bgfx::setViewFrameBuffer(view, framebuffer); }
 	inline void setFrameBuffer(OtFrameBuffer& framebuffer) { framebuffer.submit(view); }
 	inline void setFrameBuffer(OtGbuffer& gbuffer) { gbuffer.submit(view); }
-	inline void setTransform(const glm::mat4& viewTransform, const glm::mat4& projectionTransform) { bgfx::setViewTransform(view, glm::value_ptr(viewTransform), glm::value_ptr(projectionTransform)); }
+	inline void setViewTransform(const glm::mat4& viewTransform, const glm::mat4& projectionTransform) { bgfx::setViewTransform(view, glm::value_ptr(viewTransform), glm::value_ptr(projectionTransform)); }
 	inline void setViewMode(int mode) { bgfx::setViewMode(view, bgfx::ViewMode::Enum(mode)); }
 	inline void setState(uint64_t state) { bgfx::setState(state); }
-	inline void setTransform(const glm::mat4& transform) { bgfx::setTransform(glm::value_ptr(transform)); }
-	inline void setTransforms(const glm::mat4* transforms, size_t count) { bgfx::setTransform(transforms, static_cast<uint16_t>(count)); }
+	inline void setModelTransform(const glm::mat4& transform) { bgfx::setTransform(glm::value_ptr(transform)); }
+	inline void setModelTransforms(const glm::mat4* transforms, size_t count) { bgfx::setTransform(transforms, static_cast<uint16_t>(count)); }
 	inline void setVertexCount(size_t count) { bgfx::setVertexCount(static_cast<uint32_t>(count)); }
 	inline void setInstanceCount(size_t count) { bgfx::setInstanceCount(static_cast<uint32_t>(count)); }
 

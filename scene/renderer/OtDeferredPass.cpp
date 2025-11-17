@@ -46,7 +46,7 @@ void OtDeferredPass::renderGeometry(OtSceneRendererContext& ctx) {
 	pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
 	pass.setFrameBuffer(gbuffer);
 	pass.setClear(true, true, glm::vec4(0.0f));
-	pass.setTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
+	pass.setViewTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
 	pass.touch();
 
 	// render all entities
@@ -98,7 +98,7 @@ void OtDeferredPass::renderPointLights(OtSceneRendererContext& ctx) {
 	OtPass pass;
 	pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
 	pass.setFrameBuffer(framebuffer);
-	pass.setTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
+	pass.setViewTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
 
 	// send out geometry
 	static constexpr float LEFT = -1.0f, RIGHT = 1.0f, BOTTOM = -1.0f, TOP = 1.0f, FRONT = 1.0f, BACK = -1.0f;

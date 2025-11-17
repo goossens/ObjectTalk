@@ -90,7 +90,7 @@ void OtDialClass::render() {
 				needlePass.setRectangle(0, 0, w, h);
 				needlePass.setFrameBuffer(framebuffer);
 				glm::mat4 projMatrix = glm::ortho(0.0f, static_cast<float>(w), static_cast<float>(h), 0.0f);
-				needlePass.setTransform(glm::mat4(1.0f), projMatrix);
+				needlePass.setViewTransform(glm::mat4(1.0f), projMatrix);
 
 				// render needle
 				auto& needleTexture = needle->getTexture();
@@ -123,7 +123,7 @@ void OtDialClass::render() {
 				model = glm::scale(model, glm::vec3(w, h, 1.0f));
 
 				// run the program
-				needlePass.setTransform(model);
+				needlePass.setModelTransform(model);
 
 				needlePass.setState(
 					OtPass::stateWriteRgb |

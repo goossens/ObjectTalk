@@ -55,7 +55,7 @@ void OtMeshPreview::render(int width, int height, OtMesh& mesh, Context& context
 	pass.setClear(true, true);
 	pass.setRectangle(0, 0, width, height);
 	pass.setFrameBuffer(framebuffer);
-	pass.setTransform(camera.viewMatrix, camera.projectionMatrix);
+	pass.setViewTransform(camera.viewMatrix, camera.projectionMatrix);
 	pass.touch();
 
 	// set the uniforms
@@ -89,7 +89,7 @@ void OtMeshPreview::render(int width, int height, OtMesh& mesh, Context& context
 			OtPass::stateCullCw);
 	}
 
-	pass.setTransform(model);
+	pass.setModelTransform(model);
 	pass.runShaderProgram(program);
 
 	// show the mesh

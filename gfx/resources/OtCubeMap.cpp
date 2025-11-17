@@ -428,7 +428,7 @@ void OtCubeMap::createCubemapFromHDR() {
 		OtPass pass;
 		pass.setRectangle(0, 0, size, size);
 		pass.setFrameBuffer(framebuffers[side].getHandle());
-		pass.setTransform(viewMatrices[side], projectionMatrix);
+		pass.setViewTransform(viewMatrices[side], projectionMatrix);
 
 		// setup sampler
 		remapSampler.submit(0, tmpTexture.getHandle());

@@ -39,7 +39,7 @@ void OtParticlesPass::render(OtSceneRendererContext& ctx) {
 	OtPass pass;
 	pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
 	pass.setFrameBuffer(framebuffer);
-	pass.setTransform(view, ctx.camera.projectionMatrix);
+	pass.setViewTransform(view, ctx.camera.projectionMatrix);
 
 	for (auto&& [entity, component] : ctx.scene->view<OtParticlesComponent>().each()) {
 		// update the particle system
@@ -73,7 +73,7 @@ void OtParticlesPass::render(OtSceneRendererContext& ctx) {
 		ctx.submitTextureSampler(particlesSampler, 0, settings.atlas);
 
 		// set the model matrix
-		pass.setTransform(ctx.scene->getGlobalTransform(entity));
+		pass.setModelTransform(ctx.scene->getGlobalTransform(entity));
 
 		// run the program
 		pass.setState(

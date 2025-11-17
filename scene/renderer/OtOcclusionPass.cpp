@@ -22,7 +22,7 @@ void OtOcclusionPass::render(OtSceneRendererContext& ctx) {
 	// setup the rendering pass
 	OtPass pass;
 	pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
-	pass.setTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
+	pass.setViewTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
 	pass.setFrameBuffer(framebuffer);
 
 	// render all entities

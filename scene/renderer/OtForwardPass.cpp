@@ -21,7 +21,7 @@ void OtForwardPass::render(OtSceneRendererContext& ctx) {
 	OtPass pass;
 	pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
 	pass.setFrameBuffer(framebuffer);
-	pass.setTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
+	pass.setViewTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
 	pass.touch();
 
 	// render all entities

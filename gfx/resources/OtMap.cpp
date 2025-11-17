@@ -705,7 +705,7 @@ void OtMap::renderImage(OtFrameBuffer& framebuffer, int size, std::function<uint
 	pass.setRectangle(0, 0, size, size);
 	pass.setFrameBuffer(framebuffer);
 	glm::mat4 projMatrix = glm::ortho(0.0f, static_cast<float>(size), static_cast<float>(size), 0.0f);
-	pass.setTransform(glm::mat4(1.0f), projMatrix);
+	pass.setViewTransform(glm::mat4(1.0f), projMatrix);
 
 	// submit
 	tvb.submit(vertices.data(), vertices.size(), OtVertexPosCol2D::getLayout());

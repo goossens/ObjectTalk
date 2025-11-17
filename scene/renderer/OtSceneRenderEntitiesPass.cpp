@@ -173,7 +173,7 @@ void OtSceneRenderEntitiesPass::renderOpaqueGeometryHelper(
 		ctx.submitAlbedoUniforms(*grd.material);
 	}
 
-	ctx.pass->setTransform(grd.globalTransform);
+	ctx.pass->setModelTransform(grd.globalTransform);
 	ctx.pass->runShaderProgram(grd.instances ? instanceProgram : singleProgram);
 }
 
@@ -213,11 +213,11 @@ void OtSceneRenderEntitiesPass::renderOpaqueModelHelper(
 
 		// handle animations
 		if (cmd.animation) {
-			ctx.pass->setTransforms(cmd.transforms.data(), cmd.transforms.size());
+			ctx.pass->setModelTransforms(cmd.transforms.data(), cmd.transforms.size());
 			ctx.pass->runShaderProgram(animatedProgram);
 
 		} else {
-			ctx.pass->setTransform(cmd.transforms[0]);
+			ctx.pass->setModelTransform(cmd.transforms[0]);
 			ctx.pass->runShaderProgram(staticProgram);
 		}
 	}
@@ -253,7 +253,7 @@ void OtSceneRenderEntitiesPass::renderTerrainHelper(
 		}
 
 		// run the program
-		ctx.pass->setTransform(mesh.transform);
+		ctx.pass->setModelTransform(mesh.transform);
 		ctx.pass->runShaderProgram(program, OtPass::discardNone);
 	}
 
@@ -279,7 +279,7 @@ void OtSceneRenderEntitiesPass::renderGrassHelper(
 
 	// run the program
 	ctx.pass->setState(state);
-	ctx.pass->setTransform(ctx.scene->getGlobalTransform(entity));
+	ctx.pass->setModelTransform(ctx.scene->getGlobalTransform(entity));
 	ctx.pass->setVertexCount((grass.grass->bladeSegments + 1) * 4);
 	ctx.pass->setInstanceCount(grass.grass->blades);
 	ctx.pass->runShaderProgram(program);
@@ -321,6 +321,6 @@ void OtSceneRenderEntitiesPass::renderTransparentGeometryHelper(
 		ctx.submitAlbedoUniforms(*grd.material);
 	}
 
-	ctx.pass->setTransform(grd.globalTransform);
+	ctx.pass->setModelTransform(grd.globalTransform);
 	ctx.pass->runShaderProgram(grd.instances ? instanceProgram : singleProgram);
 }

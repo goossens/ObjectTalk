@@ -318,7 +318,7 @@ void OtSceneRendererDebug::renderCubeMapAsCross(OtCubeMap& cubemap, CubeMapDebug
 	// setup projection
 	glm::mat4 view = glm::scale(glm::mat4(1.0f), glm::vec3(width / 2.0f, height / 1.5f, 1.0f));
 	glm::mat4 projection = glm::ortho(0.0f, float(width), float(height), 0.0f);
-	pass.setTransform(view, projection);
+	pass.setViewTransform(view, projection);
 
 	// submit geometry for cross
 	OtTransientVertexBuffer tvb;

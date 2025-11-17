@@ -308,7 +308,7 @@ void OtOscilloscope::render(OtFrameBuffer& framebuffer) {
 			break;
 	}
 
-	pass.setTransform(glm::mat4(1.0f), matrix);
+	pass.setViewTransform(glm::mat4(1.0f), matrix);
 
 	// advance to next draw step
 	currentDrawStep = (currentDrawStep + 1) % decaySteps;

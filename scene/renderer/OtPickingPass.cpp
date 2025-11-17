@@ -45,7 +45,7 @@ void OtPickingPass::render(OtSceneRendererContext& ctx, glm::vec2 ndc, std::func
 	pass.setRectangle(0, 0, bufferSize, bufferSize);
 	pass.setFrameBuffer(idBuffer);
 	pass.setClear(true, true);
-	pass.setTransform(pickingCamera.viewMatrix, pickingCamera.projectionMatrix);
+	pass.setViewTransform(pickingCamera.viewMatrix, pickingCamera.projectionMatrix);
 	pass.touch();
 
 	// update context

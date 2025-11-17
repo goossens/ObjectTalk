@@ -30,7 +30,7 @@ void OtShadowPass::render(OtSceneRendererContext& ctx) {
 		pass.setRectangle(0, 0, ctx.csm.getSize(), ctx.csm.getSize());
 		pass.setFrameBuffer(ctx.csm.getFrameBuffer(i));
 		pass.setClear(false, true);
-		pass.setTransform(ctx.csm.getCamera(i).viewMatrix, ctx.csm.getCamera(i).projectionMatrix);
+		pass.setViewTransform(ctx.csm.getCamera(i).viewMatrix, ctx.csm.getCamera(i).projectionMatrix);
 		pass.touch();
 
 		// render all entities

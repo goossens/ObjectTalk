@@ -45,7 +45,7 @@ void OtHighlightPass::renderSelectedPass(OtSceneRendererContext& ctx, OtEntity e
 	pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
 	pass.setFrameBuffer(selectedBuffer);
 	pass.setClear(true);
-	pass.setTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
+	pass.setViewTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
 	pass.touch();
 
 	// highlight entity (and its children)

@@ -32,8 +32,8 @@ void OtPickingPass::render(OtSceneRendererContext& ctx, glm::vec2 ndc, std::func
 
 	// create a "picking" camera focused on the selected point
 	glm::mat4 inverse = glm::inverse(ctx.camera.viewProjectionMatrix);
-	glm::vec3 eye = OtGlmMul(inverse, glm::vec3(ndc, OtGpuHasHomogeneousDepth() ? -1.0 : 0.0));
-	glm::vec3 at = OtGlmMul(inverse, glm::vec3(ndc, 1.0));
+	glm::vec3 eye = OtGlmMul(inverse, glm::vec3(ndc, OtGpuHasHomogeneousDepth() ? -1.0f : 0.0f));
+	glm::vec3 at = OtGlmMul(inverse, glm::vec3(ndc, 1.0f));
 
 	float nearPlane, farPlane;
 	ctx.camera.getNearFar(nearPlane, farPlane);

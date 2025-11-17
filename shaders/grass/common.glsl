@@ -58,8 +58,8 @@ vec3 bezierGrad(vec3 P0, vec3 P1, vec3 P2, vec3 P3, float t) {
 		3.0 * t * t * (P3 - P2);
 }
 
-float hash(vec3 p) {
-	return hash13(p) * 2.0 - 1.0;
+vec3 hash(vec3 p) {
+	return hash33(p) * 2.0 - 1.0;
 }
 
 float noise(vec3 p) {

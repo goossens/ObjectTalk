@@ -10,7 +10,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Create Example Archieves
+    - name: Create Example Archives
       run: |
         tar cvfz examples.tgz examples
         zip -r examples.zip examples

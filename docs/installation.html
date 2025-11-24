@@ -182,7 +182,7 @@
             <h1 class="pb-2">Build and Install on MacOS</h1>
             <p>
               ObjectTalk is supported on Sequoia (MacOS 15) and Sonoma (MacOS
-              14). There are 4 simple requirements to get your machine ready for
+              14). There are 6 simple requirements to get your machine ready for
               ObjectTalk development:
             </p>
             <ul>
@@ -203,6 +203,10 @@
                 Install Ninja using <strong>brew install ninja</strong> from the
                 command line
               </li>
+              <li>
+                Install Glslang using <strong>brew install glslang</strong> from
+                the command line
+              </li>
             </ul>
             <p>To build ObjectTalk, do the following from the command line:</p>
             <ul>
@@ -222,13 +226,15 @@
                 <strong>make test</strong>
               </li>
               <li>
-                The created binary will be <strong>./debug/bin/ot</strong> or
-                <strong>./release/bin/ot</strong> depending on the build type
+                The created binary will be
+                <strong>${HOME}/build/ObjectTalk/Debug/ot</strong> or
+                <strong>${HOME}/build/ObjectTalk/Release/ot</strong> depending
+                on the build type
               </li>
               <li>
                 You can also build an Xcode project with
                 <strong>make xcode</strong>: the project will be in the
-                <strong>build/xcode</strong> directory
+                <strong>${HOME}/build/ObjectTalk/xcode</strong> directory
               </li>
             </ul>
           </div>
@@ -237,13 +243,13 @@
             <p>
               ObjectTalk is supported on Linux. Given the large number of
               flavors, the core team only tests the build process on Ubuntu
-              22.04 Desktop. In practice, any distribution should work as it
+              24.04 Desktop. In practice, any distribution should work as it
               just depends on the availability of X-Windows, Wayland and Vulkan.
               Other flavors of Linux will likely work as well but we'll let the
               community provide the instructions.
             </p>
             <p>
-              To build the full version of ObjectTalk on Ubuntu 22.04 Desktop
+              To build the full version of ObjectTalk on Ubuntu 24.04 Desktop
               with GUI and IDE, run the following commands:
             </p>
             <ul>
@@ -251,8 +257,8 @@
                 Install additional software using
                 <strong
                   >sudo apt-get install build-essential cmake ninja-build git
-                  xorg-dev libgl1-mesa-dev x11proto-core-dev libx11-dev
-                  libwayland-dev libxkbcommon-x11-dev</strong
+                  glslang-tools xorg-dev libgl1-mesa-dev x11proto-core-dev
+                  libx11-dev libwayland-dev libxkbcommon-x11-dev</strong
                 >
               </li>
               <li><strong>cd [to your favorite build directory]</strong></li>
@@ -280,17 +286,17 @@
               </li>
               <li>
                 The created binary will be
-                <strong>./build/Linux/Debug/ot</strong> or
-                <strong>./Linux/Release/ot</strong> depending on the build type
+                <strong>${HOME}/build/ObjectTalk/Debug/ot</strong> or
+                <strong>${HOME}/build/ObjectTalk/Release/ot</strong> depending
+                on the build type
               </li>
             </ul>
           </div>
           <div id="windows">
             <h1 class="pb-2">Build and Install on Windows</h1>
             <p>
-              ObjectTalk is supported on Windows 10, 11, Server 2019 and Server
-              2022. There are 3 simple requirements to get your machine ready
-              for ObjectTalk development:
+              ObjectTalk is supported on 11 and Server 2022. There are 3 simple
+              requirements to get your machine ready for ObjectTalk development:
             </p>
             <ul>
               <li>
@@ -332,23 +338,26 @@
               <li><strong>cd ObjectTalk</strong></li>
               <li>
                 <strong
-                  >cmake -B build/vs -G &quot;Visual Studio 17 2022&quot; -A
-                  x64</strong
+                  >cmake -B ${HOME}/build/ObjectTalk/vs -G &quot;Visual Studio
+                  17 2022&quot; -A x64</strong
                 >
               </li>
               <li>
                 Build ObjectTalk by Hand:
                 <ul>
-                  <li><strong>cmake --build build/vs</strong></li>
+                  <li>
+                    <strong>cmake --build ${HOME}/build/ObjectTalk/vs</strong>
+                  </li>
                   <li>
                     Run the tests:
                     <strong
-                      >ctest --test-dir build/vs --build-config Debug
-                      --output-on-failure</strong
+                      >ctest --test-dir ${HOME}/build/ObjectTalk/vs
+                      --build-config Debug --output-on-failure</strong
                     >
                   </li>
                   <li>
-                    Run the executable at <strong>build/vs/Debug/ot.exe</strong>
+                    Run the executable at
+                    <strong>${HOME}/build/ObjectTalk/vs/Debug/ot.exe</strong>
                   </li>
                 </ul>
               </li>
@@ -357,7 +366,8 @@
                 <ul>
                   <li>
                     Open the <strong>ObjectTalk.sln</strong> solution in the
-                    <strong>build/vs</strong> folder and go crazy.
+                    <strong>${HOME}/build/ObjectTalk/vs</strong> folder and go
+                    crazy.
                   </li>
                 </ul>
               </li>
@@ -377,27 +387,31 @@
                 <ul>
                   <li>
                     <strong>Command line (MacOS Debug)</strong>:
-                    ./build/Darwin/Debug/ot
+                    ${HOME}/build/ObjectTalk/Debug/ot
                   </li>
                   <li>
                     <strong>Command line (MacOS Release)</strong>:
-                    ./build/Darwin/Release/ot
+                    ${HOME}/build/ObjectTalk/Release/ot
                   </li>
-                  <li><strong>Xcode</strong>: ./build/xcode/Release/ot</li>
+                  <li>
+                    <strong>Xcode</strong>:
+                    ${HOME}/build/ObjectTalk/xcode/Debug/ot
+                  </li>
                   <li>
                     <strong>Command line (Linux Debug)</strong>:
-                    ./build/Linux/Debug/ot
+                    ${HOME}/build/ObjectTalk/Debug/ot
                   </li>
                   <li>
                     <strong>Command line (Linux Release)</strong>:
-                    ./build/Linux/Release/ot
+                    ${HOME}/build/ObjectTalk/Release/ot
                   </li>
                   <li>
-                    <strong>Windows (Debug)</strong>: ./build/vs/Debug/ot.exe
+                    <strong>Windows (Debug)</strong>:
+                    ${HOME}/build/ObjectTalk/vs/Debug/ot.exe
                   </li>
                   <li>
                     <strong>Windows (Release)</strong>:
-                    ./build/vs/Release/ot.exe
+                    ${HOME}/build/ObjectTalk/vs/Release/ot.exe
                   </li>
                 </ul>
               </li>

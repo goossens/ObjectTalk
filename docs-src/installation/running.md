@@ -4,13 +4,13 @@ depending on the platform or the method used.
 This executable can be moved anywhere.
 
 * Executable locations:
-	* **Command line (MacOS Debug)**: ./build/Darwin/Debug/ot
-	* **Command line (MacOS Release)**: ./build/Darwin/Release/ot
-	* **Xcode**: ./build/xcode/Release/ot
-	* **Command line (Linux Debug)**: ./build/Linux/Debug/ot
-	* **Command line (Linux Release)**: ./build/Linux/Release/ot
-	* **Windows (Debug)**: ./build/vs/Debug/ot.exe
-	* **Windows (Release)**: ./build/vs/Release/ot.exe
+	* **Command line (MacOS Debug)**: ${HOME}/build/ObjectTalk/Debug/ot
+	* **Command line (MacOS Release)**: ${HOME}/build/ObjectTalk/Release/ot
+	* **Xcode**: ${HOME}/build/ObjectTalk/xcode/Debug/ot
+	* **Command line (Linux Debug)**: ${HOME}/build/ObjectTalk/Debug/ot
+	* **Command line (Linux Release)**: ${HOME}/build/ObjectTalk/Release/ot
+	* **Windows (Debug)**: ${HOME}/build/ObjectTalk/vs/Debug/ot.exe
+	* **Windows (Release)**: ${HOME}/build/ObjectTalk/vs/Release/ot.exe
 
 In principle, the ObjectTalk executable (**ot**) is a
 command line tool that takes parameters. Here is the

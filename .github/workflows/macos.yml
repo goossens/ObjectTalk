@@ -10,11 +10,10 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Setup Ninja
-      uses: ashutoshvarma/setup-ninja@master
-
     - name: Configure
-      run: 	cmake -B build -G "Ninja Multi-Config"
+      run: 	|
+        brew install glslang
+        cmake -B build -G "Ninja Multi-Config"
 
     - name: Build
       run: cmake --build build --config Release

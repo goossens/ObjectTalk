@@ -181,11 +181,11 @@ void OtDeferredPass::renderPointLights(OtSceneRendererContext& ctx) {
 	for (auto&& [entity, component] : ctx.scene->view<OtPointLightComponent>().each()) {
 		glm::mat4 transform = ctx.scene->getGlobalTransform(entity);
 
-		glm::vec3 translate;
+		glm::vec3 translate{0.0f};
 		glm::quat rotate;
-		glm::vec3 scale;
-		glm::vec3 skew;
-		glm::vec4 perspective;
+		glm::vec3 scale{0.0f};
+		glm::vec3 skew{0.0f};
+		glm::vec4 perspective{0.0f};
 		glm::decompose(transform, scale, rotate, translate, skew, perspective);
 
 		lights.emplace_back(scale * component.offset + translate, component.color, component.radius);

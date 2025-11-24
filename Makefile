@@ -4,62 +4,39 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-SRC = $(wildcard *.cpp */*.cpp */*/*.cpp */*/*.glsl)
-INC = $(wildcard *.h */*.h */*/*.h)
-TST = $(wildcard tests/*/*.ot)
-
-ifeq ($(OS),Windows_NT)
-    SYSTEM = Windows
-else
-    SYSTEM = $(shell sh -c 'uname 2>/dev/null || echo Unknown')
-endif
-
 .PHONY: debug
 debug: ninja
-	cmake --build build/$(SYSTEM) --config Debug
+	cmake --build $(HOME)/build/ObjectTalk --config Debug
 
 .PHONY: release
 release: ninja
-	cmake --build build/$(SYSTEM) --config Release
+	cmake --build $(HOME)/build/ObjectTalk --config Release
 
 .PHONY: ninja
 ninja:
-	cmake -B build/$(SYSTEM) -G "Ninja Multi-Config"
-
-.PHONY: shaders
-shaders:
-	./shaders/update
-
-.PHONY: shaders-force
-shaders-force:
-	./shaders/update --force
+	cmake -B $(HOME)/build/ObjectTalk -G "Ninja Multi-Config"
 
 .PHONY: xcode
 xcode:
-	cmake -B build/xcode -G Xcode
+	cmake -B $(HOME)/build/ObjectTalk/xcode -G Xcode
 
 .PHONY: vs
 vs:
-	cmake -B build/vs -G "Visual Studio 17 2022" -A x64
-	cmake --build build/vs
+	cmake -B $(HOME)/build/ObjectTalk/vs -G "Visual Studio 17 2022" -A x64
+	cmake --build $(HOME)/build/ObjectTalk
 
 .PHONY: test
 test: debug
-	ctest --test-dir build/$(SYSTEM) --build-config Debug --output-on-failure
+	ctest --test-dir $(HOME)/build/ObjectTalk --build-config Debug --output-on-failure
 
 .PHONY: rtest
 rtest: release
-	ctest --test-dir build/$(SYSTEM) --build-config Release --output-on-failure
+	ctest --test-dir $(HOME)/build/ObjectTalk --build-config Release --output-on-failure
 
 .PHONY: docs
 docs:
 	pugger --recursive --theme manual --assets --out docs docs-src
 
-.PHONY: cleanup
-cleanup:
-	perl -i -pe 's/\s+\n/\n/' $(SRC) $(INC) $(TST)
-	ls $(SRC) $(INC) $(TST) | xargs -o -n 1 vim -c 'set ts=4|set noet|%retab!|wq'
-
 .PHONY: clean
 clean:
-	rm -rf build
+	rm -rf $(HOME)/build/ObjectTalk

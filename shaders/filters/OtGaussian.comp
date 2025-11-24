@@ -1,0 +1,42 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+#version 450
+#extension GL_GOOGLE_include_directive : require
+
+#include "utilities.glsl"
+
+layout(local_size_x=16, local_size_y=16, local_size_z=1) in;
+
+layout(set=0, binding=0) uniform sampler2D inTexture;
+layout(set=1, binding=0) uniform writeonly image2D outTexture;
+
+layout(std140, set=2, binding=0) uniform UBO {
+	vec2 texelSize;
+    vec2 direction;
+};
+
+void main() {
+	ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = imageSize(outTexture);
+
+	if (coord.x >= size.x || coord.y >= size.y) {
+		return;
+	}
+
+	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
+
+	vec2 off1 = vec2(1.3846153846f) * direction * texelSize;
+	vec2 off2 = vec2(3.2307692308f) * direction * texelSize;
+
+	vec4 color = preMultiplyAlpha(texture(inTexture, uv)) * 0.2270270270f;
+	color += preMultiplyAlpha(texture(inTexture, uv + off1)) * 0.3162162162f;
+	color += preMultiplyAlpha(texture(inTexture, uv - off1)) * 0.3162162162f;
+	color += preMultiplyAlpha(texture(inTexture, uv + off2)) * 0.0702702703f;
+	color += preMultiplyAlpha(texture(inTexture, uv - off2)) * 0.0702702703f;
+
+	imageStore(outTexture, coord, unPreMultiplyAlpha(color));
+}

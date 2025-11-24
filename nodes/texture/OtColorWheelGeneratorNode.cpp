@@ -22,7 +22,7 @@
 class OtColorWheelGeneratorNode : public OtTextureGeneratorNode {
 public:
 	// run the texture generator
-	void onGenerate(OtFrameBuffer& output) override {
+	void onGenerate(OtTexture& output) override {
 		colorwheel.render(output);
 	}
 
@@ -30,7 +30,7 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::texture;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
 	OtColorWheel colorwheel;
 };
 

@@ -37,34 +37,19 @@ public:
 	}
 
 	// run filter
-	inline void onFilter(OtTexture& input, OtFrameBuffer& output) override {
-		temp1.initialize(output.getColorTextureType());
-		temp1.update(output.getWidth(), output.getHeight());
-
-		temp2.initialize(output.getColorTextureType());
-		temp2.update(output.getWidth(), output.getHeight());
+	inline void onFilter(OtTexture& input, OtTexture& output) override {
+		temp1.update(input.getWidth(), input.getHeight(), input.getFormat(), input.getUsage());
+		temp2.update(input.getWidth(), input.getHeight(), input.getFormat(), input.getUsage());
+		gaussian.setRadius(radius);
 
 		for (auto i = 0; i < iterations; i++) {
 			// run horizontal blur
 			gaussian.setDirection(glm::vec2(1.0f, 0.0f));
-
-			if (i == 0) {
-				gaussian.render(input, temp1);
-
-			} else {
-				gaussian.render(temp2, temp1);
-			}
+			gaussian.render(i == 0 ? input : temp2, temp1);
 
 			// run vertical blur
-			gaussian.setRadius(radius);
 			gaussian.setDirection(glm::vec2(0.0f, 1.0f));
-
-			if (i == iterations - 1) {
-				gaussian.render(temp1, output);
-
-			} else {
-				gaussian.render(temp1, temp2);
-			}
+			gaussian.render(temp1, (i == iterations - 1) ? output : temp2);
 		}
 	}
 
@@ -72,12 +57,13 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::texture;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
+private:
 	// properties
 	float radius = 2.0f;
 	int iterations = 2;
 	OtGaussian gaussian;
-	OtFrameBuffer temp1{};
-	OtFrameBuffer temp2;
+	OtTexture temp1;
+	OtTexture temp2;
 };
 
 static OtNodesFactoryRegister<OtGaussianBlurNode> registration;

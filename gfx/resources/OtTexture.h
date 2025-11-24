@@ -17,10 +17,11 @@
 #include <string>
 
 #include "imgui.h"
+#include "SDL3/SDL.h"
 
 #include "OtLibuv.h"
 
-#include "OtBgfxHandle.h"
+#include "OtGpu.h"
 #include "OtImage.h"
 
 
@@ -30,61 +31,93 @@
 
 class OtTexture {
 public:
-	// invalid handle
-	static constexpr int invalidIndex = bgfx::kInvalidHandle;
+	// texture formats
+	enum class Format {
+		none = SDL_GPU_TEXTUREFORMAT_INVALID,
+		r8 = SDL_GPU_TEXTUREFORMAT_R8_UNORM,
+		r32 = SDL_GPU_TEXTUREFORMAT_R32_FLOAT,
+		rg16 = SDL_GPU_TEXTUREFORMAT_R16G16_UNORM,
+		rgba8 = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM,
+		rgba16 = SDL_GPU_TEXTUREFORMAT_R16G16B16A16_FLOAT,
+		rgba32 = SDL_GPU_TEXTUREFORMAT_R32G32B32A32_FLOAT,
+		d32 = SDL_GPU_TEXTUREFORMAT_D32_FLOAT,
+		d32s8 = SDL_GPU_TEXTUREFORMAT_D32_FLOAT_S8_UINT
+	};
 
-	// texture types
-	static constexpr int noTexture = 0;
-	static constexpr int r8Texture = bgfx::TextureFormat::R8;
-	static constexpr int rFloat32Texture = bgfx::TextureFormat::R32F;
-	static constexpr int rgFloat16Texture = bgfx::TextureFormat::RG16F;
-	static constexpr int rgba8Texture = bgfx::TextureFormat::RGBA8;
-	static constexpr int rgbaFloat16Texture = bgfx::TextureFormat::RGBA16F;
-	static constexpr int rgbaFloat32Texture = bgfx::TextureFormat::RGBA32F;
-	static constexpr int dFloatTexture = bgfx::TextureFormat::D32F;
-	static constexpr int d24s8Texture = bgfx::TextureFormat::D24S8;
+	// texture usage
+	enum Usage {
+		none = 0,
+		sampler = SDL_GPU_TEXTUREUSAGE_SAMPLER,
+		colorTarget = SDL_GPU_TEXTUREUSAGE_COLOR_TARGET,
+		depthStencilTarget = SDL_GPU_TEXTUREUSAGE_DEPTH_STENCIL_TARGET,
+		computeStorageRead = SDL_GPU_TEXTUREUSAGE_COMPUTE_STORAGE_READ,
+		computeStorageWrite = SDL_GPU_TEXTUREUSAGE_COMPUTE_STORAGE_WRITE,
+		computeStorageReadWrite = SDL_GPU_TEXTUREUSAGE_COMPUTE_STORAGE_SIMULTANEOUS_READ_WRITE,
 
-	// texture flags
-	static constexpr uint64_t computeWrite = BGFX_TEXTURE_COMPUTE_WRITE;
-	static constexpr uint64_t blitDst = BGFX_TEXTURE_BLIT_DST;
-	static constexpr uint64_t readBack = BGFX_TEXTURE_READ_BACK;
+		readAll = sampler | computeStorageRead,
+
+		rwRenderAll = sampler | colorTarget,
+		rwComputeAll = computeStorageRead | computeStorageWrite | computeStorageReadWrite,
+		rwAll = rwRenderAll | rwComputeAll,
+		rwDefault = rwRenderAll | computeStorageWrite
+	};
 
 	// constructors
 	OtTexture() = default;
-	OtTexture(int w, int h, int f, uint64_t flags=0) { create(w, h, f, flags); }
-	OtTexture(OtBgfxHandle<bgfx::TextureHandle> t, int w, int h, int f) : texture(t), width(w), height(h), format(f) {}
+	OtTexture(int width, int height, Format format, Usage usage) { update(width, height, format, usage); }
 
-	// clear the resources
+	// clear the texture
 	void clear();
 
 	// see if texture is valid
-	inline bool isValid() { return texture.isValid(); }
+	inline bool isValid() { return texture != nullptr; }
 
-	// create an empty texture
-	void create(int width, int height, int format, uint64_t flags=0);
+	// update texture properties (returns true if update was required, false if nothing needed to be done)
+	bool update(int width, int height, Format format, Usage usage);
 
 	// load texture
 	void load(OtImage& image);
 	void load(const std::string& address, bool async=false);
-	void load(int width, int height, int format, void* pixels, bool async=false);
 	void load(void* data, size_t size, bool async=false);
+	void load(int width, int height, Format format, void* pixels, bool async=false);
 
 	// update (part of) texture
 	void update(int x, int y, int width, int height, void* pixels);
 
-	// return texture handle
-	bgfx::TextureHandle getHandle();
-
-	// return texture index
-	inline uint16_t getIndex() { return isValid() ? texture.getIndex() : bgfx::kInvalidHandle; }
-
 	// return texture ID (for Dear ImGUI use)
-	inline ImTextureID getTextureID() { return isValid() ? static_cast<ImTextureID>(texture.getIndex()) : ImTextureID_Invalid; }
+	inline ImTextureID getTextureID() {
+		return isValid()
+			? (ImTextureID)(intptr_t) texture.get()
+			: ImTextureID_Invalid;
+	}
 
-	// get texture properties
+	// access texture properties
 	inline int getWidth() { return width; }
 	inline int getHeight() { return height; }
-	inline int getFormat() { return format; }
+	inline Format getFormat() { return format; }
+	inline Usage getUsage() { return usage; }
+
+	inline int getBpp() {
+		switch (format) {
+			case Format::none: return 0;
+			case Format::r8: return 1;
+			case Format::r32: return 4;
+			case Format::rg16: return 4;
+			case Format::rgba8: return 4;
+			case Format::rgba16: return 8;
+			case Format::rgba32: return 16;
+			case Format::d32: return 4;
+			case Format::d32s8: return 4;
+		}
+
+		return 0;
+	}
+
+	inline bool canBeSampled() { return (usage & Usage::sampler) != 0; }
+	inline bool isColorTarget() { return (usage & Usage::colorTarget) != 0; }
+	inline bool isDepthStencilTarget() { return (usage & Usage::depthStencilTarget) != 0; }
+	inline bool canComputeRead() { return (usage & Usage::computeStorageRead) != 0; }
+	inline bool canComputeWrite() { return (usage & Usage::computeStorageWrite) != 0; }
 
 	// version management
 	inline void setVersion(int v) { version = v; }
@@ -93,45 +126,65 @@ public:
 
 	// see if textures are identical
 	inline bool operator==(OtTexture& rhs) {
-		return texture == rhs.texture && width == rhs.width && height == rhs.height && version == rhs.version;
+		return texture == rhs.texture && version == rhs.version;
 	}
 
 	inline bool operator!=(OtTexture& rhs) {
 		return !operator==(rhs);
 	}
 
-	// see if format has depth component
-	static inline bool hasDepth(int format) {
-		if (format) {
-			bimg::ImageBlockInfo info = bimg::getBlockInfo(bimg::TextureFormat::Enum(format));
-			return info.depthBits > 0;
-
-		} else {
-			return false;
-		}
+	// see if texture has depth component
+	inline bool hasDepth() {
+		return (usage & depthStencilTarget) != 0;
 	}
 
-	// see if format has stencil component
-	static inline bool hasStencil(int format) {
-		if (format) {
-			bimg::ImageBlockInfo info = bimg::getBlockInfo(bimg::TextureFormat::Enum(format));
-			return info.stencilBits > 0;
-
-		} else {
-			return false;
-		}
+	// see if texture has stencil component
+	inline bool hasStencil() {
+		return (usage & depthStencilTarget) != 0 && format == Format::d32s8;
 	}
 
 private:
 	// texture
-	OtBgfxHandle<bgfx::TextureHandle> texture;
+	std::shared_ptr<SDL_GPUTexture> texture;
+
+	// memory manage SDL resource
+	void assign(SDL_GPUTexture* newTexture);
+
+	// properties
 	int width = 1;
 	int height = 1;
-	int format = noTexture;
+	Format format = Format::none;
+	Usage usage = Usage::none;
 	int version = 0;
 
 	// support for async loading
 	std::shared_ptr<OtImage> asyncImage;
 	uv_async_t* asyncHandle = nullptr;
 	void loadAsync();
+
+	// get the raw texture object
+	friend class OtBlitPass;
+	friend class OtComputePass;
+	friend class OtFrameBuffer;
+	friend class OtGbuffer;
+	friend class OtReadBackBuffer;
+	friend class OtRenderPass;
+
+	inline SDL_GPUTexture* getTexture() {
+		return isValid()
+			? texture.get()
+			: OtGpu::instance().transparentDummyTexture;
+	}
+
+	// convert format types
+	inline Format convertFromImageFormat(OtImage::Format fmt) {
+		switch (fmt) {
+			case OtImage::Format::none: return Format::none;
+			case OtImage::Format::r8: return Format::r8;
+			case OtImage::Format::rgba8: return Format::rgba8;
+			case OtImage::Format::rgba32: return Format::rgba32;
+		}
+
+		return Format::none;
+	}
 };

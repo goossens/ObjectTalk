@@ -41,7 +41,8 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::shape;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
+	// proterties
 	OtShape a;
 	OtShape b;
 	OtShape output;

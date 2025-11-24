@@ -51,7 +51,8 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::virtualize;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
+	// proterties
 	OtGeometry geometry;
 	std::string name;
 	OtAsset<OtGeometryAsset> asset;

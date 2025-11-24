@@ -12,11 +12,12 @@
 #include <chrono>
 #include <cstdint>
 
-#include "OtPass.h"
-#include "OtTransientIndexBuffer.h"
-#include "OtTransientVertexBuffer.h"
+#include "OtRenderPass.h"
 
 #include "OtWaterPass.h"
+
+#include "OtWaterVert.h"
+#include "OtWaterFrag.h"
 
 
 //
@@ -24,6 +25,12 @@
 //
 
 void OtWaterPass::render(OtSceneRendererContext& ctx) {
+	// initialize resources (if required)
+	if (!resourcesInitialized) {
+		initializeResources();
+		resourcesInitialized = true;
+	}
+
 	// update the buffers
 	width = ctx.camera.width / 2;
 	height = ctx.camera.height / 2;
@@ -94,25 +101,9 @@ void OtWaterPass::renderRefraction(OtSceneRendererContext& ctx) {
 
 void OtWaterPass::renderWater(OtSceneRendererContext& ctx, OtWaterComponent& water) {
 	// setup the rendering pass
-	OtPass pass;
-	pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
-	pass.setFrameBuffer(framebuffer);
-	pass.setViewTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
-
-	// send out geometry
-	static glm::vec3 vertices[] = {
-		glm::vec3{-1.0f, -1.0f, 0.0f},
-		glm::vec3{1.0f, -1.0f, 0.0f},
-		glm::vec3{1.0f, 1.0f, 0.0f},
-		glm::vec3{-1.0f, 1.0f, 0.0f}
-	};
-
-	OtTransientVertexBuffer vertexBuffer;
-	vertexBuffer.submit(vertices, 4, OtVertexPos::getLayout());
-
-	static uint32_t indices[] = {0, 1, 2, 2, 3, 0};
-	OtTransientIndexBuffer indexBuffer;
-	indexBuffer.submit(indices, 6);
+	OtRenderPass pass;
+	pass.start(framebuffer);
+	ctx.pass = &pass;
 
 	// determine time
 	using namespace std::chrono;
@@ -129,29 +120,96 @@ void OtWaterPass::renderWater(OtSceneRendererContext& ctx, OtWaterComponent& wat
 	glm::vec4 farPoint = ctx.camera.projectionMatrix * glm::vec4(0.0, water.level, -water.distance, 1.0);
 	float distance = farPoint.z / farPoint.w;
 
-	// submit uniforms
-	ctx.waterUniforms.setValue(0, water.level, distance, water.depthFactor, 0.0f);
-	ctx.waterUniforms.setValue(1, water.scale, static_cast<float>(water.normals.isReady() ? water.normals->getTexture().getWidth() : 1), time, 0.0f);
-	ctx.waterUniforms.setValue(2, water.metallic, water.roughness, water.ao, water.reflectivity);
-	ctx.waterUniforms.setValue(3, water.color, static_cast<float>(water.useRefractance));
-	ctx.waterUniforms.submit();
+	// set vertex uniforms
+	struct VertexUniforms {
+		glm::mat4 inverseViewProjectionMatrix;
+	} vertexUniforms {
+		glm::inverse(ctx.camera.viewProjectionMatrix)
+	};
 
-	ctx.submitLightingUniforms();
-	ctx.submitShadowUniforms();
+	ctx.pass->setVertexUniforms(0, &vertexUniforms, sizeof(vertexUniforms));
+
+	// set fragment uniforms
+	struct FragmentUniforms {
+		glm::mat4 viewMatrix;
+		glm::mat4 viewProjectionMatrix;
+		glm::vec4 waterColor;
+		glm::vec2 size;
+		float waterLevel;
+		float distance;
+		float depthFactor;
+		float scale;
+		float time;
+		float metallic;
+		float roughness;
+		float ao;
+		float reflectivity;
+		uint32_t refractanceFlag;
+	} fragmentUniforms {
+		ctx.camera.viewMatrix,
+		ctx.camera.viewProjectionMatrix,
+		glm::vec4(water.color, 1.0f),
+		glm::vec2(static_cast<float>(framebuffer.getWidth()), static_cast<float>(framebuffer.getHeight())),
+		water.level,
+		distance,
+		water.depthFactor,
+		water.scale,
+		time,
+		water.metallic,
+		water.roughness,
+		water.ao,
+		water.reflectivity,
+		static_cast<uint32_t>(water.useRefractance)
+	};
+
+	pass.setFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
+	ctx.setLightingUniforms(1, 4);
+	ctx.setShadowUniforms(2, 7);
 
 	// bind the textures
-	ctx.submitTextureSampler(ctx.waterNormalmapSampler, 0, water.normals);
-	reflectionBuffer.bindColorTexture(ctx.reflectionSampler, 1);
-	refractionBuffer.bindColorTexture(ctx.refractionSampler, 2);
-	refractionBuffer.bindDepthTexture(ctx.refractionDepthSampler, 3);
+	ctx.bindFragmentSampler(0, ctx.waterNormalmapSampler, water.normals);
+	pass.bindFragmentSampler(1, ctx.reflectionSampler, reflectionBuffer.getColorTexture());
+	pass.bindFragmentSampler(2, ctx.refractionSampler, refractionBuffer.getColorTexture());
+	pass.bindFragmentSampler(3, ctx.refractionDepthSampler, refractionBuffer.getDepthTexture());
 
-	// run the waterProgram
-	pass.setState(
-		OtPass::stateWriteRgb |
-		OtPass::stateWriteA |
-		OtPass::stateWriteZ |
-		OtPass::stateDepthTestLess |
-		OtPass::stateBlendAlpha);
+	// render water
+	pass.bindPipeline(waterPipeline);
+	pass.render(vertexBuffer, indexBuffer);
 
-	pass.runShaderProgram(waterProgram);
+	// we're done
+	pass.end();
+}
+
+
+//
+//	OtWaterPass::initializeResources
+//
+
+void OtWaterPass::initializeResources() {
+	// setup rendering pipeline
+	waterPipeline.setShaders(OtWaterVert, sizeof(OtWaterVert), OtWaterFrag, sizeof(OtWaterFrag));
+	waterPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
+	waterPipeline.setVertexDescription(OtVertexPos::getDescription());
+	waterPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	waterPipeline.setCulling(OtRenderPipeline::Culling::cw);
+
+	waterPipeline.setBlend(
+		OtRenderPipeline::BlendOperation::add,
+		OtRenderPipeline::BlendFactor::srcAlpha,
+		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
+	);
+
+	// setup vertices
+	static glm::vec3 vertices[] = {
+		glm::vec3{-1.0f, -1.0f, 0.0f},
+		glm::vec3{1.0f, -1.0f, 0.0f},
+		glm::vec3{1.0f, 1.0f, 0.0f},
+		glm::vec3{-1.0f, 1.0f, 0.0f}
+	};
+
+	vertexBuffer.set(vertices, 4, OtVertexPos::getDescription());
+
+	// setup indices
+	static uint32_t indices[] = {0, 1, 2, 2, 3, 0};
+	indexBuffer.set(indices, 6);
 }

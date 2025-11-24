@@ -52,11 +52,11 @@ public:
 	}
 
 	// (de)serialize node
-	inline void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		(*data)["operator"] = op;
 	}
 
-	inline void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		op = data->value("operator", Operator::equal);
 	}
 
@@ -76,7 +76,8 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::math;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::flexible;
 
-protected:
+private:
+	// proterties
 	enum class Operator {
 		equal,
 		notEqual,

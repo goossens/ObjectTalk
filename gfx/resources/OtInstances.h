@@ -17,9 +17,11 @@
 #include <vector>
 
 #include "glm/glm.hpp"
+#include "SDL3/SDL_gpu.h"
 
 #include "OtAABB.h"
 #include "OtCamera.h"
+#include "OtVertex.h"
 
 
 //
@@ -45,8 +47,9 @@ public:
 	void add(const glm::mat4& instance, bool updateVersion=true);
 
 	// access individual instances
-	glm::mat4& operator[](size_t i) { return instances->operator[](i); }
-	size_t size() { return instances->size(); }
+	inline glm::mat4& operator[](size_t i) { return instances->operator[](i); }
+	inline size_t size() { return instances->size(); }
+	inline glm::mat4* data() { return instances->data(); }
 
 	// get list of visible instances
 	bool getVisible(OtCamera& camera, OtAABB& aabb, std::vector<glm::mat4>& visibleInstances);

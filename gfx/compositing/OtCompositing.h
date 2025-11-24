@@ -12,13 +12,15 @@
 //	Include files
 //
 
-#include <cstdint>
+#include "OtLog.h"
 
-#include "OtFrameBuffer.h"
+#include "OtRenderPass.h"
+#include "OtRenderPipeline.h"
 #include "OtSampler.h"
-#include "OtShaderProgram.h"
 #include "OtTexture.h"
-#include "OtUniformVec4.h"
+
+#include "OtFullScreenVert.h"
+#include "OtCompositingFrag.h"
 
 
 //
@@ -30,21 +32,72 @@ public:
 	// destructor
 	virtual inline ~OtCompositing() {}
 
+	// clear GPU resources
+	virtual inline void clear() {
+		renderPipeline.clear();
+		sampler.clear();
+	}
+
 	// set properties
 	inline void setBrightness(float value) { brightness = value; }
 
-	// render filter
-	void render(OtTexture& origin, OtFrameBuffer& destination);
-	void render(OtFrameBuffer& origin, OtFrameBuffer& destination);
+	// composite input on top of output
+	void render(OtTexture& source, OtTexture& destination) {
+		// sanity check
+		if (!source.canBeSampled()) {
+			OtLogFatal("Input texture to compositing does not have [sampler] usage");
+		}
 
-private:
-	// get render state
-	virtual uint64_t getState() = 0;
+		if (!destination.isColorTarget()) {
+			OtLogFatal("Output texture to compositing is not a render target");
+		}
 
-	// GPU resourcess
+		// create pipeline (if required)
+		if (!renderPipeline.isValid()) {
+			// determine render target type
+			OtRenderPipeline::RenderTargetType renderTargetType = OtRenderPipeline::RenderTargetType::none;
+
+			switch (destination.getFormat()) {
+				case OtTexture::Format::r8: renderTargetType = OtRenderPipeline::RenderTargetType::r8; break;
+				case OtTexture::Format::rg16: renderTargetType = OtRenderPipeline::RenderTargetType::rg16; break;
+				case OtTexture::Format::rgba8: renderTargetType = OtRenderPipeline::RenderTargetType::rgba8; break;
+				case OtTexture::Format::rgba16: renderTargetType = OtRenderPipeline::RenderTargetType::rgba16; break;
+				case OtTexture::Format::rgba32: renderTargetType = OtRenderPipeline::RenderTargetType::rgba32; break;
+				default: OtLogFatal("Unsupported render target type");
+			}
+
+			renderPipeline.setShaders(OtFullScreenVert, sizeof(OtFullScreenVert), OtCompositingFrag, sizeof(OtCompositingFrag));
+			renderPipeline.setRenderTargetType(renderTargetType);
+			configurePipeline(renderPipeline);
+		}
+
+		// configure pass
+		OtRenderPass pass;
+		pass.start(destination);
+		pass.bindPipeline(renderPipeline);
+		pass.bindFragmentSampler(0, sampler, source);
+
+		// set uniforms
+		struct Uniforms {
+			float brightness;
+		} uniforms {
+			brightness
+		};
+
+		pass.setFragmentUniforms(0, &uniforms, sizeof(uniforms));
+		pass.render(3);
+		pass.end();
+	}
+
+protected:
+	// methods to be overridden by derived classes (if required)
+	virtual void configurePipeline([[maybe_unused]] OtRenderPipeline& pipeline) {}
+	virtual void configurePass([[maybe_unused]] OtRenderPass& pass) {}
+
+	// the rendering pipeline
+	OtRenderPipeline renderPipeline;
+
+	// work variables
+	OtSampler sampler{OtSampler::Filter::nearest, OtSampler::Addressing::clamp};
 	float brightness = 1.0f;
-
-	OtSampler sampler{"s_texture", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtUniformVec4 uniform = OtUniformVec4("u_compositing", 1);
-	OtShaderProgram program = OtShaderProgram("OtCompositingVS", "OtCompositingFS");
 };

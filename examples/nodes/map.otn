@@ -2,16 +2,6 @@
 	"links": [
 		{
 			"from": 468368962,
-			"id": 4002493902,
-			"to": 501568887
-		},
-		{
-			"from": 1568023098,
-			"id": 1612095757,
-			"to": 46268427
-		},
-		{
-			"from": 468368962,
 			"id": 3016368026,
 			"to": 1430325844
 		},
@@ -21,24 +11,9 @@
 			"to": 3402575417
 		},
 		{
-			"from": 1568023098,
-			"id": 2405640439,
-			"to": 1775482859
-		},
-		{
-			"from": 1292962962,
-			"id": 2795293550,
-			"to": 3545046684
-		},
-		{
 			"from": 591397593,
 			"id": 303502022,
 			"to": 1852624315
-		},
-		{
-			"from": 2058357043,
-			"id": 3667428162,
-			"to": 3644423933
 		},
 		{
 			"from": 800095462,
@@ -49,6 +24,26 @@
 			"from": 468368962,
 			"id": 1889031874,
 			"to": 801060736
+		},
+		{
+			"from": 468368962,
+			"id": 576811603,
+			"to": 3177096165
+		},
+		{
+			"from": 2865025510,
+			"id": 4002341040,
+			"to": 1557016206
+		},
+		{
+			"from": 2865025510,
+			"id": 3720703396,
+			"to": 3545046684
+		},
+		{
+			"from": 2058357043,
+			"id": 3667428162,
+			"to": 3644423933
 		}
 	],
 	"metadata": {},
@@ -88,48 +83,6 @@
 			"y": 487.0
 		},
 		{
-			"id": 4292792926,
-			"inputs": [
-				{
-					"id": 501568887,
-					"name": "Map",
-					"type": "map"
-				},
-				{
-					"id": 3956068435,
-					"name": "Size",
-					"type": "int",
-					"value": 512
-				}
-			],
-			"outputs": [
-				{
-					"id": 1568023098,
-					"name": "Texture",
-					"type": "texture"
-				}
-			],
-			"title": "Map to HeightMap",
-			"type": "Map to HeightMap",
-			"x": 301.0,
-			"y": 461.0
-		},
-		{
-			"id": 829204370,
-			"inputs": [
-				{
-					"id": 46268427,
-					"name": "Texture",
-					"type": "texture"
-				}
-			],
-			"outputs": [],
-			"title": "Height Map",
-			"type": "Texture Probe",
-			"x": 516.0,
-			"y": 254.0
-		},
-		{
 			"id": 335545404,
 			"inputs": [
 				{
@@ -142,12 +95,6 @@
 					"name": "Size",
 					"type": "int",
 					"value": 1024
-				},
-				{
-					"id": 103489925,
-					"name": "Biome",
-					"type": "bool",
-					"value": false
 				}
 			],
 			"outputs": [
@@ -157,6 +104,7 @@
 					"type": "image"
 				}
 			],
+			"renderType": 1,
 			"title": "Map to Image",
 			"type": "Map to Image",
 			"x": 328.0,
@@ -178,25 +126,32 @@
 			"y": 5.0
 		},
 		{
-			"id": 2616320889,
+			"id": 2189420124,
 			"inputs": [
 				{
-					"id": 1775482859,
-					"name": "Input",
-					"type": "texture"
+					"id": 3177096165,
+					"name": "Map",
+					"type": "map"
+				},
+				{
+					"id": 3043457080,
+					"name": "Size",
+					"type": "int",
+					"value": 512
 				}
 			],
 			"outputs": [
 				{
-					"id": 1292962962,
-					"name": "Output",
+					"id": 2865025510,
+					"name": "Image",
 					"type": "image"
 				}
 			],
-			"title": "Texture to Image",
-			"type": "Texture to Image",
-			"x": 537.0,
-			"y": 496.0
+			"renderType": 2,
+			"title": "Map to Image",
+			"type": "Map to Image",
+			"x": 319.0,
+			"y": 566.0
 		},
 		{
 			"id": 2359960004,
@@ -216,8 +171,8 @@
 			],
 			"title": "Terrain Builder",
 			"type": "Terrain Builder",
-			"x": 757.0,
-			"y": 471.0
+			"x": 623.0,
+			"y": 568.0
 		},
 		{
 			"id": 364438754,
@@ -253,7 +208,7 @@
 					"type": "vector3",
 					"value": [
 						10.0,
-						1.0,
+						1.5,
 						10.0
 					]
 				}
@@ -267,12 +222,70 @@
 			],
 			"title": "Geometry Transform",
 			"type": "Geometry Transform",
-			"x": 936.0,
-			"y": 447.0
+			"x": 814.0,
+			"y": 543.0
 		},
 		{
-			"azimuth": 33.04972839355469,
-			"elevation": 14.023672103881836,
+			"id": 1962373291,
+			"inputs": [
+				{
+					"id": 801060736,
+					"name": "Map",
+					"type": "map"
+				},
+				{
+					"id": 2481129995,
+					"name": "Size",
+					"type": "int",
+					"value": 1024
+				}
+			],
+			"outputs": [
+				{
+					"id": 800095462,
+					"name": "Image",
+					"type": "image"
+				}
+			],
+			"renderType": 0,
+			"title": "Map to Image",
+			"type": "Map to Image",
+			"x": 325.0,
+			"y": 205.0
+		},
+		{
+			"id": 1154274012,
+			"inputs": [
+				{
+					"id": 797304172,
+					"name": "Image",
+					"type": "image"
+				}
+			],
+			"outputs": [],
+			"title": "Biomes",
+			"type": "Image Probe",
+			"x": 1023.0,
+			"y": 32.0
+		},
+		{
+			"id": 2401587037,
+			"inputs": [
+				{
+					"id": 1557016206,
+					"name": "Image",
+					"type": "image"
+				}
+			],
+			"outputs": [],
+			"title": "Height Map",
+			"type": "Image Probe",
+			"x": 598.0,
+			"y": 274.0
+		},
+		{
+			"azimuth": -17.039552688598633,
+			"elevation": 21.041301727294922,
 			"id": 1546965795,
 			"inputs": [
 				{
@@ -295,57 +308,9 @@
 			"title": "Geometry Probe",
 			"type": "Geometry Probe",
 			"wireframe": false,
-			"x": 1275.0,
-			"y": 271.0,
-			"zoom": 1.833551287651062
-		},
-		{
-			"id": 1962373291,
-			"inputs": [
-				{
-					"id": 801060736,
-					"name": "Map",
-					"type": "map"
-				},
-				{
-					"id": 2481129995,
-					"name": "Size",
-					"type": "int",
-					"value": 1024
-				},
-				{
-					"id": 760579038,
-					"name": "Biome",
-					"type": "bool",
-					"value": true
-				}
-			],
-			"outputs": [
-				{
-					"id": 800095462,
-					"name": "Image",
-					"type": "image"
-				}
-			],
-			"title": "Map to Image",
-			"type": "Map to Image",
-			"x": 325.0,
-			"y": 205.0
-		},
-		{
-			"id": 1154274012,
-			"inputs": [
-				{
-					"id": 797304172,
-					"name": "Image",
-					"type": "image"
-				}
-			],
-			"outputs": [],
-			"title": "Biomes",
-			"type": "Image Probe",
-			"x": 1023.0,
-			"y": 32.0
+			"x": 1166.0,
+			"y": 305.0,
+			"zoom": 1.3976020812988281
 		}
 	]
 }

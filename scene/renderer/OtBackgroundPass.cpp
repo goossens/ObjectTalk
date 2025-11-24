@@ -1,15 +1,6 @@
-//	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
-//
-//	This work is licensed under the terms of the MIT license.
-//	For a copy, see <https://opensource.org/licenses/MIT>.
+#include "glm/glm.hpp"
 
-
-//
-//	Include files
-//
-
-#include "OtPass.h"
+#include "OtRenderPass.h"
 
 #include "OtBackgroundPass.h"
 
@@ -26,10 +17,9 @@ void OtBackgroundPass::render(OtSceneRendererContext& ctx) {
 		backgroundColor = component.color;
 	}
 
-	// setup pass
-	OtPass pass;
-	pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
-	pass.setFrameBuffer(framebuffer);
-	pass.setClear(true, true, glm::vec4(backgroundColor, 1.0f));
-	pass.touch();
+	OtRenderPass pass;
+	pass.setClearColor(true, glm::vec4(backgroundColor, 1.0f));
+	pass.setClearDepth(true);
+	pass.start(framebuffer);
+	pass.end();
 }

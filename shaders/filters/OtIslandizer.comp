@@ -1,0 +1,64 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+#version 450
+
+layout(local_size_x=16, local_size_y=16, local_size_z=1) in;
+
+layout(set=0, binding=0) uniform sampler2D inTexture;
+layout(set=1, binding=0) uniform writeonly image2D outTexture;
+
+layout(std140, set=2, binding=0) uniform UBO {
+    int distanceFunction;
+};
+
+const int squareBumpFunction = 0;
+const int euclideanFunction = 1;
+const int euclidean2Function = 2;
+const int hyperboloidFunction = 3;
+const int diagonalFunction = 4;
+
+const float C = 0.2f;
+
+float radialDistance(vec2 uv) {
+	uv = (uv - 0.5f) * 2.0f;
+
+	if (distanceFunction == squareBumpFunction) {
+		return 1.0f - (1.0f - uv.x * uv.x) * (1.0f - uv.y * uv.y);
+
+	} else if (distanceFunction == euclideanFunction) {
+		return sqrt(uv.x * uv.x + uv.y * uv.y) / 1.414213562373095f;
+
+	} else if (distanceFunction == euclidean2Function) {
+		return (uv.x * uv.x + uv.y * uv.y) / 2.0f;
+
+	} else if (distanceFunction == hyperboloidFunction) {
+		return (sqrt(uv.x * uv.x + uv.y * uv.y + C * C) - C) / (sqrt(1.0 + C * C) - C);
+
+	} else if (distanceFunction == diagonalFunction) {
+		return max(abs(uv.x), abs(uv.y));
+
+	} else {
+		return 1.0f;
+	}
+}
+
+void main() {
+	ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = imageSize(outTexture);
+
+	if (coord.x >= size.x || coord.y >= size.y) {
+		return;
+	}
+
+	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
+
+	float distance = radialDistance(uv);
+	float height = texture(inTexture, uv).x;
+	height *= 1.0 - distance;
+
+	imageStore(outTexture, coord, vec4(height, 0.0f, 0.0f, 1.0f));
+}

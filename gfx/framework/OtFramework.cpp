@@ -26,8 +26,6 @@
 #include <stdlib.h>
 #endif
 
-#include "bgfx/platform.h"
-
 #include "OtConfig.h"
 #include "OtException.h"
 #include "OtFunction.h"
@@ -40,8 +38,8 @@
 #include "OtAssetManager.h"
 #include "OtFramework.h"
 #include "OtFrameworkAtExit.h"
+#include "OtGpu.h"
 #include "OtMessageBus.h"
-#include "OtPass.h"
 
 
 //
@@ -62,7 +60,6 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 
 	// initialize graphics libraries
 	initSDL();
-	initBGFX();
 	initIMGUI();
 
 	// start the asset manager
@@ -75,18 +72,35 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 		}
 	});
 
-	// let app perform its own setup
+	// startup/setup app
+	auto& gpu = OtGpu::instance();
+	gpu.startFrame();
 	app->onSetup();
+	gpu.endFrame();
+
+	// start loop timer
+	lastTime = std::chrono::high_resolution_clock::now();
 
 	// run app until we are told to stop
 	running = true;
 
 	while (running) {
-		// process all OS events
+		// process all events
 		eventsSDL();
 
+		// calculate loop speed
+		loopTime = std::chrono::high_resolution_clock::now();
+		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(loopTime - lastTime).count();
+		loopDuration = static_cast<float>(microseconds) / 1000.0f;
+		lastTime = loopTime;
+
 		// start new frame
-		startFrameBGFX();
+		{
+			OtMeasureStopWatch stopwatch;
+			gpu.startFrame();
+			gpuWaitTime = stopwatch.elapsed();
+		}
+
 		startFrameIMGUI();
 
 		// process all messages on the bus
@@ -95,29 +109,25 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 		// run all animations
 		OtAnimationClass::update();
 
-		// reset view ID
-		OtPassReset();
-
 		// handle libuv events
 		// this is done at this point so asynchronous callbacks
 		// can take part in the rendering process and use the GPU
 		uv_run(uv_default_loop(), UV_RUN_NOWAIT);
 
 		// let app render a frame
-		OtMeasureStopWatch stopwatch;
-		app->onRender();
-		cpuTime = stopwatch.elapsed();
-
-		// show profiler (if required)
-		if (profiler) {
-			renderProfiler();
+		{
+			OtMeasureStopWatch stopwatch;
+			app->onRender();
+			cpuTime = stopwatch.elapsed();
 		}
 
 		// put results on screen
-		endFrameIMGUI();
-
-		stopwatch.reset();
-		endFrameBGFX();
+		{
+			OtMeasureStopWatch stopwatch;
+			endFrameIMGUI();
+			gpu.endFrame();
+			gpuTime = stopwatch.elapsed();
+		}
 	}
 
 	// tell app we're done
@@ -134,7 +144,6 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 
 	// terminate libraries
 	endIMGUI();
-	endBGFX();
 	endSDL();
 }
 

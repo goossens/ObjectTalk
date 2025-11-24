@@ -46,7 +46,7 @@ private:
 	void olBlock(const MD_BLOCK_OL_DETAIL* detail, bool enter);
 	void liBlock(const MD_BLOCK_LI_DETAIL* detail, bool enter);
 	void hrBlock(bool enter);
-	void hBlock(const MD_BLOCK_H_DETAIL*  detail, bool  enter);
+	void hBlock(const MD_BLOCK_H_DETAIL*  detail, bool enter);
 	void codeBlock(const MD_BLOCK_CODE_DETAIL* detail, bool enter);
 	void htmlBlock(bool enter);
 	void pBlock(bool enter);

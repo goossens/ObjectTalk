@@ -1,0 +1,65 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+#version 450
+
+layout(local_size_x=16, local_size_y=16, local_size_z=1) in;
+
+layout(set=0, binding=0) uniform sampler2D inTexture;
+layout(set=1, binding=0) uniform writeonly image2D outTexture;
+
+layout(std140, set=2, binding=0) uniform UBO {
+	vec2 texelSize;
+};
+
+const float FXAA_REDUCE_MIN  = 1.0f / 128.0f;
+const float FXAA_REDUCE_MUL  = 1.0f / 8.0f;
+const float FXAA_SPAN_MAX = 8.0f;
+
+void main() {
+	ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = imageSize(outTexture);
+
+	if (coord.x >= size.x || coord.y >= size.y) {
+		return;
+	}
+
+	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
+
+	// Fast Approximate Anti-Aliasing (FXAA)
+	// Original FXAA algorithm by Timothy Lottes at Nvidia
+	vec3 rgbNW = texture(inTexture, uv + vec2(-texelSize.x, -texelSize.y)).rgb;
+	vec3 rgbNE = texture(inTexture, uv + vec2(texelSize.x, -texelSize.y)).rgb;
+	vec3 rgbSW = texture(inTexture, uv + vec2(-texelSize.x, texelSize.y)).rgb;
+	vec3 rgbSE = texture(inTexture, uv + vec2(texelSize.x, texelSize.y)).rgb;
+	vec3 rgbM = texture(inTexture, uv).rgb;
+	vec3 luma = vec3(0.299f, 0.587f, 0.114f);
+
+	float lumaNW = dot(rgbNW, luma);
+	float lumaNE = dot(rgbNE, luma);
+	float lumaSW = dot(rgbSW, luma);
+	float lumaSE = dot(rgbSE, luma);
+	float lumaM = dot(rgbM, luma);
+	float lumaMin = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));
+	float lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));
+
+	vec2 dir = vec2(-((lumaNW + lumaNE) - (lumaSW + lumaSE)), (lumaNW + lumaSW) - (lumaNE + lumaSE));
+	float dirReduce = max((lumaNW + lumaNE + lumaSW + lumaSE) * (0.25f * FXAA_REDUCE_MUL), FXAA_REDUCE_MIN);
+	float rcpDirMin = 1.0 / (min(abs(dir.x), abs(dir.y)) + dirReduce);
+	dir = min(vec2(FXAA_SPAN_MAX, FXAA_SPAN_MAX), max(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX), dir * rcpDirMin)) * vec2(texelSize.x, texelSize.y);
+
+	vec3 rgbA = 0.5f * (
+		texture(inTexture, uv + dir * (1.0f / 3.0f- 0.5f)).rgb +
+		texture(inTexture, uv + dir * (2.0f / 3.0f - 0.5f)).rgb);
+
+	vec3 rgbB = rgbA * 0.5f + 0.25f * (
+		texture(inTexture, uv + dir * -0.5f).rgb +
+		texture(inTexture, uv + dir * 0.5f).rgb);
+
+	float lumaB = dot(rgbB, luma);
+
+	imageStore(outTexture, coord, ((lumaB < lumaMin) || (lumaB > lumaMax)) ? vec4(rgbA, 1.0f) : vec4(rgbB, 1.0f));
+}

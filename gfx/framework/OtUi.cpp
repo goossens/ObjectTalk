@@ -669,7 +669,7 @@ bool OtUi::fileSelector(const char* label, std::string* path, const char* filter
 		}
 
 		dialog->Close();
- 	}
+	}
 
 	ImGui::PopID();
 	return changed;

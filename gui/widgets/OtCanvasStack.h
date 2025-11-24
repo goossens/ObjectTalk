@@ -14,12 +14,10 @@
 
 #include <vector>
 
-#include "OtCallback.h"
-
 #include "OtCanvasModule.h"
 #include "OtCompositingAlphaOver.h"
+#include "OtFlood.h"
 #include "OtFrameBuffer.h"
-#include "OtSampler.h"
 #include "OtUi.h"
 
 #include "OtWidget.h"
@@ -75,7 +73,7 @@ private:
 		// properties
 		int id;
 		OtObject canvas;
-		OtFrameBuffer framebuffer{OtTexture::rgba8Texture, OtTexture::d24s8Texture};
+		OtFrameBuffer framebuffer{OtTexture::Format::rgba8, OtTexture::Format::d32s8};
 	};
 
 	std::vector<Canvas> canvases;
@@ -85,7 +83,7 @@ private:
 	Canvas* findCanvas(int id);
 
 	// GPU resource
-	OtFrameBuffer framebuffer{OtTexture::rgba8Texture};
-	OtSampler sampler{"s_texture", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtFrameBuffer framebuffer{OtTexture::Format::rgba8};
+	OtFlood flood;
 	OtCompositingAlphaOver alphaOver;
 };

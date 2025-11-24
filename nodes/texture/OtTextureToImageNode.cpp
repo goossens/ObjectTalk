@@ -28,12 +28,10 @@ public:
 		addOutputPin("Output", image);
 	}
 
-	// when the input changes, we read back the texture into a CPU buffer
+	// when the input changes, we read back the texture into a CPU image
 	inline void onExecute() override {
 		if (texture.isValid()) {
-			buffer.readback(texture, [&]() {
-				image = buffer.getImage();
-			});
+			image = buffer.readback(texture);
 
 		} else {
 			image.clear();
@@ -44,7 +42,7 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::texture;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
 	OtTexture texture;
 	OtImage image;
 	OtReadBackBuffer buffer;

@@ -34,8 +34,12 @@ target_link_libraries(gfx PUBLIC
 	language
 	network
 	shaders
-	SDL3-static
-	bgfx
+	glslang
+	spirv-cross-c
+	spirv-cross-reflect
+	spirv-cross-core
+	SDL3::SDL3
+	shadercross
 	imgui
 	imguifd
 	imguiwidgets
@@ -43,6 +47,7 @@ target_link_libraries(gfx PUBLIC
 	delaunator
 	tess2
 	manifold
+	nanovg
 	plutovg
 	entt
 	assimp

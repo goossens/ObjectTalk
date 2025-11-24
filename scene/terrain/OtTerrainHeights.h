@@ -16,8 +16,8 @@
 
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtFrameBuffer.h"
 #include "OtNormalMapper.h"
+#include "OtTexture.h"
 #include "OtTileableFbm.h"
 
 
@@ -47,8 +47,8 @@ public:
 	bool dirty = true;
 
 	// the maps on the GPU
-	OtFrameBuffer heightmap{OtTexture::rFloat32Texture};
-	OtFrameBuffer normalmap{OtTexture::rgbaFloat32Texture};
+	OtTexture heightmap;
+	OtTexture normalmap;
 
 	// update the heightmap
 	void update(OtTileableFbm& noise, OtNormalMapper& normals);

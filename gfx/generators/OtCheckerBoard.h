@@ -14,9 +14,9 @@
 
 #include "glm/glm.hpp"
 
+#include "OtCheckerBoardComp.h"
 #include "OtColor.h"
 #include "OtGenerator.h"
-#include "OtUniformVec4.h"
 
 
 //
@@ -30,16 +30,29 @@ public:
 	inline void setBlackColor(OtColor color) { blackColor = color; }
 	inline void setWhiteColor(OtColor color) { whiteColor = color; }
 
+	// configure the compute pass
+	void configurePass(OtComputePass& pass) override {
+		// initialize pipeline (if required)
+		if (!pipeline.isValid()) {
+			pipeline.setShader(OtCheckerBoardComp, sizeof(OtCheckerBoardComp));
+		}
+
+		// set uniforms
+		struct Uniforms {
+			glm::vec4 blackColor;
+			glm::vec4 whiteColor;
+			float repeat;
+		} uniforms{
+			blackColor,
+			whiteColor,
+			repeat};
+
+		pass.addUniforms(&uniforms, sizeof(uniforms));
+	}
+
 private:
-	// prepare generator pass
-	OtComputeProgram& preparePass() override;
-
 	// properties
-	float repeat = 1.0f;
-	OtColor blackColor{0.0f, 0.0f, 0.0f};
-	OtColor whiteColor{1.0f, 1.0f, 1.0f};
-
-	// shader resources
-	OtComputeProgram program{"OtCheckerBoardCS"};
-	OtUniformVec4 uniform{"u_checkerboard", 3};
+	OtColor blackColor{0.0f};
+	OtColor whiteColor{1.0f};
+	float repeat = 10.0f;
 };

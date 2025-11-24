@@ -11,7 +11,6 @@
 
 #include "imgui.h"
 
-#include "OtFrameBuffer.h"
 #include "OtTexture.h"
 #include "OtUi.h"
 
@@ -31,34 +30,22 @@ public:
 		addOutputPin("Texture", texture);
 	}
 
-	// configure the framebuffer
-	inline virtual void configureFrameBuffer() { framebuffer.initialize(OtTexture::rgba8Texture); }
-
 	// execute the node by generating a new version of the output
 	inline void onExecute() override {
-		// initialize framebuffer (if required)
-		if (!framebuffer.isValid()) {
-			configureFrameBuffer();
-		}
-
-		// ensure framebuffer has right size
-		framebuffer.update(width, height);
+		// ensure output texture has correct setup
+		texture.update(width, height, OtTexture::Format::rgba8, OtTexture::Usage::rwDefault);
 
 		// run the generator
-		onGenerate(framebuffer);
-
-		// manage output (version numbers are used to detect changes down the line)
-		texture = framebuffer.getColorTexture();
+		onGenerate(texture);
 		texture.setVersion(version++);
 	}
 
 	// the actual generator (to be overriden by subclasses)
-	virtual void onGenerate(OtFrameBuffer& output) = 0;
+	virtual void onGenerate(OtTexture& output) = 0;
 
 protected:
 	int width = 256;
 	int height = 256;
-	OtFrameBuffer framebuffer;
 	OtTexture texture;
 	int version = 1;
 };

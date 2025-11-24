@@ -33,7 +33,7 @@ public:
 	// are we ready
 	bool isReady();
 
-	// render a frame for the scene (return the texture index)
+	// render a frame for the scene (return the texture ID)
 	ImTextureID render(int width, int height);
 
 	// handle popup messages

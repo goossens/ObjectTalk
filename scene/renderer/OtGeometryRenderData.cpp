@@ -101,6 +101,7 @@ void OtGeometryRenderData::analyzeCamera(size_t type, OtCamera& camera) {
 			// update list of visible instances (if required)
 			if (updated) {
 				view.visible = instances->getVisible(camera, worldAabb, view.visibleInstances);
+				view.idb.set(view.visibleInstances.data(), view.visibleInstances.size(), OtVertexMatrix::getDescription());
 			}
 
 		} else {

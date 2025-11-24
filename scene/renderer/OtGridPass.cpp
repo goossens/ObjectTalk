@@ -10,51 +10,85 @@
 //
 
 #include <cstdint>
-#include "OtTransientIndexBuffer.h"
-#include "OtTransientVertexBuffer.h"
+
+#include "glm/glm.hpp"
+
+#include "OtRenderPass.h"
 #include "OtVertex.h"
 
 #include "OtGridPass.h"
+
+#include "OtGridVert.h"
+#include "OtGridFrag.h"
 
 
 //
 //	OtGridPass::render
 //
 
-void OtGridPass::render(OtSceneRendererContext& ctx, OtFrameBuffer* framebuffer) {
+void OtGridPass::render(OtSceneRendererContext& ctx) {
 	if (gridScale > 0.0f) {
-		// setup pass
-		OtPass pass;
-		pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
-		pass.setFrameBuffer(*framebuffer);
-		pass.setViewTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
+		// initialize resources (if required)
+		if (!resourcesInitialized) {
+			initializeResources();
+			resourcesInitialized = false;
+		}
 
-		// send out geometry
-		static glm::vec3 vertices[] = {
-			glm::vec3{-1.0f, -1.0f, 0.0f},
-			glm::vec3{1.0f, -1.0f, 0.0f},
-			glm::vec3{1.0f, 1.0f, 0.0f},
-			glm::vec3{-1.0f, 1.0f, 0.0f}
+		// setup pass
+		OtRenderPass pass;
+		pass.start(framebuffer);
+		pass.bindPipeline(pipeline);
+
+		// set vertex uniforms
+		struct VertexUniforms {
+			glm::mat4 inverseViewProjectionMatrix;
+		} vertexUniforms {
+			glm::inverse(ctx.camera.viewProjectionMatrix)
 		};
 
-		static uint32_t indices[] = {0, 1, 2, 2, 3, 0};
-		OtTransientVertexBuffer vertexBuffer;
-		OtTransientIndexBuffer indexBuffer;
-		vertexBuffer.submit(vertices, 4, OtVertexPos::getLayout());
-		indexBuffer.submit(indices, 6);
+		ctx.pass->setVertexUniforms(0, &vertexUniforms, sizeof(vertexUniforms));
 
-		// set uniforms
-		ctx.gridUniforms.setValue(0, gridScale, 0.0f, 0.0f, 0.0f);
-		ctx.gridUniforms.submit();
+		// set fragment uniforms
+		struct FragmentUniforms {
+			glm::mat4 viewProjectionMatrix;
+			float gridScale;
+		} fragmentUniforms {
+			ctx.camera.viewProjectionMatrix,
+			gridScale
+		};
 
-		// run the program
-		pass.setState(
-			OtPass::stateWriteRgb |
-			OtPass::stateWriteA |
-			OtPass::stateWriteZ |
-			OtPass::stateDepthTestLess |
-			OtPass::stateBlendAlpha);
+		pass.setFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
 
-		pass.runShaderProgram(program);
+		pass.render(vertexBuffer, indexBuffer);
+		pass.end();
 	}
+}
+
+
+//
+//	OtGridPass::initializeResources
+//
+
+void OtGridPass::initializeResources() {
+	pipeline.setShaders(OtGridVert, sizeof(OtGridVert), OtGridFrag, sizeof(OtGridFrag));
+	pipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba32d32);
+	pipeline.setVertexDescription(OtVertexPos::getDescription());
+
+	pipeline.setBlend(
+		OtRenderPipeline::BlendOperation::add,
+		OtRenderPipeline::BlendFactor::srcAlpha,
+		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
+	);
+
+	static glm::vec3 vertices[] = {
+		glm::vec3{-1.0f, -1.0f, 0.0f},
+		glm::vec3{1.0f, -1.0f, 0.0f},
+		glm::vec3{1.0f, 1.0f, 0.0f},
+		glm::vec3{-1.0f, 1.0f, 0.0f}
+	};
+
+	static uint32_t indices[] = {0, 1, 2, 2, 3, 0};
+
+	vertexBuffer.set(vertices, sizeof(vertices) / sizeof(*vertices), OtVertexPos::getDescription());
+	indexBuffer.set(indices, sizeof(indices) / sizeof(*indices));
 }

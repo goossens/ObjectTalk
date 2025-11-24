@@ -16,8 +16,7 @@
 
 #include "OtFrameBuffer.h"
 #include "OtMesh.h"
-#include "OtShaderProgram.h"
-#include "OtUniformVec4.h"
+#include "OtRenderPipeline.h"
 
 
 //
@@ -26,6 +25,9 @@
 
 class OtMeshPreview {
 public:
+	// constructor
+	OtMeshPreview();
+
 	// rendering context
 	class Context {
 	public:
@@ -46,7 +48,7 @@ private:
 	static constexpr float maxZoomPerSecond = 0.2f;
 
 	// rendering variables
-	OtUniformVec4 uniform = OtUniformVec4("u_preview", 4);
-	OtShaderProgram program = OtShaderProgram("OtPreviewVS", "OtPreviewFS");
-	OtFrameBuffer framebuffer{OtTexture::rgba8Texture, OtTexture::dFloatTexture};
+	OtFrameBuffer framebuffer{OtTexture::Format::rgba8, OtTexture::Format::d32};
+	OtRenderPipeline fillPipeline;
+	OtRenderPipeline linePipeline;
 };

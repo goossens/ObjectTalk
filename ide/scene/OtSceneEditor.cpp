@@ -16,6 +16,7 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "ImGuizmo.h"
+#include "glm/gtc/type_ptr.hpp"
 #include "nlohmann/json.hpp"
 
 #include "OtAssetManager.h"
@@ -601,11 +602,11 @@ void OtSceneEditor::renderViewPort() {
 	auto savedPos = ImGui::GetCursorScreenPos();
 	ImGui::Dummy(size);
 
-	if (!renderer->isPicking() && ImGui::IsItemClicked()) {
+	if (ImGui::IsItemClicked()) {
 		auto position = ImGui::GetMousePos() - ImGui::GetItemRectMin();
-		glm::vec2 ndc{position.x / size.x * 2.0f - 1.0f, (size.y - position.y) / size.y * 2.0f - 1.0f};
+		glm::vec2 uv{position.x / size.x, position.y / size.y};
 
-		renderer->pickEntity(ndc, [this](OtEntity entity) {
+		renderer->pickEntity(uv, [this](OtEntity entity) {
 			selectedEntity = entity;
 
 			if (selectedEntity != OtEntityNull) {
@@ -620,15 +621,10 @@ void OtSceneEditor::renderViewPort() {
 	OtCamera camera{int(size.x), int(size.y), nearPlane, farPlane, fov, cameraViewMatrix};
 	renderer->setGridScale(gridEnabled ? gridScale : 0.0f);
 	renderer->setSelectedEntity(selectedEntity);
-	auto textureID = static_cast<ImTextureID>(renderer->render(&scene, camera));
+	auto textureID = static_cast<ImTextureID>(renderer->render(camera, &scene));
 
 	// show it on the screen
-	if (OtGpuHasOriginBottomLeft()) {
-		ImGui::Image(textureID, size, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
-
-	} else {
-		ImGui::Image(textureID, size);
-	}
+	ImGui::Image(textureID, size);
 
 	// only show guizmo if it's enabled and the selected entity has a transform
 	if (guizmoEnabled && scene.isValidEntity(selectedEntity) && scene.hasComponent<OtTransformComponent>(selectedEntity)) {

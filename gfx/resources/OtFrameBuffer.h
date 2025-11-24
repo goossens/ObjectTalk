@@ -12,11 +12,14 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "imgui.h"
+#include "SDL3/SDL.h"
 
-#include "OtBgfxHandle.h"
+#include "OtLog.h"
 
-#include "OtSampler.h"
+#include "OtRenderTarget.h"
 #include "OtTexture.h"
 
 
@@ -24,73 +27,72 @@
 //	OtFrameBuffer
 //
 
-class OtFrameBuffer {
+class OtFrameBuffer : OtRenderTarget {
 public:
-	// constructors
-	OtFrameBuffer() = default;
-	OtFrameBuffer(int colorTextureType, int depthTextureType=OtTexture::noTexture, int antiAliasing=1, bool blitTarget=false);
+	// constructors/destructor
+	OtFrameBuffer();
+	OtFrameBuffer(OtTexture::Format colorTextureType, OtTexture::Format depthTextureType=OtTexture::Format::none);
+	~OtFrameBuffer();
 
 	// initialize framebuffer
-	void initialize(int colorTextureType, int depthTextureType=OtTexture::noTexture, int antiAliasing=1, bool blitTarget=false);
+	void initialize(OtTexture::Format c, OtTexture::Format d=OtTexture::Format::none);
 
 	// clear all resources
 	void clear();
 
 	// see if framebuffer is valid
-	inline bool isValid() { return framebuffer.isValid(); }
+	inline bool isValid() { return colorTextureType != OtTexture::Format::none || depthTextureType != OtTexture::Format::none; }
 
 	// update frame buffer
-	void update(int width, int height);
+	bool update(int w, int h);
 
 	// get framebuffer dimensions
 	inline int getWidth() { return width; }
 	inline int getHeight() { return height; }
 
 	// see if textures are available
-	inline bool hasColorTexture() { return colorTextureType != OtTexture::noTexture; }
-	inline bool hasDepthTexture() { return OtTexture::hasDepth(depthTextureType); }
-	inline bool hasStencilTexture() { return OtTexture::hasStencil(depthTextureType); }
+	inline bool hasColorTexture() { return colorTextureType != OtTexture::Format::none; }
+	inline bool hasDepthTexture() { return depthTexture.hasDepth(); }
+	inline bool hasStencilTexture() { return depthTexture.hasStencil(); }
 
 	// get texture types
-	inline int getColorTextureType() { return colorTextureType; }
-	inline int getDepthTextureType() { return depthTextureType; }
+	inline OtTexture::Format getColorTextureType() { return colorTextureType; }
+	inline OtTexture::Format getDepthTextureType() { return depthTextureType; }
 
 	// get textures
-	inline OtTexture getColorTexture() { return OtTexture(colorTexture, width, height, colorTextureType); }
-	inline OtTexture getDepthTexture() { return OtTexture(depthTexture, width, height, depthTextureType); }
-
-	// get texture handles
-	inline bgfx::TextureHandle getColorTextureHandle() { return colorTexture.getHandle(); }
-	inline bgfx::TextureHandle getDepthTextureHandle() { return depthTexture.getHandle(); }
-
-	// get texture indices
-	inline uint16_t getColorTextureIndex() { return colorTexture.getIndex(); }
-	inline uint16_t getDepthTextureIndex() { return depthTexture.getIndex(); }
+	inline OtTexture& getColorTexture() { return colorTexture; }
+	inline OtTexture& getDepthTexture() { return depthTexture; }
 
 	// get texture IDs (for Dear ImGUI use)
-	inline ImTextureID getColorTextureID() { return colorTexture.isValid() ? static_cast<ImTextureID>(colorTexture.getIndex()) : ImTextureID_Invalid; }
-	inline ImTextureID getDepthTextureID() { return depthTexture.isValid() ? static_cast<ImTextureID>(depthTexture.getIndex()) : ImTextureID_Invalid; }
-
-	// bind textures
-	void bindColorTexture(OtSampler& sampler, int unit);
-	void bindDepthTexture(OtSampler& sampler, int unit);
-
-	// activate framebuffer in GPU for specified view
-	void submit(bgfx::ViewId view);
+	inline ImTextureID getColorTextureID() { return colorTexture.getTextureID(); }
+	inline ImTextureID getDepthTextureID() { return depthTexture.getTextureID(); }
 
 private:
 	// properties
-	int colorTextureType = OtTexture::noTexture;
-	int depthTextureType = OtTexture::noTexture;
-	int antiAliasing = 1;
-	bool blitTarget = false;
+	OtTexture::Format colorTextureType = OtTexture::Format::none;
+	OtTexture::Format depthTextureType = OtTexture::Format::none;
 
-	// dimensions of framebuffer;
+	// dimensions of framebuffer
 	int width = -1;
 	int height = -1;
 
-	// resource handles
-	OtBgfxHandle<bgfx::TextureHandle> colorTexture;
-	OtBgfxHandle<bgfx::TextureHandle> depthTexture;
-	OtBgfxHandle<bgfx::FrameBufferHandle> framebuffer;
+	// resources
+	OtTexture colorTexture;
+	OtTexture depthTexture;
+
+	// render target description
+	SDL_GPUColorTargetInfo colorTargetInfo;
+	SDL_GPUDepthStencilTargetInfo depthStencilTargetInfo;
+	OtRenderTargetInfo info;
+
+	// get render target information
+	friend class OtRenderPass;
+
+	OtRenderTargetInfo* getRenderTargetInfo(
+		bool clearColorTexture,
+		bool clearDepthTexture,
+		bool clearStencilTexture,
+		glm::vec4 clearColorValue,
+		float clearDepthValue,
+		std::uint8_t clearStencilValue) override;
 };

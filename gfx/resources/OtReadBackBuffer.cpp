@@ -10,11 +10,11 @@
 //
 
 #include <algorithm>
+#include <cstdint>
 
-#include "bimg/bimg.h"
+#include "SDL3/SDL.h"
 
-#include "OtFrameworkAtFrame.h"
-#include "OtPass.h"
+#include "OtGpu.h"
 #include "OtReadBackBuffer.h"
 
 
@@ -23,8 +23,7 @@
 //
 
 void OtReadBackBuffer::clear() {
-	// clear the texture and image
-	readbackTexture.clear();
+	// clear the image
 	image.clear();
 }
 
@@ -33,47 +32,8 @@ void OtReadBackBuffer::clear() {
 //	OtReadBackBuffer::readback
 //
 
-void OtReadBackBuffer::readback(OtTexture& texture, std::function<void()> callback) {
-	// update texture and buffer if required
-	if (!readbackTexture.isValid() || width != texture.getWidth() || height != texture.getHeight() || format != texture.getFormat()) {
-		// remember new specs
-		width = texture.getWidth();
-		height = texture.getHeight();
-		format = texture.getFormat();
-
-		// create new texture
-		readbackTexture = bgfx::createTexture2D(
-			uint16_t(width),
-			uint16_t(height),
-			false,
-			1,
-			bgfx::TextureFormat::Enum(format),
-			BGFX_TEXTURE_BLIT_DST | BGFX_TEXTURE_READ_BACK);
-
-		image.update(texture.getWidth(), texture.getHeight(), texture.getFormat());
-	}
-
-	// blit source texture to readback texture on GPU
-	OtPass pass;
-
-	pass.blit(
-		readbackTexture.getHandle(),
-		0, 0,
-		texture.getHandle(),
-		0, 0, uint16_t(texture.getWidth()), uint16_t(texture.getHeight()));
-
-	// request readback to CPU
-	auto frame = bgfx::readTexture(readbackTexture.getHandle(), image.getPixels());
-
-	// it takes 2 frames before the readback is complete so we increment the version in a local callback
-	OtFrameworkAtFrame::add(frame, [this, callback]() {
-		image.incrementVersion();
-
-		// run the caller's callback (if required)
-		if (callback) {
-			callback();
-		}
-	});
+OtImage& OtReadBackBuffer::readback(OtTexture& texture) {
+	return readback(texture, 0, 0, texture.getWidth(), texture.getHeight());
 }
 
 
@@ -81,51 +41,97 @@ void OtReadBackBuffer::readback(OtTexture& texture, std::function<void()> callba
 //	OtReadBackBuffer::readback
 //
 
-void OtReadBackBuffer::readback(OtTexture& texture, int x, int y, int w, int h, std::function<void()> callback) {
-	// sanity check
-	x = std::clamp(x, 0, texture.getWidth() - 2);
-	y = std::clamp(y, 0, texture.getHeight() - 2);
-	w = std::clamp(w, 1, texture.getWidth() - x);
-	h = std::clamp(h, 1, texture.getHeight() - y);
+OtImage& OtReadBackBuffer::readback(OtTexture& texture, int x, int y, int w, int h) {
+	// this is a hack to ensure things happen in the right order
+	// this object creates it's own command buffer which is executed immediately
+	// therefore, previous GPU commands have to be executed first
+	auto& gpu = OtGpu::instance();
+	gpu.flushAndRestartFrame();
 
-	// update texture and buffer if required
-	if (!readbackTexture.isValid() || width != w || height != h || format != texture.getFormat()) {
-		// remember new specs
-		width = w;
-		height = h;
-		format = texture.getFormat();
+	// create a transfer buffer
+	SDL_GPUTransferBufferCreateInfo bufferInfo{};
+	bufferInfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_DOWNLOAD;
+	bufferInfo.size = static_cast<Uint32>(texture.getBpp() * w * h);
 
-		// create new texture
-		readbackTexture = bgfx::createTexture2D(
-			uint16_t(width),
-			uint16_t(height),
-			false,
-			1,
-			bgfx::TextureFormat::Enum(format),
-			BGFX_TEXTURE_BLIT_DST | BGFX_TEXTURE_READ_BACK);
+	// transfer GPU texture back to CPU
+	auto transferBuffer = SDL_CreateGPUTransferBuffer(gpu.device, &bufferInfo);
 
-		image.update(texture.getWidth(), texture.getHeight(), texture.getFormat());
-	}
+	SDL_GPUTextureRegion region{};
+	region.texture = texture.getTexture();
+	region.x = static_cast<Uint32>(x);
+	region.y = static_cast<Uint32>(y);
+	region.w = static_cast<Uint32>(w);
+	region.h = static_cast<Uint32>(h);
+	region.d = 1;
 
-	// blit source texture to readback texture on GPU
-	OtPass pass;
+	SDL_GPUTextureTransferInfo transferInfo{};
+	transferInfo.transfer_buffer = transferBuffer;
+	transferInfo.offset = 0;
+	transferInfo.pixels_per_row = 0;
+	transferInfo.rows_per_layer = 0;
 
-	pass.blit(
-		readbackTexture.getHandle(),
-		0, 0,
-		texture.getHandle(),
-		uint16_t(x), uint16_t(y), uint16_t(w), uint16_t(h));
+	auto commandBuffer = SDL_AcquireGPUCommandBuffer(gpu.device);
+	auto copyPass = SDL_BeginGPUCopyPass(commandBuffer);
+	SDL_DownloadFromGPUTexture(copyPass, &region, &transferInfo);
+	SDL_EndGPUCopyPass(copyPass);
 
-	// request readback to CPU
-	auto frame = bgfx::readTexture(readbackTexture.getHandle(), image.getPixels());
+	// wait for download to complete
+	auto fence = SDL_SubmitGPUCommandBufferAndAcquireFence(commandBuffer);
+	SDL_WaitForGPUFences(gpu.device, true, &fence, 1);
+	SDL_ReleaseGPUFence(gpu.device, fence);
 
-	// it takes 2 frames before the readback is complete so we increment the version in a local callback
-	OtFrameworkAtFrame::add(frame, [this, callback]() {
-		image.incrementVersion();
+	// transfer data to image
+	void* data = SDL_MapGPUTransferBuffer(gpu.device, transferBuffer, false);
+	convertToImage(w, h, texture.getFormat(), data);
+	SDL_UnmapGPUTransferBuffer(gpu.device, transferBuffer);
+	SDL_ReleaseGPUTransferBuffer(gpu.device, transferBuffer);
 
-		// run the caller's callback (if required)
-		if (callback) {
-			callback();
+	// return reference to image
+	return image;
+}
+
+
+//
+//	OtReadBackBuffer::convertToImage
+//
+
+void OtReadBackBuffer::convertToImage(int w, int h, OtTexture::Format format, void* data) {
+	if (format == OtTexture::Format::r8) {
+		image.load(w, h, OtImage::Format::r8, data);
+
+	} else if (format == OtTexture::Format::rgba8) {
+		image.load(w, h, OtImage::Format::rgba8, data);
+
+	} else if (format == OtTexture::Format::rgba32) {
+		image.load(w, h, OtImage::Format::rgba32, data);
+
+	} else if (format == OtTexture::Format::rg16) {
+		auto buffer = new glm::vec4[w * h];
+		auto src = (uint16_t*) data;
+		auto dst = &buffer[0];
+
+		for (int i = 0; i < w * h; i++) {
+			auto red = static_cast<float>(*src++) / 255.0f;
+			auto green = static_cast<float>(*src++) / 255.0f;
+			*dst++ = glm::vec4(red, green, 0.0f, 1.0f);
 		}
-	});
+
+		image.load(w, h, OtImage::Format::rgba32, buffer);
+		delete [] buffer;
+
+	} else if (format == OtTexture::Format::r32) {
+		auto buffer = new glm::vec4[w * h];
+		auto src = (float*) data;
+		auto dst = &buffer[0];
+
+		for (int i = 0; i < w * h; i++) {
+			*dst++ = glm::vec4(*src++, 0.0f, 0.0f, 1.0f);
+		}
+
+		image.load(w, h, OtImage::Format::rgba32, buffer);
+		delete [] buffer;
+
+	} else {
+		OtLogFatal("Texture type can't be read back to image");
+	}
 }

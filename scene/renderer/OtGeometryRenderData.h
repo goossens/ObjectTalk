@@ -24,6 +24,7 @@
 #include "OtFrustum.h"
 #include "OtInstances.h"
 #include "OtMaterial.h"
+#include "OtVertexBuffer.h"
 
 #include "OtScene.h"
 
@@ -60,6 +61,7 @@ public:
 		bool visible;
 		int instancesVersion = 0;
 		std::vector<glm::mat4> visibleInstances;
+		OtVertexBuffer idb;
 	};
 
 	std::array<CameraView, 3 + OtCascadedShadowMap::maxCascades> cameras;

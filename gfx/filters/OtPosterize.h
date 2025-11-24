@@ -12,9 +12,10 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "OtFilter.h"
-#include "OtShaderProgram.h"
-#include "OtUniformVec4.h"
+#include "OtPosterizeComp.h"
 
 
 //
@@ -24,16 +25,26 @@
 class OtPosterize : public OtFilter {
 public:
 	// set properties
-	inline void setLevels(int l) { levels = l; }
+	inline void setLevels(int value) { levels = value; }
+
+	// configure the compute pass
+	void configurePass(OtComputePass& pass) override {
+		// initialize pipeline (if required)
+		if (!pipeline.isValid()) {
+			pipeline.setShader(OtPosterizeComp, sizeof(OtPosterizeComp));
+		}
+
+		// set uniforms
+		struct Uniforms {
+			int32_t levels;
+		} uniforms {
+			static_cast<int32_t>(levels)
+		};
+
+		pass.addUniforms(&uniforms, sizeof(uniforms));
+	}
 
 private:
-	// execute filter
-	void execute(OtPass& pass) override;
-
 	// properties
 	int levels = 10;
-
-	// GPU assets
-	OtUniformVec4 uniform = OtUniformVec4("u_posterize", 1);
-	OtShaderProgram program = OtShaderProgram("OtFilterVS", "OtPosterizeFS");
 };

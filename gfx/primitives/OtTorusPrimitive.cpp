@@ -79,7 +79,7 @@ bool OtTorusPrimitive::renderUI() {
 //	OtTorusPrimitive::serialize
 //
 
-nlohmann::json OtTorusPrimitive::serialize(std::string* /* basedir */) {
+nlohmann::json OtTorusPrimitive::serialize([[maybe_unused]] std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["type"] = name;
 	data["radius"] = radius;
@@ -98,7 +98,7 @@ nlohmann::json OtTorusPrimitive::serialize(std::string* /* basedir */) {
 //	OtTorusPrimitive::deserialize
 //
 
-void OtTorusPrimitive::deserialize(nlohmann::json data, std::string* /* basedir */) {
+void OtTorusPrimitive::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
 	radius = data.value("radius", 1.0f);
 	tubeRadius = data.value("tubeRadius", 0.4f);
 	radialSegments = data.value("radialSegments", 64);

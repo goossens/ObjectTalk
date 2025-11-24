@@ -26,7 +26,6 @@
 #include "OtPath.h"
 #include "OtText.h"
 
-#include "OtGpu.h"
 #include "OtUi.h"
 
 #include "OtModel.h"
@@ -301,11 +300,8 @@ void OtModel::loadModel(const std::string& modelPath) {
 		aiProcess_OptimizeMeshes |
 		aiProcess_GenBoundingBoxes |
 		aiProcess_ValidateDataStructure |
-		aiProcess_GlobalScale;
-
-	if (!OtGpuHasOriginBottomLeft()) {
-		flags |= aiProcess_FlipUVs;
-	}
+		aiProcess_GlobalScale |
+		aiProcess_FlipUVs;
 
 	// read the model file
 	const aiScene* scene = importer.ReadFile(modelPath, static_cast<unsigned int>(flags));
@@ -372,10 +368,6 @@ void OtModel::loadAnimations(const std::string& animationPath) {
 	auto flags =
 		aiProcess_ValidateDataStructure |
 		aiProcess_GlobalScale;
-
-	if (!OtGpuHasOriginBottomLeft()) {
-		flags |= aiProcess_FlipUVs;
-	}
 
 	// read the model file
 	const aiScene* scene = importer.ReadFile(animationPath, static_cast<unsigned int>(flags));

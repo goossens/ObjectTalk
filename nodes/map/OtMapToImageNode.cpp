@@ -11,8 +11,11 @@
 
 #include <algorithm>
 
+#include "nlohmann/json.hpp"
+
 #include "OtImage.h"
 #include "OtMap.h"
+#include "OtUi.h"
 
 #include "OtNodesFactory.h"
 
@@ -27,8 +30,37 @@ public:
 	inline void configure() override {
 		addInputPin("Map", map);
 		addInputPin("Size", size);
-		addInputPin("Biome", biome);
 		addOutputPin("Image", image);
+	}
+
+	// render custom fields
+	inline void customRendering(float itemWidth) override {
+		ImGui::SetNextItemWidth(itemWidth);
+		auto old = serialize().dump();
+
+		if (OtUi::selectorEnum("##renderType", &renderType, OtMap::renderTypes, OtMap::renderTypeCount)) {
+			oldState = old;
+			newState = serialize().dump();
+			needsEvaluating = true;
+			needsSaving = true;
+		}
+	}
+
+	inline float getCustomRenderingWidth() override {
+		return 180.0f;
+	}
+
+	inline float getCustomRenderingHeight() override {
+		return ImGui::GetFrameHeightWithSpacing();
+	}
+
+	// (de)serialize node
+	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
+		(*data)["renderType"] = renderType;
+	}
+
+	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
+		renderType = data->value("renderType", OtMap::RenderType::biomes);
 	}
 
 	// validate input parameters
@@ -39,7 +71,7 @@ public:
 	// generate the image
 	inline void onExecute() override {
 		if (map.isValid()) {
-			map.render(image, size, biome);
+			map.render(image, size, renderType);
 
 		} else {
 			image.clear();
@@ -53,7 +85,7 @@ public:
 private:
 	// properties
 	int size = 32;
-	bool biome = false;
+	OtMap::RenderType renderType = OtMap::RenderType::biomes;
 
 	// map component
 	OtMap map;

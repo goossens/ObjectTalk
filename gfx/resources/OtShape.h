@@ -51,7 +51,7 @@ public:
 		return *this;
 	}
 
-    OtShape& operator=(OtShape&& shape) {
+	OtShape& operator=(OtShape&& shape) {
 		plutovg_path_destroy(path);
 		path = std::exchange(shape.path, nullptr);
 		version = shape.version;

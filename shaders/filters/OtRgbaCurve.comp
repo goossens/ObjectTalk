@@ -1,0 +1,59 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+#version 450
+
+layout(local_size_x=16, local_size_y=16, local_size_z=1) in;
+
+layout(set=0, binding=0) uniform sampler2D inTexture;
+layout(set=1, binding=0) uniform writeonly image2D outTexture;
+
+layout(std140, set=2, binding=0) uniform UBO {
+	vec4 blackLevel;
+	vec4 whiteLevel;
+    float lut[256];
+	int mode;
+};
+
+const int rgbMode = 0;
+const int rMode = 1;
+const int gMode = 2;
+const int bMode = 3;
+const int aMode = 4;
+
+void main() {
+	ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = imageSize(outTexture);
+
+	if (coord.x >= size.x || coord.y >= size.y) {
+		return;
+	}
+
+	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
+	vec4 color = texture(inTexture, uv);
+
+	if (mode == rgbMode) {
+		color = vec4(
+			lut[int(color.r * 255.0f)],
+			lut[int(color.g * 255.0f)],
+			lut[int(color.b * 255.0f)],
+			color.a);
+
+	} else if (mode == rMode) {
+		color = vec4(lut[int(color.r * 255.0f)], color.g, color.b, color.a);
+
+	} else if (mode == gMode) {
+		color = vec4(color.r, lut[int(color.g * 255.0f)], color.b, color.a);
+
+	} else if (mode == bMode) {
+		color = vec4(color.r, color.g, lut[int(color.b * 255.0f)], color.a);
+
+	} else if (mode == aMode) {
+		color = vec4(color.r, color.g, color.b, lut[int(color.a * 255.0f)]);
+	}
+
+	imageStore(outTexture, coord, vec4((color.rgb - blackLevel.rgb) / (whiteLevel.rgb - blackLevel.rgb), color.a));
+}

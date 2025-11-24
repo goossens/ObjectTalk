@@ -11,6 +11,8 @@
 
 #include <algorithm>
 
+#include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
@@ -93,7 +95,7 @@ public:
 		return customH;
 	}
 
-	inline void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		(*data)["azimuth"] = context.azimuth;
 		(*data)["elevation"] = context.elevation;
 		(*data)["zoom"] = context.zoom;
@@ -102,7 +104,7 @@ public:
 		(*data)["wireframe"] = context.wireframe;
 	}
 
-	inline void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		context.azimuth = data->value("azimuth", 0.0f);
 		context.elevation = data->value("elevation", 0.0f);
 		context.zoom = data->value("zoom", 0.95f);
@@ -116,7 +118,8 @@ public:
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 	static constexpr float size = 170.0f;
 
-protected:
+private:
+	// proterties
 	OtGeometry geometry;
 
 	OtMeshPreview preview;

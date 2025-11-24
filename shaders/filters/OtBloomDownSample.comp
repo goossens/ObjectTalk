@@ -1,0 +1,47 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+#version 450
+
+layout(local_size_x=16, local_size_y=16, local_size_z=1) in;
+
+layout(set=0, binding=0) uniform sampler2D inTexture;
+layout(set=1, binding=0) uniform writeonly image2D outTexture;
+
+layout(std140, set=2, binding=0) uniform UBO {
+	vec2 texelSize;
+};
+
+void main() {
+	ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = imageSize(outTexture);
+
+	if (coord.x >= size.x || coord.y >= size.y) {
+		return;
+	}
+
+	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
+	vec2 halfTexel = texelSize * 0.5f;
+
+	vec3 sum = (4.0f / 32.0f) * texture(inTexture, uv).rgb;
+
+	sum += (4.0f / 32.0f) * texture(inTexture, uv + vec2(-halfTexel.x, -halfTexel.y)).rgb;
+	sum += (4.0f / 32.0f) * texture(inTexture, uv + vec2(+halfTexel.x, +halfTexel.y)).rgb;
+	sum += (4.0f / 32.0f) * texture(inTexture, uv + vec2(+halfTexel.x, -halfTexel.y)).rgb;
+	sum += (4.0f / 32.0f) * texture(inTexture, uv + vec2(-halfTexel.x, +halfTexel.y)).rgb;
+
+	sum += (2.0f / 32.0f) * texture(inTexture, uv + vec2(+texelSize.x, 0.0f)).rgb;
+	sum += (2.0f / 32.0f) * texture(inTexture, uv + vec2(-texelSize.x, 0.0f)).rgb;
+	sum += (2.0f / 32.0f) * texture(inTexture, uv + vec2(0.0f, +texelSize.y)).rgb;
+	sum += (2.0f / 32.0f) * texture(inTexture, uv + vec2(0.0f, -texelSize.y)).rgb;
+
+	sum += (1.0f / 32.0f) * texture(inTexture, uv + vec2(+texelSize.x, +texelSize.y)).rgb;
+	sum += (1.0f / 32.0f) * texture(inTexture, uv + vec2(-texelSize.x, +texelSize.y)).rgb;
+	sum += (1.0f / 32.0f) * texture(inTexture, uv + vec2(+texelSize.x, -texelSize.y)).rgb;
+	sum += (1.0f / 32.0f) * texture(inTexture, uv + vec2(-texelSize.x, -texelSize.y)).rgb;
+
+	imageStore(outTexture, coord, vec4(sum, 1.0f));
+}

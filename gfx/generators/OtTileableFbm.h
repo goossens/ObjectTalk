@@ -12,8 +12,10 @@
 //	Include files
 //
 
+#include <cstdint>
+
+#include "OtTileableFbmComp.h"
 #include "OtGenerator.h"
-#include "OtUniformVec4.h"
 
 
 //
@@ -29,18 +31,37 @@ public:
 	inline void setPersistence(float p) { persistence = p; }
 	inline void setOctaves(int o) { octaves = o; }
 
-private:
-	// prepare generator pass
-	OtComputeProgram& preparePass() override;
+	// configure the compute pass
+	void configurePass(OtComputePass& pass) override {
+		// initialize pipeline (if required)
+		if (!pipeline.isValid()) {
+			pipeline.setShader(OtTileableFbmComp, sizeof(OtTileableFbmComp));
+		}
 
+		// set uniforms
+		struct Uniforms {
+			int32_t frequency;
+			int32_t lacunarity;
+			float amplitude;
+			float persistence;
+			int32_t octaves;
+		} uniforms{
+			static_cast<int32_t>(frequency),
+			static_cast<int32_t>(lacunarity),
+			amplitude,
+			persistence,
+			static_cast<int32_t>(octaves)
+		};
+
+
+		pass.addUniforms(&uniforms, sizeof(uniforms));
+	}
+
+private:
 	// properties
 	int frequency = 10;
 	int lacunarity = 2;
 	float amplitude = 0.5f;
 	float persistence = 0.5f;
 	int octaves = 5;
-
-	// shader resources
-	OtComputeProgram program{"OtTileableFbmCS"};
-	OtUniformVec4 uniform{"u_tileableFbm", 2};
 };

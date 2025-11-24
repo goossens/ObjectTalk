@@ -1,0 +1,32 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+#version 450
+
+layout(local_size_x=16, local_size_y=16, local_size_z=1) in;
+
+layout(set=0, binding=0) uniform sampler2D inTexture;
+layout(set=1, binding=0) uniform writeonly image2D outTexture;
+
+void main() {
+	ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = imageSize(outTexture);
+
+	if (coord.x >= size.x || coord.y >= size.y) {
+		return;
+	}
+
+	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
+	vec2 uv2 = vec2(fract(uv + 0.5f));
+
+	float dist = distance(uv2, vec2(0.5f, 0.5f));
+	float alpha = clamp((dist - 0.3f) / (0.5f - 0.3f), 0.0f, 1.0f);
+
+	vec3 color1 = texture(inTexture, uv).xyz;
+	vec3 color2 = texture(inTexture, uv2).xyz;
+
+	imageStore(outTexture, coord, vec4(mix(color2, color1, alpha), 1.0f));
+}

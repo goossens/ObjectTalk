@@ -31,11 +31,6 @@ using OtCanvasObject = OtObjectPointer<OtCanvasClass>;
 
 class OtCanvasClass : public OtObjectClass {
 public:
-	// manipulate composite operation
-	inline void compositeOperation(int operation) { canvas.compositeOperation(operation); }
-	inline void compositeBlendFunc(int sfactor, int dfactor) { canvas.compositeBlendFunc(sfactor, dfactor); }
-	inline void compositeBlendFuncSeparate(int srcRGB, int dstRGB, int srcAlpha, int dstAlpha) { canvas.compositeBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha); }
-
 	// manipulate rendering state
 	inline void save() { canvas.save(); }
 	inline void restore() { canvas.restore(); }

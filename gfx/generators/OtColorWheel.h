@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include "OtColorWheelComp.h"
 #include "OtGenerator.h"
 
 
@@ -20,10 +21,12 @@
 //
 
 class OtColorWheel : public OtGenerator {
-private:
-	// prepare generator pass
-	OtComputeProgram& preparePass() override;
-
-	// shader resources
-	OtComputeProgram program{"OtColorWheelCS"};
+public:
+	// configure the compute pass
+	void configurePass([[maybe_unused]] OtComputePass& pass) override {
+		// initialize pipeline (if required)
+		if (!pipeline.isValid()) {
+			pipeline.setShader(OtColorWheelComp, sizeof(OtColorWheelComp));
+		}
+	}
 };

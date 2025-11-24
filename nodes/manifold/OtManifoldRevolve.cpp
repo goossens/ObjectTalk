@@ -44,7 +44,8 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::manifold;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
+	// properties
 	OtShape shape;
 	OtManifold manifold;
 	int segments = 128;

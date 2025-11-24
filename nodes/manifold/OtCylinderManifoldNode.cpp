@@ -45,7 +45,7 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::manifold;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
 	// properties
 	float height = 1.0f;
 	float bottomRadius = 0.5f;

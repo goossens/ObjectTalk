@@ -111,12 +111,7 @@ void OtSceneApp::renderViewPort() {
 	auto textureID = static_cast<ImTextureID>(render(static_cast<int>(size.x), static_cast<int>(size.y)));
 
 	// show it on the screen
-	if (OtGpuHasOriginBottomLeft()) {
-		ImGui::Image(textureID, size, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
-
-	} else {
-		ImGui::Image(textureID, size);
-	}
+	ImGui::Image(textureID, size);
 
 	ImGui::End();
 	ImGui::PopStyleVar();

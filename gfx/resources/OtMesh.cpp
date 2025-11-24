@@ -18,7 +18,6 @@
 
 #include "OtLog.h"
 
-#include "OtGpu.h"
 #include "OtMesh.h"
 
 
@@ -34,75 +33,6 @@ void OtMesh::clear() {
 
 	vertexBuffer.clear();
 	indexBuffer.clear();
-	lineBuffer.clear();
-}
-
-
-//
-//	OtMesh::generateCube
-//
-
-void OtMesh::generateCube() {
-	// clear the mesh
-	clear();
-
-	static float v[] = {
-		// back face
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
-		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
-		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
-		// front face
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
-		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
-		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
-		// left face
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
-		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
-		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
-		// right face
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
-		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
-		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left
-		// bottom face
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
-		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
-		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
-		// top face
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
-		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
-		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left
-	};
-
-	// add vertices
-	for (auto i = 0; i < 36; i++) {
-		addVertex(OtVertex(
-			glm::vec3(v[(i * 8) + 0], v[(i * 8) + 1], v[(i * 8) + 2]),
-			glm::vec3(v[(i * 8) + 3], v[(i * 8) + 4], v[(i * 8) + 5]),
-			glm::vec2(v[(i * 8) + 6], v[(i * 8) + 7])));
-	}
-
-	// add indices
-	for (auto i = 0; i < 12; i++) {
-		addTriangle(i * 3, (i * 3) + 1, (i * 3) + 2);
-	}
 }
 
 
@@ -129,11 +59,8 @@ void OtMesh::load(const std::string& path) {
 	auto flags =
 		aiProcessPreset_TargetRealtime_Quality |
 		aiProcess_OptimizeMeshes |
-		aiProcess_PreTransformVertices;
-
-	if (!OtGpuHasOriginBottomLeft()) {
-		flags |= aiProcess_FlipUVs;
-	}
+		aiProcess_PreTransformVertices |
+		aiProcess_FlipUVs;
 
 	// read the file
 	const aiScene* scene = importer.ReadFile(path, static_cast<unsigned int>(flags));
@@ -245,7 +172,7 @@ void OtMesh::generateAABB() {
 //
 
 void OtMesh::generateNormals() {
-	// clear normals
+	// clear tangents
 	for (auto& vertex : vertices) {
 		vertex.normal = glm::vec3(0.0f);
 	}
@@ -328,72 +255,18 @@ void OtMesh::generateTangents() {
 
 
 //
-//	OtMesh::getVertices
-//
-
-std::vector<OtVertex>& OtMesh::getVertices(bool update) {
-	if (update) {
-		refreshBuffers = true;
-		refreshLinesBuffer = true;
-	}
-
-	return vertices;
-}
-
-
-//
-//	OtMesh::submitTriangles
-//
-
-void OtMesh::submitTriangles() {
-	updateBuffers();
-	vertexBuffer.submit();
-	indexBuffer.submit();
-}
-
-
-//
-//	OtMesh::submitLines
-//
-
-void OtMesh::submitLines() {
-	updateBuffers(true);
-	vertexBuffer.submit();
-	lineBuffer.submit();
-}
-
-
-//
 //	OtMesh::updateBuffers
 //
 
-void OtMesh::updateBuffers(bool updateLines) {
+void OtMesh::updateBuffers() {
 	// update the buffers (if required)
 	if (refreshBuffers) {
 		if (!isValid()) {
 			OtLogFatal("You can't submit a mesh without vertices and/or indices");
 		}
 
-		vertexBuffer.set(vertices.data(), vertices.size(), OtVertex::getLayout());
+		vertexBuffer.set(vertices.data(), vertices.size(), OtVertex::getDescription());
 		indexBuffer.set(indices.data(), indices.size());
 		refreshBuffers = false;
-	}
-
-	// update lines buffer (if required)
-	if (updateLines && refreshLinesBuffer) {
-		std::vector<uint32_t> lines;
-
-		for (size_t i = 0; i < indices.size(); i += 3) {
-			auto p0 = indices[i];
-			auto p1 = indices[i + 1];
-			auto p2 = indices[i + 2];
-
-			lines.emplace_back(p0); lines.emplace_back(p1);
-			lines.emplace_back(p1); lines.emplace_back(p2);
-			lines.emplace_back(p2); lines.emplace_back(p0);
-		}
-
-		lineBuffer.set(lines.data(), lines.size());
-		refreshLinesBuffer = false;
 	}
 }

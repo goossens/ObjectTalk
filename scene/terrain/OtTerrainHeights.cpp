@@ -50,7 +50,7 @@ bool OtTerrainHeights::renderUI() {
 			ImGui::TableNextColumn();
 
 			if (normalmap.isValid()) {
-				ImGui::Image(normalmap.getColorTextureID(), ImVec2(512.0f, 512.0f));
+				ImGui::Image(normalmap.getTextureID(), ImVec2(512.0f, 512.0f));
 			}
 
 			ImGui::EndTable();
@@ -68,7 +68,7 @@ bool OtTerrainHeights::renderUI() {
 //	OtTerrainHeights::serialize
 //
 
-nlohmann::json OtTerrainHeights::serialize(std::string* /* basedir */) {
+nlohmann::json OtTerrainHeights::serialize([[maybe_unused]] std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["size"] = heightmapSize;
 	data["normalStrength"] = normalStrength;
@@ -85,7 +85,7 @@ nlohmann::json OtTerrainHeights::serialize(std::string* /* basedir */) {
 //	OtTerrainHeights::deserialize
 //
 
-void OtTerrainHeights::deserialize(nlohmann::json data, std::string* /* basedir */) {
+void OtTerrainHeights::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
 	heightmapSize = data.value("size", 256);
 	normalStrength = data.value("normalStrength", 10.0f);
 	frequency = data.value("frequency", 10);
@@ -103,8 +103,8 @@ void OtTerrainHeights::deserialize(nlohmann::json data, std::string* /* basedir 
 
 void OtTerrainHeights::update(OtTileableFbm& noise, OtNormalMapper& normals) {
 	// update size of framebuffer
-	heightmap.update(heightmapSize, heightmapSize);
-	normalmap.update(heightmapSize, heightmapSize);
+	heightmap.update(heightmapSize, heightmapSize, OtTexture::Format::r32, OtTexture::Usage::rwDefault);
+	normalmap.update(heightmapSize, heightmapSize, OtTexture::Format::rgba32, OtTexture::Usage::rwDefault);
 
 	// create noise map
 	noise.setFrequency(frequency);

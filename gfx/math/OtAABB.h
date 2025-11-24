@@ -64,7 +64,6 @@ public:
 	void debug();
 
 private:
-	// properties
 	glm::vec3 minp;
 	glm::vec3 maxp;
 };

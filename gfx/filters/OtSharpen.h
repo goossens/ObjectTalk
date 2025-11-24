@@ -12,9 +12,10 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "OtFilter.h"
-#include "OtShaderProgram.h"
-#include "OtUniformVec4.h"
+#include "OtSharpenComp.h"
 
 
 //
@@ -24,16 +25,28 @@
 class OtSharpen : public OtFilter {
 public:
 	// set properties
-	inline void setStrength(float s) { strength = s; }
+	inline void setStrength(float value) { strength = value; }
+
+	// configure the compute pass
+	void configurePass(OtComputePass& pass) override {
+		// initialize pipeline (if required)
+		if (!pipeline.isValid()) {
+			pipeline.setShader(OtSharpenComp, sizeof(OtSharpenComp));
+		}
+
+		// set uniforms
+		struct Uniforms {
+			glm::vec2 texelSize;
+			int32_t strength;
+		} uniforms {
+			sourceTexelSize,
+			static_cast<int32_t>(strength)
+		};
+
+		pass.addUniforms(&uniforms, sizeof(uniforms));
+	}
 
 private:
-	// execute filter
-	void execute(OtPass& pass) override;
-
 	// properties
-	float strength = 1.0f;
-
-	// GPU assets
-	OtUniformVec4 uniform = OtUniformVec4("u_sharpen", 1);
-	OtShaderProgram program = OtShaderProgram("OtFilterVS", "OtSharpenFS");
+	float strength = 100.0f;
 };

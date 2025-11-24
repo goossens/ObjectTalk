@@ -12,9 +12,10 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "OtFilter.h"
-#include "OtShaderProgram.h"
-#include "OtUniformVec4.h"
+#include "OtPixelateComp.h"
 
 
 //
@@ -24,16 +25,26 @@
 class OtPixelate : public OtFilter {
 public:
 	// set properties
-	inline void setSize(int s) { size = s; }
+	inline void setSize(int value) { size = value; }
+
+	// configure the compute pass
+	void configurePass(OtComputePass& pass) override {
+		// initialize pipeline (if required)
+		if (!pipeline.isValid()) {
+			pipeline.setShader(OtPixelateComp, sizeof(OtPixelateComp));
+		}
+
+		// set uniforms
+		struct Uniforms {
+			int32_t size;
+		} uniforms {
+			static_cast<int32_t>(size)
+		};
+
+		pass.addUniforms(&uniforms, sizeof(uniforms));
+	}
 
 private:
-	// execute filter
-	void execute(OtPass& pass) override;
-
 	// properties
-	int size = 5;
-
-	// GPU assets
-	OtUniformVec4 uniform = OtUniformVec4("u_pixelate", 1);
-	OtShaderProgram program = OtShaderProgram("OtFilterVS", "OtPixelateFS");
+	int size = 10;
 };

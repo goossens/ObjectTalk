@@ -50,7 +50,8 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::shape;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
+	// proterties
 	OtShape input;
 	OtShape output;
 	glm::vec2 translate{0.0f};

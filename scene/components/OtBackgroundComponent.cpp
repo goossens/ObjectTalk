@@ -31,7 +31,7 @@ bool OtBackgroundComponent::renderUI() {
 //	OtBackgroundComponent::serialize
 //
 
-nlohmann::json OtBackgroundComponent::serialize(std::string* /* basedir */) {
+nlohmann::json OtBackgroundComponent::serialize([[maybe_unused]] std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["color"] = color;
 	return data;
@@ -42,6 +42,6 @@ nlohmann::json OtBackgroundComponent::serialize(std::string* /* basedir */) {
 //	OtBackgroundComponent::deserialize
 //
 
-void OtBackgroundComponent::deserialize(nlohmann::json data, std::string* /* basedir */) {
+void OtBackgroundComponent::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
 	color = data.value("color", glm::vec3(0.0f));
 }

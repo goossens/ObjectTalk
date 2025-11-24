@@ -55,7 +55,8 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::shape;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
+	// proterties
 	OtShape shape;
 	OtColor color{1.0f, 0.0f, 0.0f, 1.0f};
 	bool outline = false;

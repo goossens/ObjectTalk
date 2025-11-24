@@ -32,7 +32,7 @@ void OtModelTexture::load(size_t modelID, size_t textureID, const aiTexture* tex
 		asset->getTexture().load(
 			static_cast<int>(texture->mWidth),
 			static_cast<int>(texture->mHeight),
-			OtTexture::rgba8Texture,
+			OtTexture::Format::rgba8,
 			texture->pcData,
 			true);
 	}

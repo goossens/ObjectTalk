@@ -30,7 +30,7 @@ public:
 	}
 
 	// run filter
-	inline void onFilter(OtTexture& input, OtFrameBuffer& output) override {
+	inline void onFilter(OtTexture& input, OtTexture& output) override {
 		csb.setContrast(contrast);
 		csb.setSaturation(saturation);
 		csb.setBrightness(brightness);
@@ -41,6 +41,7 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::texture;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
+private:
 	// properties
 	OtContrastSaturationBrightness csb;
 	float contrast = 1.0f;

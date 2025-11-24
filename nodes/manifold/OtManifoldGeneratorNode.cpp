@@ -166,11 +166,11 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::manifold;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
+	// properties
 	OtAsset<OtScriptAsset> script;
 	OtObject instance;
 	OtManifold manifold;
-	int version = 1;
 
 	OtID GenerateID = OtIdentifier::create("generate");
 	OtID GeneratorID = OtIdentifier::create("Generator");

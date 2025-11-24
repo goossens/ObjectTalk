@@ -15,8 +15,10 @@
 #include <string>
 #include <vector>
 
-#include "OtFrameBuffer.h"
+#include "glm/glm.hpp"
+
 #include "OtOscilloscope.h"
+#include "OtTexture.h"
 #include "OtUi.h"
 
 #include "OtWidget.h"
@@ -115,13 +117,13 @@ private:
 	OtUi::Alignment horizontalAlign = OtUi::Alignment::left;
 	OtUi::Alignment verticalAlign = OtUi::Alignment::top;
 
-	// oscilloscope to render display
+	// oscilloscope to render vector display
 	OtOscilloscope scope;
-	OtFrameBuffer framebuffer{OtTexture::rgba8Texture};
+	OtTexture texture;
 
 	// style variables
 	struct Style {
-		uint32_t color = 0xffffffff;
+		glm::vec4 color{1.0f};
 		float width = 1.0f;
 	};
 
@@ -142,7 +144,7 @@ private:
 		bool enabled;
 		Type type;
 		float width;
-		uint32_t color;
+		glm::vec4 color;
 
 		union {
 			float x;

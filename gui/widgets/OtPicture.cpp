@@ -65,7 +65,7 @@ void OtPictureClass::render() {
 		auto& texture = picture->getTexture();
 		auto size = ImVec2(texture.getWidth() * scale, texture.getHeight() * scale);
 		OtUi::align(size, horizontalAlign, verticalAlign);
-		ImGui::Image(static_cast<ImTextureID>(texture.getIndex()), size);
+		ImGui::Image(static_cast<ImTextureID>(texture.getTextureID()), size);
 	}
 }
 

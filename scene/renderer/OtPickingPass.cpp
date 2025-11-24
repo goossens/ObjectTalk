@@ -9,67 +9,72 @@
 //	Include files
 //
 
-#include "OtAssert.h"
-
 #include "glm/glm.hpp"
 
-#include "OtPass.h"
+#include "OtRenderPass.h"
 
 #include "OtPickingPass.h"
+
+#include "OtSimpleVert.h"
+#include "OtSimpleAnimatedVert.h"
+#include "OtSimpleInstancingVert.h"
+#include "OtSimpleTerrainVert.h"
+#include "OtSimpleGrassVert.h"
+
+#include "OtPickingOpaqueFrag.h"
+#include "OtPickingTransparentFrag.h"
 
 
 //
 //	OtPickingPass::render
 //
 
-void OtPickingPass::render(OtSceneRendererContext& ctx, glm::vec2 ndc, std::function<void(OtEntity)> callback) {
-	// sanity check
-	OtAssert(!picking);
-	picking = true;
+OtEntity OtPickingPass::render(OtSceneRendererContext& ctx, glm::vec2 uv) {
+	// initialize resources (if required)
+	if (!resourcesInitialized) {
+		initializeResources();
+		resourcesInitialized = true;
+	}
 
 	// update buffer (if required)
-	idBuffer.update(bufferSize, bufferSize);
+	idBuffer.update(ctx.camera.width / 4, ctx.camera.height / 4);
 
-	// create a "picking" camera focused on the selected point
-	glm::mat4 inverse = glm::inverse(ctx.camera.viewProjectionMatrix);
-	glm::vec3 eye = OtGlmMul(inverse, glm::vec3(ndc, OtGpuHasHomogeneousDepth() ? -1.0f : 0.0f));
-	glm::vec3 at = OtGlmMul(inverse, glm::vec3(ndc, 1.0f));
-
-	float nearPlane, farPlane;
-	ctx.camera.getNearFar(nearPlane, farPlane);
-
-	OtCamera pickingCamera{bufferSize, bufferSize, nearPlane, farPlane, 1.0f, eye, at};
+	// setup camera for identification buffer
+	auto camera = ctx.camera;
+	ctx.camera = OtCamera(idBuffer.getWidth(), idBuffer.getHeight(), camera.projectionMatrix, camera.viewMatrix);
 
 	// setup pass to render entities as opaque blobs
-	OtPass pass;
-	pass.setRectangle(0, 0, bufferSize, bufferSize);
-	pass.setFrameBuffer(idBuffer);
-	pass.setClear(true, true);
-	pass.setViewTransform(pickingCamera.viewMatrix, pickingCamera.projectionMatrix);
-	pass.touch();
-
-	// update context
-	auto camera = ctx.camera;
-	ctx.camera = pickingCamera;
+	OtRenderPass pass;
+	ctx.pass = &pass;
+	pass.setClearColor(true);
+	pass.setClearDepth(true);
+	pass.start(idBuffer);
 
 	// render all entity IDs into buffer
 	entityMap.clear();
 	nextID = 1;
-	renderEntities(ctx, pass);
+	renderEntities(ctx);
+
+	pass.end();
 	ctx.camera = camera;
 
-	// transfer ID buffer back to CPU (this takes 2 frames hence the callback)
-	auto texture = idBuffer.getColorTexture();
+	// readback entity ID texture to CPU image
+	auto& image = idReadback.readback(idBuffer.getColorTexture());
 
-	idReadback.readback(texture, [this, callback]() {
-		// find entity ID that appears most often in readback buffer
-		std::unordered_map<int, int> frequency;
-		int maxCount = 0;
-		int picked = 0;
-		uint8_t* pixels = (uint8_t*) idReadback.getImage().getPixels();
+	// find entity ID that appears most often in readback buffer
+	std::unordered_map<int, int> frequency;
+	int maxCount = 0;
+	int picked = 0;
+	uint8_t* pixels = (uint8_t*) image.getPixels();
+	auto bpp = image.getBpp();
+	auto pitch = image.getPitch();
 
-		for (auto i = 0; i < bufferSize * bufferSize; i++) {
-			int pick = pixels[i];
+	int px = static_cast<int>(uv.x * idBuffer.getWidth());
+	int py = static_cast<int>(uv.y * idBuffer.getHeight());
+
+	for (int y = py - 1; y <= py + 1; y++) {
+		for (int x = px - 1; x <= px + 1; x++) {
+			int pick = pixels[y * pitch + x * bpp];
 
 			if (pick) {
 				int count = 1;
@@ -86,12 +91,10 @@ void OtPickingPass::render(OtSceneRendererContext& ctx, glm::vec2 ndc, std::func
 				}
 			}
 		}
+	}
 
-		// if something was hit, report it back
-		// clear selection otherwise
-		callback(maxCount ? entityMap[picked] : OtEntityNull);
-		picking = false;
-	});
+	// if something was hit, report it back
+	return maxCount ? entityMap[picked] : OtEntityNull;
 }
 
 
@@ -100,18 +103,18 @@ void OtPickingPass::render(OtSceneRendererContext& ctx, glm::vec2 ndc, std::func
 //
 
 void OtPickingPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) {
-	ctx.pickingUniforms.setValue(0, float(nextID) / 255.0f, 0.0f, 0.0f, 0.0f);
-	ctx.pickingUniforms.submit();
-	entityMap[nextID++] = grd.entity;
+	setFragmentUniforms(ctx, grd.entity);
 
-	renderOpaqueGeometryHelper(
+	renderGeometryHelper(
 		ctx,
 		grd,
-		OtPass::stateWriteRgb | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateLines,
-		OtPass::stateWriteRgb | OtPass::stateWriteZ | OtPass::stateDepthTestLess | (grd.component->cullBack ? OtPass::stateCullCw : 0),
 		MaterialSubmission::none,
-		opaqueProgram,
-		instancedOpaqueProgram);
+		opaqueCullingPipeline,
+		opaqueNoCullingPipeline,
+		opaqueLinesPipeline,
+		opaqueInstancedCullingPipeline,
+		opaqueInstancedNoCullingPipeline,
+		opaqueInstancedLinesPipeline);
 }
 
 
@@ -120,17 +123,14 @@ void OtPickingPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeometry
 //
 
 void OtPickingPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtModelRenderData& mrd) {
-	ctx.pickingUniforms.setValue(0, float(nextID) / 255.0f, 0.0f, 0.0f, 0.0f);
-	ctx.pickingUniforms.submit();
-	entityMap[nextID++] = mrd.entity;
+	setFragmentUniforms(ctx, mrd.entity);
 
-	renderOpaqueModelHelper(
+	renderModelHelper(
 		ctx,
 		mrd,
-		OtPass::stateWriteRgb | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateCullCw,
 		MaterialSubmission::none,
-		animatedOpaqueProgram,
-		opaqueProgram);
+		opaqueCullingPipeline,
+		animatedPipeline);
 }
 
 
@@ -138,17 +138,15 @@ void OtPickingPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtModelRender
 //	OtPickingPass::renderTerrain
 //
 
-void OtPickingPass::renderTerrain(OtSceneRendererContext& ctx, [[maybe_unused]] OtEntity entity, OtTerrainComponent& terrain) {
-	ctx.pickingUniforms.setValue(0, float(nextID) / 255.0f, 0.0f, 0.0f, 0.0f);
-	ctx.pickingUniforms.submit();
-	entityMap[nextID++] = entity;
+void OtPickingPass::renderTerrain(OtSceneRendererContext& ctx, OtEntity entity, OtTerrainComponent& terrain) {
+	setFragmentUniforms(ctx, entity);
 
 	renderTerrainHelper(
 		ctx,
 		terrain,
-		OtPass::stateWriteRgb | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateLines,
-		OtPass::stateWriteRgb | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateCullCw,
-		terrainProgram);
+		false,
+		terrainCullingPipeline,
+		terrainLinesPipeline);
 }
 
 
@@ -157,16 +155,13 @@ void OtPickingPass::renderTerrain(OtSceneRendererContext& ctx, [[maybe_unused]] 
 //
 
 void OtPickingPass::renderGrass(OtSceneRendererContext& ctx, OtEntity entity, OtGrassComponent& grass) {
-	ctx.pickingUniforms.setValue(0, float(nextID) / 255.0f, 0.0f, 0.0f, 0.0f);
-	ctx.pickingUniforms.submit();
-	entityMap[nextID++] = entity;
+	setFragmentUniforms(ctx, entity);
 
 	renderGrassHelper(
 		ctx,
 		entity,
 		grass,
-		OtPass::stateWriteRgb | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateCullCw,
-		grassProgram);
+		grassPipeline);
 }
 
 
@@ -175,16 +170,138 @@ void OtPickingPass::renderGrass(OtSceneRendererContext& ctx, OtEntity entity, Ot
 //
 
 void OtPickingPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) {
-	ctx.pickingUniforms.setValue(0, float(nextID) / 255.0f, 0.0f, 0.0f, 0.0f);
-	ctx.pickingUniforms.submit();
-	entityMap[nextID++] = grd.entity;
+	setFragmentUniforms(ctx, grd.entity);
+	albedoUniformSlot = 1;
 
-	renderTransparentGeometryHelper(
+	renderGeometryHelper(
 		ctx,
 		grd,
-		OtPass::stateWriteRgb | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateLines,
-		OtPass::stateWriteRgb | OtPass::stateWriteZ | OtPass::stateDepthTestLess | (grd.component->cullBack ? OtPass::stateCullCw : 0),
 		MaterialSubmission::justAlbedo,
-		transparentProgram,
-		instancedTransparentProgram);
+		transparentCullingPipeline,
+		transparentNoCullingPipeline,
+		transparentLinesPipeline,
+		transparentInstancedCullingPipeline,
+		transparentInstancedNoCullingPipeline,
+		transparentInstancedLinesPipeline);
+}
+
+
+//
+//	OtPickingPass::setFragmentUniforms
+//
+
+void OtPickingPass::setFragmentUniforms(OtSceneRendererContext& ctx, OtEntity entity) {
+	struct Uniforms {
+		float entityID;
+	} uniforms {
+		static_cast<float>(nextID) / 255.0f
+	};
+
+	ctx.pass->setFragmentUniforms(0, &uniforms, sizeof(uniforms));
+	entityMap[nextID++] = entity;
+}
+
+
+//
+//	OtPickingPass::initializeResources
+//
+
+void OtPickingPass::initializeResources() {
+	opaqueCullingPipeline.setShaders(OtSimpleVert, sizeof(OtSimpleVert), OtPickingOpaqueFrag, sizeof(OtPickingOpaqueFrag));
+	opaqueCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);
+	opaqueCullingPipeline.setVertexDescription(OtVertex::getDescription());
+	opaqueCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	opaqueCullingPipeline.setCulling(OtRenderPipeline::Culling::cw);
+
+	opaqueNoCullingPipeline.setShaders(OtSimpleVert, sizeof(OtSimpleVert), OtPickingOpaqueFrag, sizeof(OtPickingOpaqueFrag));
+	opaqueNoCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);
+	opaqueNoCullingPipeline.setVertexDescription(OtVertex::getDescription());
+	opaqueNoCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+
+	opaqueLinesPipeline.setShaders(OtSimpleVert, sizeof(OtSimpleVert), OtPickingOpaqueFrag, sizeof(OtPickingOpaqueFrag));
+	opaqueLinesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);
+	opaqueLinesPipeline.setVertexDescription(OtVertex::getDescription());
+	opaqueLinesPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	opaqueLinesPipeline.setFill(false);
+
+	opaqueInstancedCullingPipeline.setShaders(OtSimpleInstancingVert, sizeof(OtSimpleInstancingVert), OtPickingOpaqueFrag, sizeof(OtPickingOpaqueFrag));
+	opaqueInstancedCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);
+	opaqueInstancedCullingPipeline.setVertexDescription(OtVertex::getDescription());
+	opaqueInstancedCullingPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
+	opaqueInstancedCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	opaqueInstancedCullingPipeline.setCulling(OtRenderPipeline::Culling::cw);
+
+	opaqueInstancedNoCullingPipeline.setShaders(OtSimpleInstancingVert, sizeof(OtSimpleInstancingVert), OtPickingOpaqueFrag, sizeof(OtPickingOpaqueFrag));
+	opaqueInstancedNoCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);
+	opaqueInstancedNoCullingPipeline.setVertexDescription(OtVertex::getDescription());
+	opaqueInstancedNoCullingPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
+	opaqueInstancedNoCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+
+	opaqueInstancedLinesPipeline.setShaders(OtSimpleInstancingVert, sizeof(OtSimpleInstancingVert), OtPickingOpaqueFrag, sizeof(OtPickingOpaqueFrag));
+	opaqueInstancedLinesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);
+	opaqueInstancedLinesPipeline.setVertexDescription(OtVertex::getDescription());
+	opaqueInstancedLinesPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
+	opaqueInstancedLinesPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	opaqueInstancedLinesPipeline.setFill(false);
+
+	animatedPipeline.setShaders(OtSimpleAnimatedVert, sizeof(OtSimpleAnimatedVert), OtPickingOpaqueFrag, sizeof(OtPickingOpaqueFrag));
+	animatedPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);
+	animatedPipeline.setVertexDescription(OtVertex::getDescription());
+	animatedPipeline.setAnimatedDescription(OtVertexBones::getDescription());
+	animatedPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	animatedPipeline.setCulling(OtRenderPipeline::Culling::cw);
+
+	terrainCullingPipeline.setShaders(OtSimpleTerrainVert, sizeof(OtSimpleTerrainVert), OtPickingOpaqueFrag, sizeof(OtPickingOpaqueFrag));
+	terrainCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);
+	terrainCullingPipeline.setVertexDescription(OtVertexPos::getDescription());
+	terrainCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+
+	terrainLinesPipeline.setShaders(OtSimpleTerrainVert, sizeof(OtSimpleTerrainVert), OtPickingOpaqueFrag, sizeof(OtPickingOpaqueFrag));
+	terrainLinesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);
+	terrainLinesPipeline.setVertexDescription(OtVertexPos::getDescription());
+	terrainLinesPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	terrainLinesPipeline.setFill(false);
+
+	grassPipeline.setShaders(OtSimpleGrassVert, sizeof(OtSimpleGrassVert), OtPickingOpaqueFrag, sizeof(OtPickingOpaqueFrag));
+	grassPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);
+	grassPipeline.setVertexDescription(OtVertexPos::getDescription());
+	grassPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	grassPipeline.setCulling(OtRenderPipeline::Culling::cw);
+
+	transparentCullingPipeline.setShaders(OtSimpleVert, sizeof(OtSimpleVert), OtPickingTransparentFrag, sizeof(OtPickingTransparentFrag));
+	transparentCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);
+	transparentCullingPipeline.setVertexDescription(OtVertex::getDescription());
+	transparentCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	transparentCullingPipeline.setCulling(OtRenderPipeline::Culling::cw);
+
+	transparentNoCullingPipeline.setShaders(OtSimpleVert, sizeof(OtSimpleVert), OtPickingTransparentFrag, sizeof(OtPickingTransparentFrag));
+	transparentNoCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);
+	transparentNoCullingPipeline.setVertexDescription(OtVertex::getDescription());
+	transparentNoCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+
+	transparentLinesPipeline.setShaders(OtSimpleVert, sizeof(OtSimpleVert), OtPickingTransparentFrag, sizeof(OtPickingTransparentFrag));
+	transparentLinesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);
+	transparentLinesPipeline.setVertexDescription(OtVertex::getDescription());
+	transparentLinesPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	transparentLinesPipeline.setFill(false);
+
+	transparentInstancedCullingPipeline.setShaders(OtSimpleInstancingVert, sizeof(OtSimpleInstancingVert), OtPickingTransparentFrag, sizeof(OtPickingTransparentFrag));
+	transparentInstancedCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);
+	transparentInstancedCullingPipeline.setVertexDescription(OtVertex::getDescription());
+	transparentInstancedCullingPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
+	transparentInstancedCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	transparentInstancedCullingPipeline.setCulling(OtRenderPipeline::Culling::cw);
+
+	transparentInstancedNoCullingPipeline.setShaders(OtSimpleInstancingVert, sizeof(OtSimpleInstancingVert), OtPickingTransparentFrag, sizeof(OtPickingTransparentFrag));
+	transparentInstancedNoCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);
+	transparentInstancedNoCullingPipeline.setVertexDescription(OtVertex::getDescription());
+	transparentInstancedNoCullingPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
+	transparentInstancedNoCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+
+	transparentInstancedLinesPipeline.setShaders(OtSimpleInstancingVert, sizeof(OtSimpleInstancingVert), OtPickingTransparentFrag, sizeof(OtPickingTransparentFrag));
+	transparentInstancedLinesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);
+	transparentInstancedLinesPipeline.setVertexDescription(OtVertex::getDescription());
+	transparentInstancedLinesPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
+	transparentInstancedLinesPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	transparentInstancedLinesPipeline.setFill(false);
 }

@@ -17,7 +17,6 @@
 
 #include "OtAABB.h"
 #include "OtFrustum.h"
-#include "OtGpu.h"
 
 
 //
@@ -45,9 +44,7 @@ public:
 		viewMatrix(vm) {
 
 		// calculate projection matrix
-		projectionMatrix = OtGpuHasHomogeneousDepth()
-			? glm::perspectiveFovRH_NO(glm::radians(fov), static_cast<float>(width), static_cast<float>(height), nearPlane, farPlane)
-			: glm::perspectiveFovRH_ZO(glm::radians(fov), static_cast<float>(width), static_cast<float>(height), nearPlane, farPlane);
+		projectionMatrix = glm::perspectiveFovRH_ZO(glm::radians(fov), static_cast<float>(width), static_cast<float>(height), nearPlane, farPlane);
 
 		// update camera
 		update();
@@ -59,10 +56,7 @@ public:
 
 		// determine view and projection matrices
 		viewMatrix = glm::lookAt(eye, at, glm::vec3(0.0f, 1.0f, 0.0f));
-
-		projectionMatrix = OtGpuHasHomogeneousDepth()
-			? glm::perspectiveFovRH_NO(glm::radians(fov), static_cast<float>(width), static_cast<float>(height), nearPlane, farPlane)
-			: glm::perspectiveFovRH_ZO(glm::radians(fov), static_cast<float>(width), static_cast<float>(height), nearPlane, farPlane);
+		projectionMatrix = glm::perspectiveFovRH_ZO(glm::radians(fov), static_cast<float>(width), static_cast<float>(height), nearPlane, farPlane);
 
 		// initialize camera
 		update();
@@ -70,14 +64,8 @@ public:
 
 	// get the near and far value from the projection matrix
 	inline void getNearFar(float& nearPlane, float& farPlane) {
-		if (OtGpuHasHomogeneousDepth()) {
-			nearPlane = (2.0f * projectionMatrix[3][2]) / (2.0f * projectionMatrix[2][2] - 2.0f);
-			farPlane = ((projectionMatrix[2][2] - 1.0f) * nearPlane) / (projectionMatrix[2][2] + 1.0f);
-
-		} else {
-			nearPlane = projectionMatrix[3][2] / projectionMatrix[2][2];
-			farPlane = (projectionMatrix[2][2] * nearPlane) / (projectionMatrix[2][2] + 1.0f);
-		}
+		nearPlane = projectionMatrix[3][2] / projectionMatrix[2][2];
+		farPlane = (projectionMatrix[2][2] * nearPlane) / (projectionMatrix[2][2] + 1.0f);
 	}
 
 	// update camera
@@ -93,14 +81,14 @@ public:
 	}
 
 	// see if an AABB box is visible
-	inline bool isVisibleAABB(const OtAABB& aabb) { return frustum.isVisibleAABB(aabb); }
+	bool isVisibleAABB(const OtAABB& aabb) { return frustum.isVisibleAABB(aabb); }
 
 	// properties
 	int width = 0;
 	int height = 0;
-	glm::vec3 position = glm::vec3(0.0f);
-	glm::mat4 viewMatrix = glm::mat4(0.0f);
-	glm::mat4 projectionMatrix = glm::mat4(0.0f);
-	glm::mat4 viewProjectionMatrix = glm::mat4(0.0f);
+	glm::vec3 position{0.0f};
+	glm::mat4 viewMatrix{0.0f};
+	glm::mat4 projectionMatrix{0.0f};
+	glm::mat4 viewProjectionMatrix{0.0f};
 	OtFrustum frustum;
 };

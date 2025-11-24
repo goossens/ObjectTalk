@@ -12,18 +12,9 @@
 //	Include files
 //
 
-#include <cstdint>
-#include <string>
+#include <memory>
 
-#include "OtBgfxHandle.h"
-#include "OtTexture.h"
-
-
-//
-//	Forward declaration
-//
-
-class OtCubeMap;
+#include "SDL3/SDL.h"
 
 
 //
@@ -32,43 +23,69 @@ class OtCubeMap;
 
 class OtSampler {
 public:
-	// sampler flags
-	static constexpr uint64_t linearSampling = BGFX_SAMPLER_NONE;
-	static constexpr uint64_t pointSampling = BGFX_SAMPLER_POINT;
-	static constexpr uint64_t anisotropicSampling = BGFX_SAMPLER_MIN_ANISOTROPIC | BGFX_SAMPLER_MAG_ANISOTROPIC;
-	static constexpr uint64_t repeatSampling = BGFX_SAMPLER_NONE;
-	static constexpr uint64_t clampSampling = BGFX_SAMPLER_UVW_CLAMP;
-	static constexpr uint64_t mirrorSampling = BGFX_SAMPLER_UVW_MIRROR;
-	static constexpr uint64_t defaultSampling = linearSampling | repeatSampling;
+	// filtering options
+	enum class Filter {
+		none,
+		nearest,
+		linear,
+		anisotropic
+	};
 
-	// constructor
-	inline OtSampler(const char* n, uint64_t f=defaultSampling) : name(n), flags(f) {}
+	enum class Addressing {
+		none,
+		repeat,
+		mirror,
+		clamp
+	};
 
-	// clear the resources
+	// constructors
+	OtSampler() = default;
+	OtSampler(Filter filter, Addressing addressing) : requestedFilter(filter), requestedAddressingX(addressing), requestedAddressingY(addressing) {}
+	OtSampler(Filter filter, Addressing addressingX, Addressing addressingY) : requestedFilter(filter), requestedAddressingX(addressingX), requestedAddressingY(addressingY) {}
+
+	// clear the object
 	void clear();
 
-	// (re)set the flags
-	void setFlags(uint64_t f);
-
 	// see if sampler is valid
-	inline bool isValid() { return uniform.isValid(); }
+	inline bool isValid() { return sampler != nullptr; }
 
-	// bind texture/cubemap to sampler and submit to GPU
-	void submit(int unit, OtTexture& texture);
-	void submit(int unit, bgfx::TextureHandle texture);
-	void submit(int unit, OtCubeMap& cubemap);
+	// access options
+	inline void setFilter(Filter filter) { requestedFilter = filter; }
+	inline Filter getFilter() { return requestedFilter; };
 
-	void submitDummyTexture(int unit); // bind dummy texture
-	void submitDummyCubeMap(int unit); // bind dummy cubemap
+	inline void setAddressing(Addressing addressing) {
+		requestedAddressingX = addressing;
+		requestedAddressingY = addressing;
+	}
+
+	inline void setAddressingX(Addressing addressing) { requestedAddressingX = addressing; }
+	inline void setAddressingY(Addressing addressing) { requestedAddressingY = addressing; }
+	inline Addressing getAddressingX() { return requestedAddressingX; };
+	inline Addressing getAddressingY() { return requestedAddressingY; };
+
+	inline void setMinMaxLod(float mnLod, float mxLod) { minLod = mnLod; maxLod = mxLod; }
+	inline float getMinLod() { return minLod; }
+	inline float getMaxLod() { return maxLod; }
 
 private:
-	// private method to create the uniform
-	void createUniform();
+	// sampler
+	std::shared_ptr<SDL_GPUSampler> sampler;
 
 	// properties
-	std::string name;
-	uint64_t flags;
+	Filter requestedFilter = Filter::linear;
+	Filter currentFilter = Filter::none;
+	Addressing requestedAddressingX = Addressing::repeat;
+	Addressing requestedAddressingY = Addressing::repeat;
+	Addressing currentAddressingX = Addressing::none;
+	Addressing currentAddressingY = Addressing::none;
+	float minLod = 0;
+	float maxLod = 0;
 
-	// uniform
-	OtBgfxHandle<bgfx::UniformHandle> uniform;
+	// memory manage SDL resource
+	void assign(SDL_GPUSampler* newSampler);
+
+	// get the raw sampler object
+	friend class OtComputePass;
+	friend class OtRenderPass;
+	SDL_GPUSampler* getSampler();
 };

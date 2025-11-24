@@ -36,7 +36,8 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::math;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::flexible;
 
-protected:
+private:
+	// proterties
 	float x{0.0f};
 	float y{0.0f};
 	glm::vec2 value{0.0f};

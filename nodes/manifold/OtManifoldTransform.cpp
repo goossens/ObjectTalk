@@ -47,7 +47,8 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::manifold;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
+	// properties
 	OtManifold input;
 	OtManifold output;
 	glm::vec3 translate{0.0f};

@@ -16,7 +16,7 @@
 
 
 //
-//  OtMapTile
+//	OtMapTile
 //
 
 class OtMapTile {

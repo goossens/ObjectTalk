@@ -77,7 +77,7 @@ void OtManifold::load(const std::string& filepath) {
 
 	unsigned int flags =
 		aiProcess_Triangulate |
-	    aiProcess_RemoveComponent |
+		aiProcess_RemoveComponent |
 		aiProcess_PreTransformVertices |
 		aiProcess_SortByPType;
 
@@ -176,10 +176,10 @@ void OtManifold::save(const std::string& filepath) {
 	scene->mMeshes[0]->mPrimitiveTypes = aiPrimitiveType_TRIANGLE;
 
 	// create an assimp mesh
-    aiMesh* aMash = scene->mMeshes[0];
+	aiMesh* aMash = scene->mMeshes[0];
 	aMash->mNumVertices = mesh.NumVert();
 	aMash->mVertices = new aiVector3D[aMash->mNumVertices];
-    aMash->mNormals = new aiVector3D[aMash->mNumVertices];
+	aMash->mNormals = new aiVector3D[aMash->mNumVertices];
 
 	for (size_t i = 0; i < static_cast<size_t>(aMash->mNumVertices); i++) {
 		auto x = mesh.vertProperties[i * mesh.numProp + 0];

@@ -50,14 +50,14 @@ public:
 		lapTime = startTime;
 	}
 
-	// return elapsed time in milliseconds
+	// return elapsed time in milliseconds since start of stopwatch
 	inline float elapsed() {
 		auto now = std::chrono::high_resolution_clock::now();
 		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(now - startTime).count();
 		return static_cast<float>(microseconds) / 1000.0f;
 	}
 
-	// return elapsed time in milliseconds since last call to lap
+	// return elapsed time in milliseconds since last "lap" call (or the start if this is the first call)
 	inline float lap() {
 		auto now = std::chrono::high_resolution_clock::now();
 		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(now - lapTime).count();

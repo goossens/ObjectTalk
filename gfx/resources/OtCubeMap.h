@@ -12,17 +12,16 @@
 //	Include files
 //
 
-#include <cstdint>
 #include <cmath>
 #include <memory>
 #include <string>
 
+#include "SDL3/SDL.h"
+
 #include "OtLibuv.h"
 
-#include "OtBgfxHandle.h"
-#include "OtSampler.h"
-#include "OtShaderProgram.h"
-#include "OtUniformVec4.h"
+#include "OtImage.h"
+#include "OtGpu.h"
 
 
 //
@@ -31,32 +30,31 @@
 
 class OtCubeMap {
 public:
+	// image formats
+	enum class Format {
+		none = SDL_GPU_TEXTUREFORMAT_INVALID,
+		rgba8 = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM,
+		rgba16 = SDL_GPU_TEXTUREFORMAT_R16G16B16A16_FLOAT,
+		rgba32 = SDL_GPU_TEXTUREFORMAT_R32G32B32A32_FLOAT
+	};
+
 	// create an empty cubemap
-	void create(int size, bool mip, int layers, int format, uint64_t flags);
+	void create(Format format, int size, bool mip=false);
 
 	// load cubemap from the specified file
 	void load(const std::string& path, bool async=false);
 
 	// clear the resources
-	inline void clear() { cubemap.clear(); }
+	void clear();
 
 	// see if cubemap is valid
-	inline bool isValid() { return cubemap.isValid(); }
-
-	// return cubemap handle
-	bgfx::TextureHandle getHandle();
-
-	// return cubemap index
-	inline uint16_t getIndex() {
-		return isValid() ? cubemap.getIndex() : bgfx::kInvalidHandle;
-	}
+	inline bool isValid() { return cubemap != nullptr; }
 
 	// get cubemap information
 	inline int getSize() { return size; }
 	inline bool hasMip() { return mip; }
 	inline int getMipLevels() { return mip ? (int) std::ceil(std::log2(float(size))) : 0; }
-	inline int getLayers() { return layers; }
-	inline int getFormat() { return format; }
+	inline Format getFormat() { return format; }
 
 	// version management
 	inline void setVersion(int v) { version = v; }
@@ -74,30 +72,34 @@ public:
 
 private:
 	// cubemap texture
-	OtBgfxHandle<bgfx::TextureHandle> cubemap;
+	std::shared_ptr<SDL_GPUTexture> cubemap;
+
+	// memory manage SDL resource
+	void assign(SDL_GPUTexture* newTexture);
+
+	// properties
+	Format format = Format::none;
 	int size = 1;
 	bool mip = false;
-	int layers = 1;
-	int format;
 	int version = 0;
 
 	// temporary variable for async loading from files
 	uv_async_t* asyncHandle = nullptr;
-
-	std::shared_ptr<OtImage> tmpImages[6];
-
-	OtBgfxHandle<bgfx::TextureHandle> tmpTexture;
-	OtBgfxHandle<bgfx::FrameBufferHandle> framebuffers[6];
-	OtSampler remapSampler{"s_equirectangularMap", OtSampler::linearSampling | OtSampler::repeatSampling};
-	OtShaderProgram reprojectShader{"OtHdrReprojectVS", "OtHdrReprojectFS"};
+	std::unique_ptr<std::byte[]> imageData;
+	std::unique_ptr<OtImage> asyncImage;
+	size_t bytesPerImage;
 
 	// specific cubemap loaders
 	void loadJSON(const std::string& path, bool async);
-	void loadCubemapImage(const std::string& path, bool async);
 	void loadHdrImage(const std::string& path, bool async);
 
 	// local support functions
 	void createCubemapFromSides();
-	void createCubemapFromImage();
 	void createCubemapFromHDR();
+
+	// get the raw texture object
+	friend class OtComputePass;
+	friend class OtRenderPass;
+
+	inline SDL_GPUTexture* getTexture() { return isValid() ? cubemap.get() : OtGpu::instance().dummyCubeMap; }
 };

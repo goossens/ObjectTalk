@@ -60,18 +60,18 @@ public:
 	}
 
 	// (de)serialize node
-	inline void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		(*data)["noiseType"] = noiseType;
 	}
 
-	inline void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		noiseType = data->value("noiseType", OtFbm::NoiseType::simplex);
 	}
 
 	// running the noise generator
 	inline void onExecute() override {
-		// ensure framebuffer has right size
-		framebuffer.update(width, height);
+		// ensure output texture has the right configuration
+		texture.update(width, height, OtTexture::Format::r32, OtTexture::Usage::rwDefault);
 
 		// run the generator
 		fbm.setFrequency(frequency);
@@ -80,10 +80,7 @@ public:
 		fbm.setPersistence(persistence);
 		fbm.setOctaves(octaves);
 		fbm.setNoiseType(noiseType);
-		fbm.render(framebuffer);
-
-		// manage output (version numbers are used to detect changes down the line)
-		texture = framebuffer.getColorTexture();
+		fbm.render(texture);
 		texture.setVersion(version++);
 	}
 
@@ -91,7 +88,7 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::texture;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
 	int width = 256;
 	int height = 256;
 	int frequency = 10;
@@ -102,7 +99,6 @@ protected:
 	OtFbm::NoiseType noiseType = OtFbm::NoiseType::simplex;
 
 	OtFbm fbm;
-	OtFrameBuffer framebuffer{OtTexture::rFloat32Texture};
 	OtTexture texture;
 	int version = 1;
 };

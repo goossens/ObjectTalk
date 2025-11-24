@@ -16,8 +16,7 @@
 #include <string>
 
 #include "glm/glm.hpp"
-
-#include "bimg/bimg.h"
+#include "SDL3/SDL_surface.h"
 
 
 //
@@ -26,44 +25,57 @@
 
 class OtImage {
 public:
-	// image types
-	static constexpr int rgba8Image = bimg::TextureFormat::RGBA8;
-	static constexpr int rgbaFloat32Image = bimg::TextureFormat::RGBA32F;
+	// image formats
+	enum class Format {
+		none = SDL_PIXELFORMAT_UNKNOWN,
+		r8 = SDL_PIXELFORMAT_INDEX8,
+		rgba8 = SDL_PIXELFORMAT_RGBA32,
+		rgba32 = SDL_PIXELFORMAT_RGBA128_FLOAT
+	};
 
 	// constructors
 	OtImage() = default;
 	OtImage(const std::string& path, bool powerof2=false, bool square=false);
+	OtImage(int width, int height, Format format, void* pixels);
 
 	// clear the resources
 	void clear();
 
 	// create/update an image
-	void update(int width, int height, int format);
+	void update(int width, int height, Format format);
 
-	// load image
+	// load image as RGBA
 	void load(const std::string& address, bool powerof2=false, bool square=false);
-	void loadAsGrayscale(const std::string& address, bool powerof2=false, bool square=false);
-	void loadAsRGBA(const std::string& address, bool powerof2=false, bool square=false);
-	void load(int width, int height, int format, void* pixels);
 	void load(void* data, size_t size);
+	void load(int width, int height, Format format, void* pixels);
 
 	// save the image to disk
 	void saveToPNG(const std::string& path);
-	void saveToDDS(const std::string& path);
 
 	// see if image is valid
-	inline bool isValid() { return image != nullptr; }
+	inline bool isValid() { return surface != nullptr; }
 
 	// get information about image
-	bimg::ImageContainer* getContainer();
-	inline int getWidth() { return (int) image->m_width; }
-	inline int getHeight() { return (int) image->m_height; }
-	inline void* getPixels() { return image->m_data; }
-	inline int getBitsPerPixel() { return (int) bimg::getBitsPerPixel(image->m_format); }
+	inline Format getFormat() { return static_cast<Format>(surface->format); }
+	inline int getWidth() { return surface->w; }
+	inline int getHeight() { return surface->h; }
+	inline void* getPixels() { return surface->pixels; }
+	inline int getPitch() { return surface->pitch; }
+
+	inline int getBpp() {
+		switch (getFormat()) {
+			case Format::none: return 0;
+			case Format::r8: return 1;
+			case Format::rgba8: return 4;
+			case Format::rgba32: return 16;
+		}
+
+		return 0;
+	}
 
 	// get pixel values
 	glm::vec4 getPixelRgba(int x, int y);
-	float getPixelGray(int x, int y);
+	inline float getPixelGray(int x, int y) { return getPixelRgba(x, y).r; }
 
 	glm::vec4 sampleValueRgba(float u, float v);
 	float sampleValueGray(float u, float v);
@@ -75,7 +87,7 @@ public:
 
 	// see if images are identical
 	inline bool operator==(OtImage& rhs) {
-		return image == rhs.image && version == rhs.version;
+		return surface == rhs.surface && version == rhs.version;
 	}
 
 	inline bool operator!=(OtImage& rhs) {
@@ -84,12 +96,16 @@ public:
 
 private:
 	// the actual image
-	std::shared_ptr<bimg::ImageContainer> image;
+	friend class OtTexture;
+	std::shared_ptr<SDL_Surface> surface;
 	int version = 0;
 
-	// assign a new image container to the shared pointer
-	void assignImageContainer(bimg::ImageContainer* container);
+	// memory manage SDL resource
+	void assign(SDL_Surface* newSurface);
 
-	void loadFromFile(const std::string& path);
-	void loadFromUrl(const std::string& url);
+	// local utility functions
+	void normalize();
+
+	// load image from stream
+	void load(SDL_IOStream *src);
 };

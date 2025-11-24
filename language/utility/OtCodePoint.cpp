@@ -5,7 +5,7 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
-// 	Fast ASCII ctype functions borrowed from the musl library
+//	Fast ASCII ctype functions borrowed from the musl library
 //	https://git.musl-libc.org/cgit/musl/tree/include/ctype.h
 
 

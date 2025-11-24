@@ -44,10 +44,10 @@
 					"uuid": 397016261
 				},
 				{
-					"brightness": 0.5699999928474426,
+					"brightness": 0.8199999928474426,
 					"component": "Sky Box",
 					"cubemap": "assets/sunset.hdr",
-					"gamma": 2.5999999046325684
+					"gamma": 2.200000047683716
 				}
 			]
 		},

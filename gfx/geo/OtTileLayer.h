@@ -9,7 +9,7 @@
 
 
 //
-//  Include files
+//	Include files
 //
 
 #include <memory>
@@ -23,7 +23,7 @@
 
 
 //
-//  OtTileLayer class
+//	OtTileLayer class
 //
 
 class OtTileLayer : public OtMapLayer {

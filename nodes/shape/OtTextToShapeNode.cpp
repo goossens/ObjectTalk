@@ -45,7 +45,7 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::shape;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
 	OtFont font;
 	std::string text;
 	float size = 12.0f;

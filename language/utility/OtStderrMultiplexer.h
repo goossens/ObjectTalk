@@ -57,7 +57,7 @@ private:
 
 	// send multiplexed line on stderr
 	static void send(MessageType type, const std::string& message) {
-		std::cerr << '\x02' <<  static_cast<char>(type) << message << '\x03' << std::flush;
+		std::cerr << '\x02' << static_cast<char>(type) << message << '\x03' << std::flush;
 	}
 
 	// de-multiplex stderr stream

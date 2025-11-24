@@ -9,7 +9,7 @@
 
 
 //
-//  Include files
+//	Include files
 //
 
 #include "imgui.h"
@@ -22,7 +22,7 @@
 
 
 //
-//  OtMapImageTile
+//	OtMapImageTile
 //
 
 class OtMapImageTile {

@@ -35,7 +35,7 @@ static std::string submatch(const std::smatch& match, int index) {
 //
 
 static char myToLower(char ch) {
-    return static_cast<char>(std::tolower(static_cast<int>(ch)));
+	return static_cast<char>(std::tolower(static_cast<int>(ch)));
 }
 
 void OtUrl::parse(const std::string& urlString) {
@@ -149,7 +149,7 @@ const std::string& OtUrl::download() {
 
 		} else {
 			data.clear();
-			OtLogError("Can't get [{}]: HTTP status {} ({})", url,  status, httplib::status_message(status));
+			OtLogError("Can't get [{}]: HTTP status {} ({})", url, status, httplib::status_message(status));
 		}
 
 	} else {

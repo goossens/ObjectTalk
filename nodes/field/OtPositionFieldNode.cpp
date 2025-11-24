@@ -43,7 +43,8 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::field;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::varying;
 
-protected:
+private:
+	// properties
 	float x = 0.0f;
 	float y = 0.0f;
 	float z = 0.0f;

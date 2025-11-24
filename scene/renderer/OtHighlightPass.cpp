@@ -9,28 +9,39 @@
 //	Include files
 //
 
-#include "OtPass.h"
+#include "OtRenderPass.h"
 
-#include "OtGeometryComponent.h"
-#include "OtGrassComponent.h"
 #include "OtHighlightPass.h"
-#include "OtModelComponent.h"
-#include "OtTerrainComponent.h"
+
+#include "OtSimpleVert.h"
+#include "OtSimpleAnimatedVert.h"
+#include "OtSimpleInstancingVert.h"
+#include "OtSimpleTerrainVert.h"
+#include "OtSimpleGrassVert.h"
+
+#include "OtSelectOpaqueFrag.h"
+#include "OtSelectTransparentFrag.h"
+
+#include "OtFullScreenVert.h"
+#include "OtOutlineFrag.h"
 
 
 //
 //	OtHighlightPass::render
 //
 
-void OtHighlightPass::render(OtSceneRendererContext& ctx, OtFrameBuffer* framebuffer, OtEntity entity) {
+void OtHighlightPass::render(OtSceneRendererContext& ctx, OtTexture* texture, OtEntity entity) {
 	// see if we have a "highlightable" entity
 	if (isHighlightable(ctx.scene, entity)) {
-		// update framebuffer size
-		selectedBuffer.update(ctx.camera.width, ctx.camera.height);
+		// initialize resources (if required)
+		if (!resourcesInitialized) {
+			initializeResources();
+			resourcesInitialized = false;
+		}
 
-		// run both passes
+	// run both passes
 		renderSelectedPass(ctx, entity);
-		renderHighlightPass(ctx, framebuffer);
+		renderHighlightPass(ctx, texture);
 	}
 }
 
@@ -40,16 +51,17 @@ void OtHighlightPass::render(OtSceneRendererContext& ctx, OtFrameBuffer* framebu
 //
 
 void OtHighlightPass::renderSelectedPass(OtSceneRendererContext& ctx, OtEntity entity) {
-	// setup pass to render selected entities as opaque blobs
-	OtPass pass;
-	pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
-	pass.setFrameBuffer(selectedBuffer);
-	pass.setClear(true);
-	pass.setViewTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
-	pass.touch();
+	// update framebuffer size
+	selectedBuffer.update(ctx.camera.width, ctx.camera.height);
 
-	// highlight entity (and its children)
-	renderHighlight(ctx, pass, entity);
+	// setup pass to render selected entities as opaque blobs
+	OtRenderPass pass;
+	ctx.pass = &pass;
+	pass.setClearColor(true);
+	pass.setClearDepth(true);
+	pass.start(selectedBuffer);
+	renderHighlight(ctx, entity);
+	pass.end();
 }
 
 
@@ -57,19 +69,23 @@ void OtHighlightPass::renderSelectedPass(OtSceneRendererContext& ctx, OtEntity e
 //	OtHighlightPass::renderHighlightPass
 //
 
-void OtHighlightPass::renderHighlightPass(OtSceneRendererContext& ctx, OtFrameBuffer* framebuffer) {
-	// render the outline of the entity
-	OtPass pass;
-	pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
-	pass.setFrameBuffer(*framebuffer);
-	pass.submitQuad(ctx.camera.width, ctx.camera.height);
+void OtHighlightPass::renderHighlightPass([[maybe_unused]] OtSceneRendererContext& ctx, [[maybe_unused]] OtTexture* texture) {
+		// configure pass
+		OtRenderPass pass;
+		pass.start(*texture);
+		pass.bindPipeline(outlinePipeline);
+		pass.bindFragmentSampler(0, sampler, selectedBuffer.getColorTexture());
 
-	ctx.highlightOutlineUniforms.setValue(0, 1.0f / ctx.camera.width, 1.0f / ctx.camera.height, 0.0f, 0.0f);
-	ctx.highlightOutlineUniforms.submit();
+		// set uniforms
+		struct Uniforms {
+			glm::vec2 texelSize;
+		} uniforms {
+			glm::vec2(1.0f / static_cast<float>(ctx.camera.width), 1.0f / static_cast<float>(ctx.camera.height))
+		};
 
-	selectedBuffer.bindColorTexture(ctx.selectedSampler, 0);
-	pass.setState(OtPass::stateWriteRgb | OtPass::stateWriteA | OtPass::stateBlendAlpha);
-	pass.runShaderProgram(outlineProgram);
+		pass.setFragmentUniforms(0, &uniforms, sizeof(uniforms));
+		pass.render(3);
+		pass.end();
 }
 
 
@@ -77,13 +93,13 @@ void OtHighlightPass::renderHighlightPass(OtSceneRendererContext& ctx, OtFrameBu
 //	OtHighlightPass::renderHighlight
 //
 
-void OtHighlightPass::renderHighlight(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity) {
+void OtHighlightPass::renderHighlight(OtSceneRendererContext& ctx, OtEntity entity) {
 	// render entity and its children
-	renderEntity(ctx, pass, entity);
+	renderEntity(ctx, entity);
 	OtEntity child = ctx.scene->getFirstChild(entity);
 
 	while (ctx.scene->isValidEntity(child)) {
-		renderHighlight(ctx, pass, child);
+		renderHighlight(ctx, child);
 		child = ctx.scene->getNextSibling(child);
 	}
 }
@@ -120,14 +136,16 @@ bool OtHighlightPass::isHighlightable(OtScene* scene, OtEntity entity) {
 //
 
 void OtHighlightPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) {
-	renderOpaqueGeometryHelper(
+	renderGeometryHelper(
 		ctx,
 		grd,
-		OtPass::stateWriteRgb | OtPass::stateLines,
-		OtPass::stateWriteRgb | (grd.component->cullBack ? OtPass::stateCullCw : 0),
 		MaterialSubmission::none,
-		opaqueProgram,
-		instancedOpaqueProgram);
+		opaqueCullingPipeline,
+		opaqueNoCullingPipeline,
+		opaqueLinesPipeline,
+		opaqueInstancedCullingPipeline,
+		opaqueInstancedNoCullingPipeline,
+		opaqueInstancedLinesPipeline);
 }
 
 
@@ -136,13 +154,12 @@ void OtHighlightPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeomet
 //
 
 void OtHighlightPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtModelRenderData& mrd) {
-	renderOpaqueModelHelper(
+	renderModelHelper(
 		ctx,
 		mrd,
-		OtPass::stateWriteRgb | OtPass::stateCullCw,
 		MaterialSubmission::none,
-		animatedOpaqueProgram,
-		opaqueProgram);
+		opaqueCullingPipeline,
+		animatedPipeline);
 }
 
 
@@ -154,9 +171,9 @@ void OtHighlightPass::renderTerrain(OtSceneRendererContext& ctx, [[maybe_unused]
 	renderTerrainHelper(
 		ctx,
 		terrain,
-		OtPass::stateWriteRgb | OtPass::stateLines,
-		OtPass::stateWriteRgb | OtPass::stateCullCw,
-		terrainProgram);
+		false,
+		terrainCullingPipeline,
+		terrainLinesPipeline);
 }
 
 
@@ -169,8 +186,7 @@ void OtHighlightPass::renderGrass(OtSceneRendererContext& ctx, OtEntity entity, 
 		ctx,
 		entity,
 		grass,
-		OtPass::stateWriteRgb | OtPass::stateCullCw,
-		grassProgram);
+		grassPipeline);
 }
 
 
@@ -179,12 +195,115 @@ void OtHighlightPass::renderGrass(OtSceneRendererContext& ctx, OtEntity entity, 
 //
 
 void OtHighlightPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) {
-	renderTransparentGeometryHelper(
+	renderGeometryHelper(
 		ctx,
 		grd,
-		OtPass::stateWriteRgb | OtPass::stateLines,
-		OtPass::stateWriteRgb | (grd.component->cullBack ? OtPass::stateCullCw : 0),
 		MaterialSubmission::justAlbedo,
-		transparentProgram,
-		instancedTransparentProgram);
+		transparentCullingPipeline,
+		transparentNoCullingPipeline,
+		transparentLinesPipeline,
+		transparentInstancedCullingPipeline,
+		transparentInstancedNoCullingPipeline,
+		transparentInstancedLinesPipeline);
+}
+
+
+//
+//	OtHighlightPass::initializeResources
+//
+
+void OtHighlightPass::initializeResources() {
+	opaqueCullingPipeline.setShaders(OtSimpleVert, sizeof(OtSimpleVert), OtSelectOpaqueFrag, sizeof(OtSelectOpaqueFrag));
+	opaqueCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
+	opaqueCullingPipeline.setVertexDescription(OtVertex::getDescription());
+	opaqueCullingPipeline.setCulling(OtRenderPipeline::Culling::cw);
+
+	opaqueNoCullingPipeline.setShaders(OtSimpleVert, sizeof(OtSimpleVert), OtSelectOpaqueFrag, sizeof(OtSelectOpaqueFrag));
+	opaqueNoCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
+	opaqueNoCullingPipeline.setVertexDescription(OtVertex::getDescription());
+
+	opaqueLinesPipeline.setShaders(OtSimpleVert, sizeof(OtSimpleVert), OtSelectOpaqueFrag, sizeof(OtSelectOpaqueFrag));
+	opaqueLinesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
+	opaqueLinesPipeline.setVertexDescription(OtVertex::getDescription());
+	opaqueLinesPipeline.setFill(false);
+
+	opaqueInstancedCullingPipeline.setShaders(OtSimpleInstancingVert, sizeof(OtSimpleInstancingVert), OtSelectOpaqueFrag, sizeof(OtSelectOpaqueFrag));
+	opaqueInstancedCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
+	opaqueInstancedCullingPipeline.setVertexDescription(OtVertex::getDescription());
+	opaqueInstancedCullingPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
+	opaqueInstancedCullingPipeline.setCulling(OtRenderPipeline::Culling::cw);
+
+	opaqueInstancedNoCullingPipeline.setShaders(OtSimpleInstancingVert, sizeof(OtSimpleInstancingVert), OtSelectOpaqueFrag, sizeof(OtSelectOpaqueFrag));
+	opaqueInstancedNoCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
+	opaqueInstancedNoCullingPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
+	opaqueInstancedNoCullingPipeline.setVertexDescription(OtVertex::getDescription());
+
+	opaqueInstancedLinesPipeline.setShaders(OtSimpleInstancingVert, sizeof(OtSimpleInstancingVert), OtSelectOpaqueFrag, sizeof(OtSelectOpaqueFrag));
+	opaqueInstancedLinesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
+	opaqueInstancedLinesPipeline.setVertexDescription(OtVertex::getDescription());
+	opaqueInstancedLinesPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
+	opaqueInstancedLinesPipeline.setFill(false);
+
+	animatedPipeline.setShaders(OtSimpleAnimatedVert, sizeof(OtSimpleAnimatedVert), OtSelectOpaqueFrag, sizeof(OtSelectOpaqueFrag));
+	animatedPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
+	animatedPipeline.setVertexDescription(OtVertex::getDescription());
+	animatedPipeline.setAnimatedDescription(OtVertexBones::getDescription());
+	animatedPipeline.setCulling(OtRenderPipeline::Culling::cw);
+
+	terrainCullingPipeline.setShaders(OtSimpleTerrainVert, sizeof(OtSimpleTerrainVert), OtSelectOpaqueFrag, sizeof(OtSelectOpaqueFrag));
+	terrainCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
+	terrainCullingPipeline.setVertexDescription(OtVertexPos::getDescription());
+	terrainCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+
+	terrainLinesPipeline.setShaders(OtSimpleTerrainVert, sizeof(OtSimpleTerrainVert), OtSelectOpaqueFrag, sizeof(OtSelectOpaqueFrag));
+	terrainLinesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
+	terrainLinesPipeline.setVertexDescription(OtVertexPos::getDescription());
+	terrainLinesPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	terrainLinesPipeline.setFill(false);
+
+	grassPipeline.setShaders(OtSimpleGrassVert, sizeof(OtSimpleGrassVert), OtSelectOpaqueFrag, sizeof(OtSelectOpaqueFrag));
+	grassPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
+	grassPipeline.setVertexDescription(OtVertexPos::getDescription());
+	grassPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	grassPipeline.setCulling(OtRenderPipeline::Culling::cw);
+
+	transparentCullingPipeline.setShaders(OtSimpleVert, sizeof(OtSimpleVert), OtSelectTransparentFrag, sizeof(OtSelectTransparentFrag));
+	transparentCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
+	transparentCullingPipeline.setVertexDescription(OtVertex::getDescription());
+	transparentCullingPipeline.setCulling(OtRenderPipeline::Culling::cw);
+
+	transparentNoCullingPipeline.setShaders(OtSimpleVert, sizeof(OtSimpleVert), OtSelectTransparentFrag, sizeof(OtSelectTransparentFrag));
+	transparentNoCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
+	transparentNoCullingPipeline.setVertexDescription(OtVertex::getDescription());
+
+	transparentLinesPipeline.setShaders(OtSimpleVert, sizeof(OtSimpleVert), OtSelectTransparentFrag, sizeof(OtSelectTransparentFrag));
+	transparentLinesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
+	transparentLinesPipeline.setVertexDescription(OtVertex::getDescription());
+	transparentLinesPipeline.setFill(false);
+
+	transparentInstancedCullingPipeline.setShaders(OtSimpleInstancingVert, sizeof(OtSimpleInstancingVert), OtSelectTransparentFrag, sizeof(OtSelectTransparentFrag));
+	transparentInstancedCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
+	transparentInstancedCullingPipeline.setVertexDescription(OtVertex::getDescription());
+	transparentInstancedCullingPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
+	transparentInstancedCullingPipeline.setCulling(OtRenderPipeline::Culling::cw);
+
+	transparentInstancedNoCullingPipeline.setShaders(OtSimpleInstancingVert, sizeof(OtSimpleInstancingVert), OtSelectTransparentFrag, sizeof(OtSelectTransparentFrag));
+	transparentInstancedNoCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
+	transparentInstancedNoCullingPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
+	transparentInstancedNoCullingPipeline.setVertexDescription(OtVertex::getDescription());
+
+	transparentInstancedLinesPipeline.setShaders(OtSimpleInstancingVert, sizeof(OtSimpleInstancingVert), OtSelectTransparentFrag, sizeof(OtSelectTransparentFrag));
+	transparentInstancedLinesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
+	transparentInstancedLinesPipeline.setVertexDescription(OtVertex::getDescription());
+	transparentInstancedLinesPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
+	transparentInstancedLinesPipeline.setFill(false);
+
+	outlinePipeline.setShaders(OtFullScreenVert, sizeof(OtFullScreenVert), OtOutlineFrag, sizeof(OtOutlineFrag));
+	outlinePipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16);
+
+	outlinePipeline.setBlend(
+		OtRenderPipeline::BlendOperation::add,
+		OtRenderPipeline::BlendFactor::srcAlpha,
+		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
+	);
 }

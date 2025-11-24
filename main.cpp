@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
 	try {
 		files = program.get<std::vector<std::string>>("files");
 
-	} catch (std::logic_error& e) {
+	} catch ([[maybe_unused]] std::logic_error& e) {
 	}
 
 	// set configuration

@@ -28,7 +28,7 @@ public:
 	}
 
 	// run filter
-	inline void onFilter(OtTexture& input, OtFrameBuffer& output) override {
+	inline void onFilter(OtTexture& input, OtTexture& output) override {
 		posterizer.setLevels(levels);
 		posterizer.render(input, output);
 	}
@@ -37,6 +37,7 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::texture;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
+private:
 	// properties
 	OtPosterize posterizer;
 	int levels = 10;

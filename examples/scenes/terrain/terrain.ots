@@ -44,12 +44,12 @@
 					"uuid": 864477290
 				},
 				{
-					"azimuth": 62.599998474121094,
+					"azimuth": 89.19999694824219,
 					"castShadow": true,
 					"cirrus": 0.45399999618530273,
 					"component": "Sky",
 					"cumulus": 0.800000011920929,
-					"elevation": 35.0,
+					"elevation": 76.0,
 					"mieCoefficient": 7.429999828338623,
 					"mieScattering": 0.9900000095367432,
 					"rayleighCoefficient": 1.909999966621399,
@@ -87,7 +87,7 @@
 						],
 						"region1Overlap": 0.05000000074505806,
 						"region1Texture": "assets/sand.jpg",
-						"region1TextureScale": 40.0,
+						"region1TextureScale": 31.0,
 						"region1Transition": 0.30000001192092896,
 						"region2Color": [
 							0.49399998784065247,
@@ -96,7 +96,7 @@
 						],
 						"region2Overlap": 0.05000000074505806,
 						"region2Texture": "assets/terrain.jpg",
-						"region2TextureScale": 28.0,
+						"region2TextureScale": 51.0,
 						"region2Transition": 0.49000000953674316,
 						"region3Color": [
 							0.6991150379180908,
@@ -105,7 +105,7 @@
 						],
 						"region3Overlap": 0.05000000074505806,
 						"region3Texture": "assets/rock.jpg",
-						"region3TextureScale": 160.0,
+						"region3TextureScale": 121.0,
 						"region3Transition": 0.5799999833106995,
 						"region4Color": [
 							0.8716814517974854,
@@ -113,11 +113,11 @@
 							0.8716814517974854
 						],
 						"region4Texture": "assets/snow.jpg",
-						"region4TextureScale": 15.0
+						"region4TextureScale": 30.700000762939453
 					},
 					"tileSize": 64,
 					"vOffset": -14.0,
-					"vScale": 39.0,
+					"vScale": 56.0,
 					"wireframe": false
 				}
 			]
@@ -131,23 +131,23 @@
 					"uuid": 2516776593
 				},
 				{
-					"ao": 0.9200000166893005,
+					"ao": 0.49000000953674316,
 					"color": [
-						0.3508888781070709,
-						0.5377612709999084,
-						0.9115044474601746
+						0.03535907343029976,
+						0.08551979809999466,
+						0.18584072589874268
 					],
 					"component": "Water",
-					"depthFactor": 2.309999942779541,
+					"depthFactor": 0.5600000023841858,
 					"distance": 500.0,
-					"level": 0.0,
-					"metallic": 0.6899999976158142,
+					"level": 3.6700000762939453,
+					"metallic": 0.4099999964237213,
 					"normals": "assets/water.jpg",
-					"reflectivity": 0.46000000834465027,
-					"roughness": 0.25999999046325684,
+					"reflectivity": 0.3799999952316284,
+					"roughness": 0.0,
 					"scale": 3.0,
 					"speed": 1.0,
-					"useRefractance": true
+					"useRefractance": false
 				}
 			]
 		}

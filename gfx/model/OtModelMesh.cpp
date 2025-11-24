@@ -47,12 +47,12 @@ void OtModelMesh::load(const aiMesh* mesh, OtModelNodes& nodes) {
 			hasBitangents ? toVec3(mesh->mBitangents[i]) : glm::vec3());
 	}
 
-	// clear and reserve index space
+	// reserve index space
 	indices.clear();
 	indices.reserve(mesh->mNumFaces * 3);
 
 	// process all triangles
-    for(auto i = 0u; i < mesh->mNumFaces; i++) {
+	for(auto i = 0u; i < mesh->mNumFaces; i++) {
 		indices.emplace_back(mesh->mFaces[i].mIndices[0]);
 		indices.emplace_back(mesh->mFaces[i].mIndices[1]);
 		indices.emplace_back(mesh->mFaces[i].mIndices[2]);
@@ -148,33 +148,25 @@ void OtModelMesh::load(const aiMesh* mesh, OtModelNodes& nodes) {
 		}
 	}
 
-	// update buffers during next submission
-	update = true;
+	// mark buffers as dirty
+	refreshBuffers = true;
 }
 
 
 //
-//	OtModelMesh::submitTriangles
+//	OtModelMesh::updateBuffers
 //
 
-void OtModelMesh::submitTriangles() {
-	auto vertexBoneCount = vertexBones.size();
-
-	if (update) {
-		vertexBuffer.set(vertices.data(), vertices.size(), OtVertex::getLayout());
+void OtModelMesh::updateBuffers() {
+	if (refreshBuffers) {
+		vertexBuffer.set(vertices.data(), vertices.size(), OtVertex::getDescription());
 		indexBuffer.set(indices.data(), indices.size());
+		auto vertexBoneCount = vertexBones.size();
 
 		if (vertexBoneCount) {
-			vertexBonesBuffer.set(vertexBones.data(), vertexBoneCount, OtVertexBones::getLayout());
+			vertexBonesBuffer.set(vertexBones.data(), vertexBoneCount, OtVertexBones::getDescription());
 		}
 
-		update = false;
-	}
-
-	vertexBuffer.submit();
-	indexBuffer.submit();
-
-	if (vertexBoneCount) {
-		vertexBonesBuffer.submit(1);
+		refreshBuffers = false;
 	}
 }

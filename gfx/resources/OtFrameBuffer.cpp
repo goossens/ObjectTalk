@@ -9,19 +9,30 @@
 //	Include files
 //
 
-#include <cstdint>
-
-#include "OtLog.h"
-
 #include "OtFrameBuffer.h"
+#include "OtGpu.h"
 
 
 //
-//	OtFrameBuffer:OtFrameBuffer
+//	OtFrameBuffer::OtFrameBuffer
 //
 
-OtFrameBuffer::OtFrameBuffer(int colorTextureType, int depthTextureType, int antiAliasing, bool blitTarget) {
-	initialize(colorTextureType, depthTextureType, antiAliasing, blitTarget);
+OtFrameBuffer::OtFrameBuffer() {
+	OtGpu::instance().frameBuffers++;
+}
+
+OtFrameBuffer::OtFrameBuffer(OtTexture::Format colorTextureType, OtTexture::Format depthTextureType) {
+	OtGpu::instance().frameBuffers++;
+	initialize(colorTextureType, depthTextureType);
+}
+
+
+//
+//	OtFrameBuffer::~OtFrameBuffer
+//
+
+OtFrameBuffer::~OtFrameBuffer() {
+	OtGpu::instance().frameBuffers--;
 }
 
 
@@ -29,13 +40,11 @@ OtFrameBuffer::OtFrameBuffer(int colorTextureType, int depthTextureType, int ant
 //	OtFrameBuffer::initialize
 //
 
-void OtFrameBuffer::initialize(int c, int d, int a, bool b) {
-	if (colorTextureType != c || depthTextureType != d || antiAliasing != a || blitTarget != b) {
+void OtFrameBuffer::initialize(OtTexture::Format c, OtTexture::Format d) {
+	if (colorTextureType != c || depthTextureType != d) {
 		clear();
 		colorTextureType = c;
 		depthTextureType = d;
-		antiAliasing = a;
-		blitTarget = b;
 	}
 }
 
@@ -48,7 +57,6 @@ void OtFrameBuffer::clear() {
 	// release resources (if required)
 	colorTexture.clear();
 	depthTexture.clear();
-	framebuffer.clear();
 
 	// clear other fields
 	width = -1;
@@ -57,114 +65,82 @@ void OtFrameBuffer::clear() {
 
 
 //
-//	computeTextureRtMsaaFlag
-//
-
-static inline uint64_t computeTextureRtMsaaFlag(int aa) {
-	switch (aa) {
-		case 2:
-			return BGFX_TEXTURE_RT_MSAA_X2;
-
-		case 4:
-			return BGFX_TEXTURE_RT_MSAA_X4;
-
-		case 8:
-			return BGFX_TEXTURE_RT_MSAA_X8;
-
-		case 16:
-			return BGFX_TEXTURE_RT_MSAA_X16;
-
-		default:
-			return BGFX_TEXTURE_RT;
-	}
-}
-
-
-//
 //	OtFrameBuffer::update
 //
 
-void OtFrameBuffer::update(int w, int h) {
+bool OtFrameBuffer::update(int w, int h) {
 	// update framebuffer if required
-	if (!framebuffer.isValid() || w != width || h != height) {
+	if (w != width || h != height) {
 		// clear old resources
 		clear();
 
-		// create new textures
-		uint64_t flags = computeTextureRtMsaaFlag(antiAliasing);
-		uint64_t blit = blitTarget ? BGFX_TEXTURE_BLIT_DST : 0;
-
-		if (colorTextureType != OtTexture::noTexture) {
-			colorTexture = bgfx::createTexture2D(
-				static_cast<uint16_t>(w),
-				static_cast<uint16_t>(h),
-				false,
-				1,
-				(bgfx::TextureFormat::Enum) colorTextureType,
-				flags | blit);
-		}
-
-		if (depthTextureType != OtTexture::noTexture) {
-			depthTexture = bgfx::createTexture2D(
-				static_cast<uint16_t>(w),
-				static_cast<uint16_t>(h),
-				false,
-				1,
-				(bgfx::TextureFormat::Enum) depthTextureType,
-				flags | blit);
-		}
-
-		// create framebuffer
-		bgfx::TextureHandle textures[2] = {colorTexture.getHandle(), depthTexture.getHandle()};
-
-		if (colorTextureType && depthTextureType) {
-			framebuffer = bgfx::createFrameBuffer(2, textures);
-
-		} else if (colorTextureType) {
-			framebuffer = bgfx::createFrameBuffer(1, &textures[0]);
-
-		} else if (depthTextureType) {
-			framebuffer = bgfx::createFrameBuffer(1, &textures[1]);
-
-		} else {
+		if (colorTextureType == OtTexture::Format::none && depthTextureType == OtTexture::Format::none) {
 			OtLogFatal("Internal error: you can't have a FrameBuffer without Textures");
+		}
+
+		// create new textures (if required)
+		if (colorTextureType != OtTexture::Format::none) {
+			colorTexture.update(
+				w, h,
+				colorTextureType,
+				OtTexture::OtTexture::Usage::rwDefault);
+		}
+
+		if (depthTextureType != OtTexture::Format::none) {
+			depthTexture.update(
+				w, h,
+				depthTextureType,
+				OtTexture::Usage(OtTexture::Usage::depthStencilTarget | OtTexture::Usage::sampler));
 		}
 
 		// remember dimensions
 		width = w;
 		height = h;
-	}
-}
-
-
-//
-//	OtFrameBuffer::bindColorTexture
-//
-
-void OtFrameBuffer::bindColorTexture(OtSampler& sampler, int unit) {
-	sampler.submit(unit, colorTexture.getHandle());
-}
-
-
-//
-//	OtFrameBuffer::bindDepthTexture
-//
-
-void OtFrameBuffer::bindDepthTexture(OtSampler& sampler, int unit) {
-	sampler.submit(unit, depthTexture.getHandle());
-}
-
-
-//
-//	OtFrameBuffer::submit
-//
-
-void OtFrameBuffer::submit(bgfx::ViewId view) {
-	// attach framebuffer to view
-	if (isValid()) {
-		bgfx::setViewFrameBuffer(view, framebuffer.getHandle());
+		return true;
 
 	} else {
-		OtLogFatal("Internal error: FrameBuffer not initialized before submission");
+		return false;
 	}
 }
+
+
+//
+//	OtFrameBuffer::getRenderTargetInfo
+//
+
+OtRenderTargetInfo* OtFrameBuffer::getRenderTargetInfo(
+	bool clearColorTexture,
+	bool clearDepthTexture,
+	bool clearStencilTexture,
+	glm::vec4 clearColorValue,
+	float clearDepthValue,
+	std::uint8_t clearStencilValue) {
+
+	colorTargetInfo = SDL_GPUColorTargetInfo{};
+	colorTargetInfo.texture = colorTexture.getTexture();
+
+	colorTargetInfo.clear_color = SDL_FColor{
+		clearColorValue.r,
+		clearColorValue.g,
+		clearColorValue.b,
+		clearColorValue.a
+	};
+
+	colorTargetInfo.load_op = hasColorTexture() && clearColorTexture ? SDL_GPU_LOADOP_CLEAR : SDL_GPU_LOADOP_LOAD;
+	colorTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
+
+	depthStencilTargetInfo = SDL_GPUDepthStencilTargetInfo{};
+	depthStencilTargetInfo.texture = depthTexture.getTexture();
+	depthStencilTargetInfo.clear_depth = clearDepthValue;
+	depthStencilTargetInfo.load_op = hasDepthTexture() && clearDepthTexture ? SDL_GPU_LOADOP_CLEAR : SDL_GPU_LOADOP_LOAD;
+	depthStencilTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
+	depthStencilTargetInfo.stencil_load_op = hasStencilTexture() && clearStencilTexture ? SDL_GPU_LOADOP_CLEAR : SDL_GPU_LOADOP_LOAD;
+	depthStencilTargetInfo.stencil_store_op = SDL_GPU_STOREOP_STORE;
+	depthStencilTargetInfo.clear_stencil = static_cast<Uint8>(clearStencilValue);
+
+	info.colorTargetInfo = hasColorTexture() ? &colorTargetInfo : nullptr;
+	info.numColorTargets = hasColorTexture() ? 1 : 0;
+	info.depthStencilTargetInfo = hasDepthTexture() ? &depthStencilTargetInfo : nullptr;
+	return &info;
+}
+

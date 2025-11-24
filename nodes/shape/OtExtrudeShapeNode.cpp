@@ -133,7 +133,8 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::shape;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
+	// proterties
 	OtShape shape;
 	float depth = 1.0f;
 	float tolerance = 0.25f;

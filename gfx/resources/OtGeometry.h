@@ -25,20 +25,39 @@
 class OtGeometry {
 public:
 	// constructors
-	OtGeometry();
-	inline OtGeometry(std::shared_ptr<OtMesh> m) : mesh(m) {}
-	OtGeometry(const std::string& path);
+	inline OtGeometry() {
+		mesh = std::make_shared<OtMesh>();
+	}
+
+	inline OtGeometry(std::shared_ptr<OtMesh> m) : mesh(m) {
+	}
+
+	inline OtGeometry(const std::string& path) {
+		mesh = std::make_shared<OtMesh>();
+		mesh->load(path);
+	}
 
 	// clear the geometry
-	void clear();
+	inline void clear() {
+		mesh = std::make_shared<OtMesh>();
+		incrementVersion();
+	}
 
 	// see if geometry is valid
 	inline bool isValid() { return mesh->isValid(); }
 
 	// access the mesh
-	void setMesh(std::shared_ptr<OtMesh> mesh);
-	inline OtMesh& getMesh() { return *mesh.get(); }
-	void cloneFrom(const OtGeometry& geometry);
+	inline void setMesh(std::shared_ptr<OtMesh> m) {
+		mesh = m;
+		incrementVersion();
+	}
+
+	inline OtMesh& getMesh() { return* mesh.get(); }
+
+	void cloneFrom(const OtGeometry& geometry) {
+		mesh = std::make_shared<OtMesh>(*geometry.mesh);
+		incrementVersion();
+	}
 
 	// load/save the geometry
 	inline void load(const std::string& path) { mesh->load(path); }
@@ -46,10 +65,6 @@ public:
 
 	// access bounding box
 	OtAABB& getAABB() { return mesh->getAABB(); }
-
-	// submit to GPU
-	inline void submitTriangles() { mesh->submitTriangles(); }
-	inline void submitLines() { mesh->submitLines(); }
 
 	// version management
 	inline void setVersion(int v) { version = v; }

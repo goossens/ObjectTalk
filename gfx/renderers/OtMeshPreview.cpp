@@ -19,7 +19,28 @@
 
 #include "OtCamera.h"
 #include "OtMeshPreview.h"
-#include "OtPass.h"
+#include "OtRenderPass.h"
+
+#include "OtMeshPreviewVert.h"
+#include "OtMeshPreviewFrag.h"
+
+
+//
+//	OtMeshPreview::OtMeshPreview
+//
+
+OtMeshPreview::OtMeshPreview() {
+	// configure pipelines
+	fillPipeline.setShaders(OtMeshPreviewVert, sizeof(OtMeshPreviewVert), OtMeshPreviewFrag, sizeof(OtMeshPreviewFrag));
+	fillPipeline.setVertexDescription(OtVertex::getDescription());
+	fillPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	fillPipeline.setCulling(OtRenderPipeline::Culling::cw);
+
+	linePipeline.setShaders(OtMeshPreviewVert, sizeof(OtMeshPreviewVert), OtMeshPreviewFrag, sizeof(OtMeshPreviewFrag));
+	linePipeline.setVertexDescription(OtVertex::getDescription());
+	linePipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	linePipeline.setFill(false);
+}
 
 
 //
@@ -51,46 +72,41 @@ void OtMeshPreview::render(int width, int height, OtMesh& mesh, Context& context
 		glm::vec3(0.0f));
 
 	// setup the pass
-	OtPass pass;
-	pass.setClear(true, true);
-	pass.setRectangle(0, 0, width, height);
-	pass.setFrameBuffer(framebuffer);
-	pass.setViewTransform(camera.viewMatrix, camera.projectionMatrix);
-	pass.touch();
+	OtRenderPass pass;
+	pass.setClearColor(true);
+	pass.setClearDepth(true);
+	pass.start(framebuffer);
+	pass.bindPipeline(context.wireframe ? linePipeline : fillPipeline);
 
-	// set the uniforms
-	uniform.setValue(0, 0.0f, 0.0f, 0.8f, 0.0f);
-	uniform.setValue(1, 1.0f, 1.0f, 2.0f, 0.0f);
-	uniform.setValue(2, context.meshColor, 0.0f);
-	uniform.setValue(3, context.lightColor, 0.0f);
-	uniform.submit();
+	// set uniforms
+	struct VertexUniforms {
+		glm::mat4 modelViewProj;
+		glm::mat4 model;
 
-	// submit the mesh
-	if (context.wireframe) {
-		mesh.submitLines();
+	} vertexUniforms {
+		camera.viewProjectionMatrix * model,
+		model
+	};
 
-	} else {
-		mesh.submitTriangles();
-	}
+	struct FragmentUniforms {
+		glm::vec4 viewPosition;
+		glm::vec4 lightPosition;
+		glm::vec4 objectColor;
+		glm::vec4 lightColor;
 
-	// render the mesh
-	if (context.wireframe) {
-		pass.setState(
-			OtPass::stateWriteRgb |
-			OtPass::stateWriteZ |
-			OtPass::stateDepthTestLess |
-			OtPass::stateLines);
+	} fragmentUniforms {
+		glm::vec4(0.0f, 0.0f, 1.5f, 0.0f),
+		glm::vec4(1.0f, 1.0f, 2.0f, 0.0f),
+		glm::vec4(context.meshColor, 0.0f),
+		glm::vec4(context.lightColor, 0.0f)
+	};
 
-	} else {
-		pass.setState(
-			OtPass::stateWriteRgb |
-			OtPass::stateWriteZ |
-			OtPass::stateDepthTestLess |
-			OtPass::stateCullCw);
-	}
+	pass.setVertexUniforms(0, &vertexUniforms, sizeof(vertexUniforms));
+	pass.setFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
 
-	pass.setModelTransform(model);
-	pass.runShaderProgram(program);
+	// render preview
+	pass.render(mesh);
+	pass.end();
 
 	// show the mesh
 	ImGui::Image(framebuffer.getColorTextureID(), ImVec2(static_cast<float>(width), static_cast<float>(height)));

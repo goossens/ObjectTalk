@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "OtRgba.h"
+#include "OtRgbaAdjust.h"
 
 #include "OtNodesFactory.h"
 #include "OtTextureFilterNode.h"
@@ -39,11 +39,8 @@ public:
 	}
 
 	// run filter
-	inline void onFilter(OtTexture& input, OtFrameBuffer& output) override {
-		rgba.setRed(red);
-		rgba.setGreen(green);
-		rgba.setBlue(blue);
-		rgba.setAlpha(alpha);
+	inline void onFilter(OtTexture& input, OtTexture& output) override {
+		rgba.setRgba(glm::vec4(red, green, blue, alpha));
 		rgba.render(input, output);
 	}
 
@@ -51,8 +48,9 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::texture;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
+private:
 	// properties
-	OtRgba rgba;
+	OtRgbaAdjust rgba;
 	float red = 1.0f;
 	float green = 1.0f;
 	float blue = 1.0f;

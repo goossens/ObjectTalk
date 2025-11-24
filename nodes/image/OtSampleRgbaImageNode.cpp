@@ -50,7 +50,8 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::image;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::flexible;
 
-protected:
+private:
+	// properties
 	OtImage image;
 	float u{0.0f};
 	float v{0.0f};

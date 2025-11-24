@@ -1,0 +1,80 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+#version 450
+#extension GL_GOOGLE_include_directive : require
+
+#include "tonemapping.glsl"
+
+const int reinhardSimple = 0;
+const int reinhardExtended = 1;
+const int filmic = 2;
+const int acesFilmic = 3;
+const int uncharted2 = 4;
+const int lottes = 5;
+const int uchimura = 6;
+
+layout(local_size_x=16, local_size_y=16, local_size_z=1) in;
+
+layout(set=0, binding=0) uniform sampler2D inTexture;
+layout(set=1, binding=0) uniform writeonly image2D outTexture;
+
+layout(std140, set=2, binding=0) uniform UBO {
+	float exposure;
+	float contrast;
+	int tonemapping;
+};
+
+const int rgbMode = 0;
+const int rMode = 1;
+const int gMode = 2;
+const int bMode = 3;
+const int aMode = 4;
+
+void main() {
+	ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = imageSize(outTexture);
+
+	if (coord.x >= size.x || coord.y >= size.y) {
+		return;
+	}
+
+	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
+
+	// HDR tonemapping
+	vec3 color = texture(inTexture, uv).rgb;
+
+	if (tonemapping == reinhardSimple) {
+		color = tonemapReinhardSimple(color);
+
+	} else if (tonemapping == reinhardExtended) {
+		color = tonemapReinhardExtended(color);
+
+	} else if (tonemapping == filmic) {
+		color = tonemapFilmic(color);
+
+	} else if (tonemapping == acesFilmic) {
+		color = tonemapAcesFilmic(color);
+
+	} else if (tonemapping == uncharted2) {
+		color = tonemapUncharted2(color);
+
+	} else if (tonemapping == lottes) {
+		color = tonemapLottes(color);
+
+	} else if (tonemapping == uchimura) {
+		color = tonemapUchimura(color);
+	}
+
+	// gamma correction
+	color = pow(color, vec3(1.0f / 2.2f));
+
+	// apply exposure and contrast
+	color = ((color - 0.5f) * contrast + 0.5f) * exposure;
+
+	// store final result
+	imageStore(outTexture, coord, vec4(color, 1.0f));
+}

@@ -26,6 +26,9 @@ public:
 	// get logo information
 	ImTextureID getTextureID();
 
+	// clear the logo resources
+	inline void clear() { texture.clear(); }
+
 	// get logo size
 	inline size_t getWidth() { return 429; }
 	inline size_t getHeight() { return 350; }

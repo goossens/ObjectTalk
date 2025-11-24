@@ -147,7 +147,7 @@ bool OtCylinderPrimitive::renderUI() {
 //	OtCylinderPrimitive::serialize
 //
 
-nlohmann::json OtCylinderPrimitive::serialize(std::string* /* basedir */) {
+nlohmann::json OtCylinderPrimitive::serialize([[maybe_unused]] std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["type"] = name;
 	data["topRadius"] = topRadius;
@@ -165,7 +165,7 @@ nlohmann::json OtCylinderPrimitive::serialize(std::string* /* basedir */) {
 //	OtCylinderPrimitive::deserialize
 //
 
-void OtCylinderPrimitive::deserialize(nlohmann::json data, std::string* /* basedir */) {
+void OtCylinderPrimitive::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
 	topRadius = data.value("topRadius", 1.0f);
 	bottomRadius = data.value("bottomRadius", 1.0f);
 	radialSegments = data.value("radialSegments", 32);

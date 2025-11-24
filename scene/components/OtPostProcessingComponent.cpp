@@ -43,7 +43,7 @@ bool OtPostProcessingComponent::renderUI() {
 	changed |= OtUi::dragFloat("Exposure", &exposure, 0.1f, 3.0f);
 	changed |= OtUi::dragFloat("Contrast", &contrast, 0.5f, 2.0f);
 
-	changed |= OtUi::selectorEnum("Tonemap", &tonemap, tonemapTypes, tonemapTypeCount);
+	changed |= OtUi::selectorEnum("Tonemap", &tonemap, OtPostProcessing::tonemapTypes, OtPostProcessing::tonemapTypeCount);
 
 	return changed;
 }
@@ -53,7 +53,7 @@ bool OtPostProcessingComponent::renderUI() {
 //	OtPostProcessingComponent::serialize
 //
 
-nlohmann::json OtPostProcessingComponent::serialize(std::string* /* basedir */) {
+nlohmann::json OtPostProcessingComponent::serialize([[maybe_unused]] std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["fxaa"] = fxaa;
 	data["fog"] = fog;
@@ -73,7 +73,7 @@ nlohmann::json OtPostProcessingComponent::serialize(std::string* /* basedir */) 
 //	OtPostProcessingComponent::deserialize
 //
 
-void OtPostProcessingComponent::deserialize(nlohmann::json data, std::string* /* basedir */) {
+void OtPostProcessingComponent::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
 	fxaa = data.value("fxaa", false);
 	fog = data.value("fog", false);
 	fogDensity = data.value("fogDensity", 0.1f);
@@ -83,5 +83,5 @@ void OtPostProcessingComponent::deserialize(nlohmann::json data, std::string* /*
 	godrays = data.value("godrays", false);
 	exposure = data.value("exposure", 1.0f);
 	contrast = data.value("contrast", 1.0f);
-	tonemap = data.value("tonemap", Tonemap::acesFilmic);
+	tonemap = data.value("tonemap", OtPostProcessing::Tonemap::acesFilmic);
 }

@@ -9,7 +9,16 @@
 //	Include files
 //
 
+#include "glm/glm.hpp"
+
+#include "OtRenderPass.h"
+#include "OtVertex.h"
+
 #include "OtForwardPass.h"
+
+#include "OtForwardVert.h"
+#include "OtForwardInstancingVert.h"
+#include "OtForwardPbrFrag.h"
 
 
 //
@@ -17,15 +26,27 @@
 //
 
 void OtForwardPass::render(OtSceneRendererContext& ctx) {
-	// setup the rendering pass
-	OtPass pass;
-	pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
-	pass.setFrameBuffer(framebuffer);
-	pass.setViewTransform(ctx.camera.viewMatrix, ctx.camera.projectionMatrix);
-	pass.touch();
+	// initialize resources (if required)
+	if (!resourcesInitialized) {
+		initializeResources();
+		resourcesInitialized = true;
+	}
+
+	// setup pass
+	OtRenderPass pass;
+	pass.start(framebuffer);
+	ctx.pass = &pass;
+
+	// submit common fragment uniforms
+	// uniform slot 0 and sampler slots 0-4 are used for materials
+	ctx.setLightingUniforms(1, 5);
+	ctx.setShadowUniforms(2, 8);
 
 	// render all entities
-	renderEntities(ctx, pass);
+	renderEntities(ctx);
+
+	// we're done
+	pass.end();
 }
 
 
@@ -34,15 +55,93 @@ void OtForwardPass::render(OtSceneRendererContext& ctx) {
 //
 
 void OtForwardPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) {
-	ctx.submitLightingUniforms();
-	ctx.submitShadowUniforms();
-
-	renderTransparentGeometryHelper(
+	renderGeometryHelper(
 		ctx,
 		grd,
-		OtPass::stateWriteRgb | OtPass::stateWriteA | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateBlendAlpha | OtPass::stateLines,
-		OtPass::stateWriteRgb | OtPass::stateWriteA | OtPass::stateWriteZ | OtPass::stateDepthTestLess | OtPass::stateBlendAlpha | (grd.component->cullBack ? OtPass::stateCullCw : 0),
 		MaterialSubmission::full,
-		transparentProgram,
-		instancedTransparentProgram);
+		cullingPipeline,
+		noCullingPipeline,
+		linesPipeline,
+		instancedCullingPipeline,
+		instancedNoCullingPipeline,
+		instancedLinesPipeline);
+}
+
+
+//
+//	OtForwardPass::initializeResources
+//
+
+void OtForwardPass::initializeResources() {
+	cullingPipeline.setShaders(OtForwardVert, sizeof(OtForwardVert), OtForwardPbrFrag, sizeof(OtForwardPbrFrag));
+	cullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
+	cullingPipeline.setVertexDescription(OtVertex::getDescription());
+	cullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	cullingPipeline.setCulling(OtRenderPipeline::Culling::cw);
+
+	cullingPipeline.setBlend(
+		OtRenderPipeline::BlendOperation::add,
+		OtRenderPipeline::BlendFactor::srcAlpha,
+		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
+	);
+
+	noCullingPipeline.setShaders(OtForwardVert, sizeof(OtForwardVert), OtForwardPbrFrag, sizeof(OtForwardPbrFrag));
+	noCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
+	noCullingPipeline.setVertexDescription(OtVertex::getDescription());
+	noCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+
+	noCullingPipeline.setBlend(
+		OtRenderPipeline::BlendOperation::add,
+		OtRenderPipeline::BlendFactor::srcAlpha,
+		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
+	);
+
+	linesPipeline.setShaders(OtForwardVert, sizeof(OtForwardVert), OtForwardPbrFrag, sizeof(OtForwardPbrFrag));
+	linesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
+	linesPipeline.setVertexDescription(OtVertex::getDescription());
+	linesPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	linesPipeline.setFill(false);
+
+	linesPipeline.setBlend(
+		OtRenderPipeline::BlendOperation::add,
+		OtRenderPipeline::BlendFactor::srcAlpha,
+		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
+	);
+
+	instancedCullingPipeline.setShaders(OtForwardInstancingVert, sizeof(OtForwardInstancingVert), OtForwardPbrFrag, sizeof(OtForwardPbrFrag));
+	instancedCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
+	instancedCullingPipeline.setVertexDescription(OtVertex::getDescription());
+	instancedCullingPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
+	instancedCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	instancedCullingPipeline.setCulling(OtRenderPipeline::Culling::cw);
+
+	instancedCullingPipeline.setBlend(
+		OtRenderPipeline::BlendOperation::add,
+		OtRenderPipeline::BlendFactor::srcAlpha,
+		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
+	);
+
+	instancedNoCullingPipeline.setShaders(OtForwardInstancingVert, sizeof(OtForwardInstancingVert), OtForwardPbrFrag, sizeof(OtForwardPbrFrag));
+	instancedNoCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
+	instancedNoCullingPipeline.setVertexDescription(OtVertex::getDescription());
+	instancedNoCullingPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
+	instancedNoCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+
+	instancedNoCullingPipeline.setBlend(
+		OtRenderPipeline::BlendOperation::add,
+		OtRenderPipeline::BlendFactor::srcAlpha,
+		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
+	);
+
+	instancedLinesPipeline.setShaders(OtForwardInstancingVert, sizeof(OtForwardInstancingVert), OtForwardPbrFrag, sizeof(OtForwardPbrFrag));
+	instancedLinesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
+	instancedLinesPipeline.setVertexDescription(OtVertex::getDescription());
+	instancedLinesPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
+	instancedLinesPipeline.setFill(false);
+
+	instancedLinesPipeline.setBlend(
+		OtRenderPipeline::BlendOperation::add,
+		OtRenderPipeline::BlendFactor::srcAlpha,
+		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
+	);
 }

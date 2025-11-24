@@ -16,6 +16,8 @@
 
 #include "glm/glm.hpp"
 
+#include "OtVertex.h"
+
 #include "OtParticle.h"
 #include "OtParticleSettings.h"
 
@@ -30,9 +32,8 @@ public:
 	void update(const OtParticleSettings& settings);
 
 	// get particle system information
+	inline void* data() { return instances.data(); }
 	inline size_t size() { return particles.size(); }
-	inline int getInstanceStride() { return sizeof(Instance); }
-	inline void* getInstanceData () { return instances.data(); }
 
 private:
 	// list of particles
@@ -46,19 +47,8 @@ private:
 
 	std::vector<Index> index;
 
-	// particle instance data
-	struct Instance {
-		glm::vec3 position;
-		float alpha;
-		glm::vec2 uv1;
-		glm::vec2 uv2;
-		float scale;
-		float rotate;
-		float grid;
-		float blend;
-	};
-
-	std::vector<Instance> instances;
+	// instance data
+	std::vector<OtVertexParticle> instances;
 
 	// flag to see if we are running update for the first time
 	bool first = true;

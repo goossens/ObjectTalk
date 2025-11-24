@@ -69,7 +69,7 @@ public:
 	inline void undo() { editor.Undo(); }
 	inline void redo() { editor.Redo(); }
 	inline bool canUndo() { return editor.CanUndo(); };
-	inline bool canRedo() { return  editor.CanRedo(); };
+	inline bool canRedo() { return editor.CanRedo(); };
 	inline size_t getUndoIndex() { return editor.GetUndoIndex(); }
 
 	// render content

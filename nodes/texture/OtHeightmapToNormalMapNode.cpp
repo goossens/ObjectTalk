@@ -22,10 +22,10 @@
 class OtHeightmapToNormalMapNode : public OtTextureFilterNode {
 public:
 	// get output format
-	inline int getOutputFormat() override { return OtTexture::rgba8Texture; }
+	inline OtTexture::Format getOutputFormat() override { return OtTexture::Format::rgba8; }
 
 	// run filter
-	inline void onFilter(OtTexture& input, OtFrameBuffer& output) override {
+	inline void onFilter(OtTexture& input, OtTexture& output) override {
 		mapper.render(input, output);
 	}
 
@@ -33,6 +33,7 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::texture;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
+private:
 	// properties
 	OtNormalMapper mapper;
 };

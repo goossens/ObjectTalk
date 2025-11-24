@@ -126,7 +126,7 @@ private:
 	}
 
 	inline void alignRight() {
-		float right = std::numeric_limits<float>::min();
+		float right = std::numeric_limits<float>::lowest();
 
 		for (auto& location : locations) {
 			right = std::max(right, location.oldPos.x + location.oldSize.x);
@@ -164,7 +164,7 @@ private:
 	}
 
 	inline void alignBottom() {
-		float bottom = std::numeric_limits<float>::min();
+		float bottom = std::numeric_limits<float>::lowest();
 
 		for (auto& location : locations) {
 			bottom = std::max(bottom, location.oldPos.y + location.oldSize.y);

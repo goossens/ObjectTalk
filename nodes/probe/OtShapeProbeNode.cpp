@@ -84,7 +84,8 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::probe;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
+	// proterties
 	OtShape shape;
 	OtImage image;
 	OtTexture texture;

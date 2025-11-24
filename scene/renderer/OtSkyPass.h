@@ -13,7 +13,8 @@
 //
 
 #include "OtFrameBuffer.h"
-#include "OtShaderProgram.h"
+#include "OtRenderPass.h"
+#include "OtRenderPipeline.h"
 
 #include "OtSceneRendererContext.h"
 #include "OtSkyBoxComponent.h"
@@ -33,15 +34,15 @@ public:
 	void render(OtSceneRendererContext& ctx);
 
 private:
-	// render procedural sky
-	void renderSky(OtSceneRendererContext& ctx, OtPass& pass, OtSkyComponent& sky);
-
-	// render skybox
-	void renderSkyBox(OtSceneRendererContext& ctx, OtPass& pass, OtSkyBoxComponent& skybox);
-
 	// properties
 	OtFrameBuffer& framebuffer;
+	OtRenderPipeline skyPipeline;
+	OtRenderPipeline skyBoxPipeline;
 
-	OtShaderProgram skyProgram{"OtSkyVS", "OtSkyFS"};
-	OtShaderProgram skyBoxProgram{"OtSkyVS", "OtSkyBoxFS"};
+	// support functions
+	void renderSky(OtSceneRendererContext& ctx, OtSkyComponent& sky);
+	void renderSkyBox(OtSceneRendererContext& ctx, OtSkyBoxComponent& skybox);
+
+	void initializeResources();
+	bool resourcesInitialized = false;
 };

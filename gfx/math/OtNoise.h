@@ -37,7 +37,7 @@ private:
 	// Fractional Brownian Motion (FBM) properties
 	size_t octaves = 4;
 	float startFrequency = 1.0f;	// ("width") of the first octave of noise
-	float startAmplitude = 1.0f; 	// ("height") of the first octave of noise
+	float startAmplitude = 1.0f;	// ("height") of the first octave of noise
 	float lacunarity = 2.0f;		// specifies the frequency multiplier between successive octaves
 	float persistence = 0.5f;		// is the loss of amplitude between successive octaves
 };

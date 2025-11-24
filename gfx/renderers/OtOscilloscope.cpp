@@ -16,16 +16,42 @@
 #include "OtLog.h"
 #include "OtNumbers.h"
 
-#include "OtPass.h"
 #include "OtSimplexFont.h"
 #include "OtOscilloscope.h"
+#include "OtRenderPass.h"
+#include "OtVertex.h"
+
+#include "OtOscilloscopeVert.h"
+#include "OtOscilloscopeFrag.h"
+
+
+//
+//	OtOscilloscope::OtOscilloscope
+//
+
+OtOscilloscope::OtOscilloscope() {
+	pipeline.setShaders(OtOscilloscopeVert, sizeof(OtOscilloscopeVert), OtOscilloscopeFrag, sizeof(OtOscilloscopeFrag));
+	pipeline.setVertexDescription(OtVertexPosUvCol2D::getDescription());
+	pipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba8);
+
+	pipeline.setColorBlend(
+		OtRenderPipeline::BlendOperation::add,
+		OtRenderPipeline::BlendFactor::srcAlpha,
+		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
+	);
+
+	pipeline.setAlphaBlend(
+		OtRenderPipeline::BlendOperation::max,
+		OtRenderPipeline::BlendFactor::srcAlpha,
+		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha);
+}
 
 
 //
 //	OtOscilloscope::drawLine
 //
 
-void OtOscilloscope::drawLine(float x0, float y0, float x1, float y1, float lineWidth, uint32_t color) {
+void OtOscilloscope::drawLine(float x0, float y0, float x1, float y1, float lineWidth, glm::vec4& color) {
 	beginDraw(x0, y0);
 	drawTo(x1, y1);
 	endDraw(lineWidth, color);
@@ -36,7 +62,7 @@ void OtOscilloscope::drawLine(float x0, float y0, float x1, float y1, float line
 //	OtOscilloscope::drawRectangle
 //
 
-void OtOscilloscope::drawRectangle(float x, float y, float w, float h, float lineWidth, uint32_t color) {
+void OtOscilloscope::drawRectangle(float x, float y, float w, float h, float lineWidth, glm::vec4& color) {
 	beginDraw(x, y);
 	drawTo(x + w, y);
 	drawTo(x + w, y + h);
@@ -50,7 +76,7 @@ void OtOscilloscope::drawRectangle(float x, float y, float w, float h, float lin
 //	OtOscilloscope::drawCircle
 //
 
-void OtOscilloscope::drawCircle(float x, float y, float radius, float steps, float lineWidth, uint32_t color) {
+void OtOscilloscope::drawCircle(float x, float y, float radius, float steps, float lineWidth, glm::vec4& color) {
 	beginDraw(x, y - radius);
 
 	float step = static_cast<float>(std::numbers::pi) * 2.0f / steps;
@@ -68,7 +94,7 @@ void OtOscilloscope::drawCircle(float x, float y, float radius, float steps, flo
 //	OtOscilloscope::drawSevenSegment
 //
 
-void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::string& text, float lineWidth, uint32_t color) {
+void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::string& text, float lineWidth, glm::vec4& color) {
 	// calculate scaling
 	auto s = size / 100.0f;
 	auto t = (origin == Origin::topLeft) ? s : -s;
@@ -211,7 +237,7 @@ void OtOscilloscope::drawSevenSegment(float x, float y, float size, const std::s
 //	OtOscilloscope::drawText
 //
 
-void OtOscilloscope::drawText(float x, float y, float size, const std::string& text, float lineWidth, uint32_t color) {
+void OtOscilloscope::drawText(float x, float y, float size, const std::string& text, float lineWidth, glm::vec4& color) {
 	auto scaleX = size / 32.0f;
 	auto scaleY = scaleX * ((origin == Origin::topLeft) ? -1.0f : 1.0f);
 
@@ -254,20 +280,19 @@ void OtOscilloscope::drawText(float x, float y, float size, const std::string& t
 //	OtOscilloscope::render
 //
 
-void OtOscilloscope::render(OtFrameBuffer& framebuffer) {
+void OtOscilloscope::render(OtTexture& texture) {
 	// get dimensions
-	width = framebuffer.getWidth();
-	height = framebuffer.getHeight();
+	width = texture.getWidth();
+	height = texture.getHeight();
 
 	// update vertex buffers (if required)
 	if (vertexBuffers.size() != decaySteps) {
 		vertexBuffers.resize(decaySteps);
-		vertexBufferSizes.resize(decaySteps);
 	}
 
-	// update framebuffers
-	blur1.update(width / 3, height / 3);
-	blur2.update(width / 3, height / 3);
+	// update blur textures
+	blur1.update(width / 3, height / 3, OtTexture::Format::rgba8, OtTexture::Usage::rwDefault);
+	blur2.update(width / 3, height / 3, OtTexture::Format::rgba8, OtTexture::Usage::rwDefault);
 
 	// create brush (if required)
 	if (!brush.isValid()) {
@@ -284,41 +309,49 @@ void OtOscilloscope::render(OtFrameBuffer& framebuffer) {
 			}
 		}
 
-		brush.load(brushSize, brushSize, OtTexture::rgba8Texture, pixels);
+		brush.load(brushSize, brushSize, OtTexture::Format::rgba8, pixels);
 	}
 
-	OtPass pass;
-	pass.setClear(true);
-	pass.setRectangle(0, 0, width, height);
-	pass.setFrameBuffer(framebuffer);
+	OtRenderPass pass;
+	pass.setClearColor(true);
+	pass.start(texture);
+	pass.bindPipeline(pipeline);
 
-	glm::mat4 matrix;
+	// setup brush
+	pass.bindFragmentSampler(0, sampler, brush);
+
+	// set vertex uniforms
+	struct VertexUniforms {
+		glm::mat4 matrix;
+	} vertexUniforms;
 
 	switch (origin) {
 		case Origin::topLeft:
-			matrix = glm::ortho(0.0f, float(width), float(height), 0.0f);
+			vertexUniforms.matrix = glm::ortho(0.0f, float(width), float(height), 0.0f);
 			break;
 
 		case Origin::bottomLeft:
-			matrix = glm::ortho(0.0f, float(width), 0.0f, float(height));
+			vertexUniforms.matrix = glm::ortho(0.0f, float(width), 0.0f, float(height));
 			break;
 
 		case Origin::center:
-			matrix = glm::ortho(float(-width / 2), float(width / 2), float(-height / 2), float(height / 2));
+			vertexUniforms.matrix = glm::ortho(float(-width / 2), float(width / 2), float(-height / 2), float(height / 2));
 			break;
 	}
 
-	pass.setViewTransform(glm::mat4(1.0f), matrix);
+	pass.setVertexUniforms(0, &vertexUniforms, sizeof(vertexUniforms));
 
 	// advance to next draw step
 	currentDrawStep = (currentDrawStep + 1) % decaySteps;
 
 	// update the vertex buffer
 	if (vertices.size()) {
-		vertexBuffers[currentDrawStep].set(vertices.data(), static_cast<uint32_t>(vertices.size()), OtVertexPosUvCol2D::getLayout());
+		vertexBuffers[currentDrawStep].set(
+			vertices.data(),
+			vertices.size(),
+			OtVertexPosUvCol2D::getDescription(),
+			true);
 	}
-
-	vertexBufferSizes[currentDrawStep] = static_cast<uint32_t>(vertices.size());
 
 	// render all decay steps
 	for (size_t c = 0; c < decaySteps; c++) {
@@ -326,7 +359,7 @@ void OtOscilloscope::render(OtFrameBuffer& framebuffer) {
 		size_t i = (currentDrawStep + decaySteps - stepi) % decaySteps;
 
 		// don't render empty buffers
-		if (vertexBufferSizes[i] != 0) {
+		if (vertexBuffers[i].getCount()) {
 			float alpha;
 
 			if (stepi == 0) {
@@ -339,31 +372,30 @@ void OtOscilloscope::render(OtFrameBuffer& framebuffer) {
 				alpha = std::pow(decayValue, stepi - 1.0f) * decayStart;
 			}
 
-			uniform.setValue(0, glm::vec4(alpha, 0.0f, 0.0f, 0.0f));
-			uniform.submit();
-			sampler.submit(0, brush);
-			vertexBuffers[i].submit();
+			// set fragment uniforms
+			struct FragmentUniforms {
+				float alpha;
 
-			pass.setState(
-				OtPass::stateWriteRgb |
-				OtPass::stateWriteA |
-				OtPass::stateBlendAlpha |
-				BGFX_STATE_BLEND_EQUATION_SEPARATE(BGFX_STATE_BLEND_EQUATION_ADD, BGFX_STATE_BLEND_EQUATION_MAX));
+			} fragmentUniforms {
+				alpha
+			};
 
-			pass.runShaderProgram(shader);
+			pass.setFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
+			pass.render(vertexBuffers[i]);
 		}
 	}
 
+	pass.end();
 	vertices.clear();
 
 	// apply glow
-	blur.setIntensity(1.05f + ((brightness - 1.0f) / 5.0f));
-	blur.setAlpha(1.0f);
+	blur.setBrightness(1.05f + ((brightness - 1.0f) / 5.0f));
+	blur.setTransparency(1.0f);
 
 	for (auto p = 0; p < 4; p++) {
 		// run horizontal blur
 		blur.setDirection(glm::vec2(1.0f, 0.0f));
-		blur.render(p == 0 ? framebuffer : blur2, blur1);
+		blur.render(p == 0 ? texture : blur2, blur1);
 
 		// run vertical blur
 		blur.setDirection(glm::vec2(0.0f, 1.0f));
@@ -372,7 +404,7 @@ void OtOscilloscope::render(OtFrameBuffer& framebuffer) {
 
 	// combine original rendering with glow
 	compositor.setBrightness(1.25f + ((brightness - 1.0f) / 2.0f));
-	compositor.render(blur2, framebuffer);
+	compositor.render(blur2, texture);
 }
 
 
@@ -409,7 +441,7 @@ static inline float normalizeAngle(float angle) {
 //	OtOscilloscope::endDraw
 //
 
-void OtOscilloscope::endDraw(float lineWidth, uint32_t color) {
+void OtOscilloscope::endDraw(float lineWidth, glm::vec4& color) {
 	if (points.size() < 2) {
 		OtLogFatal("Internal error: invalid number of points in VectorDisplay draw action");
 	}
@@ -602,7 +634,7 @@ void OtOscilloscope::endDraw(float lineWidth, uint32_t color) {
 //	OtOscilloscope::drawFan
 //
 
-void OtOscilloscope::drawFan(float _cx, float _cy, float _pa, float _a, float _t, float _s, float _e, uint32_t color) {
+void OtOscilloscope::drawFan(float _cx, float _cy, float _pa, float _a, float _t, float _s, float _e, glm::vec4& color) {
 	int nsteps;
 	float* angles;
 

@@ -14,7 +14,6 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 #include "OtCascadedShadowMap.h"
-#include "OtGpu.h"
 
 
 //
@@ -25,7 +24,7 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 	// create resources (if required)
 	if (!isValid()) {
 		for (auto& cascade : cascades) {
-			cascade.framebuffer.initialize(OtTexture::noTexture, OtTexture::dFloatTexture);
+			cascade.framebuffer.initialize(OtTexture::Format::none, OtTexture::Format::d32);
 		}
 	}
 
@@ -57,14 +56,12 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 	}
 
 	// determine frustum corners in clip space
-	float n = OtGpuHasHomogeneousDepth() ? -1.0f : 0.0f;
-
 	glm::vec3 frustumCorners[] = {
 		// near face
-		{  1.0f,  1.0f, n },
-		{ -1.0f,  1.0f, n },
-		{  1.0f, -1.0f, n },
-		{ -1.0f, -1.0f, n },
+		{  1.0f,  1.0f, 0.0f },
+		{ -1.0f,  1.0f, 0.0f },
+		{  1.0f, -1.0f, 0.0f },
+		{ -1.0f, -1.0f, 0.0f },
 
 		// far face
 		{  1.0f,  1.0f, 1.0f },
@@ -125,10 +122,7 @@ void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirecti
 		// calculate the view and projection matrix
 		auto cameraPosition = cascadeCenter + lightDirection * radius;
 		glm::mat4 lightViewMatrix = glm::lookAt(cameraPosition, cascadeCenter, glm::vec3(0.0f, 1.0f, 0.0f));
-
-		glm::mat4 lightProjectionMatrix = OtGpuHasHomogeneousDepth()
-			? glm::orthoRH_NO(-radius, radius, -radius, radius, -maxZ, radius + radius)
-			: glm::orthoRH_ZO(-radius, radius, -radius, radius, -maxZ, radius + radius);
+		glm::mat4 lightProjectionMatrix = glm::orthoRH_ZO(-radius, radius, -radius, radius, -maxZ, radius + radius);
 
 		// offset to texel space to avoid shimmering
 		// https://stackoverflow.com/questions/33499053/cascaded-shadow-map-shimmering

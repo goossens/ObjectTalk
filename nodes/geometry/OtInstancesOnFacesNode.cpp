@@ -139,7 +139,8 @@ private:
 			v1.uv * bc.x + v2.uv * bc.y + v3.uv * bc.z);
 	}
 
-protected:
+private:
+	// properties
 	OtGeometry geometry;
 	int seed;
 	OtInstances instances;

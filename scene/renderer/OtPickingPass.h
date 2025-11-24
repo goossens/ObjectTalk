@@ -12,12 +12,11 @@
 //	Include files
 //
 
-#include <functional>
 #include <unordered_map>
 
 #include "OtFrameBuffer.h"
 #include "OtReadBackBuffer.h"
-#include "OtShaderProgram.h"
+#include "OtRenderPipeline.h"
 
 #include "OtSceneRenderEntitiesPass.h"
 
@@ -29,37 +28,50 @@
 class OtPickingPass : public OtSceneRenderEntitiesPass {
 public:
 	// render the pass
-	void render(OtSceneRendererContext& ctx, glm::vec2 ndc, std::function<void(OtEntity)> callback);
+	OtEntity render(OtSceneRendererContext& ctx, glm::vec2 uv);
 
-	// see if we are currently "picking"
-	inline bool isPicking() { return picking; }
+private:
+	// properties
+	OtFrameBuffer idBuffer{OtTexture::Format::r8, OtTexture::Format::d32};
+	OtReadBackBuffer idReadback;
+	static constexpr int bufferSize = 8;
 
-protected:
-	// methods that must be overriden by subclasses (when required)
-	bool isRenderingOpaque() override { return true; };
-	bool isRenderingTransparent() override { return true; };
+	std::unordered_map<int, OtEntity> entityMap;
+	int nextID = 1;
+
+	OtRenderPipeline opaqueCullingPipeline;
+	OtRenderPipeline opaqueNoCullingPipeline;
+	OtRenderPipeline opaqueLinesPipeline;
+
+	OtRenderPipeline opaqueInstancedCullingPipeline;
+	OtRenderPipeline opaqueInstancedNoCullingPipeline;
+	OtRenderPipeline opaqueInstancedLinesPipeline;
+
+	OtRenderPipeline animatedPipeline;
+	OtRenderPipeline terrainCullingPipeline;
+	OtRenderPipeline terrainLinesPipeline;
+	OtRenderPipeline grassPipeline;
+
+	OtRenderPipeline transparentCullingPipeline;
+	OtRenderPipeline transparentNoCullingPipeline;
+	OtRenderPipeline transparentLinesPipeline;
+
+	OtRenderPipeline transparentInstancedCullingPipeline;
+	OtRenderPipeline transparentInstancedNoCullingPipeline;
+	OtRenderPipeline transparentInstancedLinesPipeline;
+
+	// support functions
+	bool isRenderingOpaque() override { return true; }
+	bool isRenderingTransparent() override { return true; }
 
 	void renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) override;
 	void renderOpaqueModel(OtSceneRendererContext& ctx, OtModelRenderData& mrd) override;
 	void renderTerrain(OtSceneRendererContext& ctx, OtEntity entity, OtTerrainComponent& terrain)  override;
 	void renderGrass(OtSceneRendererContext& ctx, OtEntity entity, OtGrassComponent& grass)  override;
-	void renderTransparentGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) override;
+	void renderTransparentGeometry(OtSceneRendererContext&ctx , OtGeometryRenderData& grd) override;
 
-private:
-	// properties
-	OtFrameBuffer idBuffer{OtTexture::r8Texture, OtTexture::dFloatTexture};
-	OtReadBackBuffer idReadback;
-	static constexpr int bufferSize = 8;
-	bool picking = false;
+	void setFragmentUniforms(OtSceneRendererContext& ctx, OtEntity entity);
 
-	std::unordered_map<int, OtEntity> entityMap;
-	int nextID = 1;
-
-	OtShaderProgram opaqueProgram{"OtPickingVS", "OtPickingOpaqueFS"};
-	OtShaderProgram instancedOpaqueProgram{"OtPickingInstancingVS", "OtPickingOpaqueFS"};
-	OtShaderProgram animatedOpaqueProgram{"OtPickingAnimatedVS", "OtPickingOpaqueFS"};
-	OtShaderProgram transparentProgram{"OtPickingVS", "OtPickingTransparentFS"};
-	OtShaderProgram instancedTransparentProgram{"OtPickingInstancingVS", "OtPickingTransparentFS"};
-	OtShaderProgram terrainProgram{"OtTerrainSimpleVS", "OtPickingOpaqueFS"};
-	OtShaderProgram grassProgram{"OtGrassSimpleVS", "OtPickingOpaqueFS"};
+	void initializeResources();
+	bool resourcesInitialized = false;
 };

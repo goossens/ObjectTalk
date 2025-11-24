@@ -84,34 +84,27 @@ public:
 	}
 
 	// (de)serialize node
-	inline void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
-
+	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		(*data)["mode"] = mode;
 		(*data)["lut"] = lut;
 	}
 
-	inline void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		mode = data->value("mode", OtRgbaCurve::Mode::rgb);
 		lut = data->value("lut", std::array<ImVec2, curvePoints>{ImVec2(ImGui::CurveTerminator, 0.0f)});
 	}
 
 	// run filter
-	inline void onFilter(OtTexture& input, OtFrameBuffer& output) override {
+	inline void onFilter(OtTexture& input, OtTexture& output) override {
 		// update lookup table
-		uint8_t lutValues[256];
+		std::array<float, 256> lutValues;
 
 		for (auto i = 0; i < 256; i++) {
-			lutValues[i] = static_cast<uint8_t>(ImGui::CurveValueSmooth(float(i) / 255.0f, curvePoints, lut.data()) * 255.0f);
+			lutValues[i] = ImGui::CurveValueSmooth(float(i) / 255.0f, curvePoints, lut.data());
 		}
-
-		if (!lutCurve.isValid()) {
-			lutCurve.create(256, 1, OtTexture::r8Texture);
-		}
-
-		lutCurve.update(0, 0, 256, 1, lutValues);
 
 		rgbCurve.setMode(mode);
-		rgbCurve.setLUT(lutCurve);
+		rgbCurve.setLUT(lutValues);
 		rgbCurve.setBlackLevel(blackLevel);
 		rgbCurve.setWhiteLevel(whiteLevel);
 		rgbCurve.render(input, output);
@@ -121,6 +114,7 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::texture;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
+private:
 	// properties
 	OtRgbaCurve::Mode mode = OtRgbaCurve::Mode::rgb;
 
@@ -130,7 +124,6 @@ public:
 	OtColor blackLevel{0.0f, 0.0f, 0.0f, 1.0f};
 	OtColor whiteLevel{1.0f, 1.0f, 1.0f, 1.0f};
 
-	OtTexture lutCurve;
 	int lutSelection = -1;
 
 	OtRgbaCurve rgbCurve;

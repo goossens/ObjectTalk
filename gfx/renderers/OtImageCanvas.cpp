@@ -42,7 +42,7 @@ void OtImageCanvas::render(OtImage& image) {
 	// convert ABGR to RGBA
 	int w = plutovg_surface_get_width(surface);
 	int h = plutovg_surface_get_height(surface);
-	image.update(w, h, OtImage::rgba8Image);
+	image.update(w, h, OtImage::Format::rgba8);
 
 	auto src = (uint32_t*) plutovg_surface_get_data(surface);
 	auto dest = (unsigned char*) image.getPixels();

@@ -78,7 +78,7 @@ public:
 
 	// radio button
 	template <typename T>
-	static bool radioButton(const char* label, T* value, T buttonValue, const ImVec2& size=ImVec2(0.0f, 0.0f))  {
+	static bool radioButton(const char* label, T* value, T buttonValue, const ImVec2& size=ImVec2(0.0f, 0.0f)) {
 		bool changed = false;
 		ImVec4* colors = ImGui::GetStyle().Colors;
 

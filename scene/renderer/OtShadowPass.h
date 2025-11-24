@@ -12,8 +12,7 @@
 //	Include files
 //
 
-#include "OtCascadedShadowMap.h"
-#include "OtShaderProgram.h"
+#include "OtRenderPipeline.h"
 
 #include "OtSceneRendererContext.h"
 #include "OtSceneRenderEntitiesPass.h"
@@ -28,24 +27,39 @@ public:
 	// render the pass
 	void render(OtSceneRendererContext& ctx);
 
-protected:
-	// methods that must be overriden by subclasses (when required)
-	bool isRenderingOpaque() override { return true; };
-	bool isRenderingTransparent() override { return true; };
+private:
+	// properties
+	OtRenderPipeline opaqueCullingPipeline;
+	OtRenderPipeline opaqueNoCullingPipeline;
+	OtRenderPipeline opaqueLinesPipeline;
+
+	OtRenderPipeline opaqueInstancedCullingPipeline;
+	OtRenderPipeline opaqueInstancedNoCullingPipeline;
+	OtRenderPipeline opaqueInstancedLinesPipeline;
+
+	OtRenderPipeline animatedPipeline;
+	OtRenderPipeline terrainCullingPipeline;
+	OtRenderPipeline terrainLinesPipeline;
+	OtRenderPipeline grassPipeline;
+
+	OtRenderPipeline transparentCullingPipeline;
+	OtRenderPipeline transparentNoCullingPipeline;
+	OtRenderPipeline transparentLinesPipeline;
+
+	OtRenderPipeline transparentInstancedCullingPipeline;
+	OtRenderPipeline transparentInstancedNoCullingPipeline;
+	OtRenderPipeline transparentInstancedLinesPipeline;
+
+	// support functions
+	bool isRenderingOpaque() override { return true; }
+	bool isRenderingTransparent() override { return true; }
 
 	void renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) override;
 	void renderOpaqueModel(OtSceneRendererContext& ctx, OtModelRenderData& mrd) override;
 	void renderTerrain(OtSceneRendererContext& ctx, OtEntity entity, OtTerrainComponent& terrain)  override;
 	void renderGrass(OtSceneRendererContext& ctx, OtEntity entity, OtGrassComponent& grass)  override;
-	void renderTransparentGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) override;
+	void renderTransparentGeometry(OtSceneRendererContext&ctx , OtGeometryRenderData& grd) override;
 
-private:
-	// properties
-	OtShaderProgram opaqueProgram{"OtShadowVS", "OtShadowOpaqueFS"};
-	OtShaderProgram instancedOpaqueProgram{"OtShadowInstancingVS", "OtShadowOpaqueFS"};
-	OtShaderProgram animatedOpaqueProgram{"OtShadowAnimatedVS", "OtShadowOpaqueFS"};
-	OtShaderProgram transparentProgram{"OtShadowVS", "OtShadowTransparentFS"};
-	OtShaderProgram instancedTransparentProgram{"OtShadowInstancingVS", "OtShadowTransparentFS"};
-	OtShaderProgram terrainProgram{"OtTerrainSimpleVS", "OtShadowOpaqueFS"};
-	OtShaderProgram grassProgram{"OtGrassSimpleVS", "OtShadowOpaqueFS"};
+	void initializeResources();
+	bool resourcesInitialized = false;
 };

@@ -11,12 +11,13 @@
 
 #include <algorithm>
 
+#include "glm/glm.hpp"
 #include "imgui.h"
 
+#include "OtFunction.h"
 #include "OtLog.h"
 #include "OtVM.h"
 
-#include "OtPass.h"
 #include "OtUi.h"
 
 #include "OtCanvasStack.h"
@@ -135,30 +136,23 @@ void OtCanvasStackClass::render() {
 		}
 	}
 
-	// (re)-composite all layers (if required)
+	// (re-)composite all layers (if required)
 	if (dirty) {
 		// resize framebuffer (if required) and clear it
 		framebuffer.update(w, h);
-
-		OtPass clearPass;
-		clearPass.setFrameBuffer(framebuffer);
-		clearPass.setRectangle(0, 0, w, h);
-		clearPass.setClear(true);
-		clearPass.touch();
+		flood.render(framebuffer.getColorTexture());
 
 		for (auto& canvas : canvases) {
 			if (OtCanvasObject(canvas.canvas)->isEnabled()) {
-				alphaOver.render(canvas.framebuffer, framebuffer);
+				alphaOver.render(canvas.framebuffer.getColorTexture(), framebuffer.getColorTexture());
 			}
 		}
 	}
 
-	ImVec2 size{float(w), float(h)};
-	auto texture = framebuffer.getColorTexture();
-
 	ImGui::PushID(this);
+	ImVec2 size{float(w), float(h)};
 	OtUi::align(size, horizontalAlign, verticalAlign);
-	ImGui::Image(texture.getTextureID(), size);
+	ImGui::Image(framebuffer.getColorTexture().getTextureID(), size);
 	ImGui::PopID();
 }
 

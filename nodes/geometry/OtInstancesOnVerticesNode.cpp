@@ -79,6 +79,7 @@ public:
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 private:
+	// properties
 	// generate a single instance
 	void generateInstance(OtVertex& vertex, glm::mat4& transform) {
 		// rotate to normals (if required)

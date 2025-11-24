@@ -34,7 +34,7 @@ void OtPathFollower::follow(const std::string& p, std::function<void()> cb) {
 
 	status = uv_fs_event_start(
 		fsEventHandle,
-		[](uv_fs_event_t* handle, const char* /* filename */, int events, int /* status */) {
+		[](uv_fs_event_t* handle, [[maybe_unused]] const char* filename, int events, [[maybe_unused]] int status) {
 			// get pointer to follower object
 			auto follower = (OtPathFollower*) handle->data;
 

@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include "OtFrameBuffer.h"
 #include "OtTexture.h"
 
 #include "OtNode.h"
@@ -30,30 +29,19 @@ public:
 		addOutputPin("Output", outputTexture);
 	}
 
-	// get output format (noTexture means use the same format as the incoming texture)
-	inline virtual int getOutputFormat() { return OtTexture::noTexture; }
+	// get output format (none means use the same format as the incoming texture)
+	inline virtual OtTexture::Format getOutputFormat() { return OtTexture::Format::none; }
 
 	// run the filter
 	inline void onExecute() override {
 		// do we have a valid input
 		if (inputTexture.isValid()) {
-			// determine output texture format for framebuffer
-			auto format = getOutputFormat();
-			format = format == OtTexture::noTexture ? inputTexture.getFormat() : format;
-
-			// reinitialize framebuffer if format changed
-			if (format != framebuffer.getColorTextureType()) {
-				framebuffer.initialize(format, OtTexture::noTexture, 1, true);
-			}
-
-			// ensure framebuffer has the right size
-			framebuffer.update(inputTexture.getWidth(), inputTexture.getHeight());
+			// ensure output is the correct size and format
+			auto format = getOutputFormat() == OtTexture::Format::none ? inputTexture.getFormat() : getOutputFormat();
+			outputTexture.update(inputTexture.getWidth(), inputTexture.getHeight(), format, OtTexture::Usage::rwDefault);
 
 			// run filter
-			onFilter(inputTexture, framebuffer);
-
-			// manage output (versions number are used to detect changes down the line)
-			outputTexture = framebuffer.getColorTexture();
+			onFilter(inputTexture, outputTexture);
 			outputTexture.setVersion(version++);
 
 		} else {
@@ -62,10 +50,9 @@ public:
 	}
 
 	// the actual filter execution (to be overriden by subclasses)
-	virtual void onFilter(OtTexture& input, OtFrameBuffer& output) = 0;
+	virtual void onFilter(OtTexture& input, OtTexture& output) = 0;
 
 	// properties
-	OtFrameBuffer framebuffer;
 	OtTexture inputTexture;
 	OtTexture outputTexture;
 	int version = 1;

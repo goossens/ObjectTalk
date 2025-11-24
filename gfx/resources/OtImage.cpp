@@ -10,29 +10,21 @@
 //
 
 #include <algorithm>
+#include <cstring>
 #include <fstream>
 
-#include "bx/allocator.h"
-#include <bx/file.h>
-#include "bimg/decode.h"
-#include "bimg/encode.h"
+#include "stb_image.h"
+#include "SDL3/SDL_iostream.h"
 
 #include "OtAssert.h"
 #include "OtException.h"
 #include "OtLog.h"
 #include "OtNumbers.h"
+#include "OtText.h"
 
 #include "OtImage.h"
 #include "OtFrameworkAtExit.h"
-#include "OtPath.h"
 #include "OtUrl.h"
-
-
-//
-//	Globals
-//
-
-static bx::DefaultAllocator allocator;
 
 
 //
@@ -43,14 +35,36 @@ OtImage::OtImage(const std::string& path, bool powerof2, bool square) {
 	load(path, powerof2, square);
 }
 
+OtImage::OtImage(int width, int height, Format format, void* pixels) {
+	load(width, height, format, pixels);
+}
+
 
 //
 //	OtImage::clear
 //
 
 void OtImage::clear() {
-	image.reset();
-	incrementVersion();
+	if (surface) {
+		surface = nullptr;
+		incrementVersion();
+	}
+}
+
+
+//
+//	isPowerOfTwo
+//
+
+static bool isPowerOfTwo(int n) {
+	// handle the special case of 0, which is not a power of two
+	if (n <= 0) {
+		return false;
+
+	} else {
+		// check if n has only one bit set using the bitwise AND trick
+		return (n & (n - 1)) == 0;
+	}
 }
 
 
@@ -58,73 +72,18 @@ void OtImage::clear() {
 //	OtImage::update
 //
 
-void OtImage::update(int width, int height, int format) {
-	if (!image || image->m_width != uint32_t(width) || image->m_height != uint32_t(height) || image->m_format != format) {
-		// allocate space for a new image
-		auto imageContainer = bimg::imageAlloc(
-			&allocator,
-			bimg::TextureFormat::Enum(format),
-			uint16_t(width),
-			uint16_t(height),
-			1,
-			1,
-			false,
-			false);
+void OtImage::update(int width, int height, Format format) {
+	// update surface (if required)
+	auto fmt = static_cast<SDL_PixelFormat>(format);
 
-		if (!imageContainer) {
-			OtLogFatal("Internal error: function [bimg::imageAlloc] failed");
+	if (!surface || surface->w != width || surface->h != height || surface->format != fmt) {
+		auto sdlSurface = SDL_CreateSurface(width, height, fmt);
+
+		if (!sdlSurface) {
+			OtLogFatal("Error in SDL_CreateSurface: {}", SDL_GetError());
 		}
 
-		assignImageContainer(imageContainer);
-	}
-}
-
-
-//
-//	OtImage::loadFromFile
-//
-
-void OtImage::loadFromFile(const std::string& path) {
-	// get image data from file
-	if (!OtPath::exists(path) || !OtPath::isRegularFile(path)) {
-		OtLogError("Can't open image in [{}]", path);
-	}
-
-	auto filesize = OtPath::getFileSize(path);
-	auto buffer = new char[filesize];
-	std::ifstream file(path, std::ios::binary);
-	file.read(buffer, filesize);
-
-	if (!file) {
-		delete [] buffer;
-		OtLogError("Can't open image in [{}]", path);
-	}
-
-	auto imageContainer = bimg::imageParse(&allocator, buffer, static_cast<uint32_t>(filesize));
-	delete [] buffer;
-
-	// sanity check
-	if (!imageContainer) {
-		OtLogError("Can't process image in [{}]", path);
-	}
-
-	assignImageContainer(imageContainer);
-}
-
-
-//
-//	OtImage::loadFromUrl
-//
-
-void OtImage::loadFromUrl(const std::string& address) {
-	OtUrl url(address);
-	url.download();
-
-	try {
-		load(url.getDownloadedData(), url.getDownloadedSize());
-
-	} catch (OtException&) {
-		OtLogError("Can't process image loaded from [{}]", address);
+		assign(sdlSurface);
 	}
 }
 
@@ -136,96 +95,38 @@ void OtImage::loadFromUrl(const std::string& address) {
 void OtImage::load(const std::string& address, bool powerof2, bool square) {
 	// do we have a URL?
 	if (OtText::startsWith(address, "http:") || OtText::startsWith(address, "https:")) {
-		loadFromUrl(address);
+		OtUrl url(address);
+		url.download();
+		load(url.getDownloadedData(), url.getDownloadedSize());
 
 	} else {
-		loadFromFile(address);
+		// load image from file
+		auto io = SDL_IOFromFile(address.c_str(), "r");
+
+		if (!io) {
+			OtLogFatal("Error in SDL_IOFromMem: {}", SDL_GetError());
+		}
+
+		load(io);
+		SDL_CloseIO(io);
 	}
 
 	// validate sides are power of 2 (if required)
-	if (powerof2 && !(bx::isPowerOf2(image->m_width))) {
+	if (powerof2 && !(isPowerOfTwo(surface->w))) {
 		clear();
-		OtLogError("Image width {} is not a power of 2", image->m_width);
+		OtLogError("Image width {} is not a power of 2", surface->w);
 	}
 
-	if (powerof2 && !(bx::isPowerOf2(image->m_height))) {
+	if (powerof2 && !(isPowerOfTwo(surface->h))) {
 		clear();
-		OtLogError("Image height {} is not a power of 2", image->m_height);
+		OtLogError("Image height {} is not a power of 2", surface->h);
 	}
 
 	// validate squareness (if required)
-	if (square && image->m_width != image->m_height) {
+	if (square && surface->w != surface->h) {
 		clear();
-		OtLogError("Image must be square not {} by {}", image->m_width, image->m_height);
+		OtLogError("Image must be square not {} by {}", surface->w, surface->h);
 	}
-}
-
-
-//
-//	convertImage
-//
-
-static bimg::ImageContainer* convertImage(bimg::ImageContainer& input, bimg::TextureFormat::Enum format) {
-	if (!bimg::imageConvert(format, input.m_format)) {
-		OtLogFatal("Internal error: can't convert image from [{}] to [{}]", bimg::getName(input.m_format), bimg::getName(format));
-	}
-
-	return bimg::imageConvert(&allocator, format, input);
-}
-
-
-//
-//	OtImage::loadAsGrayscale
-//
-
-void OtImage::loadAsGrayscale(const std::string& address, bool powerof2, bool square) {
-	// load the image
-	load(address, powerof2, square);
-
-	// convert image (if required)
-	if (image->m_format != bimg::TextureFormat::R32F) {
-		convertImage(*image, bimg::TextureFormat::R32F);
-	}
-}
-
-
-//
-//	OtImage::loadAsRGBA
-//
-
-void OtImage::loadAsRGBA(const std::string& address, bool powerof2, bool square) {
-	// load the image
-	load(address, powerof2, square);
-
-	// convert image (if required)
-	if (image->m_format != bimg::TextureFormat::RGBA8) {
-		convertImage(*image, bimg::TextureFormat::RGBA8);
-	}
-}
-
-
-//
-//	OtImage::load
-//
-
-void OtImage::load(int width, int height, int format, void* pixels) {
-	// create new image
-	auto imageContainer = bimg::imageAlloc(
-		&allocator,
-		bimg::TextureFormat::Enum(format),
-		uint16_t(width),
-		uint16_t(height),
-		1,
-		1,
-		false,
-		false,
-	pixels);
-
-	if (!imageContainer) {
-		OtLogFatal("Internal error: function [bimg::imageAlloc] failed");
-	}
-
-	assignImageContainer(imageContainer);
 }
 
 
@@ -235,49 +136,89 @@ void OtImage::load(int width, int height, int format, void* pixels) {
 
 void OtImage::load(void* data, size_t size) {
 	// create the image
-	auto imageContainer = bimg::imageParse(&allocator, data, static_cast<uint32_t>(size));
+	auto io = SDL_IOFromMem(data, size);
 
-	// check for errors
-	if (!imageContainer) {
-		OtLogError("Internal error: can't process in-memory image");
+	if (!io) {
+		OtLogFatal("Error in SDL_IOFromMem: {}", SDL_GetError());
 	}
 
-	assignImageContainer(imageContainer);
+	load(io);
+	SDL_CloseIO(io);
 }
 
 
 //
-//	writeToPNG
+//	OtImage::load
 //
 
-static void writeToPNG(const std::string& path, const bimg::ImageContainer& image) {
-	bx::FileWriter writer;
-	bx::Error err;
+void OtImage::load(SDL_IOStream* src) {
+	// setup stream
+	stbi_io_callbacks callbacks;
 
-	if (bx::open(&writer, path.c_str(), false, &err)) {
-		bimg::imageWritePng(
-			&writer,
-			image.m_width,
-			image.m_height,
-			image.m_width * (image.m_format == bimg::TextureFormat::R8 ? 1 : 4),
-			image.m_data,
-			image.m_format,
-			false,
-			&err);
+	callbacks.read = [](void* user, char* data, int size) {
+		return static_cast<int>(SDL_ReadIO((SDL_IOStream*) user, data, size));
+	};
 
-		if (!err.isOk()) {
-			auto msg = err.getMessage();
-			auto message = std::string(msg.getCPtr(), msg.getLength());
-			OtLogError("Can't write PNG to file at [{}], error: {}", path, message);
-		}
+	callbacks.skip = [](void* user, int n) {
+		SDL_SeekIO((SDL_IOStream*) user, n, SDL_IO_SEEK_CUR);
+	};
 
-		bx::close(&writer);;
+	callbacks.eof = [](void* user) {
+		return static_cast<int>(SDL_GetIOStatus((SDL_IOStream*) user) == SDL_IO_STATUS_EOF);
+	};
+
+	// read image
+	int w, h, n;
+	auto pixels = stbi_load_from_callbacks(&callbacks, src, &w, &h, &n, 4);
+
+	if (pixels) {
+		load(w, h, Format::rgba8, pixels);
+		stbi_image_free(pixels);
 
 	} else {
-		auto msg = err.getMessage();
-		auto message = std::string(msg.getCPtr(), msg.getLength());
-		OtLogError("Can't open PNG file at [{}] for write, error: {}", path, message);
+		SDL_SetError("%s", stbi_failure_reason());
 	}
+}
+
+
+//
+//	OtImage::load
+//
+
+void OtImage::load(int width, int height, Format format, void* pixels) {
+	// create new surface
+	auto sdlSurface = SDL_CreateSurface(width, height, static_cast<SDL_PixelFormat>(format));
+
+	if (!sdlSurface) {
+		OtLogFatal("Error in SDL_CreateSurface: {}", SDL_GetError());
+	}
+
+	if (format == Format::r8) {
+		auto palette = SDL_CreateSurfacePalette(sdlSurface);
+
+		if (!palette) {
+			 SDL_DestroySurface(sdlSurface);
+			OtLogFatal("Error in SDL_CreateSurfacePalette: {}", SDL_GetError());
+		}
+
+		for (int i = 0; i < palette->ncolors; i++) {
+			palette->colors[i].r = static_cast<Uint8>(i);
+			palette->colors[i].g = static_cast<Uint8>(i);
+			palette->colors[i].b = static_cast<Uint8>(i);
+		}
+	}
+
+	if (SDL_MUSTLOCK(sdlSurface)) {
+		SDL_LockSurface(sdlSurface);
+		std::memcpy(sdlSurface->pixels, pixels, sdlSurface->h * sdlSurface->pitch);
+		SDL_UnlockSurface(sdlSurface);
+
+	} else {
+		std::memcpy(sdlSurface->pixels, pixels, sdlSurface->h * sdlSurface->pitch);
+	}
+
+	assign(sdlSurface);
+	normalize();
 }
 
 
@@ -287,93 +228,11 @@ static void writeToPNG(const std::string& path, const bimg::ImageContainer& imag
 
 void OtImage::saveToPNG(const std::string& path) {
 	// sanity check
-	OtAssert(image);
+	OtAssert(isValid());
 
-	if (image->m_format == rgba8Image) {
-		writeToPNG(path, *image);
-
-	} else {
-		bimg::ImageContainer* newImage = convertImage(*image, bimg::TextureFormat::RGBA8);
-		writeToPNG(path, *newImage);
-		bimg::imageFree(newImage);
-	}
-}
-
-
-//
-//	writeToDDS
-//
-
-static void writeToDDS(const std::string& path, bimg::ImageContainer& image) {
-	bx::FileWriter writer;
-	bx::Error err;
-
-	if (bx::open(&writer, path.c_str(), false, &err)) {
-		bimg::imageWriteDds(
-			&writer,
-			image,
-			image.m_data,
-			image.m_size,
-			&err);
-
-		if (!err.isOk()) {
-			auto msg = err.getMessage();
-			auto message = std::string(msg.getCPtr(), msg.getLength());
-			OtLogError("Can't write DDS to file at [{}], error: {}", path, message);
-		}
-
-		bx::close(&writer);;
-
-	} else {
-		auto msg = err.getMessage();
-		auto message = std::string(msg.getCPtr(), msg.getLength());
-		OtLogError("Can't open DDS file at [{}] for write, error: {}", path, message);
-	}
-}
-
-
-//
-//	OtImage::saveToDDS
-//
-
-void OtImage::saveToDDS(const std::string& path) {
-	// sanity check
-	OtAssert(image);
-
-	if (image->m_format == rgba8Image) {
-		writeToDDS(path, *image);
-
-	} else {
-		bimg::ImageContainer* newImage = convertImage(*image, bimg::TextureFormat::RGBA8);
-		writeToDDS(path, *newImage);
-		bimg::imageFree(newImage);
-	}
-}
-
-
-//
-//	OtImage::getContainer
-//
-
-bimg::ImageContainer* OtImage::getContainer() {
-	// ensure we have a valid image
-	if (isValid()) {
-		return image.get();
-
-	} else {
-		static bimg::ImageContainer* dummy = nullptr;
-
-		// create dummy image (if required)
-		if (!dummy) {
-			dummy = bimg::imageAlloc(&allocator, bimg::TextureFormat::R8, 1, 1, 0, 1, false, false);
-
-			OtFrameworkAtExit::add([]() {
-				bimg::imageFree(dummy);
-			});
-		}
-
-		// just return a dummy image to keep everybody happy
-		return dummy;
+	// write image to file
+	if (!SDL_SavePNG(surface.get(), path.c_str())){
+		OtLogFatal("Error in SDL_SavePNG: {}", SDL_GetError());
 	}
 }
 
@@ -386,60 +245,28 @@ glm::vec4 OtImage::getPixelRgba(int x, int y) {
 	// sanity check
 	OtAssert(isValid());
 
-	x = std::clamp(x, 0, (int) (image->m_width - 1));
-	y = std::clamp(y, 0, (int) (image->m_height - 1));
+	x = std::clamp(x, 0, surface->w - 1);
+	y = std::clamp(y, 0, surface->h - 1);
 
-	if (image->m_format == bimg::TextureFormat::R8) {
-		auto value = ((uint8_t*) image->m_data)[y * image->m_width + x] / 256.0f;
-		return glm::vec4(value, value, value, 1.0f);
+	if (surface->format == SDL_PIXELFORMAT_RGBA32) {
+		auto p = static_cast<uint8_t*>(surface->pixels);
+		p += surface->pitch * y + x * 4;
 
-	} else if (image->m_format == bimg::TextureFormat::R32F) {
-		auto value = ((float*) image->m_data)[y * image->m_width + x];
-		return glm::vec4(value, value, value, 1.0f);
+		return glm::vec4(
+			static_cast<float>(p[0]) / 255.0f,
+			static_cast<float>(p[1]) / 255.0f,
+			static_cast<float>(p[2]) / 255.0f,
+			static_cast<float>(p[3]) / 255.0f);
 
-	} else if (image->m_format == bimg::TextureFormat::RGBA8) {
-		auto value = &((uint8_t*) image->m_data)[y * image->m_width + x];
-		return glm::vec4(value[0] / 255.0f, value[1] / 255.0f, value[2] / 255.0f, value[3] / 255.0f);
-
-	} else if (image->m_format == bimg::TextureFormat::RGBA32F) {
-		auto value = &((float*) image->m_data)[y * image->m_width + x];
-		return glm::vec4(value[0], value[1], value[2], value[3]);
+	} else if (surface->format == SDL_PIXELFORMAT_RGBA128_FLOAT) {
+		auto p = static_cast<uint8_t*>(surface->pixels);
+		p += surface->pitch * y + x * 16;
+		auto f = (float*) p;
+		return glm::vec4(f[0], f[1], f[2], f[3]);
 
 	} else {
-		OtLogFatal("Can't get pixel from image in [{}] format", bimg::getName(image->m_format));
+		OtLogFatal("Internal error: invalid pixel format");
 		return glm::vec4();
-	}
-}
-
-
-//
-//	OtImage::getPixelGray
-//
-
-float OtImage::getPixelGray(int x, int y) {
-	// sanity check
-	OtAssert(isValid());
-
-	x = std::clamp(x, 0, (int) image->m_width - 1);
-	y = std::clamp(y, 0, (int) image->m_height - 1);
-
-	if (image->m_format == bimg::TextureFormat::R8) {
-		return ((uint8_t*) image->m_data)[y * image->m_width + x] / 256.0f;
-
-	} else if (image->m_format == bimg::TextureFormat::R32F) {
-		return ((float*) image->m_data)[y * image->m_width + x];
-
-	} else if (image->m_format == bimg::TextureFormat::RGBA8) {
-		auto value = &((uint8_t*) image->m_data)[(y * image->m_width + x) * 4];
-		return value[0] / 255.0f * 0.3f + value[1] / 255.0f * 0.59f + value[2] / 255.0f * 0.11f;
-
-	} else if (image->m_format == bimg::TextureFormat::RGBA32F) {
-		auto value = &((float*) image->m_data)[(y * image->m_width + x) * 4];
-		return value[0] * 0.3f + value[1] * 0.59f + value[2] * 0.11f;
-
-	} else {
-		OtLogFatal("Can't get pixel from image in [{}] format", bimg::getName(image->m_format));
-		return 0.0f;
 	}
 }
 
@@ -452,8 +279,8 @@ glm::vec4 OtImage::sampleValueRgba(float x, float y) {
 	// sanity check
 	OtAssert(isValid());
 
-	x *= image->m_width - 1;
-	y *= image->m_height - 1;
+	x *= surface->w - 1;
+	y *= surface->h - 1;
 
 	int x1 = static_cast<int>(std::floor(x));
 	int y1 = static_cast<int>(std::floor(y));
@@ -479,8 +306,8 @@ float OtImage::sampleValueGray(float x, float y) {
 	// sanity check
 	OtAssert(isValid());
 
-	x *= image->m_width - 1;
-	y *= image->m_height - 1;
+	x *= surface->w - 1;
+	y *= surface->h - 1;
 
 	int x1 = static_cast<int>(std::floor(x));
 	int y1 = static_cast<int>(std::floor(y));
@@ -499,17 +326,45 @@ float OtImage::sampleValueGray(float x, float y) {
 
 
 //
-//	OtImage::assignImageContainer
+//	OtImage::assign
 //
 
-void OtImage::assignImageContainer(bimg::ImageContainer* container) {
-	// the deleter for an image container
-	struct Deleter {
-		void operator()(bimg::ImageContainer* image) {
-			bimg::imageFree(image);
-		}
-	} deleter;
+void OtImage::assign(SDL_Surface* newSurface) {
+	surface = std::shared_ptr<SDL_Surface>(
+		newSurface,
+		[](SDL_Surface* oldSurface) {
+			SDL_DestroySurface(oldSurface);
+		});
 
-	// assign a new image container to the shared pointer
-	image.reset(container, deleter);
+	incrementVersion();
+}
+
+
+//
+//	OtImage::normalize
+//
+
+void OtImage::normalize() {
+	if (SDL_ISPIXELFORMAT_FLOAT(surface->format)) {
+		if (surface->format != SDL_PIXELFORMAT_RGBA128_FLOAT) {
+			auto sdlSurface = SDL_ConvertSurface(surface.get(), SDL_PIXELFORMAT_RGBA128_FLOAT);
+
+			if (!sdlSurface) {
+				OtLogFatal("Error in SDL_ConvertSurface: {}", SDL_GetError());
+			}
+
+			assign(sdlSurface);
+		}
+
+	} else {
+		if (surface->format != SDL_PIXELFORMAT_INDEX8 && surface->format != SDL_PIXELFORMAT_RGBA32) {
+			auto sdlSurface = SDL_ConvertSurface(surface.get(), SDL_PIXELFORMAT_RGBA32);
+
+			if (!sdlSurface) {
+				OtLogFatal("Error in SDL_ConvertSurface: {}", SDL_GetError());
+			}
+
+			assign(sdlSurface);
+		}
+	}
 }

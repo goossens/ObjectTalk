@@ -13,8 +13,7 @@
 //
 
 #include "OtFilter.h"
-#include "OtShaderProgram.h"
-#include "OtUniformVec4.h"
+#include "OtContrastSaturationBrightnessComp.h"
 
 
 //
@@ -24,20 +23,34 @@
 class OtContrastSaturationBrightness : public OtFilter {
 public:
 	// set properties
-	inline void setContrast(float c) { contrast = c; }
-	inline void setSaturation(float s) { saturation = s; }
-	inline void setBrightness(float b) { brightness = b; }
+	inline void setContrast(float value) { contrast = value; }
+	inline void setSaturation(float value) { saturation = value; }
+	inline void setBrightness(float value) { brightness = value; }
+
+	// configure the compute pass
+	void configurePass(OtComputePass& pass) override {
+		// initialize pipeline (if required)
+		if (!pipeline.isValid()) {
+			pipeline.setShader(OtContrastSaturationBrightnessComp, sizeof(OtContrastSaturationBrightnessComp));
+		}
+
+		// set uniforms
+		struct Uniforms {
+			float contrast;
+			float saturation;
+			float brightness;
+		} uniforms {
+			contrast,
+			saturation,
+			brightness
+		};
+
+		pass.addUniforms(&uniforms, sizeof(uniforms));
+	}
 
 private:
-	// execute filter
-	void execute(OtPass& pass) override;
-
 	// properties
 	float contrast = 1.0f;
 	float saturation = 1.0f;
 	float brightness = 1.0f;
-
-	// GPU assets
-	OtUniformVec4 uniform = OtUniformVec4("u_csb", 1);
-	OtShaderProgram program = OtShaderProgram("OtFilterVS", "OtContrastSaturationBrightnessFS");
 };

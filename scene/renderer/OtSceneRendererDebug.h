@@ -12,14 +12,17 @@
 //	Include files
 //
 
+#include <array>
+#include <cstdint>
+
 #include "imgui.h"
 
 #include "OtCubeMap.h"
 #include "OtFrameBuffer.h"
-#include "OtSampler.h"
-#include "OtShaderProgram.h"
+#include "OtIndexBuffer.h"
+#include "OtRenderPipeline.h"
 #include "OtTexture.h"
-#include "OtUniformVec4.h"
+#include "OtVertexBuffer.h"
 
 #include "OtSceneRenderer.h"
 
@@ -35,7 +38,7 @@ public:
 
 private:
 	struct CubeMapDebug {
-		OtFrameBuffer framebuffer{OtTexture::rgba8Texture};
+		OtFrameBuffer framebuffer{OtTexture::Format::rgba8};
 		int renderedVersion = 0;
 		int renderedMip = 0;
 		int requestedMip = 0;
@@ -50,7 +53,7 @@ private:
 	void renderTimings(OtSceneRenderer& renderer);
 	void renderAssets();
 
-	void renderTexture(const char* title, ImTextureID id, int width, int height);
+	void renderTexture(const char* title, ImTextureID index, int width, int height);
 	void renderTexture(const char* title, OtTexture& texture);
 	void renderCubeMap(const char* title, OtCubeMap& cubemap, CubeMapDebug& debug);
 	void renderCubeMapAsCross(OtCubeMap& cubemap, CubeMapDebug& debug);
@@ -60,7 +63,10 @@ private:
 	CubeMapDebug iblIrradianceDebug;
 	CubeMapDebug iblEnvironmentDebug;
 
-	OtSampler crossSampler{"s_cubemap", OtSampler::linearSampling | OtSampler::repeatSampling};
-	OtUniformVec4 crossUniform{"u_crossUniform", 1};
-	OtShaderProgram crossShader{"OtCubeMapCrossVS", "OtCubeMapCrossFS"};
+	OtRenderPipeline pipeline;
+	OtIndexBuffer indexBuffer;
+	OtVertexBuffer vertexBuffer;
+
+	void initializeResources();
+	bool resourcesInitialized = false;
 };

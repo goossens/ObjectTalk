@@ -97,7 +97,7 @@ bool OtSceneEditorCamera::renderUI() {
 //	OtSceneEditorCamera::serialize
 //
 
-nlohmann::json OtSceneEditorCamera::serialize(std::string* /* basedir */) {
+nlohmann::json OtSceneEditorCamera::serialize([[maybe_unused]] std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["position"] = position;
 	data["pitch"] = pitch;
@@ -114,7 +114,7 @@ nlohmann::json OtSceneEditorCamera::serialize(std::string* /* basedir */) {
 //	OtSceneEditorCamera::deserialize
 //
 
-void OtSceneEditorCamera::deserialize(nlohmann::json data, std::string* /* basedir */) {
+void OtSceneEditorCamera::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
 	position = data.value("position", glm::vec3(0.0f, 2.0f, 5.0f));
 	pitch = data.value("pitch", -20.0f);
 	yaw = data.value("yaw", 0.0f);
@@ -167,13 +167,13 @@ void OtSceneEditorCamera::handleKeyboardAndMouse() {
 		} else if (ImGui::IsKeyDown(ImGuiKey_Z) || ImGui::IsKeyDown(ImGuiKey_Minus) || ImGui::IsKeyDown(ImGuiKey_Keypad1)) {
 			fov -= maxZoomPerSecond * delta;
 
-		} else if (ImGui::IsKeyDown(ImGuiKey_C) || ImGui::IsKeyDown(ImGuiKey_Equal) ||  ImGui::IsKeyDown(ImGuiKey_Keypad3)) {
+		} else if (ImGui::IsKeyDown(ImGuiKey_C) || ImGui::IsKeyDown(ImGuiKey_Equal) || ImGui::IsKeyDown(ImGuiKey_Keypad3)) {
 			fov += maxZoomPerSecond * delta;
 		}
 	}
 
 	// ensure all properties are in range
- 	pitch = std::clamp(pitch, -89.9f, 89.9f);
+	pitch = std::clamp(pitch, -89.9f, 89.9f);
 
 	if (yaw < -360.0f) {
 		yaw += 360.0f;
@@ -182,7 +182,7 @@ void OtSceneEditorCamera::handleKeyboardAndMouse() {
 		yaw -= 360.0f;
 	}
 
- 	fov = std::clamp(fov, 20.0f, 160.0f);
+	fov = std::clamp(fov, 20.0f, 160.0f);
 }
 
 

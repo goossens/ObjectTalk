@@ -17,9 +17,9 @@
 
 #include "OtGlm.h"
 #include "OtUi.h"
-#include "OtTransientIndexBuffer.h"
 
 #include "OtGrass.h"
+#include "OtVertex.h"
 
 
 //
@@ -117,11 +117,59 @@ void OtGrass::deserialize(nlohmann::json data, [[maybe_unused]] std::string* bas
 
 
 //
-//	OtGrass::submit
+//	OtGrass::getVertexBuffer
 //
 
-void OtGrass::submit() {
-	// submit geometry
+OtVertexBuffer& OtGrass::getVertexBuffer() {
+	// TODO: insert return statement here
+
+	// update buffers (if required)
+	if (bufferBladeSegments != bladeSegments) {
+		updateBuffers();
+		bufferBladeSegments = bladeSegments;
+	}
+
+	// return buffer
+	return vertexBuffer;
+}
+
+
+//
+//	OtGrass::getIndexBuffer
+//
+
+OtIndexBuffer& OtGrass::getIndexBuffer() {
+	// update buffers (if required)
+	if (bufferBladeSegments != bladeSegments) {
+		updateBuffers();
+		bufferBladeSegments = bladeSegments;
+	}
+
+	// return buffer
+	return indexBuffer;
+}
+
+
+//
+//	OtGrass::updateBuffers
+//
+
+void OtGrass::updateBuffers() {
+	// update vertex buffer
+	std::vector<glm::vec3> vertices;
+	auto verticesPerSide = (bladeSegments + 1) * 2;
+	auto vertexCount = verticesPerSide * 2;
+
+	for (auto i = 0; i < vertexCount; i++) {
+		vertices.emplace_back(
+			float(i & 1) - 0.5f,
+			float((i % verticesPerSide) / 2) / bladeSegments,
+			0.0f);
+	}
+
+	vertexBuffer.set(vertices.data(), vertices.size(), OtVertexPos::getDescription());
+
+	// update index buffer
 	std::vector<uint32_t> indices;
 	indices.resize(bladeSegments * 12);
 
@@ -145,6 +193,5 @@ void OtGrass::submit() {
 		indices[i * 12 + 11] = vi + 2;
 	}
 
-	OtTransientIndexBuffer tib;
-	tib.submit(indices.data(), indices.size());
+	indexBuffer.set(indices.data(), indices.size(), false);
 }

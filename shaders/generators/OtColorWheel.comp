@@ -1,0 +1,43 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+#version 450 core
+#extension GL_GOOGLE_include_directive : require
+
+#include "constants.glsl"
+
+layout(local_size_x=16, local_size_y=16, local_size_z=1) in;
+layout(set=1, binding=0) uniform writeonly image2D outTexture;
+
+vec3 colorPalette(float distance, float angle) {
+	float theta = mod(3.0f + 3.0f * angle / PI + 1.5f, 6.0f);
+	vec3 result = clamp(abs(mod(theta + vec3(0.0f, 4.0f, 2.0f), 6.0f) - 3.0f) - 1.0f, 0.0f, 1.0f);
+	result = mix(vec3(1.0f), result, distance);
+	return result;
+}
+
+float stableAtan2(float y, float x) {
+	return mix(PI / 2.0f - atan(x, y), atan(y, x), abs(x) > abs(y));
+}
+
+void main() {
+	ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = imageSize(outTexture);
+
+	if (coord.x >= size.x || coord.y >= size.y) {
+	}
+
+	vec2 sizef = size;
+	vec2 uv = vec2(coord) / sizef;
+
+	vec2 scale = (sizef.x > sizef.y) ? vec2(1.0, sizef.x / sizef.y) : vec2(sizef.y / sizef.x, 1.0f);
+	vec2 xy = (uv - 0.5f) * 2.0f * scale;
+	float distance = length(xy);
+	float angle = stableAtan2(xy.x, xy.y);
+
+	vec3 color = (distance > 1.0f) ? vec3(0.0f) : colorPalette(distance, angle);
+	imageStore(outTexture, coord, vec4(color, 1.0f));
+}

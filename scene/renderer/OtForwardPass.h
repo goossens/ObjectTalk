@@ -13,8 +13,9 @@
 //
 
 #include "OtFrameBuffer.h"
-#include "OtShaderProgram.h"
+#include "OtRenderPipeline.h"
 
+#include "OtSceneRendererContext.h"
 #include "OtSceneRenderEntitiesPass.h"
 
 
@@ -31,15 +32,24 @@ public:
 	void render(OtSceneRendererContext& ctx);
 
 protected:
-	// methods that must be overriden by subclasses (when required)
-	inline bool isRenderingOpaque() override { return false; };
-	inline bool isRenderingTransparent() override { return true; };
+	bool isRenderingOpaque() override { return false; }
+	bool isRenderingTransparent() override { return true; }
 
 	void renderTransparentGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) override;
 
 private:
 	// properties
 	OtFrameBuffer& framebuffer;
-	OtShaderProgram transparentProgram{"OtForwardVS", "OtForwardPbrFS"};
-	OtShaderProgram instancedTransparentProgram{"OtForwardInstancingVS", "OtForwardPbrFS"};
+
+	OtRenderPipeline cullingPipeline;
+	OtRenderPipeline noCullingPipeline;
+	OtRenderPipeline linesPipeline;
+
+	OtRenderPipeline instancedCullingPipeline;
+	OtRenderPipeline instancedNoCullingPipeline;
+	OtRenderPipeline instancedLinesPipeline;
+
+	// support functions
+	void initializeResources();
+	bool resourcesInitialized = false;
 };

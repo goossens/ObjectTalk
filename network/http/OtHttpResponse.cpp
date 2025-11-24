@@ -171,7 +171,7 @@ void OtHttpResponseClass::sendHeaders() {
 	uv_write_t* uv_write_req = (uv_write_t*) std::malloc(sizeof(uv_write_t));
 	uv_write_req->data = buffer.base;
 
-	uv_write(uv_write_req, clientStream, &buffer, 1, [](uv_write_t* req, int /* status */) {
+	uv_write(uv_write_req, clientStream, &buffer, 1, [](uv_write_t* req, [[maybe_unused]] int status) {
 		free(req->data);
 		free(req);
 	});
@@ -197,7 +197,7 @@ OtObject OtHttpResponseClass::write(const char* data, size_t size) {
 	uv_write_t* uv_write_req = (uv_write_t*) malloc(sizeof(uv_write_t));
 	uv_write_req->data = buffer.base;
 
-	uv_write(uv_write_req, clientStream, &buffer, 1, [](uv_write_t* req, int /* status */) {
+	uv_write(uv_write_req, clientStream, &buffer, 1, [](uv_write_t* req, [[maybe_unused]] int status) {
 		free(req->data);
 		free(req);
 	});

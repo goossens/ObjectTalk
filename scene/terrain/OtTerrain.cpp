@@ -72,7 +72,7 @@ bool OtTerrain::renderUI() {
 	changed |= OtUi::toggleButton("Wireframe", &wireframe);
 
 #ifdef OT_DEBUG
-	OtUi::readonlySizeT("Visible Meshes", meshes.size());
+	OtUi::readonlySizeT("Visible Tiles", meshes.size());
 #endif
 
 	return changed;
@@ -124,24 +124,10 @@ void OtTerrain::deserialize(nlohmann::json data, std::string* basedir) {
 
 
 //
-//	OtTerrain::getVertices
+//	OtTerrain::update
 //
 
-OtVertexBuffer& OtTerrain::getVertices() {
-	// initialize (if required)
-	if (!vertices.isValid()) {
-		initialize();
-	}
-
-	return vertices;
-}
-
-
-//
-//	OtTerrain::getMeshes
-//
-
-std::vector<OtTerrainMesh>& OtTerrain::getMeshes(OtCamera& camera) {
+void OtTerrain::update(OtCamera& camera) {
 	// update heights (if required)
 	if (heights.dirty) {
 		heights.update(tileableFbm, normalMapper);
@@ -180,9 +166,6 @@ std::vector<OtTerrainMesh>& OtTerrain::getMeshes(OtCamera& camera) {
 			processTile(tile, camera, i);
 		}
 	}
-
-	// return the list of visible meshes
-	return meshes;
 }
 
 
@@ -205,7 +188,7 @@ void OtTerrain::createVertices()
 	}
 
 	// store vertices in GPU buffer
-	vertices.set(buffer.data(), buffer.size(), OtVertexPos::getLayout());
+	vertices.set(buffer.data(), buffer.size(), OtVertexPos::getDescription());
 }
 
 

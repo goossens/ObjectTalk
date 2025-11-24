@@ -9,11 +9,26 @@
 //	Include files
 //
 
-#include <cstdint>
-
-#include "OtLog.h"
-
 #include "OtGbuffer.h"
+#include "OtGpu.h"
+
+
+//
+//	OtGbuffer::OtGbuffer
+//
+
+OtGbuffer::OtGbuffer() {
+	OtGpu::instance().gBuffers++;
+}
+
+
+//
+//	OtGbuffer::~OtGbuffer
+//
+
+OtGbuffer::~OtGbuffer() {
+	OtGpu::instance().gBuffers--;
+}
 
 
 //
@@ -21,112 +36,101 @@
 //
 
 void OtGbuffer::clear() {
+	// release resources (if required)
 	albedoTexture.clear();
 	normalTexture.clear();
 	pbrTexture.clear();
 	emissiveTexture.clear();
 	depthTexture.clear();
-	gbuffer.clear();
+
+	// clear other fields
+	width = -1;
+	height = -1;
+	valid = false;
 }
 
-
-//
-//	OtGbuffer::update
-//
-
-void OtGbuffer::update(int w, int h) {
+bool OtGbuffer::update(int w, int h) {
 	// update framebuffer if required
-	if (!gbuffer.isValid() || w != width || h != height) {
+	if (!valid || w != width || h != height) {
 		// clear old resources
 		clear();
 
-		// determine texture flags
-		uint64_t flags =
-			BGFX_SAMPLER_POINT |
-			BGFX_SAMPLER_U_CLAMP |
-			BGFX_SAMPLER_V_CLAMP |
-			BGFX_TEXTURE_RT;
-
 		// create new textures
-		albedoTexture = bgfx::createTexture2D(static_cast<uint16_t>(w), static_cast<uint16_t>(h), false, 1, bgfx::TextureFormat::RGBA16F, flags);
-		normalTexture = bgfx::createTexture2D(static_cast<uint16_t>(w), static_cast<uint16_t>(h), false, 1, bgfx::TextureFormat::RGBA8, flags);
-		pbrTexture = bgfx::createTexture2D(static_cast<uint16_t>(w), static_cast<uint16_t>(h), false, 1, bgfx::TextureFormat::RGBA8, flags);
-		emissiveTexture = bgfx::createTexture2D(static_cast<uint16_t>(w), static_cast<uint16_t>(h), false, 1, bgfx::TextureFormat::RGBA8, flags);
-		depthTexture = bgfx::createTexture2D(static_cast<uint16_t>(w), static_cast<uint16_t>(h), false, 1, bgfx::TextureFormat::D16F, flags);
+		auto w32 = static_cast<Uint32>(w);
+		auto h32 = static_cast<Uint32>(h);
+		auto colorUsage = OtTexture::Usage(OtTexture::Usage::colorTarget | OtTexture::Usage::sampler);
+		auto depthUsage = OtTexture::Usage(OtTexture::Usage::depthStencilTarget | OtTexture::Usage::sampler);
 
-		// create gbuffer
-		bgfx::TextureHandle textures[] = {
-			albedoTexture.getHandle(),
-			normalTexture.getHandle(),
-			pbrTexture.getHandle(),
-			emissiveTexture.getHandle(),
-			depthTexture.getHandle()
-		};
+		albedoTexture.update(w32, h32, OtTexture::Format::rgba16, colorUsage);
+		normalTexture.update(w32, h32, OtTexture::Format::rgba8, colorUsage);
+		pbrTexture.update(w32, h32, OtTexture::Format::rgba8, colorUsage);
+		emissiveTexture.update(w32, h32, OtTexture::Format::rgba8, colorUsage);
+		depthTexture.update(w32, h32, OtTexture::Format::d32, depthUsage);
 
-		gbuffer = bgfx::createFrameBuffer(sizeof(textures) / sizeof(*textures), textures);
-
-		// remember dimensions
+		// remember dimensions and set state
 		width = w;
 		height = h;
-	}
-}
-
-
-//
-//	OtGbuffer::bindAlbedoTexture
-//
-
-void OtGbuffer::bindAlbedoTexture(OtSampler& sampler, int unit) {
-	sampler.submit(unit, albedoTexture.getHandle());
-}
-
-
-//
-//	OtGbuffer::bindNormalTexture
-//
-
-void OtGbuffer::bindNormalTexture(OtSampler& sampler, int unit) {
-	sampler.submit(unit, normalTexture.getHandle());
-}
-
-
-//
-//	OtGbuffer::bindPbrTexture
-//
-
-void OtGbuffer::bindPbrTexture(OtSampler& sampler, int unit) {
-	sampler.submit(unit, pbrTexture.getHandle());
-}
-
-
-//
-//	OtGbuffer::bindEmissiveTexture
-//
-
-void OtGbuffer::bindEmissiveTexture(OtSampler& sampler, int unit) {
-	sampler.submit(unit, emissiveTexture.getHandle());
-}
-
-
-//
-//	OtGbuffer::bindDepthTexture
-//
-
-void OtGbuffer::bindDepthTexture(OtSampler& sampler, int unit) {
-	sampler.submit(unit, depthTexture.getHandle());
-}
-
-
-//
-//	OtGbuffer::submit
-//
-
-void OtGbuffer::submit(bgfx::ViewId view) {
-	// attach gbuffer to view
-	if (isValid()) {
-		bgfx::setViewFrameBuffer(view, gbuffer.getHandle());
+		valid = true;
+		return true;
 
 	} else {
-		OtLogFatal("Internal error: Gbuffer not initialized before submission");
+		return false;
 	}
+}
+
+
+//
+//	OtGbuffer::getRenderTargetInfo
+//
+
+OtRenderTargetInfo* OtGbuffer::getRenderTargetInfo(
+	bool clearColorTexture,
+	bool clearDepthTexture,
+	[[maybe_unused]] bool clearStencilTexture,
+	glm::vec4 clearColorValue,
+	float clearDepthValue,
+	[[maybe_unused]] std::uint8_t clearStencilValue) {
+
+	auto color = SDL_FColor{
+		clearColorValue.r,
+		clearColorValue.g,
+		clearColorValue.b,
+		clearColorValue.a
+	};
+
+	colorTargetInfo[0] = SDL_GPUColorTargetInfo{};
+	colorTargetInfo[0].texture = albedoTexture.getTexture();
+	colorTargetInfo[0].clear_color = color;
+	colorTargetInfo[0].load_op = clearColorTexture ? SDL_GPU_LOADOP_CLEAR : SDL_GPU_LOADOP_LOAD;
+	colorTargetInfo[0].store_op = SDL_GPU_STOREOP_STORE;
+
+	colorTargetInfo[1] = SDL_GPUColorTargetInfo{};
+	colorTargetInfo[1].texture = normalTexture.getTexture();
+	colorTargetInfo[1].clear_color = color;
+	colorTargetInfo[1].load_op = clearColorTexture ? SDL_GPU_LOADOP_CLEAR : SDL_GPU_LOADOP_LOAD;
+	colorTargetInfo[1].store_op = SDL_GPU_STOREOP_STORE;
+
+	colorTargetInfo[2] = SDL_GPUColorTargetInfo{};
+	colorTargetInfo[2].texture = pbrTexture.getTexture();
+	colorTargetInfo[2].clear_color = color;
+	colorTargetInfo[2].load_op = clearColorTexture ? SDL_GPU_LOADOP_CLEAR : SDL_GPU_LOADOP_LOAD;
+	colorTargetInfo[2].store_op = SDL_GPU_STOREOP_STORE;
+
+	colorTargetInfo[3] = SDL_GPUColorTargetInfo{};
+	colorTargetInfo[3].texture = emissiveTexture.getTexture();
+	colorTargetInfo[3].clear_color = color;
+	colorTargetInfo[3].load_op = clearColorTexture ? SDL_GPU_LOADOP_CLEAR : SDL_GPU_LOADOP_LOAD;
+	colorTargetInfo[3].store_op = SDL_GPU_STOREOP_STORE;
+
+	depthStencilTargetInfo = SDL_GPUDepthStencilTargetInfo{};
+	depthStencilTargetInfo.texture = depthTexture.getTexture();
+	depthStencilTargetInfo.clear_depth = clearDepthValue,
+	depthStencilTargetInfo.load_op = clearDepthTexture ? SDL_GPU_LOADOP_CLEAR : SDL_GPU_LOADOP_LOAD;
+	depthStencilTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
+
+	info.colorTargetInfo = colorTargetInfo;
+	info.numColorTargets = 4;
+	info.depthStencilTargetInfo = &depthStencilTargetInfo;
+
+	return &info;
 }

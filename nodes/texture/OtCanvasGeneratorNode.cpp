@@ -54,9 +54,6 @@ public:
 		script.onChange([&]() { onScriptChange(); });
 	}
 
-	// configure the framebuffer
-	inline void configureFrameBuffer() override { framebuffer.initialize(OtTexture::rgba8Texture, OtTexture::d24s8Texture); }
-
 	// render custom fields
 	inline void customRendering(float itemWidth) override {
 		ImGui::SetNextItemWidth(itemWidth);
@@ -94,17 +91,20 @@ public:
 	}
 
 	// run the texture generator
-	inline void onGenerate(OtFrameBuffer& output) override {
+	inline void onGenerate(OtTexture& output) override {
 		if (script.isReady() && instance && hasRenderMethod) {
 			// get access to the canvas
 			auto& canvas = OtCanvasObject(instance)->getCanvas();
 
 			// render the canvas by calling the script
 			try {
-				canvas.render(output, 1.0f, [this]() {
+				framebuffer.update(width, height);
+
+				canvas.render(framebuffer, 1.0f, [this]() {
 					OtVM::callMemberFunction(instance, generateID);
 				});
 
+				output = framebuffer.getColorTexture();
 				error.clear();
 
 			} catch (OtException& e) {
@@ -176,13 +176,15 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::texture;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
 	OtAsset<OtScriptAsset> script;
 	OtObject instance;
 
 	OtID generateID = OtIdentifier::create("generate");
 	OtID generatorID = OtIdentifier::create("Generator");
 	bool hasRenderMethod = false;
+
+	OtFrameBuffer framebuffer{OtTexture::Format::rgba8, OtTexture::Format::d32s8};
 };
 
 static OtNodesFactoryRegister<OtCanvasGeneratorNode> registration;

@@ -483,7 +483,7 @@ bool OtByteCodeClass::isMember(size_t pc, OtID& member) {
 
 bool OtByteCodeClass::isMethodDeref(size_t pc) {
 	if (getOpcode(pc) == Opcode::method) {
-		return  getNumber(pc) == dereferenceID;
+		return getNumber(pc) == dereferenceID;
 
 	} else {
 		return false;
@@ -497,7 +497,7 @@ bool OtByteCodeClass::isMethodDeref(size_t pc) {
 
 bool OtByteCodeClass::isMethodAssign(size_t pc) {
 	if (getOpcode(pc) == Opcode::method) {
-		return  getNumber(pc) == assignID;
+		return getNumber(pc) == assignID;
 
 	} else {
 		return false;

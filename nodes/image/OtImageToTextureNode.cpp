@@ -41,7 +41,8 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::image;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
+	// properties
 	OtImage image;
 	OtTexture texture;
 };

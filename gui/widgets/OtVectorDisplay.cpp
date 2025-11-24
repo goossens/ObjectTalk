@@ -140,7 +140,7 @@ OtObject OtVectorDisplayClass::setCenterOrigin() {
 //
 
 OtObject OtVectorDisplayClass::setColor(const std::string& color) {
-	style.color = OtColorParser::toUint32(color);
+	style.color = OtColorParser::toVec4(color);
 	return OtWidget(this);
 }
 
@@ -150,8 +150,7 @@ OtObject OtVectorDisplayClass::setColor(const std::string& color) {
 //
 
 OtObject OtVectorDisplayClass::setAlpha(float alpha) {
-	int a = static_cast<int>(alpha * 255.0f);
-	style.color = (style.color & 0xffffff) | a << 24;
+	style.color.a = alpha;
 	return OtWidget(this);
 }
 
@@ -484,7 +483,7 @@ void OtVectorDisplayClass::updateWidth(int id, float w) {
 void OtVectorDisplayClass::updateColor(int id, const std::string& color) {
 	for (auto& shape : shapes) {
 		if (shape.id == id) {
-			shape.color = OtColorParser::toUint32(color);
+			shape.color = OtColorParser::toVec4(color);
 			return;
 		}
 	}
@@ -498,8 +497,7 @@ void OtVectorDisplayClass::updateColor(int id, const std::string& color) {
 void OtVectorDisplayClass::updateAlpha(int id, float alpha) {
 	for (auto& shape : shapes) {
 		if (shape.id == id) {
-			int a =static_cast<int>(alpha * 255.0f);
-			shape.color = (shape.color & 0xffffff) | a << 24;
+			shape.color.a = alpha;
 			return;
 		}
 	}
@@ -568,9 +566,9 @@ void OtVectorDisplayClass::render() {
 		scale = std::min(available.x / width, available.y / height);
 	}
 
-	// calculate size of scope
+	// calculate size of vector display
 	ImVec2 size(width * scale, height * scale);
-	framebuffer.update(static_cast<int>(size.x), static_cast<int>(size.y));
+	texture.update(static_cast<int>(size.x), static_cast<int>(size.y), OtTexture::Format::rgba8, OtTexture::Usage::rwRenderAll);
 
 	// render all shapes
 	for (auto& shape : shapes) {
@@ -618,9 +616,9 @@ void OtVectorDisplayClass::render() {
 	}
 
 	// render scope frame, align it and put it on the screen
-	scope.render(framebuffer);
+	scope.render(texture);
 	OtUi::align(size, horizontalAlign, verticalAlign);
-	ImGui::Image(framebuffer.getColorTextureID(), size);
+	ImGui::Image(texture.getTextureID(), size);
 }
 
 

@@ -13,13 +13,13 @@
 #include <cstdint>
 #include <cstring>
 
-#include "bgfx/bgfx.h"
 #include "nlohmann/json.hpp"
 
 #include "OtLog.h"
 #include "OtText.h"
 
 #include "OtGlm.h"
+#include "OtGpu.h"
 #include "OtInstances.h"
 
 
@@ -91,7 +91,7 @@ void OtInstances::add(const glm::mat4 &instance, bool updateVersion) {
 	instances->emplace_back(instance);
 
 	if (updateVersion) {
-	 	incrementVersion();
+		incrementVersion();
 	}
 }
 

@@ -9,7 +9,7 @@
 
 
 //
-//  Include files
+//	Include files
 //
 
 #include <string>
@@ -20,7 +20,7 @@
 
 
 //
-//  OtMapLayer class
+//	OtMapLayer class
 //
 
 class OtMapLayer {

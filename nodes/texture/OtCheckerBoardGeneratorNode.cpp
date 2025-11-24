@@ -31,7 +31,7 @@ public:
 	}
 
 	// run the texture generator
-	void onGenerate(OtFrameBuffer& output) override {
+	void onGenerate(OtTexture& output) override {
 		checkerboard.setRepeat(repeat);
 		checkerboard.setBlackColor(blackColor);
 		checkerboard.setWhiteColor(whiteColor);
@@ -42,7 +42,7 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::texture;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
 	float repeat = 1.0f;
 	OtColor blackColor{0.0f, 0.0f, 0.0f};
 	OtColor whiteColor{1.0f, 1.0f, 1.0f};

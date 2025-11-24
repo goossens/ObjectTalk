@@ -32,10 +32,7 @@ public:
 	inline OtColor(float r, float g, float b, float a=1.0f) : color(r, g, b, a) {}
 	inline OtColor(glm::vec3 c) : color(c, 1.0f) {}
 	inline OtColor(glm::vec4 c) : color(c) {}
-
-	inline OtColor(const std::string& c) {
-		color = OtColorParser::toVec4(c);
-	}
+	inline OtColor(const std::string& c) { color = OtColorParser::toVec4(c); }
 
 	// access color data
 	inline float getRed() const { return color.r; }

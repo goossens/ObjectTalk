@@ -73,7 +73,7 @@ bool OtPlanePrimitive::renderUI() {
 //	OtPlanePrimitive::serialize
 //
 
-nlohmann::json OtPlanePrimitive::serialize(std::string* /* basedir */) {
+nlohmann::json OtPlanePrimitive::serialize([[maybe_unused]] std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["type"] = name;
 	data["widthSegments"] = widthSegments;
@@ -86,7 +86,7 @@ nlohmann::json OtPlanePrimitive::serialize(std::string* /* basedir */) {
 //	OtPlanePrimitive::deserialize
 //
 
-void OtPlanePrimitive::deserialize(nlohmann::json data, std::string* /* basedir */) {
+void OtPlanePrimitive::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
 	widthSegments = data.value("widthSegments", 1);
 	heightSegments = data.value("heightSegments", 1);
 }

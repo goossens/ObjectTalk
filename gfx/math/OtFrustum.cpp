@@ -11,7 +11,6 @@
 
 #include "OtFrustum.h"
 #include "OtGlm.h"
-#include "OtGpu.h"
 
 
 //
@@ -35,7 +34,7 @@ OtFrustum::OtFrustum(const glm::mat4& matrix) {
 	planes[rightPlane] = OtPlane(m[3] - m[0]);
 	planes[bottomPlane] = OtPlane(m[3] + m[1]);
 	planes[topPlane] = OtPlane(m[3] - m[1]);
-	planes[nearPlane] = OtPlane(OtGpuHasHomogeneousDepth() ? m[3] + m[2] : m[2]);
+	planes[nearPlane] = OtPlane(m[2]);
 	planes[farPlane] = OtPlane(m[3] - m[2]);
 
 	// normalize planes
@@ -45,12 +44,11 @@ OtFrustum::OtFrustum(const glm::mat4& matrix) {
 
 	// determine corners
 	glm::mat4 inverse = glm::inverse(matrix);
-	float n = OtGpuHasHomogeneousDepth() ? -1.0f : 0.0f;
 
-	corners[nearBottomLeft] = OtGlmMul(inverse, glm::vec4(-1.0f, -1.0f, n, 1.0f));
-	corners[nearTopLeft] = OtGlmMul(inverse, glm::vec4(-1.0f, 1.0f, n, 1.0f));
-	corners[nearTopRight] = OtGlmMul(inverse, glm::vec4(1.0f, 1.0f, n, 1.0f));
-	corners[nearBottomRight] = OtGlmMul(inverse, glm::vec4(1.0f, -1.0f, n, 1.0f));
+	corners[nearBottomLeft] = OtGlmMul(inverse, glm::vec4(-1.0f, -1.0f, 0.0f, 1.0f));
+	corners[nearTopLeft] = OtGlmMul(inverse, glm::vec4(-1.0f, 1.0f, 0.0f, 1.0f));
+	corners[nearTopRight] = OtGlmMul(inverse, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+	corners[nearBottomRight] = OtGlmMul(inverse, glm::vec4(1.0f, -1.0f, 0.0f, 1.0f));
 
 	corners[farBottomLeft] = OtGlmMul(inverse, glm::vec4(-1.0f, -1.0f, 1.0f, 1.0f));
 	corners[farTopLeft] = OtGlmMul(inverse, glm::vec4(-1.0f, 1.0f, 1.0f, 1.0f));

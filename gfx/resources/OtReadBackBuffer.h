@@ -13,9 +13,7 @@
 //
 
 #include <cstdint>
-#include <functional>
 
-#include "OtBgfxHandle.h"
 #include "OtImage.h"
 #include "OtTexture.h"
 
@@ -30,19 +28,18 @@ public:
 	void clear();
 
 	// readback the specified texture
-	void readback(OtTexture& texture, std::function<void()> callback=nullptr);
+	OtImage& readback(OtTexture& texture);
 
 	// readback part of the specified texture
-	void readback(OtTexture& texture, int x, int y, int w, int h, std::function<void()> callback=nullptr);
+	OtImage& readback(OtTexture& texture, int x, int y, int w, int h);
 
 	// get properties
 	inline OtImage& getImage() { return image; }
 
 private:
 	// properties
-	OtBgfxHandle<bgfx::TextureHandle> readbackTexture;
 	OtImage image;
-	int width = 0;
-	int height = 0;
-	int format = OtTexture::noTexture;
+
+	// convert downloaded texture data to image
+	void convertToImage(int w, int h, OtTexture::Format format, void* data);
 };

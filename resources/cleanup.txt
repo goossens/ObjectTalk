@@ -1,0 +1,29 @@
+Regular expressions to check code
+=================================
+
+
+Missing inline statements
+-------------------------
+grep -R --include '*.h' ') {' directory | grep -v "inline"
+
+
+Wrong pointer/reference alignment
+---------------------------------
+[^,=?] [&*][a-z]
+
+
+Open curly brackets at start of line
+------------------------------------
+^[ \\t]+\\{
+
+
+Fixed files with missing EOL at the end
+---------------------------------------
+[^\n]$(?!\n)
+
+
+Remove trailing whitespaces and retab files
+-------------------------------------------
+SRC=$(ls */*.cpp */*/*.cpp */*/*.vert */*/*.frag */*/*.glsl */*.h */*/*.h tests/*/*.ot)
+perl -i -pe 's/\s+\n/\n/' $(SRC)
+echo $(SRC) | xargs -o -n 1 vim -c 'set ts=4|set noet|%retab!|wq'

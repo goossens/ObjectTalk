@@ -9,13 +9,17 @@
 //	Include files
 //
 
+#include <algorithm>
+#include <cstdint>
+#include <cstring>
 #include <vector>
 
-#include "glm/glm.hpp"
 #include "imgui.h"
 
-#include "OtTransientIndexBuffer.h"
+#include "OtGpu.h"
+#include "OtMaterial.h"
 
+#include "OtMaterialComponent.h"
 #include "OtSceneRenderEntitiesPass.h"
 
 
@@ -23,10 +27,7 @@
 //	OtSceneRenderEntitiesPass::renderEntities
 //
 
-void OtSceneRenderEntitiesPass::renderEntities(OtSceneRendererContext& ctx, OtPass& pass) {
-	// remember pass
-	ctx.pass = &pass;
-
+void OtSceneRenderEntitiesPass::renderEntities(OtSceneRendererContext& ctx) {
 	// render all opaque entities
 	if (isRenderingOpaque() && ctx.hasOpaqueEntities) {
 		// render geometries
@@ -87,15 +88,13 @@ void OtSceneRenderEntitiesPass::renderEntities(OtSceneRendererContext& ctx, OtPa
 //	OtSceneRenderEntitiesPass::renderEntity
 //
 
-void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity) {
-	// remember pass
-	ctx.pass = &pass;
-
+void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtEntity entity) {
 	// render geometry (if required)
 	if (ctx.scene->hasComponent<OtGeometryComponent>(entity)) {
 		auto& grd = ctx.geometryRenderData[entity];
+		auto& camera = grd.cameras[ctx.cameraID];
 
-		if (grd.cameras[ctx.cameraID].visible) {
+		if (camera.visible) {
 			auto& geometry = ctx.scene->getComponent<OtGeometryComponent>(entity);
 
 			if (geometry.transparent) {
@@ -137,89 +136,143 @@ void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtPass
 
 
 //
-//	OtSceneRenderEntitiesPass::renderOpaqueGeometryHelper
+//	OtSceneRenderEntitiesPass::renderGeometryHelper
 //
 
-void OtSceneRenderEntitiesPass::renderOpaqueGeometryHelper(
+void OtSceneRenderEntitiesPass::renderGeometryHelper(
 	OtSceneRendererContext& ctx,
 	OtGeometryRenderData& grd,
-	uint64_t wireframeState,
-	uint64_t solidState,
 	MaterialSubmission materialSubmission,
-	OtShaderProgram& singleProgram,
-	OtShaderProgram& instanceProgram) {
+	OtRenderPipeline& cullingPipeline,
+	OtRenderPipeline& noCullingPipeline,
+	OtRenderPipeline& linesPipeline,
+	OtRenderPipeline& instancedCullingPipeline,
+	OtRenderPipeline& instancedNoCullingPipeline,
+	OtRenderPipeline& instancedLinesPipeline) {
 
-	// submit geometry and set rendering state
-	if (grd.component->wireframe) {
-		grd.component->asset->getGeometry().submitLines();
-		ctx.pass->setState(wireframeState);
+	// do we have instances?
+	if (grd.instances) {
+		// bind pipeline
+		if (grd.component->wireframe) {
+			ctx.pass->bindPipeline(instancedLinesPipeline);
+
+		} else if (grd.component->cullBack) {
+			ctx.pass->bindPipeline(instancedCullingPipeline);
+
+		} else {
+			ctx.pass->bindPipeline(instancedNoCullingPipeline);
+		}
+
+		// setup instance data
+		ctx.pass->setInstanceData(grd.cameras[ctx.cameraID].idb);
+
+		// set vertex uniforms
+		struct Uniforms {
+			glm::mat4 viewProjectionMatrix;
+
+		} uniforms {
+			ctx.camera.viewProjectionMatrix
+		};
+
+		ctx.pass->setVertexUniforms(0, &uniforms, sizeof(uniforms));
 
 	} else {
-		grd.component->asset->getGeometry().submitTriangles();
-		ctx.pass->setState(solidState);
-	}
+		// bind pipeline
+		if (grd.component->wireframe) {
+			ctx.pass->bindPipeline(linesPipeline);
 
-	// submit instance data (if required)
-	if (grd.instances) {
-		auto& instances = grd.cameras[ctx.cameraID].visibleInstances;
-		ctx.idb.submit(instances.data(), instances.size(), sizeof(glm::mat4));
+		} else if (grd.component->cullBack) {
+			ctx.pass->bindPipeline(cullingPipeline);
+
+		} else {
+			ctx.pass->bindPipeline(noCullingPipeline);
+		}
+
+		// set vertex uniforms
+		struct Uniforms {
+			glm::mat4 viewProjectionMatrix;
+			glm::mat4 modelMatrix;
+		} uniforms {
+			ctx.camera.viewProjectionMatrix,
+			ctx.scene->getGlobalTransform(grd.entity)
+		};
+
+		ctx.pass->setVertexUniforms(0, &uniforms, sizeof(uniforms));
 	}
 
 	// submit material uniforms (if required)
 	if (materialSubmission == MaterialSubmission::full) {
-		ctx.submitMaterialUniforms(*grd.material);
+		setMaterialUniforms(ctx, materialUniformSlot, materialSamplerSlot, grd.entity);
 
 	} else if (materialSubmission == MaterialSubmission::justAlbedo) {
-		ctx.submitAlbedoUniforms(*grd.material);
+		setAlbedoUniforms(ctx, albedoUniformSlot,albedoSamplerSlot, grd.entity);
 	}
 
-	ctx.pass->setModelTransform(grd.globalTransform);
-	ctx.pass->runShaderProgram(grd.instances ? instanceProgram : singleProgram);
+	// render geometry
+	ctx.pass->render(grd.component->asset->getGeometry());
 }
 
 
 //
-//	OtSceneRenderEntitiesPass::renderOpaqueModelHelper
+//	OtSceneRenderEntitiesPass::renderModelHelper
 //
 
-void OtSceneRenderEntitiesPass::renderOpaqueModelHelper(
+void OtSceneRenderEntitiesPass::renderModelHelper(
 	OtSceneRendererContext& ctx,
 	OtModelRenderData& mrd,
-	uint64_t state,
 	MaterialSubmission materialSubmission,
-	OtShaderProgram& animatedProgram,
-	OtShaderProgram& staticProgram) {
+	OtRenderPipeline& staticPipeline,
+	OtRenderPipeline& animatedPipeline) {
 
 	// process all render commands
 	auto globalTransform = ctx.scene->getGlobalTransform(mrd.entity);
 	auto renderList = mrd.model->getRenderList(globalTransform);
 
 	for (auto& cmd : renderList) {
-		// submit the geometry and uniforms
-		cmd.mesh->submitTriangles();
-
-		// submit material uniforms
-		if (materialSubmission != MaterialSubmission::none) {
-			if (materialSubmission == MaterialSubmission::justAlbedo) {
-				ctx.submitAlbedoUniforms(*cmd.material);
-
-			} else {
-				ctx.submitMaterialUniforms(*cmd.material);
-			}
-		}
-
-		// set the rendering state
-		ctx.pass->setState(state);
-
 		// handle animations
 		if (cmd.animation) {
-			ctx.pass->setModelTransforms(cmd.transforms.data(), cmd.transforms.size());
-			ctx.pass->runShaderProgram(animatedProgram);
+			// bind pipeline
+			ctx.pass->bindPipeline(animatedPipeline);
+
+			// set vertex uniforms
+			struct Uniforms {
+				glm::mat4 viewProjectionMatrix;
+				glm::mat4 models[64];
+			} uniforms;
+
+			uniforms.viewProjectionMatrix = ctx.camera.viewProjectionMatrix;
+			std::memcpy(&uniforms.models, cmd.transforms.data(), std::min(cmd.transforms.size(), size_t(64)) * sizeof(glm::mat4));
+			ctx.pass->setVertexUniforms(0, &uniforms, sizeof(uniforms));
+
+			// bind animation data
+			ctx.pass->setAnimationData(cmd.mesh->getBonesBuffer());
 
 		} else {
-			ctx.pass->setModelTransform(cmd.transforms[0]);
-			ctx.pass->runShaderProgram(staticProgram);
+			// bind pipeline
+			ctx.pass->bindPipeline(staticPipeline);
+
+			// set vertex uniforms
+			struct Uniforms {
+				glm::mat4 viewProjectionMatrix;
+				glm::mat4 modelMatrix;
+			} uniforms {
+				ctx.camera.viewProjectionMatrix,
+				cmd.transforms[0]
+			};
+
+			ctx.pass->setVertexUniforms(0, &uniforms, sizeof(uniforms));
 		}
+
+		// submit material uniforms (if required)
+		if (materialSubmission == MaterialSubmission::full) {
+			setMaterialUniforms(ctx, materialUniformSlot, materialSamplerSlot, cmd.material);
+
+		} else if (materialSubmission == MaterialSubmission::justAlbedo) {
+			setAlbedoUniforms(ctx, albedoUniformSlot, albedoSamplerSlot, cmd.material);
+		}
+
+		// render geometry
+		ctx.pass->render(cmd.mesh->getVertexBuffer(), cmd.mesh->getIndexBuffer());
 	}
 }
 
@@ -231,34 +284,115 @@ void OtSceneRenderEntitiesPass::renderOpaqueModelHelper(
 void OtSceneRenderEntitiesPass::renderTerrainHelper(
 	OtSceneRendererContext& ctx,
 	OtTerrainComponent& component,
-	uint64_t wireframeState,
-	uint64_t solidState,
-	OtShaderProgram& program) {
+	bool setFragmentUniforms,
+	OtRenderPipeline& cullingPipeline,
+	OtRenderPipeline& linesPipeline) {
 
-	// submit the geometry and uniforms
+	// get terrain data
 	auto& terrain = *component.terrain;
-	terrain.getVertices().submit();
-	ctx.submitTerrainUniforms(terrain);
+	OtTerrainHeights& heights = terrain.heights;
+	OtTerrainMaterial& material = terrain.material;
 
-	// process all the terrain meshes
-	for (auto& mesh : terrain.getMeshes(ctx.camera)) {
-		// submit the terrain
-		if (terrain.isWireframe()) {
-			mesh.tile.lines.submit();
-			ctx.pass->setState(wireframeState);
+	// setup pipeline
+	ctx.pass->bindPipeline(terrain.isWireframe() ? linesPipeline : cullingPipeline);
 
-		} else {
-			mesh.tile.triangles.submit();
-			ctx.pass->setState(solidState);
-		}
+	// set (per terrain) vertex uniforms
+	struct TerrainVertexUniforms {
+		glm::mat4 viewProjectionMatrix;
+		float hScale;
+		float heightMapSize;
+	} terrainVertexUniforms {
+		ctx.camera.viewProjectionMatrix,
+		terrain.hScale,
+		static_cast<float>(heights.heightmapSize)
+	};
 
-		// run the program
-		ctx.pass->setModelTransform(mesh.transform);
-		ctx.pass->runShaderProgram(program, OtPass::discardNone);
+	ctx.pass->setVertexUniforms(0, &terrainVertexUniforms, sizeof(terrainVertexUniforms));
+	ctx.pass->bindVertexSampler(0, ctx.normalmapSampler, heights.normalmap);
+
+	// set fragment uniforms
+	if (setFragmentUniforms) {
+		struct FragmentUniforms {
+			glm::vec4 region1Color;
+			glm::vec4 region2Color;
+			glm::vec4 region3Color;
+			glm::vec4 region4Color;
+
+			float hScale;
+			float vScale;
+			float vOffset;
+			float heightMapSize;
+
+			float region1TextureSize;
+			float region2TextureSize;
+			float region3TextureSize;
+			float region4TextureSize;
+
+			float region1TextureScale;
+			float region2TextureScale;
+			float region3TextureScale;
+			float region4TextureScale;
+
+			float region1Transition;
+			float region2Transition;
+			float region3Transition;
+
+			float region1Overlap;
+			float region2Overlap;
+			float region3Overlap;
+		} fragmentUniforms {
+			glm::vec4(material.region1Color, static_cast<float>(material.region1Texture.isReady())),
+			glm::vec4(material.region2Color, static_cast<float>(material.region2Texture.isReady())),
+			glm::vec4(material.region3Color, static_cast<float>(material.region3Texture.isReady())),
+			glm::vec4(material.region4Color, static_cast<float>(material.region4Texture.isReady())),
+
+			terrain.hScale,
+			terrain.vScale,
+			terrain.vOffset,
+			static_cast<float>(heights.heightmapSize),
+
+			static_cast<float>(material.region1Texture.isReady() ? material.region1Texture->getTexture().getWidth() : 1),
+			static_cast<float>(material.region2Texture.isReady() ? material.region2Texture->getTexture().getWidth() : 1),
+			static_cast<float>(material.region3Texture.isReady() ? material.region3Texture->getTexture().getWidth() : 1),
+			static_cast<float>(material.region4Texture.isReady() ? material.region4Texture->getTexture().getWidth() : 1),
+
+			material.region1TextureScale,
+			material.region2TextureScale,
+			material.region3TextureScale,
+			material.region4TextureScale,
+
+			material.region1Transition,
+			material.region2Transition,
+			material.region3Transition,
+
+			material.region1Overlap,
+			material.region2Overlap,
+			material.region3Overlap
+		};
+
+		ctx.pass->setFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
 	}
 
-	// cleanup
-	ctx.pass->discard();
+	// bind textures
+	ctx.bindFragmentSampler(0, ctx.region1Sampler, material.region1Texture);
+	ctx.bindFragmentSampler(1, ctx.region2Sampler, material.region2Texture);
+	ctx.bindFragmentSampler(2, ctx.region3Sampler, material.region3Texture);
+	ctx.bindFragmentSampler(3, ctx.region4Sampler, material.region4Texture);
+
+	// process all the terrain meshes
+	for (auto& mesh : terrain.getMeshes()) {
+		// set (per mesh) vertex uniforms
+		struct MeshVertexUniforms {
+			glm::mat4 modelMatrix;
+		} meshVertexUniforms {
+			mesh.transform
+		};
+
+		ctx.pass->setVertexUniforms(1, &meshVertexUniforms, sizeof(meshVertexUniforms));
+
+		// render terrain tile
+		ctx.pass->render(mesh.tile.vertices, mesh.tile.triangles);
+	}
 }
 
 
@@ -269,58 +403,177 @@ void OtSceneRenderEntitiesPass::renderTerrainHelper(
 void OtSceneRenderEntitiesPass::renderGrassHelper(
 	OtSceneRendererContext& ctx,
 	OtEntity entity,
-	OtGrassComponent& grass,
-	uint64_t state,
-	OtShaderProgram& program) {
+	OtGrassComponent& component,
+	OtRenderPipeline& pipeline) {
 
-	// submit geometry and uniforms
-	grass.grass->submit();
-	ctx.submitGrassUniforms(*grass.grass);
+	// set uniforms
+	auto& grass = *component.grass;
 
-	// run the program
-	ctx.pass->setState(state);
-	ctx.pass->setModelTransform(ctx.scene->getGlobalTransform(entity));
-	ctx.pass->setVertexCount((grass.grass->bladeSegments + 1) * 4);
-	ctx.pass->setInstanceCount(grass.grass->blades);
-	ctx.pass->runShaderProgram(program);
+	struct Uniforms {
+		glm::mat4 viewProjectionMatrix;
+		glm::mat4 modelMatrix;
+
+		glm::vec4 baseColor;
+		glm::vec4 tipColor;
+
+		float patchWidth;
+		float patchDepth;
+		int32_t segments;
+		int32_t blades;
+
+		float bladeWidth;
+		float bladeHeight;
+		float BladePointiness;
+		float BladeCurve;
+
+		float time;
+		float windDirection;
+		float windStrength;
+
+		float widthVariation;
+		float heightVariation;
+		float windVariation;
+		float colorVariation;
+	} uniforms {
+		ctx.camera.viewProjectionMatrix,
+		ctx.scene->getGlobalTransform(entity),
+
+		glm::vec4(grass.baseColor, 1.0f),
+		glm::vec4(grass.tipColor, 1.0f),
+
+		grass.patchWidth,
+		grass.patchDepth,
+		static_cast<int32_t>(grass.bladeSegments),
+		static_cast<int32_t>(grass.blades),
+
+		grass.bladeWidth,
+		grass.bladeHeight,
+		grass.bladePointiness,
+		grass.bladeCurve,
+
+		static_cast<float>(ImGui::GetTime()),
+		glm::radians(grass.windDirection),
+		grass.windStrength,
+
+		grass.widthVariation,
+		grass.heightVariation,
+		grass.windVariation,
+		grass.colorVariation
+	};
+
+	ctx.pass->setVertexUniforms(0, &uniforms, sizeof(uniforms));
+
+	ctx.pass->bindPipeline(pipeline);
+	ctx.pass->setInstanceCount(grass.blades);
+	ctx.pass->render(grass.getVertexBuffer(), grass.getIndexBuffer());
 }
 
 
 //
-//	OtSceneRenderEntitiesPass::renderTransparentGeometryHelper
+//	OtSceneRenderEntitiesPass::setMaterialUniforms
 //
 
-void OtSceneRenderEntitiesPass::renderTransparentGeometryHelper(
+void OtSceneRenderEntitiesPass::setMaterialUniforms(
 	OtSceneRendererContext& ctx,
-	OtGeometryRenderData& grd,
-	uint64_t wireframeState,
-	uint64_t solidState,
-	MaterialSubmission materialSubmission,
-	OtShaderProgram& singleProgram,
-	OtShaderProgram& instanceProgram) {
+	size_t uniformSlot,
+	size_t samplerSlot,
+	std::shared_ptr<OtMaterial> material) {
 
-	if (grd.component->wireframe) {
-		grd.component->asset->getGeometry().submitLines();
-		ctx.pass->setState(wireframeState);
+	// set uniforms
+	struct Uniforms {
+		glm::vec4 albedoColor;
+		glm::vec3 emissiveColor;
+		float textureScale;
+		glm::vec2 textureOffset;
+		float metallicFactor;
+		float roughnessFactor;
+		float aoFactor;
+		uint32_t hasAlbedoTexture;
+		uint32_t hasMetallicRoughnessTexture;
+		uint32_t hasEmissiveTexture;
+		uint32_t hasAoTexture;
+		uint32_t hasNormalTexture;
+	} uniforms {
+		material->albedo,
+		material->emissive,
+		material->scale,
+		material->offset,
+		material->metallic,
+		material->roughness,
+		material->ao,
+		static_cast<uint32_t>(material->albedoTexture.isReady()),
+		static_cast<uint32_t>(material->metallicRoughnessTexture.isReady()),
+		static_cast<uint32_t>(material->emissiveTexture.isReady()),
+		static_cast<uint32_t>(material->aoTexture.isReady()),
+		static_cast<uint32_t>(material->normalTexture.isReady())
+	};
 
-	} else {
-		grd.component->asset->getGeometry().submitTriangles();
-		ctx.pass->setState(solidState);
-	}
+	ctx.pass->setFragmentUniforms(uniformSlot, &uniforms, sizeof(uniforms));
 
-	if (grd.instances) {
-		auto& instances = grd.cameras[ctx.cameraID].visibleInstances;
-		ctx.idb.submit(instances.data(), instances.size(), sizeof(glm::mat4));
-	}
+	// set textures
+	ctx.bindFragmentSampler(samplerSlot++, ctx.albedoSampler, material->albedoTexture);
+	ctx.bindFragmentSampler(samplerSlot++, ctx.metallicRoughnessSampler, material->metallicRoughnessTexture);
+	ctx.bindFragmentSampler(samplerSlot++, ctx.emissiveSampler, material->emissiveTexture);
+	ctx.bindFragmentSampler(samplerSlot++, ctx.aoSampler, material->aoTexture);
+	ctx.bindFragmentSampler(samplerSlot++, ctx.normalSampler, material->normalTexture);
+}
 
-	// submit material uniforms (if required)
-	if (materialSubmission == MaterialSubmission::full) {
-		ctx.submitMaterialUniforms(*grd.material);
 
-	} else if (materialSubmission == MaterialSubmission::justAlbedo) {
-		ctx.submitAlbedoUniforms(*grd.material);
-	}
+//
+//	OtSceneRenderEntitiesPass::setMaterialUniforms
+//
 
-	ctx.pass->setModelTransform(grd.globalTransform);
-	ctx.pass->runShaderProgram(grd.instances ? instanceProgram : singleProgram);
+void OtSceneRenderEntitiesPass::setMaterialUniforms(OtSceneRendererContext& ctx, size_t uniformSlot, size_t samplerSlot, OtEntity entity) {
+	setMaterialUniforms(
+		ctx,
+		uniformSlot,
+		samplerSlot,
+		ctx.scene->hasComponent<OtMaterialComponent>(entity)
+			? ctx.scene->getComponent<OtMaterialComponent>(entity).material
+			: std::make_shared<OtMaterial>());
+}
+
+
+//
+//	OtSceneRenderEntitiesPass::setAlbedoUniforms
+//
+
+void OtSceneRenderEntitiesPass::setAlbedoUniforms(
+	OtSceneRendererContext& ctx,
+	size_t uniformSlot,
+	size_t samplerSlot,
+	std::shared_ptr<OtMaterial> material) {
+
+	// set uniforms
+	struct Uniforms {
+		glm::vec4 albedoColor;
+		glm::vec2 textureOffset;
+		float textureScale;
+		uint32_t hasAlbedoTexture;
+	} uniforms {
+		material->albedo,
+		material->offset,
+		material->scale,
+		static_cast<uint32_t>(material->albedoTexture.isReady()),
+	};
+
+	ctx.pass->setFragmentUniforms(uniformSlot, &uniforms, sizeof(uniforms));
+
+	// set textures
+	ctx.bindFragmentSampler(samplerSlot, ctx.albedoSampler, material->albedoTexture);
+}
+
+
+//
+//	OtSceneRenderEntitiesPass::setAlbedoUniforms
+//
+
+void OtSceneRenderEntitiesPass::setAlbedoUniforms(OtSceneRendererContext& ctx, size_t uniformSlot, size_t samplerSlot, OtEntity entity) {
+	setAlbedoUniforms(
+		ctx,
+		uniformSlot,
+		samplerSlot,
+		ctx.scene->hasComponent<OtMaterialComponent>(entity)
+			? ctx.scene->getComponent<OtMaterialComponent>(entity).material
+			: std::make_shared<OtMaterial>());
 }

@@ -9,7 +9,7 @@
 
 
 //
-//  Include files
+//	Include files
 //
 
 #include "imgui.h"
@@ -20,18 +20,18 @@
 
 
 //
-//  OtProjector
+//	OtProjector
 //
-//  The OtProjector class converts coordinates between various coordinate
-//  systems. Below is a description of the coordinate types:
+//	The OtProjector class converts coordinates between various coordinate
+//	systems. Below is a description of the coordinate types:
 //
-//  LatLon -	Latitude and longitude in decimal degrees using the WGS84
-//			 	datum (EPSG:4326).
+//	LatLon -	Latitude and longitude in decimal degrees using the WGS84
+//				datum (EPSG:4326).
 //
-//  Tile -		Tile coordinates for each zoom level using the top-left
+//	Tile -		Tile coordinates for each zoom level using the top-left
 //				as the origin.
 //
-//  Raster -	Normalized screen raster coordinates using the intersection
+//	Raster -	Normalized screen raster coordinates using the intersection
 //				between the Prime Meridian and the Equator as the origin with
 //				positive numbers going east and north. Horizontal and
 //				vertical coordinate are between -1.0 and 1.0;

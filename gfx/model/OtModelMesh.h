@@ -39,9 +39,6 @@ public:
 	// load the mesh
 	void load(const aiMesh* mesh, OtModelNodes& nodes);
 
-	// submit the triangles
-	void submitTriangles();
-
 	// get properties
 	inline size_t getMaterialIndex() { return material; }
 	inline OtAABB& getAABB() { return aabb; }
@@ -60,6 +57,31 @@ public:
 
 	inline bool hasRootNode() { return rootNode != std::numeric_limits<size_t>::max(); }
 	inline size_t getRootNode() { return rootNode; }
+
+	// access buffers
+	inline OtVertexBuffer& getVertexBuffer() {
+		if (refreshBuffers) {
+			updateBuffers();
+		}
+
+		return vertexBuffer;
+	}
+
+	inline OtVertexBuffer& getBonesBuffer() {
+		if (refreshBuffers) {
+			updateBuffers();
+		}
+
+		return vertexBonesBuffer;
+	}
+
+	inline OtIndexBuffer& getIndexBuffer() {
+		if (refreshBuffers) {
+			updateBuffers();
+		}
+
+		return indexBuffer;
+	}
 
 private:
 	friend class OtModel;
@@ -84,5 +106,8 @@ private:
 	OtVertexBuffer vertexBuffer;
 	OtVertexBuffer vertexBonesBuffer;
 	OtIndexBuffer indexBuffer;
-	bool update = false;
+	bool refreshBuffers = false;
+
+	// house keeping function
+	void updateBuffers();
 };

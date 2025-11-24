@@ -12,9 +12,12 @@
 //	Include files
 //
 
-#include <cstdint>
+#include <memory>
 
-#include "OtPass.h"
+#include "OtInstances.h"
+#include "OtMaterial.h"
+#include "OtSampler.h"
+#include "OtTextureAsset.h"
 
 #include "OtGeometryRenderData.h"
 #include "OtGrassComponent.h"
@@ -28,10 +31,14 @@
 //
 
 class OtSceneRenderEntitiesPass {
+public:
+	// destructor
+	virtual ~OtSceneRenderEntitiesPass() {}
+
 protected:
 	// render all entities in scene and call appropriate render functions (see below)
-	void renderEntities(OtSceneRendererContext& ctx, OtPass& pass);
-	void renderEntity(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity);
+	void renderEntities(OtSceneRendererContext& ctx);
+	void renderEntity(OtSceneRendererContext& ctx, OtEntity entity);
 
 	virtual void renderOpaqueGeometry(OtSceneRendererContext&, OtGeometryRenderData&) {}
 	virtual void renderOpaqueModel(OtSceneRendererContext&, OtModelRenderData&) {}
@@ -39,9 +46,9 @@ protected:
 	virtual void renderGrass(OtSceneRendererContext&, OtEntity, OtGrassComponent&) {}
 	virtual void renderTransparentGeometry(OtSceneRendererContext&, OtGeometryRenderData&) {}
 
-	// methods that must be overriden by subclasses
-	virtual bool isRenderingOpaque() = 0;
-	virtual bool isRenderingTransparent() = 0;
+	// subclasses must overwrite these methods if required (these are called by renderEntities)
+	virtual bool isRenderingOpaque() { return false; }
+	virtual bool isRenderingTransparent() { return false; }
 
 	// helper functions
 	enum class MaterialSubmission {
@@ -50,44 +57,46 @@ protected:
 		justAlbedo
 	};
 
-	void renderOpaqueGeometryHelper(
+	void renderGeometryHelper(
 		OtSceneRendererContext& ctx,
 		OtGeometryRenderData& grd,
-		uint64_t wireframeState,
-		uint64_t solidState,
 		MaterialSubmission materialSubmission,
-		OtShaderProgram& singleProgram,
-		OtShaderProgram& instanceProgram);
+		OtRenderPipeline& cullingPipeline,
+		OtRenderPipeline& noCullingPipeline,
+		OtRenderPipeline& linesPipeline,
+		OtRenderPipeline& instancedCullingPipeline,
+		OtRenderPipeline& instancedNoCullingPipeline,
+		OtRenderPipeline& instancedLinesPipeline);
 
-	void renderOpaqueModelHelper(
+	void renderModelHelper(
 		OtSceneRendererContext& ctx,
 		OtModelRenderData& mrd,
-		uint64_t state,
 		MaterialSubmission materialSubmission,
-		OtShaderProgram& animatedProgram,
-		OtShaderProgram& staticProgram);
+		OtRenderPipeline& staticPipeline,
+		OtRenderPipeline& animatedPipeline);
 
 	void renderTerrainHelper(
 		OtSceneRendererContext& ctx,
 		OtTerrainComponent& terrain,
-		uint64_t wireframeState,
-		uint64_t solidState,
-		OtShaderProgram& program);
+		bool setFragmentUniforms,
+		OtRenderPipeline& cullingPipeline,
+		OtRenderPipeline& linesPipeline);
 
 	void renderGrassHelper(
 		OtSceneRendererContext& ctx,
 		OtEntity entity,
 		OtGrassComponent& grass,
-		uint64_t state,
-		OtShaderProgram& program);
+		OtRenderPipeline& pipeline);
 
-	void renderTransparentGeometryHelper(
-		OtSceneRendererContext& ctx,
-		OtGeometryRenderData& grd,
-		uint64_t wireframeState,
-		uint64_t solidState,
-		MaterialSubmission materialSubmission,
-		OtShaderProgram& singleProgram,
-		OtShaderProgram& instanceProgram);
+	void setMaterialUniforms(OtSceneRendererContext& ctx, size_t uniformSlot, size_t samplerSlot, std::shared_ptr<OtMaterial> material);
+	void setMaterialUniforms(OtSceneRendererContext& ctx, size_t uniformSlot, size_t samplerSlot, OtEntity entity);
+
+	void setAlbedoUniforms(OtSceneRendererContext& ctx, size_t uniformSlot, size_t samplerSlot, std::shared_ptr<OtMaterial> material);
+	void setAlbedoUniforms(OtSceneRendererContext& ctx, size_t uniformSlot, size_t samplerSlot, OtEntity entity);
+
+	size_t materialUniformSlot = 0;
+	size_t materialSamplerSlot = 0;
+
+	size_t albedoUniformSlot = 0;
+	size_t albedoSamplerSlot = 0;
 };
-

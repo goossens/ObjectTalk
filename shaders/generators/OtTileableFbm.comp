@@ -1,0 +1,56 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+#version 450
+
+layout(local_size_x=16, local_size_y=16, local_size_z=1) in;
+layout(set=1, binding=0) uniform writeonly image2D outTexture;
+
+layout(std140, set=2, binding=0) uniform UBO {
+	int frequency;
+	int lacunarity;
+	float amplitude;
+	float persistence;
+	int octaves;
+};
+
+float hash(vec2 p, float scale) {
+	return fract(sin(dot(mod(p, scale), vec2(27.16898f, 38.90563f))) * 5151.5473453f);
+}
+
+float tileableNoise(vec2 p, float scale) {
+	p *= scale;
+	vec2 f = fract(p);
+	p = floor(p);
+	f = f * f * (3.0f - 2.0f * f);
+
+	return mix(
+		mix(hash(p, scale), hash(p + vec2(1.0f, 0.0f), scale), f.x),
+		mix(hash(p + vec2(0.0f, 1.0f), scale), hash(p + vec2(1.0f, 1.0f), scale), f.x), f.y);
+}
+
+void main() {
+	ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = imageSize(outTexture);
+
+	if (coord.x >= size.x || coord.y >= size.y) {
+		return;
+	}
+
+	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
+
+	float sum = 0.0f;
+	float f = frequency;
+	float a = amplitude;
+
+	for (int i = 0; i < octaves; i++)	{
+		sum += a * tileableNoise(uv, f);
+		f *= lacunarity;
+		a *= persistence;
+	}
+
+	imageStore(outTexture, coord, vec4(sum, 0.0f, 0.0f, 1.0f));
+}

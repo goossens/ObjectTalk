@@ -12,8 +12,10 @@
 //	Include files
 //
 
+#include <cstdint>
+
+#include "OtFbmComp.h"
 #include "OtGenerator.h"
-#include "OtUniformVec4.h"
 
 
 //
@@ -47,10 +49,34 @@ public:
 	inline void setOctaves(int o) { octaves = o; }
 	inline void setNoiseType(NoiseType nt) { noiseType = nt; }
 
-private:
-	// prepare generator pass
-	OtComputeProgram& preparePass() override;
+	// configure the compute pass
+	void configurePass(OtComputePass& pass) override {
+		// initialize pipeline (if required)
+		if (!pipeline.isValid()) {
+			pipeline.setShader(OtFbmComp, sizeof(OtFbmComp));
+		}
 
+		// set uniforms
+		struct Uniforms {
+			float lacunarity;
+			float amplitude;
+			float persistence;
+			int32_t frequency;
+			int32_t octaves;
+			int32_t noiseType;
+		} uniforms{
+			lacunarity,
+			amplitude,
+			persistence,
+			static_cast<int32_t>(frequency),
+			static_cast<int32_t>(octaves),
+			static_cast<int32_t>(noiseType)
+		};
+
+		pass.addUniforms(&uniforms, sizeof(uniforms));
+	}
+
+private:
 	// properties
 	int frequency = 1;
 	float lacunarity = 2.0f;
@@ -58,8 +84,4 @@ private:
 	float persistence = 0.5f;
 	int octaves = 5;
 	NoiseType noiseType = NoiseType::simplex;
-
-	// shader resources
-	OtComputeProgram program{"OtFbmCS"};
-	OtUniformVec4 uniform{"u_fbm", 2};
 };

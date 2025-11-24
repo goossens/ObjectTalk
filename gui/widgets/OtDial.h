@@ -14,9 +14,8 @@
 
 #include <string>
 
-#include "OtFrameBuffer.h"
-#include "OtSampler.h"
-#include "OtShaderProgram.h"
+#include "OtNeedle.h"
+#include "OtTexture.h"
 #include "OtTextureAsset.h"
 #include "OtUi.h"
 
@@ -118,8 +117,7 @@ private:
 	float value = 0.0f;
 
 	// work variables
-	OtFrameBuffer framebuffer{OtTexture::rgba8Texture, OtTexture::noTexture, 1, true};
-	OtSampler sampler{"s_texture", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtShaderProgram program{"OtDialVS", "OtDialFS"};
+	OtTexture output;
+	OtNeedle needleFilter;
 	bool redraw = true;
 };

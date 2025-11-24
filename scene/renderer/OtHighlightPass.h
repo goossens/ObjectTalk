@@ -13,7 +13,8 @@
 //
 
 #include "OtFrameBuffer.h"
-#include "OtShaderProgram.h"
+#include "OtRenderPipeline.h"
+#include "OtSampler.h"
 
 #include "OtSceneRenderEntitiesPass.h"
 
@@ -25,42 +26,59 @@
 class OtHighlightPass : public OtSceneRenderEntitiesPass {
 public:
 	// render the pass
-	void render(OtSceneRendererContext& ctx, OtFrameBuffer* framebuffer, OtEntity entity);
+	void render(OtSceneRendererContext& ctx, OtTexture* texture, OtEntity entity);
 
 private:
 	// render entities as opaque blobs
 	void renderSelectedPass(OtSceneRendererContext& ctx, OtEntity entity);
 
 	// render the outline of the selected entity(s)
-	void renderHighlightPass(OtSceneRendererContext& ctx, OtFrameBuffer* framebuffer);
+	void renderHighlightPass(OtSceneRendererContext& ctx, OtTexture* texture);
 
 	// recursive method to render an entity and it's children
-	void renderHighlight(OtSceneRendererContext& ctx, OtPass& pass, OtEntity entity);
+	void renderHighlight(OtSceneRendererContext& ctx, OtEntity entity);
 
 	// see if specified entity or one of the children is "highlightable"
 	bool isHighlightable(OtScene* scene, OtEntity entity);
 
-protected:
-	// methods that must be overriden by subclasses (when required)
-	inline bool isRenderingOpaque() override { return true; };
-	inline bool isRenderingTransparent() override { return true; };
+private:
+	// properties
+	OtFrameBuffer selectedBuffer{OtTexture::Format::r8};
+	OtSampler sampler{OtSampler::Filter::nearest, OtSampler::Addressing::clamp};
+
+	OtRenderPipeline opaqueCullingPipeline;
+	OtRenderPipeline opaqueNoCullingPipeline;
+	OtRenderPipeline opaqueLinesPipeline;
+
+	OtRenderPipeline opaqueInstancedCullingPipeline;
+	OtRenderPipeline opaqueInstancedNoCullingPipeline;
+	OtRenderPipeline opaqueInstancedLinesPipeline;
+
+	OtRenderPipeline animatedPipeline;
+	OtRenderPipeline terrainCullingPipeline;
+	OtRenderPipeline terrainLinesPipeline;
+	OtRenderPipeline grassPipeline;
+
+	OtRenderPipeline transparentCullingPipeline;
+	OtRenderPipeline transparentNoCullingPipeline;
+	OtRenderPipeline transparentLinesPipeline;
+
+	OtRenderPipeline transparentInstancedCullingPipeline;
+	OtRenderPipeline transparentInstancedNoCullingPipeline;
+	OtRenderPipeline transparentInstancedLinesPipeline;
+
+	OtRenderPipeline outlinePipeline;
+
+	// support functions
+	bool isRenderingOpaque() override { return true; }
+	bool isRenderingTransparent() override { return true; }
 
 	void renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) override;
 	void renderOpaqueModel(OtSceneRendererContext& ctx, OtModelRenderData& mrd) override;
 	void renderTerrain(OtSceneRendererContext& ctx, OtEntity entity, OtTerrainComponent& terrain)  override;
 	void renderGrass(OtSceneRendererContext& ctx, OtEntity entity, OtGrassComponent& grass)  override;
-	void renderTransparentGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) override;
+	void renderTransparentGeometry(OtSceneRendererContext&ctx , OtGeometryRenderData& grd) override;
 
-private:
-	// properties
-	OtFrameBuffer selectedBuffer{OtTexture::r8Texture};
-
-	OtShaderProgram opaqueProgram{"OtSelectVS", "OtSelectOpaqueFS"};
-	OtShaderProgram instancedOpaqueProgram{"OtSelectInstancingVS", "OtSelectOpaqueFS"};
-	OtShaderProgram animatedOpaqueProgram{"OtSelectAnimatedVS", "OtSelectOpaqueFS"};
-	OtShaderProgram transparentProgram{"OtSelectVS", "OtSelectTransparentFS"};
-	OtShaderProgram instancedTransparentProgram{"OtSelectInstancingVS", "OtSelectTransparentFS"};
-	OtShaderProgram terrainProgram{"OtTerrainSimpleVS", "OtSelectOpaqueFS"};
-	OtShaderProgram grassProgram{"OtGrassSimpleVS", "OtSelectOpaqueFS"};
-	OtShaderProgram outlineProgram{"OtOutlineVS", "OtOutlineFS"};
+	void initializeResources();
+	bool resourcesInitialized = false;
 };

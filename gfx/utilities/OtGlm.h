@@ -100,11 +100,9 @@ inline void OtGlmDebug(const char* label, const glm::vec4& v) {
 	std::cout << label << glm::to_string(v) << std::endl;
 }
 
-
 inline void OtGlmDebug(const char* label, const glm::quat& q) {
 	std::cout << label << glm::to_string(q) << std::endl;
 }
-
 
 inline void OtGlmDebug(const char* label, const glm::mat3& m) {
 	std::cout << label << glm::to_string(m) << std::endl;

@@ -76,7 +76,7 @@ void OtMarkdown::render(const std::string& markdown) {
 //	OtMarkdown::docBlock
 //
 
-void OtMarkdown::docBlock(bool /* enter */) {
+void OtMarkdown::docBlock([[maybe_unused]] bool enter) {
 }
 
 
@@ -84,7 +84,7 @@ void OtMarkdown::docBlock(bool /* enter */) {
 //	OtMarkdown::quoteBlock
 //
 
-void OtMarkdown::quoteBlock(bool /* enter */) {
+void OtMarkdown::quoteBlock([[maybe_unused]] bool enter) {
 }
 
 
@@ -127,7 +127,7 @@ void OtMarkdown::olBlock(const MD_BLOCK_OL_DETAIL* detail, bool enter) {
 //	OtMarkdown::liBlock
 //
 
-void OtMarkdown::liBlock(const MD_BLOCK_LI_DETAIL* /* detail */, bool enter) {
+void OtMarkdown::liBlock([[maybe_unused]] const MD_BLOCK_LI_DETAIL* detail, bool enter) {
 	if (enter) {
 		ImGui::NewLine();
 
@@ -196,7 +196,7 @@ void OtMarkdown::hBlock(const MD_BLOCK_H_DETAIL* detail, bool enter) {
 //	OtMarkdown::codeBlock
 //
 
-void OtMarkdown::codeBlock(const MD_BLOCK_CODE_DETAIL* /* detail */, bool /* enter */) {
+void OtMarkdown::codeBlock([[maybe_unused]] const MD_BLOCK_CODE_DETAIL* detail, [[maybe_unused]] bool enter) {
 }
 
 
@@ -204,7 +204,7 @@ void OtMarkdown::codeBlock(const MD_BLOCK_CODE_DETAIL* /* detail */, bool /* ent
 //	OtMarkdown::htmlBlock
 //
 
-void OtMarkdown::htmlBlock(bool /* enter */) {
+void OtMarkdown::htmlBlock([[maybe_unused]] bool  enter) {
 }
 
 
@@ -212,7 +212,7 @@ void OtMarkdown::htmlBlock(bool /* enter */) {
 //	OtMarkdown::pBlock
 //
 
-void OtMarkdown::pBlock(bool /* enter */) {
+void OtMarkdown::pBlock([[maybe_unused]] bool enter) {
 	if (listStack.empty()) {
 		ImGui::NewLine();
 	}
@@ -223,7 +223,7 @@ void OtMarkdown::pBlock(bool /* enter */) {
 //	OtMarkdown::tableBlock
 //
 
-void OtMarkdown::tableBlock(const MD_BLOCK_TABLE_DETAIL* /* detail */, bool enter) {
+void OtMarkdown::tableBlock([[maybe_unused]] const MD_BLOCK_TABLE_DETAIL* detail, bool enter) {
 	if (enter) {
 		tableRowPos.clear();
 		tableColPos.clear();
@@ -323,7 +323,7 @@ void OtMarkdown::thBlock(const MD_BLOCK_TD_DETAIL* detail, bool enter) {
 //	OtMarkdown::tdBlock
 //
 
-void OtMarkdown::tdBlock(const MD_BLOCK_TD_DETAIL* /* detail */, bool enter) {
+void OtMarkdown::tdBlock([[maybe_unused]] const MD_BLOCK_TD_DETAIL* detail, bool enter) {
 	if (enter) {
 		if (tableNextColumn < tableColPos.size()) {
 			ImGui::SetCursorPosX(tableColPos[tableNextColumn]);
@@ -434,7 +434,7 @@ void OtMarkdown::imgSpan(const MD_SPAN_IMG_DETAIL* detail, bool enter) {
 //	OtMarkdown::codeSpan
 //
 
-void OtMarkdown::codeSpan(bool /* enter */) {
+void OtMarkdown::codeSpan([[maybe_unused]] bool enter) {
 }
 
 
@@ -442,7 +442,7 @@ void OtMarkdown::codeSpan(bool /* enter */) {
 //	OtMarkdown::latexMathSpan
 //
 
-void OtMarkdown::latexMathSpan(bool /* enter */) {
+void OtMarkdown::latexMathSpan([[maybe_unused]] bool enter) {
 }
 
 
@@ -459,7 +459,7 @@ void OtMarkdown::latexMathDisplaySpan(bool enter) {
 //	OtMarkdown::wikiLinkSpan
 //
 
-void OtMarkdown::wikiLinkSpan(const MD_SPAN_WIKILINK_DETAIL* /* detail */, bool /* enter */) {
+void OtMarkdown::wikiLinkSpan([[maybe_unused]] const MD_SPAN_WIKILINK_DETAIL* detail, [[maybe_unused]] bool enter) {
 }
 
 
@@ -467,7 +467,7 @@ void OtMarkdown::wikiLinkSpan(const MD_SPAN_WIKILINK_DETAIL* /* detail */, bool 
 //	OtMarkdown::uSpan
 //
 
-void OtMarkdown::uSpan(bool /* enter */) {
+void OtMarkdown::uSpan([[maybe_unused]] bool enter) {
 }
 
 
@@ -529,11 +529,11 @@ int OtMarkdown::text(MD_TEXTTYPE type, const char* text, const char* end) {
 	switch (type) {
 		case MD_TEXT_NORMAL: renderText(text, end); break;
 		case MD_TEXT_CODE: renderText(text, end); break;
-		case MD_TEXT_NULLCHAR:  break;
+		case MD_TEXT_NULLCHAR: break;
 		case MD_TEXT_BR: ImGui::NewLine(); break;
 		case MD_TEXT_SOFTBR: ImGui::NewLine();; break;
 		case MD_TEXT_ENTITY: renderEntity(text, end); break;
-		case MD_TEXT_HTML:  renderHtml(text, end); break;
+		case MD_TEXT_HTML: renderHtml(text, end); break;
 		case MD_TEXT_LATEXMATH: renderText(text, end); break;
 	}
 
@@ -741,7 +741,7 @@ void OtMarkdown::setFont(bool enter) {
 
 ImVec4 OtMarkdown::getColor() {
 	if (href.empty()) {
-		return  ImGui::GetStyle().Colors[ImGuiCol_Text];
+		return	ImGui::GetStyle().Colors[ImGuiCol_Text];
 
 	} else {
 		return ImGui::GetStyle().Colors[ImGuiCol_ButtonHovered];

@@ -15,8 +15,7 @@
 #include "glm/glm.hpp"
 
 #include "OtFilter.h"
-#include "OtShaderProgram.h"
-#include "OtUniformVec4.h"
+#include "OtBlurComp.h"
 
 
 //
@@ -26,23 +25,40 @@
 class OtBlur : public OtFilter {
 public:
 	// constructor
-	OtBlur();
+	OtBlur() {
+		// switch to linear sampling for input texture
+		sampler.setFilter(OtSampler::Filter::linear);
+	}
 
 	// set properties
-	inline void setIntensity(float i) { intensity = i; }
-	inline void setAlpha(float a) { alpha = a; }
-	inline void setDirection(const glm::vec2& d) { direction = d; }
+	inline void setDirection(const glm::vec2& value) { direction = value; }
+	inline void setBrightness(float value) { brightness = value; }
+	inline void setTransparency(float value) { transparency = value; }
+
+	// configure the compute pass
+	void configurePass(OtComputePass& pass) override {
+		// initialize pipeline (if required)
+		if (!pipeline.isValid()) {
+			pipeline.setShader(OtBlurComp, sizeof(OtBlurComp));
+		}
+
+		// set uniforms
+		struct Uniforms {
+			glm::vec2 offset;
+			float brightness;
+			float transparency;
+		} uniforms {
+			direction * sourceTexelSize,
+			brightness,
+			transparency
+		};
+
+		pass.addUniforms(&uniforms, sizeof(uniforms));
+	}
 
 private:
-	// execute filter
-	void execute(OtPass& pass) override;
-
 	// properties
-	float intensity = 2.0f;
-	float alpha = 1.0f;
 	glm::vec2 direction{1.0f};
-
-	// GPU assets
-	OtUniformVec4 uniform = OtUniformVec4("u_blur", 1);
-	OtShaderProgram program = OtShaderProgram("OtFilterVS", "OtBlurFS");
+	float brightness = 2.0f;
+	float transparency = 1.0f;
 };

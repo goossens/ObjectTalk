@@ -6,7 +6,7 @@
 
 
 //
-//  Include files
+//	Include files
 //
 
 #include <vector>
@@ -19,7 +19,7 @@
 
 
 //
-//  OtTileLayer::render
+//	OtTileLayer::render
 //
 
 void OtTileLayer::render(ImDrawList* drawlist, OtProjector& projector) {
@@ -83,7 +83,7 @@ void OtTileLayer::render(ImDrawList* drawlist, OtProjector& projector) {
 
 
 //
-//  OtTileLayer::getTile
+//	OtTileLayer::getTile
 //
 
 std::shared_ptr<OtMapImageTile> OtTileLayer::getTile(const OtMapTile& tile) {

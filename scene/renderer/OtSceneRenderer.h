@@ -13,19 +13,19 @@
 //
 
 #include <functional>
-#include <memory>
 
 #include "glm/glm.hpp"
 #include "imgui.h"
 
+#include "OtCamera.h"
+#include "OtCascadedShadowMap.h"
 #include "OtFrameBuffer.h"
 #include "OtGbuffer.h"
 
-#include "OtCamera.h"
 #include "OtEntity.h"
 #include "OtScene.h"
 
-#include "OtSceneRendererContext.h"
+#include "OtImageBasedLighting.h"
 
 #include "OtBackgroundPass.h"
 #include "OtDeferredPass.h"
@@ -38,6 +38,7 @@
 #include "OtHighlightPass.h"
 #include "OtPickingPass.h"
 #include "OtPostProcessingPass.h"
+#include "OtSceneRendererContext.h"
 
 
 //
@@ -51,15 +52,13 @@ public:
 	inline void setSelectedEntity(OtEntity entity) { selectedEntity = entity; }
 
 	// support entity picking
-	inline void pickEntity(glm::vec2 ndc, std::function<void(OtEntity)> callback) {
-		pickingNDC = ndc;
+	inline void pickEntity(glm::vec2 uv, std::function<void(OtEntity)> callback) {
+		pickingUV = uv;
 		pickingCallback = callback;
 	}
 
-	inline bool isPicking() { return pickingPass.isPicking(); }
-
-	// render specified scene using provided camera (returns the ID of the resulting texture)
-	ImTextureID render(OtScene* scene, OtCamera& camera);
+	// render specified scene
+	ImTextureID render(OtCamera& camera, OtScene* scene);
 
 private:
 	// give the debugger access to the inner circle
@@ -70,18 +69,18 @@ private:
 
 	// framebuffers
 	OtGbuffer deferredRenderingBuffer;
-	OtFrameBuffer compositeBuffer{OtTexture::rgbaFloat16Texture, OtTexture::dFloatTexture};
+	OtFrameBuffer compositeBuffer{OtTexture::Format::rgba16, OtTexture::Format::d32};
 
 	// rendering passes
 	OtShadowPass shadowPass;
 	OtBackgroundPass backgroundPass{compositeBuffer};
-	OtSkyPass skyPass{compositeBuffer};
 	OtDeferredPass deferredPass{deferredRenderingBuffer, compositeBuffer};
 	OtForwardPass forwardPass{compositeBuffer};
+	OtSkyPass skyPass{compositeBuffer};
 	OtWaterPass waterPass{compositeBuffer};
 	OtParticlesPass particlePass{compositeBuffer};
+	OtGridPass gridPass{compositeBuffer};
 	OtPostProcessingPass postProcessingPass{compositeBuffer};
-	OtGridPass gridPass;
 	OtHighlightPass highlightPass;
 	OtPickingPass pickingPass;
 
@@ -90,16 +89,17 @@ private:
 	float shadowPassTime;
 	float backgroundPassTime;
 	float opaquePassTime;
-	float transparentPassTime;
-	float skyPassTime;
 	float waterPassTime;
+	float skyPassTime;
 	float particlePassTime;
+	float transparentPassTime;
+	float gridPassTime;
 	float postProcessingTime;
 	float editorPassTime;
 	float renderTime;
 
 	// support for selected entities and entity picking
 	OtEntity selectedEntity = OtEntityNull;
-	glm::vec2 pickingNDC;
+	glm::vec2 pickingUV;
 	std::function<void(OtEntity)> pickingCallback;
 };

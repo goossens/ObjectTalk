@@ -163,7 +163,7 @@ bool OtPolyhedronPrimitive::renderUI() {
 //	OtPolyhedronPrimitive::serialize
 //
 
-nlohmann::json OtPolyhedronPrimitive::serialize(std::string* /* basedir */) {
+nlohmann::json OtPolyhedronPrimitive::serialize([[maybe_unused]] std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["type"] = name;
 	data["detail"] = detail;
@@ -175,6 +175,6 @@ nlohmann::json OtPolyhedronPrimitive::serialize(std::string* /* basedir */) {
 //	OtPolyhedronPrimitive::deserialize
 //
 
-void OtPolyhedronPrimitive::deserialize(nlohmann::json data, std::string* /* basedir */) {
+void OtPolyhedronPrimitive::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
 	detail = data.value("detail", 1);
 }

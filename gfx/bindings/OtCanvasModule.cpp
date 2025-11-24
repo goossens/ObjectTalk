@@ -32,10 +32,6 @@ OtType OtCanvasClass::getMeta() {
 		type->set("getWidth", OtFunction::create(&OtCanvasClass::getWidth));
 		type->set("getHeight", OtFunction::create(&OtCanvasClass::getHeight));
 
-		type->set("compositeOperation", OtFunction::create(&OtCanvasClass::compositeOperation));
-		type->set("compositeBlendFunc", OtFunction::create(&OtCanvasClass::compositeBlendFunc));
-		type->set("compositeBlendFuncSeparate", OtFunction::create(&OtCanvasClass::compositeBlendFuncSeparate));
-
 		type->set("save", OtFunction::create(&OtCanvasClass::save));
 		type->set("restore", OtFunction::create(&OtCanvasClass::restore));
 		type->set("reset", OtFunction::create(&OtCanvasClass::reset));
@@ -161,8 +157,8 @@ static void RegisterEnums(OtModule& module) {
 	module->set("roundJoin", OtInteger::create(NVG_ROUND));
 	module->set("bevelJoin", OtInteger::create(NVG_BEVEL));
 
-	module->set("ccw", OtInteger::create(NVG_CCW));
-	module->set("cw", OtInteger::create(NVG_CW));
+	module->set("ccw", OtInteger::create(NVG_SOLID));
+	module->set("cw", OtInteger::create(NVG_HOLE));
 
 	module->set("left", OtInteger::create(NVG_ALIGN_LEFT));
 	module->set("center", OtInteger::create(NVG_ALIGN_CENTER));

@@ -1,0 +1,40 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+#version 450
+
+layout(local_size_x=16, local_size_y=16, local_size_z=1) in;
+
+layout(set=0, binding=0) uniform sampler2D inTexture;
+layout(set=1, binding=0) uniform writeonly image2D outTexture;
+
+layout(std140, set=2, binding=0) uniform UBO {
+	float contrast;
+	float saturation;
+	float brightness;
+};
+
+void main() {
+	ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = imageSize(outTexture);
+
+	if (coord.x >= size.x || coord.y >= size.y) {
+		return;
+	}
+
+	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
+
+	const vec3 LumCoeff = vec3(0.2125f, 0.7154f, 0.0721f);
+	const vec3 AvgLumin  = vec3(0.5f, 0.5f, 0.5f);
+
+	vec4 color = texture(inTexture, uv);
+	vec3 brtColor  = color.rgb * brightness;
+	vec3 intensity = vec3(dot(brtColor, LumCoeff));
+	vec3 satColor  = mix(intensity, brtColor, saturation);
+	vec3 conColor  = mix(AvgLumin, satColor, contrast);
+
+	imageStore(outTexture, coord, vec4(conColor, color.a));
+}

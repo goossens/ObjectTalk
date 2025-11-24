@@ -35,22 +35,26 @@ public:
 	void deserialize(nlohmann::json data, std::string* basedir);
 
 	// set the properties
-	void setAlbedo(const glm::vec4& a) { albedo = a; }
-	void setMetallic(float m) { metallic = m; }
-	void setRoughness(float r) { roughness = r; }
-	void setEmissive(const glm::vec3& e) { emissive = e; }
-	void setAo(float a) { ao = a; }
-	void setTextureOffset(const glm::vec2& o) { offset = o; }
-	void setTextureScale(float s) { scale = s; }
+	inline void setAlbedo(const glm::vec4& a) { albedo = a; }
+	inline void setMetallic(float m) { metallic = m; }
+	inline void setRoughness(float r) { roughness = r; }
+	inline void setEmissive(const glm::vec3& e) { emissive = e; }
+	inline void setAo(float a) { ao = a; }
+	inline void setTextureOffset(const glm::vec2& o) { offset = o; }
+	inline void setTextureScale(float s) { scale = s; }
 
 	// set the textures
-	void setAlbedoTexture(const std::string& path) { albedoTexture = path; }
-	void setNormalTexture(const std::string& path) { normalTexture = path; }
-	void setMetallicRoughnessTexture(const std::string& path) { metallicRoughnessTexture = path; }
-	void setEmissiveTexture(const std::string& path) { emissiveTexture = path; }
-	void setAoTexture(const std::string& path) { aoTexture = path; }
+	inline void setAlbedoTexture(const std::string& path) { albedoTexture = path; }
+	inline void setNormalTexture(const std::string& path) { normalTexture = path; }
+	inline void setMetallicRoughnessTexture(const std::string& path) { metallicRoughnessTexture = path; }
+	inline void setEmissiveTexture(const std::string& path) { emissiveTexture = path; }
+	inline void setAoTexture(const std::string& path) { aoTexture = path; }
 
-	// material properties
+private:
+	// the scene renderer needs access to our properties
+	friend class OtSceneRenderEntitiesPass;
+
+	// stored properties
 	glm::vec4 albedo{1.0f};
 	float metallic = 0.5f;
 	float roughness = 0.5f;

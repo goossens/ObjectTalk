@@ -12,9 +12,10 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "OtFilter.h"
-#include "OtShaderProgram.h"
-#include "OtUniformVec4.h"
+#include "OtIslandizerComp.h"
 
 
 //
@@ -41,16 +42,26 @@ public:
 	static constexpr size_t distanceFunctionCount = sizeof(distanceFunctions) / sizeof(*distanceFunctions);
 
 	// set properties
-	inline void setDistanceFunction(DistanceFunction df) { distanceFunction = df; }
+	inline void setDistanceFunction(DistanceFunction value) { distanceFunction = value; }
+
+	// configure the compute pass
+	void configurePass(OtComputePass& pass) override {
+		// initialize pipeline (if required)
+		if (!pipeline.isValid()) {
+			pipeline.setShader(OtIslandizerComp, sizeof(OtIslandizerComp));
+		}
+
+		// set uniforms
+		struct Uniforms {
+			int32_t distanceFunction;
+		} uniforms {
+			static_cast<int32_t>(distanceFunction)
+		};
+
+		pass.addUniforms(&uniforms, sizeof(uniforms));
+	}
 
 private:
-	// execute filter
-	void execute(OtPass& pass) override;
-
-	// shader resources
-	OtShaderProgram program{"OtFilterVS", "OtIslandizerFS"};
-	OtUniformVec4 uniform{"u_islander", 1};
-
 	// properties
 	DistanceFunction distanceFunction = DistanceFunction::squareBump;
 };

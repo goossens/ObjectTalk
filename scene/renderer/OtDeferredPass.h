@@ -14,7 +14,8 @@
 
 #include "OtFrameBuffer.h"
 #include "OtGbuffer.h"
-#include "OtShaderProgram.h"
+#include "OtIndexBuffer.h"
+#include "OtVertexBuffer.h"
 
 #include "OtSceneRenderEntitiesPass.h"
 
@@ -31,19 +32,9 @@ public:
 	// render the pass
 	void render(OtSceneRendererContext& ctx);
 
-	// render all opaque geometry
-	void renderGeometry(OtSceneRendererContext& ctx);
-
-	// run direct lighting calculations
-	void renderDirectionalLight(OtSceneRendererContext& ctx);
-
-	// render point lights
-	void renderPointLights(OtSceneRendererContext& ctx);
-
 protected:
-	// methods that must be overriden by subclasses (when required)
-	inline bool isRenderingOpaque() override { return true; };
-	inline bool isRenderingTransparent() override { return false; };
+	bool isRenderingOpaque() override { return true; }
+	bool isRenderingTransparent() override { return false; }
 
 	void renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) override;
 	void renderOpaqueModel(OtSceneRendererContext& ctx, OtModelRenderData& mrd) override;
@@ -55,13 +46,31 @@ private:
 	OtGbuffer& gbuffer;
 	OtFrameBuffer& framebuffer;
 
-	OtUniformMat4 invViewProjUniform{"u_invViewProjUniform", 1};
-	OtShaderProgram opaqueProgram{"OtDeferredVS", "OtDeferredPbrFS"};
-	OtShaderProgram instancedOpaqueProgram{"OtDeferredInstancingVS", "OtDeferredPbrFS"};
-	OtShaderProgram animatedOpaqueProgram{"OtDeferredAnimatedVS", "OtDeferredPbrFS"};
-	OtShaderProgram terrainProgram{"OtTerrainVS", "OtTerrainFS"};
-	OtShaderProgram grassProgram{"OtGrassVS", "OtGrassFS"};
+	OtRenderPipeline cullingPipeline;
+	OtRenderPipeline noCullingPipeline;
+	OtRenderPipeline linesPipeline;
 
-	OtShaderProgram directionalLightProgram{"OtDeferredLightingVS", "OtDeferredLightingFS"};
-	OtShaderProgram pointLightProgram{"OtPointLightsVS", "OtPointLightsFS"};
+	OtRenderPipeline instancedCullingPipeline;
+	OtRenderPipeline instancedNoCullingPipeline;
+	OtRenderPipeline instancedLinesPipeline;
+
+	OtRenderPipeline animatedPipeline;
+	OtRenderPipeline terrainCullingPipeline;
+	OtRenderPipeline terrainLinesPipeline;
+	OtRenderPipeline grassPipeline;
+
+	OtRenderPipeline directionalLightPipeline;
+	OtRenderPipeline pointLightsPipeline;
+
+	OtVertexBuffer pointLightVertices;
+	OtVertexBuffer pointLightInstances;
+	OtIndexBuffer pointLightIndices;
+
+	// support functions
+	void renderGeometry(OtSceneRendererContext& ctx);
+	void renderDirectionalLight(OtSceneRendererContext& ctx);
+	void renderPointLights(OtSceneRendererContext& ctx);
+
+	void initializeResources();
+	bool resourcesInitialized = false;
 };

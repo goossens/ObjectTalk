@@ -1,0 +1,48 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+#version 450 core
+
+layout(local_size_x=16, local_size_y=16, local_size_z=1) in;
+
+layout(set=0, binding=0) uniform sampler2D postProcessTexture;
+layout(set=0, binding=1) uniform sampler2D occlusionTexture;
+layout(set=1, binding=0) uniform writeonly image2D outTexture;
+
+layout(std140, set=2, binding=0) uniform UBO {
+	vec4 lightColor;
+	vec2 lightUv;
+	float decay;
+	float exposure;
+	float density;
+	float weight;
+};
+
+void main() {
+	ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = imageSize(outTexture);
+
+	if (coord.x >= size.x || coord.y >= size.y) {
+		return;
+	}
+
+	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
+
+	int samples = 50;
+	vec2 deltaTexCoord = (uv - lightUv) * density / float(samples);
+
+	vec2 tc = uv;
+	float ray = 0.0;
+	float illuminationDecay = 1.0;
+
+	for (int i = 0; i < samples; i++) {
+		tc -= deltaTexCoord;
+		ray += texture(occlusionTexture, tc).r * illuminationDecay * weight;
+		illuminationDecay *= decay;
+	}
+
+	imageStore(outTexture, coord, texture(postProcessTexture, uv) + lightColor * ray * exposure);
+}

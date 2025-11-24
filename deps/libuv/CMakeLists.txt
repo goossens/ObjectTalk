@@ -23,4 +23,5 @@ if(CMAKE_GENERATOR STREQUAL Xcode)
 	set_target_properties(uv_a PROPERTIES XCODE_ATTRIBUTE_GCC_WARN_64_TO_32_BIT_CONVERSION "NO")
 endif()
 
+
 set_target_properties(uv_a PROPERTIES FOLDER deps/libuv)

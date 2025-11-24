@@ -55,36 +55,20 @@ OtWorkspace::OtWorkspace() {
 void OtWorkspace::onSetup() {
 	// set the current directory to examples if we are in development mode
 	// set it to documents or home directory otherwise
-	auto exec = OtPath::getExecutable();
-	auto root = OtPath::getParent(OtPath::getParent(OtPath::getParent(exec)));
-	auto examples = OtPath::join(root, "examples");
+	auto home = OtPath::getHomeDirectory();
+	auto examples = OtPath::join(OtPath::join(home, "ObjectTalk"), "examples");
 
 	if (OtPath::isDirectory(examples)) {
 		OtPath::changeDirectory(examples);
 
 	} else {
-		root = OtPath::getParent(root);
-		examples = OtPath::join(root, "examples");
+		auto documents = OtPath::getDocumentsDirectory();
 
-		if (OtPath::isDirectory(examples)) {
-			OtPath::changeDirectory(examples);
+		if (OtPath::isDirectory(documents)) {
+			OtPath::changeDirectory(documents);
 
-		} else if (OtText::contains(exec, "/build/xcode/Debug/ObjectTalk.app/Contents/MacOS/ot")) {
-			OtPath::changeDirectory(OtPath::join(OtText::left(exec, exec.size() - 51), "examples"));
-
-		} else {
-			auto path = OtPath::getDocumentsDirectory();
-
-			if (OtPath::isDirectory(path)) {
-				OtPath::changeDirectory(path);
-
-			} else {
-				path = OtPath::getHomeDirectory();
-
-				if (OtPath::isDirectory(path)) {
-					OtPath::changeDirectory(path);
-				}
-			}
+		} else if (OtPath::isDirectory(home)) {
+			OtPath::changeDirectory(home);
 		}
 	}
 

@@ -16,7 +16,7 @@
 
 
 //
-//  Include files
+//	Include files
 //
 
 #include <algorithm>
@@ -30,7 +30,7 @@
 
 
 //
-//  OtProjector::flyTo
+//	OtProjector::flyTo
 //
 
 void OtProjector::flyTo(OtLatLon c, double r) {
@@ -45,7 +45,7 @@ void OtProjector::flyTo(OtLatLon c, double r) {
 
 
 //
-//  OtProjector::latLonToRaster
+//	OtProjector::latLonToRaster
 //
 
 OtMapRaster OtProjector::latLonToRaster(OtLatLon ll) {
@@ -60,7 +60,7 @@ OtMapRaster OtProjector::latLonToRaster(OtLatLon ll) {
 
 
 //
-//  OtProjector::rasterToLatLon
+//	OtProjector::rasterToLatLon
 //
 
 OtLatLon OtProjector::rasterToLatLon(OtMapRaster raster) {
@@ -74,7 +74,7 @@ OtLatLon OtProjector::rasterToLatLon(OtMapRaster raster) {
 
 
 //
-//  OtProjector::rasterToTile
+//	OtProjector::rasterToTile
 //
 
 OtMapTile OtProjector::rasterToTile(OtMapRaster raster, int zm) {
@@ -98,7 +98,7 @@ OtLatLon OtProjector::screenToLatLon(ImVec2 screen) {
 
 
 //
-//  OtProjector::visibleRasterBoundaries
+//	OtProjector::visibleRasterBoundaries
 //
 
 void OtProjector::visibleRasterBoundaries(OtMapRaster& min, OtMapRaster& max) {
@@ -132,7 +132,7 @@ void OtProjector::tileScreenBoundaries(OtMapTile& tile, ImVec2& minS, ImVec2& ma
 
 
 //
-//  OtProjector::calculate
+//	OtProjector::calculate
 //
 
 void OtProjector::calculate() {

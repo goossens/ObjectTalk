@@ -16,13 +16,8 @@
 #include <string>
 
 #include "SDL3/SDL.h"
-#include "bgfx/bgfx.h"
-#include "imgui.h"
 
 #include "OtFrameworkApp.h"
-#include "OtSampler.h"
-#include "OtShaderProgram.h"
-#include "OtTexture.h"
 
 
 //
@@ -61,45 +56,22 @@ private:
 	void eventsSDL();
 	void endSDL();
 
-	void initBGFX();
-	void startFrameBGFX();
-	void endFrameBGFX();
-	void endBGFX();
-
 	void initIMGUI();
 	void eventIMGUI(SDL_Event& event);
 	void startFrameIMGUI();
-	void updateTextureIMGUI(ImTextureData* texture);
 	void endFrameIMGUI();
 	void endIMGUI();
 
-	// main window
-	SDL_Window* window = nullptr;
-	void* nativeWindowHandle = nullptr;
-	void* nativeDisplayType = nullptr;
-	int width;
-	int height;
-
-	// Input Method Editor (IME) support
-	SDL_Window* imeWindow = nullptr;
+	// window information
+	SDL_Window* window;
 
 	// time tracking
 	std::chrono::time_point<std::chrono::high_resolution_clock> lastTime;
 	std::chrono::time_point<std::chrono::high_resolution_clock> loopTime;
 	float loopDuration;
 	float cpuTime;
-
-	// support Dear ImGui
-	bgfx::VertexLayout imguiVertexLayout;
-	OtSampler imguiTextureSampler{"s_imguiTexture", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtShaderProgram imguiShaderProgram{"OtImGuiVS", "OtImGuiFS"};
-
-	// cursors
-	SDL_Cursor* cursors[ImGuiMouseCursor_COUNT];
-	ImGuiMouseCursor lastCursor = ImGuiMouseCursor_None;
-
-	// clipboard
-	std::string clipboardText;
+	float gpuTime;
+	float gpuWaitTime;
 
 	// anti-aliasing setting
 	int antiAliasing = 0;

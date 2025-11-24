@@ -9,13 +9,13 @@
 //	Include files
 //
 
-#include "OtInstanceDataBuffer.h"
-#include "OtPass.h"
-#include "OtTransientIndexBuffer.h"
-#include "OtTransientVertexBuffer.h"
+#include "OtRenderPass.h"
 #include "OtVertex.h"
 
 #include "OtParticlesPass.h"
+
+#include "OtParticlesVert.h"
+#include "OtParticlesFrag.h"
 
 
 //
@@ -23,6 +23,12 @@
 //
 
 void OtParticlesPass::render(OtSceneRendererContext& ctx) {
+	// initialize resources (if required)
+	if (!resourcesInitialized) {
+		initializeResources();
+		resourcesInitialized = true;
+	}
+
 	// determine view matrix for billboards (by removing rotation)
 	auto view = ctx.camera.viewMatrix;
 	view[0][0] = 1.0f;
@@ -36,10 +42,10 @@ void OtParticlesPass::render(OtSceneRendererContext& ctx) {
 	view[2][2] = 1.0f;
 
 	// setup pass
-	OtPass pass;
-	pass.setRectangle(0, 0, ctx.camera.width, ctx.camera.height);
-	pass.setFrameBuffer(framebuffer);
-	pass.setViewTransform(view, ctx.camera.projectionMatrix);
+	OtRenderPass pass;
+	pass.start(framebuffer);
+	pass.bindPipeline(pipeline);
+	ctx.pass = &pass;
 
 	for (auto&& [entity, component] : ctx.scene->view<OtParticlesComponent>().each()) {
 		// update the particle system
@@ -50,39 +56,56 @@ void OtParticlesPass::render(OtSceneRendererContext& ctx) {
 		settings.deltatime = ImGui::GetIO().DeltaTime;
 		particles.update(settings);
 
-		// send out geometry
-		static glm::vec3 vertices[] = {
-			glm::vec3{-0.5f, -0.5f, 0.0f},
-			glm::vec3{0.5f, -0.5f, 0.0f},
-			glm::vec3{0.5f, 0.5f, 0.0f},
-			glm::vec3{-0.5f, 0.5f, 0.0f}
-		};
-
-		OtTransientVertexBuffer tvb;
-		tvb.submit(vertices, 4, OtVertexPos::getLayout());
-
-		static uint32_t indices[] = {0, 1, 2, 2, 3, 0};
-		OtTransientIndexBuffer tib;
-		tib.submit(indices, 6);
-
-		// send out instance data
-		OtInstanceDataBuffer idb;
-		idb.submit(particles.getInstanceData(), particles.size(), particles.getInstanceStride());
+		// send out particle(instance) data
+		particleBuffer.set(particles.data(), particles.size(), OtVertexParticle::getDescription());
+		pass.setInstanceData(particleBuffer);
 
 		// bind the particle texture atlas
-		ctx.submitTextureSampler(particlesSampler, 0, settings.atlas);
+		ctx.bindFragmentSampler(0, particlesSampler, settings.atlas);
 
-		// set the model matrix
-		pass.setModelTransform(ctx.scene->getGlobalTransform(entity));
+		// set vertex uniforms
+		struct Uniforms {
+			glm::mat4 modelViewProjectionMatrix;
+		} uniforms{
+			ctx.camera.projectionMatrix * view * ctx.scene->getGlobalTransform(entity)
+		};
 
-		// run the program
-		pass.setState(
-			OtPass::stateWriteRgb |
-			OtPass::stateWriteA |
-			OtPass::stateWriteZ |
-			OtPass::stateDepthTestLess |
-			OtPass::stateBlendAlpha);
+		pass.setVertexUniforms(0, &uniforms, sizeof(uniforms));
 
-		pass.runShaderProgram(program);
+		// render particles
+		pass.render(vertexBuffer, indexBuffer);
 	}
+
+	pass.end();
+}
+
+
+//
+//	OtParticlesPass::initializeResources
+//
+
+void OtParticlesPass::initializeResources() {
+	pipeline.setShaders(OtParticlesVert, sizeof(OtParticlesVert), OtParticlesFrag, sizeof(OtParticlesFrag));
+	pipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
+	pipeline.setVertexDescription(OtVertexPos::getDescription());
+	pipeline.setInstanceDescription(OtVertexParticle::getDescription());
+	pipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+
+	pipeline.setBlend(
+		OtRenderPipeline::BlendOperation::add,
+		OtRenderPipeline::BlendFactor::srcAlpha,
+		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
+	);
+
+	static glm::vec3 vertices[] = {
+		glm::vec3{-0.5f, -0.5f, 0.0f},
+		glm::vec3{0.5f, -0.5f, 0.0f},
+		glm::vec3{0.5f, 0.5f, 0.0f},
+		glm::vec3{-0.5f, 0.5f, 0.0f}
+	};
+
+	static uint32_t indices[] = {0, 1, 2, 2, 3, 0};
+
+	vertexBuffer.set(vertices, sizeof(vertices) / sizeof(*vertices), OtVertexPos::getDescription());
+	indexBuffer.set(indices, sizeof(indices) / sizeof(*indices));
 }

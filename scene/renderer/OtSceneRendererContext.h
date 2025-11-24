@@ -17,22 +17,19 @@
 
 #include "glm/glm.hpp"
 
-#include "OtTextureAsset.h"
-
+#include "OtAsset.h"
 #include "OtCamera.h"
 #include "OtCascadedShadowMap.h"
 #include "OtGrass.h"
 #include "OtImageBasedLighting.h"
-#include "OtInstanceDataBuffer.h"
 #include "OtMaterial.h"
-#include "OtPass.h"
-#include "OtSampler.h"
-#include "OtUniformMat4.h"
-#include "OtUniformVec4.h"
+#include "OtRenderPass.h"
+#include "OtTextureAsset.h"
 
 #include "OtGeometryRenderData.h"
 #include "OtImageBasedLighting.h"
 #include "OtModelRenderData.h"
+#include "OtSampler.h"
 #include "OtScene.h"
 #include "OtTerrain.h"
 
@@ -44,16 +41,7 @@
 class OtSceneRendererContext {
 public:
 	// initialize context
-	void initialize(OtScene* s, OtCamera& c);
-
-	// utility functions
-	void submitLightingUniforms();
-	void submitShadowUniforms();
-	void submitMaterialUniforms(OtMaterial& material);
-	void submitAlbedoUniforms(OtMaterial& material);
-	void submitTerrainUniforms(OtTerrain& terrain);
-	void submitGrassUniforms(OtGrass& grass);
-	void submitTextureSampler(OtSampler& sampler, int unit, OtAsset<OtTextureAsset>& texture);
+	void initialize(OtScene* s, OtCamera c);
 
 	// camera information
 	OtCamera camera;
@@ -69,8 +57,8 @@ public:
 	// scene to render
 	OtScene* scene;
 
-	// current rendering pass
-	OtPass* pass;
+	// rendering pass
+	OtRenderPass* pass;
 
 	// image base lighting
 	OtImageBasedLighting ibl;
@@ -112,61 +100,43 @@ public:
 	bool renderDirectionalLight;
 	bool castShadow;
 
-	// uniforms
-	OtUniformVec4 clipUniforms{"u_clip", 1};
-	OtUniformVec4 lightingUniforms{"u_lighting", 4};
-	OtUniformVec4 shadowUniforms{"u_shadow", 2};
-	OtUniformVec4 materialUniforms{"u_material", 5};
-	OtUniformVec4 albedoUniforms{"u_albedo", 2};
-	OtUniformVec4 terrainUniforms{"u_terrain", 9};
-	OtUniformVec4 grassUniforms{"u_grass", 6};
-	OtUniformVec4 waterUniforms{"u_water", 4};
-	OtUniformVec4 skyUniforms{"u_sky", 3};
+	// properties
+	OtSampler iblBrdfLutSampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
+	OtSampler iblIrradianceMapSampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
+	OtSampler iblEnvironmentMapSampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
 
-	OtUniformMat4 viewUniform{"u_viewUniform", 1};
-	OtUniformMat4 invViewProjUniform{"u_invViewProjUniform", 1};
-	OtUniformMat4 shadowViewProjUniform{"u_shadowViewProjTransform", 4};
+	OtSampler shadowMap0Sampler{OtSampler::Filter::nearest, OtSampler::Addressing::clamp};
+	OtSampler shadowMap1Sampler{OtSampler::Filter::nearest, OtSampler::Addressing::clamp};
+	OtSampler shadowMap2Sampler{OtSampler::Filter::nearest, OtSampler::Addressing::clamp};
+	OtSampler shadowMap3Sampler{OtSampler::Filter::nearest, OtSampler::Addressing::clamp};
 
-	OtUniformVec4 gridUniforms{"u_grid", 1};
-	OtUniformVec4 highlightOutlineUniforms{"u_outline", 1};
-	OtUniformVec4 pickingUniforms{"u_picking", 1};
+	OtSampler albedoSampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
+	OtSampler normalSampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
+	OtSampler metallicRoughnessSampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
+	OtSampler emissiveSampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
+	OtSampler aoSampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
 
-	// samplers
-	OtSampler iblBrdfLutSampler{"s_iblBrdfLut", OtSampler::linearSampling | OtSampler::repeatSampling};
-	OtSampler iblIrradianceMapSampler{"s_iblIrradianceMap", OtSampler::linearSampling | OtSampler::repeatSampling};
-	OtSampler iblEnvironmentMapSampler{"s_iblEnvironmentMap", OtSampler::linearSampling | OtSampler::repeatSampling};
+	OtSampler lightingAlbedoSampler{OtSampler::Filter::nearest, OtSampler::Addressing::clamp};
+	OtSampler lightingNormalSampler{OtSampler::Filter::nearest, OtSampler::Addressing::clamp};
+	OtSampler lightingPbrSampler{OtSampler::Filter::nearest, OtSampler::Addressing::clamp};
+	OtSampler lightingEmissiveSampler{OtSampler::Filter::nearest, OtSampler::Addressing::clamp};
+	OtSampler lightingDepthSampler{OtSampler::Filter::nearest, OtSampler::Addressing::clamp};
 
-	OtSampler albedoSampler{"s_albedoTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
-	OtSampler normalSampler{"s_normalTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
-	OtSampler metallicRoughnessSampler{"s_metallicRoughnessTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
-	OtSampler emissiveSampler{"s_emissiveTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
-	OtSampler aoSampler{"s_aoTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
+	OtSampler cubemapSampler{OtSampler::Filter::linear, OtSampler::Addressing::clamp};
 
-	OtSampler shadowMap0Sampler{"s_shadowMap0", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtSampler shadowMap1Sampler{"s_shadowMap1", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtSampler shadowMap2Sampler{"s_shadowMap2", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtSampler shadowMap3Sampler{"s_shadowMap3", OtSampler::pointSampling | OtSampler::clampSampling};
+	OtSampler waterNormalmapSampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
+	OtSampler reflectionSampler{OtSampler::Filter::linear, OtSampler::Addressing::clamp};
+	OtSampler refractionSampler{OtSampler::Filter::linear, OtSampler::Addressing::clamp};
+	OtSampler refractionDepthSampler{OtSampler::Filter::linear, OtSampler::Addressing::clamp};
 
-	OtSampler region1Sampler{"s_region1Texture", OtSampler::linearSampling | OtSampler::repeatSampling};
-	OtSampler region2Sampler{"s_region2Texture", OtSampler::linearSampling | OtSampler::repeatSampling};
-	OtSampler region3Sampler{"s_region3Texture", OtSampler::linearSampling | OtSampler::repeatSampling};
-	OtSampler region4Sampler{"s_region4Texture", OtSampler::linearSampling | OtSampler::repeatSampling};
-	OtSampler normalmapSampler{"s_normalMapTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
+	OtSampler normalmapSampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
+	OtSampler region1Sampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
+	OtSampler region2Sampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
+	OtSampler region3Sampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
+	OtSampler region4Sampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
 
-	OtSampler lightingAlbedoSampler{"s_lightingAlbedoTexture", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtSampler lightingNormalSampler{"s_lightingNormalTexture", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtSampler lightingPbrSampler{"s_lightingPbrTexture", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtSampler lightingEmissiveSampler{"s_lightingEmissiveTexture", OtSampler::pointSampling | OtSampler::clampSampling};
-	OtSampler lightingDepthSampler{"s_lightingDepthTexture", OtSampler::pointSampling | OtSampler::clampSampling};
-
-	OtSampler skySampler{"s_skyTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
-
-	OtSampler waterNormalmapSampler{"s_waterNormalMapTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
-	OtSampler reflectionSampler{"s_reflectionTexture", OtSampler::linearSampling | OtSampler::clampSampling};
-	OtSampler refractionSampler{"s_refractionTexture", OtSampler::linearSampling | OtSampler::clampSampling};
-	OtSampler refractionDepthSampler{"s_refractionDepthTexture", OtSampler::linearSampling | OtSampler::clampSampling};
-
-	OtSampler selectedSampler{"s_selectedTexture", OtSampler::pointSampling | OtSampler::clampSampling};
-
-	OtInstanceDataBuffer idb;
+	// support functions
+	void setLightingUniforms(size_t uniformSlot, size_t samplerSlot);
+	void setShadowUniforms(size_t uniformSlot, size_t samplerSlot);
+	void bindFragmentSampler(size_t slot, OtSampler& sampler, OtAsset<OtTextureAsset>& texture);
 };

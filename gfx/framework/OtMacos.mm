@@ -21,6 +21,7 @@
 void OtFramework::fixMenus() {
 	// fix menu labels
 	NSString* appName = [NSString stringWithCString:"ObjectTalk" encoding:[NSString defaultCStringEncoding]];
+
 	NSMenu* appMenu = [[[NSApp mainMenu] itemAtIndex: 0] submenu];
 	[appMenu setTitle: appName];
 	[[appMenu itemAtIndex: 0] setTitle: [@"About " stringByAppendingString: appName]];

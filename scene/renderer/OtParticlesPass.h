@@ -13,8 +13,10 @@
 //
 
 #include "OtFrameBuffer.h"
-#include "OtShaderProgram.h"
+#include "OtIndexBuffer.h"
+#include "OtRenderPipeline.h"
 #include "OtSampler.h"
+#include "OtVertexBuffer.h"
 
 #include "OtSceneRendererContext.h"
 
@@ -34,6 +36,14 @@ public:
 private:
 	// properties
 	OtFrameBuffer& framebuffer;
-	OtShaderProgram program{"OtParticlesVS", "OtParticlesFS"};
-	OtSampler particlesSampler{"s_particlesTexture", OtSampler::linearSampling | OtSampler::repeatSampling};
+	OtRenderPipeline pipeline;
+	OtSampler particlesSampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
+
+	OtVertexBuffer vertexBuffer;
+	OtVertexBuffer particleBuffer;
+	OtIndexBuffer indexBuffer;
+
+	// support functions
+	void initializeResources();
+	bool resourcesInitialized = false;
 };

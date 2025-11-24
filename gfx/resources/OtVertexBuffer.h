@@ -12,7 +12,11 @@
 //	Include files
 //
 
-#include "OtBgfxHandle.h"
+#include <memory>
+
+#include "SDL3/SDL_gpu.h"
+
+#include "OtVertex.h"
 
 
 //
@@ -21,20 +25,36 @@
 
 class OtVertexBuffer {
 public:
-	// clear the resources
-	inline void clear() { vertexBuffer.clear(); }
-
-	// set vertices
-	void set(void* data, size_t count, const bgfx::VertexLayout& layout);
+	// clear the object
+	void clear();
 
 	// see if buffer is valid
-	inline bool isValid() { return vertexBuffer.isValid(); }
+	inline bool isValid() { return vertexBuffer != nullptr; }
 
-	// submit to GPU
-	void submit(uint8_t stream=0);
+	// set vertices
+	void set(void* data, size_t count, OtVertexDescription* description, bool dynamic=false);
+
+	// get vertex description and count
+	inline OtVertexDescription* getDescription() { return vertexDescription; }
+	inline size_t getCount() { return vertexCount; }
 
 private:
-	// vertex layout and the actual buffer
-	bgfx::VertexLayout layout;
-	OtBgfxHandle<bgfx::VertexBufferHandle> vertexBuffer;
+	// the GPU resources
+	std::shared_ptr<SDL_GPUBuffer> vertexBuffer;
+	std::shared_ptr<SDL_GPUTransferBuffer> transferBuffer;
+
+	// memory manage SDL resource
+	void assignVertexBuffer(SDL_GPUBuffer* newBuffer);
+	void assignTransferBuffer(SDL_GPUTransferBuffer* newBuffer);
+
+	// vertex description and count
+	OtVertexDescription* vertexDescription = nullptr;
+	size_t vertexCount = 0;
+
+	// current dynamic buffer size
+	size_t currentBufferSize = 0;
+
+	// get accesss to the raw buffer handle
+	friend class OtRenderPass;
+	inline SDL_GPUBuffer* getBuffer() { return vertexBuffer.get(); }
 };

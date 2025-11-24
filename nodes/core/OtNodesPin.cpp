@@ -23,7 +23,7 @@
 //	OtNodesPinClass::serialize
 //
 
-nlohmann::json OtNodesPinClass::serialize(std::string* /* basedir */) {
+nlohmann::json OtNodesPinClass::serialize([[maybe_unused]] std::string* basedir) {
 	auto data = nlohmann::json::object();
 	data["type"] = getTypeName();
 	data["id"] = id;
@@ -41,7 +41,7 @@ nlohmann::json OtNodesPinClass::serialize(std::string* /* basedir */) {
 //	OtNodesPinClass::deserialize
 //
 
-void OtNodesPinClass::deserialize(nlohmann::json data, bool restoreIDs, std::string* /* basedir */) {
+void OtNodesPinClass::deserialize(nlohmann::json data, bool restoreIDs, [[maybe_unused]] std::string* basedir) {
 	// restore ID (if required)
 	if (restoreIDs) {
 		id = data["id"];
@@ -261,11 +261,11 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec4& value) {
 	};
 }
 
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtFont& /* value */) { return nullptr; }
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtImage& /* value */) { return nullptr; }
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtTexture& /* value */) { return nullptr; }
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtShape& /* value */) { return nullptr; }
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtGeometry& /* value */) { return nullptr; }
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtManifold& /* value */) { return nullptr; }
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtMap& /* value */) { return nullptr; }
-OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtInstances& /* value */) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig([[maybe_unused]]OtFont& value) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig([[maybe_unused]]OtImage& value) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig([[maybe_unused]]OtTexture& value) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig([[maybe_unused]]OtShape& value) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig([[maybe_unused]]OtGeometry& value) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig([[maybe_unused]]OtManifold& value) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig([[maybe_unused]]OtMap& value) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig([[maybe_unused]]OtInstances& value) { return nullptr; }

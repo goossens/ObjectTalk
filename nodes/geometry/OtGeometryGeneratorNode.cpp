@@ -109,7 +109,7 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::geometry;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
 	// our primitive and geometry
 	std::shared_ptr<OtPrimitiveBase> primitive;
 	OtGeometry geometry;

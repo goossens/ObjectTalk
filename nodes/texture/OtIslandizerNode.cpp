@@ -47,16 +47,16 @@ public:
 	}
 
 	// (de)serialize node
-	inline void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		(*data)["distance"] = distance;
 	}
 
-	inline void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		distance = data->value("distance", OtIslandizer::DistanceFunction::squareBump);
 	}
 
 	// run filter
-	inline void onFilter(OtTexture& input, OtFrameBuffer& output) override {
+	inline void onFilter(OtTexture& input, OtTexture& output) override {
 		islandizer.setDistanceFunction(distance);
 		islandizer.render(input, output);
 	}
@@ -65,6 +65,7 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::texture;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
+private:
 	// properties
 	OtIslandizer islandizer;
 	OtIslandizer::DistanceFunction distance = OtIslandizer::DistanceFunction::squareBump;

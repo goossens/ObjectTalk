@@ -18,7 +18,7 @@
 //	OtSceneRenderer::render
 //
 
-ImTextureID OtSceneRenderer::render(OtScene* scene, OtCamera& camera) {
+ImTextureID OtSceneRenderer::render(OtCamera& camera, OtScene* scene) {
 	// reset rendering context
 	OtMeasureStopWatch stopwatch;
 	ctx.initialize(scene, camera);
@@ -31,7 +31,7 @@ ImTextureID OtSceneRenderer::render(OtScene* scene, OtCamera& camera) {
 
 	shadowPassTime = stopwatch.lap();
 
-	// render background
+	// render background items
 	compositeBuffer.update(camera.width, camera.height);
 	backgroundPass.render(ctx);
 	backgroundPassTime = stopwatch.lap();
@@ -72,23 +72,24 @@ ImTextureID OtSceneRenderer::render(OtScene* scene, OtCamera& camera) {
 
 	transparentPassTime = stopwatch.lap();
 
+	gridPass.render(ctx);
+	gridPassTime = stopwatch.lap();
+
 	// post process frame
 	auto output = postProcessingPass.render(ctx);
 	postProcessingTime = stopwatch.lap();
 
 	// handle editor passes
-	gridPass.render(ctx, output);
-
 	if (scene->isValidEntity(selectedEntity)) {
 		highlightPass.render(ctx, output, selectedEntity);
 	}
 
 	if (pickingCallback) {
-		pickingPass.render(ctx, pickingNDC, pickingCallback);
+		pickingCallback(pickingPass.render(ctx, pickingUV));
 		pickingCallback = nullptr;
 	}
 
 	editorPassTime = stopwatch.lap();
 	renderTime = stopwatch.elapsed();
-	return output->getColorTextureID();
+	return output->getTextureID();
 }

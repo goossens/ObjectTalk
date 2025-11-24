@@ -9,9 +9,13 @@
 //	Include files
 //
 
+#include <cstring>
+
+#include "OtLog.h"
+
 #include "OtImage.h"
-#include "OtFrameworkAtExit.h"
 #include "OtTexture.h"
+#include "OtGpu.h"
 
 
 //
@@ -19,10 +23,11 @@
 //
 
 void OtTexture::clear() {
-	texture.clear();
+	texture = nullptr;
 	width = 1;
 	height = 1;
-	format = noTexture;
+	format = Format::none;
+	usage = Usage::none;
 	incrementVersion();
 }
 
@@ -31,82 +36,36 @@ void OtTexture::clear() {
 //	OtTexture::create
 //
 
-void OtTexture::create(int w, int h, int f, uint64_t flags) {
-	width = w;
-	height = h;
-	format = f;
-	incrementVersion();
+bool OtTexture::update(int w, int h, Format f, Usage u) {
+	if (!texture || width != w || h != height || f != format || u != usage) {
+		// remember settings
+		width = w;
+		height = h;
+		format = f;
+		usage = u;
 
-	texture = bgfx::createTexture2D(
-		static_cast<uint16_t>(width),
-		static_cast<uint16_t>(height),
-		false,
-		1,
-		bgfx::TextureFormat::Enum(format),
-		flags);
-}
+		// create new texture
+		SDL_GPUTextureCreateInfo info{};
+		info.type = SDL_GPU_TEXTURETYPE_2D;
+		info.format = SDL_GPUTextureFormat(format);
+		info.usage = SDL_GPUTextureUsageFlags(usage);
+		info.width = static_cast<Uint32>(width);
+		info.height = static_cast<Uint32>(height);
+		info.layer_count_or_depth = 1;
+		info.num_levels = 1;
+		info.sample_count = SDL_GPU_SAMPLECOUNT_1;
+		auto sdlTexture = SDL_CreateGPUTexture(OtGpu::instance().device, &info);
 
-
-//
-//	createRegularTexture
-//
-
-static bgfx::TextureHandle createRegularTexture(bimg::ImageContainer* image) {
-	return bgfx::createTexture2D(
-		static_cast<uint16_t>(image->m_width),
-		static_cast<uint16_t>(image->m_height),
-		false,
-		image->m_numLayers,
-		bgfx::TextureFormat::Enum(image->m_format),
-		BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
-		bgfx::copy(image->m_data, image->m_size));
-}
-
-
-//
-//	createMipmapTexture
-//
-
-static bgfx::TextureHandle createMipmapTexture(bimg::ImageContainer* image) {
-	// create a new empty texture
-	bgfx::TextureHandle texture = bgfx::createTexture2D(
-		static_cast<uint16_t>(image->m_width),
-		static_cast<uint16_t>(image->m_height),
-		true,
-		image->m_numLayers,
-		bgfx::TextureFormat::Enum(image->m_format));
-
-	const bimg::ImageBlockInfo& blockInfo = getBlockInfo(image->m_format);
-	const uint32_t blockWidth  = blockInfo.blockWidth;
-	const uint32_t blockHeight = blockInfo.blockHeight;
-
-	uint32_t w = image->m_width;
-	uint32_t h = image->m_height;
-
-	// process all mip levels
-	for (auto lod = 0; lod < image->m_numMips; lod++) {
-		w = std::max(blockWidth,  w);
-		h = std::max(blockHeight, h);
-
-		bimg::ImageMip mip;
-
-		if (bimg::imageGetRawData(*image, 0, static_cast<uint8_t>(lod), image->m_data, image->m_size, mip)) {
-			bgfx::updateTexture2D(
-				texture,
-				0,
-				static_cast<uint8_t>(lod),
-				0,
-				0,
-				static_cast<uint16_t>(w),
-				static_cast<uint16_t>(h),
-				bgfx::copy(mip.m_data, mip.m_size));
+		if (!sdlTexture) {
+			OtLogFatal("Error in SDL_CreateGPUTexture: {}", SDL_GetError());
 		}
 
-		w  >>= 1;
-		h >>= 1;
-	}
+		assign(sdlTexture);
+		return true;
 
-	return texture;
+	} else {
+		return false;
+	}
 }
 
 
@@ -115,22 +74,39 @@ static bgfx::TextureHandle createMipmapTexture(bimg::ImageContainer* image) {
 //
 
 void OtTexture::load(OtImage& image) {
-	// get the image data
-	bimg::ImageContainer* container = image.getContainer();
+	// update the texture
+	update(image.getWidth(), image.getHeight(), convertFromImageFormat(image.getFormat()), Usage::readAll);
 
-	// update properties
-	width = container->m_width;
-	height = container->m_height;
-	format = container->m_format;
-	incrementVersion();
+	// create a transfer buffer
+	SDL_GPUTransferBufferCreateInfo bufferInfo{};
+	bufferInfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD;
+	bufferInfo.size = static_cast<Uint32>(width * height * getBpp());
+	auto& gpu = OtGpu::instance();
+	SDL_GPUTransferBuffer* transferBuffer = SDL_CreateGPUTransferBuffer(gpu.device, &bufferInfo);
 
-	// create texture
-	if (container->m_numMips > 1) {
-		texture = createMipmapTexture(container);
-
-	} else {
-		texture = createRegularTexture(container);
+	if (!transferBuffer) {
+		OtLogFatal("Error in SDL_CreateGPUTransferBuffer: {}", SDL_GetError());
 	}
+
+	// put image in transfer buffer
+	void* data = SDL_MapGPUTransferBuffer(gpu.device, transferBuffer, false);
+	std::memcpy(data, image.getPixels(), bufferInfo.size);
+	SDL_UnmapGPUTransferBuffer(gpu.device, transferBuffer);
+
+	// upload image to GPU
+	SDL_GPUTextureTransferInfo transferInfo{};
+	transferInfo.transfer_buffer = transferBuffer;
+
+	SDL_GPUTextureRegion region{};
+	region.texture = texture.get();
+	region.w = static_cast<Uint32>(width);
+	region.h = static_cast<Uint32>(height);
+	region.d = 1;
+
+	SDL_GPUCopyPass* copyPass = SDL_BeginGPUCopyPass(gpu.copyCommandBuffer);
+	SDL_UploadToGPUTexture(copyPass, &transferInfo, &region, false);
+	SDL_EndGPUCopyPass(copyPass);
+	SDL_ReleaseGPUTransferBuffer(gpu.device, transferBuffer);
 }
 
 
@@ -147,26 +123,6 @@ void OtTexture::load(const std::string& path, bool async) {
 	} else {
 		// get the image
 		OtImage image(path);
-		load(image);
-	}
-}
-
-
-//
-//	OtTexture::load
-//
-
-void OtTexture::load(int w, int h, int f, void* pixels, bool async) {
-	if (async) {
-		// get image and schedule an asynchronous load to the GPU
-		asyncImage = std::make_shared<OtImage>();
-		asyncImage->load(w, h, f, pixels);
-		loadAsync();
-
-	} else {
-		// get the image
-		OtImage image;
-		image.load(w, h, f, pixels);
 		load(image);
 	}
 }
@@ -193,69 +149,79 @@ void OtTexture::load(void* data, size_t size, bool async) {
 
 
 //
-//	OtTexture::update
+//	OtTexture::load
 //
 
-void OtTexture::update(int x, int y, int w, int h, void* pixels) {
-	// determine size of update
-	auto size = bimg::imageGetSize(
-		nullptr,
-		static_cast<uint16_t>(w),
-		static_cast<uint16_t>(h),
-		1,
-		false,
-		false,
-		1,
-		bimg::TextureFormat::Enum(format));
+void OtTexture::load(int w, int h, Format f, void* pixels, bool async) {
+	OtImage::Format fmt = OtImage::Format::none;
 
-	// update the texture
-	bgfx::updateTexture2D(
-		texture.getHandle(),
-		0,
-		0,
-		static_cast<uint16_t>(x),
-		static_cast<uint16_t>(y),
-		static_cast<uint16_t>(w),
-		static_cast<uint16_t>(h),
-		bgfx::copy(pixels, size));
+	if (f == Format::r8) {
+		fmt = OtImage::Format::r8;
 
-	incrementVersion();
+	} else if (f == Format::rgba8) {
+		fmt = OtImage::Format::rgba8;
+
+	} else if (f == Format::rgba32) {
+		fmt = OtImage::Format::rgba32;
+
+	} else {
+		OtLogFatal("Unsupported pixel format");
+	}
+
+	if (async) {
+		// get image and schedule an asynchronous load to the GPU
+		asyncImage = std::make_shared<OtImage>();
+		asyncImage->load(w, h, fmt, pixels);
+		loadAsync();
+
+	} else {
+		// get the image
+		OtImage image;
+		image.load(w, h, fmt, pixels);
+		load(image);
+	}
 }
 
 
 //
-//	OtTexture::getHandle
+//	OtTexture::update
 //
 
-bgfx::TextureHandle OtTexture::getHandle() {
-	// ensure we have a valid texture
-	if (isValid()) {
-		return texture.getHandle();
+void OtTexture::update(int x, int y, int w, int h, void* pixels) {
+	// create a transfer buffer
+	SDL_GPUTransferBufferCreateInfo bufferInfo{};
+	bufferInfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD;
+	bufferInfo.size = static_cast<Uint32>(w * h * getBpp());
+	auto& gpu = OtGpu::instance();
+	SDL_GPUTransferBuffer* transferBuffer = SDL_CreateGPUTransferBuffer(gpu.device, &bufferInfo);
 
-	} else {
-		static bgfx::TextureHandle dummy = BGFX_INVALID_HANDLE;
-
-		// create dummy texture (if required)
-		if (!bgfx::isValid(dummy)) {
-			OtImage image;
-			bimg::ImageContainer* container = image.getContainer();
-			const bgfx::Memory* mem = bgfx::copy(container->m_data, container->m_size);
-
-			dummy = bgfx::createTexture2D(
-				1, 1, false, 1,
-				bgfx::TextureFormat::Enum(bimg::TextureFormat::R8),
-				BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
-				mem);
-
-			// dummy texture will be destroyed when program exits
-			OtFrameworkAtExit::add([]() {
-				bgfx::destroy(dummy);
-			});
-		}
-
-		// just return a dummy image to keep everybody happy
-		return dummy;
+	if (!transferBuffer) {
+		OtLogFatal("Error in SDL_CreateGPUTransferBuffer: {}", SDL_GetError());
 	}
+
+	// put image in transfer buffer
+	void* data = SDL_MapGPUTransferBuffer(gpu.device, transferBuffer, false);
+	std::memcpy(data, pixels, bufferInfo.size);
+	SDL_UnmapGPUTransferBuffer(gpu.device, transferBuffer);
+
+	// upload image to GPU
+	SDL_GPUTextureTransferInfo transferInfo{};
+	transferInfo.transfer_buffer = transferBuffer;
+	transferInfo.pixels_per_row = static_cast<Uint32>(w);
+	transferInfo.rows_per_layer = static_cast<Uint32>(h);
+
+	SDL_GPUTextureRegion region{};
+	region.texture = texture.get();
+	region.x = static_cast<Uint32>(x);
+	region.y = static_cast<Uint32>(y);
+	region.w = static_cast<Uint32>(w);
+	region.h = static_cast<Uint32>(h);
+	region.d = 1;
+
+	SDL_GPUCopyPass* copyPass = SDL_BeginGPUCopyPass(gpu.copyCommandBuffer);
+	SDL_UploadToGPUTexture(copyPass, &transferInfo, &region, false);
+	SDL_EndGPUCopyPass(copyPass);
+	SDL_ReleaseGPUTransferBuffer(gpu.device, transferBuffer);
 }
 
 
@@ -288,4 +254,22 @@ void OtTexture::loadAsync() {
 
 	status = uv_async_send(asyncHandle);
 	UV_CHECK_ERROR("uv_async_send", status);
+}
+
+
+//
+//	OtTexture::assign
+//
+
+void OtTexture::assign(SDL_GPUTexture* newTexture) {
+		texture = std::shared_ptr<SDL_GPUTexture>(
+			newTexture,
+			[](SDL_GPUTexture* oldTexture) {
+				auto& gpu = OtGpu::instance();
+				SDL_ReleaseGPUTexture(gpu.device, oldTexture);
+				gpu.textures--;
+			});
+
+		OtGpu::instance().textures++;
+		incrementVersion();
 }

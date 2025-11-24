@@ -13,7 +13,7 @@
 //
 
 #include "OtFilter.h"
-#include "OtShaderProgram.h"
+#include "OtSeamlessTileComp.h"
 
 
 //
@@ -21,10 +21,12 @@
 //
 
 class OtSeamlessTile : public OtFilter {
-private:
-	// execute filter
-	void execute(OtPass& pass) override;
-
-	// shader resources
-	OtShaderProgram program{"OtFilterVS", "OtSeamlessTileFS"};
+public:
+	// configure the compute pass
+	void configurePass([[maybe_unused]] OtComputePass& pass) override {
+		// initialize pipeline (if required)
+		if (!pipeline.isValid()) {
+			pipeline.setShader(OtSeamlessTileComp, sizeof(OtSeamlessTileComp));
+		}
+	}
 };

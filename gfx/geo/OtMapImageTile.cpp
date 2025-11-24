@@ -6,7 +6,7 @@
 
 
 //
-//  Include files
+//	Include files
 //
 
 #include <string>
@@ -17,7 +17,7 @@
 
 
 //
-//  OtMapImageTile::render
+//	OtMapImageTile::render
 //
 
 void OtMapImageTile::render(ImDrawList* drawlist, OtProjector& projector) {

@@ -9,7 +9,7 @@
 
 
 //
-//  Include files
+//	Include files
 //
 
 #include <memory>
@@ -25,7 +25,7 @@
 
 
 //
-//  OtSlippyMap class
+//	OtSlippyMap class
 //
 
 class OtSlippyMap {

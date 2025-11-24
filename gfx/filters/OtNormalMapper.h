@@ -12,9 +12,10 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "OtFilter.h"
-#include "OtShaderProgram.h"
-#include "OtUniformVec4.h"
+#include "OtNormalMapperComp.h"
 
 
 //
@@ -23,19 +24,35 @@
 
 class OtNormalMapper : public OtFilter {
 public:
-	// determine if resulting normalmap includes height
-	inline void includeHeight(bool flag) { includeHeightFlag = flag; }
-
 	// set strength of normals
-	inline void setStrength(float strength) { normalStrength = strength; }
+	inline void setStrength(float value) { normalStrength = value; }
+
+	// determine if resulting normalmap includes height
+	inline void includeHeight(bool value) { includeHeightFlag = value; }
+
+	// configure the compute pass
+	void configurePass(OtComputePass& pass) override {
+		// initialize pipeline (if required)
+		if (!pipeline.isValid()) {
+			pipeline.setShader(OtNormalMapperComp, sizeof(OtNormalMapperComp));
+		}
+
+		// set uniforms
+		struct Uniforms {
+			glm::vec2 texelSize;
+			float normalStrength;
+			int32_t includeHeightFlag;
+		} uniforms {
+			sourceTexelSize,
+			normalStrength,
+			static_cast<int32_t>(includeHeightFlag)
+		};
+
+		pass.addUniforms(&uniforms, sizeof(uniforms));
+	}
 
 private:
-	// execute filter
-	void execute(OtPass& pass) override;
-
-	// shader resources
-	OtShaderProgram program{"OtFilterVS", "OtNormalMapperFS"};
-	OtUniformVec4 uniform = OtUniformVec4{"u_normalMapper", 1};
-	bool includeHeightFlag = false;
+	// properties
 	float normalStrength = 10.0f;
+	bool includeHeightFlag = false;
 };

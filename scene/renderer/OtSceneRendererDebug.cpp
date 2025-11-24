@@ -9,19 +9,23 @@
 //	Include files
 //
 
+#include <cstdint>
 #include <string>
 
 #include "fmt/format.h"
+#include "imgui.h"
 
 #include "OtAssetManager.h"
 #include "OtPath.h"
-#include "OtPass.h"
-#include "OtTransientIndexBuffer.h"
-#include "OtTransientVertexBuffer.h"
+#include "OtRenderPass.h"
+#include "OtSampler.h"
 #include "OtVertex.h"
 #include "OtUi.h"
 
 #include "OtSceneRendererDebug.h"
+
+#include "OtCubeMapCrossVert.h"
+#include "OtCubeMapCrossFrag.h"
 
 
 //
@@ -54,7 +58,7 @@ void OtSceneRendererDebug::renderIbl(OtSceneRenderer& renderer) {
 	if (ImGui::CollapsingHeader("Image Based Lighting (IBL)")) {
 		auto& ibl = renderer.ctx.ibl;
 
-		if (ibl.iblEnvironmentMap.isValid()) {
+		if (ibl.iblBrdfLut.isValid()) {
 			if (ibl.iblSkyMap->isValid()) { renderCubeMap("Sky Map", *ibl.iblSkyMap, iblSkyMapDebug); }
 			if (ibl.iblIrradianceMap.isValid()) { renderCubeMap("Irradiance Map", ibl.iblIrradianceMap, iblIrradianceDebug); }
 			if (ibl.iblEnvironmentMap.isValid()) { renderCubeMap("Environment Map", ibl.iblEnvironmentMap, iblEnvironmentDebug); }
@@ -74,7 +78,7 @@ void OtSceneRendererDebug::renderIbl(OtSceneRenderer& renderer) {
 #define RENDER_GBUFFER(title, part)											\
 	renderTexture(															\
 		title,																\
-		renderer.deferredRenderingBuffer.get ## part ## TextureIndex(),		\
+		renderer.deferredRenderingBuffer.get ## part ## TextureID(),		\
 		renderer.deferredRenderingBuffer.getWidth(),						\
 		renderer.deferredRenderingBuffer.getHeight())
 
@@ -106,7 +110,7 @@ void OtSceneRendererDebug::renderShadowMaps(OtSceneRenderer& renderer) {
 
 			for (size_t i = 0; i < OtCascadedShadowMap::maxCascades; i++) {
 				auto title = fmt::format("Cascade {}", i + 1);
-				renderTexture(title.c_str(), renderer.ctx.csm.getDepthTextureIndex(i), size, size);
+				renderTexture(title.c_str(), renderer.ctx.csm.getDepthTexture(i).getTextureID(), size, size);
 			}
 
 		} else {
@@ -151,8 +155,7 @@ void OtSceneRendererDebug::renderOcclusion(OtSceneRenderer& renderer) {
 		auto& postProcessor = renderer.postProcessingPass;
 
 		if (postProcessor.occlusionBuffer.isValid()) {
-			auto texture = postProcessor.occlusionBuffer.getColorTexture();
-			renderTexture("Occlusion Buffer", texture);
+			renderTexture("Occlusion Buffer", postProcessor.occlusionBuffer);
 
 		} else {
 			ImGui::SeparatorText("No Data");
@@ -166,15 +169,16 @@ void OtSceneRendererDebug::renderOcclusion(OtSceneRenderer& renderer) {
 //
 
 void OtSceneRendererDebug::renderTimings(OtSceneRenderer& renderer) {
-	if (ImGui::CollapsingHeader("Timings (ms)")) {
+	if (ImGui::CollapsingHeader("CPU Timings (ms)")) {
 		OtUi::readonlyFloat("Context setup", renderer.ctxTime);
 		OtUi::readonlyFloat("Shadow pass", renderer.shadowPassTime);
 		OtUi::readonlyFloat("Background pass", renderer.backgroundPassTime);
 		OtUi::readonlyFloat("Opaque pass", renderer.opaquePassTime);
-		OtUi::readonlyFloat("Transparent pass", renderer.transparentPassTime);
-		OtUi::readonlyFloat("Sky pass", renderer.skyPassTime);
 		OtUi::readonlyFloat("Water pass", renderer.waterPassTime);
+		OtUi::readonlyFloat("Sky pass", renderer.skyPassTime);
 		OtUi::readonlyFloat("Particle pass", renderer.particlePassTime);
+		OtUi::readonlyFloat("Transparent pass", renderer.transparentPassTime);
+		OtUi::readonlyFloat("Grid pass", renderer.gridPassTime);
 		OtUi::readonlyFloat("Post Processing", renderer.postProcessingTime);
 		OtUi::readonlyFloat("Editor pass", renderer.editorPassTime);
 		OtUi::readonlyFloat("Total CPU time", renderer.renderTime);
@@ -227,10 +231,10 @@ void OtSceneRendererDebug::renderAssets() {
 //	OtSceneRendererDebug::renderTexture
 //
 
-void OtSceneRendererDebug::renderTexture(const char* title, ImTextureID id, int width, int height) {
+void OtSceneRendererDebug::renderTexture(const char* title, ImTextureID index, int width, int height) {
 	if (ImGui::TreeNode(title)) {
 		auto size = ImGui::GetContentRegionAvail().x;
-		ImGui::Image(id, ImVec2(size, size * height / width));
+		ImGui::Image(index, ImVec2(size, size * height / width));
 		ImGui::TreePop();
 	}
 }
@@ -252,7 +256,10 @@ void OtSceneRendererDebug::renderTexture(const char* title, OtTexture& texture) 
 
 void OtSceneRendererDebug::renderCubeMap(const char* title, OtCubeMap& cubemap, CubeMapDebug& debug) {
 	if (ImGui::TreeNode(title)) {
-		OtUi::dragInt("Mip Level", &debug.requestedMip, 0, cubemap.getMipLevels());
+
+		if (cubemap.hasMip()) {
+			OtUi::dragInt("Mip Level", &debug.requestedMip, 0, cubemap.getMipLevels() - 1);
+		}
 
 		if (cubemap.getVersion() != debug.renderedVersion || debug.requestedMip != debug.renderedMip) {
 			renderCubeMapAsCross(cubemap, debug);
@@ -270,6 +277,71 @@ void OtSceneRendererDebug::renderCubeMap(const char* title, OtCubeMap& cubemap, 
 //
 
 void OtSceneRendererDebug::renderCubeMapAsCross(OtCubeMap& cubemap, CubeMapDebug& debug) {
+	// initialize resources (if required)
+	if (!resourcesInitialized) {
+		initializeResources();
+		resourcesInitialized = true;
+	}
+
+	// set framebuffer size
+	static constexpr int width = 600;
+	static constexpr int height = width * 4 / 6;
+	debug.framebuffer.update(width, height);
+
+	// create mipmap sampler
+	OtSampler sampler;
+	sampler.setFilter(OtSampler::Filter::linear);
+	sampler.setAddressing(OtSampler::Addressing::clamp);
+	auto mipmapLevels = cubemap.getMipLevels();
+	sampler.setMinMaxLod(0.0f, static_cast<float>(mipmapLevels ? mipmapLevels - 1 : 0));
+
+	// start a rendering pass
+	OtRenderPass pass;
+	pass.setClearColor(true);
+	pass.start(debug.framebuffer);
+	pass.bindPipeline(pipeline);
+	pass.bindFragmentSampler(0, sampler, cubemap);
+
+	// set vertext uniforms
+	glm::mat4 view = glm::scale(glm::mat4(1.0f), glm::vec3(width / 2.0f, height / 1.5f, 1.0f));
+	glm::mat4 projection = glm::ortho(0.0f, float(width), float(height), 0.0f);
+
+	struct VertexUniforms {
+		glm::mat4 viewProjectionMatrix;
+	} vertexUniforms {
+		projection * view
+	};
+
+	pass.setVertexUniforms(0, &vertexUniforms, sizeof(vertexUniforms));
+
+	// set fragment uniforms
+	struct FragmentUniforms {
+		float mipLevel;
+	} fragmentUniforms {
+		static_cast<float>(debug.requestedMip)
+	};
+
+	pass.setFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
+
+	// render cubemap as cross
+	pass.render(vertexBuffer, indexBuffer);
+	pass.end();
+
+	// update metadata
+	debug.renderedVersion = cubemap.getVersion();
+	debug.renderedMip = debug.requestedMip;
+}
+
+
+//
+//	OtSceneRendererDebug::initializeResources
+//
+
+void OtSceneRendererDebug::initializeResources() {
+	pipeline.setShaders(OtCubeMapCrossVert, sizeof(OtCubeMapCrossVert), OtCubeMapCrossFrag, sizeof(OtCubeMapCrossFrag));
+	pipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba8);
+	pipeline.setVertexDescription(OtVertexPosUvw::getDescription());
+
 	static float crossVertices[] = {
 		0.0f, 0.5f, 0.0f, -1.0f,  1.0f, -1.0f,
 		0.0f, 1.0f, 0.0f, -1.0f, -1.0f, -1.0f,
@@ -291,7 +363,7 @@ void OtSceneRendererDebug::renderCubeMapAsCross(OtCubeMap& cubemap, CubeMapDebug
 		2.0f, 1.0f, 0.0f, -1.0f, -1.0f, -1.0f,
 	};
 
-	static constexpr size_t crossVertexCount = sizeof(crossVertices) / sizeof(*crossVertices) / 6;
+	vertexBuffer.set(crossVertices, sizeof(crossVertices) / sizeof(*crossVertices) / 6, OtVertexPosUvw::getDescription());
 
 	static uint32_t crossIndices[] = {
 		0, 1, 3, 3, 1, 4,
@@ -302,39 +374,6 @@ void OtSceneRendererDebug::renderCubeMapAsCross(OtCubeMap& cubemap, CubeMapDebug
 		10, 11, 12, 12, 11, 13
 	};
 
-	static constexpr size_t crossIndexCount = sizeof(crossIndices) / sizeof(*crossIndices);
-
-	// set framebuffer size
-	static constexpr int width = 600;
-	static constexpr int height = width * 4 / 6;
-	debug.framebuffer.update(width, height);
-
-	// start a rendering pass
-	OtPass pass;
-	pass.setClear(true);
-	pass.setRectangle(0, 0, width, height);
-	pass.setFrameBuffer(debug.framebuffer);
-
-	// setup projection
-	glm::mat4 view = glm::scale(glm::mat4(1.0f), glm::vec3(width / 2.0f, height / 1.5f, 1.0f));
-	glm::mat4 projection = glm::ortho(0.0f, float(width), float(height), 0.0f);
-	pass.setViewTransform(view, projection);
-
-	// submit geometry for cross
-	OtTransientVertexBuffer tvb;
-	OtTransientIndexBuffer tib;
-	tvb.submit(crossVertices, crossVertexCount, OtVertexPosUvw::getLayout());
-	tib.submit(crossIndices, crossIndexCount);
-
-	// setup sampler and uniform
-	crossSampler.submit(0, cubemap.getHandle());
-	crossUniform.setValue(0, float(debug.requestedMip), 0.0f, 0.0f, 0.0f);
-	crossUniform.submit();
-
-	// run program
-	pass.runShaderProgram(crossShader);
-
-	// update metadata
-	debug.renderedVersion = cubemap.getVersion();
-	debug.renderedMip = debug.requestedMip;
+	indexBuffer.set(crossIndices, sizeof(crossIndices) / sizeof(*crossIndices));
+	resourcesInitialized = true;
 }

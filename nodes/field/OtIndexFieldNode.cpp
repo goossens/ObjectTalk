@@ -37,7 +37,8 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::field;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::varying;
 
-protected:
+private:
+	// properties
 	int index = 0;
 };
 

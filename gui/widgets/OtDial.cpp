@@ -10,13 +10,13 @@
 //
 
 #include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 #include "imgui.h"
 
 #include "OtFunction.h"
 #include "OtLog.h"
 
-#include "OtPass.h"
-#include "OtTransientVertexBuffer.h"
+#include "OtBlitPass.h"
 #include "OtUi.h"
 #include "OtVertex.h"
 
@@ -70,76 +70,45 @@ void OtDialClass::render() {
 		if (redraw) {
 			// determine framebuffer dimensions
 			auto& backgroundTexture = background->getTexture();
-			auto w = backgroundTexture.getWidth();
-			auto h = backgroundTexture.getHeight();
-			framebuffer.update(w, h);
+			auto bw = backgroundTexture.getWidth();
+			auto bh = backgroundTexture.getHeight();
+			output.update(bw, bh, OtTexture::Format::rgba8, OtTexture::Usage::rwDefault);
 
-			// render background
-			OtPass backgroundPass;
-			auto target = framebuffer.getColorTexture();
-			backgroundPass.blit(target, backgroundTexture);
-\
 			// render needle (if required)
 			if (needle.isReady()) {
 				// determine needle rotation
 				auto ratio = (value - minValue) / (maxValue - minValue);
 				auto rotation = minRotation + ratio * (maxRotation - minRotation);
 
-				// configure rendering pass
-				OtPass needlePass;
-				needlePass.setRectangle(0, 0, w, h);
-				needlePass.setFrameBuffer(framebuffer);
-				glm::mat4 projMatrix = glm::ortho(0.0f, static_cast<float>(w), static_cast<float>(h), 0.0f);
-				needlePass.setViewTransform(glm::mat4(1.0f), projMatrix);
+				// convert coordinates to UV space
+				auto& needleTexture = background->getTexture();
+				auto ndcBx = bx / bw;
+				auto ndcBy = by / bh;
+				auto ndcNx = nx / needleTexture.getWidth();
+				auto ndcNy = ny / needleTexture.getHeight();
 
-				// render needle
-				auto& needleTexture = needle->getTexture();
-				w = needleTexture.getWidth();
-				h = needleTexture.getHeight();
+				// determine needle transformation
+				glm::mat4 transform{1.0f};
+				transform = glm::translate(transform, glm::vec3(ndcNx, ndcNy, 0.0f));
+				transform = glm::rotate(transform, glm::radians(-rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+				transform = glm::translate(transform, glm::vec3(-ndcBx, -ndcBy, 0.0f));
 
-				// submit vertices
-				static float vertices[] = {
-					// pos      // tex
-					0.0f, 1.0f, 0.0f, 1.0f,
-					1.0f, 0.0f, 1.0f, 0.0f,
-					0.0f, 0.0f, 0.0f, 0.0f,
+				// render the dial with the needle
+				needleFilter.setTransform(transform);
+				needleFilter.setNeedle(needle->getTexture());
+				needleFilter.render(background->getTexture(), output);
 
-					0.0f, 1.0f, 0.0f, 1.0f,
-					1.0f, 1.0f, 1.0f, 1.0f,
-					1.0f, 0.0f, 1.0f, 0.0f
-				};
+				// reset flag
+				redraw = false;
 
-				OtTransientVertexBuffer tvb;
-				tvb.submit(vertices, sizeof(vertices) / sizeof(*vertices), OtVertexPosUv2D::getLayout());
-
-				// bind needle to sampler
-				sampler.submit(0, needleTexture);
-
-				// determine transformation
-				glm::mat4 model{1.0f};
-				model = glm::translate(model, glm::vec3(bx, by, 0.0f));
-				model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-	 			model = glm::translate(model, glm::vec3(-nx, -ny, 0.0f));
-				model = glm::scale(model, glm::vec3(w, h, 1.0f));
-
-				// run the program
-				needlePass.setModelTransform(model);
-
-				needlePass.setState(
-					OtPass::stateWriteRgb |
-					OtPass::stateWriteA |
-					OtPass::stateBlendAlpha);
-
-				needlePass.runShaderProgram(program);
+			} else {
+				OtBlitPass::blit(background->getTexture(), output);
 			}
-
-			// reset flag
-			redraw = false;
 		}
 
-		auto size = ImVec2(framebuffer.getWidth() * scale, framebuffer.getHeight() * scale);
+		auto size = ImVec2(output.getWidth() * scale, output.getHeight() * scale);
 		OtUi::align(size, horizontalAlign, verticalAlign);
-		ImGui::Image(framebuffer.getColorTextureID(), size);
+		ImGui::Image(output.getTextureID(), size);
 	}
 }
 

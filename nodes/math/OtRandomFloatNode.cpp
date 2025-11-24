@@ -55,7 +55,8 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::math;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::varying;
 
-protected:
+private:
+	// proterties
 	size_t id = 0;
 	int seed = 1;
 	float minValue = 0.0f;

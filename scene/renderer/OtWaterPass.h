@@ -14,7 +14,10 @@
 
 #include "OtFrameBuffer.h"
 #include "OtGbuffer.h"
-#include "OtShaderProgram.h"
+#include "OtIndexBuffer.h"
+#include "OtRenderPass.h"
+#include "OtRenderPipeline.h"
+#include "OtVertexBuffer.h"
 
 #include "OtBackgroundPass.h"
 #include "OtDeferredPass.h"
@@ -47,10 +50,13 @@ private:
 	OtFrameBuffer& framebuffer;
 
 	OtGbuffer renderingBuffer;
-	OtFrameBuffer reflectionBuffer{OtTexture::rgbaFloat16Texture, OtTexture::dFloatTexture};
-	OtFrameBuffer refractionBuffer{OtTexture::rgbaFloat16Texture, OtTexture::dFloatTexture};
+	OtFrameBuffer reflectionBuffer{OtTexture::Format::rgba16, OtTexture::Format::d32};
+	OtFrameBuffer refractionBuffer{OtTexture::Format::rgba16, OtTexture::Format::d32};
 
-	OtShaderProgram waterProgram{"OtWaterVS", "OtWaterFS"};
+	OtIndexBuffer indexBuffer;
+	OtVertexBuffer vertexBuffer;
+
+	OtRenderPipeline waterPipeline;
 
 	OtBackgroundPass backgroundReflectionPass{reflectionBuffer};
 	OtDeferredPass deferredReflectionPass{renderingBuffer, reflectionBuffer};
@@ -64,4 +70,8 @@ private:
 
 	int width;
 	int height;
+
+	// support functions
+	void initializeResources();
+	bool resourcesInitialized = false;
 };

@@ -13,7 +13,6 @@
 //
 
 #include "OtCompositing.h"
-#include "OtPass.h"
 
 
 //
@@ -21,12 +20,12 @@
 //
 
 class OtCompositingAlphaOver : public OtCompositing {
-private:
-	// get render state
-	uint64_t getState() override {
-		return
-			OtPass::stateWriteRgb |
-			OtPass::stateWriteA |
-			OtPass::stateBlendAlpha;
+protected:
+	void configurePipeline(OtRenderPipeline& pipeline) override {
+		pipeline.setBlend(
+			OtRenderPipeline::BlendOperation::add,
+			OtRenderPipeline::BlendFactor::srcAlpha,
+			OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
+		);
 	}
 };

@@ -97,8 +97,10 @@ public:
 			}
 		}
 
-		// now we need to update all normals
+		// now we need to update all normals, tangents and the AABB
 		mesh.generateNormals();
+		mesh.generateTangents();
+		mesh.generateAABB();
 
 		// update geometry version number
 		geometry.incrementVersion();
@@ -108,7 +110,8 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::geometry;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
+	// properties
 	OtImage image;
 	OtGeometry geometry;
 	int width = 0;

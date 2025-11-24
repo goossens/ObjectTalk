@@ -108,7 +108,7 @@ void OtSubProcess::send(const std::string& message) {
 		(uv_stream_t*) &stdinPipe,
 		&buffer,
 		1,
-		[](uv_write_t* request, int /* status */) {
+		[](uv_write_t* request, [[maybe_unused]] int status) {
 			free(request->data);
 			free(request);
 		}));
@@ -134,7 +134,7 @@ void OtSubProcess::kill(int signal) {
 //	OtSubProcess::onAllocateMemory
 //
 
-void OtSubProcess::onAllocateMemory(uv_handle_t* /* handle */, size_t len, uv_buf_t* buf) {
+void OtSubProcess::onAllocateMemory([[maybe_unused]] uv_handle_t* handle, size_t len, uv_buf_t* buf) {
 	buf->base = new char[len];
 
 #ifdef _WIN32

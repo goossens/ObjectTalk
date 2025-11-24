@@ -125,8 +125,8 @@ public:
 	void deserialize(nlohmann::json data, bool restoreIDs=true, std::string* basedir=nullptr);
 	void deserializeFromString(const std::string& json, bool restoreIDs=true, std::string* basedir=nullptr);
 
-	virtual inline void customSerialize(nlohmann::json* /* data */, std::string* /* basedir */) {}
-	virtual inline void customDeserialize(nlohmann::json* /* data */, std::string* /* basedir */) {}
+	virtual inline void customSerialize([[maybe_unused]] nlohmann::json* data, [[maybe_unused]] std::string* basedir) {}
+	virtual inline void customDeserialize([[maybe_unused]] nlohmann::json* data, [[maybe_unused]] std::string* basedir) {}
 
 	// get pin counts
 	inline size_t getInputPinCount() { return inputPins.size(); }
@@ -161,7 +161,7 @@ public:
 	inline bool hasVaryingInput() { return varyingInput; }
 
 	// process the varying context (called for each iteration)
-	virtual void processVaryingContext(OtNodeVaryingContext& /* context */) {}
+	virtual void processVaryingContext([[maybe_unused]] OtNodeVaryingContext& context) {}
 
 	// interfaces
 	virtual inline bool onUpdate() { return false; };
@@ -169,12 +169,12 @@ public:
 	virtual inline void onExecute() {};
 
 	// handle custom section of nodes
-	virtual inline void customRendering(float /* itemWidth */) {}
+	virtual inline void customRendering([[maybe_unused]] float itemWidth) {}
 	virtual inline float getCustomRenderingWidth() { return 0.0f; }
 	virtual inline float getCustomRenderingHeight() { return 0.0f; }
 
 	// special rendering for input nodes
-	virtual inline bool customInputRendering(float /* itemWidth */) { return false; }
+	virtual inline bool customInputRendering([[maybe_unused]] float itemWidth) { return false; }
 
 	// public properties
 	uint32_t id;

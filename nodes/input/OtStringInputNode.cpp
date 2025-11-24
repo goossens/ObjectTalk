@@ -58,11 +58,11 @@ public:
 
 
 	// (de)serialize node
-	inline void customSerialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		(*data)["value"] = value;
 	}
 
-	inline void customDeserialize(nlohmann::json* data, std::string* /* basedir */) override {
+	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		value = data->value("value", "");
 	}
 
@@ -70,7 +70,8 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::input;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-protected:
+private:
+	// properties
 	std::string value = "";
 };
 

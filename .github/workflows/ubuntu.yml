@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   verify-ubuntu:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Checkout Repository
@@ -13,8 +13,8 @@ jobs:
     - name: Setup libraries and tools
       run: |
         sudo apt update
-        sudo apt install xorg-dev libegl-dev libgl1-mesa-dev x11proto-core-dev libx11-dev
-        sudo apt install ninja-build
+        sudo apt install xorg-dev libegl-dev libgl1-mesa-dev x11proto-core-dev libx11-dev libwayland-dev libxkbcommon-x11-dev
+        sudo apt install ninja-build glslang-tools
 
     - name: Configure
       run: cmake -B build -G "Ninja Multi-Config"

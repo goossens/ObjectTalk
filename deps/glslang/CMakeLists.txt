@@ -15,7 +15,7 @@ set(ENABLE_PCH OFF CACHE BOOL "" FORCE)
 set(ENABLE_OPT OFF CACHE BOOL "" FORCE)
 set(ENABLE_HLSL OFF CACHE BOOL "" FORCE)
 
-FetchContent_Populate(glslang QUIET GIT_REPOSITORY "https://github.com/KhronosGroup/glslang" GIT_TAG "15.4.0")
+FetchContent_Populate(glslang QUIET GIT_REPOSITORY "https://github.com/KhronosGroup/glslang" GIT_TAG "16.0.0")
 add_subdirectory(${glslang_SOURCE_DIR} ${glslang_BINARY_DIR} EXCLUDE_FROM_ALL)
 
 if(CMAKE_GENERATOR STREQUAL Xcode)

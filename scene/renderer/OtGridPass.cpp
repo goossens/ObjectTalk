@@ -71,8 +71,9 @@ void OtGridPass::render(OtSceneRendererContext& ctx) {
 
 void OtGridPass::initializeResources() {
 	pipeline.setShaders(OtGridVert, sizeof(OtGridVert), OtGridFrag, sizeof(OtGridFrag));
-	pipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba32d32);
+	pipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
 	pipeline.setVertexDescription(OtVertexPos::getDescription());
+	pipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
 
 	pipeline.setBlend(
 		OtRenderPipeline::BlendOperation::add,

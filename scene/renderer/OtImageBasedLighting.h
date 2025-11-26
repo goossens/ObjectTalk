@@ -43,7 +43,7 @@ public:
 
 private:
 	// samplers
-	OtSampler cubemapSampler;
+	OtSampler cubemapSampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
 
 	// compute/render pipelines
 	OtComputePipeline brdfLutPipeline{OtBrdfLutComp, sizeof(OtBrdfLutComp)};

@@ -27,11 +27,11 @@ layout(std140, set=3, binding=0) uniform UBO {
 };
 
 // From Karis, 2014
-vec3 prefilterEnvMap(vec3 R) {
+vec3 preFilterEnvMap(vec3 R) {
 	// Isotropic approximation: we lose stretchy reflections :(
 	vec3 N = R;
 	vec3 V = R;
-	vec3 prefilteredColor = vec3(0.0);
+	vec3 preFilteredColor = vec3(0.0);
 	float totalWeight = 0.0;
 
 	const int numSamples = 64;
@@ -51,22 +51,24 @@ vec3 prefilterEnvMap(vec3 R) {
 			// float pdf = D_GGX(NoH, roughness) * NoH / (4.0 * VoH);
 			// but since V = N => VoH == NoH
 			float pdf = D_GGX(NoH, roughness) / 4.0 + 0.001;
+
 			// Solid angle of current sample -- bigger for less likely samples
 			float omegaS = 1.0 / (float(numSamples) * pdf);
+
 			// Solid angle of pixel
 			float omegaP = 4.0 * PI / (6.0 * size * size);
 			float mipLevel = roughness == 0.0 ? 0.0 : max(0.5 * log2(omegaS / omegaP), 0.0);
-			prefilteredColor += textureLod(inTexture, L, mipLevel).rgb * NoL;
+			preFilteredColor += textureLod(inTexture, L, mipLevel).rgb * NoL;
 			totalWeight += NoL;
 		}
 	}
 
-	return prefilteredColor / totalWeight;
+	return preFilteredColor / totalWeight;
 }
 
 vec4 processSide(vec3 N) {
 	// Don't need to integrate for roughness == 0, since it's a perfect reflector
-	return (roughness == 0.0) ? texture(inTexture, N, 0) : vec4(prefilterEnvMap(N), 1.0);
+	return (roughness == 0.0) ? texture(inTexture, N, 0) : vec4(preFilterEnvMap(N), 1.0);
 }
 
 void main() {

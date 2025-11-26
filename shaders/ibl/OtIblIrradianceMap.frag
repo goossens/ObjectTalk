@@ -21,25 +21,24 @@ layout(location=4) out vec4 side5Color;
 layout(location=5) out vec4 side6Color;
 
 vec4 processSide(vec3 N) {
-	vec3 up = abs(N.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
+	vec3 up = vec3(0.0, 1.0, 0.0);
 	const vec3 right = normalize(cross(up, N));
 	up = cross(N, right);
 
-	const float deltaPhi = TWO_PI / 360.0;
-	const float deltaTheta = HALF_PI / 90.0;
-	vec3 color = vec3(0.0);
+	float sampleDelta = 0.1;
+	vec3 irradiance = vec3(0.0);
 	int sampleCount = 0;
 
-	for (float phi = 0.0; phi < TWO_PI; phi += deltaPhi) {
-		for (float theta = 0.0; theta < HALF_PI; theta += deltaTheta) {
-			vec3 tempVec = cos(phi) * right + sin(phi) * up;
-			vec3 sampleVector = cos(theta) * N + sin(theta) * tempVec;
-			color += texture(inTexture, sampleVector, 0).rgb * cos(theta) * sin(theta);
+	for (float phi = 0.0; phi < TWO_PI; phi += sampleDelta) {
+		for (float theta = 0.0; theta < HALF_PI; theta += sampleDelta) {
+			vec3 tangentSample = vec3(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
+			vec3 sampleVector = tangentSample.x * right + tangentSample.y * up + tangentSample.z * N;
+			irradiance += texture(inTexture, sampleVector).rgb * cos(theta) * sin(theta);
 			sampleCount++;
 		}
 	}
 
-	return vec4(PI * color / float(sampleCount), 1.0);
+	return vec4(PI * irradiance / float(sampleCount), 1.0);
 }
 
 void main() {

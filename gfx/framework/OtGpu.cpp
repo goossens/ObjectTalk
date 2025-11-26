@@ -132,6 +132,17 @@ void OtGpu::setWindowSize(int w, int h) {
 
 
 //
+//	OtGpu::startup
+//
+
+void OtGpu::startup(std::function<void()> callback) {
+	acquireCommandBuffers();
+	callback();
+	executeCommandBuffer();
+}
+
+
+//
 //	OtGpu::startFrame
 //
 
@@ -143,8 +154,8 @@ void OtGpu::startFrame() {
 	// acquire new command buffers
 	acquireCommandBuffers();
 
-	// get the swapchain texture
-	if (!SDL_WaitAndAcquireGPUSwapchainTexture(pipelineCommandBuffer, window, &swapchainTexture, nullptr, nullptr)) {
+	// get the swap chain texture
+	if (!SDL_WaitAndAcquireGPUSwapchainTexture(pipelineCommandBuffer, window, &swapChainTexture, nullptr, nullptr)) {
 		OtLogFatal("Error in SDL_WaitAndAcquireGPUSwapchainTexture: {}", SDL_GetError());
 	}
 }

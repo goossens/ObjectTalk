@@ -13,6 +13,7 @@
 //
 
 #include <atomic>
+#include <functional>
 
 #include "SDL3/SDL.h"
 
@@ -32,6 +33,9 @@ public:
 	// set a new window size
 	void setWindowSize(int w, int h);
 
+	// manage app startup
+	void startup(std::function<void()> callback);
+
 	// manage frames
 	void startFrame();
 	void endFrame();
@@ -42,7 +46,7 @@ public:
 	SDL_GPUDevice* device;
 	SDL_GPUCommandBuffer* copyCommandBuffer;
 	SDL_GPUCommandBuffer* pipelineCommandBuffer;
-	SDL_GPUTexture* swapchainTexture;
+	SDL_GPUTexture* swapChainTexture;
 	int width;
 	int height;
 
@@ -66,7 +70,7 @@ public:
 	std::atomic<int> samplers = 0;
 	std::atomic<int> cubemaps = 0;
 
-	private:
+private:
 	// support functions
 	SDL_GPUTexture* createDummyTexture(SDL_GPUCopyPass* pass, SDL_GPUTransferBuffer* buffer, SDL_Color pixel);
 	SDL_GPUTexture* createDummyCubeMap();

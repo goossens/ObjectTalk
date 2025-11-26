@@ -128,13 +128,13 @@ void OtFramework::endFrameIMGUI() {
 	ImDrawData* drawData = ImGui::GetDrawData();
 	const bool isMinimized = (drawData->DisplaySize.x <= 0.0f || drawData->DisplaySize.y <= 0.0f);
 
-	if (gpu.swapchainTexture != nullptr && !isMinimized) {
+	if (gpu.swapChainTexture != nullptr && !isMinimized) {
 		// run Dear ImGui copy pass
 		ImGui_ImplSDLGPU3_PrepareDrawData(drawData, gpu.pipelineCommandBuffer);
 
 		// setup Dear ImGui render target
 		SDL_GPUColorTargetInfo targetInfo{};
-		targetInfo.texture = gpu.swapchainTexture;
+		targetInfo.texture = gpu.swapChainTexture;
 		targetInfo.clear_color = SDL_FColor{0.0f, 0.0f, 0.0f, 1.0f};
 		targetInfo.load_op = SDL_GPU_LOADOP_CLEAR;
 		targetInfo.store_op = SDL_GPU_STOREOP_STORE;

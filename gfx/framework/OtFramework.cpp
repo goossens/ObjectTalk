@@ -74,9 +74,10 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 
 	// startup/setup app
 	auto& gpu = OtGpu::instance();
-	gpu.startFrame();
-	app->onSetup();
-	gpu.endFrame();
+
+	gpu.startup([&]() {
+		app->onSetup();
+	});
 
 	// start loop timer
 	lastTime = std::chrono::high_resolution_clock::now();

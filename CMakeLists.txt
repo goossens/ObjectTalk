@@ -68,7 +68,7 @@ if(NOT MSVC AND CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 
 if(CMAKE_GENERATOR STREQUAL "Xcode")
-	set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0")
+	set(CMAKE_OSX_DEPLOYMENT_TARGET "14.0")
 	set_target_properties(ot PROPERTIES OUTPUT_NAME "ObjectTalk")
 	set_target_properties(ot PROPERTIES MACOSX_BUNDLE ON)
 	set_target_properties(ot PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/resources/info.plist)

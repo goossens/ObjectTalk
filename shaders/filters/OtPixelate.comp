@@ -23,8 +23,6 @@ void main() {
 		return;
 	}
 
-	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
-
 	float x = coord.x % posterizeSize;
 	float y = coord.y % posterizeSize;
 

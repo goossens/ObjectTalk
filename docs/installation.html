@@ -181,9 +181,9 @@
           <div id="macos">
             <h1 class="pb-2">Build and Install on MacOS</h1>
             <p>
-              ObjectTalk is supported on Sequoia (MacOS 15) and Sonoma (MacOS
-              14). There are 6 simple requirements to get your machine ready for
-              ObjectTalk development:
+              ObjectTalk is supported on Tahoe (MacOS 26), Sequoia (MacOS 15)
+              and Sonoma (MacOS 14). There are 6 simple requirements to get your
+              machine ready for ObjectTalk development:
             </p>
             <ul>
               <li>Install Xcode from the App Store</li>
@@ -254,41 +254,65 @@
             </p>
             <ul>
               <li>
-                Install additional software using
-                <strong
-                  >sudo apt-get install build-essential cmake ninja-build git
-                  glslang-tools xorg-dev libgl1-mesa-dev x11proto-core-dev
-                  libx11-dev libwayland-dev libxkbcommon-x11-dev</strong
-                >
-              </li>
-              <li><strong>cd [to your favorite build directory]</strong></li>
-              <li>
-                If your favorite directory is on a mounted drive, you might have
-                to do a
-                <strong
-                  >git config --global --replace-all safe.directory '*'</strong
-                >
-              </li>
-              <li>
-                <strong
-                  >git clone https://github.com/goossens/ObjectTalk.git</strong
-                >
-              </li>
-              <li><strong>cd ObjectTalk</strong></li>
-              <li>
-                Create a debug version with <strong>make debug</strong> or
-                create a release version with <strong>make release</strong>
+                <p>
+                  Install additional software using
+                  <strong
+                    >sudo apt-get install build-essential git make pkg-config
+                    cmake ninja-build libasound2-dev libpulse-dev libaudio-dev
+                    libfribidi-dev libjack-dev libsndio-dev libx11-dev
+                    libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev
+                    libxi-dev libxss-dev libxtst-dev libxkbcommon-dev libdrm-dev
+                    libgbm-dev libgl1-mesa-dev libgles2-mesa-dev
+                    libegl1-mesa-dev libdbus-1-dev libibus-1.0-dev libudev-dev
+                    libpipewire-0.3-dev libwayland-dev libdecor-0-dev
+                    liburing-dev</strong
+                  >
+                </p>
               </li>
               <li>
-                You can run the test suite for the language with
-                <strong>make test</strong> or
-                <strong>make rtest</strong> depending on the build type
+                <p><strong>cd [to your favorite build directory]</strong></p>
               </li>
               <li>
-                The created binary will be
-                <strong>${HOME}/build/ObjectTalk/Debug/ot</strong> or
-                <strong>${HOME}/build/ObjectTalk/Release/ot</strong> depending
-                on the build type
+                <p>
+                  If your favorite directory is on a mounted drive, you might
+                  have to do a
+                  <strong
+                    >git config --global --replace-all safe.directory
+                    '*'</strong
+                  >
+                </p>
+              </li>
+              <li>
+                <p>
+                  <strong
+                    >git clone
+                    https://github.com/goossens/ObjectTalk.git</strong
+                  >
+                </p>
+              </li>
+              <li>
+                <p><strong>cd ObjectTalk</strong></p>
+              </li>
+              <li>
+                <p>
+                  Create a debug version with <strong>make debug</strong> or
+                  create a release version with <strong>make release</strong>
+                </p>
+              </li>
+              <li>
+                <p>
+                  You can run the test suite for the language with
+                  <strong>make test</strong> or
+                  <strong>make rtest</strong> depending on the build type
+                </p>
+              </li>
+              <li>
+                <p>
+                  The created binary will be
+                  <strong>${HOME}/build/ObjectTalk/Debug/ot</strong> or
+                  <strong>${HOME}/build/ObjectTalk/Release/ot</strong> depending
+                  on the build type
+                </p>
               </li>
             </ul>
           </div>

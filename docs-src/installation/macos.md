@@ -1,4 +1,4 @@
-ObjectTalk is supported on Sequoia (MacOS 15) and Sonoma (MacOS 14).
+ObjectTalk is supported on Tahoe (MacOS 26), Sequoia (MacOS 15) and Sonoma (MacOS 14).
 There are 6 simple requirements to get your machine ready for ObjectTalk development:
 
 * Install Xcode from the App Store

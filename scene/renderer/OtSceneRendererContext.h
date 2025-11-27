@@ -135,6 +135,9 @@ public:
 	OtSampler region3Sampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
 	OtSampler region4Sampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
 
+	OtSampler particlesSampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
+	OtSampler highlightSampler{OtSampler::Filter::nearest, OtSampler::Addressing::clamp};
+
 	// support functions
 	void setLightingUniforms(size_t uniformSlot, size_t samplerSlot);
 	void setShadowUniforms(size_t uniformSlot, size_t samplerSlot);

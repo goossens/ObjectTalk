@@ -69,12 +69,12 @@ void OtHighlightPass::renderSelectedPass(OtSceneRendererContext& ctx, OtEntity e
 //	OtHighlightPass::renderHighlightPass
 //
 
-void OtHighlightPass::renderHighlightPass([[maybe_unused]] OtSceneRendererContext& ctx, [[maybe_unused]] OtTexture* texture) {
+void OtHighlightPass::renderHighlightPass(OtSceneRendererContext& ctx, OtTexture* texture) {
 		// configure pass
 		OtRenderPass pass;
 		pass.start(*texture);
 		pass.bindPipeline(outlinePipeline);
-		pass.bindFragmentSampler(0, sampler, selectedBuffer.getColorTexture());
+		pass.bindFragmentSampler(0, ctx.highlightSampler, selectedBuffer.getColorTexture());
 
 		// set uniforms
 		struct Uniforms {

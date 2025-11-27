@@ -14,7 +14,6 @@
 
 #include "OtFrameBuffer.h"
 #include "OtRenderPipeline.h"
-#include "OtSampler.h"
 
 #include "OtSceneRenderEntitiesPass.h"
 
@@ -44,7 +43,6 @@ private:
 private:
 	// properties
 	OtFrameBuffer selectedBuffer{OtTexture::Format::r8};
-	OtSampler sampler{OtSampler::Filter::nearest, OtSampler::Addressing::clamp};
 
 	OtRenderPipeline opaqueCullingPipeline;
 	OtRenderPipeline opaqueNoCullingPipeline;

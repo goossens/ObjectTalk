@@ -16,7 +16,6 @@
 
 #include "OtInstances.h"
 #include "OtMaterial.h"
-#include "OtSampler.h"
 #include "OtTextureAsset.h"
 
 #include "OtGeometryRenderData.h"

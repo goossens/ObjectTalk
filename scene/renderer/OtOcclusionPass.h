@@ -13,7 +13,6 @@
 //
 
 #include "OtRenderPipeline.h"
-#include "OtSampler.h"
 #include "OtTexture.h"
 
 #include "OtSceneRenderEntitiesPass.h"

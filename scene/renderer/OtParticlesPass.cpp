@@ -61,7 +61,7 @@ void OtParticlesPass::render(OtSceneRendererContext& ctx) {
 		pass.setInstanceData(particleBuffer);
 
 		// bind the particle texture atlas
-		ctx.bindFragmentSampler(0, particlesSampler, settings.atlas);
+		ctx.bindFragmentSampler(0, ctx.particlesSampler, settings.atlas);
 
 		// set vertex uniforms
 		struct Uniforms {

@@ -15,7 +15,6 @@
 #include "OtFrameBuffer.h"
 #include "OtIndexBuffer.h"
 #include "OtRenderPipeline.h"
-#include "OtSampler.h"
 #include "OtVertexBuffer.h"
 
 #include "OtSceneRendererContext.h"
@@ -37,7 +36,6 @@ private:
 	// properties
 	OtFrameBuffer& framebuffer;
 	OtRenderPipeline pipeline;
-	OtSampler particlesSampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
 
 	OtVertexBuffer vertexBuffer;
 	OtVertexBuffer particleBuffer;

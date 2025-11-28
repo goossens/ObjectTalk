@@ -4,15 +4,15 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-#version 450
+#version 450 core
 #extension GL_GOOGLE_include_directive : require
 
 #define LIGHTING_UNIFORMS 1
-#define LIGHTING_SAMPLERS 4
+#define LIGHTING_SAMPLERS 2
 #include "lighting.glsl"
 
 #define SHADOW_UNIFORMS 2
-#define SHADOW_SAMPLERS 7
+#define SHADOW_SAMPLERS 5
 #include "shadow.glsl"
 
 #include "pbr.glsl"
@@ -30,22 +30,18 @@ layout(std140, set=3, binding=0) uniform UBO {
 	vec4 waterColor;
 	vec2 size;
 	float waterLevel;
-	float distance;
-	float depthFactor;
+	float farDistance;
 	float scale;
 	float time;
 	float metallic;
 	float roughness;
 	float ao;
 	float reflectivity;
-	bool refractanceFlag;
 };
 
 // texture samplers
 layout(set=2, binding=0) uniform sampler2D waterNormalMapTexture;
 layout(set=2, binding=1) uniform sampler2D reflectionTexture;
-layout(set=2, binding=2) uniform sampler2D refractionTexture;
-layout(set=2, binding=3) uniform sampler2D refractionDepthTexture;
 
 // main program
 void main() {
@@ -62,16 +58,16 @@ void main() {
 	vec3 waterNdcPos = waterClipPos.xyz / waterClipPos.w;
 
 	// clip to distance
-	if (waterNdcPos.z > distance) {
+	if (waterNdcPos.z > farDistance) {
 		discard;
 	}
 
-	// get normal
-	vec2 uv = waterWorldPos.xz * scale;
-	vec2 uv1 = (uv / 103.0) + vec2(time / 17.0, time / 29.0);
-	vec2 uv2 = (uv / 107.0) - vec2(time / -19.0, time / 31.0) + vec2(0.23);
-	vec2 uv3 = (uv / vec2(897.0, 983.0)) + vec2(time / 101.0, time / 97.0) + vec2(0.51);
-	vec2 uv4 = (uv / vec2(991.0, 877.0)) - vec2(time / 109.0, time / -113.0) + vec2(0.71);
+	// get water normal
+	vec2 uv = waterWorldPos.xz / size * scale + vec2(-0.1, 0.1) * time;
+	vec2 uv1 = uv + vec2(time / 17.0, time / 29.0);
+	vec2 uv2 = uv - vec2(time / -19.0, time / 31.0);
+	vec2 uv3 = uv + vec2(time / 101.0, time / 97.0);
+	vec2 uv4 = uv - vec2(time / 109.0, time / -113.0);
 
 	vec4 noise =
 		texture(waterNormalMapTexture, uv1) +
@@ -79,29 +75,18 @@ void main() {
 		texture(waterNormalMapTexture, uv3) +
 		texture(waterNormalMapTexture, uv4);
 
-	noise = noise * 0.5 - 1.0;
+	vec3 normal = normalize((noise.xzy * 0.5 - 1.0) * vec3(1.5, 1.0, 1.5));
 
-	float dist = length(cameraPosition - waterWorldPos);
-	vec3 normal = normalize(noise.xzy * vec3(2.0, clamp(dist * 0.001, 1.0, 100.0), 2.0));
-
-	// determine reflection and refraction colors
-	vec2 refractionUv = gl_FragCoord.xy / size;
-	vec2 reflectionUv = vec2(refractionUv.x, 1.0 - refractionUv.y);
-	vec3 reflectionColor = texture(reflectionTexture, reflectionUv).rgb;
-	vec3 refractionColor = waterColor.rgb * (refractanceFlag ? texture(refractionTexture, refractionUv).rgb : vec3(1.0));
-
-	// determine view direction and water depth
+	// determine view direction
 	vec3 viewDirection = normalize(cameraPosition - waterWorldPos);
 
-	// determine water depth
-	float refractionDepth = texture(refractionDepthTexture, refractionUv).r;
-	vec3 refractionWorldPos = uvToWorldSpace(refractionUv, refractionDepth, inverse(viewProjectionMatrix));
-	float waterDepth = length(refractionWorldPos - waterWorldPos);
+	// determine reflection
+	vec2 reflectionUv = vec2(gl_FragCoord.xy) / size;
+	reflectionUv = vec2(reflectionUv.x, 1.0 - reflectionUv.y);
+	vec3 reflectionColor = texture(reflectionTexture, reflectionUv).rgb;
 
-	// determine water color and transparency
-	float refractiveFactor = pow(dot(viewDirection, normal), reflectivity);
-	vec3 color = mix(reflectionColor, refractionColor, refractiveFactor);
-	float alpha = clamp(waterDepth * depthFactor, 0.0, 1.0);
+	// determine water color
+	vec3 color = mix(waterColor.rgb, reflectionColor, pow(1.0 - dot(viewDirection, normal), reflectivity));
 
 	// material data
 	Material material;
@@ -140,6 +125,6 @@ void main() {
 	}
 
 	// set results
-	fragColor = vec4(color, alpha);
+	fragColor = vec4(color, 1.0);
 	gl_FragDepth = waterNdcPos.z;
 }

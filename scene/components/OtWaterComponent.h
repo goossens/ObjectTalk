@@ -37,7 +37,6 @@ public:
 	// stored properties
 	float level = 0.0f;
 	float distance = 100.0f;
-	bool useRefractance = true;
 	glm::vec3 color{0.5f, 0.6f, 0.8f};
 	OtAsset<OtTextureAsset> normals;
 	float scale = 10.0f;
@@ -46,5 +45,4 @@ public:
 	float roughness = 0.2f;
 	float ao = 0.25f;
 	float reflectivity = 1.0f;
-	float depthFactor = 1.0f;
 };

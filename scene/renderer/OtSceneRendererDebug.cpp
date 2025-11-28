@@ -125,19 +125,12 @@ void OtSceneRendererDebug::renderShadowMaps(OtSceneRenderer& renderer) {
 //
 
 void OtSceneRendererDebug::renderReflection(OtSceneRenderer& renderer) {
-	if (ImGui::CollapsingHeader("Reflection/Refraction")) {
+	if (ImGui::CollapsingHeader("Reflection")) {
 		auto& water = renderer.waterPass;
 
 		if (water.reflectionBuffer.isValid()) {
-			if (water.reflectionBuffer.isValid()) {
-				auto texture = water.reflectionBuffer.getColorTexture();
-				renderTexture("Reflection Buffer", texture);
-			}
-
-			if (water.refractionBuffer.isValid()) {
-				auto texture = water.refractionBuffer.getColorTexture();
-				renderTexture("Refraction Buffer", texture);
-			}
+			auto texture = water.reflectionBuffer.getColorTexture();
+			renderTexture("Reflection Buffer", texture);
 
 		} else {
 			ImGui::SeparatorText("No Data");

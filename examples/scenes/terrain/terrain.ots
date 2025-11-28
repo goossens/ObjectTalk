@@ -44,16 +44,16 @@
 					"uuid": 864477290
 				},
 				{
-					"azimuth": 89.19999694824219,
+					"azimuth": 88.0,
 					"castShadow": true,
 					"cirrus": 0.45399999618530273,
 					"component": "Sky",
-					"cumulus": 0.800000011920929,
-					"elevation": 76.0,
+					"cumulus": 0.8700000047683716,
+					"elevation": 45.0,
 					"mieCoefficient": 7.429999828338623,
 					"mieScattering": 0.9900000095367432,
 					"rayleighCoefficient": 1.909999966621399,
-					"speed": 1.0
+					"speed": 3.0
 				}
 			]
 		},
@@ -66,7 +66,7 @@
 					"uuid": 1003125373
 				},
 				{
-					"castShadow": true,
+					"castShadow": false,
 					"component": "Terrain",
 					"hScale": 1.0,
 					"heights": {
@@ -78,7 +78,7 @@
 						"persistence": 0.5,
 						"size": 256
 					},
-					"lod": 3,
+					"lod": 10,
 					"material": {
 						"region1Color": [
 							0.9649999737739563,
@@ -116,8 +116,8 @@
 						"region4TextureScale": 30.700000762939453
 					},
 					"tileSize": 64,
-					"vOffset": -14.0,
-					"vScale": 56.0,
+					"vOffset": -5.0,
+					"vScale": 15.0,
 					"wireframe": false
 				}
 			]
@@ -131,23 +131,21 @@
 					"uuid": 2516776593
 				},
 				{
-					"ao": 0.49000000953674316,
+					"ao": 0.20000000298023224,
 					"color": [
-						0.03535907343029976,
-						0.08551979809999466,
-						0.18584072589874268
+						0.12512725591659546,
+						0.20583750307559967,
+						0.36725664138793945
 					],
 					"component": "Water",
-					"depthFactor": 0.5600000023841858,
-					"distance": 500.0,
-					"level": 3.6700000762939453,
-					"metallic": 0.4099999964237213,
+					"distance": 310.0,
+					"level": 0.0,
+					"metallic": 0.0,
 					"normals": "assets/water.jpg",
-					"reflectivity": 0.3799999952316284,
-					"roughness": 0.0,
-					"scale": 3.0,
-					"speed": 1.0,
-					"useRefractance": false
+					"reflectivity": 0.20999999344348907,
+					"roughness": 0.7599999904632568,
+					"scale": 8.800000190734863,
+					"speed": 0.10999999940395355
 				}
 			]
 		}
@@ -157,14 +155,14 @@
 			"far": 5000.0,
 			"fov": 60.0,
 			"near": 1.0,
-			"pitch": -16.422727584838867,
+			"pitch": -15.823806762695313,
 			"position": [
-				-19.38536834716797,
-				29.278636932373047,
-				528.7132568359375
+				1.2024078369140625,
+				14.835087776184082,
+				505.0217590332031
 			],
 			"speed": 3.0,
-			"yaw": 32.9482307434082
+			"yaw": 49.42139434814453
 		},
 		"gizmo": {
 			"enabled": false,
@@ -186,14 +184,14 @@
 		"bloom": true,
 		"bloomIntensity": 0.5400000214576721,
 		"contrast": 1.100000023841858,
-		"exposure": 1.3799999952316284,
-		"fog": true,
+		"exposure": 1.0,
+		"fog": false,
 		"fogColor": [
 			0.4000000059604645,
 			0.5,
 			0.800000011920929
 		],
-		"fogDensity": 0.05999999865889549,
+		"fogDensity": 0.009999999776482582,
 		"fxaa": true,
 		"godrays": false,
 		"tonemap": 3

@@ -37,16 +37,10 @@ void OtWaterPass::render(OtSceneRendererContext& ctx) {
 
 	renderingBuffer.update(width, height);
 	reflectionBuffer.update(width, height);
-	refractionBuffer.update(width, height);
 
-	// render the three water passes
+	// render the water passes
 	auto& water = ctx.scene->getComponent<OtWaterComponent>(ctx.waterEntity);
 	renderReflection(ctx);
-
-	if (water.useRefractance) {
-		renderRefraction(ctx);
-	}
-
 	renderWater(ctx, water);
 }
 
@@ -67,28 +61,6 @@ void OtWaterPass::renderReflection(OtSceneRendererContext& ctx) {
 	if (ctx.hasOpaqueEntities) { deferredReflectionPass.render(ctx); }
 	if (ctx.hasTransparentGeometries) { forwardReflectionPass.render(ctx); }
 	if (ctx.hasSkyEntities) { skyReflectionPass.render(ctx); }
-
-	ctx.camera = camera;
-	ctx.cameraID = cameraID;
-}
-
-
-//
-//	OtWaterPass::renderRefraction
-//
-
-void OtWaterPass::renderRefraction(OtSceneRendererContext& ctx) {
-	// setup the renderer for the refraction
-	auto camera = ctx.camera;
-	auto cameraID = ctx.cameraID;
-	ctx.camera = ctx.refractionCamera;
-	ctx.cameraID = OtSceneRendererContext::getRefractionCameraID();
-
-	// render the scene
-	backgroundRefractionPass.render(ctx);
-	if (ctx.hasOpaqueEntities) { deferredRefractionPass.render(ctx); }
-	if (ctx.hasTransparentGeometries) { forwardRefractionPass.render(ctx); }
-	if (ctx.hasSkyEntities) { skyRefractionPass.render(ctx); }
 
 	ctx.camera = camera;
 	ctx.cameraID = cameraID;
@@ -137,14 +109,12 @@ void OtWaterPass::renderWater(OtSceneRendererContext& ctx, OtWaterComponent& wat
 		glm::vec2 size;
 		float waterLevel;
 		float distance;
-		float depthFactor;
 		float scale;
 		float time;
 		float metallic;
 		float roughness;
 		float ao;
 		float reflectivity;
-		uint32_t refractanceFlag;
 	} fragmentUniforms {
 		ctx.camera.viewMatrix,
 		ctx.camera.viewProjectionMatrix,
@@ -152,25 +122,21 @@ void OtWaterPass::renderWater(OtSceneRendererContext& ctx, OtWaterComponent& wat
 		glm::vec2(static_cast<float>(framebuffer.getWidth()), static_cast<float>(framebuffer.getHeight())),
 		water.level,
 		distance,
-		water.depthFactor,
 		water.scale,
 		time,
 		water.metallic,
 		water.roughness,
 		water.ao,
 		water.reflectivity,
-		static_cast<uint32_t>(water.useRefractance)
 	};
 
 	pass.setFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
-	ctx.setLightingUniforms(1, 4);
-	ctx.setShadowUniforms(2, 7);
+	ctx.setLightingUniforms(1, 2);
+	ctx.setShadowUniforms(2, 5);
 
 	// bind the textures
 	ctx.bindFragmentSampler(0, ctx.waterNormalmapSampler, water.normals);
 	pass.bindFragmentSampler(1, ctx.reflectionSampler, reflectionBuffer.getColorTexture());
-	pass.bindFragmentSampler(2, ctx.refractionSampler, refractionBuffer.getColorTexture());
-	pass.bindFragmentSampler(3, ctx.refractionDepthSampler, refractionBuffer.getDepthTexture());
 
 	// render water
 	pass.bindPipeline(waterPipeline);
@@ -191,13 +157,6 @@ void OtWaterPass::initializeResources() {
 	waterPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
 	waterPipeline.setVertexDescription(OtVertexPos::getDescription());
 	waterPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
-	waterPipeline.setCulling(OtRenderPipeline::Culling::cw);
-
-	waterPipeline.setBlend(
-		OtRenderPipeline::BlendOperation::add,
-		OtRenderPipeline::BlendFactor::srcAlpha,
-		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
-	);
 
 	// setup vertices
 	static glm::vec3 vertices[] = {

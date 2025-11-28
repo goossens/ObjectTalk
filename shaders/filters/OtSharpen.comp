@@ -4,7 +4,7 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-#version 450
+#version 450 core
 
 layout(local_size_x=16, local_size_y=16, local_size_z=1) in;
 

@@ -7,7 +7,7 @@
 //	Inspired by Marie, How to make an infinite grid:
 //	http://asliceofrendering.com/scene%20helper/2020/01/05/InfiniteGrid/
 
-#version 450
+#version 450 core
 
 layout(location=0) in vec3 aPosition;
 

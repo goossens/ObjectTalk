@@ -4,7 +4,7 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-#version 450
+#version 450 core
 
 layout(location=0) in vec3 vUv;
 layout(location=0) out vec4 fragColor;

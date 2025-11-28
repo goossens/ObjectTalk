@@ -4,7 +4,7 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-#version 450
+#version 450 core
 #extension GL_GOOGLE_include_directive : require
 
 #define ALBEDO_UNIFORMS 0

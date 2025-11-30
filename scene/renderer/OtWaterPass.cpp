@@ -40,7 +40,7 @@ void OtWaterPass::render(OtSceneRendererContext& ctx) {
 
 	// render the water passes
 	auto& water = ctx.scene->getComponent<OtWaterComponent>(ctx.waterEntity);
-	renderReflection(ctx);
+	renderReflection(ctx, water);
 	renderWater(ctx, water);
 }
 
@@ -49,12 +49,14 @@ void OtWaterPass::render(OtSceneRendererContext& ctx) {
 //	OtWaterPass::renderReflection
 //
 
-void OtWaterPass::renderReflection(OtSceneRendererContext& ctx) {
+void OtWaterPass::renderReflection(OtSceneRendererContext& ctx, OtWaterComponent& water) {
 	// setup the renderer for the reflection
 	auto camera = ctx.camera;
 	auto cameraID = ctx.cameraID;
+	auto clippingPlane = ctx.clippingPlane;
 	ctx.camera = ctx.reflectionCamera;
 	ctx.cameraID = OtSceneRendererContext::getReflectionCameraID();
+	ctx.clippingPlane = glm::vec4(0.0f, 1.0f, 0.0f, -water.level);
 
 	// render the scene
 	backgroundReflectionPass.render(ctx);
@@ -64,6 +66,7 @@ void OtWaterPass::renderReflection(OtSceneRendererContext& ctx) {
 
 	ctx.camera = camera;
 	ctx.cameraID = cameraID;
+	ctx.clippingPlane = clippingPlane;
 }
 
 

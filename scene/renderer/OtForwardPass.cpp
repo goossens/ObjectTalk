@@ -39,8 +39,9 @@ void OtForwardPass::render(OtSceneRendererContext& ctx) {
 
 	// submit common fragment uniforms
 	// uniform slot 0 and sampler slots 0-4 are used for materials
-	ctx.setLightingUniforms(1, 5);
-	ctx.setShadowUniforms(2, 8);
+	ctx.setClippingUniforms(1);
+	ctx.setLightingUniforms(2, 5);
+	ctx.setShadowUniforms(3, 8);
 
 	// render all entities
 	renderEntities(ctx);

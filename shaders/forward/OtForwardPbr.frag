@@ -11,11 +11,14 @@
 #define MATERIAL_SAMPLERS 0
 #include "material.glsl"
 
-#define LIGHTING_UNIFORMS 1
+#define CLIPPING_UNIFORMS 1
+#include "clipping.glsl"
+
+#define LIGHTING_UNIFORMS 2
 #define LIGHTING_SAMPLERS 5
 #include "lighting.glsl"
 
-#define SHADOW_UNIFORMS 2
+#define SHADOW_UNIFORMS 3
 #define SHADOW_SAMPLERS 8
 #include "shadow.glsl"
 
@@ -31,6 +34,9 @@ layout(location=0) out vec4 fragColor;
 
 // main function
 void main() {
+	// apply clipping plane
+	clipAgainstPlane(vPosition);
+
 	// determine UV coordinates
 	vec2 uv = vUv * textureScale + textureOffset;
 

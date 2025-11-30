@@ -39,7 +39,7 @@ public:
 
 private:
 	// support functions
-	void renderReflection(OtSceneRendererContext& ctx);
+	void renderReflection(OtSceneRendererContext& ctx, OtWaterComponent& water);
 	void renderWater(OtSceneRendererContext& ctx, OtWaterComponent& water);
 
 	// give the debugger access to the inner circle

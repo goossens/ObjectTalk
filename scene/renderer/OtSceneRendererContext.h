@@ -43,6 +43,9 @@ public:
 	// initialize context
 	void initialize(OtScene* s, OtCamera c);
 
+	// scene to render
+	OtScene* scene;
+
 	// camera information
 	OtCamera camera;
 	OtCamera reflectionCamera;
@@ -51,9 +54,6 @@ public:
 	static inline size_t getMainCameraID() { return 0; }
 	static inline size_t getReflectionCameraID() { return 1; }
 	static inline size_t getShadowCameraID(size_t camera) { return 2 + camera; }
-
-	// scene to render
-	OtScene* scene;
 
 	// rendering pass
 	OtRenderPass* pass;
@@ -90,6 +90,9 @@ public:
 	std::vector<OtEntity> transparentGeometryEntities;
 	std::unordered_map<OtEntity, OtGeometryRenderData> geometryRenderData;
 	std::unordered_map<OtEntity, OtModelRenderData> modelRenderData;
+
+	// clipping plane
+	glm::vec4 clippingPlane;
 
 	// directional light information
 	glm::vec3 directionalLightDirection;
@@ -135,6 +138,7 @@ public:
 	OtSampler highlightSampler{OtSampler::Filter::nearest, OtSampler::Addressing::clamp};
 
 	// support functions
+	void setClippingUniforms(size_t uniformSlot);
 	void setLightingUniforms(size_t uniformSlot, size_t samplerSlot);
 	void setShadowUniforms(size_t uniformSlot, size_t samplerSlot);
 	void bindFragmentSampler(size_t slot, OtSampler& sampler, OtAsset<OtTextureAsset>& texture);

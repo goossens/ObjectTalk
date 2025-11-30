@@ -46,6 +46,8 @@ void OtSceneRendererContext::initialize(OtScene* s, OtCamera c) {
 	iblEntity = OtEntityNull;
 	waterEntity = OtEntityNull;
 
+	clippingPlane = glm::vec4(0.0f);
+
 	directionalLightDirection = glm::vec3(0.0f);
 	directionalLightColor = glm::vec3(0.0f);
 	directionalLightAmbient = 0.0f;
@@ -260,6 +262,22 @@ void OtSceneRendererContext::initialize(OtScene* s, OtCamera c) {
 			i++;
 		}
 	}
+}
+
+
+//
+//	OtSceneRendererContext::setClippingUniforms
+//
+
+void OtSceneRendererContext::setClippingUniforms(size_t uniformSlot) {
+	// set uniforms
+	struct Uniforms {
+		glm::vec4 clippingPlane;
+	} uniforms {
+		clippingPlane
+	};
+
+	pass->setFragmentUniforms(uniformSlot, &uniforms, sizeof(uniforms));
 }
 
 

@@ -5,6 +5,10 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 #version 450 core
+#extension GL_GOOGLE_include_directive : require
+
+#define CLIPPING_UNIFORMS 0
+#include "clipping.glsl"
 
 layout(location=0) in vec3 vPosition;
 layout(location=1) in vec3 vNormal;
@@ -15,7 +19,7 @@ layout(location=2) out vec4 fragPBR;
 layout(location=3) out vec4 fragEmissive;
 
 // uniforms
-layout(std140, set=3, binding=0) uniform UBO {
+layout(std140, set=3, binding=1) uniform UBO {
 	vec4 region1Color;
 	vec4 region2Color;
 	vec4 region3Color;
@@ -52,6 +56,9 @@ layout(set=2, binding=3) uniform sampler2D region4Texture;
 
 // main function
 void main() {
+	// apply clipping plane
+	clipAgainstPlane(vPosition);
+
 	// get parameters
 	vec2 uv1 = fract(vPosition.xz / region1TextureSize * region1TextureScale);
 	vec2 uv2 = fract(vPosition.xz / region2TextureSize * region2TextureScale);

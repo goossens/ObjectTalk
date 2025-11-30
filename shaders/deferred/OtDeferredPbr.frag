@@ -11,6 +11,9 @@
 #define MATERIAL_SAMPLERS 0
 #include "material.glsl"
 
+#define CLIPPING_UNIFORMS 1
+#include "clipping.glsl"
+
 layout(location=0) in vec3 vPosition;
 layout(location=1) in vec3 vNormal;
 layout(location=2) in vec3 vTangent;
@@ -24,6 +27,9 @@ layout(location=3) out vec4 fragEmissive;
 
 // main function
 void main() {
+	// apply clipping plane
+	clipAgainstPlane(vPosition);
+
 	// determine UV coordinates
 	vec2 uv = vUv * textureScale + textureOffset;
 

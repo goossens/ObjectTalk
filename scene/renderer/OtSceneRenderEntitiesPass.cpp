@@ -312,6 +312,8 @@ void OtSceneRenderEntitiesPass::renderTerrainHelper(
 
 	// set fragment uniforms
 	if (setFragmentUniforms) {
+		ctx.setClippingUniforms(0);
+
 		struct FragmentUniforms {
 			glm::vec4 region1Color;
 			glm::vec4 region2Color;
@@ -370,14 +372,14 @@ void OtSceneRenderEntitiesPass::renderTerrainHelper(
 			material.region3Overlap
 		};
 
-		ctx.pass->setFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
-	}
+		ctx.pass->setFragmentUniforms(1, &fragmentUniforms, sizeof(fragmentUniforms));
 
-	// bind textures
-	ctx.bindFragmentSampler(0, ctx.region1Sampler, material.region1Texture);
-	ctx.bindFragmentSampler(1, ctx.region2Sampler, material.region2Texture);
-	ctx.bindFragmentSampler(2, ctx.region3Sampler, material.region3Texture);
-	ctx.bindFragmentSampler(3, ctx.region4Sampler, material.region4Texture);
+		// bind textures
+		ctx.bindFragmentSampler(0, ctx.region1Sampler, material.region1Texture);
+		ctx.bindFragmentSampler(1, ctx.region2Sampler, material.region2Texture);
+		ctx.bindFragmentSampler(2, ctx.region3Sampler, material.region3Texture);
+		ctx.bindFragmentSampler(3, ctx.region4Sampler, material.region4Texture);
+	}
 
 	// process all the terrain meshes
 	for (auto& mesh : terrain.getMeshes()) {

@@ -68,6 +68,10 @@ void OtDeferredPass::renderGeometry(OtSceneRendererContext& ctx) {
 	pass.start(gbuffer);
 	ctx.pass = &pass;
 
+	// submit common fragment uniforms
+	// uniform slot 0 and sampler slots 0-4 are used for materials
+	ctx.setClippingUniforms(1);
+
 	// render all entities
 	renderEntities(ctx);
 

@@ -48,12 +48,12 @@
 					"castShadow": true,
 					"cirrus": 0.45399999618530273,
 					"component": "Sky",
-					"cumulus": 0.8700000047683716,
+					"cumulus": 0.6800000071525574,
 					"elevation": 45.0,
 					"mieCoefficient": 7.429999828338623,
 					"mieScattering": 0.9900000095367432,
 					"rayleighCoefficient": 1.909999966621399,
-					"speed": 3.0
+					"speed": 1.0
 				}
 			]
 		},
@@ -133,19 +133,22 @@
 				{
 					"ao": 0.20000000298023224,
 					"color": [
-						0.12512725591659546,
-						0.20583750307559967,
-						0.36725664138793945
+						0.16289453208446503,
+						0.2391882985830307,
+						0.4601770043373108
 					],
 					"component": "Water",
+					"depthFactor": 1.2000000476837158,
 					"distance": 310.0,
+					"dudv": "",
 					"level": 0.0,
 					"metallic": 0.0,
 					"normals": "assets/water.jpg",
-					"reflectivity": 0.20999999344348907,
+					"reflectivity": 6.809999942779541,
 					"roughness": 0.7599999904632568,
-					"scale": 8.800000190734863,
-					"speed": 0.10999999940395355
+					"scale": 30.0,
+					"speed": 0.5,
+					"useRefractance": true
 				}
 			]
 		}
@@ -182,16 +185,16 @@
 	},
 	"processing": {
 		"bloom": true,
-		"bloomIntensity": 0.5400000214576721,
-		"contrast": 1.100000023841858,
-		"exposure": 1.0,
-		"fog": false,
+		"bloomIntensity": 0.6299999952316284,
+		"contrast": 1.2000000476837158,
+		"exposure": 1.2000000476837158,
+		"fog": true,
 		"fogColor": [
 			0.4000000059604645,
 			0.5,
 			0.800000011920929
 		],
-		"fogDensity": 0.009999999776482582,
+		"fogDensity": 0.0,
 		"fxaa": true,
 		"godrays": false,
 		"tonemap": 3

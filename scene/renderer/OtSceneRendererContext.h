@@ -49,11 +49,13 @@ public:
 	// camera information
 	OtCamera camera;
 	OtCamera reflectionCamera;
+	OtCamera refractionCamera;
 
 	size_t cameraID;
 	static inline size_t getMainCameraID() { return 0; }
 	static inline size_t getReflectionCameraID() { return 1; }
-	static inline size_t getShadowCameraID(size_t camera) { return 2 + camera; }
+	static inline size_t getRefractionCameraID() { return 2; }
+	static inline size_t getShadowCameraID(size_t camera) { return 3 + camera; }
 
 	// rendering pass
 	OtRenderPass* pass;
@@ -127,6 +129,8 @@ public:
 
 	OtSampler waterNormalmapSampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
 	OtSampler reflectionSampler{OtSampler::Filter::linear, OtSampler::Addressing::clamp};
+	OtSampler refractionSampler{OtSampler::Filter::linear, OtSampler::Addressing::clamp};
+	OtSampler refractionDepthSampler{OtSampler::Filter::linear, OtSampler::Addressing::clamp};
 
 	OtSampler normalmapSampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
 	OtSampler region1Sampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};

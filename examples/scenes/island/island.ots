@@ -167,13 +167,14 @@
 					"component": "Water",
 					"depthFactor": 1.0,
 					"distance": 500.0,
+					"dudv": "",
 					"level": 15.0,
 					"metallic": 0.10000000149011612,
 					"normals": "assets/water.jpg",
 					"reflectivity": 0.4699999988079071,
 					"roughness": 0.30000001192092896,
 					"scale": 48.36000061035156,
-					"speed": 2.5799999237060547,
+					"speed": 0.5,
 					"useRefractance": false
 				}
 			]

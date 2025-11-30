@@ -40,6 +40,7 @@ public:
 private:
 	// support functions
 	void renderReflection(OtSceneRendererContext& ctx, OtWaterComponent& water);
+	void renderRefraction(OtSceneRendererContext& ctx, OtWaterComponent& water);
 	void renderWater(OtSceneRendererContext& ctx, OtWaterComponent& water);
 
 	// give the debugger access to the inner circle
@@ -50,6 +51,7 @@ private:
 
 	OtGbuffer renderingBuffer;
 	OtFrameBuffer reflectionBuffer{OtTexture::Format::rgba16, OtTexture::Format::d32};
+	OtFrameBuffer refractionBuffer{OtTexture::Format::rgba16, OtTexture::Format::d32};
 
 	OtIndexBuffer indexBuffer;
 	OtVertexBuffer vertexBuffer;
@@ -60,6 +62,10 @@ private:
 	OtDeferredPass deferredReflectionPass{renderingBuffer, reflectionBuffer};
 	OtForwardPass forwardReflectionPass{reflectionBuffer};
 	OtSkyPass skyReflectionPass{reflectionBuffer};
+
+	OtBackgroundPass backgroundRefractionPass{refractionBuffer};
+	OtDeferredPass deferredRefractionPass{renderingBuffer, refractionBuffer};
+	OtForwardPass forwardRefractionPass{refractionBuffer};
 
 	int width;
 	int height;

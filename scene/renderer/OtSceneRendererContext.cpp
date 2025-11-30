@@ -203,6 +203,11 @@ void OtSceneRendererContext::initialize(OtScene* s, OtCamera c) {
 		int width = camera.width / 2;
 		int height = camera.height / 2;
 		reflectionCamera = OtCamera{width, height, camera.projectionMatrix, reflectionViewMatrix};
+
+		// setup the refraction camera (if required)
+		if (water.useRefractance) {
+			refractionCamera = OtCamera{width, height, camera.projectionMatrix, camera.viewMatrix};
+		}
 	}
 
 	// update geometry render data
@@ -221,6 +226,10 @@ void OtSceneRendererContext::initialize(OtScene* s, OtCamera c) {
 
 		if (waterEntity != OtEntityNull) {
 			grd.analyzeCamera(getReflectionCameraID(), reflectionCamera);
+
+			if (scene->getComponent<OtWaterComponent>(waterEntity).useRefractance) {
+				grd.analyzeCamera(getRefractionCameraID(), refractionCamera);
+			}
 		}
 
 		currentEntities.emplace(entity);

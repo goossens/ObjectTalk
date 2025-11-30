@@ -197,6 +197,7 @@ void OtShadowPass::initializeResources() {
 	terrainCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::d32);
 	terrainCullingPipeline.setVertexDescription(OtVertexPos::getDescription());
 	terrainCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	terrainCullingPipeline.setCulling(OtRenderPipeline::Culling::cw);
 
 	terrainLinesPipeline.setShaders(OtSimpleTerrainVert, sizeof(OtSimpleTerrainVert), OtShadowOpaqueFrag, sizeof(OtShadowOpaqueFrag));
 	terrainLinesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::d32);

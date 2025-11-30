@@ -54,10 +54,10 @@ struct Bbox {
 
 
 //
-//	barycentric
+//	baryCentric
 //
 
-glm::vec3 barycentric(glm::vec2& a, glm::vec2& b, glm::vec2& c, glm::vec2& p) {
+glm::vec3 baryCentric(glm::vec2& a, glm::vec2& b, glm::vec2& c, glm::vec2& p) {
 	auto v0 = b - a;
 	auto v1 = c - a;
 	auto v2 = p - a;
@@ -269,7 +269,7 @@ void OtMap::renderHeightMap(OtHeightMap& heightmap, int size) {
 		for (int y = bbox.minY; y <= bbox.maxY; y++) {
 			for (int x = bbox.minX; x <= bbox.maxX; x++) {
 				auto pixelCenter = glm::vec2(x + 0.5f, y + 0.5f);
-				auto bc = barycentric(v1.position, v2.position, v3.position, pixelCenter);
+				auto bc = baryCentric(v1.position, v2.position, v3.position, pixelCenter);
 
 				if (bc.x > 0.0f && bc.y >= 0.0f && bc.z >= 0.0f && !std::isnan(bc.x)) {
 					auto elevation = bc.x * v1.elevation + bc.y * v2.elevation + bc.z * v3.elevation;

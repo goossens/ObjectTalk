@@ -166,6 +166,7 @@ void OtOcclusionPass::initializeResources() {
 	terrainCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
 	terrainCullingPipeline.setVertexDescription(OtVertexPos::getDescription());
 	terrainCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	terrainCullingPipeline.setCulling(OtRenderPipeline::Culling::cw);
 
 	terrainLinesPipeline.setShaders(OtSimpleTerrainVert, sizeof(OtSimpleTerrainVert), OtOcclusionOpaqueFrag, sizeof(OtOcclusionOpaqueFrag));
 	terrainLinesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);

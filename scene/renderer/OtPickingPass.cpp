@@ -255,6 +255,7 @@ void OtPickingPass::initializeResources() {
 	terrainCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);
 	terrainCullingPipeline.setVertexDescription(OtVertexPos::getDescription());
 	terrainCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	terrainCullingPipeline.setCulling(OtRenderPipeline::Culling::cw);
 
 	terrainLinesPipeline.setShaders(OtSimpleTerrainVert, sizeof(OtSimpleTerrainVert), OtPickingOpaqueFrag, sizeof(OtPickingOpaqueFrag));
 	terrainLinesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);

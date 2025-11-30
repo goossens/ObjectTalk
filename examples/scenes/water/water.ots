@@ -44,16 +44,16 @@
 					"uuid": 864477290
 				},
 				{
-					"azimuth": 0.0,
+					"azimuth": 2.5999999046325684,
 					"castShadow": true,
 					"cirrus": 0.45399999618530273,
 					"component": "Sky",
-					"cumulus": 0.800000011920929,
-					"elevation": 23.479000091552734,
+					"cumulus": 0.6600000262260437,
+					"elevation": 28.5,
 					"mieCoefficient": 5.734000205993652,
 					"mieScattering": 0.9900000095367432,
 					"rayleighCoefficient": 2.8420000076293945,
-					"speed": 1.25
+					"speed": 1.399999976158142
 				}
 			]
 		},

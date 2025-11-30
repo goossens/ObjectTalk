@@ -254,6 +254,7 @@ void OtHighlightPass::initializeResources() {
 	terrainCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
 	terrainCullingPipeline.setVertexDescription(OtVertexPos::getDescription());
 	terrainCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
+	terrainCullingPipeline.setCulling(OtRenderPipeline::Culling::cw);
 
 	terrainLinesPipeline.setShaders(OtSimpleTerrainVert, sizeof(OtSimpleTerrainVert), OtSelectOpaqueFrag, sizeof(OtSelectOpaqueFrag));
 	terrainLinesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);

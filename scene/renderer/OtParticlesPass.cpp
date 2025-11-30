@@ -56,7 +56,7 @@ void OtParticlesPass::render(OtSceneRendererContext& ctx) {
 		settings.deltatime = ImGui::GetIO().DeltaTime;
 		particles.update(settings);
 
-		// send out particle(instance) data
+		// send out particle (instance) data
 		particleBuffer.set(particles.data(), particles.size(), OtVertexParticle::getDescription());
 		pass.setInstanceData(particleBuffer);
 

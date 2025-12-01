@@ -131,23 +131,23 @@
 					"uuid": 2516776593
 				},
 				{
-					"ao": 0.20000000298023224,
+					"ao": 0.0,
 					"color": [
-						0.16289453208446503,
-						0.2391882985830307,
-						0.4601770043373108
+						0.14864124357700348,
+						0.19339050352573395,
+						0.32300883531570435
 					],
 					"component": "Water",
-					"depthFactor": 1.2000000476837158,
+					"depthFactor": 0.8899999856948853,
 					"distance": 310.0,
-					"dudv": "",
+					"dudv": "assets/dudvMap.png",
 					"level": 0.0,
 					"metallic": 0.0,
 					"normals": "assets/water.jpg",
-					"reflectivity": 6.809999942779541,
+					"reflectivity": 7.409999847412109,
 					"roughness": 0.7599999904632568,
-					"scale": 30.0,
-					"speed": 0.5,
+					"scale": 80.0,
+					"speed": 2.0,
 					"useRefractance": true
 				}
 			]

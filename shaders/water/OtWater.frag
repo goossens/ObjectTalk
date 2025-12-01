@@ -4,15 +4,18 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
+//	Inspired by: https://vincenguyen.super.site/blog/blog-posts-1/how-to-render-pretty-water
+//	Which was in inspired by https://www.youtube.com/playlist?list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh
+
 #version 450 core
 #extension GL_GOOGLE_include_directive : require
 
 #define LIGHTING_UNIFORMS 1
-#define LIGHTING_SAMPLERS 4
+#define LIGHTING_SAMPLERS 5
 #include "lighting.glsl"
 
 #define SHADOW_UNIFORMS 2
-#define SHADOW_SAMPLERS 7
+#define SHADOW_SAMPLERS 8
 #include "shadow.glsl"
 
 #include "pbr.glsl"
@@ -34,19 +37,20 @@ layout(std140, set=3, binding=0) uniform UBO {
 	float farDistance;
 	float depthFactor;
 	float scale;
-	float time;
+	float moveFactor;
 	float metallic;
 	float roughness;
 	float ao;
 	float reflectivity;
-	bool refractanceFlag;
+	bool usesRefractance;
 };
 
 // texture samplers
-layout(set=2, binding=0) uniform sampler2D waterNormalMapTexture;
-layout(set=2, binding=1) uniform sampler2D reflectionTexture;
-layout(set=2, binding=2) uniform sampler2D refractionTexture;
-layout(set=2, binding=3) uniform sampler2D refractionDepthTexture;
+layout(set=2, binding=0) uniform sampler2D waterDuDvMapTexture;
+layout(set=2, binding=1) uniform sampler2D waterNormalMapTexture;
+layout(set=2, binding=2) uniform sampler2D reflectionTexture;
+layout(set=2, binding=3) uniform sampler2D refractionTexture;
+layout(set=2, binding=4) uniform sampler2D refractionDepthTexture;
 
 // main program
 void main() {
@@ -68,29 +72,24 @@ void main() {
 	}
 
 	// get water normal
-	vec2 uv = (waterWorldPos.xz / size + vec2(-0.01, 0.01) * time) * scale;
-	vec2 uv1 = uv + vec2(time / 17.0, time / 29.0);
-	vec2 uv2 = uv - vec2(time / -19.0, time / 31.0);
-	vec2 uv3 = uv + vec2(time / 101.0, time / 97.0);
-	vec2 uv4 = uv - vec2(time / 109.0, time / -113.0);
+	const float waveStrength = 0.015;
+	vec2 textureCoords = waterWorldPos.xz / size * scale;
+	vec2 distortedTexCoords = texture(waterDuDvMapTexture, vec2(textureCoords.x + moveFactor, textureCoords.y)).rg * 0.1;
+	distortedTexCoords = textureCoords + vec2(distortedTexCoords.x, distortedTexCoords.y + moveFactor);
+	vec2 totalDistortion = (texture(waterDuDvMapTexture, distortedTexCoords).rg * 2.0 - 1.0) * waveStrength;
 
-	vec4 noise =
-		texture(waterNormalMapTexture, uv1) +
-		texture(waterNormalMapTexture, uv2) +
-		texture(waterNormalMapTexture, uv3) +
-		texture(waterNormalMapTexture, uv4);
-
-	vec3 N = normalize((noise.xzy * 0.5 - 1.0) * vec3(1.5, 1.0, 1.5));
+	vec4 normalMapColor = texture(waterNormalMapTexture, distortedTexCoords);
+	vec3 N = normalize(vec3(normalMapColor.r * 2.0 - 1.0, normalMapColor.b, normalMapColor.g * 2.0 - 1.0));
 
 	// determine reflection and refraction colors
-	vec2 refractionUv = gl_FragCoord.xy / size;
+	vec2 refractionUv = gl_FragCoord.xy / size + totalDistortion;
 	vec2 reflectionUv = vec2(refractionUv.x, 1.0 - refractionUv.y);
 	vec3 reflectionColor = texture(reflectionTexture, reflectionUv).rgb;
 	vec3 refractionColor = waterColor.rgb;
 	float alpha = 1.0;
 
 	// handle refraction (if required)
-	if (refractanceFlag) {
+	if (usesRefractance) {
 		// set refraction colors
 		refractionColor *= texture(refractionTexture, refractionUv).rgb;
 

@@ -9,8 +9,9 @@
 //	Include files
 //
 
-#include <chrono>
 #include <cstdint>
+
+#include "imgui.h"
 
 #include "OtRenderPass.h"
 
@@ -112,16 +113,10 @@ void OtWaterPass::renderWater(OtSceneRendererContext& ctx, OtWaterComponent& wat
 	pass.start(framebuffer);
 	ctx.pass = &pass;
 
-	// determine time
-	using namespace std::chrono;
-	uint64_t now = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-	static uint64_t start = 0;
-
-	if (start == 0) {
-		start = now;
-	}
-
-	float time = static_cast<float>(static_cast<double>(now - start) / 1000.0) * 0.1f * water.speed;
+	// determine wave movement factor
+	static float time = 0.0f;
+	time += ImGui::GetIO().DeltaTime;
+	float moveFactor = std::fmod(water.speed * 0.01f * time, 1.0f);
 
 	// get maximum distance in clip space
 	glm::vec4 farPoint = ctx.camera.projectionMatrix * glm::vec4(0.0, water.level, -water.distance, 1.0);
@@ -147,7 +142,7 @@ void OtWaterPass::renderWater(OtSceneRendererContext& ctx, OtWaterComponent& wat
 		float distance;
 		float depthFactor;
 		float scale;
-		float time;
+		float moveFactor;
 		float metallic;
 		float roughness;
 		float ao;
@@ -163,7 +158,7 @@ void OtWaterPass::renderWater(OtSceneRendererContext& ctx, OtWaterComponent& wat
 		distance,
 		water.depthFactor,
 		water.scale,
-		time,
+		moveFactor,
 		water.metallic,
 		water.roughness,
 		water.ao,
@@ -172,14 +167,15 @@ void OtWaterPass::renderWater(OtSceneRendererContext& ctx, OtWaterComponent& wat
 	};
 
 	pass.setFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
-	ctx.setLightingUniforms(1, 4);
-	ctx.setShadowUniforms(2, 7);
+	ctx.setLightingUniforms(1, 5);
+	ctx.setShadowUniforms(2, 8);
 
 	// bind the textures
-	ctx.bindFragmentSampler(0, ctx.waterNormalmapSampler, water.normals);
-	pass.bindFragmentSampler(1, ctx.reflectionSampler, reflectionBuffer.getColorTexture());
-	pass.bindFragmentSampler(2, ctx.refractionSampler, refractionBuffer.getColorTexture());
-	pass.bindFragmentSampler(3, ctx.refractionDepthSampler, refractionBuffer.getDepthTexture());
+	ctx.bindFragmentSampler(0, ctx.waterNormalmapSampler, water.dudv);
+	ctx.bindFragmentSampler(1, ctx.waterNormalmapSampler, water.normals);
+	pass.bindFragmentSampler(2, ctx.reflectionSampler, reflectionBuffer.getColorTexture());
+	pass.bindFragmentSampler(3, ctx.refractionSampler, refractionBuffer.getColorTexture());
+	pass.bindFragmentSampler(4, ctx.refractionDepthSampler, refractionBuffer.getDepthTexture());
 
 	// render water
 	pass.bindPipeline(waterPipeline);

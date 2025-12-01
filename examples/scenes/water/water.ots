@@ -53,7 +53,7 @@
 					"mieCoefficient": 5.734000205993652,
 					"mieScattering": 0.9900000095367432,
 					"rayleighCoefficient": 2.8420000076293945,
-					"speed": 1.399999976158142
+					"speed": 3.0
 				}
 			]
 		},
@@ -73,14 +73,17 @@
 						0.19911503791809082
 					],
 					"component": "Water",
+					"depthFactor": 1.0,
 					"distance": 600.0,
+					"dudv": "assets/dudvMap.png",
 					"level": 0.0,
 					"metallic": 0.0,
-					"normals": "assets/water.jpg",
+					"normals": "assets/normalMap.png",
 					"reflectivity": 0.8399999737739563,
 					"roughness": 0.25999999046325684,
-					"scale": 41.0,
-					"speed": 2.0
+					"scale": 10.0,
+					"speed": 4.0,
+					"useRefractance": false
 				}
 			]
 		},

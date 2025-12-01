@@ -158,23 +158,23 @@
 					"uuid": 2088255789
 				},
 				{
-					"ao": 0.44999998807907104,
+					"ao": 0.33000001311302185,
 					"color": [
-						0.45344191789627075,
-						0.534967839717865,
-						0.8539823293685913
+						0.43417656421661377,
+						0.5241270661354065,
+						0.8761062026023865
 					],
 					"component": "Water",
 					"depthFactor": 1.0,
 					"distance": 500.0,
-					"dudv": "",
+					"dudv": "assets/dudvMap.png",
 					"level": 15.0,
-					"metallic": 0.10000000149011612,
-					"normals": "assets/water.jpg",
-					"reflectivity": 0.4699999988079071,
-					"roughness": 0.30000001192092896,
-					"scale": 48.36000061035156,
-					"speed": 0.5,
+					"metallic": 0.0,
+					"normals": "assets/normalMap.jpg",
+					"reflectivity": 0.6100000143051147,
+					"roughness": 0.0,
+					"scale": 80.0,
+					"speed": 2.0,
 					"useRefractance": false
 				}
 			]
@@ -185,14 +185,14 @@
 			"far": 2000.0,
 			"fov": 60.0,
 			"near": 1.0,
-			"pitch": 0.9196246266365051,
+			"pitch": 0.8528481721878052,
 			"position": [
 				0.0,
 				20.0,
 				200.0
 			],
 			"speed": 3.0,
-			"yaw": -2.0
+			"yaw": 1.1910806894302368
 		},
 		"gizmo": {
 			"enabled": false,

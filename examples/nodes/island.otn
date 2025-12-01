@@ -29,6 +29,11 @@
 			"from": 902124213,
 			"id": 4030250391,
 			"to": 3582590217
+		},
+		{
+			"from": 4243123040,
+			"id": 916739136,
+			"to": 2225849993
 		}
 	],
 	"metadata": {},
@@ -111,8 +116,8 @@
 			],
 			"title": "Islandizer",
 			"type": "Islandizer",
-			"x": 248.0,
-			"y": 266.0
+			"x": 254.0,
+			"y": 317.0
 		},
 		{
 			"id": 3557975928,
@@ -127,7 +132,7 @@
 			"title": "Texture Probe",
 			"type": "Texture Probe",
 			"x": 514.0,
-			"y": 45.0
+			"y": 43.0
 		},
 		{
 			"id": 833814754,
@@ -147,8 +152,8 @@
 			],
 			"title": "Texture to Image",
 			"type": "Texture to Image",
-			"x": 517.0,
-			"y": 321.0
+			"x": 523.0,
+			"y": 372.0
 		},
 		{
 			"id": 978565693,
@@ -168,8 +173,8 @@
 			],
 			"title": "Terrain Builder",
 			"type": "Terrain Builder",
-			"x": 729.0,
-			"y": 296.0
+			"x": 735.0,
+			"y": 347.0
 		},
 		{
 			"id": 4090088266,
@@ -219,8 +224,8 @@
 			],
 			"title": "Geometry Transform",
 			"type": "Geometry Transform",
-			"x": 916.0,
-			"y": 271.0
+			"x": 922.0,
+			"y": 322.0
 		},
 		{
 			"azimuth": -18.803956985473633,
@@ -247,9 +252,24 @@
 			"title": "Geometry Probe",
 			"type": "Geometry Probe",
 			"wireframe": false,
-			"x": 1257.0,
-			"y": 257.0,
+			"x": 1263.0,
+			"y": 308.0,
 			"zoom": 1.1302343606948853
+		},
+		{
+			"id": 2474077943,
+			"inputs": [
+				{
+					"id": 2225849993,
+					"name": "Texture",
+					"type": "texture"
+				}
+			],
+			"outputs": [],
+			"title": "Texture Probe",
+			"type": "Texture Probe",
+			"x": 266.0,
+			"y": 43.0
 		}
 	]
 }

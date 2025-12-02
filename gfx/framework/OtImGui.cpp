@@ -164,30 +164,30 @@ void OtFramework::endIMGUI() {
 
 void OtFramework::renderProfiler() {
 	auto& gpu = OtGpu::instance();
-	auto labelWith = ImGui::CalcTextSize("                         ").x;
+	auto labelWith = ImGui::CalcTextSize("                      ").x;
 
 	ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), ImGuiCond_Once);
 	ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Text("Framerate:"); ImGui::SameLine(labelWith); ImGui::Text("%.1f", 1000.0f / loopDuration);
-	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.2f", cpuTime);
-	ImGui::Text("GPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.2f", gpuTime);
-	ImGui::Text("GPU wait [ms]:"); ImGui::SameLine(labelWith); ImGui::Text("%0.2f", gpuWaitTime);
-	ImGui::Text("Back buffer width:"); ImGui::SameLine(labelWith); ImGui::Text("%d", gpu.width);
-	ImGui::Text("Back buffer height:"); ImGui::SameLine(labelWith); ImGui::Text("%d", gpu.height);
-	ImGui::Text("Anti-aliasing:"); ImGui::SameLine(labelWith); ImGui::Text("%d", antiAliasing);
+	ImGui::Text("Framerate:"); ImGui::SameLine(labelWith); ImGui::Text("%5.1f", 1000.0f / loopDuration);
+	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%5.2f", cpuTime);
+	ImGui::Text("GPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%5.2f", gpuTime);
+	ImGui::Text("GPU wait [ms]:"); ImGui::SameLine(labelWith); ImGui::Text("%5.2f", gpuWaitTime);
+	ImGui::Text("Back buffer width:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", gpu.width);
+	ImGui::Text("Back buffer height:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", gpu.height);
+	ImGui::Text("Anti-aliasing:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", antiAliasing);
 
 	ImGui::Separator();
-	ImGui::Text("Compute passes:"); ImGui::SameLine(labelWith); ImGui::Text("%d", gpu.computePasses.load());
-	ImGui::Text("Compute pipelines:"); ImGui::SameLine(labelWith); ImGui::Text("%d", gpu.computePipelines.load());
-	ImGui::Text("Render passes:"); ImGui::SameLine(labelWith); ImGui::Text("%d", gpu.renderPasses.load());
-	ImGui::Text("Render pipelines:"); ImGui::SameLine(labelWith); ImGui::Text("%d", gpu.renderPipelines.load());
-	ImGui::Text("Render shaders:"); ImGui::SameLine(labelWith); ImGui::Text("%d", gpu.renderShaders.load());
-	ImGui::Text("Vertex buffers:"); ImGui::SameLine(labelWith); ImGui::Text("%d", gpu.vertexBuffers.load());
-	ImGui::Text("Index buffers:"); ImGui::SameLine(labelWith); ImGui::Text("%d", gpu.indexBuffers.load());
-	ImGui::Text("Frame buffers:"); ImGui::SameLine(labelWith); ImGui::Text("%d", gpu.frameBuffers.load());
-	ImGui::Text("G-buffers:"); ImGui::SameLine(labelWith); ImGui::Text("%d", gpu.gBuffers.load());
-	ImGui::Text("Textures:"); ImGui::SameLine(labelWith); ImGui::Text("%d", gpu.textures.load());
-	ImGui::Text("Cubemaps:"); ImGui::SameLine(labelWith); ImGui::Text("%d", gpu.cubemaps.load());
-	ImGui::Text("Samplers:"); ImGui::SameLine(labelWith); ImGui::Text("%d", gpu.samplers.load());
+	ImGui::Text("Compute passes:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", gpu.computePasses.load());
+	ImGui::Text("Compute pipelines:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", gpu.computePipelines.load());
+	ImGui::Text("Render passes:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", gpu.renderPasses.load());
+	ImGui::Text("Render pipelines:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", gpu.renderPipelines.load());
+	ImGui::Text("Render shaders:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", gpu.renderShaders.load());
+	ImGui::Text("Vertex buffers:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", gpu.vertexBuffers.load());
+	ImGui::Text("Index buffers:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", gpu.indexBuffers.load());
+	ImGui::Text("Frame buffers:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", gpu.frameBuffers.load());
+	ImGui::Text("G-buffers:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", gpu.gBuffers.load());
+	ImGui::Text("Textures:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", gpu.textures.load());
+	ImGui::Text("Cubemaps:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", gpu.cubemaps.load());
+	ImGui::Text("Samplers:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", gpu.samplers.load());
 	ImGui::End();
 }

@@ -53,6 +53,7 @@ target_link_libraries(gfx PUBLIC
 	assimp
 	md4c
 	bsthreadpool
+	fastnoiselite
 	tweeny)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${GFX_INCLUDES} ${GFX_SOURCES})

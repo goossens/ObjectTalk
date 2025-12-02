@@ -27,6 +27,7 @@ In case User Interface (UI) modules are included, we also use:
 * [PlutoVG](https://github.com/sammycage/plutovg) - standalone 2D vector graphics library in C released under the [MIT license](https://opensource.org/licenses/MIT).
 * [EnTT](https://github.com/skypjack/entt) - Entity Component System (ECS) by [Michele Caini](https://github.com/skypjack) released under the [MIT license](https://opensource.org/licenses/MIT).
 * [BS::thread_pool](https://github.com/bshoshany/thread-pool) - A fast, lightweight, and easy-to-use C++17 thread pool library released under the [MIT license](https://opensource.org/licenses/MIT).
+* [FastNoiseLite](https://github.com/Auburn/FastNoiseLite) - open source noise generation library with a large selection of noise algorithms released under the [MIT license](https://opensource.org/licenses/MIT).
 * [Jolt Physics](https://github.com/jrouwe/JoltPhysics) - A multi core friendly 3D rigid body physics and collision detection library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [Box2D](https://box2d.org) - 2D physics engine released under the [MIT license](https://opensource.org/licenses/MIT).
 * [assimp](https://github.com/assimp/assimp) - to import 3D models released under a [custom license](https://github.com/assimp/assimp/blob/master/LICENSE) based on the [3-clause BSD-License license](https://opensource.org/licenses/BSD-3-Clause).

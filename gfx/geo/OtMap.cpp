@@ -293,11 +293,11 @@ void OtMap::generateRegions() {
 	for (auto y = 1; y < map->size; y++) {
 		for (auto x = 1; x < map->size; x++) {
 			addRegion(
-				step * ((noise.perlin(
+				step * ((noise.noise(
 					static_cast<float>(x),
 					static_cast<float>(y),
 					static_cast<float>(map->seed + 1)) * 2.0f - 1.0f) * 0.49f + x),
-				step * ((noise.perlin(
+				step * ((noise.noise(
 					static_cast<float>(x),
 					static_cast<float>(y),
 					static_cast<float>(map->seed + 2)) * 2.0f - 1.0f) * 0.49f + y));
@@ -413,7 +413,7 @@ void OtMap::generateCorners() {
 
 void OtMap::assignWater() {
 	OtNoise noise;
-	noise.setStartFrequency(0.5f + 3.0f * map->ruggedness);
+	noise.setFrequency(0.5f + 3.0f * map->ruggedness);
 
 	auto size = static_cast<float>(map->size);
 	auto size2 = size / 2.0f;

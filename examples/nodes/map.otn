@@ -61,7 +61,7 @@
 					"id": 3612237621,
 					"name": "Seed",
 					"type": "int",
-					"value": 99
+					"value": 37
 				},
 				{
 					"id": 1799471862,
@@ -137,7 +137,7 @@
 					"id": 3043457080,
 					"name": "Size",
 					"type": "int",
-					"value": 512
+					"value": 1024
 				}
 			],
 			"outputs": [

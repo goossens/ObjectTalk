@@ -21,6 +21,7 @@ process(httplib)
 
 if(OT_INCLUDE_UI)
 	process(bsthreadpool)
+	process(fastnoiselite)
 	process(glslang)
 	process(spirvcross)
 	process(sdl)

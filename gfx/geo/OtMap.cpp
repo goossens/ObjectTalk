@@ -287,43 +287,44 @@ void OtMap::renderHeightMap(OtHeightMap& heightmap, int size) {
 
 void OtMap::generateRegions() {
 	OtNoise noise;
-	auto step = static_cast<float>(map->size) / static_cast<float>(map->size + 1);
 
 	// create internal regions
 	for (auto y = 1; y < map->size; y++) {
 		for (auto x = 1; x < map->size; x++) {
 			addRegion(
-				step * ((noise.noise(
+				x + (noise.noise(
 					static_cast<float>(x),
 					static_cast<float>(y),
-					static_cast<float>(map->seed + 1)) * 2.0f - 1.0f) * 0.49f + x),
-				step * ((noise.noise(
+					static_cast<float>(map->seed + 1)) * 2.0f - 1.0f) * 0.49f,
+				y + (noise.noise(
 					static_cast<float>(x),
 					static_cast<float>(y),
-					static_cast<float>(map->seed + 2)) * 2.0f - 1.0f) * 0.49f + y));
+					static_cast<float>(map->seed + 2)) * 2.0f - 1.0f) * 0.49f);
 		}
 	}
 
-	// create border regions
+	// create border regions (top and bottom)
 	for (auto x = 0; x <= map->size; x++) {
-		addBorderRegion(step * static_cast<float>(x), 0.0f);
-		addBorderRegion(step * static_cast<float>(x), step * static_cast<float>(map->size + 1));
+		addBorderRegion(static_cast<float>(x), 0.0f);
+		addBorderRegion(static_cast<float>(x), static_cast<float>(map->size));
 	}
 
+	// create border regions (left and right)
 	for (auto y = 1; y < map->size; y++) {
-		addBorderRegion(0.0f, step * static_cast<float>(y));
-		addBorderRegion(step * static_cast<float>(map->size + 1), step * static_cast<float>(y));
+		addBorderRegion(0.0f, static_cast<float>(y));
+		addBorderRegion(static_cast<float>(map->size), static_cast<float>(y));
 	}
 
-	// create ghost regions
+	// create ghost regions (top and bottom)
 	for (auto x = -1; x <= map->size + 1; x++) {
-		addGhostRegion(step * static_cast<float>(x), -10.0f);
-		addGhostRegion(step * static_cast<float>(x), step * static_cast<float>(map->size + 2));
+		addGhostRegion(static_cast<float>(x), -10.0f);
+		addGhostRegion(static_cast<float>(x), static_cast<float>(map->size + 10.0f));
 	}
 
+	// create ghost regions (left and right)
 	for (auto y = 0; y <= map->size; y++) {
-		addGhostRegion(step * -10.0f, step * static_cast<float>(y));
-		addGhostRegion(step * static_cast<float>(map->size + 2), step * static_cast<float>(y));
+		addGhostRegion(-10.0f, static_cast<float>(y));
+		addGhostRegion(static_cast<float>(map->size + 10.0f), static_cast<float>(y));
 	}
 
 	// perform Delaunay triangulation on regions
@@ -484,11 +485,11 @@ void OtMap::assignShores() {
 			for (auto neighbor : region.neighbors) {
 				if (map->regions[neighbor].ocean) {
 					region.oceanshore = true;
-					map->oceanshores.insert(neighbor);
+					map->oceanshores.insert(region.id);
 
 				} else if (map->regions[neighbor].lake) {
 					region.lakeshore = true;
-					map->lakeshores.insert(neighbor);
+					map->lakeshores.insert(region.id);
 				}
 			}
 		}
@@ -564,17 +565,25 @@ void OtMap::assignElevation() {
 		list.push_back(shore);
 	}
 
-	// process all other land regions
+	// process all other regions
 	while (!list.empty()) {
 		auto& region = map->regions[list.front()];
 		list.pop_front();
 
-		auto newElevation = region.elevation + (region.water ? 0.0f : 1.0f);
-
 		for (auto n : region.neighbors) {
 			auto& neighbor = map->regions[n];
 
-			if (!neighbor.ocean) {
+			if (neighbor.ocean) {
+				auto newElevation = region.elevation - 1.0f;
+
+				if (neighbor.elevation == invalidValue || newElevation > neighbor.elevation) {
+					neighbor.elevation = newElevation;
+					list.push_back(neighbor.id);
+				}
+
+			} else {
+				auto newElevation = region.elevation + (neighbor.lake ? 0.0f : 1.0f);
+
 				if (neighbor.elevation == invalidValue || newElevation < neighbor.elevation) {
 					neighbor.elevation = newElevation;
 					list.push_back(neighbor.id);
@@ -593,13 +602,6 @@ void OtMap::assignElevation() {
 		}
 	}
 
-	// assign ocean depth
-	for (auto& region : map->regions) {
-		if (region.ocean) {
-			region.elevation = -region.distance;
-		}
-	}
-
 	// find elevation limits
 	float minElevation = std::numeric_limits<float>::max();
 	float maxElevation = std::numeric_limits<float>::lowest();
@@ -612,11 +614,12 @@ void OtMap::assignElevation() {
 	// normalize elevations and redistribute
 	for (auto& region : map->regions) {
 		if (region.ocean) {
-			region.elevation = 0.5f * (region.elevation - minElevation) / minElevation;
+			float normalizedElevation = region.elevation / minElevation;
+			region.elevation = -std::pow(normalizedElevation, 1.5f);
 
 		} else {
 			float normalizedElevation = region.elevation / maxElevation;
-			region.elevation = normalizedElevation * normalizedElevation;
+			region.elevation = std::pow(normalizedElevation, 1.5f);
 		}
 	}
 

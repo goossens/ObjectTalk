@@ -173,15 +173,6 @@ private:
 	// utility functions
 	inline void addRegion(float x, float y) { map->regions.emplace_back(map->regions.size(), glm::vec2(x, y)); }
 
-	inline void addGhostRegion(float x, float y) {
-		auto id = map->regions.size();
-		auto& region = map->regions.emplace_back(id, glm::vec2(x, y));
-		region.ghost = true;
-		region.water = true;
-		region.ocean = true;
-		map->oceans.insert(id);
-	}
-
 	inline void addBorderRegion(float x, float y) {
 		auto id = map->regions.size();
 		auto& region = map->regions.emplace_back(id, glm::vec2(x, y));
@@ -189,6 +180,15 @@ private:
 		region.water = true;
 		region.ocean = true;
 		map->borders.insert(id);
+		map->oceans.insert(id);
+	}
+
+	inline void addGhostRegion(float x, float y) {
+		auto id = map->regions.size();
+		auto& region = map->regions.emplace_back(id, glm::vec2(x, y));
+		region.ghost = true;
+		region.water = true;
+		region.ocean = true;
 		map->oceans.insert(id);
 	}
 

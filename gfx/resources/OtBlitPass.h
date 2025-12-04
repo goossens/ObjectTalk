@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include "SDL3/SDL_gpu.h"
+#include "SDL3/SDL.h"
 
 #include "OtGpu.h"
 #include "OtTexture.h"

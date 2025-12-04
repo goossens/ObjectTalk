@@ -15,7 +15,7 @@
 #include <cstdint>
 
 #include "glm/glm.hpp"
-#include "SDL3/SDL_gpu.h"
+#include "SDL3/SDL.h"
 
 
 //

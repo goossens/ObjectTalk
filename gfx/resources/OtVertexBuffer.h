@@ -14,7 +14,7 @@
 
 #include <memory>
 
-#include "SDL3/SDL_gpu.h"
+#include "SDL3/SDL.h"
 
 #include "OtVertex.h"
 

@@ -16,7 +16,7 @@
 #include <memory>
 #include <vector>
 
-#include "SDL3/SDL_gpu.h"
+#include "SDL3/SDL.h"
 
 #include "OtComputePipeline.h"
 #include "OtCubeMap.h"

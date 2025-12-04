@@ -14,7 +14,6 @@
 #include <fstream>
 
 #include "stb_image.h"
-#include "SDL3/SDL_iostream.h"
 
 #include "OtAssert.h"
 #include "OtException.h"

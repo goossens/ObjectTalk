@@ -661,6 +661,7 @@
 		"type": "scene"
 	},
 	"processing": {
+		"backgroundFogRatio": 0.0,
 		"bloom": true,
 		"bloomIntensity": 0.6700000166893005,
 		"contrast": 1.1399999856948853,
@@ -671,7 +672,7 @@
 			0.5,
 			0.800000011920929
 		],
-		"fogDensity": 0.2199999988079071,
+		"fogDensity": 0.25,
 		"fxaa": true,
 		"godrays": true,
 		"tonemap": 3

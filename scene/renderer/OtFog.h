@@ -29,6 +29,7 @@ public:
 	inline void setInverseProjection(const glm::mat4& value) { invProj = value; }
 	inline void setFogColor(const glm::vec3& value) { fogColor = value; }
 	inline void setFogDensity(float value) { fogDensity = value; }
+	inline void setBackgroundFogRatio(float value) { backgroundFogRatio = value; }
 
 	// configure the compute pass
 	void configurePass(OtComputePass& pass) override {
@@ -45,10 +46,12 @@ public:
 			glm::mat4 invProj;
 			glm::vec3 fogColor;
 			float fogDensity;
+			float backgroundFogRatio;
 		} uniforms {
 			invProj,
 			fogColor,
-			fogDensity
+			fogDensity,
+			backgroundFogRatio
 		};
 
 		pass.addUniforms(&uniforms, sizeof(uniforms));
@@ -60,5 +63,6 @@ private:
 	glm::mat4 invProj{1.0f};
 	glm::vec3 fogColor{1.0f};
 	float fogDensity = 1.0f;
+	float backgroundFogRatio = 1.0f;
 	OtSampler depthSampler{OtSampler::Filter::nearest, OtSampler::Addressing::clamp};
 };

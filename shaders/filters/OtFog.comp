@@ -19,6 +19,7 @@ layout(std140, set=2, binding=0) uniform UBO {
 	mat4 invProj;
 	vec3 fogColor;
 	float fogDensity;
+	float backgroundFogRatio;
 };
 
 void main() {
@@ -35,7 +36,7 @@ void main() {
 	float depth = texture(inDepth, uv).x;
 	vec4 p = invProj * vec4(uvToClipSpace(uv, depth), 1.0f);
 	vec3 pos = p.xyz / p.w;
-	depth = length(pos);
+	depth = length(pos) * ((depth == 1.0) ? backgroundFogRatio : 1.0);
 
 	// determine fog amount
 	float d = (fogDensity / 100.0) * depth;

@@ -44,24 +44,14 @@
 					"uuid": 397016261
 				},
 				{
+					"component": "Image Based Lighting (IBL)",
+					"cubemap": "assets/sunset.hdr"
+				},
+				{
 					"brightness": 0.8199999928474426,
 					"component": "Sky Box",
 					"cubemap": "assets/sunset.hdr",
 					"gamma": 2.200000047683716
-				}
-			]
-		},
-		{
-			"children": [],
-			"components": [
-				{
-					"component": "Core",
-					"tag": "IBL",
-					"uuid": 1816997939
-				},
-				{
-					"component": "Image Based Lighting (IBL)",
-					"cubemap": "assets/sunset.hdr"
 				}
 			]
 		},
@@ -130,10 +120,11 @@
 		"type": "scene"
 	},
 	"processing": {
+		"backgroundFogRatio": 0.10000000149011612,
 		"bloom": true,
-		"bloomIntensity": 0.44999998807907104,
-		"contrast": 1.5099999904632568,
-		"exposure": 0.5299999713897705,
+		"bloomIntensity": 0.6399999856948853,
+		"contrast": 1.7100000381469727,
+		"exposure": 0.5799999833106995,
 		"fog": false,
 		"fogColor": [
 			0.4000000059604645,

@@ -71,6 +71,7 @@ OtTexture* OtPostProcessingPass::render(OtSceneRendererContext& ctx) {
 		fog.setInverseProjection(glm::inverse(ctx.camera.projectionMatrix));
 		fog.setFogColor(settings.fogColor);
 		fog.setFogDensity(settings.fogDensity);
+		fog.setBackgroundFogRatio(settings.backgroundFogRatio);
 		fog.render(*input, *output);
 		swap();
 	}

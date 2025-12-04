@@ -143,10 +143,10 @@
 					"dudv": "assets/dudvMap.png",
 					"level": 0.0,
 					"metallic": 0.0,
-					"normals": "assets/water.jpg",
+					"normals": "assets/normalMap.png",
 					"reflectivity": 7.409999847412109,
 					"roughness": 0.7599999904632568,
-					"scale": 80.0,
+					"scale": 100.0,
 					"speed": 2.0,
 					"useRefractance": true
 				}
@@ -158,14 +158,14 @@
 			"far": 5000.0,
 			"fov": 60.0,
 			"near": 1.0,
-			"pitch": -15.823806762695313,
+			"pitch": -15.556845664978027,
 			"position": [
-				1.2024078369140625,
-				14.835087776184082,
-				505.0217590332031
+				1.2499668598175049,
+				14.260221481323242,
+				505.2757568359375
 			],
 			"speed": 3.0,
-			"yaw": 49.42139434814453
+			"yaw": 47.55339431762695
 		},
 		"gizmo": {
 			"enabled": false,
@@ -184,6 +184,7 @@
 		"type": "scene"
 	},
 	"processing": {
+		"backgroundFogRatio": 0.0,
 		"bloom": true,
 		"bloomIntensity": 0.6299999952316284,
 		"contrast": 1.2000000476837158,
@@ -194,7 +195,7 @@
 			0.5,
 			0.800000011920929
 		],
-		"fogDensity": 0.0,
+		"fogDensity": 0.3400000035762787,
 		"fxaa": true,
 		"godrays": false,
 		"tonemap": 3

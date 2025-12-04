@@ -30,6 +30,7 @@ bool OtPostProcessingComponent::renderUI() {
 
 	if (fog) {
 		changed |= OtUi::dragFloat("Fog Density", &fogDensity);
+		changed |= OtUi::dragFloat("Background Fog", &backgroundFogRatio, 0.0f, 1.0f);
 		changed |= ImGui::ColorEdit3("Fog Color", glm::value_ptr(fogColor));
 	}
 
@@ -58,6 +59,7 @@ nlohmann::json OtPostProcessingComponent::serialize([[maybe_unused]] std::string
 	data["fxaa"] = fxaa;
 	data["fog"] = fog;
 	data["fogDensity"] = fogDensity;
+	data["backgroundFogRatio"] = backgroundFogRatio;
 	data["fogColor"] = fogColor;
 	data["bloom"] = bloom;
 	data["bloomIntensity"] = bloomIntensity;
@@ -77,6 +79,7 @@ void OtPostProcessingComponent::deserialize(nlohmann::json data, [[maybe_unused]
 	fxaa = data.value("fxaa", false);
 	fog = data.value("fog", false);
 	fogDensity = data.value("fogDensity", 0.1f);
+	backgroundFogRatio = data.value("backgroundFogRatio", 0.1f);
 	fogColor = data.value("fogColor", glm::vec3(0.4f, 0.5f, 0.8f));
 	bloom = data.value("bloom", false);
 	bloomIntensity = data.value("bloomIntensity", 0.8f);

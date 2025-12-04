@@ -37,6 +37,7 @@ public:
 	bool fxaa = false;
 	bool fog = false;
 	float fogDensity = 0.1f;
+	float backgroundFogRatio = 1.0f;
 	glm::vec3 fogColor = glm::vec3(0.4f, 0.5f, 0.8f);
 	bool bloom = false;
 	float bloomIntensity = 0.8f;

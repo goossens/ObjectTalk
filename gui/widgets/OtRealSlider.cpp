@@ -45,7 +45,7 @@ void OtRealSliderClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-		OtLogError("[RealSlider] constructor expects 0, 1, 2, 4 or 5 arguments (not {})", count);
+			OtLogError("[RealSlider] constructor expects 0, 1, 2, 4 or 5 arguments (not {})", count);
 	}
 }
 

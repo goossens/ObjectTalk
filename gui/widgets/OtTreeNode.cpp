@@ -37,7 +37,7 @@ void OtTreeNodeClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-		OtLogError("[TextField] constructor expects up to 2 arguments (not {})", count);
+			OtLogError("[TextField] constructor expects up to 2 arguments (not {})", count);
 	}
 }
 

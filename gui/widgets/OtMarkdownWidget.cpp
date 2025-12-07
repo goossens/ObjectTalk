@@ -31,7 +31,7 @@ void OtMarkdownWidgetClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-		OtLogError("[Markdown] constructor expects up to 1 argument (not {})", count);
+			OtLogError("[Markdown] constructor expects up to 1 argument (not {})", count);
 	}
 }
 

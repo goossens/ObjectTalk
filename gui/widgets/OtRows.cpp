@@ -42,7 +42,7 @@ void OtRowsClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-		OtLogError("[rows] constructor expects up to 3 arguments (not {})", count);
+			OtLogError("[rows] constructor expects up to 3 arguments (not {})", count);
 	}
 }
 

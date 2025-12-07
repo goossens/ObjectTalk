@@ -58,7 +58,7 @@ void OtFilmStripClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-		OtLogError("[FilmStrip] constructor expects up to 5 arguments (not {})", count);
+			OtLogError("[FilmStrip] constructor expects up to 5 arguments (not {})", count);
 	}
 }
 

@@ -41,7 +41,7 @@ void OtTextFieldClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-		OtLogError("[TextField] constructor expects up to 3 arguments (not {})", count);
+			OtLogError("[TextField] constructor expects up to 3 arguments (not {})", count);
 	}
 }
 

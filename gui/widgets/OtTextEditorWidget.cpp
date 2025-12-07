@@ -35,7 +35,7 @@ void OtTextEditorWidgetClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-		OtLogError("[TextEditor] constructor expects up to 2 arguments (not {})", count);
+			OtLogError("[TextEditor] constructor expects up to 2 arguments (not {})", count);
 	}
 }
 

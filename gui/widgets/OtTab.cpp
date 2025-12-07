@@ -33,7 +33,7 @@ void OtTabClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-		OtLogError("[Tab] constructor expects up to 1 argument (not {})", count);
+			OtLogError("[Tab] constructor expects up to 1 argument (not {})", count);
 	}
 }
 

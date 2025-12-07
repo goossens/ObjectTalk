@@ -32,7 +32,7 @@ void OtHeaderClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-		OtLogError("[Header] constructor expects up to 1 argument (not {})", count);
+			OtLogError("[Header] constructor expects up to 1 argument (not {})", count);
 	}
 }
 

@@ -49,7 +49,7 @@ void OtDialClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-		OtLogError("[Dial] constructor expects up to 4 arguments (not {})", count);
+			OtLogError("[Dial] constructor expects up to 4 arguments (not {})", count);
 	}
 }
 

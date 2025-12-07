@@ -35,7 +35,7 @@ void OtTextDiffWidgetClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-		OtLogError("[TextDiff] constructor expects0, 2 or 3 arguments (not {})", count);
+			OtLogError("[TextDiff] constructor expects0, 2 or 3 arguments (not {})", count);
 	}
 }
 

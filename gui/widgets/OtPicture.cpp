@@ -45,7 +45,7 @@ void OtPictureClass::init(size_t count, OtObject* parameters) {
 			break;
 
 		default:
-		OtLogError("[Picture] constructor expects up to 4 arguments (not {})", count);
+			OtLogError("[Picture] constructor expects up to 4 arguments (not {})", count);
 	}
 }
 

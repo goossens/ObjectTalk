@@ -27,7 +27,7 @@ class Zoo : Object {
 var zoo = Zoo();
 var sum = 0.0;
 var start = os.clock();
-var loops = 100000;
+var loops = 1000000;
 var c = 0;
 
 print("Running ", loops, " loops...");

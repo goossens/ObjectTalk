@@ -50,6 +50,9 @@ OtType OtSoundClass::getMeta() {
 		type->set("resume", OtFunction::create(&OtSoundClass::resume));
 		type->set("stop", OtFunction::create(&OtSoundClass::stop));
 
+		type->set("setGain", OtFunction::create(&OtSoundClass::setGain));
+		type->set("getGain", OtFunction::create(&OtSoundClass::getGain));
+
 		type->set("isPlaying", OtFunction::create(&OtSoundClass::isPlaying));
 	}
 

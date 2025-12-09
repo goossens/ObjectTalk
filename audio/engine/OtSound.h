@@ -39,6 +39,9 @@ public:
 	void stop();
 	bool isPlaying();
 
+	void setGain(float gain);
+	float getGain();
+
 private:
 	// properties
 	MIX_Audio* audio = nullptr;

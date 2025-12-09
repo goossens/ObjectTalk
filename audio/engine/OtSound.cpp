@@ -171,3 +171,33 @@ bool OtSound::isPlaying() {
 
 	return MIX_TrackPlaying(track);
 }
+
+
+//
+//	OtSound::setGain
+//
+
+void OtSound::setGain(float gain) {
+	// sanity check
+	if (!track) {
+		OtLogFatal("Invalid operation on uninitialized sound");
+	}
+
+	if (!MIX_SetTrackGain(track, gain)) {
+		OtLogFatal("Error in MIX_SetTrackGain: {}", SDL_GetError());
+	}
+}
+
+
+//
+//	OtSound::getGain
+//
+
+float OtSound::getGain() {
+	// sanity check
+	if (!track) {
+		OtLogFatal("Invalid operation on uninitialized sound");
+	}
+
+	return MIX_GetTrackGain(track);
+}

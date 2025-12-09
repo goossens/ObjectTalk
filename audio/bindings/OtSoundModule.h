@@ -43,6 +43,9 @@ public:
 	inline void stop() { sound.stop(); }
 	inline bool isPlaying() { return sound.isPlaying(); }
 
+	inline void setGain(float gain) { sound.setGain(gain); }
+	inline float getGain() { return sound.getGain(); }
+
 	// access raw sound
 	inline OtSound& getSound() { return sound; }
 

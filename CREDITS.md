@@ -17,6 +17,7 @@ been a lot harder to implement the project.
 In case User Interface (UI) modules are included, we also use:
 
 * [SDL3](https://github.com/libsdl-org/SDL) - cross-platform library designed to make it easy to write multi-media software released under the [zlib license](https://opensource.org/licenses/Zlib).
+* [SDL_mixer](https://github.com/libsdl-org/SDL_mixer) - an audio management library that provides decoding of many popular audio file formats, mixing, various DSP processing effects and positional audio. released under the [zlib license](https://opensource.org/licenses/Zlib).
 * [SDL_shadercross](https://github.com/libsdl-org/SDL_shadercross) - a library for translating shaders to different formats released under the [zlib license](https://opensource.org/licenses/Zlib).
 * [SPIRV-Cross](https://github.com/KhronosGroup/SPIRV-Cross) - a tool designed for parsing and converting SPIR-V to other shader languages released under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 * [Dear ImGui](https://github.com/ocornut/imgui) - graphical user interface library released under the [MIT license](https://opensource.org/licenses/MIT).

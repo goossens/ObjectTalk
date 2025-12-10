@@ -14,6 +14,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "glm/glm.hpp"
@@ -30,6 +31,7 @@
 #endif
 
 #include "manifold/manifold.h"
+#include "manifold/cross_section.h"
 
 #if defined __clang__
 #pragma clang diagnostic pop
@@ -94,6 +96,8 @@ public:
 	static OtManifold cube(float width, float height, float depth, bool center);
 	static OtManifold cylinder(float height, float bottomRadius, float topRadius, int segments, bool center);
 	static OtManifold sphere(float radius, int segments);
+
+	std::vector<OtManifold> decompose();
 	static OtManifold compose(std::vector<OtManifold>& manifolds);
 
 	// combine manifolds
@@ -104,6 +108,13 @@ public:
 	// 2D to 3D and visa versa
 	static OtManifold extrude(OtShape& shape, float height, int segments, float twistDegrees, float scaleTop, float tolerance);
 	static OtManifold revolve(OtShape& shape, int segments, float revolveDegrees, float tolerance);
+
+	OtShape slice(float height);
+	OtShape project();
+
+	// simplify/refine manifold based on to tolerance
+	OtManifold simplify(float tolerance);
+	OtManifold refine(float tolerance);
 
 	// transform manifold
 	OtManifold translate(float x, float y, float z);
@@ -116,9 +127,14 @@ public:
 	inline OtManifold scale(glm::vec3 xyz) { return scale(xyz.x, xyz.y, xyz.z); }
 	inline OtManifold mirror(glm::vec3 xyz) { return mirror(xyz.x, xyz.y, xyz.z); }
 
+	// combine/split manifold
 	OtManifold hull();
+	std::pair<OtManifold, OtManifold> split(glm::vec3 normal, float offset);
 
 	// get manifold information
+	inline float getSurfaceArea() { return static_cast<float>(manifold->SurfaceArea()); }
+	inline float getVolume() { return static_cast<float>(manifold->Volume()); }
+
 	inline size_t getVertexCount() { return manifold ? manifold->NumVert() : 0; }
 	inline size_t getTriangleCount() { return manifold ? manifold->NumTri() : 0; }
 

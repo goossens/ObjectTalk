@@ -241,6 +241,21 @@ OtManifold OtManifold::sphere(float radius, int segments) {
 
 
 //
+//	OtManifold::decompose
+//
+
+std::vector<OtManifold> OtManifold::decompose() {
+	std::vector<OtManifold> result;
+
+	for (auto& m : manifold->Decompose()) {
+		result.emplace_back(m);
+	}
+
+	return result;
+}
+
+
+//
 //	OtManifold::compose
 //
 
@@ -286,10 +301,10 @@ OtManifold OtManifold::intersectManifolds(OtManifold& other) {
 
 
 //
-//	ShapeToPolygons
+//	shapeToPolygons
 //
 
-static void ShapeToPolygons(manifold::Polygons& polygons, OtShape& shape, float tolerance) {
+static void shapeToPolygons(manifold::Polygons& polygons, OtShape& shape, float tolerance) {
 	// get the shape's path segments
 	std::vector<glm::vec2> points;
 	std::vector<size_t> sizes;
@@ -302,10 +317,33 @@ static void ShapeToPolygons(manifold::Polygons& polygons, OtShape& shape, float 
 		auto& polygon = polygons.emplace_back();
 
 		for (auto j = start; j < start + size - 1; j++) {
-			polygon.emplace_back(points[j].x, points[j].y);
+			polygon.emplace_back(static_cast<double>(points[j].x), static_cast<double>(points[j].y));
 		}
 
 		start += size;
+	}
+}
+
+
+//
+//	polygonsToShape
+//
+
+static void polygonsToShape(OtShape& shape, manifold::Polygons& polygons) {
+	for (auto& polygon : polygons) {
+		bool first = true;
+
+		for (auto& point : polygon) {
+			if (first) {
+				shape.moveTo(static_cast<float>(point.x), static_cast<float>(point.y));
+				first = false;
+
+			} else {
+				shape.lineTo(static_cast<float>(point.x), static_cast<float>(point.y));
+			}
+		}
+
+		shape.close();
 	}
 }
 
@@ -317,7 +355,7 @@ static void ShapeToPolygons(manifold::Polygons& polygons, OtShape& shape, float 
 OtManifold OtManifold::extrude(OtShape& shape, float height, int divisions, float twistDegrees, float scaleTop, float tolerance) {
 	// convert shape to polygons
 	manifold::Polygons polygons;
-	ShapeToPolygons(polygons, shape, tolerance);
+	shapeToPolygons(polygons, shape, tolerance);
 
 	// extrude and create manifold
 	return OtManifold(manifold::Manifold::Extrude(
@@ -336,10 +374,56 @@ OtManifold OtManifold::extrude(OtShape& shape, float height, int divisions, floa
 OtManifold OtManifold::revolve(OtShape& shape, int segments, float revolveDegrees, float tolerance) {
 	// convert shape to polygons
 	manifold::Polygons polygons;
-	ShapeToPolygons(polygons, shape, tolerance);
+	shapeToPolygons(polygons, shape, tolerance);
 
 	// extrude and create manifold
 	return OtManifold(manifold::Manifold::Revolve(polygons, segments, revolveDegrees).CalculateNormals(0));
+}
+
+
+//
+//	OtManifold::slice
+//
+
+OtShape OtManifold::slice(float height) {
+	auto polygons = manifold->Slice(static_cast<double>(height));
+
+	OtShape shape;
+	polygonsToShape(shape, polygons);
+	return shape;
+}
+
+
+//
+//	OtManifold::project
+//
+
+OtShape OtManifold::project() {
+	auto polygons = manifold->Project();
+	auto crossSection = manifold::CrossSection(polygons);
+	polygons = crossSection.ToPolygons();
+
+	OtShape shape;
+	polygonsToShape(shape, polygons);
+	return shape;
+}
+
+
+//
+//	OtManifold::simplify
+//
+
+OtManifold OtManifold::simplify(float tolerance) {
+	return OtManifold(manifold->Simplify(static_cast<double>(tolerance)));
+}
+
+
+//
+//	OtManifold::refine
+//
+
+OtManifold OtManifold::refine(float tolerance) {
+	return OtManifold(manifold->Refine(static_cast<double>(tolerance)));
 }
 
 
@@ -385,6 +469,22 @@ OtManifold OtManifold::mirror(float x, float y, float z) {
 
 OtManifold OtManifold::hull() {
 	return OtManifold(manifold->Hull().CalculateNormals(0));
+}
+
+
+//
+//	OtManifold::split
+//
+
+std::pair<OtManifold, OtManifold> OtManifold::split(glm::vec3 normal, float offset) {
+	auto result = manifold->SplitByPlane(
+		manifold::vec3(
+			static_cast<double>(normal.x),
+			static_cast<double>(normal.y),
+			static_cast<double>(normal.z)),
+		static_cast<double>(offset));
+
+	return std::pair<OtManifold, OtManifold>(result.first, result.second);
 }
 
 

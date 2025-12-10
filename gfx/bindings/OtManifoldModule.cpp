@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include "glm/glm.hpp"
+
 #include "OtArray.h"
 #include "OtClass.h"
 #include "OtFunction.h"
@@ -17,10 +19,23 @@
 #include "OtObject.h"
 #include "OtValue.h"
 
-#include "OtManifold.h"
 #include "OtManifoldModule.h"
 #include "OtShapeModule.h"
 
+
+//
+//	OtManifoldClass::decompose
+//
+
+OtObject OtManifoldClass::decompose() {
+	OtArray result = OtArray::create();
+
+	for (auto& m : manifold.decompose()) {
+		result->add(OtManifoldObject::create(m));
+	}
+
+	return result;
+}
 
 //
 //	OtManifoldClass::compose
@@ -45,6 +60,37 @@ OtObject OtManifoldClass::compose(OtObject array) {
 
 
 //
+//	OtManifoldClass::slice
+//
+
+OtObject OtManifoldClass::slice(float height) {
+	return OtShapeObject::create(manifold.slice(height));
+}
+
+
+//
+//	OtManifoldClass::project
+//
+
+OtObject OtManifoldClass::project() {
+	return OtShapeObject::create(manifold.project());
+}
+
+
+//
+//	OtManifoldClass::split
+//
+
+OtObject OtManifoldClass::split(float x, float y, float z, float d) {
+	auto manifolds = manifold.split(glm::vec3(x, y, z), d);
+	OtArray result = OtArray::create();
+	result->add(OtManifoldObject::create(manifolds.first));
+	result->add(OtManifoldObject::create(manifolds.second));
+	return result;
+}
+
+
+//
 //	OtManifoldClass::getMeta
 //
 
@@ -58,15 +104,27 @@ OtType OtManifoldClass::getMeta() {
 		type->set("load", OtFunction::create(&OtManifoldClass::load));
 		type->set("save", OtFunction::create(&OtManifoldClass::save));
 
-		type->set("union", OtFunction::create(&OtManifoldClass::unionManifolds));
-		type->set("difference", OtFunction::create(&OtManifoldClass::differenceManifolds));
-		type->set("intersect", OtFunction::create(&OtManifoldClass::intersectManifolds));
+		type->set("__add__", OtFunction::create(&OtManifoldClass::unionManifolds));
+		type->set("__sub__", OtFunction::create(&OtManifoldClass::differenceManifolds));
+		type->set("__pow__", OtFunction::create(&OtManifoldClass::intersectManifolds));
+
+		type->set("decompose", OtFunction::create(&OtManifoldClass::decompose));
+		type->set("slice", OtFunction::create(&OtManifoldClass::slice));
+		type->set("project", OtFunction::create(&OtManifoldClass::project));
+
+		type->set("simplify", OtFunction::create(&OtManifoldClass::simplify));
+		type->set("refine", OtFunction::create(&OtManifoldClass::refine));
 
 		type->set("translate", OtFunction::create(&OtManifoldClass::translate));
 		type->set("rotate", OtFunction::create(&OtManifoldClass::rotate));
 		type->set("scale", OtFunction::create(&OtManifoldClass::scale));
 		type->set("mirror", OtFunction::create(&OtManifoldClass::mirror));
+
+		type->set("split", OtFunction::create(&OtManifoldClass::split));
 		type->set("hull", OtFunction::create(&OtManifoldClass::hull));
+
+		type->set("getSurfaceArea", OtFunction::create(&OtManifoldClass::getSurfaceArea));
+		type->set("getVolume", OtFunction::create(&OtManifoldClass::getVolume));
 
 		type->set("getVertexCount", OtFunction::create(&OtManifoldClass::getVertexCount));
 		type->set("getTriangleCount", OtFunction::create(&OtManifoldClass::getTriangleCount));

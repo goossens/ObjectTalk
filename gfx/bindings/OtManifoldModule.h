@@ -47,6 +47,7 @@ public:
 		return OtManifoldObject::create(OtManifold::sphere(radius, segments));
 	}
 
+	OtObject decompose();
 	static OtObject compose(OtObject array);
 
 	static inline OtObject extrude(OtShape shape, float height, int divisions, float twistDegrees, float scaleTop, float tolerance) {
@@ -56,6 +57,14 @@ public:
 	static inline OtObject revolve(OtShape shape, int segments, float revolveDegrees, float tolerance) {
 		return OtManifoldObject::create(OtManifold::revolve(shape, segments, revolveDegrees, tolerance));
 	}
+
+	// 3D to 2D transforms
+	OtObject slice(float height);
+	OtObject project();
+
+	// simplify/refine manifold based on to tolerance
+	inline OtObject simplify(float tolerance) { return OtManifoldObject::create(manifold.simplify(tolerance)); }
+	inline OtObject refine(float tolerance) { return OtManifoldObject::create(manifold.refine(tolerance)); }
 
 	// combine manifolds
 	inline OtObject unionManifolds(OtManifold other) { return OtManifoldObject::create(manifold.unionManifolds(other)); }
@@ -68,9 +77,14 @@ public:
 	inline OtObject scale(float x, float y, float z) { return OtManifoldObject::create(manifold.scale(x, y, z)); }
 	inline OtObject mirror(float x, float y, float z) { return OtManifoldObject::create(manifold.mirror(x, y, z)); }
 
+	// combine/split manifold
+	OtObject split(float x, float y, float z, float d);
 	inline OtObject hull() { return OtManifoldObject::create(manifold.hull()); }
 
 	// get manifold information
+	inline float getSurfaceArea() { return manifold.getSurfaceArea(); }
+	inline float getVolume() { return manifold.getVolume(); }
+
 	inline size_t getVertexCount() { return manifold.getVertexCount(); }
 	inline size_t getTriangleCount() { return manifold.getTriangleCount(); }
 

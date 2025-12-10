@@ -6,10 +6,10 @@ include /manual.pug
 
 		+manual-body()
 			+manual-toc()
-				include:markdown scenes-reference/toc.md
+				include:markdown scenes/reference/toc.md
 
 			+manual-content()
 				+manual-chapter("reference", "Scenes Reference")
-					include:markdown scenes-reference/scenes.md
+					include:markdown scenes/reference/scenes.md
 
 		include common/footer.pug

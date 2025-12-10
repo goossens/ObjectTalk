@@ -1,0 +1,15 @@
+include /manual.pug
+
++page("HTTP Module")
+	+manual()
+		include common/header.pug
+
+		+manual-body()
+			+manual-toc()
+				include:markdown modules/manifold/toc.md
+
+			+manual-content()
+				+manual-chapter("overview", "HTTP Module")
+					include:markdown modules/manifold/overview.md
+
+		include common/footer.pug

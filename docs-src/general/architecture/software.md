@@ -113,7 +113,7 @@ Each node really feels like an object instance and drawing connections between t
 programming. Today, in ObjectTalk, the IDE has an node editor that allows you to setup nodes and connect
 them into a graph. These graphs are automatically reevaluated when values change. The examples folder
 contains image processing chains and nodes are used in the scene examples to process images or create geometry.
-ObjectTalk already has over 50 nodes already and many will follow depending on my needs.
+ObjectTalk already has over 90 nodes already and many will follow depending on my needs.
 
 **3D Scenes**
 

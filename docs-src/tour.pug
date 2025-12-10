@@ -6,16 +6,16 @@ include /manual.pug
 
 		+manual-body()
 			+manual-toc()
-				include:markdown tour/toc.md
+				include:markdown language/tour/toc.md
 
 			+manual-content()
 				+manual-chapter("about", "About ObjectTalk")
-					include:markdown tour/about.md
+					include:markdown language/tour/about.md
 
 				+manual-chapter("history", "Language History")
-					include:markdown tour/history.md
+					include:markdown language/tour/history.md
 
 				+manual-chapter("overview", "Language Overview")
-					include:markdown tour/overview.md
+					include:markdown language/tour/overview.md
 
 		include common/footer.pug

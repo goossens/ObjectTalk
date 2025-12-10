@@ -6,16 +6,16 @@ include /manual.pug
 
 		+manual-body()
 			+manual-toc()
-				include:markdown architecture/toc.md
+				include:markdown general/architecture/toc.md
 
 			+manual-content()
 				+manual-chapter("overview", "Architecture Overview")
-					include:markdown architecture/overview.md
+					include:markdown general/architecture/overview.md
 
 				+manual-chapter("software", "Software Architecture")
-					include:markdown architecture/software.md
+					include:markdown general/architecture/software.md
 
 				+manual-chapter("runtime", "Runtime Architecture")
-					include:markdown architecture/runtime.md
+					include:markdown general/architecture/runtime.md
 
 		include common/footer.pug

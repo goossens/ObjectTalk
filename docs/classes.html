@@ -91,7 +91,10 @@
                 >Modules</a
               >
               <div class="dropdown-menu" aria-labelledby="Modules">
-                <a class="nav-link page-scroll" href="http.html">HTTP</a>
+                <a class="nav-link page-scroll" href="http.html">HTTP</a
+                ><a class="nav-link page-scroll" href="manifold.html"
+                  >Manifold</a
+                >
               </div>
             </li>
             <li class="nav-item dropdown">
@@ -2552,7 +2555,7 @@ print(class.getName());
                   <td>import(module)</td>
                   <td>
                     Import a module into the current context. The module can
-                    refer to an internal module are a path to a user module.
+                    refer to an internal module or a path to a user module.
                   </td>
                 </tr>
                 <tr>
@@ -2616,7 +2619,7 @@ print(class.getName());
               (under the name <strong>debug</strong>) and can be used to enter
               the debugger or get state information while running.
             </p>
-            <pre><code>debug(); // enter the inteactive debugger.
+            <pre><code>debug(); // enter the interactive debugger by 'executing' the debug instance
 </code></pre>
             <p>
               When the interactive debugger state in entered, it depends on the
@@ -2624,6 +2627,11 @@ print(class.getName());
               was started from the command line, a command line based debugger
               is activated. If the script was launched from the IDE, a visual
               debugger is activated.
+            </p>
+            <p>
+              It is also possible not to interrupt program execution and get
+              information about the program state. This is done by executing the
+              following member functions on the debug instance.
             </p>
             <p><strong>Member Functions</strong></p>
             <table class="table table-striped">
@@ -2634,10 +2642,6 @@ print(class.getName());
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>debug()</td>
-                  <td>Enter the interactive debugger.</td>
-                </tr>
                 <tr>
                   <td>where()</td>
                   <td>Return the current execution location as a string.</td>

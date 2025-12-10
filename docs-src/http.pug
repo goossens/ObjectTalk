@@ -6,25 +6,25 @@ include /manual.pug
 
 		+manual-body()
 			+manual-toc()
-				include:markdown http/toc.md
+				include:markdown modules/http/toc.md
 
 			+manual-content()
 				+manual-chapter("overview", "HTTP Module")
-					include:markdown http/overview.md
+					include:markdown modules/http/overview.md
 
 				+manual-chapter("url", "URL")
-					include:markdown http/url.md
+					include:markdown modules/http/url.md
 
 				+manual-chapter("server", "Server")
-					include:markdown http/server.md
+					include:markdown modules/http/server.md
 
 				+manual-chapter("router", "Router")
-					include:markdown http/router.md
+					include:markdown modules/http/router.md
 
 				+manual-chapter("request", "Request")
-					include:markdown http/request.md
+					include:markdown modules/http/request.md
 
 				+manual-chapter("response", "Response")
-					include:markdown http/response.md
+					include:markdown modules/http/response.md
 
 		include common/footer.pug

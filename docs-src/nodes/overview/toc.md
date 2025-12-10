@@ -1,5 +1,5 @@
 **Overview**
-* [Introduction](#introduction)
+* [Introduction](#overview)
 * [Node Anatomy](#node-anatomy)
 * [Node Categories](#node-categories)
 * [Pin Type](#pin-types)

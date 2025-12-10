@@ -6,37 +6,37 @@ include /manual.pug
 
 		+manual-body()
 			+manual-toc()
-				include:markdown guide/toc.md
+				include:markdown language/guide/toc.md
 
 			+manual-content()
 				+manual-chapter("overview",  " ObjectTalk Language Guide")
-					include:markdown guide/overview.md
+					include:markdown language/guide/overview.md
 
 				+manual-chapter("basics", "The Basics")
-					include:markdown guide/basics.md
+					include:markdown language/guide/basics.md
 
 				+manual-chapter("collections", "Collections")
-					include:markdown guide/collections.md
+					include:markdown language/guide/collections.md
 
 				+manual-chapter("operators", "Operators")
-					include:markdown guide/operators.md
+					include:markdown language/guide/operators.md
 
 				+manual-chapter("flow", "Control Flow")
-					include:markdown guide/flow.md
+					include:markdown language/guide/flow.md
 
 				+manual-chapter("scope", "Scope")
-					include:markdown guide/scope.md
+					include:markdown language/guide/scope.md
 
 				+manual-chapter("modules", "Modules")
-					include:markdown guide/modules.md
+					include:markdown language/guide/modules.md
 
 				+manual-chapter("classes", "Classes")
-					include:markdown guide/classes.md
+					include:markdown language/guide/classes.md
 
 				+manual-chapter("functions", "Functions")
-					include:markdown guide/functions.md
+					include:markdown language/guide/functions.md
 
 				+manual-chapter("closures", "Closures")
-					include:markdown guide/closures.md
+					include:markdown language/guide/closures.md
 
 		include common/footer.pug

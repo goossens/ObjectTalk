@@ -6,22 +6,22 @@ include /manual.pug
 
 		+manual-body()
 			+manual-toc()
-				include:markdown nodes-overview/toc.md
+				include:markdown nodes/overview/toc.md
 
 			+manual-content()
 				+manual-chapter("overview",  "Nodes Overview")
-					include:markdown nodes-overview/overview.md
+					include:markdown nodes/overview/overview.md
 
 				+manual-chapter("node-anatomy",  "Node Anatomy")
-					include:markdown nodes-overview/node-anatomy.md
+					include:markdown nodes/overview/node-anatomy.md
 
 				+manual-chapter("node-categories",  "Node Categories")
-					include:markdown nodes-overview/node-categories.md
+					include:markdown nodes/overview/node-categories.md
 
 				+manual-chapter("pin-types",  "Pin Types")
-					include:markdown nodes-overview/pin-types.md
+					include:markdown nodes/overview/pin-types.md
 
 				+manual-chapter("data-flows",  "Data Flows")
-					include:markdown nodes-overview/data-flows.md
+					include:markdown nodes/overview/data-flows.md
 
 		include common/footer.pug

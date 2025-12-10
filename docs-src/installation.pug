@@ -6,22 +6,22 @@ include /manual.pug
 
 		+manual-body()
 			+manual-toc()
-				include:markdown installation/toc.md
+				include:markdown general/installation/toc.md
 
 			+manual-content()
 				+manual-chapter("overview", "Installation")
-					include:markdown installation/overview.md
+					include:markdown general/installation/overview.md
 
 				+manual-chapter("macos", "Build and Install on MacOS")
-					include:markdown installation/macos.md
+					include:markdown general/installation/macos.md
 
 				+manual-chapter("linux", "Build and Install on Linux")
-					include:markdown installation/linux.md
+					include:markdown general/installation/linux.md
 
 				+manual-chapter("windows", "Build and Install on Windows")
-					include:markdown installation/windows.md
+					include:markdown general/installation/windows.md
 
 				+manual-chapter("running", "Running ObjectTalk")
-					include:markdown installation/running.md
+					include:markdown general/installation/running.md
 
 		include common/footer.pug

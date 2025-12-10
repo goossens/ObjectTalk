@@ -20,7 +20,7 @@ core classes and instances of core classes as a convenience.
 | ------ | ----------- |
 | assert(expression) | Evaluates the expression and terminates the program with an error if false. |
 | addImportPath(path) | Add the specified path to the import search path. Helpful to find module in non-standard locations |
-| import(module) | Import a module into the current context. The module can refer to an internal module are a path to a user module. |
+| import(module) | Import a module into the current context. The module can refer to an internal module or a path to a user module. |
 | range() | Returns a number iterator. If called with one parameter, the iterator yields to number from 0 to n-1. If called with two parameters, the iterator yields number from the first to the last. If called with three parameters, the first indicates the start, the second indicates the end and the third indicates the step. Step in this case may be a negative number to create a reverse number iterator. |
 | print(text[, ...]) | Prints each value to stdout as well as a linefeed. |
 | members() | Returns the members of an object. If the object is a **Class** class, it returns the class members. |

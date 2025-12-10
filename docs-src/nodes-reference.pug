@@ -6,43 +6,43 @@ include /manual.pug
 
 		+manual-body()
 			+manual-toc()
-				include:markdown nodes-reference/toc.md
+				include:markdown nodes/reference/toc.md
 
 			+manual-content()
 				+manual-chapter("reference", "Nodes Reference")
-					include:markdown nodes-reference/nodes.md
+					include:markdown nodes/reference/nodes.md
 
 				+manual-chapter("field", "Field Nodes")
-					include:markdown nodes-reference/field/doc.md
+					include:markdown nodes/reference/field/doc.md
 
 				+manual-chapter("geometry", "Geometry Nodes")
-					include:markdown nodes-reference/geometry/doc.md
+					include:markdown nodes/reference/geometry/doc.md
 
 				+manual-chapter("input", "Input Nodes")
-					include:markdown nodes-reference/input/doc.md
+					include:markdown nodes/reference/input/doc.md
 
 				+manual-chapter("manifold", "Manifold Nodes")
-					include:markdown nodes-reference/manifold/doc.md
+					include:markdown nodes/reference/manifold/doc.md
 
 				+manual-chapter("map", "Map Nodes")
-					include:markdown nodes-reference/map/doc.md
+					include:markdown nodes/reference/map/doc.md
 
 				+manual-chapter("math", "Math Nodes")
-					include:markdown nodes-reference/math/doc.md
+					include:markdown nodes/reference/math/doc.md
 
 				+manual-chapter("probe", "Probe Nodes")
-					include:markdown nodes-reference/probe/doc.md
+					include:markdown nodes/reference/probe/doc.md
 
 				+manual-chapter("save", "Save Nodes")
-					include:markdown nodes-reference/save/doc.md
+					include:markdown nodes/reference/save/doc.md
 
 				+manual-chapter("shape", "Shape Nodes")
-					include:markdown nodes-reference/shape/doc.md
+					include:markdown nodes/reference/shape/doc.md
 
 				+manual-chapter("texture", "Texture Nodes")
-					include:markdown nodes-reference/texture/doc.md
+					include:markdown nodes/reference/texture/doc.md
 
 				+manual-chapter("virtualize", "Virtualize Nodes")
-					include:markdown nodes-reference/virtualize/doc.md
+					include:markdown nodes/reference/virtualize/doc.md
 
 		include common/footer.pug

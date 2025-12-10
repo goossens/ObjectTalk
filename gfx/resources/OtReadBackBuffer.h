@@ -27,10 +27,10 @@ public:
 	// clear the data
 	void clear();
 
-	// readback the specified texture
+	// read back the specified texture
 	OtImage& readback(OtTexture& texture);
 
-	// readback part of the specified texture
+	// read back part of the specified texture
 	OtImage& readback(OtTexture& texture, int x, int y, int w, int h);
 
 	// get properties

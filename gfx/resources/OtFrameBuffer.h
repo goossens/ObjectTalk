@@ -27,7 +27,7 @@
 //	OtFrameBuffer
 //
 
-class OtFrameBuffer : OtRenderTarget {
+class OtFrameBuffer : public OtRenderTarget {
 public:
 	// constructors/destructor
 	OtFrameBuffer();

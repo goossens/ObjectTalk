@@ -75,7 +75,7 @@ void OtMesh::load(const std::string& path) {
 		OtLogError("Incomplete mesh [{}]", path);
 	}
 
-	// load all the meshes
+	// import all the meshes
 	int offset = 0;
 	bool needsTangents = false;
 

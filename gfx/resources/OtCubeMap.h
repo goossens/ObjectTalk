@@ -83,7 +83,7 @@ private:
 	bool mip = false;
 	int version = 0;
 
-	// temporary variable for async loading from files
+	// temporary variables for async loading from files
 	uv_async_t* asyncHandle = nullptr;
 	std::unique_ptr<std::byte[]> imageData;
 	std::unique_ptr<OtImage> asyncImage;

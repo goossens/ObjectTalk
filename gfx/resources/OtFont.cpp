@@ -42,18 +42,18 @@ void OtFont::load(const std::string& path) {
 	}
 
 	auto filesize = OtPath::getFileSize(path);
-	fontdata = std::make_shared<FontData>(filesize);
+	fontData = std::make_shared<FontData>(filesize);
 	std::ifstream stream(path.c_str(), std::ios::binary);
-	stream.read((char*) fontdata->bytes.data(), filesize);
+	stream.read((char*) fontData->bytes.data(), filesize);
 
 	if (!stream) {
-		fontdata.reset();
+		fontData.reset();
 		OtLogError("Can't open font in [{}]", path);
 	}
 
 	// prepare font
-	if (!stbtt_InitFont(&fontdata->font, fontdata->bytes.data(), 0)) {
-		fontdata.reset();
+	if (!stbtt_InitFont(&fontData->font, fontData->bytes.data(), 0)) {
+		fontData.reset();
 		OtLogError("Can't process font [{}]", path);
 	}
 }
@@ -64,8 +64,8 @@ void OtFont::load(const std::string& path) {
 //
 
 bool OtFont::hasCodePoint(int32_t codepoint) {
-	OtAssert(fontdata);
-	return stbtt_FindGlyphIndex(&fontdata->font, codepoint) != 0;
+	OtAssert(fontData);
+	return stbtt_FindGlyphIndex(&fontData->font, codepoint) != 0;
 }
 
 
@@ -75,7 +75,7 @@ bool OtFont::hasCodePoint(int32_t codepoint) {
 
 float OtFont::getWidth(const std::string& text, float size) {
 	// sanity check
-	OtAssert(fontdata);
+	OtAssert(fontData);
 
 	// process all unicode characters (codepoints)
 	int width = 0;
@@ -89,12 +89,12 @@ float OtFont::getWidth(const std::string& text, float size) {
 		// get character width
 		int advanceWidth;
 		int leftSideBearing;
-		stbtt_GetCodepointHMetrics(&fontdata->font, codepoint, &advanceWidth, &leftSideBearing);
+		stbtt_GetCodepointHMetrics(&fontData->font, codepoint, &advanceWidth, &leftSideBearing);
 		width += advanceWidth;
 	}
 
 	// scale result
-	return stbtt_ScaleForPixelHeight(&fontdata->font, size) * static_cast<float>(width);
+	return stbtt_ScaleForPixelHeight(&fontData->font, size) * static_cast<float>(width);
 }
 
 
@@ -114,13 +114,13 @@ void OtFont::parseGlyphs(
 #define Y(y) (y * scale)
 
 	// sanity check
-	OtAssert(fontdata);
+	OtAssert(fontData);
 
 	// horizontal character offset
 	int offset = 0;
 
 	// determine scaling factor
-	float scale = stbtt_ScaleForPixelHeight(&fontdata->font, size);
+	float scale = stbtt_ScaleForPixelHeight(&fontData->font, size);
 
 	// process all unicode characters (codepoints)
 	auto end = text.end();
@@ -132,7 +132,7 @@ void OtFont::parseGlyphs(
 
 		// process all vertices (drawing commands) for this codepoint
 		stbtt_vertex* verts;
-		int count = stbtt_GetCodepointShape(&fontdata->font, codepoint, &verts);
+		int count = stbtt_GetCodepointShape(&fontData->font, codepoint, &verts);
 
 		for (auto c = 0; c < count; c++) {
 			switch (verts[c].type) {
@@ -157,7 +157,7 @@ void OtFont::parseGlyphs(
 		// advance the charector offset
 		int advanceWidth;
 		int leftSideBearing;
-		stbtt_GetCodepointHMetrics(&fontdata->font, codepoint, &advanceWidth, &leftSideBearing);
+		stbtt_GetCodepointHMetrics(&fontData->font, codepoint, &advanceWidth, &leftSideBearing);
 		offset += advanceWidth;
 	}
 

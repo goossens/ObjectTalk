@@ -41,7 +41,7 @@ public:
 	void load(const std::string& path);
 	void save(const std::string& path);
 
-	// add vertices/indices to the geometry
+	// add vertices/indices to the mesh
 	inline void addVertex(const OtVertex& vertex) {
 		vertices.emplace_back(vertex);
 		aabb.addPoint(vertex.position);

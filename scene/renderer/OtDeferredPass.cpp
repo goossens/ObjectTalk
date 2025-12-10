@@ -286,7 +286,7 @@ void OtDeferredPass::initializeResources() {
 	animatedPipeline.setShaders(OtDeferredAnimatedVert, sizeof(OtDeferredAnimatedVert), OtDeferredPbrFrag, sizeof(OtDeferredPbrFrag));
 	animatedPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::gBuffer);
 	animatedPipeline.setVertexDescription(OtVertex::getDescription());
-	animatedPipeline.setAnimatedDescription(OtVertexBones::getDescription());
+	animatedPipeline.setAnimationDescription(OtVertexBones::getDescription());
 	animatedPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
 	animatedPipeline.setCulling(OtRenderPipeline::Culling::cw);
 

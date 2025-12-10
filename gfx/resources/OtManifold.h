@@ -65,7 +65,7 @@
 //	to a Mesh or Geometry, this class automatically converts the vertex coordinates to the right-handed
 //	Y-up coordinate system.
 //
-//	In ObjectTalk, Manifolds are used in Nodes to interactively create models that can be rendered.
+//	In ObjectTalk, Manifolds are used in Scripts and Nodes to create models that can be rendered.
 //
 
 

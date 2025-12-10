@@ -21,7 +21,7 @@
 //
 
 void OtCascadedShadowMap::update(OtCamera& camera, const glm::vec3& lightDirection, int size) {
-	// create resources (if required)
+	// create framebuffers (if required)
 	if (!isValid()) {
 		for (auto& cascade : cascades) {
 			cascade.framebuffer.initialize(OtTexture::Format::none, OtTexture::Format::d32);

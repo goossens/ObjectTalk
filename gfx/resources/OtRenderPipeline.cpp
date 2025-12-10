@@ -40,11 +40,11 @@ void OtRenderPipeline::setVertexDescription(OtVertexDescription* description) {
 
 
 //
-//	OtRenderPipeline::setAnimatedDescription
+//	OtRenderPipeline::setAnimationDescription
 //
 
-void OtRenderPipeline::setAnimatedDescription(OtVertexDescription* description) {
-	animatedDescription = description;
+void OtRenderPipeline::setAnimationDescription(OtVertexDescription* description) {
+	animationDescription = description;
 	pipeline = nullptr;
 }
 
@@ -177,7 +177,7 @@ void OtRenderPipeline::clear() {
 	fragmentShaderSize = 0;
 
 	vertexDescription = nullptr;
-	animatedDescription = nullptr;
+	animationDescription = nullptr;
 	instanceDescription = nullptr;
 	renderTargetType = RenderTargetType::rgba8d32;
 	culling = Culling::cw;
@@ -265,15 +265,15 @@ SDL_GPUGraphicsPipeline* OtRenderPipeline::getPipeline() {
 			descriptionCount++;
 		}
 
-		if (animatedDescription) {
-			for (size_t i = 0; i < animatedDescription->members; i++) {
-				auto& attribute = attributes.emplace_back(animatedDescription->attributes[i]);
+		if (animationDescription) {
+			for (size_t i = 0; i < animationDescription->members; i++) {
+				auto& attribute = attributes.emplace_back(animationDescription->attributes[i]);
 				attribute.buffer_slot = static_cast<Uint32>(descriptionCount);
 				attribute.location = static_cast<Uint32>(attributes.size() - 1);
 			}
 
 			bufferDescriptions[descriptionCount].slot = static_cast<Uint32>(descriptionCount);
-			bufferDescriptions[descriptionCount].pitch = static_cast<Uint32>(animatedDescription->size);
+			bufferDescriptions[descriptionCount].pitch = static_cast<Uint32>(animationDescription->size);
 			bufferDescriptions[descriptionCount].input_rate = SDL_GPU_VERTEXINPUTRATE_VERTEX;
 			descriptionCount++;
 		}

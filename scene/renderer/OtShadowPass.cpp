@@ -189,7 +189,7 @@ void OtShadowPass::initializeResources() {
 	animatedPipeline.setShaders(OtSimpleAnimatedVert, sizeof(OtSimpleAnimatedVert), OtShadowOpaqueFrag, sizeof(OtShadowOpaqueFrag));
 	animatedPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::d32);
 	animatedPipeline.setVertexDescription(OtVertex::getDescription());
-	animatedPipeline.setAnimatedDescription(OtVertexBones::getDescription());
+	animatedPipeline.setAnimationDescription(OtVertexBones::getDescription());
 	animatedPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
 	animatedPipeline.setCulling(OtRenderPipeline::Culling::cw);
 

@@ -159,7 +159,7 @@ void OtOcclusionPass::initializeResources() {
 	animatedPipeline.setShaders(OtSimpleAnimatedVert, sizeof(OtSimpleAnimatedVert), OtOcclusionOpaqueFrag, sizeof(OtOcclusionOpaqueFrag));
 	animatedPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8);
 	animatedPipeline.setVertexDescription(OtVertex::getDescription());
-	animatedPipeline.setAnimatedDescription(OtVertexBones::getDescription());
+	animatedPipeline.setAnimationDescription(OtVertexBones::getDescription());
 	animatedPipeline.setCulling(OtRenderPipeline::Culling::cw);
 
 	terrainCullingPipeline.setShaders(OtSimpleTerrainVert, sizeof(OtSimpleTerrainVert), OtOcclusionOpaqueFrag, sizeof(OtOcclusionOpaqueFrag));

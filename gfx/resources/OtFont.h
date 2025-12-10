@@ -32,10 +32,10 @@ public:
 	OtFont(const std::string& path) { load(path); }
 
 	// clear the resources
-	inline void clear() { fontdata.reset(); }
+	inline void clear() { fontData.reset(); }
 
 	// see if font is ready to go
-	inline bool isValid() { return fontdata != nullptr; }
+	inline bool isValid() { return fontData != nullptr; }
 
 	// load the font
 	void load(const std::string& path);
@@ -57,7 +57,7 @@ public:
 
 	// see if fonts are identical
 	inline bool operator==(OtFont& rhs) {
-		return fontdata == rhs.fontdata;
+		return fontData == rhs.fontData;
 	}
 
 	inline bool operator!=(OtFont& rhs) {
@@ -72,5 +72,5 @@ private:
 		stbtt_fontinfo font;
 	};
 
-	std::shared_ptr<FontData> fontdata;
+	std::shared_ptr<FontData> fontData;
 };

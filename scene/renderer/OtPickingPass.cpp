@@ -247,7 +247,7 @@ void OtPickingPass::initializeResources() {
 	animatedPipeline.setShaders(OtSimpleAnimatedVert, sizeof(OtSimpleAnimatedVert), OtPickingOpaqueFrag, sizeof(OtPickingOpaqueFrag));
 	animatedPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::r8d32);
 	animatedPipeline.setVertexDescription(OtVertex::getDescription());
-	animatedPipeline.setAnimatedDescription(OtVertexBones::getDescription());
+	animatedPipeline.setAnimationDescription(OtVertexBones::getDescription());
 	animatedPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
 	animatedPipeline.setCulling(OtRenderPipeline::Culling::cw);
 

@@ -79,7 +79,7 @@ void OtPostProcessingComponent::deserialize(nlohmann::json data, [[maybe_unused]
 	fxaa = data.value("fxaa", false);
 	fog = data.value("fog", false);
 	fogDensity = data.value("fogDensity", 0.1f);
-	backgroundFogRatio = data.value("backgroundFogRatio", 0.1f);
+	backgroundFogRatio = data.value("backgroundFogRatio", 1.0f);
 	fogColor = data.value("fogColor", glm::vec3(0.4f, 0.5f, 0.8f));
 	bloom = data.value("bloom", false);
 	bloomIntensity = data.value("bloomIntensity", 0.8f);

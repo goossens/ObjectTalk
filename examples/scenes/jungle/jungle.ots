@@ -79,12 +79,12 @@
 					"uuid": 312324165
 				},
 				{
-					"azimuth": 293.47900390625,
+					"azimuth": 283.0,
 					"castShadow": true,
 					"cirrus": 0.5199999809265137,
 					"component": "Sky",
 					"cumulus": 0.5720000267028809,
-					"elevation": 31.30500030517578,
+					"elevation": 35.29999923706055,
 					"mieCoefficient": 5.451000213623047,
 					"mieScattering": 0.9900000095367432,
 					"rayleighCoefficient": 2.753000020980835,

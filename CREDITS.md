@@ -22,7 +22,8 @@ In case User Interface (UI) modules are included, we also use:
 * [SPIRV-Cross](https://github.com/KhronosGroup/SPIRV-Cross) - a tool designed for parsing and converting SPIR-V to other shader languages released under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 * [Dear ImGui](https://github.com/ocornut/imgui) - graphical user interface library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) - file selection dialog for Dear ImGui released under the [MIT license](https://opensource.org/licenses/MIT).
-* [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) - Gizmo to visually manipulate 4x4 matrices released under the [MIT license](https://opensource.org/licenses/MIT).
+* [ImGui Knobs](https://github.com/altschuler/imgui-knobs) - library for designing knobs for Dear ImGui released under the [MIT license](https://opensource.org/licenses/MIT).
+* [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) - gizmo to visually manipulate 4x4 matrices released under the [MIT license](https://opensource.org/licenses/MIT).
 * [glm](https://github.com/g-truc/glm) - mathematics library for graphics software released under the [MIT license](https://opensource.org/licenses/MIT).
 * [libtess2](https://github.com/memononen/libtess2) - library to convert (tessellate) polygons into triangles by [Mikko Mononen](https://github.com/memononen) released under the [SGI Free Software License B, version 2](https://directory.fsf.org/wiki/License:SGI-B-2.0)
 * [PlutoVG](https://github.com/sammycage/plutovg) - standalone 2D vector graphics library in C released under the [MIT license](https://opensource.org/licenses/MIT).

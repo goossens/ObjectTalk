@@ -42,6 +42,7 @@ target_link_libraries(gfx PUBLIC
 	shadercross
 	imgui
 	imguifd
+	imguiknobs
 	imguiwidgets
 	glm
 	delaunator

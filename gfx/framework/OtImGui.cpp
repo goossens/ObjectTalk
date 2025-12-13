@@ -19,6 +19,7 @@
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlgpu3.h"
+#include "implot.h"
 
 #include "OtDejaVu.h"
 #include "OtFramework.h"
@@ -33,6 +34,7 @@ void OtFramework::initIMGUI() {
 	// setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
+	ImPlot::CreateContext();
 
 	// deactivate Dear ImGui automatic .ini file handling
 	auto& io = ImGui::GetIO();
@@ -154,6 +156,7 @@ void OtFramework::endFrameIMGUI() {
 void OtFramework::endIMGUI() {
 	ImGui_ImplSDLGPU3_Shutdown();
 	ImGui_ImplSDL3_Shutdown();
+	ImPlot::DestroyContext();
 	ImGui::DestroyContext();
 }
 

@@ -44,6 +44,7 @@ target_link_libraries(gfx PUBLIC
 	imguifd
 	imguiknobs
 	imguiwidgets
+	implot
 	glm
 	delaunator
 	tess2

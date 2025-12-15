@@ -97,7 +97,7 @@ public:
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 private:
-	// proterties
+	// properties
 	OtManifold manifold;
 	std::string errorMessage;
 };

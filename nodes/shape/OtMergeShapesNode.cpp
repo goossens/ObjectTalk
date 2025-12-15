@@ -42,7 +42,7 @@ public:
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 private:
-	// proterties
+	// properties
 	OtShape a;
 	OtShape b;
 	OtShape output;

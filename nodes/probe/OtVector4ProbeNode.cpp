@@ -36,7 +36,7 @@ public:
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 private:
-	// proterties
+	// properties
 	glm::vec4 value{0.0f};
 };
 

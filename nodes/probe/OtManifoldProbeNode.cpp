@@ -122,7 +122,7 @@ public:
 	static constexpr float size = 170.0f;
 
 private:
-	// proterties
+	// properties
 	OtManifold manifold;
 	OtMesh mesh;
 

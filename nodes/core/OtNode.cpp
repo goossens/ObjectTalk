@@ -74,6 +74,7 @@ void OtNodeClass::deserialize(nlohmann::json data, bool restoreIDs, std::string*
 			auto n = input["name"];
 			auto t = input["type"];
 			auto t1 = pin->getTypeName();
+
 			if (input["name"] == pin->name && input["type"] == pin->getTypeName()) {
 				pin->deserialize(input, restoreIDs, basedir);
 			}

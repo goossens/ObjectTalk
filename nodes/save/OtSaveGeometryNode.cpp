@@ -73,7 +73,7 @@ public:
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 private:
-	// proterties
+	// properties
 	OtGeometry geometry;
 };
 

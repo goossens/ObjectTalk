@@ -119,7 +119,7 @@ public:
 	static constexpr float size = 170.0f;
 
 private:
-	// proterties
+	// properties
 	OtGeometry geometry;
 
 	OtMeshPreview preview;

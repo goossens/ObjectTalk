@@ -56,7 +56,7 @@ public:
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::varying;
 
 private:
-	// proterties
+	// properties
 	size_t id = 0;
 	int seed = 1;
 	float minValue = 0.0f;

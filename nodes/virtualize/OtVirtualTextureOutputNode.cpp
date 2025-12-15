@@ -52,7 +52,7 @@ public:
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 private:
-	// proterties
+	// properties
 	OtTexture texture;
 	std::string name;
 	OtAsset<OtTextureAsset> asset;

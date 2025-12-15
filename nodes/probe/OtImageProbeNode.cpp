@@ -83,7 +83,7 @@ public:
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 private:
-	// proterties
+	// properties
 	OtImage image;
 	OtTexture texture;
 	float customW;

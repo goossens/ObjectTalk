@@ -85,7 +85,7 @@ public:
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 private:
-	// proterties
+	// properties
 	OtShape shape;
 	OtImage image;
 	OtTexture texture;

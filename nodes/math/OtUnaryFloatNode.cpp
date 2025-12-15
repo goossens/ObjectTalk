@@ -100,7 +100,7 @@ public:
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::flexible;
 
 private:
-	// proterties
+	// properties
 	enum class Operator {
 		neg,
 		abs,

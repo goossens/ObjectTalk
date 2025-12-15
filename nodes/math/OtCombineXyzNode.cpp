@@ -38,7 +38,7 @@ public:
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::flexible;
 
 private:
-	// proterties
+	// properties
 	float x{0.0f};
 	float y{0.0f};
 	float z{0.0f};

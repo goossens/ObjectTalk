@@ -134,7 +134,7 @@ public:
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 private:
-	// proterties
+	// properties
 	OtShape shape;
 	float depth = 1.0f;
 	float tolerance = 0.25f;

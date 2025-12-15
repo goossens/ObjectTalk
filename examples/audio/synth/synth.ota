@@ -1,0 +1,120 @@
+{
+	"circuits": [
+		{
+			"id": 2557146591,
+			"inputs": [
+				{
+					"id": 3360538592,
+					"name": "Frequency",
+					"type": "control"
+				},
+				{
+					"id": 3503788378,
+					"name": "Pulse With",
+					"type": "control"
+				}
+			],
+			"outputs": [
+				{
+					"id": 410275450,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"title": "VCO",
+			"type": "VCO",
+			"waveForm": 0,
+			"x": 198.0,
+			"y": 276.0
+		},
+		{
+			"id": 1460307938,
+			"inputs": [
+				{
+					"id": 3978828348,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"outputs": [
+				{
+					"id": 1492965834,
+					"name": "Output",
+					"type": "stereo"
+				}
+			],
+			"title": "Mono to Stereo",
+			"type": "Mono to Stereo",
+			"x": 552.0,
+			"y": 275.0
+		},
+		{
+			"id": 278093283,
+			"inputs": [
+				{
+					"id": 248961618,
+					"name": "Input",
+					"type": "stereo"
+				}
+			],
+			"outputs": [],
+			"title": "Speaker Out",
+			"type": "Speaker Out",
+			"x": 844.0,
+			"y": 274.0
+		},
+		{
+			"id": 736233516,
+			"inputs": [
+				{
+					"id": 3989792102,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"outputs": [],
+			"title": "Oscilloscope",
+			"type": "Oscilloscope",
+			"x": 480.0,
+			"y": 19.0
+		},
+		{
+			"id": 942025815,
+			"inputs": [
+				{
+					"id": 1847356709,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"outputs": [],
+			"title": "Spectrum Analyzer",
+			"type": "Spectrum Analyzer",
+			"x": 512.0,
+			"y": 419.0
+		}
+	],
+	"metadata": {},
+	"wires": [
+		{
+			"from": 1492965834,
+			"id": 809450030,
+			"to": 248961618
+		},
+		{
+			"from": 410275450,
+			"id": 3946171600,
+			"to": 3978828348
+		},
+		{
+			"from": 410275450,
+			"id": 31414758,
+			"to": 3989792102
+		},
+		{
+			"from": 410275450,
+			"id": 510579969,
+			"to": 1847356709
+		}
+	]
+}

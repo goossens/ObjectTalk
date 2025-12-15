@@ -44,6 +44,7 @@
 //		If one file is specified on the command line
 //			do the following based on file extension
 //				.ot  - compile and run script
+//				.ota - open audio in IDE
 //				.ots - run scene file
 //				.otn - open nodes in IDE
 //				.* - open file in IDE

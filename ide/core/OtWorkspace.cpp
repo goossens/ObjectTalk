@@ -28,6 +28,7 @@
 #include "OtMarkdownEditor.h"
 #include "OtNodesEditor.h"
 #include "OtObjectTalkEditor.h"
+#include "OtAudioEditor.h"
 #include "OtSceneEditor.h"
 #include "OtTxtEditor.h"
 #include "OtWorkspace.h"
@@ -43,6 +44,7 @@ OtWorkspace::OtWorkspace() {
 	registerEditorType<OtMarkdownEditor>();
 	registerEditorType<OtNodesEditor>();
 	registerEditorType<OtObjectTalkEditor>();
+	registerEditorType<OtAudioEditor>();
 	registerEditorType<OtSceneEditor>();
 	registerEditorType<OtTxtEditor>();
 }
@@ -750,6 +752,7 @@ void OtWorkspace::renderNewFileType() {
 
 		static constexpr float buttonWidth = 120.0f;
 		if (ImGui::Button("Script", ImVec2(buttonWidth, 0.0f))) { newFile(".ot"); ImGui::CloseCurrentPopup(); } ImGui::SameLine();
+		if (ImGui::Button("Audio", ImVec2(buttonWidth, 0.0f))) { newFile(".ota"); ImGui::CloseCurrentPopup(); } ImGui::SameLine();
 		if (ImGui::Button("Scene", ImVec2(buttonWidth, 0.0f))) { newFile(".ots"); ImGui::CloseCurrentPopup(); } ImGui::SameLine();
 		if (ImGui::Button("Nodes", ImVec2(buttonWidth, 0.0f))) { newFile(".otn"); ImGui::CloseCurrentPopup(); }
 

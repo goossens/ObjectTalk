@@ -27,6 +27,12 @@ MIX_Mixer* OtMixer::getRawMixer() {
 			OtLogFatal("Error in MIX_Init: {}", SDL_GetError());
 		}
 
+		mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
+
+		if (!mixer) {
+			OtLogFatal("Error in MIX_CreateMixerDevice: {}", SDL_GetError());
+		}
+
 		OtFrameworkAtExit::add([this]() {
 			MIX_DestroyMixer(mixer);
 			MIX_Quit();
@@ -35,11 +41,20 @@ MIX_Mixer* OtMixer::getRawMixer() {
 		mixerLibraryInitialized = true;
 	}
 
-	mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
+	return mixer;
+}
 
-	if (!mixer) {
-		OtLogFatal("Error in MIX_CreateMixerDevice: {}", SDL_GetError());
+
+//
+//	OtMixer::getSampleRate
+//
+
+size_t OtMixer::getSampleRate() {
+	SDL_AudioSpec spec;
+
+	if (!MIX_GetMixerFormat(getRawMixer(), &spec)) {
+		OtLogFatal("Error in MIX_GetMixerFormat: {}", SDL_GetError());
 	}
 
-	return mixer;
+	return static_cast<size_t>(spec.freq);
 }

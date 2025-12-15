@@ -14,7 +14,7 @@
 #include "OtLog.h"
 #include "OtModule.h"
 
-#include "OtSoundModule.h"
+#include "OtAudioModule.h"
 
 
 //
@@ -64,7 +64,7 @@ OtType OtSoundClass::getMeta() {
 //	Module registration
 //
 
-static OtModuleRegistration registration{"sound", [](OtModule module) {
+static OtModuleRegistration registration{"audio", [](OtModule module) {
 	// register classes
 	module->set("Sound", OtClass::create(OtSoundClass::getMeta()));
 }};

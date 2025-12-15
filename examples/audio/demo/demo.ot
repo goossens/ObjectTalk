@@ -7,7 +7,7 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 var gui = import("gui");
-var sound = import("sound");
+var audio = import("audio");
 
 class MyApp : gui.App {
 	function toggleSound(this, sound) {
@@ -20,8 +20,8 @@ class MyApp : gui.App {
 	}
 
 	function setup(this) {
-		this.startMusic = sound.Sound(Path(__DIR__, "assets", "start-music.mp3"));
-		this.coffeeBreakMusic = sound.Sound(Path(__DIR__, "assets", "coffee-break-music.mp3"));
+		this.startMusic = audio.Sound(Path(__DIR__, "assets", "start-music.mp3"));
+		this.coffeeBreakMusic = audio.Sound(Path(__DIR__, "assets", "coffee-break-music.mp3"));
 
 		var rows = gui.Properties();
 		this.add(rows);

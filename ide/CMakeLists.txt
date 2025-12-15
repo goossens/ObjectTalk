@@ -24,6 +24,6 @@ target_compile_options(ide PRIVATE
 	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4 /WX>)
 
 target_include_directories(ide PUBLIC ${IDE_INCLUDE_DIRS})
-target_link_libraries(ide PUBLIC language gfx nodes scene imguieditor imguizmo)
+target_link_libraries(ide PUBLIC language gfx nodes audio scene imguieditor imguizmo)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${IDE_INCLUDES} ${IDE_SOURCES})

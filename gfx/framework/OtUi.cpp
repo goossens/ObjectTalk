@@ -16,6 +16,7 @@
 #include "fmt/format.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui_internal.h"
+#include "imgui-knobs.h"
 #include "ImGuiFileDialog.h"
 #include "nlohmann/json.hpp"
 
@@ -955,6 +956,19 @@ bool OtUi::bezier(const char* label, float P[4]) {
 	ImGui::SetCursorScreenPos(ImVec2(bb.Min.x, bb.Max.y + grabRadius));
 	ImGui::PopID();
 	return changed;
+}
+
+
+bool OtUi::knob(const char* label, float* value, float minValue, float maxValue, const char* format, bool logarithmic) {
+	static constexpr float pi = static_cast<float>(std::numbers::pi);
+
+	auto result = ImGuiKnobs::Knob(
+		label, value, minValue, maxValue, 0.0f,
+		format, ImGuiKnobVariant_WiperDot,
+		0.0f, logarithmic ? ImGuiKnobFlags_Logarithmic : 0, 10,
+		pi * 0.6f, pi * 2.4f);
+
+	return result;
 }
 
 

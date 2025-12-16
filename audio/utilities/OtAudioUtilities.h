@@ -28,3 +28,16 @@ inline float OtLinearToDb(float x) {
 inline float OtDbToLinear(float x) {
 	return std::pow(10.0f, x / 20.0f);
 }
+
+inline float OtFrequencyToCv(float f) {
+	return std::log2(f / 440.0f);
+}
+
+inline float OtCvToFrequency(float cv) {
+	return 440.0f * std::pow(2.0f, cv);
+}
+
+inline float OtMidiNoteToFrequency(int midiNote) {
+	float semitonesAway = static_cast<float>(midiNote - 69);
+	return 440.0f * std::pow(2.0f, (semitonesAway / 12.0f));
+}

@@ -1,6 +1,21 @@
 {
 	"circuits": [
 		{
+			"id": 1315334498,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2197641789,
+					"name": "Frequency",
+					"type": "control"
+				}
+			],
+			"title": "Keyboard Input",
+			"type": "Keyboard Input",
+			"x": 47.0,
+			"y": 111.0
+		},
+		{
 			"id": 2557146591,
 			"inputs": [
 				{
@@ -9,8 +24,8 @@
 					"type": "control"
 				},
 				{
-					"id": 3503788378,
-					"name": "Pulse With",
+					"id": 4000249913,
+					"name": "Pulse Width",
 					"type": "control"
 				}
 			],
@@ -24,8 +39,8 @@
 			"title": "VCO",
 			"type": "VCO",
 			"waveForm": 0,
-			"x": 198.0,
-			"y": 276.0
+			"x": 583.0,
+			"y": 304.0
 		},
 		{
 			"id": 1460307938,
@@ -45,8 +60,8 @@
 			],
 			"title": "Mono to Stereo",
 			"type": "Mono to Stereo",
-			"x": 552.0,
-			"y": 275.0
+			"x": 937.0,
+			"y": 303.0
 		},
 		{
 			"id": 278093283,
@@ -60,8 +75,8 @@
 			"outputs": [],
 			"title": "Speaker Out",
 			"type": "Speaker Out",
-			"x": 844.0,
-			"y": 274.0
+			"x": 1229.0,
+			"y": 302.0
 		},
 		{
 			"id": 736233516,
@@ -75,8 +90,8 @@
 			"outputs": [],
 			"title": "Oscilloscope",
 			"type": "Oscilloscope",
-			"x": 480.0,
-			"y": 19.0
+			"x": 865.0,
+			"y": 47.0
 		},
 		{
 			"id": 942025815,
@@ -90,8 +105,8 @@
 			"outputs": [],
 			"title": "Spectrum Analyzer",
 			"type": "Spectrum Analyzer",
-			"x": 512.0,
-			"y": 419.0
+			"x": 897.0,
+			"y": 447.0
 		}
 	],
 	"metadata": {},
@@ -115,6 +130,11 @@
 			"from": 410275450,
 			"id": 510579969,
 			"to": 1847356709
+		},
+		{
+			"from": 2197641789,
+			"id": 4073085486,
+			"to": 3360538592
 		}
 	]
 }

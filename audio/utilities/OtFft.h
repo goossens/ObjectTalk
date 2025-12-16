@@ -25,12 +25,15 @@
 
 void OtFft(std::complex<float>* fourier, int n) {
 	// calculate 2log(m)
-    auto m = -1;
-    for (auto i = n; i; i >>= 1) { m++; }
+	auto m = -1;
+
+	for (auto i = n; i; i >>= 1) {
+		m++;
+	}
 
 	// reverse bits
 	auto i2 = n / 2;
-    auto j = 0;
+	auto j = 0;
 
 	for (auto i = 0; i < n - 1; i++) {
 		if (i < j) {
@@ -49,7 +52,7 @@ void OtFft(std::complex<float>* fourier, int n) {
 
 	// compute the FFT
 	auto c = std::complex<float>(-1.0f, 0.0f);
-    auto l2 = 1;
+	auto l2 = 1;
 
 	for (auto l = 0; l < m; l++) {
 		auto l1 = l2;
@@ -78,9 +81,4 @@ void OtFft(std::complex<float>* fourier, int n) {
 		c.imag(std::sqrt(0.5f - 0.5f * c.real()));
 		c.real(std::sqrt(0.5f + 0.5f * c.real()));
 	}
-
-	// for (auto i = 0; i < n; i++) {
-	// 	fourier[i] /= n;
-	// 	fourier[i] /= n;
-	// }
 }

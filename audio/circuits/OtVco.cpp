@@ -27,7 +27,7 @@ public:
 	// configure node
 	inline void configure() override {
 		frequency = addInputPin("Frequency", OtCircuitPinClass::Type::control);
-		pulseWith = addInputPin("Pulse With", OtCircuitPinClass::Type::control);
+		pulseWidth = addInputPin("Pulse Width", OtCircuitPinClass::Type::control);
 		output = addOutputPin("Output", OtCircuitPinClass::Type::mono);
 	}
 
@@ -42,14 +42,24 @@ public:
 			newState = serialize().dump();
 			needsSaving = true;
 		}
+
+		if (frequency->isSourceConnected()) { ImGui::BeginDisabled(); }
+		if (OtUi::knob("Freq", &manualFrequency, 80.0f, 8000.0f, "%.0f", true)) {}
+		if (frequency->isSourceConnected()) { ImGui::EndDisabled(); }
+
+		ImGui::SameLine();
+
+		if (pulseWidth->isSourceConnected() || waveForm != OtOscillator::WaveForm::square) { ImGui::BeginDisabled(); }
+		if (OtUi::knob("Width", &manualPulseWidth, 0.0f, 1.0f, "%.2f")) {}
+		if (pulseWidth->isSourceConnected() || waveForm != OtOscillator::WaveForm::square) { ImGui::EndDisabled(); }
 	}
 
 	inline float getCustomRenderingWidth() override {
-		return 140.0f;
+		return 200.0f;
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return ImGui::GetFrameHeightWithSpacing();
+		return ImGui::GetFrameHeightWithSpacing() + ImGui::GetTextLineHeight() * 6.0f;
 	}
 
 	// (de)serialize node
@@ -61,7 +71,7 @@ public:
 		waveForm = data->value("waveForm", OtOscillator::WaveForm::sine);
 	}
 
-	// process frame
+	// generate samples
 	void execute(size_t sampleRate, size_t samples) override {
 		output->buffer->resize(samples);
 		oscillator.setSampleRate(sampleRate);
@@ -78,10 +88,13 @@ public:
 private:
 	// properties
 	OtCircuitPin frequency;
-	OtCircuitPin pulseWith;
+	OtCircuitPin pulseWidth;
 	OtCircuitPin output;
 	OtOscillator oscillator;
+
 	OtOscillator::WaveForm waveForm = OtOscillator::WaveForm::sine;
+	float manualFrequency = 440.0f;
+	float manualPulseWidth = 0.5f;
 };
 
 static OtCircuitFactoryRegister<OtVco> registration;

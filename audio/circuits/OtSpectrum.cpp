@@ -76,39 +76,28 @@ public:
 			ImPlot::PushStyleVar(ImPlotStyleVar_FillAlpha, 0.25f);
 
 			if (ImPlot::BeginPlot("##Spectrum", ImVec2(itemWidth, customH), ImPlotFlags_CanvasOnly)) {
-				// perform  Fast Fourier Transform (FFT)
-				std::complex<float> fourier[fourierWindow] = {};
-
+				// quickly copy signal to separate buffer to avoid race conditions and to not hold up audio thread
 				{
 					std::lock_guard<std::mutex> guard(mutex);
-
-					for (size_t i = 0; i < signalWindow; i++) {
-						fourier[i] = std::complex<float>(data[i] * hammingLut[i]);
-					}
+					std::copy(data.begin(), data.end(), fftInputBuffer);
 				}
 
-				OtFft(fourier, fourierWindow);
+				// perform  Fast Fourier Transform (FFT)
+				auto result = fft.forwardFrequencyOnly(fftInputBuffer);
 
-				// determine magnitudes
-				for (size_t i = 0; i < fourierWindow / 2; i++) {
-					auto magnitude = std::sqrt(fourier[i].real() * fourier[i].real() + fourier[i].imag() * fourier[i].imag()) / fourierWindow;
-					magnitudes[i] = std::lerp(magnitudes[i], magnitude, 0.05f);
+				// smooth out magnitude changes
+				for (size_t i = 0; i < N / 2; i++) {
+					magnitudes[i] = std::lerp(magnitudes[i], result[i], 0.1f);
 				}
 
-				// convert to decibels
-				float spectrum[fourierWindow / 2] = {};
-
-				for (size_t i = 0; i < fourierWindow / 2; i++) {
-					spectrum[i] = OtLinearToDb(magnitudes[i]);
-				}
-
-				float freqBinSize = sampleRate / fourierWindow;
+				// display frequency spectrum
+				float freqBinSize = sampleRate / N;
 				ImPlot::SetupAxisScale(ImAxis_X1, ImPlotScale_Log10);
 				ImPlot::SetupAxisLimits(ImAxis_X1, freqBinSize, sampleRate / 2.0, ImGuiCond_Always);
 				ImPlot::SetupAxisTicks(ImAxis_X1, ticks, tickCount, tickLabels);
-				ImPlot::SetupAxisLimits(ImAxis_Y1, -80.0, -10.0, ImGuiCond_Always);
-				ImPlot::PlotShaded("", spectrum, static_cast<int>(fourierWindow / 2), -80.0, freqBinSize, freqBinSize);
-				ImPlot::PlotLine("", spectrum, static_cast<int>(fourierWindow / 2), freqBinSize, freqBinSize);
+				ImPlot::SetupAxisLimits(ImAxis_Y1, 0.0, static_cast<double>(N / 2), ImGuiCond_Always);
+				ImPlot::PlotShaded("", magnitudes + 1, static_cast<int>(N / 2 - 1), 0.0, freqBinSize, freqBinSize);
+				ImPlot::PlotLine("", magnitudes + 1, static_cast<int>(N / 2 - 1), freqBinSize, freqBinSize);
 				ImPlot::EndPlot();
 			}
 
@@ -132,8 +121,7 @@ public:
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::probe;
 	static constexpr float width = 600.0f;
 	static constexpr float height = 250.0f;
-	static constexpr size_t signalWindow = 512;	// signal buffer size
-	static constexpr size_t fourierWindow = 4096;	// FFT buffer size
+	static constexpr size_t N = 1024;
 
 private:
 	// properties
@@ -144,8 +132,8 @@ private:
 	float sampleRate;
 
 	std::mutex mutex;
-	OtSignalQueue<float, signalWindow> data;
-	float magnitudes[fourierWindow / 2] = {};
+	OtSignalQueue<float, N> data;
+	float magnitudes[N / 2] = {};
 
 	// hamming window support for FFT
 	template<typename T, int N>
@@ -160,10 +148,12 @@ private:
 	}
 
 	static float hammingWindow(int i) {
-		return 0.53836f - 0.46164f * std::cos(std::numbers::pi2 * (1.0f / fourierWindow) * static_cast<float>(i));
+		return 0.53836f - 0.46164f * std::cos(std::numbers::pi2 * (1.0f / N) * static_cast<float>(i));
 	}
 
-	std::array<float, signalWindow> hammingLut = generateLookupTable<float, signalWindow>(hammingWindow);
+	std::array<float, N> hammingLut = generateLookupTable<float, N>(hammingWindow);
+	OtFft fft{N};
+	float fftInputBuffer[N];
 };
 
 static OtCircuitFactoryRegister<OtSpectrum> registration;

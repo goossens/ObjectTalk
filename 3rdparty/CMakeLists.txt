@@ -43,6 +43,11 @@ if(OT_INCLUDE_UI)
 	target_link_libraries(nanovg SDL3::SDL3)
 	set_target_properties(nanovg PROPERTIES FOLDER 3rdParty)
 
+	file(GLOB PFFFT_SOURCES pffft/*.c pffft/*.h)
+	add_library(pffft STATIC ${PFFFT_SOURCES})
+	target_include_directories(pffft PUBLIC pffft)
+	set_target_properties(pffft PROPERTIES FOLDER 3rdParty)
+
 	file(GLOB MD4C_SOURCES md4c/*.c md4c/*.h)
 	add_library(md4c STATIC ${MD4C_SOURCES})
 	target_include_directories(md4c PUBLIC md4c)

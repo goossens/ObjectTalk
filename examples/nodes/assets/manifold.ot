@@ -4,6 +4,6 @@ class Generator : Object {
 	function generate(this) {
 		var cube = manifold.cube(1, 1, 1, true);
 		var cylinder = manifold.cylinder(1, 0.2, 0.4, 128, true).rotate(90, 0, 0);
-		return cube.difference(cylinder);
+		return cube - cylinder;
 	}
 }

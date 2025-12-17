@@ -49,7 +49,7 @@ OtNodesComponent::OtNodesComponent() {
 			// build list of input nodes
 			inputNodes.clear();
 
-			nodes.eachNode([&](OtNode& node) {
+			nodes.eachNode([&](OtNode node) {
 				if (node->category == OtNodeClass::Category::input) {
 					inputNodes.emplace_back(node);
 				}

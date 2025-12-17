@@ -15,7 +15,7 @@
 #include "implot.h"
 
 #include "OtCircuitFactory.h"
-#include "OtSignalQueue.h"
+#include "OtCircularBuffer.h"
 
 
 //
@@ -30,7 +30,7 @@ public:
 	}
 
 	// process frame
-	inline void execute([[maybe_unused]] size_t sampleRate, size_t samples) override {
+	inline void execute() override {
 		if (input->isSourceConnected()) {
 			customW = width;
 			customH = height;
@@ -38,7 +38,7 @@ public:
 			// add input signal to data buffer
 			std::lock_guard<std::mutex> guard(mutex);
 			auto signal = input->getSignalBuffer();
-			data.insert(signal->data(), samples);
+			data.insert(input->getSignalBuffer()->data(), signal->getSampleCount());
 
 		} else {
 			customW = width;
@@ -100,7 +100,7 @@ private:
 	float customH;
 
 	std::mutex mutex;
-	OtSignalQueue<float, N> data;
+	OtCircularBuffer<float, N> data;
 };
 
 static OtCircuitFactoryRegister<OtScope> registration;

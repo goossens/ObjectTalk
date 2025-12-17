@@ -35,11 +35,11 @@ nlohmann::json OtCircuitClass::serialize(std::string* basedir) {
 	auto inputs = nlohmann::json::array();
 	auto outputs = nlohmann::json::array();
 
-	eachInput([&](OtCircuitPin& pin) {
+	eachInput([&](OtCircuitPin pin) {
 		inputs.push_back(pin->serialize(basedir));
 	});
 
-	eachOutput([&](OtCircuitPin& pin) {
+	eachOutput([&](OtCircuitPin pin) {
 		outputs.push_back(pin->serialize(basedir));
 	});
 
@@ -69,7 +69,7 @@ void OtCircuitClass::deserialize(nlohmann::json data, bool restoreIDs, std::stri
 	title = data.value("title", type);
 
 	// restore input pins
-	eachInput([&](OtCircuitPin& pin) {
+	eachInput([&](OtCircuitPin pin) {
 		for (auto& input : data["inputs"]) {
 			auto n = input["name"];
 			auto t = input["type"];
@@ -82,7 +82,7 @@ void OtCircuitClass::deserialize(nlohmann::json data, bool restoreIDs, std::stri
 	});
 
 	// restore output pins
-	eachOutput([&](OtCircuitPin& pin) {
+	eachOutput([&](OtCircuitPin pin) {
 		for (auto& output : data["outputs"]) {
 			if (output["name"] == pin->name && output["type"] == pin->getTypeName()) {
 				pin->deserialize(output, restoreIDs, basedir);

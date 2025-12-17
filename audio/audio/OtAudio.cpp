@@ -29,8 +29,8 @@
 
 OtAudio::OtAudio() {
 	// setup the signal processor
-	dsp.setSignalProvider([this](OtSignalBuffer& buffer, size_t sampleRate, size_t samples) {
-		provideSignal(buffer, sampleRate, samples);
+	dsp.setSignalProvider([this](OtSignalBuffer& buffer) {
+		provideSignal(buffer);
 	});
 
 	dsp.start();
@@ -41,22 +41,24 @@ OtAudio::OtAudio() {
 //	OtAudio::provideSignal
 //
 
-void OtAudio::provideSignal(OtSignalBuffer& buffer, size_t sampleRate, size_t samples) {
+void OtAudio::provideSignal(OtSignalBuffer& buffer) {
 	// see if resorting is required
 	if (needsSorting) {
 		sortCircuitsTopologically();
 		needsSorting = false;
 	}
 
-	// execute all circuits (in depth-first order)
+    buffer.clear();
+
+    // execute all circuits (in depth-first order)
 	for (auto& circuit : circuits) {
 		try {
 			circuit->error.clear();
-			circuit->execute(sampleRate, samples);
+			circuit->execute();
 
 			// if the circuit is an output circuit, get the stream and mix it
 			if (circuit->category == OtCircuitClass::Category::output) {
-				circuit->eachInput([&](OtCircuitPin& pin) {
+				circuit->eachInput([&](OtCircuitPin pin) {
 					if (pin->isSourceConnected()) {
 						auto source = pin->getSource();
 
@@ -114,6 +116,9 @@ void OtAudio::load(const std::string& path) {
 //
 
 void OtAudio::loadFromString(const std::string& string, std::string& basedir) {
+	// stop audio processing
+	dsp.stop();
+
 	// clear circuits
 	clear();
 
@@ -151,6 +156,9 @@ void OtAudio::loadFromString(const std::string& string, std::string& basedir) {
 
 	// set the sorting flag
 	needsSorting = true;
+
+	// restart audio processing
+	dsp.start();
 }
 
 
@@ -168,7 +176,7 @@ void OtAudio::save(const std::string& path) {
 	// save all circuits
 	auto basedir = OtPath::getParent(path);
 
-	eachCircuit([&](OtCircuit& circuit) {
+	eachCircuit([&](OtCircuit circuit) {
 		circuitsJSON.push_back(circuit->serialize(&basedir));
 	});
 
@@ -214,17 +222,17 @@ OtCircuit OtAudio::createCircuit(const std::string& name, float x, float y) {
 
 void OtAudio::deleteCircuit(OtCircuit circuit) {
 	// find the circuit
-	auto i = std::find_if(circuits.begin(), circuits.end(), [circuit](OtCircuit& candidate) {
+	auto i = std::find_if(circuits.begin(), circuits.end(), [circuit](OtCircuit candidate) {
 		return candidate->id == circuit->id;
 	});
 
 	// remove registered pins and possible wires
-	(*i)->eachInput([this](OtCircuitPin& pin) {
+	(*i)->eachInput([this](OtCircuitPin pin) {
 		deleteWires(pin);
 		pinIndex.erase(pin->id);
 	});
 
-	(*i)->eachOutput([this](OtCircuitPin& pin) {
+	(*i)->eachOutput([this](OtCircuitPin pin) {
 		deleteWires(pin);
 		pinIndex.erase(pin->id);
 	});
@@ -266,7 +274,7 @@ bool OtAudio::hasCycle(OtCircuitClass* circuit, OtCircuitClass* newTarget) {
 			circuit->temporaryMark = true;
 
 			// visit all circuits it depends on
-			circuit->eachInput([&](OtCircuitPin& pin) {
+			circuit->eachInput([&](OtCircuitPin pin) {
 				if (!cycle && pin->sourcePin != nullptr) {
 					cycle = hasCycle(pin->sourcePin->circuit);
 				}
@@ -630,11 +638,11 @@ void OtAudio::indexCircuit(OtCircuit circuit) {
 	// index circuit and its pins
 	circuitIndex[circuit->id] = circuit;
 
-	circuit->eachInput([this](OtCircuitPin& pin) {
+	circuit->eachInput([this](OtCircuitPin pin) {
 		pinIndex[pin->id] = pin;
 	});
 
-	circuit->eachOutput([this](OtCircuitPin& pin) {
+	circuit->eachOutput([this](OtCircuitPin pin) {
 		pinIndex[pin->id] = pin;
 	});
 }
@@ -647,11 +655,11 @@ void OtAudio::indexCircuit(OtCircuit circuit) {
 void OtAudio::unindexCircuit(OtCircuit circuit) {
 	circuitIndex.erase(circuitIndex.find(circuit->id));
 
-	circuit->eachInput([this](OtCircuitPin& pin) {
+	circuit->eachInput([this](OtCircuitPin pin) {
 		pinIndex.erase(pinIndex.find(pin->id));
 	});
 
-	circuit->eachOutput([this](OtCircuitPin& pin) {
+	circuit->eachOutput([this](OtCircuitPin pin) {
 		pinIndex.erase(pinIndex.find(pin->id));
 	});
 }
@@ -661,7 +669,7 @@ void OtAudio::unindexCircuit(OtCircuit circuit) {
 //	OtAudio::visitCircuit
 //
 
-bool OtAudio::visitCircuit(OtCircuit& circuit, std::vector<OtCircuit>& circuitIDs) {
+bool OtAudio::visitCircuit(OtCircuit circuit, std::vector<OtCircuit>& circuitIDs) {
 	// function result
 	bool cycle = false;
 
@@ -676,7 +684,7 @@ bool OtAudio::visitCircuit(OtCircuit& circuit, std::vector<OtCircuit>& circuitID
 			circuit->temporaryMark = true;
 
 			// visit all circuits it depends on
-			circuit->eachInput([&](OtCircuitPin& pin) {
+			circuit->eachInput([&](OtCircuitPin pin) {
 				if (!cycle && pin->sourcePin != nullptr) {
 					cycle = visitCircuit(circuitIndex[pin->sourcePin->circuit->id], circuitIDs);
 				}

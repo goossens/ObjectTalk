@@ -17,6 +17,8 @@
 
 #include "OtAssert.h"
 
+#include "OtAudioSettings.h"
+
 
 //
 //	OtSignalBuffer
@@ -26,16 +28,11 @@ class OtSignalBuffer {
 public:
 	// constructor
 	inline OtSignalBuffer(size_t c) : channels(c) {
-		buffer.reserve(channels * 128);
+		buffer.resize(channels * OtAudioSettings::bufferSize);
 	}
 
-	// buffer access
-	inline void resize(size_t samples) {
-		buffer.resize(channels * samples);
-	}
-
-	// clear the buffer with specified value (without changing its size)
-	inline void clear(float value) {
+	// clear the buffer with specified value
+	inline void clear(float value=0.0f) {
 		std::fill(buffer.begin(), buffer.end(), value);
 	}
 
@@ -64,7 +61,7 @@ public:
 
 	// get buffer information
 	inline size_t getChannelCount() { return channels; }
-	inline size_t getSampleCount() { return buffer.size() / channels; }
+	inline size_t getSampleCount() { return OtAudioSettings::bufferSize; }
 	inline float* data() { return buffer.data(); }
 
 	// interator support

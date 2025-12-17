@@ -973,6 +973,25 @@ bool OtUi::knob(const char* label, float* value, float minValue, float maxValue,
 
 
 //
+//	OtUi::knobHeight
+//
+
+int OtUi::knobHeight() {
+	// title height
+	auto height = ImGui::GetFrameHeightWithSpacing();
+
+	// knob height
+	height += ImGui::GetTextLineHeight() * 4.0f;
+
+	// field height
+	height += ImGui::GetFrameHeightWithSpacing();
+
+	// return total height of knob widget
+	return height;
+}
+
+
+//
 //	to/from_json
 //
 

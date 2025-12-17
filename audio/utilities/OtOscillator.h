@@ -47,7 +47,6 @@ public:
 	void setWaveForm(WaveForm wf) { waveForm = wf; }
 	void setFrequency(float f) { frequency = static_cast<double>(f); }
 	void setPulseWidth(float pw);
-	void setSampleRate(size_t sr) { sampleRate = static_cast<double>(sr); }
 
 	// get the next sample
 	float get();
@@ -60,6 +59,5 @@ private:
 	WaveForm waveForm = WaveForm::sine;
 	double frequency = 440.0;
 	double pulseWidth = 0.25;
-	double sampleRate = 48000.0;
 	double t = 0.0;
 };

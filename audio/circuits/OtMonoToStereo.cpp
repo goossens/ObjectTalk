@@ -30,20 +30,18 @@ public:
 	}
 
 	// process frame
-	void execute([[maybe_unused]] size_t sampleRate, size_t samples) override {
-		output->buffer->resize(samples);
-
+	void execute() override {
 		if (input->isSourceConnected()) {
 			auto signal = input->getSignalBuffer();
 
-			for (size_t i = 0; i < samples; i++) {
+			for (size_t i = 0; i < signal->getSampleCount(); i++) {
 				auto value = signal->get(0, i);
 				output->buffer->set(0, i, value);
 				output->buffer->set(1, i, value);
 			}
 
 		} else {
-			output->buffer->clear(samples);
+			output->buffer->clear();
 		}
 	};
 

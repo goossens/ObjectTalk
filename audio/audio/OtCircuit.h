@@ -20,6 +20,7 @@
 
 #include "OtVertex.h"
 
+#include "OtCircuitControl.h"
 #include "OtCircuitPin.h"
 #include "OtCircuitUtils.h"
 
@@ -76,6 +77,11 @@ public:
 		return pin;
 	}
 
+	// add controls
+	inline OtCircuitControl addControl(const char* name, OtCircuitPin pin, float* value) {
+		return std::make_shared<OtCircuitControlClass>(name, pin, value);
+	}
+
 	// (de)serialize
 	nlohmann::json serialize(std::string* basedir=nullptr);
 	void deserialize(nlohmann::json data, bool restoreIDs=true, std::string* basedir=nullptr);
@@ -89,7 +95,7 @@ public:
 	inline size_t getOutputPinCount() { return outputPins.size(); }
 
 	// iterate through all pins
-	inline void eachPin(std::function<void(OtCircuitPin&)> callback) {
+	inline void eachPin(std::function<void(OtCircuitPin)> callback) {
 		for (auto& pin : inputPins) {
 			callback(pin);
 		}
@@ -100,21 +106,21 @@ public:
 	}
 
 	// iterate through all input pins
-	inline void eachInput(std::function<void(OtCircuitPin&)> callback) {
+	inline void eachInput(std::function<void(OtCircuitPin)> callback) {
 		for (auto& pin : inputPins) {
 			callback(pin);
 		}
 	}
 
 	// iterate through all output pins
-	inline void eachOutput(std::function<void(OtCircuitPin&)> callback) {
+	inline void eachOutput(std::function<void(OtCircuitPin)> callback) {
 		for (auto& pin : outputPins) {
 			callback(pin);
 		}
 	}
 
-	// interfaces
-	virtual inline void execute([[maybe_unused]] size_t sampleRate, [[maybe_unused]] size_t samples) {};
+	// process one buffer size worth of audio
+	virtual inline void execute() {};
 
 	// handle custom section of circuits
 	virtual inline void customRendering([[maybe_unused]] float itemWidth) {}

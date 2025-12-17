@@ -91,8 +91,8 @@ public:
 	OtWire findWire(OtCircuitPin from, OtCircuitPin to);
 
 	// access circuits and pins
-	inline OtCircuit& getCircuit(uint32_t id) { return circuitIndex[id]; }
-	inline OtCircuitPin& getPin(uint32_t id) { return pinIndex[id]; }
+	inline OtCircuit getCircuit(uint32_t id) { return circuitIndex[id]; }
+	inline OtCircuitPin getPin(uint32_t id) { return pinIndex[id]; }
 
 	// handle selections
 	void selectAll();
@@ -109,7 +109,7 @@ public:
 	inline bool hasMultipleSelected() { return getSelected().size() > 1; }
 
 	// iterate through circuits and wires
-	inline void eachCircuit(std::function<void(OtCircuit&)> callback) {
+	inline void eachCircuit(std::function<void(OtCircuit)> callback) {
 		for (auto& circuit : circuits) {
 			callback(circuit);
 		}
@@ -143,7 +143,7 @@ private:
 
 	// signal processor to get the sound out
 	OtDsp dsp;
-	void provideSignal(OtSignalBuffer& buffer, size_t sampleRate, size_t samples);
+	void provideSignal(OtSignalBuffer& buffer);
 
 	// (un)index a circuit and its pins
 	void indexCircuit(OtCircuit circuit);
@@ -151,7 +151,7 @@ private:
 
 	// helper functions for depth-first searches and topological sorting
 	bool hasCycle(OtCircuitClass* circuit, OtCircuitClass* newTarget=0);
-	bool visitCircuit(OtCircuit& circuit, std::vector<OtCircuit>& circuitIDs);
+	bool visitCircuit(OtCircuit circuit, std::vector<OtCircuit>& circuitIDs);
 	void sortCircuitsTopologically();
 
 	// restore a circuit from its JSON data

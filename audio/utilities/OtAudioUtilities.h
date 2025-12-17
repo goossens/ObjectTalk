@@ -21,12 +21,30 @@
 //	Support functions
 //
 
-inline float OtLinearToDb(float x) {
-	return 20.0f * std::log10(x);
+inline float OtLinearToDbv(float v) {
+	if (v <= 0) {
+		return -100.0f;
+
+	} else {
+		return 20.0f * std::log10(v);
+	}
 }
 
-inline float OtDbToLinear(float x) {
+inline float OtDbvToLinear(float x) {
 	return std::pow(10.0f, x / 20.0f);
+}
+
+inline float OtLinearToDbu(float v) {
+	if (v <= 0) {
+		return -100.0f;
+
+	} else {
+		return 20.0f * std::log10(v / 0.775f);
+	}
+}
+
+inline float OtDbuToLinear(float x) {
+	return std::pow(10.0f, x / 20.0f) * 0.775f;
 }
 
 inline float OtFrequencyToCv(float f) {

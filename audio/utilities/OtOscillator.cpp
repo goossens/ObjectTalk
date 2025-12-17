@@ -17,6 +17,7 @@
 
 #include "OtNumbers.h"
 
+#include "OtAudioSettings.h"
 #include "OtOscillator.h"
 
 
@@ -82,7 +83,7 @@ void OtOscillator::setPulseWidth(float pw) {
 //
 
 float OtOscillator::get() {
-	double sampleLength = frequency / sampleRate;
+	double sampleLength = frequency / OtAudioSettings::sampleRate;
 	double value;
 
 	switch (waveForm) {

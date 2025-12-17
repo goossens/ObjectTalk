@@ -11,6 +11,7 @@
 
 #include "OtLog.h"
 
+#include "OtAudioSettings.h"
 #include "OtDsp.h"
 #include "OtMixer.h"
 
@@ -22,18 +23,17 @@
 OtDsp::OtDsp() {
 	// get mixer information
 	auto& mixer = OtMixer::instance();
-	sampleRate = mixer.getSampleRate();
 
 	// create an audio stream
 	SDL_AudioSpec src;
 	src.format = SDL_AUDIO_F32;
 	src.channels = 2;
-	src.freq = static_cast<int>(sampleRate);
+	src.freq = OtAudioSettings::sampleRate;
 
 	SDL_AudioSpec dst;
 	dst.format = SDL_AUDIO_F32;
 	dst.channels = 2;
-    src.freq = static_cast<int>(sampleRate);
+	dst.freq = OtAudioSettings::sampleRate;
 
 	stream = SDL_CreateAudioStream(&src, &dst);
 
@@ -155,16 +155,15 @@ float OtDsp::getGain() {
 //	OtDsp::getStreamData
 //
 
-void OtDsp::getStreamData([[maybe_unused]] int additional, int total) {
-	size_t samples = std::min(static_cast<size_t>(128), static_cast<size_t>(total) / bytesPerSample);
-	buffer.resize(samples);
-	buffer.clear(0.0f);
+void OtDsp::getStreamData([[maybe_unused]] int additional, [[maybe_unused]] int total) {
+	if (isPlaying() && provider) {
+		provider(buffer);
 
-	if (provider) {
-		provider(buffer, sampleRate, samples);
+	} else {
+		buffer.clear(0.0f);
 	}
 
-	if (!SDL_PutAudioStreamData(stream, buffer.data(), static_cast<int>(samples * bytesPerSample))) {
+	if (!SDL_PutAudioStreamData(stream, buffer.data(), static_cast<int>(OtAudioSettings::bufferSize * sizeof(float) * 2))) {
 		OtLogFatal("Error in SDL_PutAudioStreamData: {}", SDL_GetError());
 	}
 }

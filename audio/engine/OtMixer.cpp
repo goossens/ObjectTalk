@@ -43,18 +43,3 @@ MIX_Mixer* OtMixer::getRawMixer() {
 
 	return mixer;
 }
-
-
-//
-//	OtMixer::getSampleRate
-//
-
-size_t OtMixer::getSampleRate() {
-	SDL_AudioSpec spec;
-
-	if (!MIX_GetMixerFormat(getRawMixer(), &spec)) {
-		OtLogFatal("Error in MIX_GetMixerFormat: {}", SDL_GetError());
-	}
-
-	return static_cast<size_t>(spec.freq);
-}

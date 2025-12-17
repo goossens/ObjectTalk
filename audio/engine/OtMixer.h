@@ -26,9 +26,6 @@ public:
 	// access raw mixer
 	MIX_Mixer* getRawMixer();
 
-	// return the sample rate for the mixer's output device
-	size_t getSampleRate();
-
 private:
 	bool mixerLibraryInitialized = false;
 	MIX_Mixer* mixer = nullptr;

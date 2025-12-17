@@ -39,18 +39,15 @@ public:
 	float getGain();
 
 	// set signal provider
-	inline void setSignalProvider(std::function<void(OtSignalBuffer&, size_t sampleRate, size_t samples)> p) { provider = p; };
+	inline void setSignalProvider(std::function<void(OtSignalBuffer&)> p) { provider = p; };
 
 private:
 	// properties
 	SDL_AudioStream* stream = nullptr;
 	MIX_Track* track = nullptr;
 	OtSignalBuffer buffer{2};
-	size_t sampleRate;
 
-	static constexpr size_t bytesPerSample = sizeof(float) * 2;
-
-	std::function<void(OtSignalBuffer&, size_t sampleRate, size_t samples)> provider = nullptr;
+	std::function<void(OtSignalBuffer&)> provider = nullptr;
 
 	// provide more data to the stream
 	void getStreamData(int additional, int total);

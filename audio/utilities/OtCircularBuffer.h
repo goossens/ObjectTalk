@@ -13,43 +13,42 @@
 //
 
 #include <algorithm>
-#include <array>
 
 #include "OtAssert.h"
 
 
 //
-//	OtSignalQueue
+//	OtCircularBuffer
 //
 
 template<typename T, size_t N>
-class OtSignalQueue {
+class OtCircularBuffer {
 public:
-	// clear the queue with specified value
+	// clear the buffer with specified value
 	inline void clear(T sample) {
-		std::fill(queue.begin(), queue.end(), sample);
+		std::fill(buffer, buffer + N, sample);
 	}
 
 	// insert samples
 	inline void insert(T* samples, size_t count) {
 		OtAssert(count < N);
-		std::copy(queue.begin() + count, queue.end(), queue.begin());
-		std::copy(samples, samples + count, queue.end() - count);
+		std::copy(buffer + count, buffer + N, buffer);
+		std::copy(samples, samples + count, buffer + N - count);
 	}
 
 	// access members
-	inline T operator[](size_t i) const { return queue[i]; }
-	inline T& operator[](size_t i) { return queue[i]; }
+	inline T operator[](size_t i) const { return buffer[i]; }
+	inline T& operator[](size_t i) { return buffer[i]; }
 
 	// queue information
-	inline T* data() { return queue.data(); }
+	inline T* data() { return buffer; }
 	inline size_t size() { return N; }
 
 	// interator support
-	inline typename std::array<T, N>::iterator begin() { return queue.begin(); }
-	inline typename std::array<T, N>::iterator end() { return queue.end(); }
+	inline typename std::array<T, N>::iterator begin() { return buffer; }
+	inline typename std::array<T, N>::iterator end() { return buffer + N; }
 
 private:
 	// signal queue
-	std::array<T, N> queue = {};
+	alignas(32) T buffer[N] = {};
 };

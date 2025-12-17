@@ -82,7 +82,7 @@ void OtAudioWidget::render(OtAudio* s) {
 	float width = 0.0f;
 	float height = 0.0f;
 
-	audio->eachCircuit([&](OtCircuit& circuit) {
+	audio->eachCircuit([&](OtCircuit circuit) {
 		width = std::max(width, circuit->x + circuit->w);
 		height = std::max(height, circuit->y + circuit->h);
 	});
@@ -116,7 +116,7 @@ void OtAudioWidget::render(OtAudio* s) {
 	drawlist->ChannelsSplit(2);
 	drawlist->ChannelsSetCurrent(1);
 
-	audio->eachCircuit([&](OtCircuit& circuit) {
+	audio->eachCircuit([&](OtCircuit circuit) {
 		renderCircuit(drawlist, circuit);
 
 		if (circuit->needsSaving) {
@@ -305,7 +305,7 @@ void OtAudioWidget::renderRubberBand(ImDrawList* drawlist) {
 //	OtAudioWidget::renderCircuit
 //
 
-void OtAudioWidget::renderCircuit(ImDrawList* drawlist, OtCircuit& circuit) {
+void OtAudioWidget::renderCircuit(ImDrawList* drawlist, OtCircuit circuit) {
 	// update circuit size if required
 	if (circuit->needsSizing) {
 		calculateCircuitSize(circuit);
@@ -363,7 +363,7 @@ void OtAudioWidget::renderCircuit(ImDrawList* drawlist, OtCircuit& circuit) {
 	ImGui::TextUnformatted(renamingCircuit == circuit->id ? "" : circuit->title.c_str());
 
 	// render all output pins
-	circuit->eachOutput([&](OtCircuitPin& pin) {
+	circuit->eachOutput([&](OtCircuitPin pin) {
 		renderPin(drawlist, pin, bottomRight.x, circuit->w);
 	});
 
@@ -371,7 +371,7 @@ void OtAudioWidget::renderCircuit(ImDrawList* drawlist, OtCircuit& circuit) {
 	circuit->customRendering(circuit->w - horizontalPadding * 2.0f);
 
 	// render all input pins
-	circuit->eachInput([&](OtCircuitPin& pin) {
+	circuit->eachInput([&](OtCircuitPin pin) {
 		renderPin(drawlist, pin, topLeft.x, circuit->w);
 	});
 
@@ -423,7 +423,7 @@ void OtAudioWidget::renderCircuit(ImDrawList* drawlist, OtCircuit& circuit) {
 //	OtAudioWidget::renderPin
 //
 
-void OtAudioWidget::renderPin(ImDrawList* drawlist, OtCircuitPin& pin, float x, float w) {
+void OtAudioWidget::renderPin(ImDrawList* drawlist, OtCircuitPin pin, float x, float w) {
 	// render the pin
 	auto color = pinColors[static_cast<size_t>(pin->type)];
 	auto pos = ImVec2(x, ImGui::GetCursorScreenPos().y + pinOffset);
@@ -503,13 +503,13 @@ void OtAudioWidget::renderWire(ImDrawList* drawlist, const ImVec2& start, const 
 //	OtAudioWidget::calculateCircuitSize
 //
 
-void OtAudioWidget::calculateCircuitSize(OtCircuit& circuit) {
+void OtAudioWidget::calculateCircuitSize(OtCircuit circuit) {
 	// determine widest line
 	// first we look at circuit title width
 	auto w = ImGui::CalcTextSize(circuit->title.c_str()).x;
 
 	// then we look at each pin
-	circuit->eachPin([&](OtCircuitPin& pin) {
+	circuit->eachPin([&](OtCircuitPin pin) {
 		if (pin->hasRenderer) {
 			// use dimensions for custom pin rendering
 			w = std::max(w, pin->renderingWidth);

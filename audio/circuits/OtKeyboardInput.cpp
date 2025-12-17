@@ -69,10 +69,8 @@ public:
 	}
 
 	// generate samples
-	void execute([[maybe_unused]] size_t sampleRate, [[maybe_unused]] size_t samples) override {
-		auto buffer = output->buffer;
-		buffer->resize(samples);
-		buffer->clear(OtFrequencyToCv(frequency));
+	void execute() override {
+		output->buffer->clear(OtFrequencyToCv(frequency));
 	}
 
 	static constexpr const char* circuitName = "Keyboard Input";
@@ -86,7 +84,7 @@ private:
 
 	int currentNote = 0;
 	bool keyPressed[128];
-	float frequency = 0.0f;
+	float frequency = 500.0f;
 	float velocity = 0.0f;
 };
 

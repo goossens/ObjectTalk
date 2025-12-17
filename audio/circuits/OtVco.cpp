@@ -14,6 +14,7 @@
 
 #include "OtUi.h"
 
+#include "OtAudioUtilities.h"
 #include "OtCircuitFactory.h"
 #include "OtOscillator.h"
 
@@ -29,29 +30,38 @@ public:
 		frequency = addInputPin("Frequency", OtCircuitPinClass::Type::control);
 		pulseWidth = addInputPin("Pulse Width", OtCircuitPinClass::Type::control);
 		output = addOutputPin("Output", OtCircuitPinClass::Type::mono);
+
+		frequencyControl = addControl("Freq", frequency, &manualFrequency)
+			->setRange(80.0f, 8000.0f)
+			->setLabelFormat("%.0f")
+			->setIsFrequency()
+			->setIsLogarithmic();
+
+		pulseWidthControl = addControl("PW", pulseWidth, &manualPulseWidth)
+			->setRange(0.0f, 1.0f)
+			->setLabelFormat("%.2f");
 	}
 
 	// render custom fields
 	inline void customRendering(float itemWidth) override {
 		ImGui::SetNextItemWidth(itemWidth);
 		auto old = serialize().dump();
+		auto changed = false;
 
 		if (OtUi::selectorEnum("##waveForm", &waveForm, OtOscillator::waveForms, OtOscillator::waveFormCount)) {
 			oscillator.setWaveForm(waveForm);
+			changed = true;
+		}
+
+		if (frequencyControl->renderKnob()) { changed |= true; }
+		ImGui::SameLine();
+		if (pulseWidthControl->renderKnob()) { changed |= true; }
+
+		if (changed) {
 			oldState = old;
 			newState = serialize().dump();
 			needsSaving = true;
 		}
-
-		if (frequency->isSourceConnected()) { ImGui::BeginDisabled(); }
-		if (OtUi::knob("Freq", &manualFrequency, 80.0f, 8000.0f, "%.0f", true)) {}
-		if (frequency->isSourceConnected()) { ImGui::EndDisabled(); }
-
-		ImGui::SameLine();
-
-		if (pulseWidth->isSourceConnected() || waveForm != OtOscillator::WaveForm::square) { ImGui::BeginDisabled(); }
-		if (OtUi::knob("Width", &manualPulseWidth, 0.0f, 1.0f, "%.2f")) {}
-		if (pulseWidth->isSourceConnected() || waveForm != OtOscillator::WaveForm::square) { ImGui::EndDisabled(); }
 	}
 
 	inline float getCustomRenderingWidth() override {
@@ -59,7 +69,7 @@ public:
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return ImGui::GetFrameHeightWithSpacing() + ImGui::GetTextLineHeight() * 6.0f;
+		return ImGui::GetFrameHeightWithSpacing() + OtUi::knobHeight();
 	}
 
 	// (de)serialize node
@@ -72,12 +82,11 @@ public:
 	}
 
 	// generate samples
-	void execute(size_t sampleRate, size_t samples) override {
-		output->buffer->resize(samples);
-		oscillator.setSampleRate(sampleRate);
-
+	void execute() override {
 		// process all the samples
-		for (size_t i = 0; i < samples; i++) {
+		for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
+			oscillator.setFrequency(frequencyControl->getValue(i));
+			oscillator.setPulseWidth(pulseWidthControl->getValue(i));
 			output->buffer->set(0, i, oscillator.get());
 		}
 	};
@@ -90,11 +99,14 @@ private:
 	OtCircuitPin frequency;
 	OtCircuitPin pulseWidth;
 	OtCircuitPin output;
-	OtOscillator oscillator;
 
-	OtOscillator::WaveForm waveForm = OtOscillator::WaveForm::sine;
+	OtCircuitControl frequencyControl;
+	OtCircuitControl pulseWidthControl;
 	float manualFrequency = 440.0f;
 	float manualPulseWidth = 0.5f;
+
+	OtOscillator oscillator;
+	OtOscillator::WaveForm waveForm = OtOscillator::WaveForm::sine;
 };
 
 static OtCircuitFactoryRegister<OtVco> registration;

@@ -11,7 +11,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <complex>
 #include <mutex>
 
 #include "imgui.h"
@@ -22,7 +21,7 @@
 #include "OtAudioUtilities.h"
 #include "OtCircuitFactory.h"
 #include "OtFft.h"
-#include "OtSignalQueue.h"
+#include "OtCircularBuffer.h"
 
 
 //
@@ -37,16 +36,15 @@ public:
 	}
 
 	// process frame
-	inline void execute(size_t sr, size_t samples) override {
+	inline void execute() override {
 		if (input->isSourceConnected()) {
-			sampleRate = static_cast<double>(sr);
 			customW = width;
 			customH = height;
 
 			// add input signal to data buffer
 			std::lock_guard<std::mutex> guard(mutex);
 			auto signal = input->getSignalBuffer();
-			data.insert(signal->data(), samples);
+			data.insert(signal->data(), signal->getSampleCount());
 
 		} else {
 			customW = width;
@@ -76,8 +74,9 @@ public:
 			ImPlot::PushStyleVar(ImPlotStyleVar_FillAlpha, 0.25f);
 
 			if (ImPlot::BeginPlot("##Spectrum", ImVec2(itemWidth, customH), ImPlotFlags_CanvasOnly)) {
-				// quickly copy signal to separate buffer to avoid race conditions and to not hold up audio thread
 				{
+					// quickly copy signal to separate buffer
+					// to avoid race conditions and to not hold up audio thread
 					std::lock_guard<std::mutex> guard(mutex);
 					std::copy(data.begin(), data.end(), fftInputBuffer);
 				}
@@ -91,11 +90,12 @@ public:
 				}
 
 				// display frequency spectrum
-				float freqBinSize = sampleRate / N;
+				float freqBinSize = OtAudioSettings::sampleRate / N;
 				ImPlot::SetupAxisScale(ImAxis_X1, ImPlotScale_Log10);
-				ImPlot::SetupAxisLimits(ImAxis_X1, freqBinSize, sampleRate / 2.0, ImGuiCond_Always);
+				ImPlot::SetupAxisLimits(ImAxis_X1, freqBinSize, OtAudioSettings::sampleRate / 2.0, ImGuiCond_Always);
 				ImPlot::SetupAxisTicks(ImAxis_X1, ticks, tickCount, tickLabels);
-				ImPlot::SetupAxisLimits(ImAxis_Y1, 0.0, static_cast<double>(N / 2), ImGuiCond_Always);
+				ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoTickLabels);
+				ImPlot::SetupAxisLimits(ImAxis_Y1, 0.0, 0.8, ImGuiCond_Always);
 				ImPlot::PlotShaded("", magnitudes + 1, static_cast<int>(N / 2 - 1), 0.0, freqBinSize, freqBinSize);
 				ImPlot::PlotLine("", magnitudes + 1, static_cast<int>(N / 2 - 1), freqBinSize, freqBinSize);
 				ImPlot::EndPlot();
@@ -121,7 +121,7 @@ public:
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::probe;
 	static constexpr float width = 600.0f;
 	static constexpr float height = 250.0f;
-	static constexpr size_t N = 1024;
+	static constexpr size_t N = 4096;
 
 private:
 	// properties
@@ -129,31 +129,13 @@ private:
 
 	float customW;
 	float customH;
-	float sampleRate;
+
+	OtFft fft{N};
 
 	std::mutex mutex;
-	OtSignalQueue<float, N> data;
-	float magnitudes[N / 2] = {};
-
-	// hamming window support for FFT
-	template<typename T, int N>
-	inline constexpr std::array<T, N> generateLookupTable(T (*function)(int)) {
-		std::array<T, N> lut;
-
-		for (int i = 0; i < N; i++) {
-			lut[i] = function(i);
-		}
-
-		return lut;
-	}
-
-	static float hammingWindow(int i) {
-		return 0.53836f - 0.46164f * std::cos(std::numbers::pi2 * (1.0f / N) * static_cast<float>(i));
-	}
-
-	std::array<float, N> hammingLut = generateLookupTable<float, N>(hammingWindow);
-	OtFft fft{N};
+	OtCircularBuffer<float, N> data;
 	float fftInputBuffer[N];
+	float magnitudes[N / 2] = {};
 };
 
 static OtCircuitFactoryRegister<OtSpectrum> registration;

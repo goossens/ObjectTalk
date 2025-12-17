@@ -46,12 +46,12 @@ private:
 	// render the parts
 	void renderGrid(ImDrawList* drawlist);
 	void renderRubberBand(ImDrawList* drawlist);
-	void renderCircuit(ImDrawList* drawlist, OtCircuit& circuit);
+	void renderCircuit(ImDrawList* drawlist, OtCircuit circuit);
 	void renderWire(ImDrawList* drawlist, const ImVec2& start, const ImVec2& end, ImU32 color);
-	void renderPin(ImDrawList* drawlist, OtCircuitPin& pin, float x, float w);
+	void renderPin(ImDrawList* drawlist, OtCircuitPin pin, float x, float w);
 
 	// utility functions
-	void calculateCircuitSize(OtCircuit& circuit);
+	void calculateCircuitSize(OtCircuit circuit);
 	void handleInteractions();
 
 	// target audio

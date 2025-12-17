@@ -100,11 +100,6 @@ public:
 	inline std::shared_ptr<OtSignalBuffer> getSignalBuffer() { return sourcePin->buffer; }
 	inline bool isSourceConnected() { return sourcePin != nullptr; }
 
-	inline void connectToDestination(OtCircuitPin destPin) { destinationPin = destPin; }
-	inline void disconnectFromDestination() { destinationPin = nullptr; }
-	inline OtCircuitPin getDestination() { return destinationPin; }
-	inline bool isDestinationConnected() { return destinationPin != nullptr; }
-
 	// (de)serialize
 	nlohmann::json serialize(std::string* basedir=nullptr);
 	void deserialize(nlohmann::json data, bool restoreIDs=true, std::string* basedir=nullptr);
@@ -126,5 +121,4 @@ public:
 	std::shared_ptr<OtSignalBuffer> buffer;
 
 	OtCircuitPin sourcePin;
-	OtCircuitPin destinationPin;
 };

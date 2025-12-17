@@ -32,8 +32,9 @@ public:
 		outputPin = addOutputPin("Value", value);
 	}
 
-	// process the varying context (called for each iteration)
+	// process the varying context (called each iteration)
 	inline void processVaryingContext(OtNodeVaryingContext& context) override {
+		varying = true;
 		id = context.index;
 	}
 
@@ -43,8 +44,9 @@ public:
 			seed = 1;
 		}
 
-		if (outputPin->isDestinationConnected() && outputPin->destinationPin->isVarying()) {
+		if (varying) {
 			value = OtHash::toFloat(static_cast<uint32_t>(id), seed) * (maxValue - minValue) + minValue;
+			varying = false;
 
 		} else {
 			value = OtRandom(minValue, maxValue);
@@ -57,6 +59,7 @@ public:
 
 private:
 	// properties
+	bool varying = false;
 	size_t id = 0;
 	int seed = 1;
 	float minValue = 0.0f;

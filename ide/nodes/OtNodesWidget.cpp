@@ -104,7 +104,7 @@ void OtNodesWidget::render(OtNodes* n) {
 	float width = 0.0f;
 	float height = 0.0f;
 
-	nodes->eachNode([&](OtNode& node) {
+	nodes->eachNode([&](OtNode node) {
 		width = std::max(width, node->x + node->w);
 		height = std::max(height, node->y + node->h);
 	});
@@ -138,7 +138,7 @@ void OtNodesWidget::render(OtNodes* n) {
 	drawlist->ChannelsSplit(2);
 	drawlist->ChannelsSetCurrent(1);
 
-	nodes->eachNode([&](OtNode& node) {
+	nodes->eachNode([&](OtNode node) {
 		renderNode(drawlist, node);
 
 		if (node->needsSaving) {
@@ -328,7 +328,7 @@ void OtNodesWidget::renderRubberBand(ImDrawList* drawlist) {
 //	OtNodesWidget::renderNode
 //
 
-void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
+void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode node) {
 	// update node size if required
 	if (node->needsSizing) {
 		calculateNodeSize(node);
@@ -386,7 +386,7 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 	ImGui::TextUnformatted(renamingNode == node->id ? "" : node->title.c_str());
 
 	// render all output pins
-	node->eachOutput([&](OtNodesPin& pin) {
+	node->eachOutput([&](OtNodesPin pin) {
 		renderPin(drawlist, pin, bottomRight.x, node->w);
 	});
 
@@ -394,7 +394,7 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 	node->customRendering(node->w - horizontalPadding * 2.0f);
 
 	// render all input pins
-	node->eachInput([&](OtNodesPin& pin) {
+	node->eachInput([&](OtNodesPin pin) {
 		renderPin(drawlist, pin, topLeft.x, node->w);
 	});
 
@@ -446,7 +446,7 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode& node) {
 //	OtNodesWidget::renderPin
 //
 
-void OtNodesWidget::renderPin(ImDrawList* drawlist, OtNodesPin& pin, float x, float w) {
+void OtNodesWidget::renderPin(ImDrawList* drawlist, OtNodesPin pin, float x, float w) {
 	// render the pin
 	auto color = pinColors[pin->type];
 	auto pos = ImVec2(x, ImGui::GetCursorScreenPos().y + pinOffset);
@@ -607,13 +607,13 @@ void OtNodesWidget::renderLink(ImDrawList* drawlist, const ImVec2& start, const 
 //	OtNodesWidget::calculateNodeSize
 //
 
-void OtNodesWidget::calculateNodeSize(OtNode& node) {
+void OtNodesWidget::calculateNodeSize(OtNode node) {
 	// determine widest line
 	// first we look at node title width
 	auto w = ImGui::CalcTextSize(node->title.c_str()).x;
 
 	// then we look at each pin
-	node->eachPin([&](OtNodesPin& pin) {
+	node->eachPin([&](OtNodesPin pin) {
 		if (pin->hasRenderer) {
 			// use dimensions for custom pin rendering
 			w = std::max(w, pin->renderingWidth);

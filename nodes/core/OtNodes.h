@@ -89,8 +89,8 @@ public:
 	OtNodesLink findLink(OtNodesPin from, OtNodesPin to);
 
 	// access nodes and pins
-	inline OtNode& getNode(uint32_t id) { return nodeIndex[id]; }
-	inline OtNodesPin& getPin(uint32_t id) { return pinIndex[id]; }
+	inline OtNode getNode(uint32_t id) { return nodeIndex[id]; }
+	inline OtNodesPin getPin(uint32_t id) { return pinIndex[id]; }
 
 	// handle selections
 	void selectAll();
@@ -107,7 +107,7 @@ public:
 	inline bool hasMultipleSelected() { return getSelected().size() > 1; }
 
 	// iterate through nodes and links
-	inline void eachNode(std::function<void(OtNode&)> callback) {
+	inline void eachNode(std::function<void(OtNode)> callback) {
 		for (auto& node : nodes) {
 			callback(node);
 		}
@@ -149,7 +149,7 @@ private:
 
 	// helper functions for depth-first searches and topological sorting
 	bool hasCycle(OtNodeClass* node, OtNodeClass* newTarget=0);
-	bool visitNode(OtNode& node, std::vector<OtNode>& nodes);
+	bool visitNode(OtNode node, std::vector<OtNode>& nodes);
 	bool sortNodesTopologically();
 	void classifyLinks();
 

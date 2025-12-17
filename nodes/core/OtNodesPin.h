@@ -139,10 +139,9 @@ public:
 	inline OtNodesPin getSource() { return sourcePin; }
 	inline bool isSourceConnected() { return sourcePin != nullptr; }
 
-	inline void connectToDestination(OtNodesPin destPin) { destinationPin = destPin; }
-	inline void disconnectFromDestination() { destinationPin = nullptr; }
-	inline OtNodesPin getDestination() { return destinationPin; }
-	inline bool isDestinationConnected() { return destinationPin != nullptr; }
+	inline void connectToDestination() { destinationConnections++; }
+	inline void disconnectFromDestination() { destinationConnections--; }
+	inline bool isDestinationConnected() { return destinationConnections != 0; }
 
 	// process the input and see if value has changed
 	virtual bool processInput() { return false; };
@@ -169,7 +168,7 @@ public:
 	bool hasRenderer = false;
 
 	OtNodesPin sourcePin;
-	OtNodesPin destinationPin;
+	int destinationConnections = 0;
 };
 
 

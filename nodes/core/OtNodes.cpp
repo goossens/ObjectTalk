@@ -117,7 +117,7 @@ void OtNodes::save(const std::string& path) {
 	// save all nodes
 	auto basedir = OtPath::getParent(path);
 
-	eachNode([&](OtNode& node) {
+	eachNode([&](OtNode node) {
 		nodesJSON.push_back(node->serialize(&basedir));
 	});
 
@@ -164,17 +164,17 @@ OtNode OtNodes::createNode(const std::string& name, float x, float y) {
 
 void OtNodes::deleteNode(OtNode node) {
 	// find the node
-	auto i = std::find_if(nodes.begin(), nodes.end(), [node](OtNode& candidate) {
+	auto i = std::find_if(nodes.begin(), nodes.end(), [node](OtNode candidate) {
 		return candidate->id == node->id;
 	});
 
 	// remove registered pins and possible links
-	(*i)->eachInput([this](OtNodesPin& pin) {
+	(*i)->eachInput([this](OtNodesPin pin) {
 		deleteLinks(pin);
 		pinIndex.erase(pin->id);
 	});
 
-	(*i)->eachOutput([this](OtNodesPin& pin) {
+	(*i)->eachOutput([this](OtNodesPin pin) {
 		deleteLinks(pin);
 		pinIndex.erase(pin->id);
 	});
@@ -216,7 +216,7 @@ bool OtNodes::hasCycle(OtNodeClass* node, OtNodeClass* newTarget) {
 			node->temporaryMark = true;
 
 			// visit all nodes it depends on
-			node->eachInput([&](OtNodesPin& pin) {
+			node->eachInput([&](OtNodesPin pin) {
 				if (!cycle && pin->sourcePin != nullptr) {
 					cycle = hasCycle(pin->sourcePin->node);
 				}
@@ -585,11 +585,11 @@ void OtNodes::indexNode(OtNode node) {
 	// index node and its pins
 	nodeIndex[node->id] = node;
 
-	node->eachInput([this](OtNodesPin& pin) {
+	node->eachInput([this](OtNodesPin pin) {
 		pinIndex[pin->id] = pin;
 	});
 
-	node->eachOutput([this](OtNodesPin& pin) {
+	node->eachOutput([this](OtNodesPin pin) {
 		pinIndex[pin->id] = pin;
 	});
 }
@@ -602,11 +602,11 @@ void OtNodes::indexNode(OtNode node) {
 void OtNodes::unindexNode(OtNode node) {
 	nodeIndex.erase(nodeIndex.find(node->id));
 
-	node->eachInput([this](OtNodesPin& pin) {
+	node->eachInput([this](OtNodesPin pin) {
 		pinIndex.erase(pinIndex.find(pin->id));
 	});
 
-	node->eachOutput([this](OtNodesPin& pin) {
+	node->eachOutput([this](OtNodesPin pin) {
 		pinIndex.erase(pinIndex.find(pin->id));
 	});
 }
@@ -616,7 +616,7 @@ void OtNodes::unindexNode(OtNode node) {
 //	OtNodes::visitNode
 //
 
-bool OtNodes::visitNode(OtNode& node, std::vector<OtNode>& nodeList) {
+bool OtNodes::visitNode(OtNode node, std::vector<OtNode>& nodeList) {
 	// function result
 	bool cycle = false;
 
@@ -631,7 +631,7 @@ bool OtNodes::visitNode(OtNode& node, std::vector<OtNode>& nodeList) {
 			node->temporaryMark = true;
 
 			// visit all nodes it depends on
-			node->eachInput([&](OtNodesPin& pin) {
+			node->eachInput([&](OtNodesPin pin) {
 				if (!cycle && pin->sourcePin != nullptr) {
 					cycle = visitNode(nodeIndex[pin->sourcePin->node->id], nodeList);
 				}
@@ -687,23 +687,23 @@ void OtNodes::classifyLinks() {
 	for (auto& node : nodes) {
 		node->varyingInput = false;
 
-		node->eachInput([&](OtNodesPin& pin) {
+		node->eachInput([&](OtNodesPin pin) {
 			pin->varying = pin->sourcePin ? pin->sourcePin->varying : false;
 			node->varyingInput |= pin->varying;
 		});
 
 		if (node->kind == OtNodeClass::Kind::fixed) {
-			node->eachOutput([](OtNodesPin& pin) {
+			node->eachOutput([](OtNodesPin pin) {
 				pin->varying = false;
 			});
 
 		} else if (node->kind == OtNodeClass::Kind::varying) {
-			node->eachOutput([](OtNodesPin& pin) {
+			node->eachOutput([](OtNodesPin pin) {
 				pin->varying = true;
 			});
 
 		} else {
-			node->eachOutput([&](OtNodesPin& pin) {
+			node->eachOutput([&](OtNodesPin pin) {
 				pin->varying = node->varyingInput;
 			});
 		}
@@ -732,7 +732,7 @@ void OtNodes::evaluate() {
 
 	// evaluate all nodes
 	for (auto& node : nodes) {
-		node->eachInput([node](OtNodesPin& pin) {
+		node->eachInput([node](OtNodesPin pin) {
 			if (pin->isVarying() && pin->sourcePin->node->needsEvaluating) {
 				node->needsEvaluating = true;
 			}

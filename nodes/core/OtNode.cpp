@@ -35,11 +35,11 @@ nlohmann::json OtNodeClass::serialize(std::string* basedir) {
 	auto inputs = nlohmann::json::array();
 	auto outputs = nlohmann::json::array();
 
-	eachInput([&](OtNodesPin& pin) {
+	eachInput([&](OtNodesPin pin) {
 		inputs.push_back(pin->serialize(basedir));
 	});
 
-	eachOutput([&](OtNodesPin& pin) {
+	eachOutput([&](OtNodesPin pin) {
 		outputs.push_back(pin->serialize(basedir));
 	});
 
@@ -69,7 +69,7 @@ void OtNodeClass::deserialize(nlohmann::json data, bool restoreIDs, std::string*
 	title = data.value("title", type);
 
 	// restore input pins
-	eachInput([&](OtNodesPin& pin) {
+	eachInput([&](OtNodesPin pin) {
 		for (auto& input : data["inputs"]) {
 			auto n = input["name"];
 			auto t = input["type"];
@@ -82,7 +82,7 @@ void OtNodeClass::deserialize(nlohmann::json data, bool restoreIDs, std::string*
 	});
 
 	// restore output pins
-	eachOutput([&](OtNodesPin& pin) {
+	eachOutput([&](OtNodesPin pin) {
 		for (auto& output : data["outputs"]) {
 			if (output["name"] == pin->name && output["type"] == pin->getTypeName()) {
 				pin->deserialize(output, restoreIDs, basedir);
@@ -120,7 +120,7 @@ void OtNodeClass::evaluateVariableInputs(OtNodeVaryingContext& context, bool top
 	}
 
 	// process all input pins
-	eachInput([&](OtNodesPin& pin){
+	eachInput([&](OtNodesPin pin){
 		// only look at connected pins that are marked as varying
 		if (pin->isSourceConnected() && pin->isVarying()) {
 			pin->sourcePin->node->evaluateVariableInputs(context, false);

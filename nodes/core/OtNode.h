@@ -133,7 +133,7 @@ public:
 	inline size_t getOutputPinCount() { return outputPins.size(); }
 
 	// iterate through all pins
-	inline void eachPin(std::function<void(OtNodesPin&)> callback) {
+	inline void eachPin(std::function<void(OtNodesPin)> callback) {
 		for (auto& pin : inputPins) {
 			callback(pin);
 		}
@@ -144,14 +144,14 @@ public:
 	}
 
 	// iterate through all input pins
-	inline void eachInput(std::function<void(OtNodesPin&)> callback) {
+	inline void eachInput(std::function<void(OtNodesPin)> callback) {
 		for (auto& pin : inputPins) {
 			callback(pin);
 		}
 	}
 
 	// iterate through all output pins
-	inline void eachOutput(std::function<void(OtNodesPin&)> callback) {
+	inline void eachOutput(std::function<void(OtNodesPin)> callback) {
 		for (auto& pin : outputPins) {
 			callback(pin);
 		}

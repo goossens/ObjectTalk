@@ -113,7 +113,7 @@ std::string OtByteCodeClass::disassemble() {
 
 			case Opcode::method: {
 				auto method = getID(pc);
-				auto count =getNumber(pc);
+				auto count = getNumber(pc);
 				buffer << "method" << OtIdentifier::name(method) << "(" << count << ")";
 				break;
 			}

@@ -135,7 +135,7 @@ OtScanner::Token OtScanner::advance() {
 		}
 
 		// skip shell style comments
-		if (source->at(position) =='#') {
+		if (source->at(position) == '#') {
 			position++;
 
 			while (position < size && !(source->at(position) == '\n')) {
@@ -147,10 +147,10 @@ OtScanner::Token OtScanner::advance() {
 			}
 
 		// skip C style comments
-		} else if (source->at(position) =='/' && source->at(position + 1) =='*') {
+		} else if (source->at(position) == '/' && source->at(position + 1) == '*') {
 			position += 2;
 
-			while (position < size && !(source->at(position) =='*' && source->at(position + 1) =='/')) {
+			while (position < size && !(source->at(position) == '*' && source->at(position + 1) == '/')) {
 				position++;
 			}
 
@@ -159,7 +159,7 @@ OtScanner::Token OtScanner::advance() {
 			}
 
 		// skip C++ style comments
-		} else if (source->at(position) =='/' && source->at(position + 1) =='/') {
+		} else if (source->at(position) == '/' && source->at(position + 1) == '/') {
 			position += 2;
 
 			while (position < size && !(source->at(position) == '\n')) {
@@ -185,17 +185,17 @@ OtScanner::Token OtScanner::advance() {
 
 	// handle numeric literals
 	} else if (std::isdigit(source->at(position)) ||
-		(source->at(position) =='-' && position < size && std::isdigit(source->at(position + 1))) ||
-		(source->at(position) =='+' && position < size && std::isdigit(source->at(position + 1)))) {
+		(source->at(position) == '-' && position < size && std::isdigit(source->at(position + 1))) ||
+		(source->at(position) == '+' && position < size && std::isdigit(source->at(position + 1)))) {
 
 		auto start = position;
 		int sign = 1;
 
-		if (source->at(position) =='-') {
+		if (source->at(position) == '-') {
 			position++;
 			sign = -1;
 
-		} else if (source->at(position) =='+') {
+		} else if (source->at(position) == '+') {
 			position++;
 		}
 
@@ -254,20 +254,20 @@ OtScanner::Token OtScanner::advance() {
 			}
 
 			// is this a real?
-			if (position < size && source->at(position) =='.' && position < size && std::isdigit(source->at(position + 1))) {
+			if (position < size && source->at(position) == '.' && position < size && std::isdigit(source->at(position + 1))) {
 				position++;
 
 				while (position < size && std::isdigit(source->at(position))) {
 					position++;
 				}
 
-				if (tolower(source->at(position)) =='e' && position < size) {
+				if (tolower(source->at(position)) == 'e' && position < size) {
 					position++;
 
-					if (position < size && source->at(position) =='-') {
+					if (position < size && source->at(position) == '-') {
 						position++;
 
-					} else if (position < size && source->at(position) =='+') {
+					} else if (position < size && source->at(position) == '+') {
 						position++;
 					}
 
@@ -286,7 +286,7 @@ OtScanner::Token OtScanner::advance() {
 		}
 
 	// handle string literals
-	} else if (source->at(position) =='"') {
+	} else if (source->at(position) == '"') {
 		auto start = ++position;
 
 		while (position < size && !(source->at(position) == '"' && !(source->at(position - 1) == '\\'))) {
@@ -302,8 +302,8 @@ OtScanner::Token OtScanner::advance() {
 		token = Token::stringLiteral;
 
 	// handle identifiers (and tokens with identifier structure)
-	} else if (source->at(position) =='_' || std::isalpha(source->at(position))) {
-		while (position < size && (source->at(position) =='_' || std::isalnum(source->at(position)))) {
+	} else if (source->at(position) == '_' || std::isalpha(source->at(position))) {
+		while (position < size && (source->at(position) == '_' || std::isalnum(source->at(position)))) {
 			position++;
 		}
 
@@ -362,11 +362,11 @@ void OtScanner::error(std::string message) {
 			marker += lineText[c];
 
 		} else {
-			marker +=' ';
+			marker += ' ';
 		}
 	}
 
-	marker +='^';
+	marker += '^';
 	auto fullMessage = fmt::format("Module: {}, Line: {}: {}:\n{}\n{}", moduleName, lineNumber, message, lineText, marker);
 
 	// throw exception

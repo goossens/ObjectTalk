@@ -95,7 +95,7 @@ SDL_GPUSampler* OtSampler::getSampler() {
 		info.max_lod = maxLod;
 		info.max_anisotropy = requestedFilter == Filter::anisotropic ? 4.0f : 0.0f;
 		info.enable_anisotropy = requestedFilter == Filter::anisotropic;
-		auto sdlSampler =SDL_CreateGPUSampler(OtGpu::instance().device, &info);
+		auto sdlSampler = SDL_CreateGPUSampler(OtGpu::instance().device, &info);
 
 		if (sdlSampler == nullptr) {
 			OtLogFatal("Error in SDL_CreateGPUSampler: {}", SDL_GetError());

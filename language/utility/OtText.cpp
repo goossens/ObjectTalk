@@ -413,7 +413,7 @@ std::string OtText::decodeURL(const std::string& text) {
 	auto c = text.cbegin();
 
 	while (c < text.cend()) {
-		if (*c =='+') {
+		if (*c == '+') {
 			c++;
 			o <<' ';
 
@@ -482,7 +482,7 @@ std::string OtText::fromJSON(const std::string text) {
 	auto c = text.begin();
 
 	while (c < text.end()) {
-		if (*c =='\\') {
+		if (*c == '\\') {
 			c++;
 
 			if (c < text.cend()) {

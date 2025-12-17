@@ -85,7 +85,7 @@ void OtUrl::parse(const std::string& urlString) {
 		auto slash = path.rfind('/');
 
 		if (slash == std::string::npos) {
-			directory ="";
+			directory = "";
 			filename = path;
 
 		} else {
@@ -97,7 +97,7 @@ void OtUrl::parse(const std::string& urlString) {
 
 		if (period == std::string::npos) {
 			stem = filename;
-			extension ="";
+			extension = "";
 
 		} else {
 			stem = filename.substr(0, period);

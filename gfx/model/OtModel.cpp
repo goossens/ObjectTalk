@@ -640,7 +640,7 @@ void OtModel::renderAnimations() {
 
 void OtModel::renderAnimationChannels(size_t animationID) {
 	auto& animation = animations[animationID];
-	auto& channels =animation.channels;
+	auto& channels = animation.channels;
 	auto duration = animation.duration;
 	auto lineHeight = ImGui::GetTextLineHeightWithSpacing();
 	auto& style = ImGui::GetStyle();

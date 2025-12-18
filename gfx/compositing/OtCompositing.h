@@ -71,19 +71,18 @@ public:
 			configurePipeline(renderPipeline);
 		}
 
-		// configure pass
-		OtRenderPass pass;
-		pass.start(destination);
-		pass.bindPipeline(renderPipeline);
-		pass.bindFragmentSampler(0, sampler, source);
-
-		// set uniforms
+		// setup uniforms
 		struct Uniforms {
 			float brightness;
 		} uniforms {
 			brightness
 		};
 
+		// configure pass
+		OtRenderPass pass;
+		pass.start(destination);
+		pass.bindPipeline(renderPipeline);
+		pass.bindFragmentSampler(0, sampler, source);
 		pass.setFragmentUniforms(0, &uniforms, sizeof(uniforms));
 		pass.render(3);
 		pass.end();

@@ -22,6 +22,8 @@
 
 #include "OtImage.h"
 #include "OtGpu.h"
+#include "OtRenderPipeline.h"
+#include "OtSampler.h"
 
 
 //
@@ -83,11 +85,14 @@ private:
 	bool mip = false;
 	int version = 0;
 
-	// temporary variables for async loading from files
+	// variables for async loading from files
 	uv_async_t* asyncHandle = nullptr;
 	std::unique_ptr<std::byte[]> imageData;
 	std::unique_ptr<OtImage> asyncImage;
 	size_t bytesPerImage;
+
+	OtRenderPipeline hdrPipeline;
+	OtSampler hdrSampler{OtSampler::Filter::linear, OtSampler::Addressing::clamp};
 
 	// specific cubemap loaders
 	void loadJSON(const std::string& path, bool async);

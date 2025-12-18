@@ -41,6 +41,7 @@ void OtGpu::init(SDL_Window* win, int w, int h) {
 
 #if OT_DEBUG
 	SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_DEBUGMODE_BOOLEAN, true);
+	SDL_SetBooleanProperty(props, SDL_HINT_RENDER_VULKAN_DEBUG, true);
 	SDL_SetLogPriorities(SDL_LOG_PRIORITY_INFO);
 #endif
 

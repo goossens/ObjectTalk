@@ -10,7 +10,7 @@
 #include "constants.glsl"
 
 layout(local_size_x=16, local_size_y=16, local_size_z=1) in;
-layout(set=1, binding=0) uniform writeonly image2D outTexture;
+layout(set=1, binding=0, rgba8) uniform writeonly image2D outTexture;
 
 vec3 colorPalette(float distance, float angle) {
 	float theta = mod(3.0f + 3.0f * angle / PI + 1.5f, 6.0f);

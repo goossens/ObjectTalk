@@ -36,21 +36,8 @@ void OtImageBasedLighting::update(OtIblComponent& component) {
 			resourcesInitialized = true;
 		}
 
-		static constexpr int threadCount = 16;
-		static constexpr int brdfLutSize = 128;
-		static constexpr int irradianceSize = 64;
-		static constexpr int environmentSize = 256;
-		static constexpr int environmentMipLevels = 8;
-
-		// generate the Smith BRDF LUT
-		auto usage = OtTexture::Usage(OtTexture::Usage::sampler | OtTexture::Usage::computeStorageWrite);
-		iblBrdfLut.update(brdfLutSize, brdfLutSize, OtTexture::Format::rg16, usage);
-
-		OtComputePass brdfPass;
-		brdfPass.addOutputTexture(iblBrdfLut);
-		brdfPass.execute(brdfLutPipeline, brdfLutSize / threadCount, brdfLutSize / threadCount, 1);
-
 		// render irradiance map
+		static constexpr int irradianceSize = 64;
         iblIrradianceMap.create(OtCubeMap::Format::rgba16, irradianceSize, false);
 
         OtRenderPass irradiancePass;
@@ -61,6 +48,8 @@ void OtImageBasedLighting::update(OtIblComponent& component) {
 		irradiancePass.end();
 
 		// render environment map
+		static constexpr int environmentSize = 256;
+		static constexpr int environmentMipLevels = 8;
 		iblEnvironmentMap.create(OtCubeMap::Format::rgba16, environmentSize, true);
 		maxEnvLevel = environmentMipLevels;
 
@@ -97,9 +86,21 @@ void OtImageBasedLighting::update(OtIblComponent& component) {
 //
 
 void OtImageBasedLighting::initializeResources() {
+	// initialize pipelines
 	irradiancePipeline.setShaders(OtFullScreenVert, sizeof(OtFullScreenVert), OtIblIrradianceMapFrag, sizeof(OtIblIrradianceMapFrag));
 	irradiancePipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::cubemap);
 
 	environmentPipeline.setShaders(OtFullScreenVert, sizeof(OtFullScreenVert), OtIblEnvironmentMapFrag, sizeof(OtIblEnvironmentMapFrag));
 	environmentPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::cubemap);
+
+	// generate the Smith BRDF LUT
+	static constexpr int threadCount = 16;
+	static constexpr int brdfLutSize = 128;
+
+	auto usage = OtTexture::Usage(OtTexture::Usage::sampler | OtTexture::Usage::computeStorageWrite);
+	iblBrdfLut.update(brdfLutSize, brdfLutSize, OtTexture::Format::rg16, usage);
+
+	OtComputePass brdfPass;
+	brdfPass.addOutputTexture(iblBrdfLut);
+	brdfPass.execute(brdfLutPipeline, brdfLutSize / threadCount, brdfLutSize / threadCount, 1);
 }

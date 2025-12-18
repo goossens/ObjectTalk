@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <cstdint>
+
 #include "nlohmann/json.hpp"
 #include "stb_image.h"
 
@@ -19,8 +21,6 @@
 #include "OtAsset.h"
 #include "OtCubeMap.h"
 #include "OtRenderPass.h"
-#include "OtRenderPipeline.h"
-#include "OtSampler.h"
 #include "OtTexture.h"
 #include "OtVertex.h"
 
@@ -307,18 +307,26 @@ void OtCubeMap::createCubemapFromHDR() {
 	// create a cubemap texture
 	create(Format::rgba16, size, true);
 
-	// setup the rendering pipeline
-	OtRenderPipeline pipeline;
-	pipeline.setShaders(OtFullScreenVert, sizeof(OtFullScreenVert), OtHdrReprojectFrag, sizeof(OtHdrReprojectFrag));
-	pipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::cubemap);
+	// setup the rendering pipeline (if required)
+	if (!hdrPipeline.isValid()) {
+		hdrPipeline.setShaders(OtFullScreenVert, sizeof(OtFullScreenVert), OtHdrReprojectFrag, sizeof(OtHdrReprojectFrag));
+		hdrPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16);
+	}
 
-	// run a render pass
-	OtRenderPass pass;
-	OtSampler sampler{OtSampler::Filter::linear, OtSampler::Addressing::clamp};
+	// run a render passesf
+	for (size_t i = 0; i < 6; i++) {
+		struct Uniforms {
+			int32_t side;
+		} uniforms {
+			static_cast<int32_t>(i)
+		};
 
-	pass.start(*this);
-	pass.bindPipeline(pipeline);
-	pass.bindFragmentSampler(0, sampler, inputTexture);
-	pass.render(3);
-	pass.end();
+		OtRenderPass pass;
+		pass.start2(*this, i);
+		pass.bindFragmentSampler(0, hdrSampler, inputTexture);
+		pass.setFragmentUniforms(0, &uniforms, sizeof(uniforms));
+		pass.bindPipeline(hdrPipeline);
+		pass.render(3);
+		pass.end();
+	}
 }

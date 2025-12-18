@@ -41,8 +41,7 @@ OtRenderShader::OtRenderShader(const uint32_t* code, size_t size, Stage stage) {
 	// see if shader has already been compiled
 	auto hash = OtHash::generate(code, size, stage);
 
-	// if (shaders.find(hash) == shaders.end()) {
-	if (true) {
+	if (shaders.find(hash) == shaders.end()) {
 		// shader is not in cache so we need to cross compile it
 
 		// figure out shader metadata

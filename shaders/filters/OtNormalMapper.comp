@@ -14,7 +14,7 @@ layout(set=1, binding=0) uniform writeonly image2D outTexture;
 layout(std140, set=2, binding=0) uniform UBO {
 	vec2 texelSize;
 	float normalStrength;
-    bool includeHeight;
+	bool includeHeight;
 };
 
 void main() {

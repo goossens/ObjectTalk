@@ -48,9 +48,9 @@ void OtAudio::provideSignal(OtSignalBuffer& buffer) {
 		needsSorting = false;
 	}
 
-    buffer.clear();
+	buffer.clear();
 
-    // execute all circuits (in depth-first order)
+	// execute all circuits (in depth-first order)
 	for (auto& circuit : circuits) {
 		try {
 			circuit->error.clear();

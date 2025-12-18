@@ -30,7 +30,7 @@ float noise(vec3 x) {
 	return mix(mix(mix(hash(n +   0.0), hash(n +   1.0), f.x),
 				   mix(hash(n + 157.0), hash(n + 158.0), f.x), f.y),
 			   mix(mix(hash(n + 113.0), hash(n + 114.0), f.x),
-			       mix(hash(n + 270.0), hash(n + 271.0), f.x), f.y), f.z);
+				   mix(hash(n + 270.0), hash(n + 271.0), f.x), f.y), f.z);
 }
 
 float fbm(vec3 p) {

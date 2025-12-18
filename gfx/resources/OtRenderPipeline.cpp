@@ -311,8 +311,6 @@ SDL_GPUGraphicsPipeline* OtRenderPipeline::getPipeline() {
 
 		} else if (renderTargetType == RenderTargetType::cubemap) {
 			SDL_GPUColorTargetBlendState blendState{};
-			blendState.enable_blend = false;
-			blendState.enable_color_write_mask = false;
 			targetDescriptions.emplace_back(SDL_GPUColorTargetDescription{SDL_GPU_TEXTUREFORMAT_R16G16B16A16_FLOAT, blendState});
 			targetDescriptions.emplace_back(SDL_GPUColorTargetDescription{SDL_GPU_TEXTUREFORMAT_R16G16B16A16_FLOAT, blendState});
 			targetDescriptions.emplace_back(SDL_GPUColorTargetDescription{SDL_GPU_TEXTUREFORMAT_R16G16B16A16_FLOAT, blendState});
@@ -375,7 +373,7 @@ SDL_GPUGraphicsPipeline* OtRenderPipeline::getPipeline() {
 		createInfo.vertex_input_state = vertexInputState;
 		createInfo .primitive_type = SDL_GPU_PRIMITIVETYPE_TRIANGLELIST;
 		createInfo.rasterizer_state = rasterState;
-		createInfo.multisample_state =multisampleState;
+		createInfo.multisample_state = multisampleState;
 		createInfo.depth_stencil_state = depthStencilState;
 		createInfo.target_info = targetInfo;
 

@@ -103,7 +103,7 @@ OtEntity OtPickingPass::render(OtSceneRendererContext& ctx, glm::vec2 uv) {
 //
 
 void OtPickingPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) {
-	setFragmentUniforms(ctx, grd.entity);
+	bindFragmentUniforms(ctx, grd.entity);
 
 	renderGeometryHelper(
 		ctx,
@@ -123,7 +123,7 @@ void OtPickingPass::renderOpaqueGeometry(OtSceneRendererContext& ctx, OtGeometry
 //
 
 void OtPickingPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtModelRenderData& mrd) {
-	setFragmentUniforms(ctx, mrd.entity);
+	bindFragmentUniforms(ctx, mrd.entity);
 
 	renderModelHelper(
 		ctx,
@@ -139,7 +139,7 @@ void OtPickingPass::renderOpaqueModel(OtSceneRendererContext& ctx, OtModelRender
 //
 
 void OtPickingPass::renderTerrain(OtSceneRendererContext& ctx, OtEntity entity, OtTerrainComponent& terrain) {
-	setFragmentUniforms(ctx, entity);
+	bindFragmentUniforms(ctx, entity);
 
 	renderTerrainHelper(
 		ctx,
@@ -155,7 +155,7 @@ void OtPickingPass::renderTerrain(OtSceneRendererContext& ctx, OtEntity entity, 
 //
 
 void OtPickingPass::renderGrass(OtSceneRendererContext& ctx, OtEntity entity, OtGrassComponent& grass) {
-	setFragmentUniforms(ctx, entity);
+	bindFragmentUniforms(ctx, entity);
 
 	renderGrassHelper(
 		ctx,
@@ -170,7 +170,7 @@ void OtPickingPass::renderGrass(OtSceneRendererContext& ctx, OtEntity entity, Ot
 //
 
 void OtPickingPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtGeometryRenderData& grd) {
-	setFragmentUniforms(ctx, grd.entity);
+	bindFragmentUniforms(ctx, grd.entity);
 	albedoUniformSlot = 1;
 
 	renderGeometryHelper(
@@ -187,17 +187,17 @@ void OtPickingPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtGeo
 
 
 //
-//	OtPickingPass::setFragmentUniforms
+//	OtPickingPass::bindFragmentUniforms
 //
 
-void OtPickingPass::setFragmentUniforms(OtSceneRendererContext& ctx, OtEntity entity) {
+void OtPickingPass::bindFragmentUniforms(OtSceneRendererContext& ctx, OtEntity entity) {
 	struct Uniforms {
 		float entityID;
 	} uniforms {
 		static_cast<float>(nextID) / 255.0f
 	};
 
-	ctx.pass->setFragmentUniforms(0, &uniforms, sizeof(uniforms));
+	ctx.pass->bindFragmentUniforms(0, &uniforms, sizeof(uniforms));
 	entityMap[nextID++] = entity;
 }
 

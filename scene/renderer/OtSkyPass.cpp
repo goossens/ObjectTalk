@@ -53,7 +53,7 @@ void OtSkyPass::render(OtSceneRendererContext& ctx) {
 		glm::inverse(ctx.camera.projectionMatrix * glm::toMat4(rotate))
 	};
 
-	pass.setVertexUniforms(0, &uniforms, sizeof(uniforms));
+	pass.bindVertexUniforms(0, &uniforms, sizeof(uniforms));
 
 	// see if we have any sky components
 	for (auto&& [entity, component] : ctx.scene->view<OtSkyComponent>().each()) {
@@ -102,7 +102,7 @@ void OtSkyPass::renderSky(OtSceneRendererContext& ctx, OtSkyComponent& sky) {
 		sky.mieScattering
 	};
 
-	ctx.pass->setFragmentUniforms(0, &uniforms, sizeof(uniforms));
+	ctx.pass->bindFragmentUniforms(0, &uniforms, sizeof(uniforms));
 
 	// render sky
 	ctx.pass->render(3);
@@ -126,7 +126,7 @@ void OtSkyPass::renderSkyBox(OtSceneRendererContext& ctx, OtSkyBoxComponent& sky
 		skybox.gamma
 	};
 
-	ctx.pass->setFragmentUniforms(0, &uniforms, sizeof(uniforms));
+	ctx.pass->bindFragmentUniforms(0, &uniforms, sizeof(uniforms));
 
 	// submit texture via sampler
 	ctx.pass->bindFragmentSampler(0, ctx.cubemapSampler, skybox.cubemap->getCubeMap());

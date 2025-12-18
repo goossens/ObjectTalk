@@ -174,7 +174,7 @@ void OtSceneRenderEntitiesPass::renderGeometryHelper(
 			ctx.camera.viewProjectionMatrix
 		};
 
-		ctx.pass->setVertexUniforms(0, &uniforms, sizeof(uniforms));
+		ctx.pass->bindVertexUniforms(0, &uniforms, sizeof(uniforms));
 
 	} else {
 		// bind pipeline
@@ -197,7 +197,7 @@ void OtSceneRenderEntitiesPass::renderGeometryHelper(
 			ctx.scene->getGlobalTransform(grd.entity)
 		};
 
-		ctx.pass->setVertexUniforms(0, &uniforms, sizeof(uniforms));
+		ctx.pass->bindVertexUniforms(0, &uniforms, sizeof(uniforms));
 	}
 
 	// submit material uniforms (if required)
@@ -242,7 +242,7 @@ void OtSceneRenderEntitiesPass::renderModelHelper(
 
 			uniforms.viewProjectionMatrix = ctx.camera.viewProjectionMatrix;
 			std::memcpy(&uniforms.models, cmd.transforms.data(), std::min(cmd.transforms.size(), size_t(64)) * sizeof(glm::mat4));
-			ctx.pass->setVertexUniforms(0, &uniforms, sizeof(uniforms));
+			ctx.pass->bindVertexUniforms(0, &uniforms, sizeof(uniforms));
 
 			// bind animation data
 			ctx.pass->setAnimationData(cmd.mesh->getBonesBuffer());
@@ -260,7 +260,7 @@ void OtSceneRenderEntitiesPass::renderModelHelper(
 				cmd.transforms[0]
 			};
 
-			ctx.pass->setVertexUniforms(0, &uniforms, sizeof(uniforms));
+			ctx.pass->bindVertexUniforms(0, &uniforms, sizeof(uniforms));
 		}
 
 		// submit material uniforms (if required)
@@ -284,7 +284,7 @@ void OtSceneRenderEntitiesPass::renderModelHelper(
 void OtSceneRenderEntitiesPass::renderTerrainHelper(
 	OtSceneRendererContext& ctx,
 	OtTerrainComponent& component,
-	bool setFragmentUniforms,
+	bool bindFragmentUniforms,
 	OtRenderPipeline& cullingPipeline,
 	OtRenderPipeline& linesPipeline) {
 
@@ -307,11 +307,11 @@ void OtSceneRenderEntitiesPass::renderTerrainHelper(
 		static_cast<float>(heights.heightmapSize)
 	};
 
-	ctx.pass->setVertexUniforms(0, &terrainVertexUniforms, sizeof(terrainVertexUniforms));
+	ctx.pass->bindVertexUniforms(0, &terrainVertexUniforms, sizeof(terrainVertexUniforms));
 	ctx.pass->bindVertexSampler(0, ctx.normalmapSampler, heights.normalmap);
 
 	// set fragment uniforms
-	if (setFragmentUniforms) {
+	if (bindFragmentUniforms) {
 		ctx.setClippingUniforms(0);
 
 		struct FragmentUniforms {
@@ -372,7 +372,7 @@ void OtSceneRenderEntitiesPass::renderTerrainHelper(
 			material.region3Overlap
 		};
 
-		ctx.pass->setFragmentUniforms(1, &fragmentUniforms, sizeof(fragmentUniforms));
+		ctx.pass->bindFragmentUniforms(1, &fragmentUniforms, sizeof(fragmentUniforms));
 
 		// bind textures
 		ctx.bindFragmentSampler(0, ctx.region1Sampler, material.region1Texture);
@@ -390,7 +390,7 @@ void OtSceneRenderEntitiesPass::renderTerrainHelper(
 			mesh.transform
 		};
 
-		ctx.pass->setVertexUniforms(1, &meshVertexUniforms, sizeof(meshVertexUniforms));
+		ctx.pass->bindVertexUniforms(1, &meshVertexUniforms, sizeof(meshVertexUniforms));
 
 		// render terrain tile
 		ctx.pass->render(mesh.tile.vertices, mesh.tile.triangles);
@@ -463,7 +463,7 @@ void OtSceneRenderEntitiesPass::renderGrassHelper(
 		grass.colorVariation
 	};
 
-	ctx.pass->setVertexUniforms(0, &uniforms, sizeof(uniforms));
+	ctx.pass->bindVertexUniforms(0, &uniforms, sizeof(uniforms));
 
 	ctx.pass->bindPipeline(pipeline);
 	ctx.pass->setInstanceCount(grass.blades);
@@ -510,7 +510,7 @@ void OtSceneRenderEntitiesPass::setMaterialUniforms(
 		static_cast<uint32_t>(material->normalTexture.isReady())
 	};
 
-	ctx.pass->setFragmentUniforms(uniformSlot, &uniforms, sizeof(uniforms));
+	ctx.pass->bindFragmentUniforms(uniformSlot, &uniforms, sizeof(uniforms));
 
 	// set textures
 	ctx.bindFragmentSampler(samplerSlot++, ctx.albedoSampler, material->albedoTexture);
@@ -559,7 +559,7 @@ void OtSceneRenderEntitiesPass::setAlbedoUniforms(
 		static_cast<uint32_t>(material->albedoTexture.isReady()),
 	};
 
-	ctx.pass->setFragmentUniforms(uniformSlot, &uniforms, sizeof(uniforms));
+	ctx.pass->bindFragmentUniforms(uniformSlot, &uniforms, sizeof(uniforms));
 
 	// set textures
 	ctx.bindFragmentSampler(samplerSlot, ctx.albedoSampler, material->albedoTexture);

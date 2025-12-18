@@ -339,7 +339,7 @@ void OtOscilloscope::render(OtTexture& texture) {
 			break;
 	}
 
-	pass.setVertexUniforms(0, &vertexUniforms, sizeof(vertexUniforms));
+	pass.bindVertexUniforms(0, &vertexUniforms, sizeof(vertexUniforms));
 
 	// advance to next draw step
 	currentDrawStep = (currentDrawStep + 1) % decaySteps;
@@ -380,7 +380,7 @@ void OtOscilloscope::render(OtTexture& texture) {
 				alpha
 			};
 
-			pass.setFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
+			pass.bindFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
 			pass.render(vertexBuffers[i]);
 		}
 	}

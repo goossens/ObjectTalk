@@ -312,7 +312,7 @@ void OtSceneRendererDebug::renderCubeMapAsCross(OtCubeMap& cubemap, CubeMapDebug
 		projection * view
 	};
 
-	pass.setVertexUniforms(0, &vertexUniforms, sizeof(vertexUniforms));
+	pass.bindVertexUniforms(0, &vertexUniforms, sizeof(vertexUniforms));
 
 	// set fragment uniforms
 	struct FragmentUniforms {
@@ -321,7 +321,7 @@ void OtSceneRendererDebug::renderCubeMapAsCross(OtCubeMap& cubemap, CubeMapDebug
 		static_cast<float>(debug.requestedMip)
 	};
 
-	pass.setFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
+	pass.bindFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
 
 	// render cubemap as cross
 	pass.render(vertexBuffer, indexBuffer);

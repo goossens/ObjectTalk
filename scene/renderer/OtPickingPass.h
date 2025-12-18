@@ -70,7 +70,7 @@ private:
 	void renderGrass(OtSceneRendererContext& ctx, OtEntity entity, OtGrassComponent& grass)  override;
 	void renderTransparentGeometry(OtSceneRendererContext&ctx , OtGeometryRenderData& grd) override;
 
-	void setFragmentUniforms(OtSceneRendererContext& ctx, OtEntity entity);
+	void bindFragmentUniforms(OtSceneRendererContext& ctx, OtEntity entity);
 
 	void initializeResources();
 	bool resourcesInitialized = false;

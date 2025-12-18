@@ -159,7 +159,7 @@ void OtDeferredPass::renderDirectionalLight(OtSceneRendererContext& ctx) {
 		glm::inverse(ctx.camera.viewProjectionMatrix)
 	};
 
-	pass.setFragmentUniforms(0, &uniforms, sizeof(uniforms));
+	pass.bindFragmentUniforms(0, &uniforms, sizeof(uniforms));
 	ctx.setLightingUniforms(1, 5);
 	ctx.setShadowUniforms(2, 8);
 
@@ -208,7 +208,7 @@ void OtDeferredPass::renderPointLights(OtSceneRendererContext& ctx) {
 		ctx.camera.viewProjectionMatrix
 	};
 
-	pass.setVertexUniforms(0, &vertexUniforms, sizeof(vertexUniforms));
+	pass.bindVertexUniforms(0, &vertexUniforms, sizeof(vertexUniforms));
 
 	// set fragment uniforms
 	struct FragmentUniforms {
@@ -221,7 +221,7 @@ void OtDeferredPass::renderPointLights(OtSceneRendererContext& ctx) {
 		static_cast<float>(ctx.camera.height)
 	};
 
-	pass.setFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
+	pass.bindFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
 	ctx.setLightingUniforms(1, 4);
 
 	// send out particle(instance) data

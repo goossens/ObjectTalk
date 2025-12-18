@@ -341,7 +341,7 @@ void OtCanvas::render(OtFrameBuffer& framebuffer, float scale, std::function<voi
 		// update vertex and index buffers
 		vertexBuffer.set(vertices.data(), vertices.size(), OtVertexPosUv2D::getDescription(), true);
 		indexBuffer.set(indices.data(), indices.size(), true);
-		setVertexUniforms(pass);
+		bindVertexUniforms(pass);
 
 		// render all calls
 		for (auto& call : calls) {
@@ -383,13 +383,13 @@ int OtCanvas::addPaint(const NVGpaint& paint) {
 
 void OtCanvas::concaveFill(OtRenderPass& pass, Call& call) {
 	if (call.shapeCount) {
-	setFragmentUniforms(pass, call.uniformOffset, call.textureID);
-		setFragmentUniforms(pass, call.uniformOffset + 1, call.textureID);
+	bindFragmentUniforms(pass, call.uniformOffset, call.textureID);
+		bindFragmentUniforms(pass, call.uniformOffset + 1, call.textureID);
 		pass.bindPipeline(fillShapesPipeline);
 		pass.render(vertexBuffer, indexBuffer, call.shapeOffset, call.shapeCount);
 	}
 
-	setFragmentUniforms(pass, call.uniformOffset, call.textureID);
+	bindFragmentUniforms(pass, call.uniformOffset, call.textureID);
 
 	if (call.strokeCount) {
 		pass.bindPipeline(fillFragmentsPipeline);
@@ -408,7 +408,7 @@ void OtCanvas::concaveFill(OtRenderPass& pass, Call& call) {
 //
 
 void OtCanvas::convexFill(OtRenderPass& pass, Call& call) {
-	setFragmentUniforms(pass, call.uniformOffset, call.textureID);
+	bindFragmentUniforms(pass, call.uniformOffset, call.textureID);
 	pass.bindPipeline(convexPipeline);
 
 	if (call.shapeCount) {
@@ -427,11 +427,11 @@ void OtCanvas::convexFill(OtRenderPass& pass, Call& call) {
 
 void OtCanvas::stroke(OtRenderPass& pass, Call& call) {
 	if (call.strokeCount) {
-		setFragmentUniforms(pass, call.uniformOffset + 1, call.textureID);
+		bindFragmentUniforms(pass, call.uniformOffset + 1, call.textureID);
 		pass.bindPipeline(strokeBasePipeline);
 		pass.render(vertexBuffer, indexBuffer, call.strokeOffset, call.strokeCount);
 
-		setFragmentUniforms(pass, call.uniformOffset, call.textureID);
+		bindFragmentUniforms(pass, call.uniformOffset, call.textureID);
 		pass.bindPipeline(strokeFragmentPipeline);
 		pass.render(vertexBuffer, indexBuffer, call.strokeOffset, call.strokeCount);
 
@@ -447,7 +447,7 @@ void OtCanvas::stroke(OtRenderPass& pass, Call& call) {
 
 void OtCanvas::triangles(OtRenderPass& pass, Call& call) {
 	if (call.fillCount) {
-		setFragmentUniforms(pass, call.uniformOffset, call.textureID);
+		bindFragmentUniforms(pass, call.uniformOffset, call.textureID);
 		pass.bindPipeline(convexPipeline);
 		pass.render(vertexBuffer, indexBuffer, call.fillOffset, call.fillCount);
 	}
@@ -823,10 +823,10 @@ size_t OtCanvas::paintToUniforms(NVGpaint* paint, NVGscissor* scissor, float w, 
 
 
 //
-//	OtCanvas::setVertexUniforms
+//	OtCanvas::bindVertexUniforms
 //
 
-void OtCanvas::setVertexUniforms(OtRenderPass& pass) {
+void OtCanvas::bindVertexUniforms(OtRenderPass& pass) {
 	struct VertexUniforms {
 		float width;
 		float heigh;
@@ -835,16 +835,16 @@ void OtCanvas::setVertexUniforms(OtRenderPass& pass) {
 		height
 	};
 
-	pass.setVertexUniforms(0, &vertexUniforms, sizeof(VertexUniforms));
+	pass.bindVertexUniforms(0, &vertexUniforms, sizeof(VertexUniforms));
 }
 
 
 //
-//	OtCanvas::setFragmentUniforms
+//	OtCanvas::bindFragmentUniforms
 //
 
-void OtCanvas::setFragmentUniforms(OtRenderPass& pass, size_t uniformOffset, int textureID) {
-	pass.setFragmentUniforms(0, &fragmentUniforms[uniformOffset], sizeof(FragmentUniforms));
+void OtCanvas::bindFragmentUniforms(OtRenderPass& pass, size_t uniformOffset, int textureID) {
+	pass.bindFragmentUniforms(0, &fragmentUniforms[uniformOffset], sizeof(FragmentUniforms));
 
 	if (textureID) {
 		// find texture

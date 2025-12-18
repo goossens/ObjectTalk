@@ -324,7 +324,7 @@ void OtCubeMap::createCubemapFromHDR() {
 		OtRenderPass pass;
 		pass.start2(*this, i);
 		pass.bindFragmentSampler(0, hdrSampler, inputTexture);
-		pass.setFragmentUniforms(0, &uniforms, sizeof(uniforms));
+		pass.bindFragmentUniforms(0, &uniforms, sizeof(uniforms));
 		pass.bindPipeline(hdrPipeline);
 		pass.render(3);
 		pass.end();

@@ -129,7 +129,7 @@ void OtWaterPass::renderWater(OtSceneRendererContext& ctx, OtWaterComponent& wat
 		glm::inverse(ctx.camera.viewProjectionMatrix)
 	};
 
-	ctx.pass->setVertexUniforms(0, &vertexUniforms, sizeof(vertexUniforms));
+	ctx.pass->bindVertexUniforms(0, &vertexUniforms, sizeof(vertexUniforms));
 
 	// set fragment uniforms
 	struct FragmentUniforms {
@@ -166,7 +166,7 @@ void OtWaterPass::renderWater(OtSceneRendererContext& ctx, OtWaterComponent& wat
 		static_cast<uint32_t>(water.useRefractance)
 	};
 
-	pass.setFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
+	pass.bindFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
 	ctx.setLightingUniforms(1, 5);
 	ctx.setShadowUniforms(2, 8);
 

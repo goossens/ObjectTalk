@@ -273,6 +273,6 @@ private:
 
 	size_t paintToUniforms(NVGpaint* paint, NVGscissor* scissor, float width, float fringe, float strokeThr, int shaderType);
 
-	void setVertexUniforms(OtRenderPass& pass);
-	void setFragmentUniforms(OtRenderPass& pass, size_t uniformOffset, int textureID);
+	void bindVertexUniforms(OtRenderPass& pass);
+	void bindFragmentUniforms(OtRenderPass& pass, size_t uniformOffset, int textureID);
 };

@@ -311,10 +311,10 @@ void OtRenderPass::bindFragmentSampler(size_t slot, OtSampler& sampler, OtCubeMa
 
 
 //
-//	OtRenderPass::setVertexUniforms
+//	OtRenderPass::bindVertexUniforms
 //
 
-void OtRenderPass::setVertexUniforms(size_t slot, const void* data, size_t size) {
+void OtRenderPass::bindVertexUniforms(size_t slot, const void* data, size_t size) {
 	OtAssert(open);
 
 	SDL_PushGPUVertexUniformData(
@@ -326,10 +326,10 @@ void OtRenderPass::setVertexUniforms(size_t slot, const void* data, size_t size)
 
 
 //
-//	OtRenderPass::setFragmentUniforms
+//	OtRenderPass::bindFragmentUniforms
 //
 
-void OtRenderPass::setFragmentUniforms(size_t slot, const void* data, size_t size) {
+void OtRenderPass::bindFragmentUniforms(size_t slot, const void* data, size_t size) {
 	OtAssert(open);
 
 	SDL_PushGPUFragmentUniformData(

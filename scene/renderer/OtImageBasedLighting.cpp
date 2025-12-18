@@ -68,7 +68,7 @@ void OtImageBasedLighting::update(OtIblComponent& component) {
 				static_cast<uint32_t>(environmentSize)
 			};
 
-			environmentPass.setFragmentUniforms(0, &uniforms, sizeof(uniforms));
+			environmentPass.bindFragmentUniforms(0, &uniforms, sizeof(uniforms));
 			environmentPass.bindFragmentSampler(0, cubemapSampler, cubemap);
 			environmentPass.render(3);
 			environmentPass.end();

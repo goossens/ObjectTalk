@@ -101,8 +101,8 @@ void OtMeshPreview::render(int width, int height, OtMesh& mesh, Context& context
 		glm::vec4(context.lightColor, 0.0f)
 	};
 
-	pass.setVertexUniforms(0, &vertexUniforms, sizeof(vertexUniforms));
-	pass.setFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
+	pass.bindVertexUniforms(0, &vertexUniforms, sizeof(vertexUniforms));
+	pass.bindFragmentUniforms(0, &fragmentUniforms, sizeof(fragmentUniforms));
 
 	// render preview
 	pass.render(mesh);

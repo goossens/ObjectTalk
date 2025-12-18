@@ -66,8 +66,8 @@ public:
 	void bindFragmentSampler(size_t slot, OtSampler& sampler, OtCubeMap& cubemap);
 
 	// set uniforms
-	void setVertexUniforms(size_t slot, const void* data, size_t size);
-	void setFragmentUniforms(size_t slot, const void* data, size_t size);
+	void bindVertexUniforms(size_t slot, const void* data, size_t size);
+	void bindFragmentUniforms(size_t slot, const void* data, size_t size);
 
 	// set the stencil reference
 	void setStencilReference(uint8_t reference);

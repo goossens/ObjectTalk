@@ -286,7 +286,7 @@ void OtSceneRendererContext::setClippingUniforms(size_t uniformSlot) {
 		clippingPlane
 	};
 
-	pass->setFragmentUniforms(uniformSlot, &uniforms, sizeof(uniforms));
+	pass->bindFragmentUniforms(uniformSlot, &uniforms, sizeof(uniforms));
 }
 
 
@@ -314,7 +314,7 @@ void OtSceneRendererContext::setLightingUniforms(size_t uniformSlot, size_t samp
 		hasImageBasedLighting ? ibl.maxEnvLevel : 0
 	};
 
-	pass->setFragmentUniforms(uniformSlot, &uniforms, sizeof(uniforms));
+	pass->bindFragmentUniforms(uniformSlot, &uniforms, sizeof(uniforms));
 
 	// submit the IBL samplers
 	if (hasImageBasedLighting) {
@@ -354,7 +354,7 @@ void OtSceneRendererContext::setShadowUniforms(size_t uniformSlot, size_t sample
 		uniforms.cascadeDistance[i] = csm.getDistance(i);
 	}
 
-	pass->setFragmentUniforms(uniformSlot, &uniforms, sizeof(uniforms));
+	pass->bindFragmentUniforms(uniformSlot, &uniforms, sizeof(uniforms));
 
 	// set textures
 	pass->bindFragmentSampler(samplerSlot++, shadowMap0Sampler, csm.getDepthTexture(0));

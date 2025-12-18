@@ -77,7 +77,7 @@ protected:
 	void renderTerrainHelper(
 		OtSceneRendererContext& ctx,
 		OtTerrainComponent& terrain,
-		bool setFragmentUniforms,
+		bool bindFragmentUniforms,
 		OtRenderPipeline& cullingPipeline,
 		OtRenderPipeline& linesPipeline);
 

@@ -83,7 +83,7 @@ public:
 		pass.start(destination);
 		pass.bindPipeline(renderPipeline);
 		pass.bindFragmentSampler(0, sampler, source);
-		pass.setFragmentUniforms(0, &uniforms, sizeof(uniforms));
+		pass.bindFragmentUniforms(0, &uniforms, sizeof(uniforms));
 		pass.render(3);
 		pass.end();
 	}

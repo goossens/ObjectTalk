@@ -83,7 +83,7 @@ void OtHighlightPass::renderHighlightPass(OtSceneRendererContext& ctx, OtTexture
 			glm::vec2(1.0f / static_cast<float>(ctx.camera.width), 1.0f / static_cast<float>(ctx.camera.height))
 		};
 
-		pass.setFragmentUniforms(0, &uniforms, sizeof(uniforms));
+		pass.bindFragmentUniforms(0, &uniforms, sizeof(uniforms));
 		pass.render(3);
 		pass.end();
 }

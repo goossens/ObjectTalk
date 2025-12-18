@@ -70,7 +70,7 @@ void OtParticlesPass::render(OtSceneRendererContext& ctx) {
 			ctx.camera.projectionMatrix * view * ctx.scene->getGlobalTransform(entity)
 		};
 
-		pass.setVertexUniforms(0, &uniforms, sizeof(uniforms));
+		pass.bindVertexUniforms(0, &uniforms, sizeof(uniforms));
 
 		// render particles
 		pass.render(vertexBuffer, indexBuffer);

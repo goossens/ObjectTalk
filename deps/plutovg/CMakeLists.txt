@@ -19,7 +19,7 @@ target_compile_options(plutovg PRIVATE
 	$<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Werror -Wall>
 	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/wd4267>)
 
-if(CMAKE_GENERATOR STREQUAL Xcode)
+if(CMAKE_GENERATOR STREQUAL "Xcode")
 	set_target_properties(plutovg PROPERTIES XCODE_ATTRIBUTE_GCC_WARN_64_TO_32_BIT_CONVERSION "NO")
 endif()
 

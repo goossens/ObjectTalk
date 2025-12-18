@@ -53,7 +53,7 @@ if(OT_INCLUDE_UI)
 	target_include_directories(md4c PUBLIC md4c)
 	set_target_properties(md4c PROPERTIES FOLDER 3rdParty)
 
-	if(CMAKE_GENERATOR STREQUAL Xcode)
+	if(CMAKE_GENERATOR STREQUAL "Xcode")
 		set_target_properties(md4c PROPERTIES XCODE_ATTRIBUTE_GCC_WARN_64_TO_32_BIT_CONVERSION "NO")
 	endif()
 

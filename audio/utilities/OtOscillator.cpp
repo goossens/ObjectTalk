@@ -120,6 +120,9 @@ float OtOscillator::get() {
 			value = y - blep(t1, sampleLength);
 			break;
 		}
+
+		default:
+			value = 0.0;
 	}
 
 	// update the oscillator phase

@@ -45,8 +45,8 @@ public:
 	inline size_t size() { return N; }
 
 	// interator support
-	inline typename std::array<T, N>::iterator begin() { return buffer; }
-	inline typename std::array<T, N>::iterator end() { return buffer + N; }
+	inline T* begin() { return buffer; }
+	inline T* end() { return buffer + N; }
 
 private:
 	// signal queue

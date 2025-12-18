@@ -63,15 +63,15 @@ public:
 	virtual void configure() = 0;
 
 	// add pins
-	inline OtCircuitPin addInputPin(const char* name, OtCircuitPinClass::Type type) {
-		OtCircuitPin pin = std::make_shared<OtCircuitPinClass>(name, type, OtCircuitPinClass::Direction::input);
+	inline OtCircuitPin addInputPin(const char* name, OtCircuitPinClass::Type pinType) {
+		OtCircuitPin pin = std::make_shared<OtCircuitPinClass>(name, pinType, OtCircuitPinClass::Direction::input);
 		pin->circuit = this;
 		inputPins.emplace_back(pin);
 		return pin;
 	}
 
-	inline OtCircuitPin addOutputPin(const char* name, OtCircuitPinClass::Type type) {
-		OtCircuitPin pin = std::make_shared<OtCircuitPinClass>(name, type, OtCircuitPinClass::Direction::output);
+	inline OtCircuitPin addOutputPin(const char* name, OtCircuitPinClass::Type pinType) {
+		OtCircuitPin pin = std::make_shared<OtCircuitPinClass>(name, pinType, OtCircuitPinClass::Direction::output);
 		pin->circuit = this;
 		outputPins.emplace_back(pin);
 		return pin;

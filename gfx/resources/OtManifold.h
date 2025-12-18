@@ -114,7 +114,7 @@ public:
 
 	// simplify/refine manifold based on to tolerance
 	OtManifold simplify(float tolerance);
-	OtManifold refine(float tolerance);
+	OtManifold refine(int tolerance);
 
 	// transform manifold
 	OtManifold translate(float x, float y, float z);

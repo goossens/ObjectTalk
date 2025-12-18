@@ -422,8 +422,8 @@ OtManifold OtManifold::simplify(float tolerance) {
 //	OtManifold::refine
 //
 
-OtManifold OtManifold::refine(float tolerance) {
-	return OtManifold(manifold->Refine(static_cast<double>(tolerance)));
+OtManifold OtManifold::refine(int tolerance) {
+	return OtManifold(manifold->Refine(tolerance));
 }
 
 

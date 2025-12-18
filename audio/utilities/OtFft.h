@@ -79,7 +79,7 @@ public:
 		auto limit = size / 2;
 
 		for (int i = 0; i < limit; i++) {
-			out[i] = std::abs(resultBuffer[i]) * scale * 2.0;
+			out[i] = std::abs(resultBuffer[i]) * scale * 2.0f;
 		}
 
 		std::fill(out + limit, out + size, 0.0f);

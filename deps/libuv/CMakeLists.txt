@@ -15,13 +15,12 @@ FetchContent_Populate(libuv QUIET GIT_REPOSITORY "https://github.com/libuv/libuv
 add_subdirectory(${libuv_SOURCE_DIR} ${libuv_BINARY_DIR} EXCLUDE_FROM_ALL)
 
 target_compile_options(uv_a PRIVATE
-	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wall -Wno-shorten-64-to-32>
+	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wall -Wno-shorten-64-to-32 -Wno-gnu-folding-constant>
 	$<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wno-format-truncation>
 	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/wd4334 /wd4244 /wd4245 /wd4267 /wd4701 /wd4702>)
 
-if(CMAKE_GENERATOR STREQUAL Xcode)
+if(CMAKE_GENERATOR STREQUAL "Xcode")
 	set_target_properties(uv_a PROPERTIES XCODE_ATTRIBUTE_GCC_WARN_64_TO_32_BIT_CONVERSION "NO")
 endif()
-
 
 set_target_properties(uv_a PROPERTIES FOLDER deps/libuv)

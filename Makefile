@@ -22,7 +22,7 @@ xcode:
 
 .PHONY: vs
 vs:
-	cmake -B $(HOME)/build/ObjectTalk/vs -G "Visual Studio 17 2022" -A x64
+	cmake -B $(HOME)/build/ObjectTalk/vs -G "Visual Studio 18 2025" -A ARM64
 	cmake --build $(HOME)/build/ObjectTalk
 
 .PHONY: test

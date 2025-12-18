@@ -106,9 +106,9 @@ void ImGui_PianoKeyboard(const char* IDName, ImVec2 Size, int* PrevNoteActive, i
 		if (NoteIsDark[i] > 0) continue;
 
 		ImRect NoteRect(
-			round(OffsetX),
+			OffsetX,
 			OffsetY,
-			round(OffsetX + NoteWidth),
+			OffsetX + NoteWidth,
 			OffsetY2
 		);
 
@@ -140,9 +140,9 @@ void ImGui_PianoKeyboard(const char* IDName, ImVec2 Size, int* PrevNoteActive, i
 
 		float OffsetDark = NoteDarkOffset[i] * NoteWidth2;
 		ImRect NoteRect(
-			round(OffsetX + OffsetDark),
+			OffsetX + OffsetDark,
 			OffsetY,
-			round(OffsetX + NoteWidth2 + OffsetDark),
+			OffsetX + NoteWidth2 + OffsetDark,
 			OffsetY2
 		);
 

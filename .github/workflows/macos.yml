@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   verify-macos:
-    runs-on: macos-15-intel
+    runs-on: macos-latest
 
     steps:
     - name: Checkout Repository

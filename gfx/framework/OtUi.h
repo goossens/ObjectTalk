@@ -184,7 +184,7 @@ public:
 
 	// knobs
 	static bool knob(const char* label, float* value, float minValue, float maxValue, const char* format="%.0f", bool logarithmic=false);
-	static int knobHeight();
+	static float knobHeight();
 
 	// bezier curve editor
 	static bool bezier(const char* label, float P[4]);

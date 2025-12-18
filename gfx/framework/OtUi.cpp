@@ -976,7 +976,7 @@ bool OtUi::knob(const char* label, float* value, float minValue, float maxValue,
 //	OtUi::knobHeight
 //
 
-int OtUi::knobHeight() {
+float OtUi::knobHeight() {
 	// title height
 	auto height = ImGui::GetFrameHeightWithSpacing();
 

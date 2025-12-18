@@ -4,21 +4,14 @@ on: [push]
 
 jobs:
   verify-windows:
-    runs-on: windows-${{ matrix.config.server }}
-    name: build-${{ matrix.config.toolchain }}-${{ matrix.config.arch }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-          - {toolchain: Visual Studio 17 2022, arch: x64, server: 2025}
+    runs-on: windows-latest
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
     - name: Configure
-      run: cmake -B build -G "${{ matrix.config.toolchain }}" -A ${{ matrix.config.arch }}
+      run: cmake -B build -G "Visual Studio 18 2026" -A x64
 
     - name: Build
       run: cmake --build build --config Release
@@ -29,12 +22,12 @@ jobs:
     - name: Package
       run: |
         cd build/Release
-        7z a ../../windows-${{ matrix.config.server }}.zip ot.exe
+        7z a ../../windows-.zip ot.exe
 
     - name: Release
       uses: "svenstaro/upload-release-action@v2"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         tag: "development"
-        file: windows-${{ matrix.config.server }}.zip
+        file: windows.zip
         overwrite: true

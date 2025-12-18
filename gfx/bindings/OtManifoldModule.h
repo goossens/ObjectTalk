@@ -64,7 +64,7 @@ public:
 
 	// simplify/refine manifold based on to tolerance
 	inline OtObject simplify(float tolerance) { return OtManifoldObject::create(manifold.simplify(tolerance)); }
-	inline OtObject refine(float tolerance) { return OtManifoldObject::create(manifold.refine(tolerance)); }
+	inline OtObject refine(int tolerance) { return OtManifoldObject::create(manifold.refine(tolerance)); }
 
 	// combine manifolds
 	inline OtObject unionManifolds(OtManifold other) { return OtManifoldObject::create(manifold.unionManifolds(other)); }

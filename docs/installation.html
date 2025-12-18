@@ -322,12 +322,13 @@
           <div id="windows">
             <h1 class="pb-2">Build and Install on Windows</h1>
             <p>
-              ObjectTalk is supported on 11 and Server 2022. There are 3 simple
-              requirements to get your machine ready for ObjectTalk development:
+              ObjectTalk is supported on Windows 11 and Server 2025. There are 3
+              simple requirements to get your machine ready for ObjectTalk
+              development:
             </p>
             <ul>
               <li>
-                Install Visual Studio 17 2022 (make sure you pick the
+                Install Visual Studio 18 2025 (make sure you pick the
                 &quot;Desktop development with C++&quot; option)
               </li>
               <li>
@@ -342,8 +343,6 @@
                 <a href="https://cmake.org/download/"
                   >https://cmake.org/download/</a
                 >
-                (ensure you select the &quot;add cmake to the system PATH&quot;
-                option)
               </li>
             </ul>
             <p>To build ObjectTalk, do the following from the command line:</p>
@@ -366,11 +365,12 @@
               <li>
                 <strong
                   >cmake -B ${HOME}/build/ObjectTalk/vs -G &quot;Visual Studio
-                  17 2022&quot; -A x64</strong
+                  18 2026&quot; -A x64</strong
                 >
+                (or <strong>ARM64</strong> depending on processor)
               </li>
               <li>
-                Build ObjectTalk by Hand:
+                Build ObjectTalk by hand:
                 <ul>
                   <li>
                     <strong>cmake --build ${HOME}/build/ObjectTalk/vs</strong>

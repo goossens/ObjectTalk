@@ -18,7 +18,7 @@ set(ENABLE_HLSL OFF CACHE BOOL "" FORCE)
 FetchContent_Populate(glslang QUIET GIT_REPOSITORY "https://github.com/KhronosGroup/glslang" GIT_TAG "16.0.0")
 add_subdirectory(${glslang_SOURCE_DIR} ${glslang_BINARY_DIR} EXCLUDE_FROM_ALL)
 
-if(CMAKE_GENERATOR STREQUAL Xcode)
+if(CMAKE_GENERATOR STREQUAL "Xcode")
 	set_target_properties(glslang PROPERTIES XCODE_ATTRIBUTE_GCC_WARN_64_TO_32_BIT_CONVERSION "NO")
 endif()
 

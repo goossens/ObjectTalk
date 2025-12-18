@@ -41,8 +41,9 @@ OtRenderShader::OtRenderShader(const uint32_t* code, size_t size, Stage stage) {
 	// see if shader has already been compiled
 	auto hash = OtHash::generate(code, size, stage);
 
-	if (shaders.find(hash) == shaders.end()) {
-		// shader is not it cache so we need to cross compile it
+	// if (shaders.find(hash) == shaders.end()) {
+	if (true) {
+		// shader is not in cache so we need to cross compile it
 
 		// figure out shader metadata
 		SDL_ShaderCross_GraphicsShaderMetadata* metadata = SDL_ShaderCross_ReflectGraphicsSPIRV((Uint8*) code, size, 0);

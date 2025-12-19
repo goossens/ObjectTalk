@@ -12,7 +12,16 @@
 //	Include files
 //
 
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wno-aggressive-loop-optimizations"
+#endif
+
 #include "FastNoiseLite.h"
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
 
 //

@@ -313,7 +313,7 @@ void OtCubeMap::createCubemapFromHDR() {
 		hdrPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16);
 	}
 
-	// run a render passesf
+	// run render passes
 	for (size_t i = 0; i < 6; i++) {
 		struct Uniforms {
 			int32_t side;

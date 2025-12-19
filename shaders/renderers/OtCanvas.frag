@@ -27,7 +27,7 @@ layout(std140, set=3, binding=0) uniform UBO {
 	int type;
 };
 
-layout(set=0, binding=0) uniform sampler2D tex;
+layout(set=2, binding=0) uniform sampler2D tex;
 
 const int simpleShader = 0;
 const int fillGradientShader = 1;

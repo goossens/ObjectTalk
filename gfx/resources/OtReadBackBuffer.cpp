@@ -81,7 +81,7 @@ OtImage& OtReadBackBuffer::readback(OtTexture& texture, int x, int y, int w, int
 	SDL_ReleaseGPUFence(gpu.device, fence);
 
 	// transfer data to image
-	void* data = SDL_MapGPUTransferBuffer(gpu.device, transferBuffer, false);
+	auto data = SDL_MapGPUTransferBuffer(gpu.device, transferBuffer, false);
 	convertToImage(w, h, texture.getFormat(), data);
 	SDL_UnmapGPUTransferBuffer(gpu.device, transferBuffer);
 	SDL_ReleaseGPUTransferBuffer(gpu.device, transferBuffer);

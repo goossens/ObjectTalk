@@ -22,7 +22,7 @@ jobs:
     - name: Package
       run: |
         cd build/Release
-        7z a ../../windows-.zip ot.exe
+        7z a ../../windows.zip ot.exe
 
     - name: Release
       uses: "svenstaro/upload-release-action@v2"

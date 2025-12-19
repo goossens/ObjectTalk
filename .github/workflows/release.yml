@@ -23,7 +23,7 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create Development Tag
-      uses: "richardsimko/update-tag"
+      uses: "richardsimko/update-tag@v1"
       with:
         tag_name: "development"
       env:

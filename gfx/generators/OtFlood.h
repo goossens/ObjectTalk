@@ -17,8 +17,8 @@
 #include "glm/glm.hpp"
 
 #include "OtColor.h"
-#include "OtFloodComp.h"
 #include "OtGenerator.h"
+#include "OtShaders.h"
 
 
 //
@@ -34,7 +34,7 @@ public:
 	void configurePass(OtComputePass& pass) override {
 		// initialize pipeline (if required)
 		if (!pipeline.isValid()) {
-			pipeline.setShader(OtFloodComp, sizeof(OtFloodComp));
+			pipeline.setShader(OtFloodComp, OtFloodCompSize);
 		}
 
 		// set uniforms

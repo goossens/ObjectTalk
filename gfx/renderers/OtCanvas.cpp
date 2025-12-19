@@ -17,8 +17,7 @@
 #include "OtCanvas.h"
 #include "OtImage.h"
 
-#include "OtCanvasFrag.h"
-#include "OtCanvasVert.h"
+#include "OtShaders.h"
 
 
 //
@@ -52,7 +51,7 @@ OtCanvas::OtCanvas() {
 	}
 
 	// configure rendering pipelines
-	convexPipeline.setShaders(OtCanvasVert, sizeof(OtCanvasVert), OtCanvasFrag, sizeof(OtCanvasFrag));
+	convexPipeline.setShaders(OtCanvasVert, OtCanvasVertSize, OtCanvasFrag, OtCanvasFragSize);
 	convexPipeline.setVertexDescription(OtVertexPosUv2D::getDescription());
 	convexPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba8d24s8);
 
@@ -62,7 +61,7 @@ OtCanvas::OtCanvas() {
 		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
 	);
 
-	fillShapesPipeline.setShaders(OtCanvasVert, sizeof(OtCanvasVert), OtCanvasFrag, sizeof(OtCanvasFrag));
+	fillShapesPipeline.setShaders(OtCanvasVert, OtCanvasVertSize, OtCanvasFrag, OtCanvasFragSize);
 	fillShapesPipeline.setVertexDescription(OtVertexPosUv2D::getDescription());
 	fillShapesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba8d24s8);
 	fillShapesPipeline.setColorMask(OtRenderPipeline::ColorMask::none);
@@ -78,7 +77,7 @@ OtCanvas::OtCanvas() {
 		OtRenderPipeline::StencilOperation::keep,
 		OtRenderPipeline::StencilOperation::keep);
 
-	fillFragmentsPipeline.setShaders(OtCanvasVert, sizeof(OtCanvasVert), OtCanvasFrag, sizeof(OtCanvasFrag));
+	fillFragmentsPipeline.setShaders(OtCanvasVert, OtCanvasVertSize, OtCanvasFrag, OtCanvasFragSize);
 	fillFragmentsPipeline.setVertexDescription(OtVertexPosUv2D::getDescription());
 	fillFragmentsPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba8d24s8);
 
@@ -95,7 +94,7 @@ OtCanvas::OtCanvas() {
 		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
 	);
 
-	fillPipeline.setShaders(OtCanvasVert, sizeof(OtCanvasVert), OtCanvasFrag, sizeof(OtCanvasFrag));
+	fillPipeline.setShaders(OtCanvasVert, OtCanvasVertSize, OtCanvasFrag, OtCanvasFragSize);
 	fillPipeline.setVertexDescription(OtVertexPosUv2D::getDescription());
 	fillPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba8d24s8);
 	fillPipeline.setDepthTest(OtRenderPipeline::CompareOperation::none);
@@ -114,7 +113,7 @@ OtCanvas::OtCanvas() {
 		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
 	);
 
-	strokeBasePipeline.setShaders(OtCanvasVert, sizeof(OtCanvasVert), OtCanvasFrag, sizeof(OtCanvasFrag));
+	strokeBasePipeline.setShaders(OtCanvasVert, OtCanvasVertSize, OtCanvasFrag, OtCanvasFragSize);
 	strokeBasePipeline.setVertexDescription(OtVertexPosUv2D::getDescription());
 	strokeBasePipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba8d24s8);
 
@@ -131,7 +130,7 @@ OtCanvas::OtCanvas() {
 		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
 	);
 
-	strokeFragmentPipeline.setShaders(OtCanvasVert, sizeof(OtCanvasVert), OtCanvasFrag, sizeof(OtCanvasFrag));
+	strokeFragmentPipeline.setShaders(OtCanvasVert, OtCanvasVertSize, OtCanvasFrag, OtCanvasFragSize);
 	strokeFragmentPipeline.setVertexDescription(OtVertexPosUv2D::getDescription());
 	strokeFragmentPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba8d24s8);
 
@@ -148,7 +147,7 @@ OtCanvas::OtCanvas() {
 		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
 	);
 
-	clearStencilPipeline.setShaders(OtCanvasVert, sizeof(OtCanvasVert), OtCanvasFrag, sizeof(OtCanvasFrag));
+	clearStencilPipeline.setShaders(OtCanvasVert, OtCanvasVertSize, OtCanvasFrag, OtCanvasFragSize);
 	clearStencilPipeline.setVertexDescription(OtVertexPosUv2D::getDescription());
 	clearStencilPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba8d24s8);
 	clearStencilPipeline.setColorMask(OtRenderPipeline::ColorMask::none);

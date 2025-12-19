@@ -21,8 +21,7 @@
 #include "OtMeshPreview.h"
 #include "OtRenderPass.h"
 
-#include "OtMeshPreviewVert.h"
-#include "OtMeshPreviewFrag.h"
+#include "OtShaders.h"
 
 
 //
@@ -31,12 +30,12 @@
 
 OtMeshPreview::OtMeshPreview() {
 	// configure pipelines
-	fillPipeline.setShaders(OtMeshPreviewVert, sizeof(OtMeshPreviewVert), OtMeshPreviewFrag, sizeof(OtMeshPreviewFrag));
+	fillPipeline.setShaders(OtMeshPreviewVert, OtMeshPreviewVertSize, OtMeshPreviewFrag, OtMeshPreviewFragSize);
 	fillPipeline.setVertexDescription(OtVertex::getDescription());
 	fillPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
 	fillPipeline.setCulling(OtRenderPipeline::Culling::cw);
 
-	linePipeline.setShaders(OtMeshPreviewVert, sizeof(OtMeshPreviewVert), OtMeshPreviewFrag, sizeof(OtMeshPreviewFrag));
+	linePipeline.setShaders(OtMeshPreviewVert,OtMeshPreviewVertSize, OtMeshPreviewFrag, OtMeshPreviewFragSize);
 	linePipeline.setVertexDescription(OtVertex::getDescription());
 	linePipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
 	linePipeline.setFill(false);

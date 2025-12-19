@@ -15,10 +15,7 @@
 #include "OtRenderPass.h"
 
 #include "OtImageBasedLighting.h"
-
-#include "OtFullScreenVert.h"
-#include "OtIblIrradianceMapFrag.h"
-#include "OtIblEnvironmentMapFrag.h"
+#include "OtShaders.h"
 
 
 //
@@ -87,10 +84,10 @@ void OtImageBasedLighting::update(OtIblComponent& component) {
 
 void OtImageBasedLighting::initializeResources() {
 	// initialize pipelines
-	irradiancePipeline.setShaders(OtFullScreenVert, sizeof(OtFullScreenVert), OtIblIrradianceMapFrag, sizeof(OtIblIrradianceMapFrag));
+	irradiancePipeline.setShaders(OtFullScreenVert, OtFullScreenVertSize, OtIblIrradianceMapFrag, OtIblIrradianceMapFragSize);
 	irradiancePipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::cubemap);
 
-	environmentPipeline.setShaders(OtFullScreenVert, sizeof(OtFullScreenVert), OtIblEnvironmentMapFrag, sizeof(OtIblEnvironmentMapFrag));
+	environmentPipeline.setShaders(OtFullScreenVert, OtFullScreenVertSize, OtIblEnvironmentMapFrag, OtIblEnvironmentMapFragSize);
 	environmentPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::cubemap);
 
 	// generate the Smith BRDF LUT

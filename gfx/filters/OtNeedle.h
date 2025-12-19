@@ -14,8 +14,8 @@
 
 #include "glm/glm.hpp"
 
-#include "OtNeedleComp.h"
 #include "OtFilter.h"
+#include "OtShaders.h"
 
 
 //
@@ -32,7 +32,7 @@ public:
 	void configurePass(OtComputePass& pass) override {
 		// initialize pipeline (if required)
 		if (!pipeline.isValid()) {
-			pipeline.setShader(OtNeedleComp, sizeof(OtNeedleComp));
+			pipeline.setShader(OtNeedleComp, OtNeedleCompSize);
 		}
 
 		// add overlay texture

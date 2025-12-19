@@ -14,8 +14,8 @@
 
 #include <cstdint>
 
-#include "OtTileableFbmComp.h"
 #include "OtGenerator.h"
+#include "OtShaders.h"
 
 
 //
@@ -35,7 +35,7 @@ public:
 	void configurePass(OtComputePass& pass) override {
 		// initialize pipeline (if required)
 		if (!pipeline.isValid()) {
-			pipeline.setShader(OtTileableFbmComp, sizeof(OtTileableFbmComp));
+			pipeline.setShader(OtTileableFbmComp, OtTileableFbmCompSize);
 		}
 
 		// set uniforms

@@ -16,7 +16,7 @@
 #include "OtSampler.h"
 #include "OtTexture.h"
 
-#include "OtGodRaysComp.h"
+#include "OtShaders.h"
 
 
 //
@@ -39,7 +39,7 @@ public:
 	void configurePass(OtComputePass& pass) override {
 		// initialize pipeline (if required)
 		if (!pipeline.isValid()) {
-			pipeline.setShader(OtGodRaysComp, sizeof(OtGodRaysComp));
+			pipeline.setShader(OtGodRaysComp, OtGodRaysCompSize);
 		}
 
 		// set uniforms

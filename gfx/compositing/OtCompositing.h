@@ -19,8 +19,7 @@
 #include "OtSampler.h"
 #include "OtTexture.h"
 
-#include "OtFullScreenVert.h"
-#include "OtCompositingFrag.h"
+#include "OtShaders.h"
 
 
 //
@@ -66,7 +65,7 @@ public:
 				default: OtLogFatal("Unsupported render target type");
 			}
 
-			renderPipeline.setShaders(OtFullScreenVert, sizeof(OtFullScreenVert), OtCompositingFrag, sizeof(OtCompositingFrag));
+			renderPipeline.setShaders(OtFullScreenVert, OtFullScreenVertSize, OtCompositingFrag, OtCompositingFragSize);
 			renderPipeline.setRenderTargetType(renderTargetType);
 			configurePipeline(renderPipeline);
 		}

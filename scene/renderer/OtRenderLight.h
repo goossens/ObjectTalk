@@ -15,8 +15,7 @@
 #include "glm/glm.hpp"
 
 #include "OtGenerator.h"
-
-#include "OtRenderLightComp.h"
+#include "OtShaders.h"
 
 
 //
@@ -34,7 +33,7 @@ public:
 	void configurePass(OtComputePass& pass) override {
 		// initialize pipeline (if required)
 		if (!pipeline.isValid()) {
-			pipeline.setShader(OtRenderLightComp, sizeof(OtRenderLightComp));
+			pipeline.setShader(OtRenderLightComp, OtRenderLightCompSize);
 		}
 
 		// set uniforms

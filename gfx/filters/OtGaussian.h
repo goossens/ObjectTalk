@@ -15,7 +15,7 @@
 #include "glm/glm.hpp"
 
 #include "OtFilter.h"
-#include "OtGaussianComp.h"
+#include "OtShaders.h"
 
 
 //
@@ -38,7 +38,7 @@ public:
 	void configurePass(OtComputePass& pass) override {
 		// initialize pipeline (if required)
 		if (!pipeline.isValid()) {
-			pipeline.setShader(OtGaussianComp, sizeof(OtGaussianComp));
+			pipeline.setShader(OtGaussianComp, OtGaussianCompSize);
 		}
 
 		// set uniforms

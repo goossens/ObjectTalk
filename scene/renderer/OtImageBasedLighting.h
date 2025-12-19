@@ -19,8 +19,7 @@
 #include "OtTexture.h"
 
 #include "OtIblComponent.h"
-
-#include "OtBrdfLutComp.h"
+#include "OtShaders.h"
 
 
 //
@@ -46,7 +45,7 @@ private:
 	OtSampler cubemapSampler{OtSampler::Filter::linear, OtSampler::Addressing::repeat};
 
 	// compute/render pipelines
-	OtComputePipeline brdfLutPipeline{OtBrdfLutComp, sizeof(OtBrdfLutComp)};
+	OtComputePipeline brdfLutPipeline{OtBrdfLutComp, OtBrdfLutCompSize};
 	OtRenderPipeline irradiancePipeline;
 	OtRenderPipeline environmentPipeline;
 

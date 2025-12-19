@@ -21,8 +21,7 @@
 #include "OtRenderPass.h"
 #include "OtVertex.h"
 
-#include "OtOscilloscopeVert.h"
-#include "OtOscilloscopeFrag.h"
+#include "OtShaders.h"
 
 
 //
@@ -30,7 +29,7 @@
 //
 
 OtOscilloscope::OtOscilloscope() {
-	pipeline.setShaders(OtOscilloscopeVert, sizeof(OtOscilloscopeVert), OtOscilloscopeFrag, sizeof(OtOscilloscopeFrag));
+	pipeline.setShaders(OtOscilloscopeVert, OtOscilloscopeVertSize, OtOscilloscopeFrag, OtOscilloscopeFragSize);
 	pipeline.setVertexDescription(OtVertexPosUvCol2D::getDescription());
 	pipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba8);
 

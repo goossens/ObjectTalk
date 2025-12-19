@@ -13,7 +13,7 @@
 //
 
 #include "OtFilter.h"
-#include "OtSeamlessTileComp.h"
+#include "OtShaders.h"
 
 
 //
@@ -26,7 +26,7 @@ public:
 	void configurePass([[maybe_unused]] OtComputePass& pass) override {
 		// initialize pipeline (if required)
 		if (!pipeline.isValid()) {
-			pipeline.setShader(OtSeamlessTileComp, sizeof(OtSeamlessTileComp));
+			pipeline.setShader(OtSeamlessTileComp, OtSeamlessTileCompSize);
 		}
 	}
 };

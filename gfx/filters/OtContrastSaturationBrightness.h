@@ -13,7 +13,7 @@
 //
 
 #include "OtFilter.h"
-#include "OtContrastSaturationBrightnessComp.h"
+#include "OtShaders.h"
 
 
 //
@@ -31,7 +31,7 @@ public:
 	void configurePass(OtComputePass& pass) override {
 		// initialize pipeline (if required)
 		if (!pipeline.isValid()) {
-			pipeline.setShader(OtContrastSaturationBrightnessComp, sizeof(OtContrastSaturationBrightnessComp));
+			pipeline.setShader(OtContrastSaturationBrightnessComp, OtContrastSaturationBrightnessCompSize);
 		}
 
 		// set uniforms

@@ -14,8 +14,8 @@
 
 #include "glm/glm.hpp"
 
-#include "OtFogComp.h"
 #include "OtFilter.h"
+#include "OtShaders.h"
 
 
 //
@@ -35,7 +35,7 @@ public:
 	void configurePass(OtComputePass& pass) override {
 		// initialize pipeline (if required)
 		if (!pipeline.isValid()) {
-			pipeline.setShader(OtFogComp, sizeof(OtFogComp));
+			pipeline.setShader(OtFogComp, OtFogCompSize);
 		}
 
 		// add overlay texture

@@ -17,9 +17,7 @@
 #include "OtVertex.h"
 
 #include "OtGridPass.h"
-
-#include "OtGridVert.h"
-#include "OtGridFrag.h"
+#include "OtShaders.h"
 
 
 //
@@ -70,7 +68,7 @@ void OtGridPass::render(OtSceneRendererContext& ctx) {
 //
 
 void OtGridPass::initializeResources() {
-	pipeline.setShaders(OtGridVert, sizeof(OtGridVert), OtGridFrag, sizeof(OtGridFrag));
+	pipeline.setShaders(OtGridVert, OtGridVertSize, OtGridFrag, OtGridFragSize);
 	pipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
 	pipeline.setVertexDescription(OtVertexPos::getDescription());
 	pipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);

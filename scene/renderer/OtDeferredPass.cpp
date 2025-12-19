@@ -16,23 +16,7 @@
 #include "OtVertex.h"
 
 #include "OtDeferredPass.h"
-
-#include "OtDeferredVert.h"
-#include "OtDeferredAnimatedVert.h"
-#include "OtDeferredInstancingVert.h"
-#include "OtDeferredPbrFrag.h"
-
-#include "OtTerrainVert.h"
-#include "OtTerrainFrag.h"
-
-#include "OtGrassVert.h"
-#include "OtGrassFrag.h"
-
-#include "OtFullScreenVert.h"
-#include "OtDeferredLightingFrag.h"
-
-#include "OtPointLightsVert.h"
-#include "OtPointLightsFrag.h"
+#include "OtShaders.h"
 
 
 //
@@ -246,78 +230,78 @@ void OtDeferredPass::renderPointLights(OtSceneRendererContext& ctx) {
 
 void OtDeferredPass::initializeResources() {
 	// configure rendering pipelines
-	cullingPipeline.setShaders(OtDeferredVert, sizeof(OtDeferredVert), OtDeferredPbrFrag, sizeof(OtDeferredPbrFrag));
+	cullingPipeline.setShaders(OtDeferredVert, OtDeferredVertSize, OtDeferredPbrFrag, OtDeferredPbrFragSize);
 	cullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::gBuffer);
 	cullingPipeline.setVertexDescription(OtVertex::getDescription());
 	cullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
 	cullingPipeline.setCulling(OtRenderPipeline::Culling::cw);
 
-	noCullingPipeline.setShaders(OtDeferredVert, sizeof(OtDeferredVert), OtDeferredPbrFrag, sizeof(OtDeferredPbrFrag));
+	noCullingPipeline.setShaders(OtDeferredVert, OtDeferredVertSize, OtDeferredPbrFrag, OtDeferredPbrFragSize);
 	noCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::gBuffer);
 	noCullingPipeline.setVertexDescription(OtVertex::getDescription());
 	noCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
 
-	linesPipeline.setShaders(OtDeferredVert, sizeof(OtDeferredVert), OtDeferredPbrFrag, sizeof(OtDeferredPbrFrag));
+	linesPipeline.setShaders(OtDeferredVert, OtDeferredVertSize, OtDeferredPbrFrag, OtDeferredPbrFragSize);
 	linesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::gBuffer);
 	linesPipeline.setVertexDescription(OtVertex::getDescription());
 	linesPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
 	linesPipeline.setFill(false);
 
-	instancedCullingPipeline.setShaders(OtDeferredInstancingVert, sizeof(OtDeferredInstancingVert), OtDeferredPbrFrag, sizeof(OtDeferredPbrFrag));
+	instancedCullingPipeline.setShaders(OtDeferredInstancingVert, OtDeferredInstancingVertSize, OtDeferredPbrFrag, OtDeferredPbrFragSize);
 	instancedCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::gBuffer);
 	instancedCullingPipeline.setVertexDescription(OtVertex::getDescription());
 	instancedCullingPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
 	instancedCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
 	instancedCullingPipeline.setCulling(OtRenderPipeline::Culling::cw);
 
-	instancedNoCullingPipeline.setShaders(OtDeferredInstancingVert, sizeof(OtDeferredInstancingVert), OtDeferredPbrFrag, sizeof(OtDeferredPbrFrag));
+	instancedNoCullingPipeline.setShaders(OtDeferredInstancingVert, OtDeferredInstancingVertSize, OtDeferredPbrFrag, OtDeferredPbrFragSize);
 	instancedNoCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::gBuffer);
 	instancedNoCullingPipeline.setVertexDescription(OtVertex::getDescription());
 	instancedNoCullingPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
 	instancedNoCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
 
-	instancedLinesPipeline.setShaders(OtDeferredInstancingVert, sizeof(OtDeferredInstancingVert), OtDeferredPbrFrag, sizeof(OtDeferredPbrFrag));
+	instancedLinesPipeline.setShaders(OtDeferredInstancingVert, OtDeferredInstancingVertSize, OtDeferredPbrFrag, OtDeferredPbrFragSize);
 	instancedLinesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::gBuffer);
 	instancedLinesPipeline.setVertexDescription(OtVertex::getDescription());
 	instancedLinesPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
 	instancedLinesPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
 	instancedLinesPipeline.setFill(false);
 
-	animatedPipeline.setShaders(OtDeferredAnimatedVert, sizeof(OtDeferredAnimatedVert), OtDeferredPbrFrag, sizeof(OtDeferredPbrFrag));
+	animatedPipeline.setShaders(OtDeferredAnimatedVert, OtDeferredAnimatedVertSize, OtDeferredPbrFrag, OtDeferredPbrFragSize);
 	animatedPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::gBuffer);
 	animatedPipeline.setVertexDescription(OtVertex::getDescription());
 	animatedPipeline.setAnimationDescription(OtVertexBones::getDescription());
 	animatedPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
 	animatedPipeline.setCulling(OtRenderPipeline::Culling::cw);
 
-	cullingPipeline.setShaders(OtDeferredVert, sizeof(OtDeferredVert), OtDeferredPbrFrag, sizeof(OtDeferredPbrFrag));
+	cullingPipeline.setShaders(OtDeferredVert, OtDeferredVertSize, OtDeferredPbrFrag, OtDeferredPbrFragSize);
 	cullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::gBuffer);
 	cullingPipeline.setVertexDescription(OtVertex::getDescription());
 	cullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
 	cullingPipeline.setCulling(OtRenderPipeline::Culling::cw);
 
-	terrainCullingPipeline.setShaders(OtTerrainVert, sizeof(OtTerrainVert), OtTerrainFrag, sizeof(OtTerrainFrag));
+	terrainCullingPipeline.setShaders(OtTerrainVert, OtTerrainVertSize, OtTerrainFrag, OtTerrainFragSize);
 	terrainCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::gBuffer);
 	terrainCullingPipeline.setVertexDescription(OtVertexPos::getDescription());
 	terrainCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
 
-	terrainLinesPipeline.setShaders(OtTerrainVert, sizeof(OtTerrainVert), OtTerrainFrag, sizeof(OtTerrainFrag));
+	terrainLinesPipeline.setShaders(OtTerrainVert, OtTerrainVertSize, OtTerrainFrag, OtTerrainFragSize);
 	terrainLinesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::gBuffer);
 	terrainLinesPipeline.setVertexDescription(OtVertexPos::getDescription());
 	terrainLinesPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
 	terrainLinesPipeline.setFill(false);
 
-	grassPipeline.setShaders(OtGrassVert, sizeof(OtGrassVert), OtGrassFrag, sizeof(OtGrassFrag));
+	grassPipeline.setShaders(OtGrassVert, OtGrassVertSize, OtGrassFrag, OtGrassFragSize);
 	grassPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::gBuffer);
 	grassPipeline.setVertexDescription(OtVertexPos::getDescription());
 	grassPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
 	grassPipeline.setCulling(OtRenderPipeline::Culling::cw);
 
-	directionalLightPipeline.setShaders(OtFullScreenVert, sizeof(OtFullScreenVert), OtDeferredLightingFrag, sizeof(OtDeferredLightingFrag));
+	directionalLightPipeline.setShaders(OtFullScreenVert, OtFullScreenVertSize, OtDeferredLightingFrag, OtDeferredLightingFragSize);
 	directionalLightPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
 	directionalLightPipeline.setDepthTest(OtRenderPipeline::CompareOperation::always);
 
-	pointLightsPipeline.setShaders(OtPointLightsVert, sizeof(OtPointLightsVert), OtPointLightsFrag, sizeof(OtPointLightsFrag));
+	pointLightsPipeline.setShaders(OtPointLightsVert, OtPointLightsVertSize, OtPointLightsFrag, OtPointLightsFragSize);
 	pointLightsPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
 	pointLightsPipeline.setVertexDescription(OtVertexPos::getDescription());
 	pointLightsPipeline.setInstanceDescription(OtVertexPointLight::getDescription());

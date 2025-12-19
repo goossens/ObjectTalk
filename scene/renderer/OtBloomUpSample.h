@@ -15,7 +15,7 @@
 #include "glm/glm.hpp"
 
 #include "OtFilter.h"
-#include "OtBloomUpSampleComp.h"
+#include "OtShaders.h"
 
 
 //
@@ -31,7 +31,7 @@ public:
 	void configurePass(OtComputePass& pass) override {
 		// initialize pipeline (if required)
 		if (!pipeline.isValid()) {
-			pipeline.setShader(OtBloomUpSampleComp, sizeof(OtBloomUpSampleComp));
+			pipeline.setShader(OtBloomUpSampleComp, OtBloomUpSampleCompSize);
 		}
 
 		// set uniforms

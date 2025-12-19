@@ -15,7 +15,7 @@
 #include "glm/glm.hpp"
 
 #include "OtFilter.h"
-#include "OtRgbaAdjustComp.h"
+#include "OtShaders.h"
 
 
 //
@@ -31,7 +31,7 @@ public:
 	void configurePass(OtComputePass& pass) override {
 		// initialize pipeline (if required)
 		if (!pipeline.isValid()) {
-			pipeline.setShader(OtRgbaAdjustComp, sizeof(OtRgbaAdjustComp));
+			pipeline.setShader(OtRgbaAdjustComp, OtRgbaAdjustCompSize);
 		}
 
 		// set uniforms

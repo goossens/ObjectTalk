@@ -12,8 +12,8 @@
 //	Include files
 //
 
-#include "OtColorWheelComp.h"
 #include "OtGenerator.h"
+#include "OtShaders.h"
 
 
 //
@@ -26,7 +26,7 @@ public:
 	void configurePass([[maybe_unused]] OtComputePass& pass) override {
 		// initialize pipeline (if required)
 		if (!pipeline.isValid()) {
-			pipeline.setShader(OtColorWheelComp, sizeof(OtColorWheelComp));
+			pipeline.setShader(OtColorWheelComp, OtColorWheelCompSize);
 		}
 	}
 };

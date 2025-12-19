@@ -23,9 +23,7 @@
 #include "OtUi.h"
 
 #include "OtSceneRendererDebug.h"
-
-#include "OtCubeMapCrossVert.h"
-#include "OtCubeMapCrossFrag.h"
+#include "OtShaders.h"
 
 
 //
@@ -338,7 +336,7 @@ void OtSceneRendererDebug::renderCubeMapAsCross(OtCubeMap& cubemap, CubeMapDebug
 //
 
 void OtSceneRendererDebug::initializeResources() {
-	pipeline.setShaders(OtCubeMapCrossVert, sizeof(OtCubeMapCrossVert), OtCubeMapCrossFrag, sizeof(OtCubeMapCrossFrag));
+	pipeline.setShaders(OtCubeMapCrossVert, OtCubeMapCrossVertSize, OtCubeMapCrossFrag, OtCubeMapCrossFragSize);
 	pipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba8);
 	pipeline.setVertexDescription(OtVertexPosUvw::getDescription());
 

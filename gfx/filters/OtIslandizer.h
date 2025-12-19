@@ -15,7 +15,7 @@
 #include <cstdint>
 
 #include "OtFilter.h"
-#include "OtIslandizerComp.h"
+#include "OtShaders.h"
 
 
 //
@@ -48,7 +48,7 @@ public:
 	void configurePass(OtComputePass& pass) override {
 		// initialize pipeline (if required)
 		if (!pipeline.isValid()) {
-			pipeline.setShader(OtIslandizerComp, sizeof(OtIslandizerComp));
+			pipeline.setShader(OtIslandizerComp, OtIslandizerCompSize);
 		}
 
 		// set uniforms

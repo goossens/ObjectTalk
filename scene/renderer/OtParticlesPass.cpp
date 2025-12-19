@@ -13,9 +13,7 @@
 #include "OtVertex.h"
 
 #include "OtParticlesPass.h"
-
-#include "OtParticlesVert.h"
-#include "OtParticlesFrag.h"
+#include "OtShaders.h"
 
 
 //
@@ -85,7 +83,7 @@ void OtParticlesPass::render(OtSceneRendererContext& ctx) {
 //
 
 void OtParticlesPass::initializeResources() {
-	pipeline.setShaders(OtParticlesVert, sizeof(OtParticlesVert), OtParticlesFrag, sizeof(OtParticlesFrag));
+	pipeline.setShaders(OtParticlesVert, OtParticlesVertSize, OtParticlesFrag, OtParticlesFragSize);
 	pipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
 	pipeline.setVertexDescription(OtVertexPos::getDescription());
 	pipeline.setInstanceDescription(OtVertexParticle::getDescription());

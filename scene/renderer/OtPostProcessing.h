@@ -15,7 +15,7 @@
 #include <cstdint>
 
 #include "OtFilter.h"
-#include "OtPostProcessingComp.h"
+#include "OtShaders.h"
 
 
 //
@@ -55,7 +55,7 @@ public:
 	void configurePass(OtComputePass& pass) override {
 		// initialize pipeline (if required)
 		if (!pipeline.isValid()) {
-			pipeline.setShader(OtPostProcessingComp, sizeof(OtPostProcessingComp));
+			pipeline.setShader(OtPostProcessingComp, OtPostProcessingCompSize);
 		}
 
 		// set uniforms

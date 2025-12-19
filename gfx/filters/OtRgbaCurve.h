@@ -19,7 +19,7 @@
 
 #include "OtColor.h"
 #include "OtFilter.h"
-#include "OtRgbaCurveComp.h"
+#include "OtShaders.h"
 
 
 //
@@ -55,7 +55,7 @@ public:
 	void configurePass(OtComputePass& pass) override {
 		// initialize pipeline (if required)
 		if (!pipeline.isValid()) {
-			pipeline.setShader(OtRgbaCurveComp, sizeof(OtRgbaCurveComp));
+			pipeline.setShader(OtRgbaCurveComp, OtRgbaCurveCompSize);
 		}
 
 		// set uniforms

@@ -16,9 +16,7 @@
 #include "OtRenderPass.h"
 
 #include "OtWaterPass.h"
-
-#include "OtWaterVert.h"
-#include "OtWaterFrag.h"
+#include "OtShaders.h"
 
 
 //
@@ -192,7 +190,7 @@ void OtWaterPass::renderWater(OtSceneRendererContext& ctx, OtWaterComponent& wat
 
 void OtWaterPass::initializeResources() {
 	// setup rendering pipeline
-	waterPipeline.setShaders(OtWaterVert, sizeof(OtWaterVert), OtWaterFrag, sizeof(OtWaterFrag));
+	waterPipeline.setShaders(OtWaterVert, OtWaterVertSize, OtWaterFrag, OtWaterFragSize);
 	waterPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
 	waterPipeline.setVertexDescription(OtVertexPos::getDescription());
 	waterPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);

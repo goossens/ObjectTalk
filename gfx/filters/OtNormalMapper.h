@@ -15,7 +15,7 @@
 #include <cstdint>
 
 #include "OtFilter.h"
-#include "OtNormalMapperComp.h"
+#include "OtShaders.h"
 
 
 //
@@ -34,7 +34,7 @@ public:
 	void configurePass(OtComputePass& pass) override {
 		// initialize pipeline (if required)
 		if (!pipeline.isValid()) {
-			pipeline.setShader(OtNormalMapperComp, sizeof(OtNormalMapperComp));
+			pipeline.setShader(OtNormalMapperComp, OtNormalMapperCompSize);
 		}
 
 		// set uniforms

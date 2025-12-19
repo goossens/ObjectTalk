@@ -14,9 +14,9 @@
 
 #include "glm/glm.hpp"
 
-#include "OtCheckerBoardComp.h"
 #include "OtColor.h"
 #include "OtGenerator.h"
+#include "OtShaders.h"
 
 
 //
@@ -34,7 +34,7 @@ public:
 	void configurePass(OtComputePass& pass) override {
 		// initialize pipeline (if required)
 		if (!pipeline.isValid()) {
-			pipeline.setShader(OtCheckerBoardComp, sizeof(OtCheckerBoardComp));
+			pipeline.setShader(OtCheckerBoardComp, OtCheckerBoardCompSize);
 		}
 
 		// set uniforms

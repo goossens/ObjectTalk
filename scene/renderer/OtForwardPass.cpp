@@ -15,10 +15,7 @@
 #include "OtVertex.h"
 
 #include "OtForwardPass.h"
-
-#include "OtForwardVert.h"
-#include "OtForwardInstancingVert.h"
-#include "OtForwardPbrFrag.h"
+#include "OtShaders.h"
 
 
 //
@@ -74,7 +71,7 @@ void OtForwardPass::renderTransparentGeometry(OtSceneRendererContext& ctx, OtGeo
 //
 
 void OtForwardPass::initializeResources() {
-	cullingPipeline.setShaders(OtForwardVert, sizeof(OtForwardVert), OtForwardPbrFrag, sizeof(OtForwardPbrFrag));
+	cullingPipeline.setShaders(OtForwardVert, OtForwardVertSize, OtForwardPbrFrag, OtForwardPbrFragSize);
 	cullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
 	cullingPipeline.setVertexDescription(OtVertex::getDescription());
 	cullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
@@ -86,7 +83,7 @@ void OtForwardPass::initializeResources() {
 		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
 	);
 
-	noCullingPipeline.setShaders(OtForwardVert, sizeof(OtForwardVert), OtForwardPbrFrag, sizeof(OtForwardPbrFrag));
+	noCullingPipeline.setShaders(OtForwardVert, OtForwardVertSize, OtForwardPbrFrag, OtForwardPbrFragSize);
 	noCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
 	noCullingPipeline.setVertexDescription(OtVertex::getDescription());
 	noCullingPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
@@ -97,7 +94,7 @@ void OtForwardPass::initializeResources() {
 		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
 	);
 
-	linesPipeline.setShaders(OtForwardVert, sizeof(OtForwardVert), OtForwardPbrFrag, sizeof(OtForwardPbrFrag));
+	linesPipeline.setShaders(OtForwardVert, OtForwardVertSize, OtForwardPbrFrag, OtForwardPbrFragSize);
 	linesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
 	linesPipeline.setVertexDescription(OtVertex::getDescription());
 	linesPipeline.setDepthTest(OtRenderPipeline::CompareOperation::less);
@@ -109,7 +106,7 @@ void OtForwardPass::initializeResources() {
 		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
 	);
 
-	instancedCullingPipeline.setShaders(OtForwardInstancingVert, sizeof(OtForwardInstancingVert), OtForwardPbrFrag, sizeof(OtForwardPbrFrag));
+	instancedCullingPipeline.setShaders(OtForwardInstancingVert, OtForwardInstancingVertSize, OtForwardPbrFrag, OtForwardPbrFragSize);
 	instancedCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
 	instancedCullingPipeline.setVertexDescription(OtVertex::getDescription());
 	instancedCullingPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
@@ -122,7 +119,7 @@ void OtForwardPass::initializeResources() {
 		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
 	);
 
-	instancedNoCullingPipeline.setShaders(OtForwardInstancingVert, sizeof(OtForwardInstancingVert), OtForwardPbrFrag, sizeof(OtForwardPbrFrag));
+	instancedNoCullingPipeline.setShaders(OtForwardInstancingVert, OtForwardInstancingVertSize, OtForwardPbrFrag, OtForwardPbrFragSize);
 	instancedNoCullingPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
 	instancedNoCullingPipeline.setVertexDescription(OtVertex::getDescription());
 	instancedNoCullingPipeline.setInstanceDescription(OtVertexMatrix::getDescription());
@@ -134,7 +131,7 @@ void OtForwardPass::initializeResources() {
 		OtRenderPipeline::BlendFactor::oneMinusSrcAlpha
 	);
 
-	instancedLinesPipeline.setShaders(OtForwardInstancingVert, sizeof(OtForwardInstancingVert), OtForwardPbrFrag, sizeof(OtForwardPbrFrag));
+	instancedLinesPipeline.setShaders(OtForwardInstancingVert, OtForwardInstancingVertSize, OtForwardPbrFrag, OtForwardPbrFragSize);
 	instancedLinesPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
 	instancedLinesPipeline.setVertexDescription(OtVertex::getDescription());
 	instancedLinesPipeline.setInstanceDescription(OtVertexMatrix::getDescription());

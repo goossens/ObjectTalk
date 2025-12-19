@@ -17,10 +17,7 @@
 #include "OtRenderPass.h"
 
 #include "OtSkyPass.h"
-
-#include "OtSkyVert.h"
-#include "OtSkyFrag.h"
-#include "OtSkyBoxFrag.h"
+#include "OtShaders.h"
 
 
 //
@@ -141,11 +138,11 @@ void OtSkyPass::renderSkyBox(OtSceneRendererContext& ctx, OtSkyBoxComponent& sky
 //
 
 void OtSkyPass::initializeResources() {
-	skyPipeline.setShaders(OtSkyVert, sizeof(OtSkyVert), OtSkyFrag, sizeof(OtSkyFrag));
+	skyPipeline.setShaders(OtSkyVert, OtSkyVertSize, OtSkyFrag, OtSkyFragSize);
 	skyPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
 	skyPipeline.setDepthTest(OtRenderPipeline::CompareOperation::lessEqual);
 
-	skyBoxPipeline.setShaders(OtSkyVert, sizeof(OtSkyVert), OtSkyBoxFrag, sizeof(OtSkyBoxFrag));
+	skyBoxPipeline.setShaders(OtSkyVert, OtSkyVertSize, OtSkyBoxFrag, OtSkyBoxFragSize);
 	skyBoxPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16d32);
 	skyBoxPipeline.setDepthTest(OtRenderPipeline::CompareOperation::lessEqual);
 }

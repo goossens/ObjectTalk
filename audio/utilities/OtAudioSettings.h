@@ -11,7 +11,7 @@
 
 
 //
-//	Constants
+//	OtAudioSettings
 //
 
 class OtAudioSettings {

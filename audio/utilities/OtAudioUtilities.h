@@ -18,44 +18,53 @@
 
 
 //
-//	Support functions
+//	OtAudioUtilities
 //
 
-inline float OtLinearToDbv(float v) {
-	if (v <= 0) {
-		return -100.0f;
-
-	} else {
-		return 20.0f * std::log10(v);
+class OtAudioUtilities {
+public:
+	inline static float detune(float frequency, int octaves, int semitones=0, double cents=0) {
+		double totalCents = (octaves * 1200.0) + (semitones * 100.0) + cents;
+		double result = std::pow(2.0, totalCents / 1200.0);
+		return static_cast<float>(result * frequency);
 	}
-}
 
-inline float OtDbvToLinear(float x) {
-	return std::pow(10.0f, x / 20.0f);
-}
+	inline static float linearToDbv(float v) {
+		if (v <= 0) {
+			return -100.0f;
 
-inline float OtLinearToDbu(float v) {
-	if (v <= 0) {
-		return -100.0f;
-
-	} else {
-		return 20.0f * std::log10(v / 0.775f);
+		} else {
+			return 20.0f * std::log10(v);
+		}
 	}
-}
 
-inline float OtDbuToLinear(float x) {
-	return std::pow(10.0f, x / 20.0f) * 0.775f;
-}
+	inline static float dbvToLinear(float x) {
+		return std::pow(10.0f, x / 20.0f);
+	}
 
-inline float OtFrequencyToCv(float f) {
-	return std::log2(f / 440.0f);
-}
+	inline static float linearToDbu(float v) {
+		if (v <= 0) {
+			return -100.0f;
 
-inline float OtCvToFrequency(float cv) {
-	return 440.0f * std::pow(2.0f, cv);
-}
+		} else {
+			return 20.0f * std::log10(v / 0.775f);
+		}
+	}
 
-inline float OtMidiNoteToFrequency(int midiNote) {
-	float semitonesAway = static_cast<float>(midiNote - 69);
-	return 440.0f * std::pow(2.0f, (semitonesAway / 12.0f));
-}
+	inline static float dbuToLinear(float x) {
+		return std::pow(10.0f, x / 20.0f) * 0.775f;
+	}
+
+	inline static float frequencyToCv(float f) {
+		return std::log2(f / 440.0f);
+	}
+
+	inline static float cvToFrequency(float cv) {
+		return 440.0f * std::pow(2.0f, cv);
+	}
+
+	inline static float midiNoteToFrequency(int midiNote) {
+		float semitonesAway = static_cast<float>(midiNote - 69);
+		return 440.0f * std::pow(2.0f, (semitonesAway / 12.0f));
+	}
+};

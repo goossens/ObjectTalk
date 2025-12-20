@@ -73,7 +73,7 @@ public:
 	inline float getValue(size_t t) {
 		if (pin->isSourceConnected()) {
 			auto sample = pin->getSignalBuffer()->get(0, t);
-			return frequency ? OtCvToFrequency(sample) : sample;
+			return frequency ? OtAudioUtilities::cvToFrequency(sample) : sample;
 
 		} else {
 			return *value;

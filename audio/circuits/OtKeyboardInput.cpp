@@ -46,7 +46,7 @@ public:
 
 				if (msg == NoteOn) {
 					circuit->keyPressed[key] = true;
-					circuit->frequency = OtMidiNoteToFrequency(key);
+					circuit->frequency = OtAudioUtilities::midiNoteToFrequency(key);
 					circuit->velocity = velocity;
 				}
 
@@ -70,7 +70,7 @@ public:
 
 	// generate samples
 	void execute() override {
-		output->buffer->clear(OtFrequencyToCv(frequency));
+		output->buffer->clear(OtAudioUtilities::frequencyToCv(frequency));
 	}
 
 	static constexpr const char* circuitName = "Keyboard Input";

@@ -64,7 +64,7 @@ public:
 class OtCircuitFactory : OtSingleton<OtCircuitFactory> {
 public:
 	// register a new type (name has to be globally unique in this factory, not just in category)
-	static inline void registerType(const char* category, const char* name, std::function<OtCircuit()> constructor) {
+	inline static void registerType(const char* category, const char* name, std::function<OtCircuit()> constructor) {
 		// find the category
 		auto& factory = instance();
 
@@ -87,14 +87,14 @@ public:
 	}
 
 	// iterate through categories
-	static inline void eachCategory(std::function<void(OtCircuitCategory&)> callback) {
+	inline static void eachCategory(std::function<void(OtCircuitCategory&)> callback) {
 		for (auto& category : instance().categories) {
 			callback(category);
 		}
 	}
 
 	// create new circuit
-	static inline OtCircuit createCircuit(const std::string& name) {
+	inline static OtCircuit createCircuit(const std::string& name) {
 		// sanity check
 		auto& factory = instance();
 

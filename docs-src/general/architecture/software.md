@@ -1,6 +1,6 @@
 The diagram below depicts the subsystems included in the ObjectTalk ecosystem.
 As mentioned above, the four boxes on the right are available on both ObjectTalk
-configurations whereas the five boxes on the left are only available when the
+configurations whereas the boxes on the left are only available when the
 host operating system offers GUI libraries.
 
 ![Software Architecture](img/software-architecture.png#center)
@@ -72,14 +72,39 @@ the network framework. For those familiar with [Node.js](https://nodejs.org/) an
 operational asynchronous web server, use [Node.js](https://nodejs.org/). If you want to use a
 simple server using a few lines of code, this ObjectTalk library might be the ticket.
 
+**Audio Framework**
+
+The Audio Framework is an optional component and it is included when ObjectTalk is build in GUI mode.
+The foundation of this framework is the audio processing capabilities provided by the
+[Simple DirectMedia Layer (SDL3)](https://github.com/libsdl-org/SDL) cross-platform library and their
+[mixer extension](https://github.com/libsdl-org/SDL_mixer). ObjectTalk includes an audio circuit
+system that allows you to wire up your audio needs by connecting synth modules, audio effects,
+Digital Signal Processing (DSP) units and more.
+
+**Audio Classes**
+
+These classes provide scripting access to the audio framework as well components to build audio
+circuits. ObjectTalk has a rich set of platform independent circuit parts that can be used to create
+fancy synthesizers, effects boxes, guitar amplifiers or just used to play a sound.
+In the included examples, the audio and pacman folders contain sample scripts to showcase
+the power of these classes.
+
+**Audio Engine**
+
+The audio engine provides a visual tool to build audio circuits visually. This is modelled after
+the Node Engine described below. The difference the audio and node engine is that the audio engine
+operates in realtime and always runs and evaluates every circuit component. The node engine
+only reevaluates nodes if there are changes. Audio circuits created this way can be used to
+make standalone capabilities or they can be used as audio features in 3D scenes described below.
+
 **Graphics Framework**
 
 As mentioned above, the graphics framework is optional and will only be compiled in when the
 host operating system provided the required GUI libraries. The foundation of this framework
 is provided by a number of open source cross-platform libraries. [SDL3](https://github.com/libsdl-org/SDL)
 is used as an system independent abstraction for windows and user/system interactions.
-[BGFX](https://github.com/bkaradzic/bgfx) is used as a system independent abstraction to render
-graphics supporting Metal, OpenGL, Vulkan and DirectX APIs. [Dear ImGui](https://github.com/ocornut/imgui)
+[SDL3 GPU](https://wiki.libsdl.org/SDL3/CategoryGPU) is used as a system independent abstraction to render
+graphics supporting Metal, Vulkan and DirectX APIs. [Dear ImGui](https://github.com/ocornut/imgui)
 is used as a neutral user interface library and all widgets are implemented with it.
 The framework glues all of this together and ObjectTalk users will never have to deal with this level of detail.
 
@@ -143,6 +168,11 @@ following editors:
 	- The editor has full undo capabilities and works with UTF-8 encoded text.
 	- The editor can launch ObjectTalk scripts and has a console for output and highlighting for errors.
 	- A visual debugger is also available.
+
+- **Audio editor**
+	- This editor allows the creation of audio circuits.
+	- The editor has full undo capabilities.
+	- The editor constantly evaluates the audio circuits so it can be used for realtime audio programming.
 
 - **Node editor**
 	- This editor allows the creation of node graphs.

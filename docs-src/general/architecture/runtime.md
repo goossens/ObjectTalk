@@ -47,3 +47,30 @@ just like any other program in graphics mode. When the IDE runs a script or grap
 a subprocess is spawned in the applicable mode. Bi-directional Inter Process Communication (IPC) is
 setup to allow the IDE to communicate with the ObjectTalk script, GUI, scene or
 node-based apps. This is how the visual debugger is implemented.
+
+**Rendering Pipeline**
+
+![IDE Mode](img/rendering-pipeline.png#center)
+
+ObjectTalk has a significant number of GUI capabilities and it therefore also has a complex rendering
+pipeline. At the heart of this pipeline is the master compositor that brings everything together
+before it can be shown on the screen. In ObjectTalk, the Dear ImGui library is used for this purpose
+(see step 7 in the diagram above). This might not be the fastest approach but it sure is the most
+convenient approach. Dear ImGui provides a great immediate mode rendering philosophy and it comes
+with a rich set of widgets. ObjectTalk adds a lot of widgets to this (either from external projects
+or included in ObjectTalk).
+
+All the complexity of rendering a 3D scene is depicted above in the diagram as steps 1 through 6.
+At the end, the rendered scene is in a GPU texture and can simply be rendered to the screen through
+a Dear ImGui image widget.
+
+Below is a description of the 6 steps to create the final 3D scene texture:
+
+1. If a scene generates shadows, Cascaded Shadow Maps (CSM) are created in the first steps so
+they can be used in follow-on lighting calculations.
+1. A simple background pass clears the scene composite buffer and sets it to a desired color.
+1. Opaque geometries, models, terrain and grass goes through a
+[Deferred shading](https://en.wikipedia.org/wiki/Deferred_shading) process that first renders
+all entities to a G-buffer and then applies lighting as a second pass.
+1. Transparent entities are rendered directly to the composite buffer to ensure transparency.
+1. The composite buffer is send through post processing to apply desired effects.

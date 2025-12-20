@@ -172,18 +172,19 @@
               would lead to fragmentation and possibly missing/incompatible
               pieces. Today, the ObjectTalk ecosystem compiles into that single
               unit that contains everything. The file called “ot” can be moved
-              around with easy and will always be complete, coherent and in
+              around with ease and will always be complete, coherent and in
               sync.
             </p>
             <p>
               During the compilation of ObjectTalk it is decided whether some
               user interface subsystems are included. On headless Linux systems,
-              the Graphical User Interface (GUI) is omitted and the “ot”
-              executable can only run command line scripts or simple servers
-              like a web server. When the GUI libraries are available on the
-              host system, “ot” is compiled to offer all subsystems. On MacOS
-              and Windows this is the default but even here a stripped-down
-              version can be compiled by setting a flag during compilation.
+              the Graphical User Interface (GUI) and audio system are omitted
+              and the “ot” executable can only run command line scripts or
+              simple servers like a web server. When the GUI libraries are
+              available on the host system, “ot” is compiled to offer all
+              subsystems. On MacOS and Windows this is the default but even here
+              a stripped-down version can be compiled by setting a flag during
+              compilation.
             </p>
             <p>
               Github is used as the
@@ -198,9 +199,10 @@
               <a href="https://goossens.github.io/ObjectTalk"
                 >documentation website</a
               >
-              is automatically updated on every commit (off course the developer
-              has to ensure the documentation is inline with the software.
-              Documentation still doesn’t write itself).
+              is automatically updated on every commit Off course the developer
+              has to ensure the documentation is in sync with the software. Good
+              documentation still doesn’t write itself despite what the AI hype
+              cycle victims might think.
             </p>
           </div>
           <div id="software">
@@ -209,7 +211,7 @@
               The diagram below depicts the subsystems included in the
               ObjectTalk ecosystem. As mentioned above, the four boxes on the
               right are available on both ObjectTalk configurations whereas the
-              five boxes on the left are only available when the host operating
+              boxes on the left are only available when the host operating
               system offers GUI libraries.
             </p>
             <p>
@@ -315,6 +317,42 @@
               simple server using a few lines of code, this ObjectTalk library
               might be the ticket.
             </p>
+            <p><strong>Audio Framework</strong></p>
+            <p>
+              The Audio Framework is an optional component and it is included
+              when ObjectTalk is build in GUI mode. The foundation of this
+              framework is the audio processing capabilities provided by the
+              <a href="https://github.com/libsdl-org/SDL"
+                >Simple DirectMedia Layer (SDL3)</a
+              >
+              cross-platform library and their
+              <a href="https://github.com/libsdl-org/SDL_mixer"
+                >mixer extension</a
+              >. ObjectTalk includes an audio circuit system that allows you to
+              wire up your audio needs by connecting synth modules, audio
+              effects, Digital Signal Processing (DSP) units and more.
+            </p>
+            <p><strong>Audio Classes</strong></p>
+            <p>
+              These classes provide scripting access to the audio framework as
+              well components to build audio circuits. ObjectTalk has a rich set
+              of platform independent circuit parts that can be used to create
+              fancy synthesizers, effects boxes, guitar amplifiers or just used
+              to play a sound. In the included examples, the audio and pacman
+              folders contain sample scripts to showcase the power of these
+              classes.
+            </p>
+            <p><strong>Audio Engine</strong></p>
+            <p>
+              The audio engine provides a visual tool to build audio circuits
+              visually. This is modelled after the Node Engine described below.
+              The difference the audio and node engine is that the audio engine
+              operates in realtime and always runs and evaluates every circuit
+              component. The node engine only reevaluates nodes if there are
+              changes. Audio circuits created this way can be used to make
+              standalone capabilities or they can be used as audio features in
+              3D scenes described below.
+            </p>
             <p><strong>Graphics Framework</strong></p>
             <p>
               As mentioned above, the graphics framework is optional and will
@@ -324,9 +362,9 @@
               <a href="https://github.com/libsdl-org/SDL">SDL3</a>
               is used as an system independent abstraction for windows and
               user/system interactions.
-              <a href="https://github.com/bkaradzic/bgfx">BGFX</a> is used as a
-              system independent abstraction to render graphics supporting
-              Metal, OpenGL, Vulkan and DirectX APIs.
+              <a href="https://wiki.libsdl.org/SDL3/CategoryGPU">SDL3 GPU</a> is
+              used as a system independent abstraction to render graphics
+              supporting Metal, Vulkan and DirectX APIs.
               <a href="https://github.com/ocornut/imgui">Dear ImGui</a> is used
               as a neutral user interface library and all widgets are
               implemented with it. The framework glues all of this together and
@@ -435,6 +473,17 @@
                 </ul>
               </li>
               <li>
+                <p><strong>Audio editor</strong></p>
+                <ul>
+                  <li>This editor allows the creation of audio circuits.</li>
+                  <li>The editor has full undo capabilities.</li>
+                  <li>
+                    The editor constantly evaluates the audio circuits so it can
+                    be used for realtime audio programming.
+                  </li>
+                </ul>
+              </li>
+              <li>
                 <p><strong>Node editor</strong></p>
                 <ul>
                   <li>This editor allows the creation of node graphs.</li>
@@ -539,6 +588,59 @@
               communicate with the ObjectTalk script, GUI, scene or node-based
               apps. This is how the visual debugger is implemented.
             </p>
+            <p><strong>Rendering Pipeline</strong></p>
+            <p>
+              <img src="img/rendering-pipeline.png#center" alt="IDE Mode" />
+            </p>
+            <p>
+              ObjectTalk has a significant number of GUI capabilities and it
+              therefore also has a complex rendering pipeline. At the heart of
+              this pipeline is the master compositor that brings everything
+              together before it can be shown on the screen. In ObjectTalk, the
+              Dear ImGui library is used for this purpose (see step 7 in the
+              diagram above). This might not be the fastest approach but it sure
+              is the most convenient approach. Dear ImGui provides a great
+              immediate mode rendering philosophy and it comes with a rich set
+              of widgets. ObjectTalk adds a lot of widgets to this (either from
+              external projects or included in ObjectTalk).
+            </p>
+            <p>
+              All the complexity of rendering a 3D scene is depicted above in
+              the diagram as steps 1 through 6. At the end, the rendered scene
+              is in a GPU texture and can simply be rendered to the screen
+              through a Dear ImGui image widget.
+            </p>
+            <p>
+              Below is a description of the 6 steps to create the final 3D scene
+              texture.
+            </p>
+            <ol>
+              <li>
+                If a scene generates shadows, Cascaded Shadow Maps (CSM) are
+                created in the first steps so they can be used in follow-on
+                lighting calculations.
+              </li>
+              <li>
+                A simple background pass clears the scene composite buffer and
+                sets it to a desired color.
+              </li>
+              <li>
+                Opaque geometries, models, terrain and grass goes through a
+                <a href="https://en.wikipedia.org/wiki/Deferred_shading"
+                  >Deferred shading</a
+                >
+                process that first renders all entities to a G-buffer and then
+                applies lighting as a second pass.
+              </li>
+              <li>
+                Transparent entities are rendered directly to the composite
+                buffer to ensure transparency.
+              </li>
+              <li>
+                The composite buffer is send through post processing to apply
+                desired effects.
+              </li>
+            </ol>
           </div>
         </div>
       </div>

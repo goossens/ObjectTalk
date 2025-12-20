@@ -51,7 +51,6 @@ public:
 	void start(OtFrameBuffer& framebuffer);
 	void start(OtGbuffer& gbuffer);
 	void start(OtCubeMap& cubemap, size_t mipLevel=0);
-	void start2(OtCubeMap& cubemap, size_t side, size_t mipLevel=0);
 
 	// bind a render pipeline
 	void bindPipeline(OtRenderPipeline& pipeline);

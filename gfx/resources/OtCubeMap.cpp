@@ -309,23 +309,14 @@ void OtCubeMap::createCubemapFromHDR() {
 	// setup the rendering pipeline (if required)
 	if (!hdrPipeline.isValid()) {
 		hdrPipeline.setShaders(OtFullScreenVert, OtFullScreenVertSize, OtHdrReprojectFrag, OtHdrReprojectFragSize);
-		hdrPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::rgba16);
+		hdrPipeline.setRenderTargetType(OtRenderPipeline::RenderTargetType::cubemap);
 	}
 
-	// run render passes
-	for (size_t i = 0; i < 6; i++) {
-		struct Uniforms {
-			int32_t side;
-		} uniforms {
-			static_cast<int32_t>(i)
-		};
-
-		OtRenderPass pass;
-		pass.start2(*this, i);
-		pass.bindFragmentSampler(0, hdrSampler, inputTexture);
-		pass.bindFragmentUniforms(0, &uniforms, sizeof(uniforms));
-		pass.bindPipeline(hdrPipeline);
-		pass.render(3);
-		pass.end();
-	}
+	// run render pass
+	OtRenderPass pass;
+	pass.start(*this);
+	pass.bindFragmentSampler(0, hdrSampler, inputTexture);
+	pass.bindPipeline(hdrPipeline);
+	pass.render(3);
+	pass.end();
 }

@@ -215,34 +215,6 @@ void OtRenderPass::start(OtCubeMap& cubemap, size_t mipLevel) {
 
 
 //
-//	OtRenderPass::start2
-//
-
-void OtRenderPass::start2(OtCubeMap& cubemap, size_t side, size_t mipLevel) {
-	// sanity checks
-	OtAssert(!open);
-
-	if (!cubemap.isValid()) {
-		OtLogFatal("Can't use invalid cubemap in render pass");
-	}
-
-	// start rendering pass
-	SDL_GPUColorTargetInfo colorTargetInfo{};
-	colorTargetInfo.texture = cubemap.getTexture();
-	colorTargetInfo.mip_level = static_cast<Uint32>(mipLevel);
-	colorTargetInfo.layer_or_depth_plane = static_cast<Uint32>(side);
-
-	pass = SDL_BeginGPURenderPass(OtGpu::instance().pipelineCommandBuffer, &colorTargetInfo, 1, nullptr);
-
-	if (!pass) {
-		OtLogFatal("Error in SDL_BeginGPURenderPass: {}", SDL_GetError());
-	}
-
-	open = true;
-}
-
-
-//
 //	OtRenderPass::bindPipeline
 //
 

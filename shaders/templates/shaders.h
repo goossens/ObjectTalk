@@ -19,6 +19,6 @@
 
 
 //
-//	Shader definitions
+//	Shader references
 //
 

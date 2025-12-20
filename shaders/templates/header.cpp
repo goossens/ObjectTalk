@@ -10,3 +10,15 @@
 //
 
 
+//
+//	Include files
+//
+
+#include <cstddef>
+#include <cstdint>
+
+
+//
+//	SPIR-V shader
+//
+

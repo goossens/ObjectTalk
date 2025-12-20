@@ -19,7 +19,7 @@
 
 
 //
-//	Shader definitions
+//	Shader references
 //
 
 extern const uint32_t OtCubeMapCrossFrag[];
@@ -100,8 +100,8 @@ extern const uint32_t OtGrassFrag[];
 extern const size_t OtGrassFragSize;
 extern const uint32_t OtGrassVert[];
 extern const size_t OtGrassVertSize;
-extern const uint32_t OtSimpleGrassVert[];
 extern const size_t OtSimpleGrassVertSize;
+extern const uint32_t OtSimpleGrassVert[];
 extern const uint32_t OtGridFrag[];
 extern const size_t OtGridFragSize;
 extern const uint32_t OtGridVert[];

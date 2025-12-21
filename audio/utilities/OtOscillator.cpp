@@ -83,7 +83,7 @@ void OtOscillator::setPulseWidth(float pw) {
 //
 
 float OtOscillator::get() {
-	double sampleLength = frequency / OtAudioSettings::sampleRate;
+	double sampleLength = pitch / OtAudioSettings::sampleRate;
 	double value;
 
 	switch (waveForm) {

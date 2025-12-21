@@ -106,3 +106,23 @@ void OtCircuitClass::deserializeFromString(const std::string& json, bool restore
 	auto data = nlohmann::json::parse(json);
 	return deserialize(data, restoreIDs, basedir);
 }
+
+
+//
+//	OtCircuitClass::captureState
+//
+
+std::string OtCircuitClass::captureState() {
+	return serialize().dump();
+}
+
+
+//
+//	OtCircuitClass::captureStateTransaction
+//
+
+void OtCircuitClass::captureStateTransaction(const std::string& old) {
+	oldState = old;
+	newState = serialize().dump();
+	needsSaving = true;
+}

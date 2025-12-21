@@ -23,16 +23,17 @@ class OtKeyboardInputCircuit : public OtCircuitClass {
 public:
 	// configure circuit
 	inline void configure() override {
-		output = addOutputPin("Frequency", OtCircuitPinClass::Type::control);
+		pitchOutput = addOutputPin("Pitch", OtCircuitPinClass::Type::control);
+		gateOutput = addOutputPin("Gate", OtCircuitPinClass::Type::control);
 	}
 
 	// render custom fields
-	inline void customRendering(float itemWidth) override {
+	inline bool customRendering(float itemWidth) override {
 		ImGui_PianoKeyboard(
 			"Piano",
 			ImVec2(itemWidth, height),
 			&currentNote,
-			24, 83,
+			36, 83,
 			[](void* data, int msg, int key, float velocity) {
 				OtKeyboardInputCircuit* circuit = (OtKeyboardInputCircuit*) data;
 
@@ -46,18 +47,19 @@ public:
 
 				if (msg == NoteOn) {
 					circuit->keyPressed[key] = true;
-					circuit->frequency = OtAudioUtilities::midiNoteToFrequency(key);
+					circuit->pitch = OtAudioUtilities::midiNoteToPitch(key);
 					circuit->velocity = velocity;
 				}
 
 				if (msg == NoteOff) {
 					circuit->keyPressed[key] = false;
-					circuit->frequency = 0.0f;
 					circuit->velocity = 0.0f;
 				}
 
 				return false;
 			}, this);
+
+			return false;
 	}
 
 	inline float getCustomRenderingWidth() override {
@@ -65,12 +67,13 @@ public:
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return height;
+		return height + ImGui::GetStyle().ItemSpacing.y;
 	}
 
 	// generate samples
 	void execute() override {
-		output->buffer->clear(OtAudioUtilities::frequencyToCv(frequency));
+		pitchOutput->buffer->clear(OtAudioUtilities::pitchToCv(pitch));
+		gateOutput->buffer->clear(velocity == 0.0f ? 0.0f : 1.0f);
 	}
 
 	static constexpr const char* circuitName = "Keyboard Input";
@@ -80,12 +83,14 @@ public:
 
 private:
 	// properties
-	OtCircuitPin output;
-
 	int currentNote = 0;
 	bool keyPressed[128];
-	float frequency = 500.0f;
+	float pitch = 500.0f;
 	float velocity = 0.0f;
+
+	// work variables
+	OtCircuitPin pitchOutput;
+	OtCircuitPin gateOutput;
 };
 
 static OtCircuitFactoryRegister<OtKeyboardInputCircuit> registration;

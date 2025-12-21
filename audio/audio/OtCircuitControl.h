@@ -40,12 +40,12 @@ public:
 	}
 
 	inline OtCircuitControl setIsLogarithmic(bool flag=true) {
-		logarithmic = flag;
+		isLogarithmic = flag;
 		return shared_from_this();
 	}
 
-	inline OtCircuitControl setIsFrequency(bool flag=true) {
-		frequency = flag;
+	inline OtCircuitControl setIsPitch(bool flag=true) {
+		isPitch = flag;
 		return shared_from_this();
 	}
 
@@ -56,13 +56,13 @@ public:
 
 	// render the control knob
 	inline bool renderKnob() {
-		if (pin->isSourceConnected()) {
+		if (pin && pin->isSourceConnected()) {
 			ImGui::BeginDisabled();
 		}
 
-		auto result = OtUi::knob(name.c_str(), value, minValue, maxValue, format.c_str(), logarithmic);
+		auto result = OtUi::knob(name.c_str(), value, minValue, maxValue, format.c_str(), isLogarithmic);
 
-		if (pin->isSourceConnected()) {
+		if (pin && pin->isSourceConnected()) {
 			ImGui::EndDisabled();
 		}
 
@@ -71,9 +71,9 @@ public:
 
 	// get the value for the control (either from the knob or the connected stream)
 	inline float getValue(size_t t) {
-		if (pin->isSourceConnected()) {
+		if (pin && pin->isSourceConnected()) {
 			auto sample = pin->getSignalBuffer()->get(0, t);
-			return frequency ? OtAudioUtilities::cvToFrequency(sample) : sample;
+			return isPitch ? OtAudioUtilities::cvToPitch(sample) : sample;
 
 		} else {
 			return *value;
@@ -88,6 +88,6 @@ private:
 	float minValue = 0.0f;
 	float maxValue = 1.0f;
 	std::string format = "%.1f";
-	bool logarithmic = false;
-	bool frequency = false;
+	bool isLogarithmic = false;
+	bool isPitch = false;
 };

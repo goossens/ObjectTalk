@@ -973,10 +973,21 @@ bool OtUi::knob(const char* label, float* value, float minValue, float maxValue,
 
 
 //
+//	OtUi::knobWidth
+//
+
+float OtUi::knobWidth(int columns) {
+	return
+		ImGui::GetTextLineHeight() * 4.0f * columns +
+		ImGui::GetStyle().ItemSpacing.x * (columns - 1);
+}
+
+
+//
 //	OtUi::knobHeight
 //
 
-float OtUi::knobHeight() {
+float OtUi::knobHeight(int rows) {
 	// title height
 	auto height = ImGui::GetFrameHeightWithSpacing();
 
@@ -987,7 +998,7 @@ float OtUi::knobHeight() {
 	height += ImGui::GetFrameHeightWithSpacing();
 
 	// return total height of knob widget
-	return height;
+	return height * rows;
 }
 
 

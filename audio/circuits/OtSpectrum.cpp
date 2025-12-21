@@ -56,7 +56,7 @@ public:
 	}
 
 	// render custom fields
-	inline void customRendering(float itemWidth) override {
+	inline bool customRendering(float itemWidth) override {
 		static constexpr double ticks[] = {
 			16.0, 31.0, 62.0, 125.0, 250.0, 500.0,
 			1000.0, 2000.0, 4000.0, 8000.0, 16000.0
@@ -107,6 +107,8 @@ public:
 		} else {
 			ImGui::TextUnformatted("No input signal");
 		}
+
+		return false;
 	}
 
 	inline float getCustomRenderingWidth() override {
@@ -114,7 +116,7 @@ public:
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return customH;
+		return customH + ImGui::GetStyle().ItemSpacing.y;
 	}
 
 	static constexpr const char* circuitName = "Spectrum Analyzer";

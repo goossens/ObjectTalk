@@ -119,11 +119,15 @@ public:
 		}
 	}
 
+	// handle circuit state
+	std::string captureState();
+	void captureStateTransaction(const std::string& oldState);
+
 	// process one buffer size worth of audio
 	virtual inline void execute() {};
 
 	// handle custom section of circuits
-	virtual inline void customRendering([[maybe_unused]] float itemWidth) {}
+	virtual inline bool customRendering([[maybe_unused]] float itemWidth) { return false; }
 	virtual inline float getCustomRenderingWidth() { return 0.0f; }
 	virtual inline float getCustomRenderingHeight() { return 0.0f; }
 

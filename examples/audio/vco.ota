@@ -1,0 +1,152 @@
+{
+	"circuits": [
+		{
+			"id": 1315334498,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2197641789,
+					"name": "Pitch",
+					"type": "control"
+				},
+				{
+					"id": 116879968,
+					"name": "Velocity",
+					"type": "control"
+				},
+				{
+					"id": 2895604225,
+					"name": "Gate",
+					"type": "control"
+				}
+			],
+			"title": "Keyboard Input",
+			"type": "Keyboard Input",
+			"x": 14.0,
+			"y": 622.0
+		},
+		{
+			"id": 2557146591,
+			"inputs": [
+				{
+					"id": 3360538592,
+					"name": "Pitch",
+					"type": "control"
+				},
+				{
+					"id": 4000249913,
+					"name": "Pulse Width",
+					"type": "control"
+				}
+			],
+			"outputs": [
+				{
+					"id": 410275450,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"pitch": 440.0,
+			"pulseWidth": 0.5,
+			"title": "VCO",
+			"type": "VCO",
+			"waveForm": 3,
+			"x": 596.0,
+			"y": 335.0
+		},
+		{
+			"id": 1460307938,
+			"inputs": [
+				{
+					"id": 3978828348,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"outputs": [
+				{
+					"id": 1492965834,
+					"name": "Output",
+					"type": "stereo"
+				}
+			],
+			"title": "Mono to Stereo",
+			"type": "Mono to Stereo",
+			"x": 1201.0,
+			"y": 50.0
+		},
+		{
+			"id": 278093283,
+			"inputs": [
+				{
+					"id": 248961618,
+					"name": "Input",
+					"type": "stereo"
+				}
+			],
+			"outputs": [],
+			"title": "Speaker Out",
+			"type": "Speaker Out",
+			"x": 1413.0,
+			"y": 50.0
+		},
+		{
+			"id": 736233516,
+			"inputs": [
+				{
+					"id": 3989792102,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"outputs": [],
+			"title": "Oscilloscope",
+			"type": "Oscilloscope",
+			"x": 1201.0,
+			"y": 207.0
+		},
+		{
+			"id": 942025815,
+			"inputs": [
+				{
+					"id": 1847356709,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"outputs": [],
+			"title": "Spectrum Analyzer",
+			"type": "Spectrum Analyzer",
+			"x": 901.0,
+			"y": 482.0
+		}
+	],
+	"metadata": {},
+	"wires": [
+		{
+			"from": 1492965834,
+			"id": 809450030,
+			"to": 248961618
+		},
+		{
+			"from": 410275450,
+			"id": 3946171600,
+			"to": 3978828348
+		},
+		{
+			"from": 410275450,
+			"id": 31414758,
+			"to": 3989792102
+		},
+		{
+			"from": 410275450,
+			"id": 510579969,
+			"to": 1847356709
+		},
+		{
+			"from": 2197641789,
+			"id": 3314960292,
+			"to": 3360538592
+		}
+	]
+}

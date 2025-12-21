@@ -45,7 +45,7 @@ public:
 
 	// set oscillator properties
 	void setWaveForm(WaveForm wf) { waveForm = wf; }
-	void setFrequency(float f) { frequency = static_cast<double>(f); }
+	void setPitch(float f) { pitch = static_cast<double>(f); }
 	void setPulseWidth(float pw);
 
 	// get the next sample
@@ -57,7 +57,7 @@ public:
 private:
 	// properties
 	WaveForm waveForm = WaveForm::sine;
-	double frequency = 440.0;
+	double pitch = 440.0;
 	double pulseWidth = 0.25;
 	double t = 0.0;
 };

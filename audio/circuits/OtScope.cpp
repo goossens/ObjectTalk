@@ -50,7 +50,7 @@ public:
 	}
 
 	// render custom fields
-	inline void customRendering(float itemWidth) override {
+	inline bool customRendering(float itemWidth) override {
 		if (input->isSourceConnected()) {
 			// find first rising zero crossing
 			std::lock_guard<std::mutex> guard(mutex);
@@ -75,6 +75,8 @@ public:
 		} else {
 			ImGui::TextUnformatted("No input signal");
 		}
+
+		return false;
 	}
 
 	inline float getCustomRenderingWidth() override {
@@ -82,7 +84,7 @@ public:
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return customH;
+		return customH + ImGui::GetStyle().ItemSpacing.y;
 	}
 
 	static constexpr const char* circuitName = "Oscilloscope";

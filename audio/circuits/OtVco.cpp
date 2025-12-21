@@ -14,7 +14,7 @@
 
 #include "OtUi.h"
 
-#include "OtAudioUtilities.h"
+#include "OtAudioSettings.h"
 #include "OtCircuitFactory.h"
 #include "OtOscillator.h"
 
@@ -27,45 +27,38 @@ class OtVco : public OtCircuitClass {
 public:
 	// configure node
 	inline void configure() override {
-		frequency = addInputPin("Frequency", OtCircuitPinClass::Type::control);
-		pulseWidth = addInputPin("Pulse Width", OtCircuitPinClass::Type::control);
-		output = addOutputPin("Output", OtCircuitPinClass::Type::mono);
+		pitchOutput = addInputPin("Pitch", OtCircuitPinClass::Type::control);
+		pulseWidthOutput = addInputPin("Pulse Width", OtCircuitPinClass::Type::control);
+		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
 
-		frequencyControl = addControl("Freq", frequency, &manualFrequency)
+		pitchControl = addControl("Pitch", pitchOutput, &pitch)
 			->setRange(80.0f, 8000.0f)
 			->setLabelFormat("%.0f")
-			->setIsFrequency()
+			->setIsPitch()
 			->setIsLogarithmic();
 
-		pulseWidthControl = addControl("PW", pulseWidth, &manualPulseWidth)
+		pulseWidthControl = addControl("PW", pulseWidthOutput, &pulseWidth)
 			->setRange(0.0f, 1.0f)
 			->setLabelFormat("%.2f");
 	}
 
 	// render custom fields
-	inline void customRendering(float itemWidth) override {
+	inline bool customRendering(float itemWidth) override {
 		ImGui::SetNextItemWidth(itemWidth);
-		auto old = serialize().dump();
-		auto changed = false;
+		bool changed = false;
 
 		if (OtUi::selectorEnum("##waveForm", &waveForm, OtOscillator::waveForms, OtOscillator::waveFormCount)) {
 			oscillator.setWaveForm(waveForm);
 			changed = true;
 		}
 
-		if (frequencyControl->renderKnob()) { changed |= true; }
-		ImGui::SameLine();
-		if (pulseWidthControl->renderKnob()) { changed |= true; }
-
-		if (changed) {
-			oldState = old;
-			newState = serialize().dump();
-			needsSaving = true;
-		}
+		changed |= pitchControl->renderKnob(); ImGui::SameLine();
+		changed |= pulseWidthControl->renderKnob();
+		return changed;
 	}
 
 	inline float getCustomRenderingWidth() override {
-		return 200.0f;
+		return OtUi::knobWidth(2);
 	}
 
 	inline float getCustomRenderingHeight() override {
@@ -75,19 +68,23 @@ public:
 	// (de)serialize node
 	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		(*data)["waveForm"] = waveForm;
+		(*data)["pitch"] = pitch;
+		(*data)["pulseWidth"] = pulseWidth;
 	}
 
 	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		waveForm = data->value("waveForm", OtOscillator::WaveForm::sine);
+		pitch = data->value("pitch", 440.0f);
+		pulseWidth = data->value("pulseWidth", 0.5f);
 	}
 
 	// generate samples
 	void execute() override {
 		// process all the samples
 		for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-			oscillator.setFrequency(frequencyControl->getValue(i));
+			oscillator.setPitch(pitchControl->getValue(i));
 			oscillator.setPulseWidth(pulseWidthControl->getValue(i));
-			output->buffer->set(0, i, oscillator.get());
+			audioOutput->buffer->set(0, i, oscillator.get());
 		}
 	};
 
@@ -96,14 +93,14 @@ public:
 
 private:
 	// properties
-	OtCircuitPin frequency;
-	OtCircuitPin pulseWidth;
-	OtCircuitPin output;
+	OtCircuitPin pitchOutput;
+	OtCircuitPin pulseWidthOutput;
+	OtCircuitPin audioOutput;
 
-	OtCircuitControl frequencyControl;
+	OtCircuitControl pitchControl;
 	OtCircuitControl pulseWidthControl;
-	float manualFrequency = 440.0f;
-	float manualPulseWidth = 0.5f;
+	float pitch = 440.0f;
+	float pulseWidth = 0.5f;
 
 	OtOscillator oscillator;
 	OtOscillator::WaveForm waveForm = OtOscillator::WaveForm::sine;

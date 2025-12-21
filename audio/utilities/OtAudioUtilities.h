@@ -4,8 +4,6 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-//	Based on https://gist.github.com/agrafix/aa49c17cd32c8ba63b6a7cb8dce8b0bd
-
 
 #pragma once
 
@@ -23,10 +21,10 @@
 
 class OtAudioUtilities {
 public:
-	inline static float detune(float frequency, int octaves, int semitones=0, double cents=0) {
+	inline static float detune(float pitch, int octaves, int semitones=0, double cents=0) {
 		double totalCents = (octaves * 1200.0) + (semitones * 100.0) + cents;
 		double result = std::pow(2.0, totalCents / 1200.0);
-		return static_cast<float>(result * frequency);
+		return static_cast<float>(result * pitch);
 	}
 
 	inline static float linearToDbv(float v) {
@@ -55,15 +53,15 @@ public:
 		return std::pow(10.0f, x / 20.0f) * 0.775f;
 	}
 
-	inline static float frequencyToCv(float f) {
+	inline static float pitchToCv(float f) {
 		return std::log2(f / 440.0f);
 	}
 
-	inline static float cvToFrequency(float cv) {
+	inline static float cvToPitch(float cv) {
 		return 440.0f * std::pow(2.0f, cv);
 	}
 
-	inline static float midiNoteToFrequency(int midiNote) {
+	inline static float midiNoteToPitch(int midiNote) {
 		float semitonesAway = static_cast<float>(midiNote - 69);
 		return 440.0f * std::pow(2.0f, (semitonesAway / 12.0f));
 	}

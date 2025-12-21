@@ -44,15 +44,15 @@ static constexpr ImU32 errorTooltipColor = IM_COL32(128, 0, 32, 255);
 static constexpr ImU32 circuitColors[] = {
 	IM_COL32(125, 45, 75, 255),		// input
 	IM_COL32(60, 30, 40, 255),		// output
-	IM_COL32(150, 60, 110, 255),	// generator
+	IM_COL32(0, 70, 170, 255),		// generator
 	IM_COL32(55, 95, 130, 255),		// effect
 	IM_COL32(50, 50, 90, 255)		// probe
 	};
 
 static constexpr ImU32 pinColors[] = {
-	IM_COL32(220, 130, 0, 255),		// mono
+	IM_COL32(180, 90, 0, 255),		// mono
 	IM_COL32(100, 160, 100, 255),	// stereo
-	IM_COL32(180, 180, 180, 255)	// control
+	IM_COL32(0, 100, 200, 255)		// control
 };
 
 static constexpr float gridSpacing = 64.0f;
@@ -368,7 +368,11 @@ void OtAudioWidget::renderCircuit(ImDrawList* drawlist, OtCircuit circuit) {
 	});
 
 	// do the custom circuit rendering
-	circuit->customRendering(circuit->w - horizontalPadding * 2.0f);
+	auto oldState = circuit->captureState();
+
+	if (circuit->customRendering(circuit->w - horizontalPadding * 2.0f)) {
+		circuit->captureStateTransaction(oldState);
+	}
 
 	// render all input pins
 	circuit->eachInput([&](OtCircuitPin pin) {

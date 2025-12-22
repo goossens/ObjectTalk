@@ -5,11 +5,13 @@
 			"inputs": [],
 			"outputs": [
 				{
+					"attenuation": 1.0,
 					"id": 2197641789,
 					"name": "Pitch",
 					"type": "control"
 				},
 				{
+					"attenuation": 1.0,
 					"id": 2895604225,
 					"name": "Gate",
 					"type": "control"
@@ -17,18 +19,20 @@
 			],
 			"title": "Keyboard Input",
 			"type": "Keyboard Input",
-			"x": 40.0,
-			"y": 436.0
+			"x": 41.0,
+			"y": 584.0
 		},
 		{
 			"id": 2557146591,
 			"inputs": [
 				{
+					"attenuation": 1.0,
 					"id": 3360538592,
 					"name": "Pitch",
 					"type": "control"
 				},
 				{
+					"attenuation": 1.0,
 					"id": 4000249913,
 					"name": "Pulse Width",
 					"type": "control"
@@ -36,6 +40,7 @@
 			],
 			"outputs": [
 				{
+					"attenuation": 1.0,
 					"id": 410275450,
 					"name": "Output",
 					"type": "mono"
@@ -45,17 +50,18 @@
 			"pulseWidth": 0.5,
 			"title": "VCO",
 			"type": "VCO",
-			"waveForm": 3,
-			"x": 523.0,
-			"y": 61.0
+			"waveForm": 0,
+			"x": 530.0,
+			"y": 50.0
 		},
 		{
-			"attack": 0.5,
-			"decay": 0.5,
-			"hold": 0.010000000707805157,
+			"attack": 1.4299999475479126,
+			"decay": 10.0,
+			"hold": 9.729999542236328,
 			"id": 3801042963,
 			"inputs": [
 				{
+					"attenuation": 1.0,
 					"id": 2235339939,
 					"name": "Trigger",
 					"type": "control"
@@ -63,27 +69,87 @@
 			],
 			"outputs": [
 				{
+					"attenuation": 1.0,
 					"id": 3111468910,
 					"name": "Output",
 					"type": "control"
 				}
 			],
-			"release": 1.0,
+			"release": 1.600000023841858,
 			"sustain": 0.5,
 			"title": "Envelope Generator",
 			"type": "Envelope Generator",
-			"x": 523.0,
-			"y": 436.0
+			"x": 563.0,
+			"y": 438.0
+		},
+		{
+			"id": 3244187191,
+			"inputs": [],
+			"outputs": [
+				{
+					"attenuation": 1.0,
+					"id": 507672911,
+					"name": "Output",
+					"type": "control"
+				}
+			],
+			"pitch": 1.0,
+			"pulseWidth": 0.5,
+			"title": "LFO",
+			"type": "LFO",
+			"waveForm": 0,
+			"x": 313.0,
+			"y": 331.0
+		},
+		{
+			"id": 4064142102,
+			"inputs": [
+				{
+					"attenuation": 1.0,
+					"id": 1254475580,
+					"name": "Input",
+					"type": "mono"
+				},
+				{
+					"attenuation": 1.0,
+					"id": 1145682991,
+					"name": "F Mod",
+					"type": "control"
+				},
+				{
+					"attenuation": 1.0,
+					"id": 1051869345,
+					"name": "Q Mod",
+					"type": "control"
+				}
+			],
+			"mode": 3,
+			"outputs": [
+				{
+					"attenuation": 1.0,
+					"id": 1734700177,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"pitch": 1000.0,
+			"resonance": 0.5,
+			"title": "VCF",
+			"type": "VCF",
+			"x": 767.0,
+			"y": 50.0
 		},
 		{
 			"id": 3569591617,
 			"inputs": [
 				{
+					"attenuation": 1.0,
 					"id": 1337454414,
 					"name": "Input",
 					"type": "mono"
 				},
 				{
+					"attenuation": 1.0,
 					"id": 2718563792,
 					"name": "CV",
 					"type": "control"
@@ -91,6 +157,7 @@
 			],
 			"outputs": [
 				{
+					"attenuation": 1.0,
 					"id": 470986240,
 					"name": "Output",
 					"type": "mono"
@@ -99,13 +166,14 @@
 			"title": "VCA",
 			"type": "VCA",
 			"volume": 1.0,
-			"x": 938.0,
-			"y": 76.0
+			"x": 1036.0,
+			"y": 50.0
 		},
 		{
 			"id": 1460307938,
 			"inputs": [
 				{
+					"attenuation": 1.0,
 					"id": 3978828348,
 					"name": "Input",
 					"type": "mono"
@@ -113,6 +181,7 @@
 			],
 			"outputs": [
 				{
+					"attenuation": 1.0,
 					"id": 1492965834,
 					"name": "Output",
 					"type": "stereo"
@@ -127,6 +196,7 @@
 			"id": 278093283,
 			"inputs": [
 				{
+					"attenuation": 1.0,
 					"id": 248961618,
 					"name": "Input",
 					"type": "stereo"
@@ -142,6 +212,7 @@
 			"id": 1203394735,
 			"inputs": [
 				{
+					"attenuation": 1.0,
 					"id": 2271235433,
 					"name": "Input",
 					"type": "mono"
@@ -169,7 +240,7 @@
 		{
 			"from": 410275450,
 			"id": 1272862781,
-			"to": 1337454414
+			"to": 1254475580
 		},
 		{
 			"from": 470986240,
@@ -190,6 +261,16 @@
 			"from": 470986240,
 			"id": 368892597,
 			"to": 2271235433
+		},
+		{
+			"from": 1734700177,
+			"id": 4115215161,
+			"to": 1337454414
+		},
+		{
+			"from": 507672911,
+			"id": 1515309229,
+			"to": 1145682991
 		}
 	]
 }

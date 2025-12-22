@@ -13,7 +13,6 @@
 //
 
 #include <cstdint>
-#include <functional>
 #include <memory>
 #include <string>
 
@@ -38,8 +37,6 @@ class OtCircuitClass;
 class OtCircuitPinClass;
 using OtCircuitPin = std::shared_ptr<OtCircuitPinClass>;
 
-typedef std::function<void(float)> OtCircuitPinRenderer;
-
 class OtCircuitPinClass : public std::enable_shared_from_this<OtCircuitPinClass> {
 public:
 	// pin types and direction
@@ -61,7 +58,7 @@ public:
 	};
 
 	// constructor
-	inline OtCircuitPinClass(const char* n, Type t, Direction d) : name(n), type(t), direction(d) {
+	inline OtCircuitPinClass(const char* n, Type t, Direction d, bool a=false) : name(n), type(t), direction(d), attenuationFlag(a) {
 		id = OtCircuitGenerateID();
 
 		if (direction == Direction::output) {
@@ -79,14 +76,6 @@ public:
 					break;
 			}
 		}
-	}
-
-	// handle custom renderer
-	inline OtCircuitPin addCustomRenderer(OtCircuitPinRenderer renderer, float width=0.0f) {
-		render = renderer;
-		renderingWidth = width;
-		hasRenderer = true;
-		return shared_from_this();
 	}
 
 	// check status
@@ -112,13 +101,10 @@ public:
 	const char* name;
 	Type type;
 	Direction direction;
+	bool attenuationFlag;
+	float attenuation = 1.0f;
 	OtCircuitClass* circuit;
 
-	OtCircuitPinRenderer render = [](float){};
-	float renderingWidth = 0.0f;
-	bool hasRenderer = false;
-
 	std::shared_ptr<OtSignalBuffer> buffer;
-
 	OtCircuitPin sourcePin;
 };

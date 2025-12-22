@@ -65,7 +65,7 @@ public:
 	inline bool isActive() { return state != State::idle; }
 
 	// get envelope as set of samples for visualization purposes
-	inline void getVisualization(float* output, size_t size) {
+	inline void getVisualization(float* output, int size) {
 		// get total envelope length and length of each phase in samples
 		auto totalLengthInTime = (attackTime + holdTime + decayTime + releaseTime) * 1.25f;
 		auto sampleRate = static_cast<float>(size) / totalLengthInTime;

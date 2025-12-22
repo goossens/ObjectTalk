@@ -12,9 +12,7 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtAudioSettings.h"
 #include "OtCircuitFactory.h"
-#include "OtOscillator.h"
 
 
 //

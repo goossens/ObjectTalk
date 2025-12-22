@@ -962,13 +962,11 @@ bool OtUi::bezier(const char* label, float P[4]) {
 bool OtUi::knob(const char* label, float* value, float minValue, float maxValue, const char* format, bool logarithmic) {
 	static constexpr float pi = static_cast<float>(std::numbers::pi);
 
-	auto result = ImGuiKnobs::Knob(
+	return ImGuiKnobs::Knob(
 		label, value, minValue, maxValue, 0.0f,
 		format, ImGuiKnobVariant_WiperDot,
 		0.0f, logarithmic ? ImGuiKnobFlags_Logarithmic : 0, 10,
 		pi * 0.6f, pi * 2.4f);
-
-	return result;
 }
 
 
@@ -999,6 +997,37 @@ float OtUi::knobHeight(int rows) {
 
 	// return total height of knob widget
 	return height * rows;
+}
+
+
+//
+//	OtUi::trimSlider
+//
+
+bool OtUi::trimSlider(float* value) {
+	ImGui::PushID(value);
+	ImGui::SetNextItemWidth(ImGui::GetTextLineHeight() * 4.0f);
+	auto result = ImGui::SliderFloat("", value, 0.0f, 1.0f, "%.2f");
+	ImGui::PopID();
+	return result;
+}
+
+
+//
+//	OtUi::trimSliderWidth
+//
+
+float OtUi::trimSliderWidth() {
+	return ImGui::GetTextLineHeight() * 4.0f;
+}
+
+
+//
+//	OtUi::trimSliderHeight
+//
+
+float OtUi::trimSliderHeight() {
+	return ImGui::GetTextLineHeight();
 }
 
 

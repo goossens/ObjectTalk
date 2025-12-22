@@ -18,7 +18,7 @@
 
 #include "OtNumbers.h"
 
-#include "OtAudioUtilities.h"
+#include "OtAudioSettings.h"
 #include "OtCircuitFactory.h"
 #include "OtFft.h"
 #include "OtCircularBuffer.h"

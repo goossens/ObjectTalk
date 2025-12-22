@@ -42,6 +42,9 @@ OtAudio::OtAudio() {
 //
 
 void OtAudio::provideSignal(OtSignalBuffer& buffer) {
+	// thread safety
+	std::lock_guard<std::mutex> guard(mutex);
+
 	// see if resorting is required
 	if (needsSorting) {
 		sortCircuitsTopologically();
@@ -91,6 +94,7 @@ OtAudio::~OtAudio() {
 //
 
 void OtAudio::clear() {
+	// reset audio
 	wireIndex.clear();
 	pinIndex.clear();
 	circuitIndex.clear();

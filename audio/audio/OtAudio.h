@@ -15,6 +15,7 @@
 #include <cstdint>
 #include <functional>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -37,6 +38,10 @@ public:
 	// constructor/destructor
 	OtAudio();
 	~OtAudio();
+
+	// handle concurrent access
+	inline void lock() { mutex.lock(); }
+	inline void unlock() { mutex.unlock(); }
 
 	// register a circuit type
 	template <typename T>
@@ -144,6 +149,7 @@ private:
 	// signal processor to get the sound out
 	OtDsp dsp;
 	void provideSignal(OtSignalBuffer& buffer);
+	std::mutex mutex;
 
 	// (un)index a circuit and its pins
 	void indexCircuit(OtCircuit circuit);

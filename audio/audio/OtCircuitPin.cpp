@@ -28,6 +28,11 @@ nlohmann::json OtCircuitPinClass::serialize([[maybe_unused]] std::string* basedi
 	data["type"] = getTypeName();
 	data["id"] = id;
 	data["name"] = name;
+
+	if (attenuationFlag) {
+		data["attenuation"] = attenuation;
+	}
+
 	return data;
 }
 
@@ -37,8 +42,9 @@ nlohmann::json OtCircuitPinClass::serialize([[maybe_unused]] std::string* basedi
 //
 
 void OtCircuitPinClass::deserialize(nlohmann::json data, bool restoreIDs, [[maybe_unused]] std::string* basedir) {
-	// restore ID (if required)
 	if (restoreIDs) {
 		id = data["id"];
 	}
+
+	attenuation = data.value("attenuation", 1.0f);
 }

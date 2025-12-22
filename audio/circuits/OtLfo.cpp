@@ -20,24 +20,22 @@
 
 
 //
-//	OtVco
+//	OtLfo
 //
 
-class OtVco : public OtCircuitClass {
+class OtLfo : public OtCircuitClass {
 public:
 	// configure node
 	inline void configure() override {
-		pitchOutput = addInputPin("Pitch", OtCircuitPinClass::Type::control);
-		pulseWidthOutput = addInputPin("Pulse Width", OtCircuitPinClass::Type::control);
-		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
+		output = addOutputPin("Output", OtCircuitPinClass::Type::control);
 
-		pitchControl = addControl("Pitch", pitchOutput, &pitch)
-			->setRange(80.0f, 8000.0f)
-			->setLabelFormat("%.0f")
+		frequencyControl = addControl("Freq", nullptr, &pitch)
+			->setRange(0.1f, 200.0f)
+			->setLabelFormat("%.1f")
 			->setIsFrequency()
 			->setIsLogarithmic();
 
-		pulseWidthControl = addControl("PW", pulseWidthOutput, &pulseWidth)
+		pulseWidthControl = addControl("PW", nullptr, &pulseWidth)
 			->setRange(0.0f, 1.0f)
 			->setLabelFormat("%.2f");
 	}
@@ -47,7 +45,7 @@ public:
 		bool changed = false;
 		ImGui::SetNextItemWidth(itemWidth);
 		changed |= OtUi::selectorEnum("##waveForm", &waveForm, OtOscillator::waveForms, OtOscillator::waveFormCount);
-		changed |= pitchControl->renderKnob(); ImGui::SameLine();
+		changed |= frequencyControl->renderKnob(); ImGui::SameLine();
 		changed |= pulseWidthControl->renderKnob();
 		return changed;
 	}
@@ -79,30 +77,28 @@ public:
 		oscillator.setWaveForm(waveForm);
 
 		for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-			oscillator.setPitch(pitchControl->getValue(i));
+			oscillator.setPitch(frequencyControl->getValue(i));
 			oscillator.setPulseWidth(pulseWidthControl->getValue(i));
-			audioOutput->buffer->set(0, i, oscillator.get());
+			output->buffer->set(0, i, oscillator.get());
 		}
 	};
 
-	static constexpr const char* circuitName = "VCO";
+	static constexpr const char* circuitName = "LFO";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::generator;
 
 private:
 	// properties
 	OtOscillator::WaveForm waveForm = OtOscillator::WaveForm::sine;
-	float pitch = 440.0f;
+	float pitch = 1.0f;
 	float pulseWidth = 0.5f;
 
 	// work variables
-	OtCircuitPin pitchOutput;
-	OtCircuitPin pulseWidthOutput;
-	OtCircuitPin audioOutput;
+	OtCircuitPin output;
 
-	OtCircuitControl pitchControl;
+	OtCircuitControl frequencyControl;
 	OtCircuitControl pulseWidthControl;
 
 	OtOscillator oscillator;
 };
 
-static OtCircuitFactoryRegister<OtVco> registration;
+static OtCircuitFactoryRegister<OtLfo> registration;

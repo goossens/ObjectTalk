@@ -44,8 +44,8 @@ public:
 		return shared_from_this();
 	}
 
-	inline OtCircuitControl setIsPitch(bool flag=true) {
-		isPitch = flag;
+	inline OtCircuitControl setIsFrequency(bool flag=true) {
+		isFrequency = flag;
 		return shared_from_this();
 	}
 
@@ -73,7 +73,7 @@ public:
 	inline float getValue(size_t t) {
 		if (pin && pin->isSourceConnected()) {
 			auto sample = pin->getSignalBuffer()->get(0, t);
-			return isPitch ? OtAudioUtilities::cvToPitch(sample) : sample;
+			return isFrequency ? OtAudioUtilities::cvToPitch(sample) : sample;
 
 		} else {
 			return *value;
@@ -89,5 +89,5 @@ private:
 	float maxValue = 1.0f;
 	std::string format = "%.1f";
 	bool isLogarithmic = false;
-	bool isPitch = false;
+	bool isFrequency = false;
 };

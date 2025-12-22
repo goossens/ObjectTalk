@@ -222,6 +222,9 @@ void OtAudioEditor::handleShortcuts() {
 //
 
 void OtAudioEditor::renderEditor() {
+	// given that audio processes in real-time in a separate thread, we need to lock during editing
+	audio.lock();
+
 	// render the audio
 	widget.render(&audio);
 
@@ -293,4 +296,6 @@ void OtAudioEditor::renderEditor() {
 		taskManager.perform(nextTask);
 		nextTask = nullptr;
 	}
+
+	audio.unlock();
 }

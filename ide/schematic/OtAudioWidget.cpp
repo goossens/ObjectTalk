@@ -447,24 +447,33 @@ void OtAudioWidget::renderPin(ImDrawList* drawlist, OtCircuitPin pin, float x, f
 
 	ImGui::SetCursorScreenPos(savedPos);
 
-	// see if we have a custom renderer
-	if (pin->hasRenderer) {
-		try {
-			pin->circuit->error.clear();
-			pin->render(w - horizontalPadding * 2.0f);
+	// render label and optional attenuator
+	ImGui::AlignTextToFramePadding();
+	auto spacerWidth = w - ImGui::CalcTextSize(pin->name).x - horizontalPadding * 2.0f;
 
-		} catch (OtException& e) {
-			pin->circuit->error = e.getShortErrorMessage();
+	if (pin->isInput()) {
+		ImGui::TextUnformatted(pin->name);
+
+		if (pin->attenuationFlag) {
+			ImGui::SameLine(0.0f, spacerWidth - OtUi::trimSliderWidth());
+
+			if (OtUi::trimSlider(&pin->attenuation)) {
+				pin->circuit->needsSaving = true;
+			}
 		}
 
 	} else {
-		// right align labels for output pins
-		if (pin->isOutput()) {
-			OtUi::hSpacer(w - ImGui::CalcTextSize(pin->name).x - horizontalPadding * 2.0f);
+		if (pin->attenuationFlag) {
+			if (OtUi::trimSlider(&pin->attenuation)) {
+				pin->circuit->needsSaving = true;
+			}
+
+			ImGui::SameLine(0.0f, spacerWidth - OtUi::trimSliderWidth());
+
+		} else {
+			OtUi::hSpacer(spacerWidth);
 		}
 
-		// render label
-		ImGui::AlignTextToFramePadding();
 		ImGui::TextUnformatted(pin->name);
 	}
 }
@@ -514,14 +523,13 @@ void OtAudioWidget::calculateCircuitSize(OtCircuit circuit) {
 
 	// then we look at each pin
 	circuit->eachPin([&](OtCircuitPin pin) {
-		if (pin->hasRenderer) {
-			// use dimensions for custom pin rendering
-			w = std::max(w, pin->renderingWidth);
+		auto pw = ImGui::CalcTextSize(pin->name).x;
 
-		} else {
-			// just use pin label width
-			w = std::max(w, ImGui::CalcTextSize(pin->name).x);
+		if (pin->attenuationFlag) {
+			pw += OtUi::trimSliderWidth();
 		}
+
+		w = std::max(w, pw);
 	});
 
 	// take any circuit custom rendering into account

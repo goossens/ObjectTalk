@@ -187,6 +187,10 @@ public:
 	static float knobWidth(int columns=1);
 	static float knobHeight(int rows=1);
 
+	static bool trimSlider(float* value);
+	static float trimSliderWidth();
+	static float trimSliderHeight();
+
 	// bezier curve editor
 	static bool bezier(const char* label, float P[4]);
 

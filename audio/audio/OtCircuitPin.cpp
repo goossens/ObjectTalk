@@ -46,5 +46,7 @@ void OtCircuitPinClass::deserialize(nlohmann::json data, bool restoreIDs, [[mayb
 		id = data["id"];
 	}
 
-	attenuation = data.value("attenuation", 1.0f);
+	if (attenuationFlag) {
+		attenuation = data.value("attenuation", 1.0f);
+	}
 }

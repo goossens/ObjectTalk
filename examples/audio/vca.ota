@@ -47,7 +47,7 @@
 			"type": "VCO",
 			"waveForm": 3,
 			"x": 523.0,
-			"y": 61.0
+			"y": 50.0
 		},
 		{
 			"attack": 0.5,
@@ -100,7 +100,7 @@
 			"type": "VCA",
 			"volume": 1.0,
 			"x": 938.0,
-			"y": 76.0
+			"y": 50.0
 		},
 		{
 			"id": 1460307938,
@@ -111,6 +111,7 @@
 					"type": "mono"
 				}
 			],
+			"leftDelayTime": 0.0,
 			"outputs": [
 				{
 					"id": 1492965834,
@@ -118,9 +119,11 @@
 					"type": "stereo"
 				}
 			],
+			"panLevel": 0.0,
+			"rightDelayTime": 20.0,
 			"title": "Mono to Stereo",
 			"type": "Mono to Stereo",
-			"x": 1201.0,
+			"x": 1145.0,
 			"y": 50.0
 		},
 		{
@@ -150,8 +153,8 @@
 			"outputs": [],
 			"title": "Oscilloscope",
 			"type": "Oscilloscope",
-			"x": 1201.0,
-			"y": 197.0
+			"x": 1136.0,
+			"y": 331.0
 		}
 	],
 	"metadata": {},

@@ -44,9 +44,8 @@ public:
 
 	// render custom fields
 	inline bool customRendering(float itemWidth) override {
-		bool changed = false;
 		ImGui::SetNextItemWidth(itemWidth);
-		changed |= OtUi::selectorEnum("##waveForm", &waveForm, OtOscillator::waveForms, OtOscillator::waveFormCount);
+		bool changed = OtUi::selectorEnum("##waveForm", &waveForm, OtOscillator::waveForms, OtOscillator::waveFormCount);
 		changed |= pitchControl->renderKnob(); ImGui::SameLine();
 		changed |= pulseWidthControl->renderKnob();
 		return changed;

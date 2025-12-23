@@ -62,7 +62,7 @@ public:
 				}
 			}
 
-			if (ImPlot::BeginPlot("##Oscilloscope", ImVec2(itemWidth, customH), ImPlotFlags_CanvasOnly)) {
+			if (ImPlot::BeginPlot("##Oscilloscope", ImVec2(itemWidth, customH), ImPlotFlags_CanvasOnly | ImPlotFlags_NoInputs)) {
 				ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoTickLabels);
 				ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoTickLabels);
 				ImPlot::SetupAxisLimits(ImAxis_X1, 0.0, 500.0);

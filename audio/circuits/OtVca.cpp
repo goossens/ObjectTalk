@@ -9,8 +9,9 @@
 //	Include files
 //
 
-#include "imgui.h"
 #include "nlohmann/json.hpp"
+
+#include "OtUi.h"
 
 #include "OtCircuitFactory.h"
 
@@ -27,7 +28,7 @@ public:
 		cvInput = addInputPin("CV", OtCircuitPinClass::Type::control);
 		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
 
-		volumeControl = addControl("Volume", cvInput, &volume)->setRange(0.0f, 1.0f)->setLabelFormat("%.2f");
+		volumeControl = addControl("Volume", nullptr, &volume)->setRange(0.0f, 1.0f)->setLabelFormat("%.2f");
 	}
 
 	// render custom fields
@@ -43,7 +44,7 @@ public:
 		return OtUi::knobHeight();
 	}
 
-	// (de)serialize node
+	// (de)serialize circuit
 	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		(*data)["volume"] = volume;
 	}
@@ -58,7 +59,12 @@ public:
 			auto signal = audioInput->getSignalBuffer();
 
 			for (size_t i = 0; i < signal->getSampleCount(); i++) {
-				audioOutput->buffer->set(0, i, signal->get(0, i) * volumeControl->getValue(i));
+				if (cvInput->isSourceConnected()) {
+					audioOutput->buffer->set(0, i, signal->get(0, i) * cvInput->getSignalBuffer()->get(0, i) * volume);
+
+				} else {
+					audioOutput->buffer->set(0, i, signal->get(0, i) * volume);
+				}
 			}
 
 		} else {

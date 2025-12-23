@@ -73,7 +73,7 @@ public:
 			ImPlot::PushStyleColor(ImPlotCol_AxisText, ImVec4(0.6f, 0.6f, 0.6f, 1.0f));
 			ImPlot::PushStyleVar(ImPlotStyleVar_FillAlpha, 0.25f);
 
-			if (ImPlot::BeginPlot("##Spectrum", ImVec2(itemWidth, customH), ImPlotFlags_CanvasOnly)) {
+			if (ImPlot::BeginPlot("##Spectrum", ImVec2(itemWidth, customH), ImPlotFlags_CanvasOnly | ImPlotFlags_NoInputs)) {
 				{
 					// quickly copy signal to separate buffer
 					// to avoid race conditions and to not hold up audio thread

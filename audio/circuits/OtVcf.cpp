@@ -42,9 +42,8 @@ public:
 
 	// render custom fields
 	inline bool customRendering([[maybe_unused]] float itemWidth) override {
-		bool changed = false;
 		ImGui::SetNextItemWidth(itemWidth);
-		changed |= OtUi::selectorEnum("##modes", &mode, OtVirtualAnalogFilter::modes, OtVirtualAnalogFilter::modesCount);
+		bool changed = OtUi::selectorEnum("##modes", &mode, OtVirtualAnalogFilter::modes, OtVirtualAnalogFilter::modesCount);
 		changed |= frequencyControl->renderKnob(); ImGui::SameLine();
 		changed |= resonanceControl->renderKnob();
 		return changed;

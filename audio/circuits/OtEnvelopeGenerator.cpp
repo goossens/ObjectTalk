@@ -46,15 +46,15 @@ public:
 			envelope.setDecayTime(decay);
 			envelope.setSustainLevel(sustain);
 			envelope.setReleaseTime(release);
-			envelope.getVisualization(visualization, visualizationSize);
+			envelope.getVisualization(plotData, plotSize);
 		}
 
-		if (ImPlot::BeginPlot("##AHDSR", ImVec2(itemWidth, visualizationHeight), ImPlotFlags_CanvasOnly)) {
+		if (ImPlot::BeginPlot("##AHDSR", ImVec2(itemWidth, plotHeight), ImPlotFlags_CanvasOnly | ImPlotFlags_NoInputs)) {
 			ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoTickLabels);
 			ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoTickLabels);
-			ImPlot::SetupAxisLimits(ImAxis_X1, 0.0, visualizationSize);
+			ImPlot::SetupAxisLimits(ImAxis_X1, 0.0, plotSize);
 			ImPlot::SetupAxisLimits(ImAxis_Y1, -0.02, 1.02);
-			ImPlot::PlotLine("Signal", visualization, visualizationSize);
+			ImPlot::PlotLine("Signal", plotData, plotSize);
 			ImPlot::EndPlot();
 		}
 
@@ -73,7 +73,7 @@ public:
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return visualizationHeight + OtUi::knobHeight();
+		return plotHeight + OtUi::knobHeight();
 	}
 
 	// (de)serialize node
@@ -129,9 +129,8 @@ public:
 
 	static constexpr const char* circuitName = "Envelope Generator";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::generator;
-	static constexpr float width = 400.0f;
-	static constexpr float visualizationHeight = 100.0f;
-	static constexpr int visualizationSize = 1024;
+	static constexpr float plotHeight = 100.0f;
+	static constexpr int plotSize = 1024;
 
 private:
 	// properties
@@ -153,7 +152,7 @@ private:
 
 	bool triggerState = false;
 	OtEnvelope envelope;
-	float visualization[visualizationSize];
+	float plotData[plotSize];
 	bool updateVisualization = true;
 };
 

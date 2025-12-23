@@ -10,11 +10,6 @@
 					"type": "control"
 				},
 				{
-					"id": 116879968,
-					"name": "Velocity",
-					"type": "control"
-				},
-				{
 					"id": 2895604225,
 					"name": "Gate",
 					"type": "control"
@@ -63,6 +58,7 @@
 					"type": "mono"
 				}
 			],
+			"leftDelayTime": 0.0,
 			"outputs": [
 				{
 					"id": 1492965834,
@@ -70,9 +66,11 @@
 					"type": "stereo"
 				}
 			],
+			"panLevel": 0.0,
+			"rightDelayTime": 0.0,
 			"title": "Mono to Stereo",
 			"type": "Mono to Stereo",
-			"x": 1201.0,
+			"x": 1066.0,
 			"y": 50.0
 		},
 		{
@@ -103,7 +101,7 @@
 			"title": "Oscilloscope",
 			"type": "Oscilloscope",
 			"x": 1201.0,
-			"y": 207.0
+			"y": 261.0
 		},
 		{
 			"id": 942025815,

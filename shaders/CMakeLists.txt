@@ -23,10 +23,6 @@ endfunction()
 if(NOT WIN32)
 	find_program(GLSL_VALIDATOR "glslangValidator" REQUIRED)
 	find_program(SED_EXECUTABLE "sed" REQUIRED)
-
-	execute_process(
-		COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/templates/shaders.h ${CMAKE_CURRENT_SOURCE_DIR}/OtShaders.h
-	)
 endif()
 
 foreach(GLSL ${SHADER_GLSL})
@@ -34,11 +30,6 @@ foreach(GLSL ${SHADER_GLSL})
 	set(TARGET_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/generated/${SHADER_STAGE}.cpp)
 
 	if(NOT WIN32)
-		execute_process(
-			COMMAND sh -c "echo 'extern const uint32_t ${SHADER_STAGE}[];' >>${CMAKE_CURRENT_SOURCE_DIR}/OtShaders.h"
-			COMMAND sh -c "echo 'extern const size_t ${SHADER_STAGE}Size;' >>${CMAKE_CURRENT_SOURCE_DIR}/OtShaders.h"
-		)
-
 		add_custom_command(
 			OUTPUT ${TARGET_SOURCE}
 			DEPENDS ${GLSL}
@@ -50,10 +41,17 @@ foreach(GLSL ${SHADER_GLSL})
 		)
 	endif()
 
-	list(APPEND SHADER_H ${TARGET_SOURCE})
 	list(APPEND SHADER_CPP ${TARGET_SOURCE})
 endforeach(GLSL)
 
-add_library(shaders STATIC ${SHADER_CPP} ${SHADER_H} ${SHADER_GLSL})
+if(NOT WIN32)
+	add_custom_command(
+		OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/OtShaders.h
+		DEPENDS ${SHADER_GLSL}
+		COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/templates/shaders.sh
+	)
+endif()
+
+add_library(shaders STATIC ${CMAKE_CURRENT_SOURCE_DIR}/OtShaders.h ${SHADER_CPP} ${SHADER_GLSL})
 target_include_directories(shaders PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${SHADER_GLSL} ${SHADER_CPP})
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${CMAKE_CURRENT_SOURCE_DIR}/OtShaders.h ${SHADER_CPP} ${SHADER_GLSL})

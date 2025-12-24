@@ -45,7 +45,7 @@
 			"pulseWidth": 0.5,
 			"title": "VCO",
 			"type": "VCO",
-			"waveForm": 3,
+			"waveForm": 2,
 			"x": 480.0,
 			"y": 49.0
 		},
@@ -85,7 +85,7 @@
 					"type": "control"
 				}
 			],
-			"pitch": 1.0,
+			"pitch": 6.800000190734863,
 			"pulseWidth": 0.5,
 			"title": "LFO",
 			"type": "LFO",
@@ -102,6 +102,7 @@
 					"type": "mono"
 				},
 				{
+					"attenuation": 1.0,
 					"id": 2718563792,
 					"name": "CV",
 					"type": "control"
@@ -109,6 +110,7 @@
 			],
 			"outputs": [
 				{
+					"attenuation": 1.0,
 					"id": 470986240,
 					"name": "Output",
 					"type": "mono"
@@ -116,7 +118,6 @@
 			],
 			"title": "VCA",
 			"type": "VCA",
-			"volume": 1.0,
 			"x": 752.0,
 			"y": 49.0
 		},
@@ -129,7 +130,7 @@
 					"type": "mono"
 				},
 				{
-					"attenuation": 1.0,
+					"attenuation": 0.12999999523162842,
 					"id": 1145682991,
 					"name": "F Mod",
 					"type": "control"
@@ -141,7 +142,7 @@
 					"type": "control"
 				}
 			],
-			"mode": 2,
+			"mode": 3,
 			"outputs": [
 				{
 					"id": 1734700177,
@@ -149,7 +150,7 @@
 					"type": "mono"
 				}
 			],
-			"pitch": 1000.0,
+			"pitch": 506.0,
 			"resonance": 0.6800000071525574,
 			"title": "VCF",
 			"type": "VCF",

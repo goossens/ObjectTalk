@@ -456,16 +456,19 @@ void OtAudioWidget::renderPin(ImDrawList* drawlist, OtCircuitPin pin, float x, f
 
 		if (pin->attenuationFlag) {
 			ImGui::SameLine(0.0f, spacerWidth - OtUi::trimSliderWidth());
+			auto oldState = pin->circuit->captureState();
 
 			if (OtUi::trimSlider(&pin->attenuation)) {
-				pin->circuit->needsSaving = true;
+				pin->circuit->captureStateTransaction(oldState);
 			}
 		}
 
 	} else {
 		if (pin->attenuationFlag) {
+			auto oldState = pin->circuit->captureState();
+
 			if (OtUi::trimSlider(&pin->attenuation)) {
-				pin->circuit->needsSaving = true;
+				pin->circuit->captureStateTransaction(oldState);
 			}
 
 			ImGui::SameLine(0.0f, spacerWidth - OtUi::trimSliderWidth());

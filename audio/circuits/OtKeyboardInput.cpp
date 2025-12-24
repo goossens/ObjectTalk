@@ -72,8 +72,13 @@ public:
 
 	// generate samples
 	void execute() override {
-		pitchOutput->buffer->clear(OtAudioUtilities::pitchToCv(pitch));
-		gateOutput->buffer->clear(velocity == 0.0f ? 0.0f : 1.0f);
+		if (pitchOutput->isDestinationConnected()) {
+			pitchOutput->setSamples(OtAudioUtilities::pitchToCv(pitch));
+		}
+
+		if (gateOutput->isDestinationConnected()) {
+			gateOutput->setSamples(velocity == 0.0f ? 0.0f : 1.0f);
+		}
 	}
 
 	static constexpr const char* circuitName = "Keyboard Input";

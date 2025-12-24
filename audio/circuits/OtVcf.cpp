@@ -12,6 +12,8 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtAudioSettings.h"
+#include "OtAudioUtilities.h"
 #include "OtCircuitFactory.h"
 #include "OtVirtualAnalogFilter.h"
 
@@ -70,18 +72,22 @@ public:
 		resonance = data->value("resonance", 0.5f);
 	}
 
-	// generate samples
+	// process samples
 	void execute() override {
-		if (audioInput->isSourceConnected()) {
-			auto signal = audioInput->getSignalBuffer();
+		if (audioOutput->isDestinationConnected()) {
+			if (audioInput->isSourceConnected()) {
+				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
+					filter.set(
+						mode,
+						(fmInput->isSourceConnected()) ? OtAudioUtilities::detune(pitch, fmInput->getSample(i)) : pitch,
+						(qmInput->isSourceConnected()) ? resonance * qmInput->getSample(i) : resonance);
 
-			for (size_t i = 0; i < signal->getSampleCount(); i++) {
-				filter.set(mode, pitch, resonance);
-				audioOutput->buffer->set(0, i, filter.process(signal->get(0, i)));
+						audioOutput->setSample(i, filter.process(audioInput->getSample(i)));
+				}
+
+			} else {
+				audioOutput->buffer->clear();
 			}
-
-		} else {
-			audioOutput->buffer->clear();
 		}
 	};
 

@@ -74,13 +74,15 @@ public:
 
 	// generate samples
 	void execute() override {
-		// process all the samples
-		oscillator.setWaveForm(waveForm);
+		if (audioOutput->isDestinationConnected()) {
+			// process all the samples
+			oscillator.setWaveForm(waveForm);
 
-		for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-			oscillator.setPitch(pitchControl->getValue(i));
-			oscillator.setPulseWidth(pulseWidthControl->getValue(i));
-			audioOutput->buffer->set(0, i, oscillator.get());
+			for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
+				oscillator.setPitch(pitchControl->getValue(i));
+				oscillator.setPulseWidth(pulseWidthControl->getValue(i));
+				audioOutput->setSample(i, oscillator.get());
+			}
 		}
 	};
 

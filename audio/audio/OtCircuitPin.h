@@ -86,8 +86,20 @@ public:
 	inline void connectToSource(OtCircuitPin srcPin) { sourcePin = srcPin; }
 	inline void disconnectFromSource() { sourcePin = nullptr; }
 	inline OtCircuitPin getSource() { return sourcePin; }
-	inline std::shared_ptr<OtSignalBuffer> getSignalBuffer() { return sourcePin->buffer; }
 	inline bool isSourceConnected() { return sourcePin != nullptr; }
+
+	inline void connectToDestination() { destinationConnections++; }
+	inline void disconnectFromDestination() { destinationConnections--; }
+	inline bool isDestinationConnected() { return destinationConnections != 0; }
+
+	// access incoming and outgoing samples
+	inline float getSample(size_t sample) { return sourcePin->buffer->get(0, sample) * attenuation; }
+	inline float getSample(size_t channel, size_t sample) { return sourcePin->buffer->get(channel, sample) * attenuation; }
+	inline float* getSamples() { return sourcePin->buffer->data(); }
+
+	inline void setSample(size_t sample, float value) { buffer->set(0, sample, value * attenuation); }
+	inline void setSample(size_t channel, size_t sample, float value) { buffer->set(channel, sample, value * attenuation); }
+	inline void setSamples(float value) { buffer->clear(value); }
 
 	// (de)serialize
 	nlohmann::json serialize(std::string* basedir=nullptr);
@@ -107,4 +119,5 @@ public:
 
 	std::shared_ptr<OtSignalBuffer> buffer;
 	OtCircuitPin sourcePin;
+	int destinationConnections = 0;
 };

@@ -35,7 +35,7 @@ public:
 		input = addInputPin("Input", OtCircuitPinClass::Type::mono);
 	}
 
-	// process frame
+	// process samples
 	inline void execute() override {
 		if (input->isSourceConnected()) {
 			customW = width;
@@ -43,8 +43,7 @@ public:
 
 			// add input signal to data buffer
 			std::lock_guard<std::mutex> guard(mutex);
-			auto signal = input->getSignalBuffer();
-			data.insert(signal->data(), signal->getSampleCount());
+			data.insert(input->getSamples(), OtAudioSettings::bufferSize);
 
 		} else {
 			customW = width;

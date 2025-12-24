@@ -45,7 +45,7 @@ public:
 	// set properties
 	inline void set(Mode m, float cutoff, float resonance) {
 		mode = m;
-		gain = static_cast<float>(std::tan(std::numbers::pi * cutoff / OtAudioSettings::sampleRate));
+		gain = static_cast<float>(std::tan(std::numbers::pi * cutoff * OtAudioSettings::dt));
 		damping = std::min(1.0f - resonance, 0.999f);
 		inverseDenominator = 1.0f / (1.0f + (2.0f * damping * gain) + gain * gain);
 	}

@@ -28,12 +28,12 @@ OtDsp::OtDsp() {
 	SDL_AudioSpec src;
 	src.format = SDL_AUDIO_F32;
 	src.channels = 2;
-	src.freq = OtAudioSettings::sampleRate;
+	src.freq = static_cast<int>(OtAudioSettings::sampleRate);
 
 	SDL_AudioSpec dst;
 	dst.format = SDL_AUDIO_F32;
 	dst.channels = 2;
-	dst.freq = OtAudioSettings::sampleRate;
+	dst.freq = static_cast<int>(OtAudioSettings::sampleRate);
 
 	stream = SDL_CreateAudioStream(&src, &dst);
 

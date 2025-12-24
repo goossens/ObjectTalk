@@ -21,7 +21,7 @@
 
 class OtAudioUtilities {
 public:
-	inline static float detune(float pitch, int octaves, int semitones=0, double cents=0) {
+	inline static float detune(float pitch, float octaves, float semitones=0, float cents=0) {
 		double totalCents = (octaves * 1200.0) + (semitones * 100.0) + cents;
 		double result = std::pow(2.0, totalCents / 1200.0);
 		return static_cast<float>(result * pitch);

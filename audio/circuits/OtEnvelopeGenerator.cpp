@@ -96,34 +96,34 @@ public:
 
 	// generate samples
 	void execute() override {
-		if (triggerInput->isSourceConnected()) {
-			envelope.setAttackTime(attack);
-			envelope.setHoldTime(hold);
-			envelope.setDecayTime(decay);
-			envelope.setSustainLevel(sustain);
-			envelope.setReleaseTime(release);
+		if (envelopeOutput->isDestinationConnected()) {
+			if (triggerInput->isSourceConnected()) {
+				envelope.setAttackTime(attack);
+				envelope.setHoldTime(hold);
+				envelope.setDecayTime(decay);
+				envelope.setSustainLevel(sustain);
+				envelope.setReleaseTime(release);
 
-			auto triggerBuffer = triggerInput->getSignalBuffer();
+				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
+					auto newTriggerState = triggerInput->getSample(i);
 
-			for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-				auto newTriggerState = triggerBuffer->get(0, i);
+					if (newTriggerState != triggerState) {
+						if (newTriggerState) {
+							envelope.noteOn();
 
-				if (newTriggerState != triggerState) {
-					if (newTriggerState) {
-						envelope.noteOn();
+						} else {
+							envelope.noteOff();
+						}
 
-					} else {
-						envelope.noteOff();
+						triggerState = newTriggerState;
 					}
 
-					triggerState = newTriggerState;
+					envelopeOutput->setSample(i, envelope.process());
 				}
 
-				envelopeOutput->buffer->set(0, i, envelope.process());
+			} else {
+				envelopeOutput->buffer->clear(0.0f);
 			}
-
-		} else {
-			envelopeOutput->buffer->clear(0.0f);
 		}
 	}
 

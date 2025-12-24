@@ -72,7 +72,7 @@ public:
 	// get the value for the control (either from the knob or the connected stream)
 	inline float getValue(size_t t) {
 		if (pin && pin->isSourceConnected()) {
-			auto sample = pin->getSignalBuffer()->get(0, t);
+			auto sample = pin->getSample(t);
 			return isFrequency ? OtAudioUtilities::cvToPitch(sample) : sample;
 
 		} else {

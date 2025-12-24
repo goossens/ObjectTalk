@@ -70,27 +70,27 @@ public:
 		rightDelayTimeInMs = data->value("RightDelayTime", 0.0f);
 	}
 
-	// process frame
+	// process samples
 	void execute() override {
-		if (input->isSourceConnected()) {
-			auto signal = input->getSignalBuffer();
+		if (output->isDestinationConnected()) {
+			if (input->isSourceConnected()) {
+				auto angle = (panLevel * std::numbers::pi / 4.0f) + std::numbers::pi / 4.0f;
+				auto leftGain = std::cos(angle);
+				auto rightGain = std::sin(angle);
 
-			auto angle = (panLevel * std::numbers::pi / 4.0f) + std::numbers::pi / 4.0f;
-			auto leftGain = std::cos(angle);
-			auto rightGain = std::sin(angle);
+				auto leftDelayTimeInSamples = leftDelayTimeInMs * OtAudioSettings::sampleRate / 1000.0f;
+				auto rightDelayTimeInSamples = rightDelayTimeInMs * OtAudioSettings::sampleRate / 1000.0f;
 
-			auto leftDelayTimeInSamples = leftDelayTimeInMs * OtAudioSettings::sampleRate / 1000.0f;
-			auto rightDelayTimeInSamples = rightDelayTimeInMs * OtAudioSettings::sampleRate / 1000.0f;
+				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
+					auto value = input->getSample(i);
 
-			for (size_t i = 0; i < signal->getSampleCount(); i++) {
-				auto value = signal->get(0, i);
+					output->setSample(0, i, leftDelay.process(value, leftDelayTimeInSamples) * leftGain);
+					output->setSample(1, i, rightDelay.process(value, rightDelayTimeInSamples) * rightGain);
+				}
 
-				output->buffer->set(0, i, leftDelay.process(value, leftDelayTimeInSamples) * leftGain);
-				output->buffer->set(1, i, rightDelay.process(value, rightDelayTimeInSamples) * rightGain);
+			} else {
+				output->setSamples(0.0f);
 			}
-
-		} else {
-			output->buffer->clear();
 		}
 	};
 

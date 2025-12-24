@@ -9,10 +9,7 @@
 //	Include files
 //
 
-#include "nlohmann/json.hpp"
-
-#include "OtUi.h"
-
+#include "OtAudioSettings.h"
 #include "OtCircuitFactory.h"
 
 
@@ -25,50 +22,26 @@ public:
 	// configure node
 	inline void configure() override {
 		audioInput = addInputPin("Input", OtCircuitPinClass::Type::mono);
-		cvInput = addInputPin("CV", OtCircuitPinClass::Type::control);
-		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
-
-		volumeControl = addControl("Volume", nullptr, &volume)->setRange(0.0f, 1.0f)->setLabelFormat("%.2f");
+		cvInput = addInputPin("CV", OtCircuitPinClass::Type::control, true);
+		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono, true);
 	}
 
-	// render custom fields
-	inline bool customRendering([[maybe_unused]] float itemWidth) override {
-		return volumeControl->renderKnob();
-	}
-
-	inline float getCustomRenderingWidth() override {
-		return OtUi::knobWidth();
-	}
-
-	inline float getCustomRenderingHeight() override {
-		return OtUi::knobHeight();
-	}
-
-	// (de)serialize circuit
-	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
-		(*data)["volume"] = volume;
-	}
-
-	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
-		volume = data->value("volume", 1.0f);
-	}
-
-	// generate samples
+	// process samples
 	void execute() override {
-		if (audioInput->isSourceConnected()) {
-			auto signal = audioInput->getSignalBuffer();
+		if (audioOutput->isDestinationConnected()) {
+			if (audioInput->isSourceConnected()) {
+				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
+					if (cvInput->isSourceConnected()) {
+						audioOutput->setSample(i, audioInput->getSample(i) * cvInput->getSample(i));
 
-			for (size_t i = 0; i < signal->getSampleCount(); i++) {
-				if (cvInput->isSourceConnected()) {
-					audioOutput->buffer->set(0, i, signal->get(0, i) * cvInput->getSignalBuffer()->get(0, i) * volume);
-
-				} else {
-					audioOutput->buffer->set(0, i, signal->get(0, i) * volume);
+					} else {
+						audioOutput->setSample(i, audioInput->getSample(i));
+					}
 				}
-			}
 
-		} else {
-			audioOutput->buffer->clear();
+			} else {
+				audioOutput->buffer->clear();
+			}
 		}
 	};
 
@@ -76,15 +49,10 @@ public:
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::effect;
 
 private:
-	// properties
-	float volume = 1.0f;
-
 	// work variables
 	OtCircuitPin audioInput;
 	OtCircuitPin cvInput;
 	OtCircuitPin audioOutput;
-
-	OtCircuitControl volumeControl;
 };
 
 static OtCircuitFactoryRegister<OtVca> registration;

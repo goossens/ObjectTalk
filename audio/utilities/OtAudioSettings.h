@@ -9,11 +9,19 @@
 
 
 //
+//	Include files
+//
+
+#include <cstddef>
+
+
+//
 //	OtAudioSettings
 //
 
 class OtAudioSettings {
 public:
 	static constexpr size_t sampleRate = 48000;
+	static constexpr float dt = 1.0f / static_cast<float>(sampleRate);
 	static constexpr size_t bufferSize = 32;
 };

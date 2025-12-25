@@ -105,7 +105,7 @@ public:
 				envelope.setReleaseTime(release);
 
 				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-					auto newTriggerState = triggerInput->getSample(i);
+					auto newTriggerState = triggerInput->getSample(i) > 0.5f;
 
 					if (newTriggerState != triggerState) {
 						if (newTriggerState) {

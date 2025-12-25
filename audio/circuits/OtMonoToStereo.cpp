@@ -74,12 +74,12 @@ public:
 	void execute() override {
 		if (output->isDestinationConnected()) {
 			if (input->isSourceConnected()) {
-				auto angle = (panLevel * std::numbers::pi / 4.0f) + std::numbers::pi / 4.0f;
+				auto angle = static_cast<float>((panLevel * std::numbers::pi / 4.0f) + std::numbers::pi / 4.0f);
 				auto leftGain = std::cos(angle);
 				auto rightGain = std::sin(angle);
 
-				auto leftDelayTimeInSamples = leftDelayTimeInMs * OtAudioSettings::sampleRate / 1000.0f;
-				auto rightDelayTimeInSamples = rightDelayTimeInMs * OtAudioSettings::sampleRate / 1000.0f;
+				auto leftDelayTimeInSamples = static_cast<size_t>(leftDelayTimeInMs * OtAudioSettings::sampleRate / 1000.0f);
+				auto rightDelayTimeInSamples = static_cast<size_t>(rightDelayTimeInMs * OtAudioSettings::sampleRate / 1000.0f);
 
 				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
 					auto value = input->getSample(i);

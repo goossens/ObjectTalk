@@ -27,17 +27,17 @@ class OtVco : public OtCircuitClass {
 public:
 	// configure node
 	inline void configure() override {
-		pitchOutput = addInputPin("Pitch", OtCircuitPinClass::Type::control);
-		pulseWidthOutput = addInputPin("Pulse Width", OtCircuitPinClass::Type::control);
+		pitchInput = addInputPin("Pitch", OtCircuitPinClass::Type::frequency);
+		pulseWidthInput = addInputPin("Pulse Width", OtCircuitPinClass::Type::control);
 		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
 
-		pitchControl = addControl("Pitch", pitchOutput, &pitch)
+		pitchControl = addControl("Pitch", pitchInput, &pitch)
 			->setRange(80.0f, 8000.0f)
 			->setLabelFormat("%.0f")
 			->setIsFrequency()
 			->setIsLogarithmic();
 
-		pulseWidthControl = addControl("PW", pulseWidthOutput, &pulseWidth)
+		pulseWidthControl = addControl("PW", pulseWidthInput, &pulseWidth)
 			->setRange(0.0f, 1.0f)
 			->setLabelFormat("%.2f");
 	}
@@ -46,8 +46,12 @@ public:
 	inline bool customRendering(float itemWidth) override {
 		ImGui::SetNextItemWidth(itemWidth);
 		bool changed = OtUi::selectorEnum("##waveForm", &waveForm, OtOscillator::waveForms, OtOscillator::waveFormCount);
-		changed |= pitchControl->renderKnob(); ImGui::SameLine();
-		changed |= pulseWidthControl->renderKnob();
+
+		if (!pitchInput->isSourceConnected() || waveForm == OtOscillator::WaveForm::square) {
+			changed |= pitchControl->renderKnob(); ImGui::SameLine();
+			changed |= pulseWidthControl->renderKnob();
+		}
+
 		return changed;
 	}
 
@@ -56,7 +60,13 @@ public:
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return ImGui::GetFrameHeightWithSpacing() + OtUi::knobHeight();
+		float height = ImGui::GetFrameHeightWithSpacing();
+
+		if (!pitchInput->isSourceConnected() || waveForm == OtOscillator::WaveForm::square) {
+			height += OtUi::knobHeight();
+		}
+
+		return height;
 	}
 
 	// (de)serialize node
@@ -96,8 +106,8 @@ private:
 	float pulseWidth = 0.5f;
 
 	// work variables
-	OtCircuitPin pitchOutput;
-	OtCircuitPin pulseWidthOutput;
+	OtCircuitPin pitchInput;
+	OtCircuitPin pulseWidthInput;
 	OtCircuitPin audioOutput;
 
 	OtCircuitControl pitchControl;

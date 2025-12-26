@@ -7,7 +7,7 @@
 				{
 					"id": 2197641789,
 					"name": "Pitch",
-					"type": "control"
+					"type": "frequency"
 				},
 				{
 					"id": 2895604225,
@@ -26,7 +26,7 @@
 				{
 					"id": 3360538592,
 					"name": "Pitch",
-					"type": "control"
+					"type": "frequency"
 				},
 				{
 					"id": 4000249913,

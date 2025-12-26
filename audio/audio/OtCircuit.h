@@ -40,6 +40,7 @@ public:
 		output,
 		generator,
 		effect,
+		converter,
 		probe
 	};
 
@@ -48,6 +49,7 @@ public:
 		"Output",
 		"Generator",
 		"Effect",
+		"Converter",
 		"Probe"
 	};
 
@@ -63,15 +65,15 @@ public:
 	virtual void configure() = 0;
 
 	// add pins
-	inline OtCircuitPin addInputPin(const char* name, OtCircuitPinClass::Type pinType, bool attenuation=false) {
-		OtCircuitPin pin = std::make_shared<OtCircuitPinClass>(name, pinType, OtCircuitPinClass::Direction::input, attenuation);
+	inline OtCircuitPin addInputPin(const char* name, OtCircuitPinClass::Type pinType) {
+		OtCircuitPin pin = std::make_shared<OtCircuitPinClass>(name, pinType, OtCircuitPinClass::Direction::input);
 		pin->circuit = this;
 		inputPins.emplace_back(pin);
 		return pin;
 	}
 
-	inline OtCircuitPin addOutputPin(const char* name, OtCircuitPinClass::Type pinType, bool attenuation=false) {
-		OtCircuitPin pin = std::make_shared<OtCircuitPinClass>(name, pinType, OtCircuitPinClass::Direction::output, attenuation);
+	inline OtCircuitPin addOutputPin(const char* name, OtCircuitPinClass::Type pinType) {
+		OtCircuitPin pin = std::make_shared<OtCircuitPinClass>(name, pinType, OtCircuitPinClass::Direction::output);
 		pin->circuit = this;
 		outputPins.emplace_back(pin);
 		return pin;

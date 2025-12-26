@@ -94,9 +94,9 @@ public:
 				ImPlot::SetupAxisLimits(ImAxis_X1, freqBinSize, OtAudioSettings::sampleRate / 2.0, ImGuiCond_Always);
 				ImPlot::SetupAxisTicks(ImAxis_X1, ticks, tickCount, tickLabels);
 				ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoTickLabels);
-				ImPlot::SetupAxisLimits(ImAxis_Y1, 0.0, 0.8, ImGuiCond_Always);
-				ImPlot::PlotShaded("", magnitudes + 1, static_cast<int>(N / 2 - 1), 0.0, freqBinSize, freqBinSize);
-				ImPlot::PlotLine("", magnitudes + 1, static_cast<int>(N / 2 - 1), freqBinSize, freqBinSize);
+				ImPlot::SetupAxisLimits(ImAxis_Y1, 0.0, 0.9, ImGuiCond_Always);
+				ImPlot::PlotShaded("", magnitudes, static_cast<int>(N / 2), 0.0, freqBinSize, freqBinSize);
+				ImPlot::PlotLine("", magnitudes, static_cast<int>(N / 2), freqBinSize, freqBinSize);
 				ImPlot::EndPlot();
 			}
 

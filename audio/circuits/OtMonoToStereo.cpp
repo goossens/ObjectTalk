@@ -10,12 +10,9 @@
 //
 
 #include <cmath>
-#include <cstdint>
 
 #include "imgui.h"
 #include "nlohmann/json.hpp"
-
-#include "OtNumbers.h"
 
 #include "OtUi.h"
 
@@ -74,7 +71,7 @@ public:
 	void execute() override {
 		if (output->isDestinationConnected()) {
 			if (input->isSourceConnected()) {
-				auto angle = static_cast<float>((panLevel * std::numbers::pi / 4.0f) + std::numbers::pi / 4.0f);
+				auto angle = (panLevel * OtAudioSettings::pi / 4.0f) + OtAudioSettings::pi / 4.0f;
 				auto leftGain = std::cos(angle);
 				auto rightGain = std::sin(angle);
 
@@ -95,7 +92,7 @@ public:
 	};
 
 	static constexpr const char* circuitName = "Mono to Stereo";
-	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::effect;
+	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::converter;
 
 private:
 	// properties

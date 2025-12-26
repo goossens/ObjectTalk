@@ -22,8 +22,8 @@ public:
 	// configure node
 	inline void configure() override {
 		audioInput = addInputPin("Input", OtCircuitPinClass::Type::mono);
-		cvInput = addInputPin("CV", OtCircuitPinClass::Type::control, true);
-		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono, true);
+		cvInput = addInputPin("CV", OtCircuitPinClass::Type::control)->hasAttenuation();
+		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono)->hasAttenuation();
 	}
 
 	// process samples

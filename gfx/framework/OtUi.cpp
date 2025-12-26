@@ -959,6 +959,10 @@ bool OtUi::bezier(const char* label, float P[4]) {
 }
 
 
+//
+//	OtUi::knob
+//
+
 bool OtUi::knob(const char* label, float* value, float minValue, float maxValue, const char* format, bool logarithmic) {
 	static constexpr float pi = static_cast<float>(std::numbers::pi);
 
@@ -966,6 +970,16 @@ bool OtUi::knob(const char* label, float* value, float minValue, float maxValue,
 		label, value, minValue, maxValue, 0.0f,
 		format, ImGuiKnobVariant_WiperDot,
 		0.0f, logarithmic ? ImGuiKnobFlags_Logarithmic : 0, 10,
+		pi * 0.6f, pi * 2.4f);
+}
+
+bool OtUi::knob(const char* label, int* value, int minValue, int maxValue) {
+	static constexpr float pi = static_cast<float>(std::numbers::pi);
+
+	return ImGuiKnobs::KnobInt(
+		label, value, minValue, maxValue, 0.0f,
+		"%i", ImGuiKnobVariant_WiperDot,
+		0.0f, 0, 10,
 		pi * 0.6f, pi * 2.4f);
 }
 

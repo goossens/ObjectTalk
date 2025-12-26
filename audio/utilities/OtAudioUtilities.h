@@ -21,10 +21,16 @@
 
 class OtAudioUtilities {
 public:
-	inline static float detune(float pitch, float octaves, float semitones=0, float cents=0) {
-		double totalCents = (octaves * 1200.0) + (semitones * 100.0) + cents;
-		double result = std::pow(2.0, totalCents / 1200.0);
-		return static_cast<float>(result * pitch);
+	inline static float tune(float pitch, float octaves, float semitones=0.0f, float cents=0.0f) {
+		auto totalCents = (octaves * 1200.0) + (semitones * 100.0) + cents;
+		auto ratio = std::pow(2.0, totalCents / 1200.0);
+		return static_cast<float>(pitch * ratio);
+	}
+
+	inline static float tuneCV(float cv, float octaves, float semitones=0.0f, float cents=0.0f) {
+		auto totalCents = (octaves * 1200.0) + (semitones * 100.0) + cents;
+		auto offset = totalCents / 1200.0;
+		return cv + static_cast<float>(offset);
 	}
 
 	inline static float linearToDbv(float v) {

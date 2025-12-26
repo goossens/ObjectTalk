@@ -25,7 +25,7 @@
 
 class OtVirtualAnalogFilter {
 public:
-	// envelope state
+	// filter modes
 	enum class Mode {
 		off,
 		lowPass,
@@ -43,9 +43,9 @@ public:
 	static constexpr size_t modesCount = sizeof(modes) / sizeof(*modes);
 
 	// set properties
-	inline void set(Mode m, float cutoff, float resonance) {
+	inline void set(Mode m, float frequency, float resonance) {
 		mode = m;
-		gain = static_cast<float>(std::tan(std::numbers::pi * cutoff * OtAudioSettings::dt));
+		gain = std::tan(OtAudioSettings::pi * frequency * OtAudioSettings::dt);
 		damping = std::min(1.0f - resonance, 0.999f);
 		inverseDenominator = 1.0f / (1.0f + (2.0f * damping * gain) + gain * gain);
 	}

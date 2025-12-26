@@ -18,6 +18,8 @@
 
 #include "nlohmann/json_fwd.hpp"
 
+#include "OtAssert.h"
+
 #include "OtCircuitUtils.h"
 #include "OtCircuitUtils.h"
 #include "OtSignalBuffer.h"
@@ -43,6 +45,7 @@ public:
 	enum class Type {
 		mono,
 		stereo,
+		frequency,
 		control
 	};
 
@@ -54,11 +57,12 @@ public:
 	static constexpr const char* typeNames[] = {
 		"mono",
 		"stereo",
+		"frequency",
 		"control"
 	};
 
 	// constructor
-	inline OtCircuitPinClass(const char* n, Type t, Direction d, bool a=false) : name(n), type(t), direction(d), attenuationFlag(a) {
+	inline OtCircuitPinClass(const char* n, Type t, Direction d) : name(n), type(t), direction(d) {
 		id = OtCircuitGenerateID();
 
 		if (direction == Direction::output) {
@@ -71,11 +75,28 @@ public:
 					buffer = std::make_shared<OtSignalBuffer>(2);
 					break;
 
+				case Type::frequency:
+					buffer = std::make_shared<OtSignalBuffer>(1);
+					break;
+
 				case Type::control:
 					buffer = std::make_shared<OtSignalBuffer>(1);
 					break;
 			}
 		}
+	}
+
+	// set options
+	inline OtCircuitPin hasAttenuation(bool flag=true) {
+		OtAssert(type != Type::frequency);
+		attenuationFlag = flag;
+		return shared_from_this();
+	}
+
+	inline OtCircuitPin hasTuning(bool flag=true) {
+		OtAssert(type == Type::frequency);
+		tuningFlag = flag;
+		return shared_from_this();
 	}
 
 	// check status
@@ -93,12 +114,12 @@ public:
 	inline bool isDestinationConnected() { return destinationConnections != 0; }
 
 	// access incoming and outgoing samples
-	inline float getSample(size_t sample) { return sourcePin->buffer->get(0, sample) * attenuation; }
-	inline float getSample(size_t channel, size_t sample) { return sourcePin->buffer->get(channel, sample) * attenuation; }
+	float getSample(size_t channel, size_t sample);
+	inline float getSample(size_t sample) { return getSample(0, sample); }
 	inline float* getSamples() { return sourcePin->buffer->data(); }
 
-	inline void setSample(size_t sample, float value) { buffer->set(0, sample, value * attenuation); }
-	inline void setSample(size_t channel, size_t sample, float value) { buffer->set(channel, sample, value * attenuation); }
+	void setSample(size_t channel, size_t sample, float value);
+	inline void setSample(size_t sample, float value) { setSample(0, sample, value); }
 	inline void setSamples(float value) { buffer->clear(value); }
 
 	// (de)serialize
@@ -113,8 +134,12 @@ public:
 	const char* name;
 	Type type;
 	Direction direction;
-	bool attenuationFlag;
+	bool attenuationFlag = false;
 	float attenuation = 1.0f;
+	bool tuningFlag = false;
+	int tuningOctaves = 0;
+	int tuningSemitones = 0;
+	int tuningCents = 0;
 	OtCircuitClass* circuit;
 
 	std::shared_ptr<OtSignalBuffer> buffer;

@@ -45,25 +45,31 @@ static constexpr ImU32 circuitColors[] = {
 	IM_COL32(125, 45, 75, 255),		// input
 	IM_COL32(60, 30, 40, 255),		// output
 	IM_COL32(0, 70, 170, 255),		// generator
-	IM_COL32(55, 95, 130, 255),		// effect
+	IM_COL32(15, 125, 115, 255),	// effect
+	IM_COL32(80, 130, 170, 255),	// converter
 	IM_COL32(50, 50, 90, 255)		// probe
 	};
 
 static constexpr ImU32 pinColors[] = {
 	IM_COL32(180, 90, 0, 255),		// mono
 	IM_COL32(100, 160, 100, 255),	// stereo
+	IM_COL32(180, 180, 180, 255),	// frequency
 	IM_COL32(0, 100, 200, 255)		// control
 };
 
 static constexpr float gridSpacing = 64.0f;
 static constexpr float circuitRounding = 4.0f;
 
-static constexpr float pinRadius = 6.0f;
+static constexpr float fontSize = 14.0f;
+
+static constexpr float pinRadius = 5.0f;
 static constexpr float pinBox = pinRadius * 2.0f + 2.0f;
-static constexpr float topPadding = 2.0f;
-static constexpr float horizontalPadding = pinRadius + 4.0f;
+static constexpr float topPadding = 1.0f;
+static constexpr float horizontalPadding = pinRadius + 2.0f;
 
 static constexpr float wireThickness = 1.5f;
+
+static constexpr const char* tuningLabel = u8"\u21c5";
 
 
 //
@@ -78,7 +84,7 @@ void OtAudioWidget::render(OtAudio* s) {
 	hoveredPin = 0;
 	pinLocations.clear();
 
-	// determine visual limits of all audio
+	// determine visual limits of all audio circuits
 	float width = 0.0f;
 	float height = 0.0f;
 
@@ -98,6 +104,7 @@ void OtAudioWidget::render(OtAudio* s) {
 		ImGuiWindowFlags_HorizontalScrollbar |
 		ImGuiWindowFlags_NoNavInputs;
 
+	ImGui::PushFont(nullptr, fontSize);
 	ImGui::SetNextWindowContentSize(ImVec2(width, height));
 	ImGui::BeginChild("audio", ImVec2(), ImGuiChildFlags_None, flags);
 	pinOffset = ImGui::GetStyle().FramePadding.y + ImGui::GetFontBaked()->Ascent - pinRadius + 1.0f;
@@ -157,6 +164,7 @@ void OtAudioWidget::render(OtAudio* s) {
 	// we should be done rendering now
 	drawlist->ChannelsMerge();
 	ImGui::EndChild();
+	ImGui::PopFont();
 }
 
 
@@ -447,37 +455,84 @@ void OtAudioWidget::renderPin(ImDrawList* drawlist, OtCircuitPin pin, float x, f
 
 	ImGui::SetCursorScreenPos(savedPos);
 
-	// render label and optional attenuator
+	// render label and optional attenuator/tuning comtrols
 	ImGui::AlignTextToFramePadding();
 	auto spacerWidth = w - ImGui::CalcTextSize(pin->name).x - horizontalPadding * 2.0f;
 
 	if (pin->isInput()) {
 		ImGui::TextUnformatted(pin->name);
-
-		if (pin->attenuationFlag) {
-			ImGui::SameLine(0.0f, spacerWidth - OtUi::trimSliderWidth());
-			auto oldState = pin->circuit->captureState();
-
-			if (OtUi::trimSlider(&pin->attenuation)) {
-				pin->circuit->captureStateTransaction(oldState);
-			}
-		}
+		if (pin->attenuationFlag) { renderPinAttenuator(pin, spacerWidth); }
+		if (pin->tuningFlag) { renderPinTuning(pin, spacerWidth); }
 
 	} else {
-		if (pin->attenuationFlag) {
-			auto oldState = pin->circuit->captureState();
+		if (pin->attenuationFlag) { renderPinAttenuator(pin, spacerWidth); }
+		if (pin->tuningFlag) { renderPinTuning(pin, spacerWidth); }
+		if (!pin->attenuationFlag && !pin->tuningFlag) { OtUi::hSpacer(spacerWidth); }
+		ImGui::TextUnformatted(pin->name);
+	}
+}
 
-			if (OtUi::trimSlider(&pin->attenuation)) {
-				pin->circuit->captureStateTransaction(oldState);
-			}
 
-			ImGui::SameLine(0.0f, spacerWidth - OtUi::trimSliderWidth());
+//
+//	OtAudioWidget::renderPinAttenuator
+//
 
-		} else {
-			OtUi::hSpacer(spacerWidth);
+void OtAudioWidget::renderPinAttenuator(OtCircuitPin pin, float width) {
+	if (pin->isInput()) {
+		ImGui::SameLine(0.0f, width - OtUi::trimSliderWidth());
+	}
+
+	ImGui::PushID(pin.get());
+	auto oldState = pin->circuit->captureState();
+
+	if (OtUi::trimSlider(&pin->attenuation)) {
+		pin->circuit->captureStateTransaction(oldState);
+	}
+
+	if (!pin->isInput()) {
+		ImGui::SameLine(0.0f, width - OtUi::trimSliderWidth());
+	}
+
+	ImGui::PopID();
+}
+
+
+//
+//	OtAudioWidget::renderPinTuning
+//
+
+void OtAudioWidget::renderPinTuning(OtCircuitPin pin, float width) {
+	float labelWidth = ImGui::CalcTextSize(tuningLabel).x + ImGui::GetStyle().FramePadding.x * 2.0f;
+
+	if (pin->isInput()) {
+		ImGui::SameLine(0.0f, width - labelWidth);
+	}
+
+	ImGui::PushID(pin.get());
+
+	if (ImGui::SmallButton(tuningLabel)) {
+		ImGui::OpenPopup("tuningPopup");
+	}
+
+	if (ImGui::BeginPopup("tuningPopup")) {
+		auto oldState = pin->circuit->captureState();
+		bool changed = false;
+
+		changed |= OtUi::knob("Octaves", &pin->tuningOctaves, -4, +4); ImGui::SameLine();
+		changed |= OtUi::knob("Semitones", &pin->tuningSemitones, -12, +12); ImGui::SameLine();
+		changed |= OtUi::knob("Cents", &pin->tuningCents, -100, +100);
+
+		if (changed) {
+			pin->circuit->captureStateTransaction(oldState);
 		}
 
-		ImGui::TextUnformatted(pin->name);
+		ImGui::EndPopup();
+	}
+
+	ImGui::PopID();
+
+	if (!pin->isInput()) {
+		ImGui::SameLine(0.0f, width - labelWidth);
 	}
 }
 
@@ -529,7 +584,11 @@ void OtAudioWidget::calculateCircuitSize(OtCircuit circuit) {
 		auto pw = ImGui::CalcTextSize(pin->name).x;
 
 		if (pin->attenuationFlag) {
-			pw += OtUi::trimSliderWidth();
+			pw += OtUi::trimSliderWidth() + ImGui::GetStyle().ItemSpacing.x;
+
+		} else if (pin->tuningFlag) {
+			pw += ImGui::CalcTextSize(tuningLabel).x + ImGui::GetStyle().FramePadding.x * 2.0f + ImGui::GetStyle().ItemSpacing.x;
+
 		}
 
 		w = std::max(w, pw);

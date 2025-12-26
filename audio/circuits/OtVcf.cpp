@@ -27,8 +27,8 @@ public:
 	// configure node
 	inline void configure() override {
 		audioInput = addInputPin("Input", OtCircuitPinClass::Type::mono);
-		fmInput = addInputPin("F Mod", OtCircuitPinClass::Type::control, true);
-		qmInput = addInputPin("Q Mod", OtCircuitPinClass::Type::control, true);
+		fmInput = addInputPin("F Mod", OtCircuitPinClass::Type::control)->hasAttenuation();
+		qmInput = addInputPin("Q Mod", OtCircuitPinClass::Type::control)->hasAttenuation();
 		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
 
 		frequencyControl = addControl("Freq", nullptr, &pitch)
@@ -79,10 +79,10 @@ public:
 				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
 					filter.set(
 						mode,
-						(fmInput->isSourceConnected()) ? OtAudioUtilities::detune(pitch, fmInput->getSample(i)) : pitch,
+						(fmInput->isSourceConnected()) ? OtAudioUtilities::tune(pitch, fmInput->getSample(i)) : pitch,
 						(qmInput->isSourceConnected()) ? resonance * qmInput->getSample(i) : resonance);
 
-						audioOutput->setSample(i, filter.process(audioInput->getSample(i)));
+					audioOutput->setSample(i, filter.process(audioInput->getSample(i)));
 				}
 
 			} else {

@@ -23,7 +23,7 @@ class OtKeyboardInputCircuit : public OtCircuitClass {
 public:
 	// configure circuit
 	inline void configure() override {
-		pitchOutput = addOutputPin("Pitch", OtCircuitPinClass::Type::control);
+		pitchOutput = addOutputPin("Pitch", OtCircuitPinClass::Type::frequency);
 		gateOutput = addOutputPin("Gate", OtCircuitPinClass::Type::control);
 	}
 
@@ -83,8 +83,8 @@ public:
 
 	static constexpr const char* circuitName = "Keyboard Input";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::input;
-	static constexpr float width = 400.0f;
-	static constexpr float height = 60.0f;
+	static constexpr float width = 300.0f;
+	static constexpr float height = 40.0f;
 
 private:
 	// properties

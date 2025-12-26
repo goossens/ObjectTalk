@@ -20,6 +20,42 @@
 
 
 //
+//	OtCircuitPinClass::getSample
+//
+
+float OtCircuitPinClass::getSample(size_t channel, size_t sample) {
+	float value = sourcePin->buffer->get(channel, sample);
+
+	if (attenuationFlag) {
+		return value * attenuation;
+
+	} else if (tuningFlag) {
+		return OtAudioUtilities::tune(sample, tuningOctaves, tuningSemitones, tuningCents);
+
+	} else {
+		return value;
+	}
+}
+
+
+//
+//	OtCircuitPinClass::setSample
+//
+
+void OtCircuitPinClass::setSample(size_t channel, size_t sample, float value) {
+	if (attenuationFlag) {
+		buffer->set(channel, sample, value * attenuation);
+
+	} else if (tuningFlag) {
+		buffer->set(channel, sample, OtAudioUtilities::tuneCV(value, tuningOctaves, tuningSemitones, tuningCents));
+
+	} else {
+		buffer->set(channel, sample, value);
+	}
+}
+
+
+//
 //	OtCircuitPinClass::serialize
 //
 
@@ -31,6 +67,12 @@ nlohmann::json OtCircuitPinClass::serialize([[maybe_unused]] std::string* basedi
 
 	if (attenuationFlag) {
 		data["attenuation"] = attenuation;
+	}
+
+	if (tuningFlag) {
+		data["tuningOctaves"] = tuningOctaves;
+		data["tuningSemitones"] = tuningSemitones;
+		data["tuningCents"] = tuningCents;
 	}
 
 	return data;
@@ -48,5 +90,11 @@ void OtCircuitPinClass::deserialize(nlohmann::json data, bool restoreIDs, [[mayb
 
 	if (attenuationFlag) {
 		attenuation = data.value("attenuation", 1.0f);
+	}
+
+	if (tuningFlag) {
+		tuningOctaves = data.value("tuningOctaves", 0.0f);
+		tuningSemitones = data.value("tuningSemitones", 0.0f);
+		tuningCents = data.value("tuningCents", 0.0f);
 	}
 }

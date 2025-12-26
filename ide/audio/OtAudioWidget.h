@@ -49,6 +49,8 @@ private:
 	void renderCircuit(ImDrawList* drawlist, OtCircuit circuit);
 	void renderWire(ImDrawList* drawlist, const ImVec2& start, const ImVec2& end, ImU32 color);
 	void renderPin(ImDrawList* drawlist, OtCircuitPin pin, float x, float w);
+	void renderPinAttenuator(OtCircuitPin pin, float width);
+	void renderPinTuning(OtCircuitPin pin, float width);
 
 	// utility functions
 	void calculateCircuitSize(OtCircuit circuit);

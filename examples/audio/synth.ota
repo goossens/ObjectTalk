@@ -7,12 +7,7 @@
 				{
 					"id": 2197641789,
 					"name": "Pitch",
-					"type": "control"
-				},
-				{
-					"id": 116879968,
-					"name": "Velocity",
-					"type": "control"
+					"type": "frequency"
 				},
 				{
 					"id": 2895604225,
@@ -22,8 +17,56 @@
 			],
 			"title": "Keyboard Input",
 			"type": "Keyboard Input",
-			"x": 22.0,
-			"y": 325.0
+			"x": 12.0,
+			"y": 474.0
+		},
+		{
+			"id": 1112908790,
+			"inputs": [
+				{
+					"id": 2954467871,
+					"name": "Input",
+					"type": "frequency"
+				}
+			],
+			"outputs": [
+				{
+					"id": 3727072312,
+					"name": "Output 1",
+					"tuningCents": 0,
+					"tuningOctaves": 0,
+					"tuningSemitones": 0,
+					"type": "frequency"
+				},
+				{
+					"id": 1139661478,
+					"name": "Output 2",
+					"tuningCents": 0,
+					"tuningOctaves": 0,
+					"tuningSemitones": 4,
+					"type": "frequency"
+				},
+				{
+					"id": 3455565350,
+					"name": "Output 3",
+					"tuningCents": 0,
+					"tuningOctaves": 0,
+					"tuningSemitones": -5,
+					"type": "frequency"
+				},
+				{
+					"id": 3732857718,
+					"name": "Output 4",
+					"tuningCents": 0,
+					"tuningOctaves": 0,
+					"tuningSemitones": 0,
+					"type": "frequency"
+				}
+			],
+			"title": "Transposer",
+			"type": "Transposer",
+			"x": 373.0,
+			"y": 188.0
 		},
 		{
 			"id": 2557146591,
@@ -31,7 +74,7 @@
 				{
 					"id": 3360538592,
 					"name": "Pitch",
-					"type": "control"
+					"type": "frequency"
 				},
 				{
 					"id": 4000249913,
@@ -51,8 +94,214 @@
 			"title": "VCO",
 			"type": "VCO",
 			"waveForm": 3,
-			"x": 566.0,
-			"y": 13.0
+			"x": 523.0,
+			"y": 11.0
+		},
+		{
+			"attack": 0.25,
+			"decay": 2.0,
+			"hold": 0.010000000707805157,
+			"id": 3801042963,
+			"inputs": [
+				{
+					"id": 2235339939,
+					"name": "Trigger",
+					"type": "control"
+				}
+			],
+			"outputs": [
+				{
+					"id": 3111468910,
+					"name": "Output",
+					"type": "control"
+				}
+			],
+			"release": 0.8500000238418579,
+			"sustain": 0.699999988079071,
+			"title": "Envelope Generator",
+			"type": "Envelope Generator",
+			"x": 724.0,
+			"y": 334.0
+		},
+		{
+			"id": 3244187191,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 507672911,
+					"name": "Output",
+					"type": "control"
+				}
+			],
+			"pitch": 6.800000190734863,
+			"pulseWidth": 0.5,
+			"title": "LFO",
+			"type": "LFO",
+			"waveForm": 0,
+			"x": 1131.0,
+			"y": 290.0
+		},
+		{
+			"id": 405217887,
+			"inputs": [
+				{
+					"id": 1699425502,
+					"name": "Pitch",
+					"type": "frequency"
+				},
+				{
+					"id": 4175452013,
+					"name": "Pulse Width",
+					"type": "control"
+				}
+			],
+			"outputs": [
+				{
+					"id": 2594101418,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"pitch": 440.0,
+			"pulseWidth": 0.5,
+			"title": "VCO",
+			"type": "VCO",
+			"waveForm": 1,
+			"x": 523.0,
+			"y": 311.0
+		},
+		{
+			"id": 3678190291,
+			"inputs": [
+				{
+					"id": 1370379221,
+					"name": "Pitch",
+					"type": "frequency"
+				},
+				{
+					"id": 268018805,
+					"name": "Pulse Width",
+					"type": "control"
+				}
+			],
+			"outputs": [
+				{
+					"id": 2129771409,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"pitch": 440.0,
+			"pulseWidth": 0.5,
+			"title": "VCO",
+			"type": "VCO",
+			"waveForm": 3,
+			"x": 523.0,
+			"y": 163.0
+		},
+		{
+			"id": 1911635902,
+			"inputs": [
+				{
+					"attenuation": 1.0,
+					"id": 3397579288,
+					"name": "Input 1",
+					"type": "mono"
+				},
+				{
+					"attenuation": 1.0,
+					"id": 1792904494,
+					"name": "Input 2",
+					"type": "mono"
+				},
+				{
+					"attenuation": 1.0,
+					"id": 1310953057,
+					"name": "Input 3",
+					"type": "mono"
+				},
+				{
+					"attenuation": 1.0,
+					"id": 312387909,
+					"name": "Input 4",
+					"type": "mono"
+				}
+			],
+			"outputs": [
+				{
+					"id": 653216130,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"title": "4 Channel Mixer",
+			"type": "4 Channel Mixer",
+			"x": 724.0,
+			"y": 161.0
+		},
+		{
+			"id": 3569591617,
+			"inputs": [
+				{
+					"id": 1337454414,
+					"name": "Input",
+					"type": "mono"
+				},
+				{
+					"attenuation": 1.0,
+					"id": 2718563792,
+					"name": "CV",
+					"type": "control"
+				}
+			],
+			"outputs": [
+				{
+					"attenuation": 0.699999988079071,
+					"id": 470986240,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"title": "VCA",
+			"type": "VCA",
+			"x": 930.0,
+			"y": 161.0
+		},
+		{
+			"id": 4064142102,
+			"inputs": [
+				{
+					"id": 1254475580,
+					"name": "Input",
+					"type": "mono"
+				},
+				{
+					"attenuation": 0.12999999523162842,
+					"id": 1145682991,
+					"name": "F Mod",
+					"type": "control"
+				},
+				{
+					"attenuation": 1.0,
+					"id": 1051869345,
+					"name": "Q Mod",
+					"type": "control"
+				}
+			],
+			"mode": 3,
+			"outputs": [
+				{
+					"id": 1734700177,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"pitch": 506.0,
+			"resonance": 0.6800000071525574,
+			"title": "VCF",
+			"type": "VCF",
+			"x": 1131.0,
+			"y": 11.0
 		},
 		{
 			"id": 1460307938,
@@ -63,6 +312,7 @@
 					"type": "mono"
 				}
 			],
+			"leftDelayTime": 15.0,
 			"outputs": [
 				{
 					"id": 1492965834,
@@ -70,10 +320,12 @@
 					"type": "stereo"
 				}
 			],
+			"panLevel": 0.0,
+			"rightDelayTime": 0.0,
 			"title": "Mono to Stereo",
 			"type": "Mono to Stereo",
-			"x": 894.0,
-			"y": 4.0
+			"x": 1334.0,
+			"y": 103.0
 		},
 		{
 			"id": 278093283,
@@ -87,64 +339,8 @@
 			"outputs": [],
 			"title": "Speaker Out",
 			"type": "Speaker Out",
-			"x": 1057.0,
-			"y": 95.0
-		},
-		{
-			"id": 736233516,
-			"inputs": [
-				{
-					"id": 3989792102,
-					"name": "Input",
-					"type": "mono"
-				}
-			],
-			"outputs": [],
-			"title": "Oscilloscope",
-			"type": "Oscilloscope",
-			"x": 1195.0,
-			"y": 14.0
-		},
-		{
-			"id": 942025815,
-			"inputs": [
-				{
-					"id": 1847356709,
-					"name": "Input",
-					"type": "mono"
-				}
-			],
-			"outputs": [],
-			"title": "Spectrum Analyzer",
-			"type": "Spectrum Analyzer",
-			"x": 897.0,
-			"y": 229.0
-		},
-		{
-			"attack": 0.5,
-			"decay": 0.5,
-			"hold": 0.05000000074505806,
-			"id": 1118339375,
-			"inputs": [
-				{
-					"id": 193309315,
-					"name": "Trigger",
-					"type": "control"
-				}
-			],
-			"outputs": [
-				{
-					"id": 2200300477,
-					"name": "Output",
-					"type": "control"
-				}
-			],
-			"release": 0.8999999761581421,
-			"sustain": 0.6299999952316284,
-			"title": "Envelope Generator",
-			"type": "Envelope Generator",
-			"x": 485.0,
-			"y": 484.0
+			"x": 1441.0,
+			"y": 11.0
 		}
 	],
 	"metadata": {},
@@ -156,28 +352,68 @@
 		},
 		{
 			"from": 410275450,
-			"id": 3946171600,
-			"to": 3978828348
+			"id": 1272862781,
+			"to": 3397579288
 		},
 		{
-			"from": 410275450,
-			"id": 31414758,
-			"to": 3989792102
-		},
-		{
-			"from": 410275450,
-			"id": 510579969,
-			"to": 1847356709
+			"from": 2895604225,
+			"id": 3790351241,
+			"to": 2235339939
 		},
 		{
 			"from": 2197641789,
 			"id": 3314960292,
+			"to": 2954467871
+		},
+		{
+			"from": 3727072312,
+			"id": 3130288672,
 			"to": 3360538592
 		},
 		{
-			"from": 2895604225,
-			"id": 2597727915,
-			"to": 193309315
+			"from": 3455565350,
+			"id": 198392078,
+			"to": 1699425502
+		},
+		{
+			"from": 1139661478,
+			"id": 2355827045,
+			"to": 1370379221
+		},
+		{
+			"from": 2129771409,
+			"id": 2053731332,
+			"to": 1792904494
+		},
+		{
+			"from": 653216130,
+			"id": 150475562,
+			"to": 1337454414
+		},
+		{
+			"from": 470986240,
+			"id": 217853430,
+			"to": 1254475580
+		},
+		{
+			"from": 2594101418,
+			"id": 1453027308,
+			"to": 1310953057
+		},
+		{
+			"from": 507672911,
+			"id": 2124012413,
+			"to": 1145682991
+		},
+		{
+			"from": 3111468910,
+			"id": 1774508053,
+			"to": 2718563792
+		},
+		{
+			"from": 1734700177,
+			"id": 3221518928,
+			"to": 3978828348
 		}
 	]
 }

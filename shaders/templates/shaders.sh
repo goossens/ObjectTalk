@@ -11,7 +11,7 @@ cd "${SCRIPT_DIRECTORY}/.." || { echo "Failed to change directory"; exit 1; }
 
 cat templates/shaders.h >OtShaders.h
 
-for FILE in generated/*.cpp
+for FILE in $(ls generated/*.cpp | sort -f)
 do
 	SHADER=$(basename ${FILE} .cpp)
 	echo "extern const uint32_t ${SHADER}[];" >>OtShaders.h

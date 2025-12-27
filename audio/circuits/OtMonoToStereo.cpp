@@ -75,14 +75,11 @@ public:
 				auto leftGain = std::cos(angle);
 				auto rightGain = std::sin(angle);
 
-				auto leftDelayTimeInSamples = static_cast<size_t>(leftDelayTimeInMs * OtAudioSettings::sampleRate / 1000.0f);
-				auto rightDelayTimeInSamples = static_cast<size_t>(rightDelayTimeInMs * OtAudioSettings::sampleRate / 1000.0f);
-
 				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
 					auto value = input->getSample(i);
 
-					output->setSample(0, i, leftDelay.process(value, leftDelayTimeInSamples) * leftGain);
-					output->setSample(1, i, rightDelay.process(value, rightDelayTimeInSamples) * rightGain);
+					output->setSample(0, i, leftDelay.process(value, leftDelayTimeInMs) * leftGain);
+					output->setSample(1, i, rightDelay.process(value, rightDelayTimeInMs) * rightGain);
 				}
 
 			} else {
@@ -108,8 +105,8 @@ private:
 	OtCircuitControl leftDelayControl;
 	OtCircuitControl rightDelayControl;
 
-	OtDelay leftDelay{OtAudioSettings::sampleRate / 10}; // max delay is 100ms
-	OtDelay rightDelay{OtAudioSettings::sampleRate / 10};
+	OtDelay<float, OtAudioSettings::sampleRate / 10> leftDelay; // max delay is 100ms
+	OtDelay<float, OtAudioSettings::sampleRate / 10> rightDelay;
 };
 
 static OtCircuitFactoryRegister<OtMonoToStereo> registration;

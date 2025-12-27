@@ -45,7 +45,6 @@ public:
 	enum class Type {
 		mono,
 		stereo,
-		frequency,
 		control
 	};
 
@@ -57,7 +56,6 @@ public:
 	static constexpr const char* typeNames[] = {
 		"mono",
 		"stereo",
-		"frequency",
 		"control"
 	};
 
@@ -75,10 +73,6 @@ public:
 					buffer = std::make_shared<OtSignalBuffer>(2);
 					break;
 
-				case Type::frequency:
-					buffer = std::make_shared<OtSignalBuffer>(1);
-					break;
-
 				case Type::control:
 					buffer = std::make_shared<OtSignalBuffer>(1);
 					break;
@@ -88,13 +82,11 @@ public:
 
 	// set options
 	inline OtCircuitPin hasAttenuation(bool flag=true) {
-		OtAssert(type != Type::frequency);
 		attenuationFlag = flag;
 		return shared_from_this();
 	}
 
 	inline OtCircuitPin hasTuning(bool flag=true) {
-		OtAssert(type == Type::frequency);
 		tuningFlag = flag;
 		return shared_from_this();
 	}

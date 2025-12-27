@@ -7,7 +7,7 @@
 				{
 					"id": 2197641789,
 					"name": "Pitch",
-					"type": "frequency"
+					"type": "control"
 				},
 				{
 					"id": 2895604225,
@@ -26,7 +26,7 @@
 				{
 					"id": 3360538592,
 					"name": "Pitch",
-					"type": "frequency"
+					"type": "control"
 				},
 				{
 					"id": 4000249913,
@@ -122,6 +122,7 @@
 			"y": 49.0
 		},
 		{
+			"frequency": 1000.0,
 			"id": 4064142102,
 			"inputs": [
 				{
@@ -130,7 +131,7 @@
 					"type": "mono"
 				},
 				{
-					"attenuation": 0.12999999523162842,
+					"attenuation": 0.18000000715255737,
 					"id": 1145682991,
 					"name": "F Mod",
 					"type": "control"
@@ -150,7 +151,6 @@
 					"type": "mono"
 				}
 			],
-			"pitch": 506.0,
 			"resonance": 0.6800000071525574,
 			"title": "VCF",
 			"type": "VCF",

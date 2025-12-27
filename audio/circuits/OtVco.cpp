@@ -27,7 +27,7 @@ class OtVco : public OtCircuitClass {
 public:
 	// configure node
 	inline void configure() override {
-		pitchInput = addInputPin("Pitch", OtCircuitPinClass::Type::frequency);
+		pitchInput = addInputPin("Pitch", OtCircuitPinClass::Type::control);
 		pulseWidthInput = addInputPin("Pulse Width", OtCircuitPinClass::Type::control);
 		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
 
@@ -47,9 +47,22 @@ public:
 		ImGui::SetNextItemWidth(itemWidth);
 		bool changed = OtUi::selectorEnum("##waveForm", &waveForm, OtOscillator::waveForms, OtOscillator::waveFormCount);
 
-		if (!pitchInput->isSourceConnected() || waveForm == OtOscillator::WaveForm::square) {
-			changed |= pitchControl->renderKnob(); ImGui::SameLine();
-			changed |= pulseWidthControl->renderKnob();
+		if (!pitchInput->isSourceConnected() || (!pulseWidthInput->isSourceConnected() && (waveForm == OtOscillator::WaveForm::square))) {
+			if (!pitchInput->isSourceConnected()) {
+				changed |= pitchControl->renderKnob();
+			}
+
+			if (!pulseWidthInput->isSourceConnected() && waveForm == OtOscillator::WaveForm::square) {
+				if (!pitchInput->isSourceConnected()) {
+					ImGui::SameLine();
+				}
+
+				changed |= pulseWidthControl->renderKnob();
+			}
+		}
+
+		if (changed) {
+			needsSizing = true;
 		}
 
 		return changed;
@@ -62,7 +75,7 @@ public:
 	inline float getCustomRenderingHeight() override {
 		float height = ImGui::GetFrameHeightWithSpacing();
 
-		if (!pitchInput->isSourceConnected() || waveForm == OtOscillator::WaveForm::square) {
+		if (!pitchInput->isSourceConnected() || (!pulseWidthInput->isSourceConnected() && (waveForm == OtOscillator::WaveForm::square))) {
 			height += OtUi::knobHeight();
 		}
 

@@ -31,7 +31,7 @@ public:
 		qmInput = addInputPin("Q Mod", OtCircuitPinClass::Type::control)->hasAttenuation();
 		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
 
-		frequencyControl = addControl("Freq", nullptr, &pitch)
+		frequencyControl = addControl("Freq", nullptr, &frequency)
 			->setRange(80.0f, 8000.0f)
 			->setLabelFormat("%.0f")
 			->setIsFrequency()
@@ -62,13 +62,13 @@ public:
 	// (de)serialize node
 	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		(*data)["mode"] = mode;
-		(*data)["pitch"] = pitch;
+		(*data)["frequency"] = frequency;
 		(*data)["resonance"] = resonance;
 	}
 
 	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		mode = data->value("mode", OtVirtualAnalogFilter::Mode::off);
-		pitch = data->value("pitch", 1000.0f);
+		frequency = data->value("frequency", 1000.0f);
 		resonance = data->value("resonance", 0.5f);
 	}
 
@@ -79,7 +79,7 @@ public:
 				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
 					filter.set(
 						mode,
-						(fmInput->isSourceConnected()) ? OtAudioUtilities::tune(pitch, fmInput->getSample(i)) : pitch,
+						(fmInput->isSourceConnected()) ? OtAudioUtilities::tune(frequency, fmInput->getSample(i)) : frequency,
 						(qmInput->isSourceConnected()) ? resonance * qmInput->getSample(i) : resonance);
 
 					audioOutput->setSample(i, filter.process(audioInput->getSample(i)));
@@ -97,7 +97,7 @@ public:
 private:
 	// properties
 	OtVirtualAnalogFilter::Mode mode = OtVirtualAnalogFilter::Mode::off;
-	float pitch = 1000.0f;
+	float frequency = 1000.0f;
 	float resonance = 0.5f;
 
 	// work variables

@@ -7,7 +7,7 @@
 				{
 					"id": 2197641789,
 					"name": "Pitch",
-					"type": "frequency"
+					"type": "control"
 				},
 				{
 					"id": 2895604225,
@@ -26,7 +26,7 @@
 				{
 					"id": 2954467871,
 					"name": "Input",
-					"type": "frequency"
+					"type": "control"
 				}
 			],
 			"outputs": [
@@ -36,7 +36,7 @@
 					"tuningCents": 0,
 					"tuningOctaves": 0,
 					"tuningSemitones": 0,
-					"type": "frequency"
+					"type": "control"
 				},
 				{
 					"id": 1139661478,
@@ -44,7 +44,7 @@
 					"tuningCents": 0,
 					"tuningOctaves": 0,
 					"tuningSemitones": 4,
-					"type": "frequency"
+					"type": "control"
 				},
 				{
 					"id": 3455565350,
@@ -52,7 +52,7 @@
 					"tuningCents": 0,
 					"tuningOctaves": 0,
 					"tuningSemitones": -5,
-					"type": "frequency"
+					"type": "control"
 				},
 				{
 					"id": 3732857718,
@@ -60,7 +60,7 @@
 					"tuningCents": 0,
 					"tuningOctaves": 0,
 					"tuningSemitones": 0,
-					"type": "frequency"
+					"type": "control"
 				}
 			],
 			"title": "Transposer",
@@ -74,7 +74,7 @@
 				{
 					"id": 3360538592,
 					"name": "Pitch",
-					"type": "frequency"
+					"type": "control"
 				},
 				{
 					"id": 4000249913,
@@ -133,7 +133,7 @@
 					"type": "control"
 				}
 			],
-			"pitch": 6.800000190734863,
+			"pitch": 1.0,
 			"pulseWidth": 0.5,
 			"title": "LFO",
 			"type": "LFO",
@@ -147,7 +147,7 @@
 				{
 					"id": 1699425502,
 					"name": "Pitch",
-					"type": "frequency"
+					"type": "control"
 				},
 				{
 					"id": 4175452013,
@@ -176,7 +176,7 @@
 				{
 					"id": 1370379221,
 					"name": "Pitch",
-					"type": "frequency"
+					"type": "control"
 				},
 				{
 					"id": 268018805,
@@ -256,7 +256,7 @@
 			],
 			"outputs": [
 				{
-					"attenuation": 0.699999988079071,
+					"attenuation": 0.5,
 					"id": 470986240,
 					"name": "Output",
 					"type": "mono"
@@ -268,6 +268,7 @@
 			"y": 161.0
 		},
 		{
+			"frequency": 800.0,
 			"id": 4064142102,
 			"inputs": [
 				{
@@ -276,7 +277,7 @@
 					"type": "mono"
 				},
 				{
-					"attenuation": 0.12999999523162842,
+					"attenuation": 0.25,
 					"id": 1145682991,
 					"name": "F Mod",
 					"type": "control"
@@ -296,7 +297,6 @@
 					"type": "mono"
 				}
 			],
-			"pitch": 506.0,
 			"resonance": 0.6800000071525574,
 			"title": "VCF",
 			"type": "VCF",

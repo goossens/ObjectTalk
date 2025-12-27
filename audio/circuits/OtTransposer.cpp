@@ -21,11 +21,11 @@ class OtTransposer : public OtCircuitClass {
 public:
 	// configure node
 	inline void configure() override {
-		input = addInputPin("Input", OtCircuitPinClass::Type::frequency);
-		output1 = addOutputPin("Output 1", OtCircuitPinClass::Type::frequency)->hasTuning();
-		output2 = addOutputPin("Output 2", OtCircuitPinClass::Type::frequency)->hasTuning();
-		output3 = addOutputPin("Output 3", OtCircuitPinClass::Type::frequency)->hasTuning();
-		output4 = addOutputPin("Output 4", OtCircuitPinClass::Type::frequency)->hasTuning();
+		input = addInputPin("Input", OtCircuitPinClass::Type::control);
+		output1 = addOutputPin("Output 1", OtCircuitPinClass::Type::control)->hasTuning();
+		output2 = addOutputPin("Output 2", OtCircuitPinClass::Type::control)->hasTuning();
+		output3 = addOutputPin("Output 3", OtCircuitPinClass::Type::control)->hasTuning();
+		output4 = addOutputPin("Output 4", OtCircuitPinClass::Type::control)->hasTuning();
 	}
 
 	// process samples

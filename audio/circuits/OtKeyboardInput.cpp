@@ -23,7 +23,7 @@ class OtKeyboardInputCircuit : public OtCircuitClass {
 public:
 	// configure circuit
 	inline void configure() override {
-		pitchOutput = addOutputPin("Pitch", OtCircuitPinClass::Type::frequency);
+		pitchOutput = addOutputPin("Pitch", OtCircuitPinClass::Type::control);
 		gateOutput = addOutputPin("Gate", OtCircuitPinClass::Type::control);
 	}
 

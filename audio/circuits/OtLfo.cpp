@@ -45,8 +45,13 @@ public:
 		bool changed = false;
 		ImGui::SetNextItemWidth(itemWidth);
 		changed |= OtUi::selectorEnum("##waveForm", &waveForm, OtOscillator::waveForms, OtOscillator::waveFormCount);
-		changed |= frequencyControl->renderKnob(); ImGui::SameLine();
-		changed |= pulseWidthControl->renderKnob();
+		changed |= frequencyControl->renderKnob();
+
+		if (waveForm == OtOscillator::WaveForm::square) {
+			ImGui::SameLine();
+			changed |= pulseWidthControl->renderKnob();
+		}
+
 		return changed;
 	}
 

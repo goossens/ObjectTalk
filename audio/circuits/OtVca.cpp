@@ -40,7 +40,7 @@ public:
 				}
 
 			} else {
-				audioOutput->buffer->clear();
+				audioOutput->setSamples(0.0f);
 			}
 		}
 	};

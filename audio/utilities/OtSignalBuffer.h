@@ -64,7 +64,7 @@ public:
 	inline size_t getSampleCount() { return OtAudioSettings::bufferSize; }
 	inline float* data() { return buffer.data(); }
 
-	// interator support
+	// iterator support
 	inline std::vector<float>::iterator begin() { return buffer.begin(); }
 	inline std::vector<float>::iterator end() { return buffer.end(); }
 

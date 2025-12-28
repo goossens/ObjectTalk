@@ -44,7 +44,7 @@ public:
 	inline T* data() { return buffer; }
 	inline size_t size() { return N; }
 
-	// interator support
+	// iterator support
 	inline T* begin() { return buffer; }
 	inline T* end() { return buffer + N; }
 

@@ -114,6 +114,9 @@ public:
 	inline void setSample(size_t sample, float value) { setSample(0, sample, value); }
 	inline void setSamples(float value) { buffer->clear(value); }
 
+	inline OtSignalBuffer& getInputBuffer() { return *(sourcePin->buffer); }
+	inline OtSignalBuffer& getOutputBuffer() { return *buffer; }
+
 	// (de)serialize
 	nlohmann::json serialize(std::string* basedir=nullptr);
 	void deserialize(nlohmann::json data, bool restoreIDs=true, std::string* basedir=nullptr);

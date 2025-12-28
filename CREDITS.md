@@ -62,6 +62,7 @@ released under the [GNU General Public License, version 2](https://www.gnu.org/l
 ## Tools
 
 * [CMake](https://cmake.org) - cross-platform family of tools designed to build, test and package software released under the [OSI-approved BSD 3-clause License](https://gitlab.kitware.com/cmake/cmake/raw/master/Copyright.txt).
+* [Faust](https://faust.grame.fr) - functional programming language for sound synthesis and audio processing release under the [GNU Lesser General Public License Version 2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html).
 * [re2c](https://github.com/skvadrik/re2c) - a free and open-source lexer generator for C/C++, Go and Rust released under a public domain license.
 * [Gunther Rademacher](https://github.com/GuntherRademacher) - a ["RailRoad Diagram Generator"](https://github.com/GuntherRademacher/rr) which is used in the documentation to visualize the ObjectTalk grammar. The tool is released under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 

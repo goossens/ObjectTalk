@@ -22,6 +22,8 @@
 
 #include "nlohmann/json_fwd.hpp"
 
+#include "OtMeasure.h"
+
 #include "OtCircuit.h"
 #include "OtCircuitPin.h"
 #include "OtCircuitFactory.h"
@@ -132,6 +134,9 @@ public:
 	void restoreCircuits(const std::string& json);
 	std::vector<uint32_t> duplicateCircuits(const std::string& json);
 
+	// get average processing time (as a percentage of the threads time)
+	float getAverageProcessingTime() { return processingTime.average(); }
+
 private:
 	// properties
 	std::vector<OtCircuit> circuits;
@@ -150,6 +155,7 @@ private:
 	OtDsp dsp;
 	void provideSignal(OtSignalBuffer& buffer);
 	std::mutex mutex;
+	OtMeasureAvarage<float, 100> processingTime;
 
 	// (un)index a circuit and its pins
 	void indexCircuit(OtCircuit circuit);

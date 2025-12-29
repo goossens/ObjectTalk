@@ -104,16 +104,23 @@ protected:
 					step(s),
 					stepNames(sn) {
 
+				// set label to name if not specified
+				if (label.size() == 0) {
+					label = name;
+				}
+
+				// set default value
 				*v = def;
 
+				// determine formating base on step size
 				if (step <= 0.01f) {
 					format = "%.2f";
 
 				} else if (step <= 0.1f) {
-					format = "%.1";
+					format = "%.1f";
 
 				} else {
-					format = "%.0";
+					format = "%.0f";
 				}
 			}
 

@@ -23,7 +23,7 @@
 
 class OtAudioSettings {
 public:
-	static constexpr size_t bufferSize = 32;
+	static constexpr size_t bufferSize = 64;
 	static constexpr size_t sampleRate = 48000;
 	static constexpr float dt = 1.0f / static_cast<float>(sampleRate);
 	static constexpr float pi = static_cast<float>(std::numbers::pi);

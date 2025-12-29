@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <algorithm>
 #include <chrono>
 #include <string>
 #include <string_view>
@@ -90,4 +91,54 @@ private:
 	// properties
 	std::string name;
 	OtMeasureStopWatch timer;
+};
+
+
+//
+//	OtMeasureAvarage
+//
+
+template<typename T, size_t N>
+class OtMeasureAvarage{
+public:
+	// add measurement
+	inline OtMeasureAvarage& operator+=(T sample) {
+		total += sample;
+
+		if (full) {
+			total -= samples[pos];
+			samples[pos] = sample;
+			pos = (pos + 1) % N;
+
+		} else {
+			samples[pos++] = sample;
+
+			if (pos == N) {
+				pos = 0;
+				full = true;
+			}
+		}
+
+		return *this;
+	}
+
+	// get average
+	inline T average() {
+		if (full) {
+			return total / N;
+
+		} else if (pos == 0) {
+			return static_cast<T>(0);
+
+		} else {
+			return total / pos;
+		}
+	}
+
+private:
+	// properties
+	T samples[N];
+	T total{};
+	size_t pos{};
+	bool full = false;
 };

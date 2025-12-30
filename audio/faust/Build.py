@@ -8,6 +8,7 @@ import os, subprocess, sys
 
 units = [
 	["chorus", "OtChorus"],
+	["compressor", "OtCompressor"],
 	["flanger", "OtFlanger"],
 	["phaser", "OtPhaser"],
 	["reverb", "OtReverb"],

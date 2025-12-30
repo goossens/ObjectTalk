@@ -78,6 +78,9 @@ protected:
 			if (std::strcmp(key, "alias") == 0) {
 				aliasing = true;
 
+			} else if (std::strcmp(key, "format") == 0) {
+				format = value;
+
 			} else if (std::strcmp(key, "name") == 0) {
 				label = value;
 			}
@@ -89,6 +92,7 @@ protected:
 			Control(
 				const std::string& n,
 				const std::string& l,
+				const std::string& f,
 				float* v,
 				float d,
 				float mn,
@@ -97,6 +101,7 @@ protected:
 				const char** sn=nullptr) :
 					name(n),
 					label(l),
+					format(f),
 					variable(v),
 					def(d),
 					min(mn),
@@ -113,14 +118,16 @@ protected:
 				*v = def;
 
 				// determine formating base on step size
-				if (step <= 0.01f) {
-					format = "%.2f";
+				if (format.size() == 0) {
+					if (step <= 0.01f) {
+						format = "%.2f";
 
-				} else if (step <= 0.1f) {
-					format = "%.1f";
+					} else if (step <= 0.1f) {
+						format = "%.1f";
 
-				} else {
-					format = "%.0f";
+					} else {
+						format = "%.0f";
+					}
 				}
 			}
 
@@ -186,21 +193,22 @@ protected:
 
 			if (aliasing) {
 				if (index.find(name) == index.end()) {
-					auto group = std::make_shared<Control>(prefixedName, label, variable, def, min, max, step, stepNames);
+					auto group = std::make_shared<Control>(prefixedName, label, format, variable, def, min, max, step, stepNames);
 					controls.push_back(group);
 					index[name] = group;
 				}
 
-				index.find(name)->second->addControl(std::make_shared<Control>(prefixedName, label, variable, def, min, max, step, stepNames));
+				index.find(name)->second->addControl(std::make_shared<Control>(prefixedName, label, format, variable, def, min, max, step, stepNames));
 				aliasing = false;
 
 			} else {
-				auto control = std::make_shared<Control>(name, label, variable, def, min, max, step, stepNames);
+				auto control = std::make_shared<Control>(name, label, format, variable, def, min, max, step, stepNames);
 				controls.push_back(control);
 				index[prefixedName] = control;
 			}
 
 			label.clear();
+			format.clear();
 		}
 
 		// UI properties
@@ -210,6 +218,7 @@ protected:
 		std::vector<std::string> prefixStack;
 		std::string prefix;
 		bool aliasing = false;
+		std::string format;
 		std::string label;
 	};
 

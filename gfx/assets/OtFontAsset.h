@@ -29,6 +29,7 @@ public:
 	inline void clearFont() { font.clear(); state = State::missing; }
 
 	// asset properties
+	static constexpr bool hasEditor = false;
 	static constexpr bool canHandleVirtual = false;
 	static constexpr const char* supportedFileTypes = ".ttf";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }

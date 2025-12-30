@@ -11,8 +11,8 @@ declare license "MIT";
 
 import("stdfaust.lib");
 
-delay = hslider("Delay", 0.2, 0, 1, 0.01): si.smoo;
-depth = hslider("Depth", 0.5, 0, 3, 0.01): si.smoo;
-feedback = hslider("Feedback", 0, 0, 1, 0.01): si.smoo;
+delay = hslider("[0]Delay[format: %.1fms]", 0.2, 0, 10, 0.1): si.smoo;
+depth = hslider("[1]Depth[format: %.0f%%]", 50, 0, 100, 1): si.smoo;
+feedback = hslider("[2]Feedback[format: %.0f%%]", 60, 0, 100, 1): si.smoo;
 
-process = _ : pf.flanger_mono(4096, delay * 4096, depth, feedback, 0);
+process = _ : pf.flanger_mono(512, delay * 51.2, depth / 100.0, feedback / 100.0, 0);

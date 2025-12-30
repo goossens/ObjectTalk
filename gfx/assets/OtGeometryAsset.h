@@ -29,6 +29,7 @@ public:
 	inline void clearGeometry() { geometry.clear(); state = State::missing; }
 
 	// asset properties
+	static constexpr bool hasEditor = false;
 	static constexpr bool canHandleVirtual = true;
 	static constexpr const char* supportedFileTypes = ".blend,.fbx,.glb,.gltf,.obj";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }

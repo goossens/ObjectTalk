@@ -33,7 +33,7 @@ public:
 
 		pitchControl = addControl("Pitch", pitchInput, &pitch)
 			->setRange(80.0f, 8000.0f)
-			->setLabelFormat("%.0f")
+			->setLabelFormat("%.0fhz")
 			->setIsFrequency()
 			->setIsLogarithmic();
 

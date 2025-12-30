@@ -27,6 +27,7 @@ public:
 	inline void setText(const std::string& t) { text = t; }
 
 	// asset properties
+	static constexpr bool hasEditor = false;
 	static constexpr bool canHandleVirtual = false;
 	static constexpr const char* supportedFileTypes = ".txt";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }

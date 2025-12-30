@@ -27,6 +27,7 @@ public:
 	inline OtCubeMap& getCubeMap() { return cubemap; }
 
 	// asset properties
+	static constexpr bool hasEditor = false;
 	static constexpr bool canHandleVirtual = false;
 	static constexpr const char* supportedFileTypes = ".dds,.hdr,.json,.ktx";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }

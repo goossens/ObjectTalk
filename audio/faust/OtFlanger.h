@@ -32,7 +32,7 @@ private:
 	double fConst1;
 	double fRec1[2];
 	int IOTA0;
-	double fVec0[8192];
+	double fVec0[1024];
 	float fHslider1;
 	double fRec2[2];
 	double fRec0[2];
@@ -88,9 +88,9 @@ private:
 	}
 	
 	virtual void instanceResetUserInterface() {
-		fHslider0 = static_cast<float>(0.0);
+		fHslider0 = static_cast<float>(6e+01);
 		fHslider1 = static_cast<float>(0.2);
-		fHslider2 = static_cast<float>(0.5);
+		fHslider2 = static_cast<float>(5e+01);
 	}
 	
 	virtual void instanceClear() {
@@ -98,7 +98,7 @@ private:
 			fRec1[l0] = 0.0;
 		}
 		IOTA0 = 0;
-		for (int l1 = 0; l1 < 8192; l1 = l1 + 1) {
+		for (int l1 = 0; l1 < 1024; l1 = l1 + 1) {
 			fVec0[l1] = 0.0;
 		}
 		for (int l2 = 0; l2 < 2; l2 = l2 + 1) {
@@ -133,9 +133,15 @@ private:
 	
 	void buildUserInterface(UI* ui_interface) override {
 		ui_interface->openVerticalBox("Flanger");
-		ui_interface->addHorizontalSlider("Delay", &fHslider1, float(0.2), float(0.0), float(1.0), float(0.01));
-		ui_interface->addHorizontalSlider("Depth", &fHslider2, float(0.5), float(0.0), float(3.0), float(0.01));
-		ui_interface->addHorizontalSlider("Feedback", &fHslider0, float(0.0), float(0.0), float(1.0), float(0.01));
+		ui_interface->declare(&fHslider1, "0", "");
+		ui_interface->declare(&fHslider1, "format", "%.1fms");
+		ui_interface->addHorizontalSlider("Delay", &fHslider1, float(0.2), float(0.0), float(1e+01), float(0.1));
+		ui_interface->declare(&fHslider2, "1", "");
+		ui_interface->declare(&fHslider2, "format", "%.0f%%");
+		ui_interface->addHorizontalSlider("Depth", &fHslider2, float(5e+01), float(0.0), float(1e+02), float(1.0));
+		ui_interface->declare(&fHslider0, "2", "");
+		ui_interface->declare(&fHslider0, "format", "%.0f%%");
+		ui_interface->addHorizontalSlider("Feedback", &fHslider0, float(6e+01), float(0.0), float(1e+02), float(1.0));
 		ui_interface->closeBox();
 	}
 	
@@ -148,15 +154,15 @@ private:
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
 			double fTemp0 = static_cast<double>(input0[i0]);
 			fRec1[0] = fSlow0 + fConst1 * fRec1[1];
-			double fTemp1 = fRec1[0] * fRec0[1] - fTemp0;
-			fVec0[IOTA0 & 8191] = fTemp1;
+			double fTemp1 = 0.01 * fRec1[0] * fRec0[1] - fTemp0;
+			fVec0[IOTA0 & 1023] = fTemp1;
 			fRec2[0] = fSlow1 + fConst1 * fRec2[1];
-			double fTemp2 = 4096.0 * fRec2[0];
+			double fTemp2 = 51.2 * fRec2[0];
 			int iTemp3 = static_cast<int>(fTemp2);
 			double fTemp4 = std::floor(fTemp2);
-			fRec0[0] = fVec0[(IOTA0 - std::min<int>(4097, std::max<int>(0, iTemp3))) & 8191] * (fTemp4 + (1.0 - fTemp2)) + (fTemp2 - fTemp4) * fVec0[(IOTA0 - std::min<int>(4097, std::max<int>(0, iTemp3 + 1))) & 8191];
+			fRec0[0] = fVec0[(IOTA0 - std::min<int>(513, std::max<int>(0, iTemp3))) & 1023] * (fTemp4 + (1.0 - fTemp2)) + (fTemp2 - fTemp4) * fVec0[(IOTA0 - std::min<int>(513, std::max<int>(0, iTemp3 + 1))) & 1023];
 			fRec3[0] = fSlow2 + fConst1 * fRec3[1];
-			output0[i0] = static_cast<float>(0.5 * (fTemp0 + fRec0[0] * fRec3[0]));
+			output0[i0] = static_cast<float>(0.5 * (fTemp0 + 0.01 * fRec0[0] * fRec3[0]));
 			fRec1[1] = fRec1[0];
 			IOTA0 = IOTA0 + 1;
 			fRec2[1] = fRec2[0];

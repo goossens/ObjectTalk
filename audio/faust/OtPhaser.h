@@ -128,7 +128,7 @@ private:
 	}
 	
 	virtual void instanceResetUserInterface() {
-		fHslider0 = static_cast<float>(0.5);
+		fHslider0 = static_cast<float>(5e+01);
 		fHslider1 = static_cast<float>(0.0);
 		fHslider2 = static_cast<float>(1.0);
 	}
@@ -202,9 +202,14 @@ private:
 	
 	void buildUserInterface(UI* ui_interface) override {
 		ui_interface->openVerticalBox("Phaser");
-		ui_interface->addHorizontalSlider("Depth", &fHslider0, float(0.5), float(0.0), float(3.0), float(0.01));
-		ui_interface->addHorizontalSlider("Feedback", &fHslider1, float(0.0), float(0.0), float(1.0), float(0.01));
+		ui_interface->declare(&fHslider2, "0", "");
+		ui_interface->declare(&fHslider2, "format", "%.01fhz");
 		ui_interface->addHorizontalSlider("Speed", &fHslider2, float(1.0), float(0.001), float(2e+01), float(0.01));
+		ui_interface->declare(&fHslider0, "1", "");
+		ui_interface->declare(&fHslider0, "format", "%.0f%%");
+		ui_interface->addHorizontalSlider("Depth", &fHslider0, float(5e+01), float(0.0), float(1e+02), float(1.0));
+		ui_interface->declare(&fHslider1, "3", "");
+		ui_interface->addHorizontalSlider("Feedback", &fHslider1, float(0.0), float(-1.0), float(1.0), float(0.01));
 		ui_interface->closeBox();
 	}
 	

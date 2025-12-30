@@ -31,7 +31,7 @@ public:
 
 		frequencyControl = addControl("Freq", nullptr, &pitch)
 			->setRange(0.1f, 200.0f)
-			->setLabelFormat("%.1f")
+			->setLabelFormat("%.1fhz")
 			->setIsFrequency()
 			->setIsLogarithmic();
 

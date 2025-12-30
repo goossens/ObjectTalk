@@ -29,6 +29,7 @@ public:
 	inline void clearShape() { shape.clear(); state = State::missing; }
 
 	// asset properties
+	static constexpr bool hasEditor = false;
 	static constexpr bool canHandleVirtual = true;
 	static constexpr const char* supportedFileTypes = ".shape";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }

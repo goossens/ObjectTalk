@@ -33,7 +33,7 @@ public:
 
 		frequencyControl = addControl("Freq", nullptr, &frequency)
 			->setRange(80.0f, 8000.0f)
-			->setLabelFormat("%.0f")
+			->setLabelFormat("%.0fhz")
 			->setIsFrequency()
 			->setIsLogarithmic();
 

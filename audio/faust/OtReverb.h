@@ -474,9 +474,12 @@ private:
 	
 	void buildUserInterface(UI* ui_interface) override {
 		ui_interface->openVerticalBox("Spring Reverb");
-		ui_interface->addHorizontalSlider("Blend", &fHslider2, float(0.5), float(0.0), float(1.0), float(0.01));
+		ui_interface->declare(&fHslider0, "0", "");
 		ui_interface->addHorizontalSlider("Dwell", &fHslider0, float(0.2), float(0.0), float(1.0), float(0.01));
+		ui_interface->declare(&fHslider1, "1", "");
 		ui_interface->addHorizontalSlider("Tension", &fHslider1, float(0.0), float(0.0), float(1.0), float(0.01));
+		ui_interface->declare(&fHslider2, "2", "");
+		ui_interface->addHorizontalSlider("Blend", &fHslider2, float(0.5), float(0.0), float(1.0), float(0.01));
 		ui_interface->closeBox();
 	}
 	

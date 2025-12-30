@@ -31,11 +31,11 @@ public:
 		triggerInput = addInputPin("Trigger", OtCircuitPinClass::Type::control);
 		envelopeOutput = addOutputPin("Output", OtCircuitPinClass::Type::control);
 
-		attackControl = addControl("Attack", nullptr, &attack)->setRange(0.0f, 10.0f)->setLabelFormat("%.2f")->setIsLogarithmic();
-		holdControl = addControl("Hold", nullptr, &hold)->setRange(0.0f, 10.0f)->setLabelFormat("%.2f")->setIsLogarithmic();
-		decayControl = addControl("Decay", nullptr, &decay)->setRange(0.0f, 10.0f)->setLabelFormat("%.2f")->setIsLogarithmic();
+		attackControl = addControl("Attack", nullptr, &attack)->setRange(0.0f, 10.0f)->setLabelFormat("%.2fs")->setIsLogarithmic();
+		holdControl = addControl("Hold", nullptr, &hold)->setRange(0.0f, 10.0f)->setLabelFormat("%.2fs")->setIsLogarithmic();
+		decayControl = addControl("Decay", nullptr, &decay)->setRange(0.0f, 10.0f)->setLabelFormat("%.2fs")->setIsLogarithmic();
 		sustainControl = addControl("Sustain", nullptr, &sustain)->setRange(0.0f, 1.0f)->setLabelFormat("%.2f");
-		releaseControl = addControl("Release", nullptr, &release)->setRange(0.0f, 10.0f)->setLabelFormat("%.2f")->setIsLogarithmic();
+		releaseControl = addControl("Release", nullptr, &release)->setRange(0.0f, 10.0f)->setLabelFormat("%.2fs")->setIsLogarithmic();
 	}
 
 	// render custom fields

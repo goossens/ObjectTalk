@@ -29,6 +29,7 @@ public:
 	inline void clearImage() { image.clear(); state = State::missing; }
 
 	// asset properties
+	static constexpr bool hasEditor = false;
 	static constexpr bool canHandleVirtual = true;
 	static constexpr const char* supportedFileTypes = ".jpg,.jpeg,.png,.hdr,.exr";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }

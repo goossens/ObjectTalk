@@ -11,7 +11,8 @@ declare license "MIT";
 
 import("stdfaust.lib");
 
-depth = hslider("Depth", 0.5, 0, 3, 0.01): si.smoo;
-feedback = hslider("Feedback", 0, 0, 1, 0.01): si.smoo;
-speed = hslider("Speed", 1, 0.001, 20, 0.01): si.smoo;
+speed = hslider("[0]Speed[format: %.01fhz]", 1, 0.001, 20, 0.01): si.smoo;
+depth = hslider("[1]Depth[format: %.0f%%]", 50, 0, 100, 1): si.smoo;
+feedback = hslider("[3]Feedback", 0, -1, 1, 0.01): si.smoo;
+
 process = _ : pf.phaser2_mono(8, 0, 10000, 20, 1, 20000, speed, depth, feedback, 0);

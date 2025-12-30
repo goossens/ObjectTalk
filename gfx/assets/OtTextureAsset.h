@@ -30,6 +30,7 @@ public:
 	inline void setTextureReady() { state = State::ready; }
 
 	// asset properties
+	static constexpr bool hasEditor = false;
 	static constexpr bool canHandleVirtual = true;
 	static constexpr const char* supportedFileTypes = ".jpg,.jpeg,.png,.hdr,.exr";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }

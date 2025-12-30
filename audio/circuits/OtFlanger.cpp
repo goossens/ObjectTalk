@@ -9,9 +9,9 @@
 //	Include files
 //
 
-#include "OtFlanger.h"
 #include "OtCircuitFactory.h"
 #include "OtFaust.h"
+#include "OtFlanger.h"
 
 
 //

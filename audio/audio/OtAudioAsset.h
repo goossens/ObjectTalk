@@ -13,18 +13,40 @@
 //
 
 #include "OtAsset.h"
-#include "OtTextAsset.h"
+#include "OtAssetBase.h"
+
+#include "OtAudio.h"
 
 
 //
 //	OtAudioAsset
 //
 
-class OtAudioAsset : public OtTextAsset {
+class OtAudioAsset : public OtAssetBase {
 public:
+	// access the audio
+	inline OtAudio& getAudio() { return audio; }
+
 	// asset properties
 	static constexpr bool hasEditor = true;
 	static constexpr bool canHandleVirtual = false;
 	static constexpr const char* supportedFileTypes = ".ota";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
+
+protected:
+	// load the audio
+	OtAssetBase::State load() override {
+		try {
+			audio.load(path);
+			return State::ready;
+
+		} catch (const OtException& exception) {
+			errorMessage = exception.what();
+			return State::invalid;
+		}
+	}
+
+private:
+	// the actual audio
+	OtAudio audio;
 };

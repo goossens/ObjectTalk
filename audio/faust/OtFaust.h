@@ -24,7 +24,7 @@
 
 #include "OtAudioSettings.h"
 #include "OtCircuitFactory.h"
-#include "OtSignalBuffer.h"
+#include "OtAudioBuffer.h"
 
 
 //
@@ -392,16 +392,16 @@ private:
 	OtCircuitPin audioInput;
 	OtCircuitPin audioOutput;
 
-	OtSignalBuffer leftIn{1};
-	OtSignalBuffer rightIn{1};
-	OtSignalBuffer leftOut{1};
-	OtSignalBuffer rightOut{1};
+	OtAudioBuffer leftIn{1};
+	OtAudioBuffer rightIn{1};
+	OtAudioBuffer leftOut{1};
+	OtAudioBuffer rightOut{1};
 
 	// target Faust processor
 	T faustDsp;
 
 	// interleave two mono buffers into one stereo buffer
-	void interleave(OtSignalBuffer& stereo, OtSignalBuffer& left, OtSignalBuffer& right) {
+	void interleave(OtAudioBuffer& stereo, OtAudioBuffer& left, OtAudioBuffer& right) {
 		auto sp = stereo.data();
 		auto lp = left.data();
 		auto rp = right.data();
@@ -413,7 +413,7 @@ private:
 	}
 
 	// de-interleave a stereo buffer into two mono buffers
-	void deinterleave(OtSignalBuffer& stereo, OtSignalBuffer& left, OtSignalBuffer& right) {
+	void deinterleave(OtAudioBuffer& stereo, OtAudioBuffer& left, OtAudioBuffer& right) {
 		auto sp = stereo.data();
 		auto lp = left.data();
 		auto rp = right.data();

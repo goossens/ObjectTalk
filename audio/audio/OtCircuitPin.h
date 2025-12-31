@@ -22,7 +22,7 @@
 
 #include "OtCircuitUtils.h"
 #include "OtCircuitUtils.h"
-#include "OtSignalBuffer.h"
+#include "OtAudioBuffer.h"
 
 
 //
@@ -66,15 +66,15 @@ public:
 		if (direction == Direction::output) {
 			switch (type) {
 				case Type::mono:
-					buffer = std::make_shared<OtSignalBuffer>(1);
+					buffer = std::make_shared<OtAudioBuffer>(1);
 					break;
 
 				case Type::stereo:
-					buffer = std::make_shared<OtSignalBuffer>(2);
+					buffer = std::make_shared<OtAudioBuffer>(2);
 					break;
 
 				case Type::control:
-					buffer = std::make_shared<OtSignalBuffer>(1);
+					buffer = std::make_shared<OtAudioBuffer>(1);
 					break;
 			}
 		}
@@ -114,8 +114,8 @@ public:
 	inline void setSample(size_t sample, float value) { setSample(0, sample, value); }
 	inline void setSamples(float value) { buffer->clear(value); }
 
-	inline OtSignalBuffer& getInputBuffer() { return *(sourcePin->buffer); }
-	inline OtSignalBuffer& getOutputBuffer() { return *buffer; }
+	inline OtAudioBuffer& getInputBuffer() { return *(sourcePin->buffer); }
+	inline OtAudioBuffer& getOutputBuffer() { return *buffer; }
 
 	// (de)serialize
 	nlohmann::json serialize(std::string* basedir=nullptr);
@@ -137,7 +137,7 @@ public:
 	int tuningCents = 0;
 	OtCircuitClass* circuit;
 
-	std::shared_ptr<OtSignalBuffer> buffer;
+	std::shared_ptr<OtAudioBuffer> buffer;
 	OtCircuitPin sourcePin;
 	int destinationConnections = 0;
 };

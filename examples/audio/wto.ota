@@ -1,0 +1,212 @@
+{
+	"circuits": [
+		{
+			"id": 1315334498,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2197641789,
+					"name": "Pitch",
+					"type": "control"
+				},
+				{
+					"id": 2895604225,
+					"name": "Gate",
+					"type": "control"
+				}
+			],
+			"title": "Keyboard Input",
+			"type": "Keyboard Input",
+			"x": 40.0,
+			"y": 436.0
+		},
+		{
+			"attack": 0.5,
+			"decay": 0.5,
+			"hold": 0.010000000707805157,
+			"id": 3801042963,
+			"inputs": [
+				{
+					"id": 2235339939,
+					"name": "Trigger",
+					"type": "control"
+				}
+			],
+			"outputs": [
+				{
+					"id": 3111468910,
+					"name": "Output",
+					"type": "control"
+				}
+			],
+			"release": 1.0,
+			"sustain": 0.5,
+			"title": "Envelope Generator",
+			"type": "Envelope Generator",
+			"x": 461.0,
+			"y": 495.0
+		},
+		{
+			"id": 3227706108,
+			"inputs": [
+				{
+					"id": 4064466241,
+					"name": "Pitch",
+					"type": "control"
+				}
+			],
+			"outputs": [
+				{
+					"id": 1176296971,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"path": "assets/brass.wav",
+			"title": "Wave Table Oscillator",
+			"type": "Wave Table Oscillator",
+			"x": 523.0,
+			"y": 82.0
+		},
+		{
+			"id": 3569591617,
+			"inputs": [
+				{
+					"id": 1337454414,
+					"name": "Input",
+					"type": "mono"
+				},
+				{
+					"attenuation": 1.0,
+					"id": 2718563792,
+					"name": "CV",
+					"type": "control"
+				}
+			],
+			"outputs": [
+				{
+					"attenuation": 1.0,
+					"id": 470986240,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"title": "VCA",
+			"type": "VCA",
+			"x": 923.0,
+			"y": 577.0
+		},
+		{
+			"id": 1460307938,
+			"inputs": [
+				{
+					"id": 3978828348,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"leftDelayTime": 0.0,
+			"outputs": [
+				{
+					"id": 1492965834,
+					"name": "Output",
+					"type": "stereo"
+				}
+			],
+			"panLevel": 0.0,
+			"rightDelayTime": 0.0,
+			"title": "Mono to Stereo",
+			"type": "Mono to Stereo",
+			"x": 1125.0,
+			"y": 577.0
+		},
+		{
+			"id": 278093283,
+			"inputs": [
+				{
+					"id": 248961618,
+					"name": "Input",
+					"type": "stereo"
+				}
+			],
+			"outputs": [],
+			"title": "Speaker Out",
+			"type": "Speaker Out",
+			"x": 1393.0,
+			"y": 577.0
+		},
+		{
+			"id": 1203394735,
+			"inputs": [
+				{
+					"id": 2271235433,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"outputs": [],
+			"title": "Oscilloscope",
+			"type": "Oscilloscope",
+			"x": 923.0,
+			"y": 342.0
+		},
+		{
+			"id": 3944626751,
+			"inputs": [
+				{
+					"id": 4153666023,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"outputs": [],
+			"title": "Spectrum Analyzer",
+			"type": "Spectrum Analyzer",
+			"x": 923.0,
+			"y": 4.0
+		}
+	],
+	"metadata": {},
+	"wires": [
+		{
+			"from": 1492965834,
+			"id": 809450030,
+			"to": 248961618
+		},
+		{
+			"from": 470986240,
+			"id": 217853430,
+			"to": 3978828348
+		},
+		{
+			"from": 2895604225,
+			"id": 3790351241,
+			"to": 2235339939
+		},
+		{
+			"from": 3111468910,
+			"id": 516761903,
+			"to": 2718563792
+		},
+		{
+			"from": 2197641789,
+			"id": 1458450978,
+			"to": 4064466241
+		},
+		{
+			"from": 1176296971,
+			"id": 3904855937,
+			"to": 1337454414
+		},
+		{
+			"from": 1176296971,
+			"id": 2676912719,
+			"to": 2271235433
+		},
+		{
+			"from": 1176296971,
+			"id": 1772491306,
+			"to": 4153666023
+		}
+	]
+}

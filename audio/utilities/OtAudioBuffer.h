@@ -13,6 +13,7 @@
 //
 
 #include <algorithm>
+#include <vector>
 
 #include "OtAssert.h"
 
@@ -20,19 +21,37 @@
 
 
 //
-//	OtSignalBuffer
+//	OtAudioBuffer
 //
 
-class OtSignalBuffer {
+class OtAudioBuffer {
 public:
 	// constructor
-	inline OtSignalBuffer(size_t c) : channels(c) {
-		buffer.resize(channels * OtAudioSettings::bufferSize);
+	inline OtAudioBuffer(size_t c, size_t s=OtAudioSettings::bufferSize) : channels(c), samples(s) {
+		buffer.resize(channels * samples);
+	}
+
+	// resize the buffer
+	inline void resize(size_t c, size_t s=OtAudioSettings::bufferSize) {
+		channels = c;
+		samples = s;
+		buffer.resize(channels * samples);
 	}
 
 	// clear the buffer with specified value
 	inline void clear(float value=0.0f) {
-		std::fill(buffer.begin(), buffer.end(), value);
+		std::fill(begin(), end(), value);
+	}
+
+	// resize and load the buffer
+	inline void load(float* data, size_t newChannels, size_t newSamples) {
+		buffer.resize(newChannels * newSamples);
+		channels = newChannels;
+		samples = newSamples;
+
+		for (size_t i = 0; i < size(); i++) {
+			buffer[i] += data[i];
+		}
 	}
 
 	// access buffer members
@@ -49,26 +68,29 @@ public:
 		buffer[channels * sample + channel] += value;
 	}
 
-	inline void mix(const OtSignalBuffer* input) {
+	inline void mix(const OtAudioBuffer& input) {
 		// sanity check
-		OtAssert(buffer.size() == input->buffer.size());
+		OtAssert(channels == input.channels && samples == input.samples);
 
-		for (size_t i = 0; i < buffer.size(); i++) {
-			buffer[i] += input->buffer[i];
+		for (size_t i = 0; i < size(); i++) {
+			buffer[i] += input.buffer[i];
 		}
 	}
 
 	// get buffer information
 	inline size_t getChannelCount() { return channels; }
-	inline size_t getSampleCount() { return OtAudioSettings::bufferSize; }
+	inline size_t getSampleCount() { return samples; }
+
 	inline float* data() { return buffer.data(); }
+	inline size_t size() { return buffer.size(); }
 
 	// iterator support
-	inline std::vector<float>::iterator begin() { return buffer.begin(); }
-	inline std::vector<float>::iterator end() { return buffer.end(); }
+	inline float* begin() { return buffer.data(); }
+	inline float* end() { return buffer.data() + buffer.size(); }
 
 private:
 	// signal buffer (channels are interleaved)
 	size_t channels;
+	size_t samples;
 	std::vector<float> buffer;
 };

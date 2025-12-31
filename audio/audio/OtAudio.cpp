@@ -30,7 +30,7 @@
 
 OtAudio::OtAudio() {
 	// setup the signal processor
-	dsp.setSignalProvider([this](OtSignalBuffer& buffer) {
+	dsp.setSignalProvider([this](OtAudioBuffer& buffer) {
 		provideSignal(buffer);
 	});
 
@@ -42,7 +42,7 @@ OtAudio::OtAudio() {
 //	OtAudio::provideSignal
 //
 
-void OtAudio::provideSignal(OtSignalBuffer& buffer) {
+void OtAudio::provideSignal(OtAudioBuffer& buffer) {
 	// thread safety
 	std::lock_guard<std::mutex> guard(mutex);
 
@@ -70,7 +70,7 @@ void OtAudio::provideSignal(OtSignalBuffer& buffer) {
 						auto source = pin->getSource();
 
 						if (source->buffer) {
-							buffer.mix(source->buffer.get());
+							buffer.mix(*source->buffer);
 						}
 					}
 				});

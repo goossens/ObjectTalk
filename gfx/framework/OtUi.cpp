@@ -988,7 +988,7 @@ bool OtUi::knob(const char* label, int* value, int minValue, int maxValue) {
 //	OtUi::knobWidth
 //
 
-float OtUi::knobWidth(int columns) {
+float OtUi::knobWidth(size_t columns) {
 	return
 		ImGui::GetTextLineHeight() * 4.0f * columns +
 		ImGui::GetStyle().ItemSpacing.x * (columns - 1);
@@ -999,7 +999,7 @@ float OtUi::knobWidth(int columns) {
 //	OtUi::knobHeight
 //
 
-float OtUi::knobHeight(int rows) {
+float OtUi::knobHeight(size_t rows) {
 	// title height
 	auto height = ImGui::GetFrameHeightWithSpacing();
 

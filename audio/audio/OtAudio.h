@@ -153,7 +153,7 @@ private:
 
 	// signal processor to get the sound out
 	OtDsp dsp;
-	void provideSignal(OtSignalBuffer& buffer);
+	void provideSignal(OtAudioBuffer& buffer);
 	std::mutex mutex;
 	OtMeasureAvarage<float, 100> processingTime;
 

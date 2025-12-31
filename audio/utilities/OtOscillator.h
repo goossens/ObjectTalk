@@ -11,16 +11,6 @@
 
 
 //
-//	Include files
-//
-
-#include <algorithm>
-#include <vector>
-
-#include "OtAssert.h"
-
-
-//
 //	OtOscillator
 //
 
@@ -45,7 +35,7 @@ public:
 
 	// set oscillator properties
 	void setWaveForm(WaveForm wf) { waveForm = wf; }
-	void setPitch(float f) { pitch = static_cast<double>(f); }
+	void setPitch(float p) { pitch = static_cast<double>(p); }
 	void setPulseWidth(float pw);
 
 	// get the next sample

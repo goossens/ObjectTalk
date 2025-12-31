@@ -17,7 +17,7 @@
 #include "SDL3/SDL.h"
 #include "SDL3_mixer/SDL_mixer.h"
 
-#include "OtSignalBuffer.h"
+#include "OtAudioBuffer.h"
 
 
 //
@@ -39,15 +39,15 @@ public:
 	float getGain();
 
 	// set signal provider
-	inline void setSignalProvider(std::function<void(OtSignalBuffer&)> p) { provider = p; };
+	inline void setSignalProvider(std::function<void(OtAudioBuffer&)> p) { provider = p; };
 
 private:
 	// properties
 	SDL_AudioStream* stream = nullptr;
 	MIX_Track* track = nullptr;
-	OtSignalBuffer buffer{2};
+	OtAudioBuffer buffer{2};
 
-	std::function<void(OtSignalBuffer&)> provider = nullptr;
+	std::function<void(OtAudioBuffer&)> provider = nullptr;
 
 	// provide more data to the stream
 	void getStreamData(int additional, int total);

@@ -40,7 +40,7 @@ public:
 	inline T operator[](size_t i) const { return buffer[i]; }
 	inline T& operator[](size_t i) { return buffer[i]; }
 
-	// queue information
+	// buffer information
 	inline T* data() { return buffer; }
 	inline size_t size() { return N; }
 

@@ -16,7 +16,7 @@
 #include <ctime>
 
 #include "OtFunction.h"
-#include "OtNumbers.h"
+#include "OtRandom.h"
 
 #include "OtTron.h"
 
@@ -169,7 +169,7 @@ void OtTronClass::render() {
 		closing = true;
 
 	} else if (closing) {
-		// handle closing annimation
+		// handle closing animation
 		if (tronScale < 0.1f) {
 			tronScale = 0.1f;
 			opening = true;

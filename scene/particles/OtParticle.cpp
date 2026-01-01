@@ -15,6 +15,7 @@
 #include "ImGuiCurve.h"
 
 #include "OtNumbers.h"
+#include "OtRandom.h"
 
 #include "OtParticle.h"
 

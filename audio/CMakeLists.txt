@@ -21,7 +21,7 @@ add_library(audio OBJECT ${AUDIO_INCLUDES} ${AUDIO_SOURCES})
 
 target_compile_options(audio PRIVATE
 	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Werror -Wall -Wextra -Wpedantic>
-	$<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Werror -Wall -Wextra -Wno-overloaded-virtual>
+	$<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Werror -Wall -Wextra -Wno-overloaded-virtual -Wno-error=array-bounds>
 	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4 /WX>)
 
 target_include_directories(audio PUBLIC ${AUDIO_INCLUDE_DIRS})

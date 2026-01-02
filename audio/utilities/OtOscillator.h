@@ -11,6 +11,15 @@
 
 
 //
+//	Include files
+//
+
+#include <algorithm>
+
+#include "OtWaveTable.h"
+
+
+//
 //	OtOscillator
 //
 
@@ -21,33 +30,33 @@ public:
 		sine,
 		square,
 		triangle,
-		sawtooth
+		sawtooth,
+		wavetable
 	};
 
 	static constexpr const char* waveForms[] = {
 		"Sine",
 		"Square",
 		"Triangle",
-		"Saw Tooth"
+		"Saw Tooth",
+		"Wave Table"
 	};
 
 	static constexpr size_t waveFormCount = sizeof(waveForms) / sizeof(*waveForms);
 
-	// set oscillator properties
-	void setWaveForm(WaveForm wf) { waveForm = wf; }
-	void setPitch(float p) { pitch = static_cast<double>(p); }
-	void setPulseWidth(float pw);
+	// set shape table
+	inline void setWaveTable(OtWaveTable* wt) { wavetable = wt; }
 
 	// get the next sample
-	float get();
+	float get(WaveForm waveForm, float pitch, float pulseWidth, float shape);
 
 	// synchronize phase
-	void synchronize(float phase);
+	void synchronize(float phase=0.0f);
 
 private:
 	// properties
-	WaveForm waveForm = WaveForm::sine;
-	double pitch = 440.0;
-	double pulseWidth = 0.25;
-	double t = 0.0;
+	OtWaveTable* wavetable;
+
+	// work variables
+	float t = 0.0f;
 };

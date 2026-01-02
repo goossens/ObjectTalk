@@ -17,8 +17,8 @@
 			],
 			"title": "Keyboard Input",
 			"type": "Keyboard Input",
-			"x": 40.0,
-			"y": 436.0
+			"x": 24.0,
+			"y": 226.0
 		},
 		{
 			"attack": 0.5,
@@ -43,30 +43,70 @@
 			"sustain": 0.5,
 			"title": "Envelope Generator",
 			"type": "Envelope Generator",
-			"x": 461.0,
-			"y": 495.0
+			"x": 428.0,
+			"y": 537.0
 		},
 		{
-			"id": 3227706108,
+			"attack": 0.1599999964237213,
+			"decay": 0.010000000707805157,
+			"hold": 0.010000000707805157,
+			"id": 3471969746,
 			"inputs": [
 				{
-					"id": 4064466241,
-					"name": "Pitch",
+					"id": 1028260272,
+					"name": "Trigger",
 					"type": "control"
 				}
 			],
 			"outputs": [
 				{
-					"id": 1176296971,
+					"id": 2634441438,
+					"name": "Output",
+					"type": "control"
+				}
+			],
+			"release": 0.019999999552965164,
+			"sustain": 0.9900000095367432,
+			"title": "Envelope Generator",
+			"type": "Envelope Generator",
+			"x": 431.0,
+			"y": 243.0
+		},
+		{
+			"id": 3924541866,
+			"inputs": [
+				{
+					"id": 2102266532,
+					"name": "Pitch",
+					"type": "control"
+				},
+				{
+					"id": 3298700112,
+					"name": "Pulse Width",
+					"type": "control"
+				},
+				{
+					"id": 3819302355,
+					"name": "Shape",
+					"type": "control"
+				}
+			],
+			"outputs": [
+				{
+					"id": 3138308028,
 					"name": "Output",
 					"type": "mono"
 				}
 			],
-			"path": "assets/brass.wav",
-			"title": "Wave Table Oscillator",
-			"type": "Wave Table Oscillator",
-			"x": 523.0,
-			"y": 82.0
+			"pitch": 440.0,
+			"pulseWidth": 0.5,
+			"shape": 0.0,
+			"title": "VCO",
+			"type": "VCO",
+			"waveForm": 4,
+			"waveTable": "assets/brass.wav",
+			"x": 438.0,
+			"y": 7.0
 		},
 		{
 			"id": 3569591617,
@@ -163,7 +203,7 @@
 			"title": "Spectrum Analyzer",
 			"type": "Spectrum Analyzer",
 			"x": 923.0,
-			"y": 4.0
+			"y": 7.0
 		}
 	],
 	"metadata": {},
@@ -185,28 +225,38 @@
 		},
 		{
 			"from": 3111468910,
-			"id": 516761903,
+			"id": 747831206,
 			"to": 2718563792
 		},
 		{
 			"from": 2197641789,
-			"id": 1458450978,
-			"to": 4064466241
+			"id": 96423281,
+			"to": 2102266532
 		},
 		{
-			"from": 1176296971,
-			"id": 3904855937,
-			"to": 1337454414
-		},
-		{
-			"from": 1176296971,
-			"id": 2676912719,
+			"from": 3138308028,
+			"id": 330703933,
 			"to": 2271235433
 		},
 		{
-			"from": 1176296971,
-			"id": 1772491306,
+			"from": 3138308028,
+			"id": 2084352094,
 			"to": 4153666023
+		},
+		{
+			"from": 3138308028,
+			"id": 555657550,
+			"to": 1337454414
+		},
+		{
+			"from": 2634441438,
+			"id": 241497857,
+			"to": 3819302355
+		},
+		{
+			"from": 2895604225,
+			"id": 2028417175,
+			"to": 1028260272
 		}
 	]
 }

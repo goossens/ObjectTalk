@@ -12,10 +12,7 @@
 //	Include files
 //
 
-#include <algorithm>
 #include <cmath>
-
-#include "OtNumbers.h"
 
 #include "OtAudioSettings.h"
 #include "OtAudioUtilities.h"
@@ -23,38 +20,28 @@
 
 
 //
-//	OtOscillator::setPulseWidth
-//
-
-void OtOscillator::setPulseWidth(float pw) {
-	pulseWidth = std::clamp(static_cast<double>(pw), 0.05, 0.95);
-}
-
-
-//
 //	OtOscillator::get
 //
 
-float OtOscillator::get() {
-	double sampleLength = pitch * OtAudioSettings::dt;
-	double value;
+float OtOscillator::get(WaveForm waveForm, float pitch, float pulseWidth, float shape) {
+	auto dt = pitch * OtAudioSettings::dt;
+	float value;
 
 	switch (waveForm) {
 		case WaveForm::sine:
-			value = std::sin(std::numbers::pi2 * t);
+			value = std::sin(OtAudioSettings::pi2 * t);
 			break;
 
 		case WaveForm::square: {
-			// auto t2 = fraction(t + pulseWidth);
-			auto y = t < pulseWidth ? 1.0 : -1.0;
+			auto y = t < pulseWidth ? 1.0f : -1.0f;
 			value = y;
 			break;
 		}
 
 		case WaveForm::triangle: {
-			auto t1 = OtAudioUtilities::fraction<double>(t + 0.25);
-			auto t2 = OtAudioUtilities::fraction<double>(t + 0.75);
-			auto y = t * 4.0;
+			auto t1 = OtAudioUtilities::fraction<float>(t + 0.25f);
+			auto t2 = OtAudioUtilities::fraction<float>(t + 0.75f);
+			auto y = t * 4.0f;
 
 			if (y >= 3) {
 				y -= 4;
@@ -63,25 +50,41 @@ float OtOscillator::get() {
 				y = 2 - y;
 			}
 
-			value = y + 4 * sampleLength * (OtAudioUtilities::blamp<double>(t1, sampleLength) - OtAudioUtilities::blamp<double>(t2, sampleLength));
+			value = y + 4 * dt * (OtAudioUtilities::blamp<float>(t1, dt) - OtAudioUtilities::blamp<float>(t2, dt));
 			break;
 		}
 
 		case WaveForm::sawtooth: {
-			auto t1 = OtAudioUtilities::fraction<double>(t + 0.5);
-			double y = 2.0 * t1 - 1.0;
-			value = y - OtAudioUtilities::blep<double>(t1, sampleLength);
+			auto t1 = OtAudioUtilities::fraction<float>(t + 0.5f);
+			auto y = 2.0f * t1 - 1.0f;
+			value = y - OtAudioUtilities::blep<float>(t1, dt);
+			break;
+		}
+
+		case WaveForm::wavetable: {
+			if (wavetable && wavetable->isValid()) {
+				value = wavetable->get(t, shape);
+
+			} else {
+				value = 0.0f;
+			}
+
 			break;
 		}
 
 		default:
-			value = 0.0;
+			value = 0.0f;
+			break;
 	}
 
 	// update the oscillator phase
-	t += sampleLength;
-	t = OtAudioUtilities::fraction<double>(t);
-	return static_cast<float>(value);
+	t += dt;
+
+	if (t > 1.0f) {
+		t -= 1.0f;
+	}
+
+	return value;
 }
 
 
@@ -90,5 +93,5 @@ float OtOscillator::get() {
 //
 
 void OtOscillator::synchronize(float phase) {
-	t = OtAudioUtilities::fraction<double>(static_cast<double>(phase));
+	t = OtAudioUtilities::fraction<float>(phase);
 }

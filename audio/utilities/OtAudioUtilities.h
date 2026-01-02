@@ -37,7 +37,7 @@ public:
 	}
 
 	template<typename T>
-	inline static double blep(T t, T dt) {
+	inline static T blep(T t, T dt) {
 		// determine Band-Limited Step
 		// adapted from "Phaseshaping Oscillator Algorithms for Musical SoundSynthesis"
 		// by Jari Kleimola, Victor Lazzarini, Joseph Timoney, and Vesa Valimaki

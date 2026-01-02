@@ -12,16 +12,15 @@
 //	Include files
 //
 
+#include <cmath>
 #include <cstring>
 #include <fstream>
 #include <memory>
 #include <string>
 
 #include "OtLog.h"
-#include "OtNumbers.h"
 
 #include "OtAudioBuffer.h"
-#include "OtAudioUtilities.h"
 
 //
 //	OtWaveTable
@@ -38,7 +37,7 @@ public:
 		std::ifstream ifs(path, std::ios::in | std::ios::binary);
 
 		if (!ifs) {
-			OtLogError("Can't open WAV file [{}]", path);
+			OtLogError("Can'sample open WAV file [{}]", path);
 		}
 
 		// read header
@@ -84,16 +83,16 @@ public:
 				auto clm = readString(ifs, chunkSize);
 
 				if (clm.rfind("<!>2048", 0) == 0) {
-					loopSize = 2048;
+					samples = 2048;
 				}
 
 			} else if (chunkType == "uhWT") {
 				ifs.seekg(chunkSize, std::ios::cur);
-				loopSize = 2048;
+				samples = 2048;
 
 			} else if (chunkType == "data") {
-				auto samples = chunkSize / 4;
-				buffer = std::make_shared<OtAudioBuffer>(1, samples);
+				auto sampleCount = chunkSize / 4;
+				buffer = std::make_shared<OtAudioBuffer>(1, sampleCount);
 				readData(ifs, reinterpret_cast<char*>(buffer->data()), chunkSize);
 
 			} else {
@@ -109,58 +108,61 @@ public:
 			OtLogError("Invalid WAV file [{}]: no samples found", path);
 		}
 
-		// set loop parameters
-		if (loopSize == 0) {
-			loopSize = buffer->getSampleCount();
+		// set parameters
+		if (samples == 0) {
+			samples = buffer->getSampleCount();
 		}
 
-		loopCount = buffer->getSampleCount() / loopSize;
-		loopLimit = static_cast<float>(loopSize);
+		shapes = buffer->getSampleCount() / samples;
+		sampleLimit = static_cast<float>(samples) - 0.0001f;
+		shapeLimit = static_cast<float>(shapes) - 0.0001f;
 	}
 
 	// clear the wave table
 	inline void clear() {
 		buffer = nullptr;
-		loopSize = 0;
-		loopCount = 0;
-		loopLimit = 0.0f;
-
-		lastFrequency = -1.0f;
-		t = 0.0f;
-		dt = 0.0f;
+		samples = 0;
+		shapes = 0;
+		sampleLimit = 0.0f;
+		shapeLimit = 0.0f;
 	}
 
-	// get the next sample
-	inline float get(float frequency) {
-		if (isValid()) {
-			if (frequency != lastFrequency) {
-				lastFrequency = frequency;
-				dt = frequency * loopLimit * OtAudioSettings::dt;
-			}
+	// get sample at specified location
+	// (sample and shape are clamped between 0 and 1)
+	// (shape can be negative but is rectified before clamping)
+	inline float get(float sample, float shape) {
+		if (buffer) {
+			sample = std::clamp(sample * static_cast<float>(samples), 0.0f, sampleLimit);
+			shape = std::clamp(std::abs(shape) * static_cast<float>(shapes), 0.0f, shapeLimit);
 
-			auto result = getSample(t);
-			t += dt;
+			auto lowX = static_cast<size_t>(sample);
+			auto highX = (lowX == samples - 1) ? 0 : lowX + 1;
+			auto ratioX = sample - static_cast<float>(lowX);
 
-			if (t >= loopLimit) {
-				t -= loopLimit;
-			}
+			auto lowY = static_cast<size_t>(shape);
+			auto highY = (lowY == shapes - 1) ? 0 : lowY + 1;
+			auto ratioY = shape - static_cast<float>(lowY);
 
-			return result;
+			auto v1 = buffer->get(0, lowY * samples + lowX);
+			auto v2 = buffer->get(0, lowY * samples + highX);
+			auto v3 = buffer->get(0, highY * samples + lowX);
+			auto v4 = buffer->get(0, highY * samples + highX);
+
+			auto x1 = std::lerp(v1, v2, ratioX);
+			auto x2 = std::lerp(v3, v4, ratioX);
+			return std::lerp(x1, x2, ratioY);
 
 		} else {
 			return 0.0f;
 		}
 	}
 
-	// synchronize phase
-	inline void synchronize(float phase) {
-		t = OtAudioUtilities::fraction<float>(phase) * loopLimit;
-	}
-
 	// get wave table information
 	inline bool isValid() { return buffer != nullptr; }
-	inline size_t size() { return buffer->size(); }
+	inline size_t getSampleCount() { return samples; }
+	inline size_t getShapeCount() { return shapes; }
 	inline float* data() { return buffer->data(); }
+	inline size_t size() { return buffer->size(); }
 
 	// see if wave tables are identical
 	inline bool operator==(OtWaveTable& rhs) {
@@ -176,67 +178,48 @@ private:
 	std::shared_ptr<OtAudioBuffer> buffer;
 
 	// work variables
-	size_t loopSize = 0;
-	size_t loopCount = 0;
-	float loopLimit = 0.0f;
-
-	float lastFrequency = -1.0f;
-	float t = 0.0f;
-	float dt = 0.0f;
-
-	// get sample at specified index
-	inline float getSample(float index) {
-		auto low = static_cast<size_t>(index);
-		auto high = (low == buffer->size() - 1) ? 0 : low + 1;
-		auto ratio = index - static_cast<float>(low);
-
-		float result = 0.0f;
-
-		for (size_t i = 0; i < 4; i++) {
-			result += std::lerp(buffer->get(0, low + i * loopSize), buffer->get(0, high + i * loopSize), ratio);
-		}
-
-		return result;
-		// return std::lerp(buffer->get(0, low), buffer->get(0, high), ratio);
-	}
+	size_t samples = 0;
+	size_t shapes = 0;
+	float sampleLimit = 0.0f;
+	float shapeLimit = 0.0f;
 
 	// read a fixed length character stream and convert to std::string
 	inline std::string readString(std::ifstream& ifs, size_t size) {
-		std::string buffer(size, 0);
-		readData(ifs, buffer.data(), size);
-		return buffer;
+		std::string data(size, 0);
+		readData(ifs, data.data(), size);
+		return data;
 	}
 
 	// read 4 byte little endian number and convert to size_t
 	inline size_t readInt4(std::ifstream& ifs) {
-		std::byte buffer[4];
-		readData(ifs, reinterpret_cast<char*>(buffer), 4);
+		std::byte data[4];
+		readData(ifs, reinterpret_cast<char*>(data), 4);
 
 		return
-			(static_cast<size_t>(buffer[3]) << 24) |
-			(static_cast<size_t>(buffer[2]) << 16) |
-			(static_cast<size_t>(buffer[1]) << 8) |
-			 static_cast<size_t>(buffer[0]);
+			(static_cast<size_t>(data[3]) << 24) |
+			(static_cast<size_t>(data[2]) << 16) |
+			(static_cast<size_t>(data[1]) << 8) |
+			 static_cast<size_t>(data[0]);
 	}
 
 	// read 2 byte little endian number and convert to size_t
 	inline size_t readInt2(std::ifstream& ifs) {
-		std::byte buffer[2];
-		readData(ifs, reinterpret_cast<char*>(buffer), 2);
-		return (static_cast<size_t>(buffer[1]) << 8) | static_cast<size_t>(buffer[0]);
+		std::byte data[2];
+		readData(ifs, reinterpret_cast<char*>(data), 2);
+		return (static_cast<size_t>(data[1]) << 8) | static_cast<size_t>(data[0]);
 	}
 
 	// read a number of bytes and store in provided buffer
-	inline void readData(std::ifstream& ifs, char* buffer, size_t size) {
-		ifs.read(buffer, size);
+	inline void readData(std::ifstream& ifs, char* data, size_t size) {
+		ifs.read(data, size);
 
 		if (ifs.eof()) {
 			OtLogError("Corrupt WAV file");
 		}
 	}
 
-	inline bool tryToReadData(std::ifstream& ifs, char* buffer, size_t size) {
-		ifs.read(buffer, size);
+	inline bool tryToReadData(std::ifstream& ifs, char* data, size_t size) {
+		ifs.read(data, size);
 		return !ifs.eof();
 	}
 };

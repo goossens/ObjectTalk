@@ -30,7 +30,7 @@ float OtCircuitPinClass::getSample(size_t channel, size_t sample) {
 		return value * attenuation;
 
 	} else if (tuningFlag) {
-		return OtAudioUtilities::tune(sample, tuningOctaves, tuningSemitones, tuningCents);
+		return OtAudioUtilities::tune(value, tuningOctaves, tuningSemitones, tuningCents);
 
 	} else {
 		return value;

@@ -58,9 +58,9 @@ protected:
 	class UI {
 	public:
 		// UI methods
-		void openTabBox(const char* label) { pushName(label); }
-		void openHorizontalBox(const char* label) { pushName(label); }
-		void openVerticalBox(const char* label) { pushName(label); }
+		void openTabBox(const char* boxLabel) { pushName(boxLabel); }
+		void openHorizontalBox(const char* boxLabel) { pushName(boxLabel); }
+		void openVerticalBox(const char* boxLabel) { pushName(boxLabel); }
 		void closeBox() { popName(); }
 
 		void addButton(const char* name, float* value) { addControl(name, value, *value, 0.0f, 1.0f); }
@@ -177,8 +177,8 @@ protected:
 		}
 
 		// add a new prefix label
-		void pushName(const char* label) {
-			prefixStack.push_back(label);
+		void pushName(const char* boxLabel) {
+			prefixStack.push_back(boxLabel);
 			updatePrefix();
 		}
 

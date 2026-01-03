@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2026 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -139,18 +139,18 @@ private:
 	double fRec0[2];
 	float fHslider2;
 	double fRec19[2];
-	
+
  public:
 	OtReverb() {
 	}
-	
+
 	OtReverb(const OtReverb&) = default;
-	
+
 	virtual ~OtReverb() = default;
-	
+
 	OtReverb& operator=(const OtReverb&) = default;
-	
-	void metadata(Meta* m) override { 
+
+	void metadata(Meta* m) override {
 		m->declare("aanl.lib/ADAA1:author", "Dario Sanfilippo");
 		m->declare("aanl.lib/ADAA1:copyright", "Copyright (C) 2021 Dario Sanfilippo     <sanfilippo.dario@gmail.com>");
 		m->declare("aanl.lib/ADAA1:license", "MIT License");
@@ -207,10 +207,10 @@ private:
 	int getNumOutputs() override {
 		return 1;
 	}
-	
+
 	static void classInit([[maybe_unused]] int sample_rate) {
 	}
-	
+
 	virtual void instanceConstants([[maybe_unused]] int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
@@ -256,13 +256,13 @@ private:
 		iConst40 = static_cast<int>(std::min<double>(std::round(0.026250000000000002 * fConst0), fConst10));
 		iConst41 = static_cast<int>(std::min<double>(std::round(0.029124999999999998 * fConst0), fConst10));
 	}
-	
+
 	virtual void instanceResetUserInterface() {
 		fHslider0 = static_cast<float>(0.2);
 		fHslider1 = static_cast<float>(0.0);
 		fHslider2 = static_cast<float>(0.5);
 	}
-	
+
 	virtual void instanceClear() {
 		IOTA0 = 0;
 		for (int l0 = 0; l0 < 8192; l0 = l0 + 1) {
@@ -452,26 +452,26 @@ private:
 			fRec19[l61] = 0.0;
 		}
 	}
-	
+
 	void init([[maybe_unused]] int sample_rate) override {
 		classInit(sample_rate);
 		instanceInit(sample_rate);
 	}
-	
+
 	virtual void instanceInit([[maybe_unused]] int sample_rate) {
 		instanceConstants(sample_rate);
 		instanceResetUserInterface();
 		instanceClear();
 	}
-	
+
 	virtual OtReverb* clone() {
 		return new OtReverb(*this);
 	}
-	
+
 	int getSampleRate() override {
 		return fSampleRate;
 	}
-	
+
 	void buildUserInterface(UI* ui_interface) override {
 		ui_interface->openVerticalBox("Spring Reverb");
 		ui_interface->declare(&fHslider0, "0", "");
@@ -482,7 +482,7 @@ private:
 		ui_interface->addHorizontalSlider("Blend", &fHslider2, float(0.5), float(0.0), float(1.0), float(0.01));
 		ui_interface->closeBox();
 	}
-	
+
 	void compute(int count, float** inputs, float** outputs) override {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];

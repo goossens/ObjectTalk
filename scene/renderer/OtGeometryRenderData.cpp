@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2026 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -101,7 +101,7 @@ void OtGeometryRenderData::analyzeCamera(size_t type, OtCamera& camera) {
 			// update list of visible instances (if required)
 			if (updated) {
 				view.visible = instances->getVisible(camera, worldAabb, view.visibleInstances);
-				
+
 				if (view.visible) {
 					view.idb.set(view.visibleInstances.data(), view.visibleInstances.size(), OtVertexMatrix::getDescription());
 				}

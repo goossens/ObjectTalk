@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2026 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -57,18 +57,18 @@ private:
 	double fRec3[3];
 	double fRec2[3];
 	double fRec1[2];
-	
+
  public:
 	OtPhaser() {
 	}
-	
+
 	OtPhaser(const OtPhaser&) = default;
-	
+
 	virtual ~OtPhaser() = default;
-	
+
 	OtPhaser& operator=(const OtPhaser&) = default;
-	
-	void metadata(Meta* m) override { 
+
+	void metadata(Meta* m) override {
 		m->declare("category", "Modulation");
 		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtPhaser -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
 		m->declare("filename", "phaser.dsp");
@@ -111,10 +111,10 @@ private:
 	int getNumOutputs() override {
 		return 1;
 	}
-	
+
 	static void classInit([[maybe_unused]] int sample_rate) {
 	}
-	
+
 	virtual void instanceConstants([[maybe_unused]] int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
@@ -126,13 +126,13 @@ private:
 		fConst6 = 6.283185307179586 / fConst0;
 		fConst7 = OtPhaser_faustpower2_f(fConst3);
 	}
-	
+
 	virtual void instanceResetUserInterface() {
 		fHslider0 = static_cast<float>(5e+01);
 		fHslider1 = static_cast<float>(0.0);
 		fHslider2 = static_cast<float>(1.0);
 	}
-	
+
 	virtual void instanceClear() {
 		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
 			iVec0[l0] = 0;
@@ -180,26 +180,26 @@ private:
 			fRec1[l14] = 0.0;
 		}
 	}
-	
+
 	void init([[maybe_unused]] int sample_rate) override {
 		classInit(sample_rate);
 		instanceInit(sample_rate);
 	}
-	
+
 	virtual void instanceInit([[maybe_unused]] int sample_rate) {
 		instanceConstants(sample_rate);
 		instanceResetUserInterface();
 		instanceClear();
 	}
-	
+
 	virtual OtPhaser* clone() {
 		return new OtPhaser(*this);
 	}
-	
+
 	int getSampleRate() override {
 		return fSampleRate;
 	}
-	
+
 	void buildUserInterface(UI* ui_interface) override {
 		ui_interface->openVerticalBox("Phaser");
 		ui_interface->declare(&fHslider2, "0", "");
@@ -212,7 +212,7 @@ private:
 		ui_interface->addHorizontalSlider("Feedback", &fHslider1, float(0.0), float(-1.0), float(1.0), float(0.01));
 		ui_interface->closeBox();
 	}
-	
+
 	void compute(int count, float** inputs, float** outputs) override {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];

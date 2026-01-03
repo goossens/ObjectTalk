@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2026 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -38,18 +38,18 @@ private:
 	double fRec0[2];
 	float fHslider2;
 	double fRec3[2];
-	
+
  public:
 	OtFlanger() {
 	}
-	
+
 	OtFlanger(const OtFlanger&) = default;
-	
+
 	virtual ~OtFlanger() = default;
-	
+
 	OtFlanger& operator=(const OtFlanger&) = default;
-	
-	void metadata(Meta* m) override { 
+
+	void metadata(Meta* m) override {
 		m->declare("category", "Modulation");
 		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtFlanger -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
 		m->declare("delays.lib/name", "Faust Delay Library");
@@ -77,22 +77,22 @@ private:
 	int getNumOutputs() override {
 		return 1;
 	}
-	
+
 	static void classInit([[maybe_unused]] int sample_rate) {
 	}
-	
+
 	virtual void instanceConstants([[maybe_unused]] int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = 44.1 / std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
 		fConst1 = 1.0 - fConst0;
 	}
-	
+
 	virtual void instanceResetUserInterface() {
 		fHslider0 = static_cast<float>(6e+01);
 		fHslider1 = static_cast<float>(0.2);
 		fHslider2 = static_cast<float>(5e+01);
 	}
-	
+
 	virtual void instanceClear() {
 		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
 			fRec1[l0] = 0.0;
@@ -111,26 +111,26 @@ private:
 			fRec3[l4] = 0.0;
 		}
 	}
-	
+
 	void init([[maybe_unused]] int sample_rate) override {
 		classInit(sample_rate);
 		instanceInit(sample_rate);
 	}
-	
+
 	virtual void instanceInit([[maybe_unused]] int sample_rate) {
 		instanceConstants(sample_rate);
 		instanceResetUserInterface();
 		instanceClear();
 	}
-	
+
 	virtual OtFlanger* clone() {
 		return new OtFlanger(*this);
 	}
-	
+
 	int getSampleRate() override {
 		return fSampleRate;
 	}
-	
+
 	void buildUserInterface(UI* ui_interface) override {
 		ui_interface->openVerticalBox("Flanger");
 		ui_interface->declare(&fHslider1, "0", "");
@@ -144,7 +144,7 @@ private:
 		ui_interface->addHorizontalSlider("Feedback", &fHslider0, float(6e+01), float(0.0), float(1e+02), float(1.0));
 		ui_interface->closeBox();
 	}
-	
+
 	void compute(int count, float** inputs, float** outputs) override {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];

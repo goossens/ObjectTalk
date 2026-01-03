@@ -1,5 +1,5 @@
 //	ObjectTalk Scripting Language
-//	Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+//	Copyright (c) 1993-2026 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
@@ -41,18 +41,18 @@ private:
 	float fHslider3;
 	double fRec5[2];
 	double fRec0[2];
-	
+
  public:
 	OtCompressor() {
 	}
-	
+
 	OtCompressor(const OtCompressor&) = default;
-	
+
 	virtual ~OtCompressor() = default;
-	
+
 	OtCompressor& operator=(const OtCompressor&) = default;
-	
-	void metadata(Meta* m) override { 
+
+	void metadata(Meta* m) override {
 		m->declare("analyzers.lib/amp_follower_ar:author", "Jonatan Liljedahl, revised by Romain Michon");
 		m->declare("analyzers.lib/name", "Faust Analyzer Library");
 		m->declare("analyzers.lib/version", "1.3.0");
@@ -94,10 +94,10 @@ private:
 	int getNumOutputs() override {
 		return 1;
 	}
-	
+
 	static void classInit([[maybe_unused]] int sample_rate) {
 	}
-	
+
 	virtual void instanceConstants([[maybe_unused]] int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
@@ -105,14 +105,14 @@ private:
 		fConst2 = 1.0 - fConst1;
 		fConst3 = 1.0 / fConst0;
 	}
-	
+
 	virtual void instanceResetUserInterface() {
 		fHslider0 = static_cast<float>(2e+02);
 		fHslider1 = static_cast<float>(1e+01);
 		fHslider2 = static_cast<float>(-1e+01);
 		fHslider3 = static_cast<float>(4.0);
 	}
-	
+
 	virtual void instanceClear() {
 		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
 			fRec2[l0] = 0.0;
@@ -133,26 +133,26 @@ private:
 			fRec0[l5] = 0.0;
 		}
 	}
-	
+
 	void init([[maybe_unused]] int sample_rate) override {
 		classInit(sample_rate);
 		instanceInit(sample_rate);
 	}
-	
+
 	virtual void instanceInit([[maybe_unused]] int sample_rate) {
 		instanceConstants(sample_rate);
 		instanceResetUserInterface();
 		instanceClear();
 	}
-	
+
 	virtual OtCompressor* clone() {
 		return new OtCompressor(*this);
 	}
-	
+
 	int getSampleRate() override {
 		return fSampleRate;
 	}
-	
+
 	void buildUserInterface(UI* ui_interface) override {
 		ui_interface->openVerticalBox("Compressor");
 		ui_interface->declare(&fHslider3, "0", "");
@@ -168,7 +168,7 @@ private:
 		ui_interface->addHorizontalSlider("Release", &fHslider0, float(2e+02), float(5.0), float(1e+03), float(1.0));
 		ui_interface->closeBox();
 	}
-	
+
 	void compute(int count, float** inputs, float** outputs) override {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];

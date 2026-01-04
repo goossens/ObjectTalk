@@ -40,7 +40,7 @@
 				}
 			],
 			"release": 1.0,
-			"sustain": 0.5,
+			"sustain": 0.699999988079071,
 			"title": "Envelope Generator",
 			"type": "Envelope Generator",
 			"x": 428.0,

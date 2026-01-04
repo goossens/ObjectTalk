@@ -114,8 +114,8 @@ public:
 		}
 
 		shapes = buffer->getSampleCount() / samples;
-		sampleLimit = static_cast<float>(samples) - 0.0001f;
-		shapeLimit = static_cast<float>(shapes) - 0.0001f;
+		sampleLimit = static_cast<float>(samples) - 1.0001f;
+		shapeLimit = static_cast<float>(shapes) - 1.0001f;
 	}
 
 	// clear the wave table
@@ -128,19 +128,19 @@ public:
 	}
 
 	// get sample at specified location
-	// (sample and shape are clamped between 0 and 1)
+	// (sample and shape are clamped to wave table range)
 	// (shape can be negative but is rectified before clamping)
 	inline float get(float sample, float shape) {
 		if (buffer) {
-			sample = std::clamp(sample * static_cast<float>(samples), 0.0f, sampleLimit);
-			shape = std::clamp(std::abs(shape) * static_cast<float>(shapes), 0.0f, shapeLimit);
+			sample = std::clamp(sample * sampleLimit, 0.0f, sampleLimit);
+			shape = std::clamp(std::abs(shape) * shapeLimit, 0.0f, shapeLimit);
 
 			auto lowX = static_cast<size_t>(sample);
-			auto highX = (lowX == samples - 1) ? 0 : lowX + 1;
+			auto highX = lowX + 1;
 			auto ratioX = sample - static_cast<float>(lowX);
 
 			auto lowY = static_cast<size_t>(shape);
-			auto highY = (lowY == shapes - 1) ? 0 : lowY + 1;
+			auto highY = lowY + 1;
 			auto ratioY = shape - static_cast<float>(lowY);
 
 			auto v1 = buffer->get(0, lowY * samples + lowX);

@@ -728,7 +728,10 @@ protected:
 		bool isWholeWord(Coordinate start, Coordinate end) const;
 		inline bool isEndOfLine(Coordinate from) const { return getIndex(from) == at(from.line).size(); }
 		inline bool isLastLine(int line) const { return line == lineCount() - 1; }
+		Coordinate findPreviousNonWhiteSpace(Coordinate from, bool includeEndOfLine=true) const;
+		Coordinate findNextNonWhiteSpace(Coordinate from, bool includeEndOfLine=true) const;
 		Coordinate normalizeCoordinate(Coordinate coordinate) const;
+		void normalizeCoordinate(float line, float column, Coordinate& glyphCoordinate, Coordinate& cursorCoordinate) const;
 
 	private:
 		int tabSize = 4;
@@ -864,7 +867,6 @@ protected:
 
 	// access the editor's text
 	void setText(const std::string_view& text);
-	void clearText();
 
 	// render (parts of) the text editor
 	void render(const char* title, const ImVec2& size, bool border);

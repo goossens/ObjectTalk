@@ -992,20 +992,21 @@ void TextEditor::handleMouseInteractions() {
 			scrolling = false;
 		}
 
-	// ignore interactions when the editor is not hovered
+	// ignore other interactions when the editor is not hovered
 	} else if (ImGui::IsWindowHovered()) {
 		auto io = ImGui::GetIO();
 		auto mousePos = ImGui::GetMousePos() - ImGui::GetCursorScreenPos();
-		bool overLineNumbers = showLineNumbers && absoluteMousePos.x > lineNumberLeftOffset && absoluteMousePos.x < lineNumberRightOffset;
+		bool overLineNumbers = showLineNumbers && (absoluteMousePos.x > lineNumberLeftOffset) && (absoluteMousePos.x < lineNumberRightOffset);
 		bool overText = mousePos.x - ImGui::GetScrollX() > textOffset;
 
-		auto mouseCoord = document.normalizeCoordinate(Coordinate(
-			static_cast<int>(std::floor(mousePos.y / glyphSize.y)),
-			static_cast<int>(std::round((mousePos.x - textOffset) / glyphSize.x))));
+		Coordinate glyphCoordinate;
+		Coordinate cursorCoordinate;
 
-		auto mouseCoordAbs = document.normalizeCoordinate(Coordinate(
-			static_cast<int>(std::floor(mousePos.y / glyphSize.y)),
-			static_cast<int>(std::floor((mousePos.x - textOffset) / glyphSize.x))));
+		document.normalizeCoordinate(
+			mousePos.y / glyphSize.y,
+			(mousePos.x - textOffset) / glyphSize.x,
+			glyphCoordinate,
+			cursorCoordinate);
 
 		// show text cursor if required
 		if (ImGui::IsWindowFocused() && overText) {
@@ -1018,12 +1019,12 @@ void TextEditor::handleMouseInteractions() {
 
 			if (overLineNumbers) {
 				auto& cursor = cursors.getCurrent();
-				auto start = Coordinate(mouseCoord.line, 0);
+				auto start = Coordinate(cursorCoordinate.line, 0);
 				auto end = document.getDown(start);
 				cursor.update(cursor.getInteractiveEnd() < cursor.getInteractiveStart() ? start : end);
 
 			} else {
-				cursors.updateCurrentCursor(mouseCoord);
+				cursors.updateCurrentCursor(cursorCoordinate);
 			}
 
 			makeCursorVisible();
@@ -1041,12 +1042,12 @@ void TextEditor::handleMouseInteractions() {
 		} else if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
 			// handle right clicks by setting up context menu (if required)
 			if (overLineNumbers && lineNumberContextMenuCallback) {
-				contextMenuLine = mouseCoordAbs.line;
+				contextMenuLine = glyphCoordinate.line;
 				ImGui::OpenPopup("LineNumberContextMenu");
 
 			} else if (overText && textContextMenuCallback) {
-				contextMenuLine = mouseCoordAbs.line;
-				contextMenuColumn = mouseCoordAbs.column;
+				contextMenuLine = glyphCoordinate.line;
+				contextMenuColumn = glyphCoordinate.column;
 				ImGui::OpenPopup("TextContextMenu");
 			}
 
@@ -1064,7 +1065,7 @@ void TextEditor::handleMouseInteractions() {
 			if (tripleClick) {
 				// left mouse button triple click
 				if (overText) {
-					auto start = document.getStartOfLine(mouseCoord);
+					auto start = document.getStartOfLine(cursorCoordinate);
 					auto end = document.getDown(start);
 					cursors.updateCurrentCursor(start, end);
 				}
@@ -1072,12 +1073,12 @@ void TextEditor::handleMouseInteractions() {
 			} else if (doubleClick) {
 				// left mouse button double click
 				if (overText) {
-					auto codepoint = document.getCodePoint(mouseCoordAbs);
+					auto codepoint = document.getCodePoint(glyphCoordinate);
 					bool handled = false;
 
 					// select bracketed section (if required)
 					if (CodePoint::isBracketOpener(codepoint)) {
-						auto brackets = bracketeer.getEnclosingBrackets(document.getRight(mouseCoordAbs));
+						auto brackets = bracketeer.getEnclosingBrackets(document.getRight(glyphCoordinate));
 
 						if (brackets != bracketeer.end()) {
 							if (ImGui::IsKeyDown(ImGuiMod_Shift)) {
@@ -1091,7 +1092,7 @@ void TextEditor::handleMouseInteractions() {
 						}
 
 					} else if (CodePoint::isBracketCloser(codepoint)) {
-						auto brackets = bracketeer.getEnclosingBrackets(mouseCoordAbs);
+						auto brackets = bracketeer.getEnclosingBrackets(glyphCoordinate);
 
 						if (brackets != bracketeer.end()) {
 							cursors.setCursor(brackets->start, document.getRight(brackets->end));
@@ -1100,9 +1101,9 @@ void TextEditor::handleMouseInteractions() {
 					}
 
 					// select word if it wasn't a bracketed section
-					if (!handled) {
-						auto start = document.findWordStart(mouseCoordAbs);
-						auto end = document.findWordEnd(mouseCoordAbs);
+					if (!handled && !document.isEndOfLine(glyphCoordinate)) {
+						auto start = document.findWordStart(glyphCoordinate);
+						auto end = document.findWordEnd(glyphCoordinate);
 						cursors.updateCurrentCursor(start, end);
 					}
 				}
@@ -1119,7 +1120,7 @@ void TextEditor::handleMouseInteractions() {
 
 				if (overLineNumbers) {
 					// handle line number clicks
-					auto start = Coordinate(mouseCoord.line, 0);
+					auto start = Coordinate(cursorCoordinate.line, 0);
 					auto end = document.getDown(start);
 
 					if (extendCursor) {
@@ -1138,13 +1139,13 @@ void TextEditor::handleMouseInteractions() {
 				} else if (overText) {
 					// handle mouse clicks in text
 					if (extendCursor) {
-						cursors.updateCurrentCursor(mouseCoord);
+						cursors.updateCurrentCursor(cursorCoordinate);
 
 					} else if (addCursor) {
-						cursors.addCursor(mouseCoord);
+						cursors.addCursor(cursorCoordinate);
 
 					} else {
-						cursors.setCursor(mouseCoord);
+						cursors.setCursor(cursorCoordinate);
 					}
 
 					makeCursorVisible();

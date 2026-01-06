@@ -16,44 +16,44 @@ static TextEditor::Iterator getPythonStyleNumber(TextEditor::Iterator start, Tex
 	TextEditor::Iterator i = start;
 	TextEditor::Iterator marker;
 
-	/*!re2c
-		re2c:api = custom;
-		re2c:api:style = free-form;
-		re2c:define:YYCTYPE = ImWchar;
-		re2c:define:YYPEEK = "i < end ? *i : 0";
-		re2c:define:YYSKIP = "++i;";
-		re2c:define:YYBACKUP = "marker = i;";
-		re2c:define:YYRESTORE = "i = marker;";
-		re2c:define:YYLESSTHAN = "i >= end";
-		re2c:yyfill:enable = 0;
-		re2c:eof = 0;
+/*!re2c
+	re2c:api = custom;
+	re2c:api:style = free-form;
+	re2c:define:YYCTYPE = ImWchar;
+	re2c:define:YYPEEK = "i < end ? *i : 0";
+	re2c:define:YYSKIP = "++i;";
+	re2c:define:YYBACKUP = "marker = i;";
+	re2c:define:YYRESTORE = "i = marker;";
+	re2c:define:YYLESSTHAN = "i >= end";
+	re2c:yyfill:enable = 0;
+	re2c:eof = 0;
 
-		digit        = [0-9];
-		decDigit     = [0-9_];
-		binDigit     = [01_];
-		octDigit     = [0-7_];
-		hexDigit     = [0-9a-fA-F_];
+	digit        = [0-9];
+	decDigit     = [0-9_];
+	binDigit     = [01_];
+	octDigit     = [0-7_];
+	hexDigit     = [0-9a-fA-F_];
 
-		decInteger   = digit decDigit*;
-		binInteger   = ("0b" | "0B") binDigit+;
-		octInteger   = ("0o" | "0O") octDigit+;
-		hexInteger   = ("0x" | "0X") hexDigit+;
+	decInteger   = digit decDigit*;
+	binInteger   = ("0b" | "0B") binDigit+;
+	octInteger   = ("0o" | "0O") octDigit+;
+	hexInteger   = ("0x" | "0X") hexDigit+;
 
-		digitPart    = digit decDigit*;
-		fraction     = "." digitPart;
-		exponent     = [eE+-] digitPart;
-		imaginary    = [jJ];
+	digitPart    = digit decDigit*;
+	fraction     = "." digitPart;
+	exponent     = [eE+-] digitPart;
+	imaginary    = [jJ];
 
-		float        = digitPart fraction? exponent? imaginary?;
-		number       = decInteger | binInteger | octInteger | hexInteger | float;
+	float        = digitPart fraction? exponent? imaginary?;
+	number       = decInteger | binInteger | octInteger | hexInteger | float;
 
-		number {
-			return i;
-		}
+	number {
+		return i;
+	}
 
-		$ { return start; }
-		* { return start; }
-	*/
+	$ { return start; }
+	* { return start; }
+*/
 }
 
 

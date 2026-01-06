@@ -33,46 +33,46 @@ static TextEditor::Iterator getCStyleNumber(TextEditor::Iterator start, TextEdit
 	TextEditor::Iterator i = start;
 	TextEditor::Iterator marker;
 
-	/*!re2c
-		re2c:api = custom;
-		re2c:api:style = free-form;
-		re2c:define:YYCTYPE = ImWchar;
-		re2c:define:YYPEEK = "i < end ? *i : 0";
-		re2c:define:YYSKIP = "++i;";
-		re2c:define:YYBACKUP = "marker = i;";
-		re2c:define:YYRESTORE = "i = marker;";
-		re2c:define:YYLESSTHAN = "i >= end";
-		re2c:yyfill:enable = 0;
-		re2c:eof = 0;
+/*!re2c
+	re2c:api = custom;
+	re2c:api:style = free-form;
+	re2c:define:YYCTYPE = ImWchar;
+	re2c:define:YYPEEK = "i < end ? *i : 0";
+	re2c:define:YYSKIP = "++i;";
+	re2c:define:YYBACKUP = "marker = i;";
+	re2c:define:YYRESTORE = "i = marker;";
+	re2c:define:YYLESSTHAN = "i >= end";
+	re2c:yyfill:enable = 0;
+	re2c:eof = 0;
 
-		D    = [0-9];						// decimal digit
-		NZ   = [1-9];						// non-zero digit
-		B    = [01];						// binary digit
-		O    = [0-7];						// octal digit
-		H    = [a-fA-F0-9];					// hexadecimal digit
-		BP   = "0"[bB];						// binary integer prefix
-		HP   = "0"[xX];						// hexadecimal integer prefix
-		E    = [Ee][+-]?D+;					// decimal exponent
-		P    = [Pp][+-]?D+;					// hexadecimal exponent
-		FS   = [fFlL];						// float suffixes
-		IS   = [uU]("l"|"L"|"ll"|"LL")? | ("l"|"L"|"ll"|"LL")[uU]?;
+	D    = [0-9];						// decimal digit
+	NZ   = [1-9];						// non-zero digit
+	B    = [01];						// binary digit
+	O    = [0-7];						// octal digit
+	H    = [a-fA-F0-9];					// hexadecimal digit
+	BP   = "0"[bB];						// binary integer prefix
+	HP   = "0"[xX];						// hexadecimal integer prefix
+	E    = [Ee][+-]?D+;					// decimal exponent
+	P    = [Pp][+-]?D+;					// hexadecimal exponent
+	FS   = [fFlL];						// float suffixes
+	IS   = [uU]("l"|"L"|"ll"|"LL")? | ("l"|"L"|"ll"|"LL")[uU]?;
 
-		NZ D* IS?           { return i; }	// decimal integer
-		BP B+ IS?           { return i; }	// binary integer
-		HP H+ IS?           { return i; }	// hexadecimal integer
-		"0" O* IS?          { return i; }	// octal integer
+	NZ D* IS?           { return i; }	// decimal integer
+	BP B+ IS?           { return i; }	// binary integer
+	HP H+ IS?           { return i; }	// hexadecimal integer
+	"0" O* IS?          { return i; }	// octal integer
 
-		D+ E FS?            { return i; }	//floats
-		D* "." D+ E? FS?    { return i; }
-		D+ "." E? FS?       { return i; }
+	D+ E FS?            { return i; }	// floats
+	D* "." D+ E? FS?    { return i; }
+	D+ "." E? FS?       { return i; }
 
-		HP H+ P FS?         { return i; }	// hexadecimal float
-		HP H* "." H+ P FS?  { return i; }
-		HP H+ "." P FS?     { return i; }
+	HP H+ P FS?         { return i; }	// hexadecimal float
+	HP H* "." H+ P FS?  { return i; }
+	HP H+ "." P FS?     { return i; }
 
-		$ { return start; }
-		* { return start; }
-	*/
+	$ { return start; }
+	* { return start; }
+*/
 }
 
 

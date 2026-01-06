@@ -16,37 +16,32 @@ static TextEditor::Iterator getLuaStyleNumber(TextEditor::Iterator start, TextEd
 	TextEditor::Iterator i = start;
 	TextEditor::Iterator marker;
 
-	/*!re2c
-		re2c:api = custom;
-		re2c:api:style = free-form;
-		re2c:define:YYCTYPE = ImWchar;
-		re2c:define:YYPEEK = "i < end ? *i : 0";
-		re2c:define:YYSKIP = "++i;";
-		re2c:define:YYBACKUP = "marker = i;";
-		re2c:define:YYRESTORE = "i = marker;";
-		re2c:define:YYLESSTHAN = "i >= end";
-		re2c:yyfill:enable = 0;
-		re2c:eof = 0;
+/*!re2c
+	re2c:api = custom;
+	re2c:api:style = free-form;
+	re2c:define:YYCTYPE = ImWchar;
+	re2c:define:YYPEEK = "i < end ? *i : 0";
+	re2c:define:YYSKIP = "++i;";
+	re2c:define:YYBACKUP = "marker = i;";
+	re2c:define:YYRESTORE = "i = marker;";
+	re2c:define:YYLESSTHAN = "i >= end";
+	re2c:yyfill:enable = 0;
+	re2c:eof = 0;
 
-		digit        = [0-9];
-		hexDigit     = [0-9a-fA-F];
+	digit        = [0-9];
+	hexDigit     = [0-9a-fA-F];
 
-		decInteger   = digit*;
-		hexInteger   = ("0x" | "0X") hexDigit+ ("." hexDigit*)? ([pP] [+-]? hexDigit*)?;
-		float        = digit* ("." digit*)? ([eE] [+-]? digit*)?;
+	digit*																{ return i; }		// decimal integer
+	("0x" | "0X") hexDigit+ ("." hexDigit*)? ([pP] [+-]? hexDigit*)?	{ return i; }		// hexadecimal integer
+	digit* ("." digit*)? ([eE] [+-]? digit*)?							{ return i; }		// float
 
-		decInteger | hexInteger | float {
-			return i;
-		}
-
-		$ { return start; }
-		* { return start; }
-	*/
+	* { return start; }
+*/
 }
 
 
 //
-//	isLuaStylePuctuation
+//	isLuaStylePunctuation
 //	[]{}!%#^&*()-+=~|<>?:/;,.
 //
 

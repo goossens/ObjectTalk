@@ -16,51 +16,51 @@ static TextEditor::Iterator tokenizeJson(TextEditor::Iterator start, TextEditor:
 	TextEditor::Iterator i = start;
 	TextEditor::Iterator marker;
 
-	/*!re2c
-		re2c:api = custom;
-		re2c:api:style = free-form;
-		re2c:define:YYCTYPE = ImWchar;
-		re2c:define:YYPEEK = "i < end ? *i : 0";
-		re2c:define:YYSKIP = "++i;";
-		re2c:define:YYBACKUP = "marker = i;";
-		re2c:define:YYRESTORE = "i = marker;";
-		re2c:define:YYLESSTHAN = "i >= end";
-		re2c:yyfill:enable = 0;
-		re2c:eof = 0;
+/*!re2c
+	re2c:api = custom;
+	re2c:api:style = free-form;
+	re2c:define:YYCTYPE = ImWchar;
+	re2c:define:YYPEEK = "i < end ? *i : 0";
+	re2c:define:YYSKIP = "++i;";
+	re2c:define:YYBACKUP = "marker = i;";
+	re2c:define:YYRESTORE = "i = marker;";
+	re2c:define:YYLESSTHAN = "i >= end";
+	re2c:yyfill:enable = 0;
+	re2c:eof = 0;
 
-		punctuation = [[\]{},:];
+	punctuation = [[\]{},:];
 
-		punctuation {
-			color = TextEditor::Color::punctuation;
-			return i;
-		}
+	punctuation {
+		color = TextEditor::Color::punctuation;
+		return i;
+	}
 
-		identifiers = "null" | "true" | "false";
+	identifiers = "null" | "true" | "false";
 
-		identifiers {
-			color = TextEditor::Color::identifier;
-			return i;
-		}
+	identifiers {
+		color = TextEditor::Color::identifier;
+		return i;
+	}
 
-		digit         = [0-9];
-		nonZeroDigit  = [1-9];
-		e             = "e" | "E";
-		minus         = "-";
-		plus          = "+";
-		zero          = "0";
-		exp           = e (minus | plus)? digit+;
-		frac          = "." digit+;
-		int           = zero | (nonZeroDigit digit*);
-		number        = minus? int frac? exp?;
+	digit         = [0-9];
+	nonZeroDigit  = [1-9];
+	e             = "e" | "E";
+	minus         = "-";
+	plus          = "+";
+	zero          = "0";
+	exp           = e (minus | plus)? digit+;
+	frac          = "." digit+;
+	int           = zero | (nonZeroDigit digit*);
+	number        = minus? int frac? exp?;
 
-		number {
-			color = TextEditor::Color::number;
-			return i;
-		}
+	number {
+		color = TextEditor::Color::number;
+		return i;
+	}
 
-		$ { return start; }
-		* { return start; }
-	*/
+	$ { return start; }
+	* { return start; }
+*/
 }
 
 

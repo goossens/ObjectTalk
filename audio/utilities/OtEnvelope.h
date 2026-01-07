@@ -98,12 +98,12 @@ private:
 	State state = State::idle;
 	int duration;
 	int currentSample;
-	double startValue;
-	double valueRange;
-	double value = 0.0f;
+	float startValue;
+	float valueRange;
+	float value = 0.0f;
 
 	// support functions
-	inline int durationInSamples(double seconds, double sampleRate=OtAudioSettings::sampleRate) {
+	inline int durationInSamples(float seconds, float sampleRate=OtAudioSettings::sampleRate) {
 		return std::max(1, static_cast<int>(std::floor(seconds * sampleRate)));
 	}
 
@@ -120,11 +120,11 @@ private:
 
 		switch (state) {
 			case State::idle: value = 0.0; break;
-			case State::attack: configureState(static_cast<float>(value), 1.0f, attackTime); break;
+			case State::attack: configureState(value, 1.0f, attackTime); break;
 			case State::hold: configureState(1.0f, 1.0f, holdTime); break;
 			case State::decay: configureState(1.0f, sustainLevel, decayTime); break;
 			case State::sustain: value = sustainLevel; break;
-			case State::release: configureState(static_cast<float>(value), 0.0f, releaseTime);
+			case State::release: configureState(value, 0.0f, releaseTime);
 		}
 	}
 
@@ -138,7 +138,7 @@ private:
 			enterState(nextState);
 
 		} else {
-			value = startValue + valueRange * easing(static_cast<double>(currentSample) / static_cast<double>(duration));
+			value = startValue + valueRange * easing(static_cast<float>(currentSample) / static_cast<float>(duration));
 		}
 	}
 

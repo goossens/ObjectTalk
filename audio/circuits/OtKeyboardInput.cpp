@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <atomic>
+
 #include "ImGuiPiano.h"
 
 #include "OtAudioUtilities.h"
@@ -47,12 +49,15 @@ public:
 
 				if (msg == NoteOn) {
 					circuit->keyPressed[key] = true;
+					circuit->gate = true;
 					circuit->pitch = OtAudioUtilities::midiNoteToPitch(key);
 					circuit->velocity = velocity;
 				}
 
 				if (msg == NoteOff) {
 					circuit->keyPressed[key] = false;
+					circuit->gate = false;
+					circuit->noteOff = true;
 					circuit->velocity = 0.0f;
 				}
 
@@ -77,7 +82,12 @@ public:
 		}
 
 		if (gateOutput->isDestinationConnected()) {
-			gateOutput->setSamples(velocity == 0.0f ? 0.0f : 1.0f);
+			gateOutput->setSamples(gate ? 1.0f : 0.0f);
+
+			if (gate && noteOff) {
+				gateOutput->setSample(0, 0.0f);
+				noteOff = false;
+			}
 		}
 	}
 
@@ -87,13 +97,15 @@ public:
 	static constexpr float height = 40.0f;
 
 private:
-	// properties
-	int currentNote = 0;
-	bool keyPressed[128];
-	float pitch = 500.0f;
-	float velocity = 0.0f;
-
 	// work variables
+	bool keyPressed[128];
+	int currentNote = 0;
+
+	std::atomic<float> pitch = 500.0f;
+	std::atomic<float> velocity = 0.0f;
+	std::atomic<bool> gate = false;
+	std::atomic<bool> noteOff = false;
+
 	OtCircuitPin pitchOutput;
 	OtCircuitPin gateOutput;
 };

@@ -70,15 +70,15 @@ public:
 	}
 
 	inline static float tune(float pitch, float octaves, float semitones=0.0f, float cents=0.0f) {
-		auto totalCents = (octaves * 1200.0) + (semitones * 100.0) + cents;
-		auto ratio = std::pow(2.0, totalCents / 1200.0);
-		return static_cast<float>(pitch * ratio);
+		auto totalCents = (octaves * 1200.0f) + (semitones * 100.0f) + cents;
+		auto ratio = std::pow(2.0f, totalCents / 1200.0f);
+		return pitch * ratio;
 	}
 
 	inline static float tuneCV(float cv, float octaves, float semitones=0.0f, float cents=0.0f) {
-		auto totalCents = (octaves * 1200.0) + (semitones * 100.0) + cents;
-		auto offset = totalCents / 1200.0;
-		return cv + static_cast<float>(offset);
+		auto totalCents = (octaves * 1200.0f) + (semitones * 100.0f) + cents;
+		auto offset = totalCents / 1200.0f;
+		return cv + offset;
 	}
 
 	inline static float linearToDbv(float v) {

@@ -28,7 +28,7 @@
 
 class OtVco : public OtCircuitClass {
 public:
-	// configure node
+	// configure circuit
 	inline void configure() override {
 		pitchInput = addInputPin("Pitch", OtCircuitPinClass::Type::control);
 		pulseWidthInput = addInputPin("Pulse Width", OtCircuitPinClass::Type::control);
@@ -126,7 +126,7 @@ public:
 		return height;
 	}
 
-	// (de)serialize node
+	// (de)serialize circuit
 	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
 		(*data)["waveForm"] = waveForm;
 		(*data)["waveTable"] = OtAssetSerialize(asset.getPath(), basedir);
@@ -179,9 +179,10 @@ private:
 	float shape = 0.0f;
 
 	OtAsset<OtWaveTableAsset> asset;
-	OtWaveTable wavetable;
 
 	// work variables
+	OtWaveTable wavetable;
+
 	OtCircuitPin pitchInput;
 	OtCircuitPin pulseWidthInput;
 	OtCircuitPin shapeInput;

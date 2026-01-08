@@ -19,7 +19,7 @@
 
 class OtMixer4 : public OtCircuitClass {
 public:
-	// configure node
+	// configure circuit
 	inline void configure() override {
 		input1 = addInputPin("Input 1", OtCircuitPinClass::Type::mono)->hasAttenuation();
 		input2 = addInputPin("Input 2", OtCircuitPinClass::Type::mono)->hasAttenuation();

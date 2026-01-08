@@ -273,7 +273,7 @@ public:
 template<typename T>
 class OtFaustCircuitMono : public OtCircuitClass {
 public:
-	// configure node
+	// configure circuit
 	inline void configure() override {
 		faustDsp.initialize();
 
@@ -297,7 +297,7 @@ public:
 		return faustDsp.getHeight();
 	}
 
-	// (de)serialize node
+	// (de)serialize circuit
 	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		faustDsp.serialize(data);
 	}
@@ -337,7 +337,7 @@ private:
 template<typename T>
 class OtFaustCircuitStereo : public OtCircuitClass {
 public:
-	// configure node
+	// configure circuit
 	inline void configure() override {
 		faustDsp.initialize();
 
@@ -361,7 +361,7 @@ public:
 		return faustDsp.getHeight();
 	}
 
-	// (de)serialize node
+	// (de)serialize circuit
 	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		faustDsp.serialize(data);
 	}

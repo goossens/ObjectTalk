@@ -19,7 +19,7 @@
 
 class OtVca : public OtCircuitClass {
 public:
-	// configure node
+	// configure circuit
 	inline void configure() override {
 		audioInput = addInputPin("Input", OtCircuitPinClass::Type::mono);
 		cvInput = addInputPin("CV", OtCircuitPinClass::Type::control)->hasAttenuation();

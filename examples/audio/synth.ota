@@ -3,6 +3,7 @@
 		{
 			"id": 1315334498,
 			"inputs": [],
+			"midiFile": "",
 			"outputs": [
 				{
 					"id": 2197641789,
@@ -15,8 +16,8 @@
 					"type": "control"
 				}
 			],
-			"title": "Keyboard Input",
-			"type": "Keyboard Input",
+			"title": "MIDI Input",
+			"type": "MIDI Input",
 			"x": 11.0,
 			"y": 482.0
 		},
@@ -33,33 +34,33 @@
 				{
 					"id": 3727072312,
 					"name": "Output 1",
-					"tuningCents": 0,
-					"tuningOctaves": 0,
-					"tuningSemitones": 0,
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 0.0,
 					"type": "control"
 				},
 				{
 					"id": 1139661478,
 					"name": "Output 2",
-					"tuningCents": 0,
-					"tuningOctaves": 0,
-					"tuningSemitones": 4,
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 4.0,
 					"type": "control"
 				},
 				{
 					"id": 3455565350,
 					"name": "Output 3",
-					"tuningCents": 0,
-					"tuningOctaves": 0,
-					"tuningSemitones": -5,
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": -5.0,
 					"type": "control"
 				},
 				{
 					"id": 3732857718,
 					"name": "Output 4",
-					"tuningCents": 0,
-					"tuningOctaves": 0,
-					"tuningSemitones": 0,
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 0.0,
 					"type": "control"
 				}
 			],
@@ -80,6 +81,11 @@
 					"id": 4000249913,
 					"name": "Pulse Width",
 					"type": "control"
+				},
+				{
+					"id": 1670933237,
+					"name": "Shape",
+					"type": "control"
 				}
 			],
 			"outputs": [
@@ -91,9 +97,11 @@
 			],
 			"pitch": 440.0,
 			"pulseWidth": 0.5,
+			"shape": 0.0,
 			"title": "VCO",
 			"type": "VCO",
 			"waveForm": 3,
+			"waveTable": "",
 			"x": 491.0,
 			"y": 14.0
 		},
@@ -153,6 +161,11 @@
 					"id": 4175452013,
 					"name": "Pulse Width",
 					"type": "control"
+				},
+				{
+					"id": 1965324768,
+					"name": "Shape",
+					"type": "control"
 				}
 			],
 			"outputs": [
@@ -164,9 +177,11 @@
 			],
 			"pitch": 440.0,
 			"pulseWidth": 0.5,
+			"shape": 0.0,
 			"title": "VCO",
 			"type": "VCO",
 			"waveForm": 1,
+			"waveTable": "",
 			"x": 491.0,
 			"y": 314.0
 		},
@@ -182,6 +197,11 @@
 					"id": 268018805,
 					"name": "Pulse Width",
 					"type": "control"
+				},
+				{
+					"id": 2542135573,
+					"name": "Shape",
+					"type": "control"
 				}
 			],
 			"outputs": [
@@ -193,9 +213,11 @@
 			],
 			"pitch": 440.0,
 			"pulseWidth": 0.5,
+			"shape": 0.0,
 			"title": "VCO",
 			"type": "VCO",
 			"waveForm": 3,
+			"waveTable": "",
 			"x": 491.0,
 			"y": 166.0
 		},
@@ -328,7 +350,7 @@
 			"y": 497.0
 		},
 		{
-			"Depth": 1.159999966621399,
+			"Depth": 50.0,
 			"Feedback": 0.20000000298023224,
 			"Speed": 1.7999999523162842,
 			"id": 3452463202,
@@ -373,7 +395,7 @@
 			"title": "Mono to Stereo",
 			"type": "Mono to Stereo",
 			"x": 1299.0,
-			"y": 94.0
+			"y": 89.0
 		},
 		{
 			"id": 278093283,

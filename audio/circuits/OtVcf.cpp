@@ -24,7 +24,7 @@
 
 class OtVcf : public OtCircuitClass {
 public:
-	// configure node
+	// configure circuit
 	inline void configure() override {
 		audioInput = addInputPin("Input", OtCircuitPinClass::Type::mono);
 		fmInput = addInputPin("F Mod", OtCircuitPinClass::Type::control)->hasAttenuation();
@@ -59,7 +59,7 @@ public:
 		return ImGui::GetFrameHeightWithSpacing() + OtUi::knobHeight();
 	}
 
-	// (de)serialize node
+	// (de)serialize circuit
 	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		(*data)["mode"] = mode;
 		(*data)["frequency"] = frequency;

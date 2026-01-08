@@ -25,6 +25,6 @@ target_compile_options(audio PRIVATE
 	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4 /WX>)
 
 target_include_directories(audio PUBLIC ${AUDIO_INCLUDE_DIRS})
-target_link_libraries(audio PUBLIC language gfx SDL3::SDL3 SDL3_mixer-static pffft)
+target_link_libraries(audio PUBLIC language gfx SDL3::SDL3 SDL3_mixer-static pffft midifile)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${AUDIO_INCLUDES} ${AUDIO_SOURCES})

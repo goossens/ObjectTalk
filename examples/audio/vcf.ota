@@ -15,8 +15,8 @@
 					"type": "control"
 				}
 			],
-			"title": "Keyboard Input",
-			"type": "Keyboard Input",
+			"title": "MIDI Input",
+			"type": "MIDI Input",
 			"x": 9.0,
 			"y": 583.0
 		},

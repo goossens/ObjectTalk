@@ -16,29 +16,29 @@
 
 #include "OtAssetBase.h"
 
-#include "OtWaveTable.h"
+#include "OtMidiFile.h"
 
 
 //
-//	OtWaveTableAsset
+//	OtMidiFileAsset
 //
 
-class OtWaveTableAsset : public OtAssetBase {
+class OtMidiFileAsset : public OtAssetBase {
 public:
-	// access the wave table
-	inline OtWaveTable& getWaveTable() { return wavetable; }
+	// access the MIDI file
+	inline OtMidiFile& getMidiFile() { return midifile; }
 
 	// asset properties
 	static constexpr bool hasEditor = false;
 	static constexpr bool canHandleVirtual = false;
-	static constexpr const char* supportedFileTypes = ".wav";
+	static constexpr const char* supportedFileTypes = ".mid";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
 
 protected:
-	// load the wave table
+	// load the MIDI file
 	OtAssetBase::State load() override {
 		try {
-			wavetable.load(path);
+			midifile.load(path);
 			return State::ready;
 
 		} catch (const OtException& exception) {
@@ -48,6 +48,6 @@ protected:
 	}
 
 private:
-	// the actual wave table
-	OtWaveTable wavetable;
+	// the actual MIDI file
+	OtMidiFile midifile;
 };

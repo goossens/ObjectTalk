@@ -18,7 +18,7 @@
 
 class OtSpeakerOut : public OtCircuitClass {
 public:
-	// configure node
+	// configure circuit
 	inline void configure() override {
 		input = addInputPin("Input", OtCircuitPinClass::Type::stereo);
 	}

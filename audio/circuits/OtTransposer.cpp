@@ -19,7 +19,7 @@
 
 class OtTransposer : public OtCircuitClass {
 public:
-	// configure node
+	// configure circuit
 	inline void configure() override {
 		input = addInputPin("Input", OtCircuitPinClass::Type::control);
 		output1 = addOutputPin("Output 1", OtCircuitPinClass::Type::control)->hasTuning();

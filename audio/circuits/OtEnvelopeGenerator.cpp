@@ -76,7 +76,7 @@ public:
 		return plotHeight + OtUi::knobHeight();
 	}
 
-	// (de)serialize node
+	// (de)serialize circuit
 	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		(*data)["attack"] = attack;
 		(*data)["hold"] = hold;

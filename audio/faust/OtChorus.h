@@ -25,23 +25,23 @@
 //
 
 class OtChorusSIG0 {
-private:
+private:	
 	int iRec1[2];
 
-public:
+public:	
 	int getNumInputsOtChorusSIG0() {
 		return 0;
 	}
 	int getNumOutputsOtChorusSIG0() {
 		return 1;
 	}
-
+	
 	void instanceInitOtChorusSIG0([[maybe_unused]] int sample_rate) {
 		for (int l2 = 0; l2 < 2; l2 = l2 + 1) {
 			iRec1[l2] = 0;
 		}
 	}
-
+	
 	void fillOtChorusSIG0(int count, double* table) {
 		for (int i1 = 0; i1 < count; i1 = i1 + 1) {
 			iRec1[0] = iRec1[1] + 1;
@@ -70,18 +70,18 @@ private:
 	float fHslider3;
 	double fRec0[2];
 	double fVec1[65536];
-
+	
  public:
 	OtChorus() {
 	}
-
+	
 	OtChorus(const OtChorus&) = default;
-
+	
 	virtual ~OtChorus() = default;
-
+	
 	OtChorus& operator=(const OtChorus&) = default;
-
-	void metadata(Meta* m) override {
+	
+	void metadata(Meta* m) override { 
 		m->declare("author", "Albert Graef");
 		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtChorus -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
 		m->declare("filename", "chorus.dsp");
@@ -107,28 +107,28 @@ private:
 	int getNumOutputs() override {
 		return 2;
 	}
-
+	
 	static void classInit([[maybe_unused]] int sample_rate) {
 		OtChorusSIG0* sig0 = newOtChorusSIG0();
 		sig0->instanceInitOtChorusSIG0(sample_rate);
 		sig0->fillOtChorusSIG0(65536, ftbl0OtChorusSIG0);
 		deleteOtChorusSIG0(sig0);
 	}
-
+	
 	virtual void instanceConstants([[maybe_unused]] int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
 		fConst1 = 0.5 * fConst0;
 		fConst2 = 1.0 / fConst0;
 	}
-
+	
 	virtual void instanceResetUserInterface() {
 		fHslider0 = static_cast<float>(0.5);
 		fHslider1 = static_cast<float>(0.025);
 		fHslider2 = static_cast<float>(0.02);
 		fHslider3 = static_cast<float>(2.0);
 	}
-
+	
 	virtual void instanceClear() {
 		IOTA0 = 0;
 		for (int l0 = 0; l0 < 65536; l0 = l0 + 1) {
@@ -141,26 +141,26 @@ private:
 			fVec1[l3] = 0.0;
 		}
 	}
-
+	
 	void init([[maybe_unused]] int sample_rate) override {
 		classInit(sample_rate);
 		instanceInit(sample_rate);
 	}
-
+	
 	virtual void instanceInit([[maybe_unused]] int sample_rate) {
 		instanceConstants(sample_rate);
 		instanceResetUserInterface();
 		instanceClear();
 	}
-
+	
 	virtual OtChorus* clone() {
 		return new OtChorus(*this);
 	}
-
+	
 	int getSampleRate() override {
 		return fSampleRate;
 	}
-
+	
 	void buildUserInterface(UI* ui_interface) override {
 		ui_interface->openVerticalBox("chorus");
 		ui_interface->addHorizontalSlider("delay", &fHslider1, float(0.025), float(0.0), float(0.2), float(0.001));
@@ -169,7 +169,7 @@ private:
 		ui_interface->addHorizontalSlider("level", &fHslider0, float(0.5), float(0.0), float(1.0), float(0.01));
 		ui_interface->closeBox();
 	}
-
+	
 	void compute(int count, float** inputs, float** outputs) override {
 		float* input0 = inputs[0];
 		float* input1 = inputs[1];

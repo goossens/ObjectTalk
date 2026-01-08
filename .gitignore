@@ -5,6 +5,3 @@
 /.vscode
 *.bak
 Save/*
-
-# Local build files
-/build

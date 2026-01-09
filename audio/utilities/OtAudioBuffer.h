@@ -80,6 +80,7 @@ public:
 	// get buffer information
 	inline size_t getChannelCount() { return channels; }
 	inline size_t getSampleCount() { return samples; }
+	inline float getDurationInSeconds() { return static_cast<float>(samples) * OtAudioSettings::dt; }
 
 	inline float* data() { return buffer.data(); }
 	inline size_t size() { return buffer.size(); }

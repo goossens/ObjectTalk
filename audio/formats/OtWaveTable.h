@@ -12,8 +12,6 @@
 //	Include files
 //
 
-#include <cmath>
-#include <cstring>
 #include <fstream>
 #include <memory>
 #include <string>
@@ -45,13 +43,8 @@ public:
 	inline size_t size() { return buffer->size(); }
 
 	// see if wave tables are identical
-	inline bool operator==(OtWaveTable& rhs) {
-		return buffer == rhs.buffer;
-	}
-
-	inline bool operator!=(OtWaveTable& rhs) {
-		return !operator==(rhs);
-	}
+	inline bool operator==(OtWaveTable& rhs) { return buffer == rhs.buffer; }
+	inline bool operator!=(OtWaveTable& rhs) { return !operator==(rhs); }
 
 private:
 	// properties

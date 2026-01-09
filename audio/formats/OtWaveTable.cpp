@@ -9,6 +9,11 @@
 //	Include files
 //
 
+#include <cmath>
+#include <cstring>
+
+#include "OtNumbers.h"
+
 #include "OtWaveTable.h"
 
 

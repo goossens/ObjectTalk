@@ -117,7 +117,6 @@ public:
 		} else if (asset.isReady() && asset->getMidiFile() != midifile) {
 			midifile = asset->getMidiFile();
 			midifile.loop();
-			midifile.display();
 		}
 
 		// process events from the MIDI file (if it is running)

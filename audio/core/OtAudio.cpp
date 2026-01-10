@@ -29,12 +29,12 @@
 //
 
 OtAudio::OtAudio() {
-	// setup the signal processor
-	dsp.setSignalProvider([this](OtAudioBuffer& buffer) {
+	// setup the signal provider for the mixer
+	mixerInput.setSignalProvider([this](OtAudioBuffer& buffer) {
 		provideSignal(buffer);
 	});
 
-	dsp.start();
+	mixerInput.start();
 }
 
 
@@ -96,7 +96,7 @@ void OtAudio::provideSignal(OtAudioBuffer& buffer) {
 //
 
 OtAudio::~OtAudio() {
-	dsp.stop();
+	mixerInput.stop();
 	clear();
 }
 
@@ -132,8 +132,8 @@ void OtAudio::load(const std::string& path) {
 //
 
 void OtAudio::loadFromString(const std::string& string, std::string& basedir) {
-	// stop audio processing
-	dsp.stop();
+	// stop audio provider
+	mixerInput.stop();
 
 	// clear circuits
 	clear();
@@ -173,8 +173,8 @@ void OtAudio::loadFromString(const std::string& string, std::string& basedir) {
 	// set the sorting flag
 	needsSorting = true;
 
-	// restart audio processing
-	dsp.start();
+	// restart audio provider
+	mixerInput.start();
 }
 
 

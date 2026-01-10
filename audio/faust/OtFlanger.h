@@ -54,7 +54,7 @@ private:
 		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtFlanger -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
 		m->declare("delays.lib/name", "Faust Delay Library");
 		m->declare("delays.lib/version", "1.2.0");
-		m->declare("filename", "flanger.dsp");
+		m->declare("filename", "OtFlanger.dsp");
 		m->declare("id", "flanger");
 		m->declare("license", "MIT");
 		m->declare("maths.lib/author", "GRAME");

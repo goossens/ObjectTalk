@@ -12,15 +12,15 @@
 #include "OtLog.h"
 
 #include "OtAudioSettings.h"
-#include "OtDsp.h"
+#include "OtMixerInput.h"
 #include "OtMixer.h"
 
 
 //
-//	OtDsp::OtDsp
+//	OtMixerInput::OtMixerInput
 //
 
-OtDsp::OtDsp() {
+OtMixerInput::OtMixerInput() {
 	// get mixer information
 	auto& mixer = OtMixer::instance();
 
@@ -54,7 +54,7 @@ OtDsp::OtDsp() {
 
 	// set the callback to collect stream data
 	bool success = SDL_SetAudioStreamGetCallback(stream, [](void* data, SDL_AudioStream*, int additional, int total) {
-		((OtDsp*) data)->getStreamData(additional, total);
+		((OtMixerInput*) data)->getStreamData(additional, total);
 	}, this);
 
 	if (!success) {
@@ -69,10 +69,10 @@ OtDsp::OtDsp() {
 
 
 //
-//	OtDsp::~OtDsp
+//	OtMixerInput::~OtMixerInput
 //
 
-OtDsp::~OtDsp() {
+OtMixerInput::~OtMixerInput() {
 	// stop track (if required)
 	if (isPlaying()) {
 		stop();
@@ -89,10 +89,10 @@ OtDsp::~OtDsp() {
 
 
 //
-//	OtDsp::start
+//	OtMixerInput::start
 //
 
-void OtDsp::start() {
+void OtMixerInput::start() {
 	// play the track
 	if (!MIX_PlayTrack(track, 0)) {
 		OtLogFatal("Error in MIX_PlayTrack: {}", SDL_GetError());
@@ -101,10 +101,10 @@ void OtDsp::start() {
 
 
 //
-//	OtDsp::stop
+//	OtMixerInput::stop
 //
 
-void OtDsp::stop() {
+void OtMixerInput::stop() {
 	// stop the track
 	if (!MIX_StopTrack(track, 0)) {
 		OtLogFatal("Error in MIX_StopTrack: {}", SDL_GetError());
@@ -113,19 +113,19 @@ void OtDsp::stop() {
 
 
 //
-//	OtDsp::isPlaying
+//	OtMixerInput::isPlaying
 //
 
-bool OtDsp::isPlaying() {
+bool OtMixerInput::isPlaying() {
 	return MIX_TrackPlaying(track);
 }
 
 
 //
-//	OtDsp::setGain
+//	OtMixerInput::setGain
 //
 
-void OtDsp::setGain(float gain) {
+void OtMixerInput::setGain(float gain) {
 	// sanity check
 	if (!track) {
 		OtLogFatal("Invalid operation on uninitialized sound");
@@ -138,10 +138,10 @@ void OtDsp::setGain(float gain) {
 
 
 //
-//	OtDsp::getGain
+//	OtMixerInput::getGain
 //
 
-float OtDsp::getGain() {
+float OtMixerInput::getGain() {
 	// sanity check
 	if (!track) {
 		OtLogFatal("Invalid operation on uninitialized sound");
@@ -152,10 +152,10 @@ float OtDsp::getGain() {
 
 
 //
-//	OtDsp::getStreamData
+//	OtMixerInput::getStreamData
 //
 
-void OtDsp::getStreamData([[maybe_unused]] int additional, [[maybe_unused]] int total) {
+void OtMixerInput::getStreamData([[maybe_unused]] int additional, [[maybe_unused]] int total) {
 	if (isPlaying() && provider) {
 		provider(buffer);
 

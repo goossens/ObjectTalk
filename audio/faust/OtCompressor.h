@@ -71,7 +71,7 @@ private:
 		m->declare("compressors.lib/compressor_mono:license", "MIT-style STK-4.3 license");
 		m->declare("compressors.lib/name", "Faust Compressor Effect Library");
 		m->declare("compressors.lib/version", "1.6.0");
-		m->declare("filename", "compressor.dsp");
+		m->declare("filename", "OtCompressor.dsp");
 		m->declare("id", "compressor");
 		m->declare("license", "MIT");
 		m->declare("maths.lib/author", "GRAME");

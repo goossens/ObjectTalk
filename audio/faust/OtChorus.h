@@ -84,7 +84,7 @@ private:
 	void metadata(Meta* m) override { 
 		m->declare("author", "Albert Graef");
 		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtChorus -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
-		m->declare("filename", "chorus.dsp");
+		m->declare("filename", "OtChorus.dsp");
 		m->declare("math.lib/author", "GRAME");
 		m->declare("math.lib/copyright", "GRAME");
 		m->declare("math.lib/deprecated", "This library is deprecated and is not maintained anymore. It will be removed in August 2017.");

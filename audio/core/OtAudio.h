@@ -27,7 +27,7 @@
 #include "OtCircuit.h"
 #include "OtCircuitPin.h"
 #include "OtCircuitFactory.h"
-#include "OtDsp.h"
+#include "OtMixerInput.h"
 #include "OtWire.h"
 
 
@@ -152,7 +152,7 @@ private:
 	std::string metadata = "{}";
 
 	// signal processor to get the sound out
-	OtDsp dsp;
+	OtMixerInput mixerInput;
 	void provideSignal(OtAudioBuffer& buffer);
 	std::mutex mutex;
 	OtMeasureAvarage<float, 100> processingTime;

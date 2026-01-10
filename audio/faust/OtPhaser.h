@@ -71,7 +71,7 @@ private:
 	void metadata(Meta* m) override { 
 		m->declare("category", "Modulation");
 		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtPhaser -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
-		m->declare("filename", "phaser.dsp");
+		m->declare("filename", "OtPhaser.dsp");
 		m->declare("filters.lib/fir:author", "Julius O. Smith III");
 		m->declare("filters.lib/fir:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/fir:license", "MIT-style STK-4.3 license");

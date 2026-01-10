@@ -165,7 +165,7 @@ private:
 		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtReverb -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
 		m->declare("delays.lib/name", "Faust Delay Library");
 		m->declare("delays.lib/version", "1.2.0");
-		m->declare("filename", "reverb.dsp");
+		m->declare("filename", "OtReverb.dsp");
 		m->declare("filters.lib/highpass:author", "Julius O. Smith III");
 		m->declare("filters.lib/highpass:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/lowpass0_highpass1", "MIT-style STK-4.3 license");

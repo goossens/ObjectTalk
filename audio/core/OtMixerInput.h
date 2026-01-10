@@ -21,14 +21,14 @@
 
 
 //
-//	OtDsp
+//	OtMixerInput
 //
 
-class OtDsp {
+class OtMixerInput {
 public:
 	// constructor/destructor
-	OtDsp();
-	~OtDsp();
+	OtMixerInput();
+	~OtMixerInput();
 
 	// perform actions
 	void start();

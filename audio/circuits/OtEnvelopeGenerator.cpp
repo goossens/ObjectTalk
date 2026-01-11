@@ -9,14 +9,16 @@
 //	Include files
 //
 
+#include <vector>
+
 #include "imgui.h"
 #include "implot.h"
 #include "nlohmann/json.hpp"
 
 #include "OtUi.h"
 
+#include "OtAudioUi.h"
 #include "OtEnvelope.h"
-#include "OtCircuitControl.h"
 #include "OtCircuitFactory.h"
 
 
@@ -30,50 +32,21 @@ public:
 	inline void configure() override {
 		triggerInput = addInputPin("Trigger", OtCircuitPinClass::Type::control);
 		envelopeOutput = addOutputPin("Output", OtCircuitPinClass::Type::control);
-
-		attackControl = addControl("Attack", nullptr, &attack)->setRange(0.0f, 10.0f)->setLabelFormat("%.2fs")->setIsLogarithmic();
-		holdControl = addControl("Hold", nullptr, &hold)->setRange(0.0f, 10.0f)->setLabelFormat("%.2fs")->setIsLogarithmic();
-		decayControl = addControl("Decay", nullptr, &decay)->setRange(0.0f, 10.0f)->setLabelFormat("%.2fs")->setIsLogarithmic();
-		sustainControl = addControl("Sustain", nullptr, &sustain)->setRange(0.0f, 1.0f)->setLabelFormat("%.2f");
-		releaseControl = addControl("Release", nullptr, &release)->setRange(0.0f, 10.0f)->setLabelFormat("%.2fs")->setIsLogarithmic();
 	}
 
 	// render custom fields
-	inline bool customRendering(float itemWidth) override {
-		if (updateVisualization) {
-			envelope.setAttackTime(attack);
-			envelope.setHoldTime(hold);
-			envelope.setDecayTime(decay);
-			envelope.setSustainLevel(sustain);
-			envelope.setReleaseTime(release);
-			envelope.getVisualization(plotData, plotSize);
-		}
-
-		if (ImPlot::BeginPlot("##AHDSR", ImVec2(itemWidth, plotHeight), ImPlotFlags_CanvasOnly | ImPlotFlags_NoInputs)) {
-			ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoTickLabels);
-			ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoTickLabels);
-			ImPlot::SetupAxisLimits(ImAxis_X1, 0.0, plotSize);
-			ImPlot::SetupAxisLimits(ImAxis_Y1, -0.02, 1.02);
-			ImPlot::PlotLine("Signal", plotData, plotSize);
-			ImPlot::EndPlot();
-		}
-
-		bool changed = false;
-		changed |= attackControl->renderKnob(); ImGui::SameLine();
-		changed |= holdControl->renderKnob(); ImGui::SameLine();
-		changed |= decayControl->renderKnob(); ImGui::SameLine();
-		changed |= sustainControl->renderKnob(); ImGui::SameLine();
-		changed |= releaseControl->renderKnob();
+	inline bool customRendering([[maybe_unused]] float itemWidth) override {
+		bool changed = OtAudioUi::envelope(&attack, &hold, &decay, &sustain, &release, &plotData, updateVisualization);
 		updateVisualization = changed;
 		return changed;
 	}
 
 	inline float getCustomRenderingWidth() override {
-		return OtUi::knobWidth(5);
+		return OtAudioUi::getEnvelopeWidth();
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return plotHeight + OtUi::knobHeight();
+		return OtAudioUi::getEnvelopeHeight();
 	}
 
 	// (de)serialize circuit
@@ -129,8 +102,6 @@ public:
 
 	static constexpr const char* circuitName = "Envelope Generator";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::generator;
-	static constexpr float plotHeight = 100.0f;
-	static constexpr int plotSize = 1024;
 
 private:
 	// properties
@@ -144,15 +115,9 @@ private:
 	OtCircuitPin triggerInput;
 	OtCircuitPin envelopeOutput;
 
-	OtCircuitControl attackControl;
-	OtCircuitControl holdControl;
-	OtCircuitControl decayControl;
-	OtCircuitControl sustainControl;
-	OtCircuitControl releaseControl;
-
 	bool triggerState = false;
 	OtEnvelope envelope;
-	float plotData[plotSize];
+	std::vector<float> plotData;
 	bool updateVisualization = true;
 };
 

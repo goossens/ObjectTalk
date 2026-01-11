@@ -29,15 +29,8 @@ public:
 	inline void configure() override {
 		output = addOutputPin("Output", OtCircuitPinClass::Type::control);
 
-		frequencyControl = addControl("Freq", nullptr, &pitch)
-			->setRange(0.1f, 200.0f)
-			->setLabelFormat("%.1fhz")
-			->setIsFrequency()
-			->setIsLogarithmic();
-
-		pulseWidthControl = addControl("PW", nullptr, &pulseWidth)
-			->setRange(0.0f, 1.0f)
-			->setLabelFormat("%.2f");
+		frequencyControl = addControl("Freq", &pitch)->setRange(0.1f, 200.0f)->setLabelFormat("%.1fhz")->setIsFrequency()->setIsLogarithmic();
+		pulseWidthControl = addControl("PW", &pulseWidth)->setRange(0.0f, 1.0f)->setLabelFormat("%.2f");
 	}
 
 	// render custom fields

@@ -80,6 +80,10 @@ public:
 	}
 
 	// add controls
+	inline OtCircuitControl addControl(const char* name, float* value) {
+		return std::make_shared<OtCircuitControlClass>(name, value);
+	}
+
 	inline OtCircuitControl addControl(const char* name, OtCircuitPin pin, float* value) {
 		return std::make_shared<OtCircuitControlClass>(name, pin, value);
 	}

@@ -31,19 +31,12 @@ public:
 		qmInput = addInputPin("Q Mod", OtCircuitPinClass::Type::control)->hasAttenuation();
 		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
 
-		frequencyControl = addControl("Freq", nullptr, &frequency)
-			->setRange(80.0f, 8000.0f)
-			->setLabelFormat("%.0fhz")
-			->setIsFrequency()
-			->setIsLogarithmic();
-
-		resonanceControl = addControl("Q", nullptr, &resonance)
-			->setRange(0.0f, 1.0f)
-			->setLabelFormat("%.2f");
+		frequencyControl = addControl("Freq", &frequency)->setRange(80.0f, 8000.0f)->setLabelFormat("%.0fhz")->setIsFrequency()->setIsLogarithmic();
+		resonanceControl = addControl("Q", &resonance)->setRange(0.0f, 1.0f)->setLabelFormat("%.2f");
 	}
 
 	// render custom fields
-	inline bool customRendering([[maybe_unused]] float itemWidth) override {
+	inline bool customRendering(float itemWidth) override {
 		ImGui::SetNextItemWidth(itemWidth);
 		bool changed = OtUi::selectorEnum("##modes", &mode, OtVirtualAnalogFilter::modes, OtVirtualAnalogFilter::modesCount);
 		changed |= frequencyControl->renderKnob(); ImGui::SameLine();

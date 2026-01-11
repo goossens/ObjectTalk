@@ -29,7 +29,8 @@ using OtCircuitControl = std::shared_ptr<OtCircuitControlClass>;
 
 class OtCircuitControlClass : public std::enable_shared_from_this<OtCircuitControlClass> {
 public:
-	// constructor
+	// constructors
+	inline OtCircuitControlClass(const char* n, float* v) : name(n), pin(nullptr), value(v) {}
 	inline OtCircuitControlClass(const char* n, OtCircuitPin p, float* v) : name(n), pin(p), value(v) {}
 
 	// set properties

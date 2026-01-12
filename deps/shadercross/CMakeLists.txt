@@ -4,8 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Populate(shadercross QUIET GIT_REPOSITORY "https://github.com/libsdl-org/SDL_shadercross" GIT_TAG "f1ca8cf")
-# FetchContent_Populate(shadercross QUIET GIT_REPOSITORY "https://github.com/libsdl-org/SDL_shadercross" GIT_TAG "main")
+FetchContent_Populate(shadercross QUIET GIT_REPOSITORY "https://github.com/libsdl-org/SDL_shadercross" GIT_TAG "main")
 
 set(IMGUIFD_SOURCES
 	${shadercross_SOURCE_DIR}/include/SDL3_shadercross/SDL_shadercross.h

@@ -17,6 +17,8 @@
 #include <string>
 #include <vector>
 
+#include "SDL3/SDL.h"
+
 #include "MidiFile.h"
 
 
@@ -82,10 +84,10 @@ private:
 	std::vector<Event> events;
 
 	// play parameters
-	float currentPlay = 0.0f;
-	float playEnd = 0.0f;
+	float currentPlay;
+	float playEnd;
 	size_t nextEvent;
-	Uint64 lastEventTime = 0;
+	Uint64 lastEventTime;
 	bool playingFlag = false;
 	bool pausingFlag = false;
 	bool loopingFlag = false;

@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include <atomic>
-
 #include "ImGuiPiano.h"
 #include "nlohmann/json.hpp"
 
@@ -18,8 +16,7 @@
 
 #include "OtAudioUtilities.h"
 #include "OtCircuitFactory.h"
-#include "OtMidiFile.h"
-#include "OtMidiFileAsset.h"
+#include "OtMidi.h"
 
 
 //
@@ -30,104 +27,50 @@ class OtMidiInputCircuit : public OtCircuitClass {
 public:
 	// configure circuit
 	inline void configure() override {
-		pitchOutput = addOutputPin("Pitch", OtCircuitPinClass::Type::control);
+		pitchOutput = addOutputPin("Pitch", OtCircuitPinClass::Type::control)->hasTuning();
 		gateOutput = addOutputPin("Gate", OtCircuitPinClass::Type::control);
 	}
 
 	// render custom fields
 	inline bool customRendering(float itemWidth) override {
-		bool changed = false;
-		ImGui::SetNextItemWidth(itemWidth - ImGui::CalcTextSize(" Midi File").x);
-
-		if (asset.renderUI(" Midi File")) {
-			if (asset.isNull()) {
-				midifile.clear();
-
-			} else if (asset.isReady()) {
-				midifile = asset->getMidiFile();
-
-			} else {
-				midifile.clear();
-			}
-
-			changed |= true;
-		}
-
-		if (!asset.isReady()) {
-			ImGui_PianoKeyboard(
-				"Piano",
-				ImVec2(itemWidth, keyboardHeight),
-				&currentNote,
-				36, 83,
-				[](void* data, int msg, int key, float velocity) {
-					OtMidiInputCircuit* circuit = (OtMidiInputCircuit*) data;
-
-					if (key >= 128) {
-						return false;
-					}
-
-					if (msg == NoteGetStatus) {
-						return circuit->keyPressed[key];
-					}
-
-					if (msg == NoteOn) {
-						circuit->keyPressed[key] = true;
-						circuit->gate = true;
-						circuit->pitch = OtAudioUtilities::midiNoteToPitch(key);
-						circuit->velocity = velocity;
-					}
-
-					if (msg == NoteOff) {
-						circuit->keyPressed[key] = false;
-						circuit->gate = false;
-						circuit->noteOff = true;
-						circuit->velocity = 0.0f;
-					}
-
-					return false;
-				}, this);
-		}
-
+		ImGui::PushItemWidth(itemWidth - midi.getLabelWidth());
+		bool changed = midi.renderUI();
+		ImGui::PopItemWidth();
 		return changed;
 	}
 
 	inline float getCustomRenderingWidth() override {
-		return keyboardWidth;
+		return midi.getRenderWidth();
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return ImGui::GetFrameHeightWithSpacing() + (asset.isReady() ? 0.0f : (keyboardHeight + ImGui::GetStyle().ItemSpacing.y));
+		return midi.getRenderHeight();
 	}
 
 	// (de)serialize circuit
 	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		(*data)["midiFile"] = OtAssetSerialize(asset.getPath(), basedir);
+		midi.serialize(data, basedir);
 	}
 
 	inline void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		asset = OtAssetDeserialize(data, "midiFile", basedir);
+		midi.deserialize(data, basedir);
 	}
 
 	// generate samples
 	void execute() override {
-		// handle status changes for MIDI file
-		if ((asset.isNull() || asset.isMissing() || asset.isInvalid()) && midifile.isValid()) {
-			midifile.clear();
+		midi.processEvents([&](OtMidi::Event* event) {
+			if (event->isNoteOn()) {
+				pitch = OtAudioUtilities::midiNoteToPitch(event->getKeyNumber());
+				velocity = event->getVelocity() / 128.0f;
+				gate = true;
 
-		} else if (asset.isReady() && asset->getMidiFile() != midifile) {
-			midifile = asset->getMidiFile();
-			midifile.loop();
-		}
-
-		// process events from the MIDI file (if it is running)
-		if (midifile.isValid() && midifile.isPlaying()) {
-			midifile.process([&](bool on, int note, int velocity) {
-				gate = on;
-				noteOff = noteOff | !on;
-				pitch = OtAudioUtilities::midiNoteToPitch(note);
-				velocity = static_cast<float>(velocity) / 128.0f;
-			});
-		}
+			} else if (event->isNoteOff()) {
+				pitch = OtAudioUtilities::midiNoteToPitch(event->getKeyNumber());
+				velocity = event->getVelocity() / 128.0f;
+				gate = false;
+				noteOff |= true;
+			}
+		});
 
 		// send pitch signal (if connected)
 		if (pitchOutput->isDestinationConnected()) {
@@ -152,17 +95,13 @@ public:
 
 private:
 	// properties
-	OtAsset<OtMidiFileAsset> asset;
+	OtMidi midi;
 
 	// work variables
-	OtMidiFile midifile;
-	bool keyPressed[128];
-	int currentNote = 0;
-
-	std::atomic<float> pitch = 500.0f;
-	std::atomic<float> velocity = 0.0f;
-	std::atomic<bool> gate = false;
-	std::atomic<bool> noteOff = false;
+	float pitch = 500.0f;
+	float velocity = 0.0f;
+	bool gate = false;
+	bool noteOff = false;
 
 	OtCircuitPin pitchOutput;
 	OtCircuitPin gateOutput;

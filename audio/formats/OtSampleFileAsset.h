@@ -16,17 +16,17 @@
 
 #include "OtAssetBase.h"
 
-#include "OtOneShotFile.h"
+#include "OtSampleFile.h"
 
 
 //
-//	OtOneShotFileAsset
+//	OtSampleFileAsset
 //
 
-class OtOneShotFileAsset : public OtAssetBase {
+class OtSampleFileAsset : public OtAssetBase {
 public:
 	// access the MIDI file
-	inline OtOneShotFile& getOneShotFile() { return samplefile; }
+	inline OtSampleFile& getSampleFile() { return samplefile; }
 
 	// asset properties
 	static constexpr bool hasEditor = false;
@@ -49,5 +49,5 @@ protected:
 
 private:
 	// the actual MIDI file
-	OtOneShotFile samplefile;
+	OtSampleFile samplefile;
 };

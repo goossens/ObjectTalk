@@ -9,13 +9,12 @@
 //	Include files
 //
 
-#include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtAudioFilter.h"
 #include "OtAudioSettings.h"
 #include "OtAudioUtilities.h"
 #include "OtCircuitFactory.h"
-#include "OtVirtualAnalogFilter.h"
 
 
 //
@@ -30,39 +29,31 @@ public:
 		fmInput = addInputPin("F Mod", OtCircuitPinClass::Type::control)->hasAttenuation();
 		qmInput = addInputPin("Q Mod", OtCircuitPinClass::Type::control)->hasAttenuation();
 		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
-
-		frequencyControl = addControl("Freq", &frequency)->setRange(80.0f, 8000.0f)->setLabelFormat("%.0fhz")->setIsFrequency()->setIsLogarithmic();
-		resonanceControl = addControl("Q", &resonance)->setRange(0.0f, 1.0f)->setLabelFormat("%.2f");
 	}
 
 	// render custom fields
 	inline bool customRendering(float itemWidth) override {
-		ImGui::SetNextItemWidth(itemWidth);
-		bool changed = OtUi::selectorEnum("##modes", &mode, OtVirtualAnalogFilter::modes, OtVirtualAnalogFilter::modesCount);
-		changed |= frequencyControl->renderKnob(); ImGui::SameLine();
-		changed |= resonanceControl->renderKnob();
+		ImGui::PushItemWidth(itemWidth - parameters.getLabelWidth());
+		bool changed = parameters.renderUI();
+		ImGui::PopItemWidth();
 		return changed;
 	}
 
 	inline float getCustomRenderingWidth() override {
-		return OtUi::knobWidth(2);
+		return parameters.getRenderWidth();
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return ImGui::GetFrameHeightWithSpacing() + OtUi::knobHeight();
+		return parameters.getRenderHeight();
 	}
 
 	// (de)serialize circuit
-	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
-		(*data)["mode"] = mode;
-		(*data)["frequency"] = frequency;
-		(*data)["resonance"] = resonance;
+	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
+		parameters.serialize(data, basedir);
 	}
 
 	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
-		mode = data->value("mode", OtVirtualAnalogFilter::Mode::off);
-		frequency = data->value("frequency", 1000.0f);
-		resonance = data->value("resonance", 0.5f);
+		parameters.deserialize(data, basedir);
 	}
 
 	// process samples
@@ -70,12 +61,7 @@ public:
 		if (audioOutput->isDestinationConnected()) {
 			if (audioInput->isSourceConnected()) {
 				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-					filter.set(
-						mode,
-						(fmInput->isSourceConnected()) ? OtAudioUtilities::tune(frequency, fmInput->getSample(i)) : frequency,
-						(qmInput->isSourceConnected()) ? resonance * qmInput->getSample(i) : resonance);
-
-					audioOutput->setSample(i, filter.process(audioInput->getSample(i)));
+					audioOutput->setSample(i, OtAudioFilter::process(parameters, state, audioInput->getSample(i)));
 				}
 
 			} else {
@@ -89,9 +75,7 @@ public:
 
 private:
 	// properties
-	OtVirtualAnalogFilter::Mode mode = OtVirtualAnalogFilter::Mode::off;
-	float frequency = 1000.0f;
-	float resonance = 0.5f;
+	OtAudioFilter::Parameters parameters;
 
 	// work variables
 	OtCircuitPin audioInput;
@@ -99,10 +83,7 @@ private:
 	OtCircuitPin qmInput;
 	OtCircuitPin audioOutput;
 
-	OtCircuitControl frequencyControl;
-	OtCircuitControl resonanceControl;
-
-	OtVirtualAnalogFilter filter;
+	OtAudioFilter::State state;
 };
 
 static OtCircuitFactoryRegister<OtVcf> registration;

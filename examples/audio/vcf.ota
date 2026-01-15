@@ -41,7 +41,7 @@
 					"type": "mono"
 				}
 			],
-			"pitch": 440.0,
+			"frequency": 440.0,
 			"pulseWidth": 0.5,
 			"title": "VCO",
 			"type": "VCO",
@@ -85,7 +85,7 @@
 					"type": "control"
 				}
 			],
-			"pitch": 6.800000190734863,
+			"frequency": 6.800000190734863,
 			"pulseWidth": 0.5,
 			"title": "LFO",
 			"type": "LFO",

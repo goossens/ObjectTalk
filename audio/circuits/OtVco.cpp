@@ -9,17 +9,11 @@
 //	Include files
 //
 
-#include "imgui.h"
 #include "nlohmann/json.hpp"
-
-#include "OtAsset.h"
-#include "OtUi.h"
 
 #include "OtAudioSettings.h"
 #include "OtCircuitFactory.h"
 #include "OtOscillator.h"
-#include "OtWaveTable.h"
-#include "OtWaveTableAsset.h"
 
 
 //
@@ -30,140 +24,52 @@ class OtVco : public OtCircuitClass {
 public:
 	// configure circuit
 	inline void configure() override {
-		pitchInput = addInputPin("Pitch", OtCircuitPinClass::Type::control);
+		frequencyInput = addInputPin("Pitch", OtCircuitPinClass::Type::control);
 		pulseWidthInput = addInputPin("Pulse Width", OtCircuitPinClass::Type::control);
 		shapeInput = addInputPin("Shape", OtCircuitPinClass::Type::control);
 		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
 
-		pitchControl = addControl("Pitch", pitchInput, &pitch)
-			->setRange(80.0f, 8000.0f)
-			->setLabelFormat("%.0fhz")
-			->setIsFrequency()
-			->setIsLogarithmic();
-
-		pulseWidthControl = addControl("PW", pulseWidthInput, &pulseWidth)
-			->setRange(0.0f, 1.0f)
-			->setLabelFormat("%.2f");
-
-		shapeControl = addControl("Shape", shapeInput, &shape)
-			->setRange(0.0f, 1.0f)
-			->setLabelFormat("%.2f");
+		parameters.showFrequencyKnob = true;
+		parameters.frequencyKnobLow = 80.0f;
+		parameters.frequencyKnobHigh = 8000.0f;
 	}
 
 	// render custom fields
 	inline bool customRendering(float itemWidth) override {
-		ImGui::SetNextItemWidth(itemWidth);
-		bool changed = OtUi::selectorEnum("##waveForm", &waveForm, OtOscillator::waveForms, OtOscillator::waveFormCount);
-		bool knobs = false;
-
-		if (changed) {
-			needsSizing = true;
-		}
-
-		if (waveForm == OtOscillator::WaveForm::wavetable) {
-			ImGui::SetNextItemWidth(itemWidth - ImGui::CalcTextSize(" Table").x);
-
-			if (asset.renderUI(" Table")) {
-				if (asset.isNull()) {
-					wavetable.clear();
-
-				} else if (asset.isReady()) {
-					wavetable = asset->getWaveTable();
-
-				} else {
-					wavetable.clear();
-				}
-
-				changed |= true;
-			}
-		}
-
-		if (!pitchInput->isSourceConnected()) {
-			changed |= pitchControl->renderKnob();
-			knobs = true;
-		}
-
-		if (!pulseWidthInput->isSourceConnected() && waveForm == OtOscillator::WaveForm::square) {
-			if (knobs) { ImGui::SameLine(); }
-			changed |= pulseWidthControl->renderKnob();
-			knobs = true;
-		}
-
-		if (!shapeInput->isSourceConnected() && waveForm == OtOscillator::WaveForm::wavetable) {
-			if (knobs) { ImGui::SameLine(); }
-			changed |= shapeControl->renderKnob();
-			knobs = true;
-		}
-
+		ImGui::PushItemWidth(itemWidth - parameters.getLabelWidth());
+		bool changed = parameters.renderUI();
+		ImGui::PopItemWidth();
 		return changed;
 	}
 
 	inline float getCustomRenderingWidth() override {
-		if (waveForm == OtOscillator::WaveForm::wavetable) {
-			return 200.0f;
-
-		} else {
-			return OtUi::knobWidth(2);
-		}
+		return parameters.getRenderWidth();
 	}
 
 	inline float getCustomRenderingHeight() override {
-		float height = ImGui::GetFrameHeightWithSpacing();
-
-		if (waveForm == OtOscillator::WaveForm::wavetable) {
-			height += ImGui::GetFrameHeightWithSpacing();
-		}
-
-		size_t knobs = 0;
-		if (!pitchInput->isSourceConnected()) { knobs++; }
-		if (!pulseWidthInput->isSourceConnected() && waveForm == OtOscillator::WaveForm::square) { knobs++; }
-		if (!shapeInput->isSourceConnected() && waveForm == OtOscillator::WaveForm::wavetable) { knobs++; }
-
-		if (knobs) {
-			height += OtUi::knobHeight();
-		}
-
-		return height;
+		parameters.showFrequencyKnob = !frequencyInput->isSourceConnected();
+		parameters.showPulseWidthKnob = parameters.waveForm == OtOscillator::WaveForm::square && !pulseWidthInput->isSourceConnected();
+		parameters.showShapeKnob = parameters.waveForm == OtOscillator::WaveForm::wavetable && !shapeInput->isSourceConnected();
+		return parameters.getRenderHeight();
 	}
 
 	// (de)serialize circuit
 	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		(*data)["waveForm"] = waveForm;
-		(*data)["waveTable"] = OtAssetSerialize(asset.getPath(), basedir);
-		(*data)["pitch"] = pitch;
-		(*data)["pulseWidth"] = pulseWidth;
-		(*data)["shape"] = shape;
-
+		parameters.serialize(data, basedir);
 	}
 
 	inline void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		waveForm = data->value("waveForm", OtOscillator::WaveForm::sine);
-		asset = OtAssetDeserialize(data, "waveTable", basedir);
-		pitch = data->value("pitch", 440.0f);
-		pulseWidth = data->value("pulseWidth", 0.5f);
-		shape = data->value("shape", 0.0f);
+		parameters.deserialize(data, basedir);
 	}
 
 	// generate samples
 	void execute() override {
-		if (audioOutput->isDestinationConnected()) {
-			// process all the samples
-			if (waveForm == OtOscillator::WaveForm::wavetable) {
-				if ((asset.isNull() || asset.isMissing() || asset.isInvalid()) && wavetable.isValid()) {
-					wavetable.clear();
-
-				} else if (asset.isReady() && asset->getWaveTable() != wavetable) {
-					wavetable = asset->getWaveTable();
-					oscillator.setWaveTable(&wavetable);
-				}
-			}
-
+		if (audioOutput->isDestinationConnected() && parameters.isReady()) {
 			for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-				audioOutput->setSample(i, oscillator.get(
-					waveForm,
-					pitchControl->getValue(i),
-					pulseWidthControl->getValue(i),
-					shapeControl->getValue(i)));
+				state.frequency = frequencyInput->isSourceConnected() ? OtAudioUtilities::cvToPitch(frequencyInput->getSample(i)) : parameters.frequency;
+				state.pulseWidth = pulseWidthInput->isSourceConnected() ? pulseWidthInput->getSample(i) : parameters.pulseWidth;
+				state.shape = shapeInput->isSourceConnected() ? shapeInput->getSample(i) : parameters.shape;
+				audioOutput->setSample(i, OtOscillator::get(parameters, state));
 			}
 		}
 	};
@@ -173,26 +79,15 @@ public:
 
 private:
 	// properties
-	OtOscillator::WaveForm waveForm = OtOscillator::WaveForm::sine;
-	float pitch = 440.0f;
-	float pulseWidth = 0.5f;
-	float shape = 0.0f;
-
-	OtAsset<OtWaveTableAsset> asset;
+	OtOscillator::Parameters parameters;
 
 	// work variables
-	OtWaveTable wavetable;
+	OtOscillator::State state;
 
-	OtCircuitPin pitchInput;
+	OtCircuitPin frequencyInput;
 	OtCircuitPin pulseWidthInput;
 	OtCircuitPin shapeInput;
 	OtCircuitPin audioOutput;
-
-	OtCircuitControl pitchControl;
-	OtCircuitControl pulseWidthControl;
-	OtCircuitControl shapeControl;
-
-	OtOscillator oscillator;
 };
 
 static OtCircuitFactoryRegister<OtVco> registration;

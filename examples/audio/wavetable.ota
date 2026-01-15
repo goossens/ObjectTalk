@@ -4,10 +4,14 @@
 			"id": 1315334498,
 			"inputs": [],
 			"midiFile": "assets/freude.mid",
+			"midiSource": 1,
 			"outputs": [
 				{
 					"id": 2197641789,
 					"name": "Pitch",
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 0.0,
 					"type": "control"
 				},
 				{
@@ -48,6 +52,7 @@
 			"y": 416.0
 		},
 		{
+			"frequency": 440.0,
 			"id": 3924541866,
 			"inputs": [
 				{
@@ -73,12 +78,12 @@
 					"type": "mono"
 				}
 			],
-			"pitch": 440.0,
 			"pulseWidth": 0.5,
-			"shape": 0.0,
+			"sampleFile": "",
+			"sampleFileFrequency": 0.0,
 			"title": "VCO",
 			"type": "VCO",
-			"waveForm": 4,
+			"waveForm": 5,
 			"waveTable": "assets/brass.wav",
 			"x": 465.0,
 			"y": 201.0
@@ -199,11 +204,6 @@
 			"to": 2235339939
 		},
 		{
-			"from": 3111468910,
-			"id": 747831206,
-			"to": 2718563792
-		},
-		{
 			"from": 2197641789,
 			"id": 96423281,
 			"to": 2102266532
@@ -227,6 +227,11 @@
 			"from": 3111468910,
 			"id": 2461571299,
 			"to": 3819302355
+		},
+		{
+			"from": 3111468910,
+			"id": 747831206,
+			"to": 2718563792
 		}
 	]
 }

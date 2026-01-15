@@ -15,14 +15,14 @@
 
 #include "OtAudioSettings.h"
 
-#include "OtOneShotFile.h"
+#include "OtSampleFile.h"
 
 
 //
-//	OtOneShotFile::load
+//	OtSampleFile::load
 //
 
-void OtOneShotFile::load(const std::string& path) {
+void OtSampleFile::load(const std::string& path) {
 	SDL_AudioSpec spec;
 	Uint8* buffer;
 	Uint32 len;

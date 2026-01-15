@@ -18,8 +18,8 @@
 			],
 			"title": "MIDI Input",
 			"type": "MIDI Input",
-			"x": 11.0,
-			"y": 482.0
+			"x": 9.0,
+			"y": 508.0
 		},
 		{
 			"id": 1112908790,
@@ -70,6 +70,7 @@
 			"y": 191.0
 		},
 		{
+			"frequency": 440.0,
 			"id": 2557146591,
 			"inputs": [
 				{
@@ -95,9 +96,9 @@
 					"type": "mono"
 				}
 			],
-			"pitch": 440.0,
 			"pulseWidth": 0.5,
-			"shape": 0.0,
+			"sampleFile": "",
+			"sampleFileFrequency": 0.0,
 			"title": "VCO",
 			"type": "VCO",
 			"waveForm": 3,
@@ -132,6 +133,7 @@
 			"y": 338.0
 		},
 		{
+			"frequency": 1.0,
 			"id": 3244187191,
 			"inputs": [],
 			"outputs": [
@@ -141,15 +143,18 @@
 					"type": "control"
 				}
 			],
-			"pitch": 1.0,
 			"pulseWidth": 0.5,
+			"sampleFile": "",
+			"sampleFileFrequency": 0.0,
 			"title": "LFO",
 			"type": "LFO",
 			"waveForm": 0,
+			"waveTable": "",
 			"x": 1048.0,
 			"y": 629.0
 		},
 		{
+			"frequency": 440.0,
 			"id": 405217887,
 			"inputs": [
 				{
@@ -175,17 +180,18 @@
 					"type": "mono"
 				}
 			],
-			"pitch": 440.0,
 			"pulseWidth": 0.5,
-			"shape": 0.0,
+			"sampleFile": "",
+			"sampleFileFrequency": 0.0,
 			"title": "VCO",
 			"type": "VCO",
 			"waveForm": 1,
 			"waveTable": "",
 			"x": 491.0,
-			"y": 314.0
+			"y": 322.0
 		},
 		{
+			"frequency": 440.0,
 			"id": 3678190291,
 			"inputs": [
 				{
@@ -211,9 +217,9 @@
 					"type": "mono"
 				}
 			],
-			"pitch": 440.0,
 			"pulseWidth": 0.5,
-			"shape": 0.0,
+			"sampleFile": "",
+			"sampleFileFrequency": 0.0,
 			"title": "VCO",
 			"type": "VCO",
 			"waveForm": 3,

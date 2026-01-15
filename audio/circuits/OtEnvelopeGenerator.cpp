@@ -17,7 +17,6 @@
 
 #include "OtUi.h"
 
-#include "OtAudioUi.h"
 #include "OtEnvelope.h"
 #include "OtCircuitFactory.h"
 
@@ -36,34 +35,25 @@ public:
 
 	// render custom fields
 	inline bool customRendering([[maybe_unused]] float itemWidth) override {
-		bool changed = OtAudioUi::envelope(&attack, &hold, &decay, &sustain, &release, &plotData, updateVisualization);
-		updateVisualization = changed;
+		bool changed = parameters.renderUI(&plotData, updateVisualization);
 		return changed;
 	}
 
 	inline float getCustomRenderingWidth() override {
-		return OtAudioUi::getEnvelopeWidth();
+		return parameters.getRenderWidth();
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return OtAudioUi::getEnvelopeHeight();
+		return parameters.getRenderHeight();
 	}
 
 	// (de)serialize circuit
-	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
-		(*data)["attack"] = attack;
-		(*data)["hold"] = hold;
-		(*data)["decay"] = decay;
-		(*data)["sustain"] = sustain;
-		(*data)["release"] = release;
+	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
+		parameters.serialize(data, basedir);
 	}
 
-	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
-		attack = data->value("attack", 1.0f);
-		hold = data->value("hold", 0.0f);
-		decay = data->value("decay", 1.0f);
-		sustain = data->value("sustain", 0.5f);
-		release = data->value("release", 0.2f);
+	inline void customDeserialize(nlohmann::json* data, std::string* basedir) override {
+		parameters.deserialize(data, basedir);
 		updateVisualization = true;
 	}
 
@@ -71,27 +61,21 @@ public:
 	void execute() override {
 		if (envelopeOutput->isDestinationConnected()) {
 			if (triggerInput->isSourceConnected()) {
-				envelope.setAttackTime(attack);
-				envelope.setHoldTime(hold);
-				envelope.setDecayTime(decay);
-				envelope.setSustainLevel(sustain);
-				envelope.setReleaseTime(release);
-
 				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
 					auto newTriggerState = triggerInput->getSample(i) > 0.5f;
 
 					if (newTriggerState != triggerState) {
 						if (newTriggerState) {
-							envelope.noteOn();
+							OtEnvelope::noteOn(parameters, state);
 
 						} else {
-							envelope.noteOff();
+							OtEnvelope::noteOff(parameters, state);
 						}
 
 						triggerState = newTriggerState;
 					}
 
-					envelopeOutput->setSample(i, envelope.process());
+					envelopeOutput->setSample(i, OtEnvelope::process(parameters, state));
 				}
 
 			} else {
@@ -105,18 +89,15 @@ public:
 
 private:
 	// properties
-	float attack = 1.0f;
-	float hold = 0.0f;
-	float decay = 1.0f;
-	float sustain = 0.8f;
-	float release = 0.2f;
+	OtEnvelope::Parameters parameters;
 
 	// work variables
+	OtEnvelope::State state;
+
 	OtCircuitPin triggerInput;
 	OtCircuitPin envelopeOutput;
 
 	bool triggerState = false;
-	OtEnvelope envelope;
 	std::vector<float> plotData;
 	bool updateVisualization = true;
 };

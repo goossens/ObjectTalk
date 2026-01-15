@@ -33,9 +33,11 @@ public:
 
 	// resize the buffer
 	inline void resize(size_t c, size_t s=OtAudioSettings::bufferSize) {
-		channels = c;
-		samples = s;
-		buffer.resize(channels * samples);
+		if (channels != c || samples != s) {
+			channels = c;
+			samples = s;
+			buffer.resize(channels * samples);
+		}
 	}
 
 	// clear the buffer with specified value
@@ -91,7 +93,7 @@ public:
 
 private:
 	// signal buffer (channels are interleaved)
-	size_t channels;
-	size_t samples;
+	size_t channels = 0;
+	size_t samples = 0;
 	std::vector<float> buffer;
 };

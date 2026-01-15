@@ -56,6 +56,24 @@ void OtCircuitPinClass::setSample(size_t channel, size_t sample, float value) {
 
 
 //
+//	OtCircuitPinClass::setSamples
+//
+
+
+void OtCircuitPinClass::setSamples(float value) {
+	if (attenuationFlag) {
+		buffer->clear(value * attenuation);
+
+	} else if (tuningFlag) {
+		buffer->clear(OtAudioUtilities::tuneCV(value, tuningOctaves, tuningSemitones, tuningCents));
+
+	} else {
+		buffer->clear(value);
+	}
+}
+
+
+//
 //	OtCircuitPinClass::serialize
 //
 

@@ -41,7 +41,7 @@
 					"type": "mono"
 				}
 			],
-			"pitch": 440.0,
+			"frequency": 440.0,
 			"pulseWidth": 0.5,
 			"title": "VCO",
 			"type": "VCO",

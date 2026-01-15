@@ -21,10 +21,10 @@
 
 
 //
-//	OtOneShotFile
+//	OtSampleFile
 //
 
-class OtOneShotFile {
+class OtSampleFile {
 public:
 	// load the specified sound file);
 	void load(const std::string& path);
@@ -40,8 +40,8 @@ public:
 	inline float getRootFrequency() { return rootFrequency; }
 
 	// see if sounds are identical
-	inline bool operator==(OtOneShotFile& rhs) { return sound == rhs.sound; }
-	inline bool operator!=(OtOneShotFile& rhs) { return !operator==(rhs); }
+	inline bool operator==(OtSampleFile& rhs) { return sound == rhs.sound; }
+	inline bool operator!=(OtSampleFile& rhs) { return !operator==(rhs); }
 
 private:
 	// properties

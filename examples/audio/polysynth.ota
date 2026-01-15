@@ -1,0 +1,64 @@
+{
+	"circuits": [
+		{
+			"filter": {
+				"frequency": 1000.0,
+				"mode": 0,
+				"power": true,
+				"resonance": 0.5
+			},
+			"id": 2696420272,
+			"inputs": [],
+			"midiFile": "",
+			"midiSource": 1,
+			"oscillators": [
+				{
+					"frequency": 440.0,
+					"pulseWidth": 0.5,
+					"sampleFile": "",
+					"sampleFileFrequency": 0.0,
+					"waveForm": 0,
+					"waveTable": ""
+				},
+				{
+					"frequency": 440.0,
+					"pulseWidth": 0.5,
+					"sampleFile": "",
+					"sampleFileFrequency": 0.0,
+					"waveForm": 0,
+					"waveTable": ""
+				},
+				{
+					"frequency": 440.0,
+					"pulseWidth": 0.5,
+					"sampleFile": "",
+					"sampleFileFrequency": 0.0,
+					"waveForm": 0,
+					"waveTable": ""
+				},
+				{
+					"frequency": 440.0,
+					"pulseWidth": 0.5,
+					"sampleFile": "",
+					"sampleFileFrequency": 0.0,
+					"waveForm": 0,
+					"waveTable": ""
+				}
+			],
+			"outputs": [
+				{
+					"attenuation": 1.0,
+					"id": 3568801586,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"title": "Polyphonic Synth",
+			"type": "Polyphonic Synth",
+			"x": 557.0,
+			"y": 69.0
+		}
+	],
+	"metadata": {},
+	"wires": []
+}

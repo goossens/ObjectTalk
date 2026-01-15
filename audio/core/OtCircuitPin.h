@@ -112,7 +112,7 @@ public:
 
 	void setSample(size_t channel, size_t sample, float value);
 	inline void setSample(size_t sample, float value) { setSample(0, sample, value); }
-	inline void setSamples(float value) { buffer->clear(value); }
+	void setSamples(float value);
 
 	inline OtAudioBuffer& getInputBuffer() { return *(sourcePin->buffer); }
 	inline OtAudioBuffer& getOutputBuffer() { return *buffer; }

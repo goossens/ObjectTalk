@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "SDL3/SDL.h"
-
 #include "OtPath.h"
 #include "OtLog.h"
 

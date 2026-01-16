@@ -22,6 +22,7 @@
 #include "implot.h"
 
 #include "OtDejaVu.h"
+#include "OtFontAudio.h"
 #include "OtFramework.h"
 #include "OtGpu.h"
 
@@ -64,14 +65,21 @@ void OtFramework::initIMGUI() {
 	initInfo.MSAASamples = SDL_GPU_SAMPLECOUNT_1;
 	ImGui_ImplSDLGPU3_Init(&initInfo);
 
-	// setup our font
+	// setup our fonts
+	io.Fonts->Clear();
 	ImFontConfig config;
+
 	std::memcpy(config.Name, "DejaVu", 7);
 	config.FontDataOwnedByAtlas = false;
 	config.OversampleH = 1;
 	config.OversampleV = 1;
-	io.Fonts->Clear();
-	io.Fonts->AddFontFromMemoryCompressedTTF((void*) &OtDejaVu, OtDejaVuSize, 15.0f, &config);
+	io.Fonts->AddFontFromMemoryCompressedTTF(reinterpret_cast<const void*>(OtDejaVu::data()), static_cast<int>(OtDejaVu::size()), 15.0f, &config);
+
+	std::memcpy(config.Name, "FontAudio", 14);
+	config.FontDataOwnedByAtlas = false;
+	config.OversampleH = 1;
+	config.OversampleV = 1;
+	io.Fonts->AddFontFromMemoryCompressedTTF(reinterpret_cast<const void*>(OtFontAudio::data()), static_cast<int>(OtFontAudio::size()), 15.0f, &config);
 }
 
 

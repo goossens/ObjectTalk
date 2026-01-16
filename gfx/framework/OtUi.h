@@ -39,7 +39,8 @@ class OtUi {
 public:
 	enum class Font {
 		standard = 0,
-		editor
+		editor,
+		audio
 	};
 
 	enum class Alignment {

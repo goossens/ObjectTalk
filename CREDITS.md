@@ -59,6 +59,7 @@ In case User Interface (UI) modules are included, we also use:
 [generous license](https://raw.githubusercontent.com/goossens/ObjectTalk/refs/heads/master/gfx/framework/OtDejaVu.lic).
 * Simple Font is extracted from the [Hershey Fonts](https://github.com/kamalmostafa/hershey-fonts)
 released under the [GNU General Public License, version 2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
+* [Fontaudio](https://github.com/fefanto/fontaudio) - icon font for audio developers by [Michelangelo Nottoli](https://github.com/fefanto) released under the [MIT License](https://opensource.org/licenses/MIT).
 
 ## Tools
 

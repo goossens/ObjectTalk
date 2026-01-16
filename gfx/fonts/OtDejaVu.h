@@ -12,13 +12,21 @@
 //	Include files
 //
 
+#include <cstddef>
 #include <cstdint>
 
 
 //
-//	Static variables
+//	OtDejaVu
 //
 
+class OtDejaVu {
+public:
+	// access font
+	inline static const uint8_t* data() { return fontData; }
+	inline static size_t size() { return fontSize; }
 
-extern const unsigned int OtDejaVu[258552 / 4];
-static constexpr int OtDejaVuSize = 258552;
+private:
+	static const uint8_t fontData[340712];
+	inline static constexpr size_t fontSize = 340712;
+};

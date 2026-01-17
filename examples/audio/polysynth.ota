@@ -3,17 +3,25 @@
 		{
 			"filter": {
 				"frequency": 1000.0,
-				"mode": 0,
+				"mode": 4,
 				"power": true,
 				"resonance": 0.5
 			},
 			"id": 2696420272,
 			"inputs": [],
-			"midiFile": "",
-			"midiSource": 1,
 			"oscillators": [
 				{
 					"frequency": 440.0,
+					"power": true,
+					"pulseWidth": 0.5,
+					"sampleFile": "",
+					"sampleFileFrequency": 0.0,
+					"waveForm": 1,
+					"waveTable": ""
+				},
+				{
+					"frequency": 440.0,
+					"power": false,
 					"pulseWidth": 0.5,
 					"sampleFile": "",
 					"sampleFileFrequency": 0.0,
@@ -22,6 +30,7 @@
 				},
 				{
 					"frequency": 440.0,
+					"power": false,
 					"pulseWidth": 0.5,
 					"sampleFile": "",
 					"sampleFileFrequency": 0.0,
@@ -30,14 +39,7 @@
 				},
 				{
 					"frequency": 440.0,
-					"pulseWidth": 0.5,
-					"sampleFile": "",
-					"sampleFileFrequency": 0.0,
-					"waveForm": 0,
-					"waveTable": ""
-				},
-				{
-					"frequency": 440.0,
+					"power": false,
 					"pulseWidth": 0.5,
 					"sampleFile": "",
 					"sampleFileFrequency": 0.0,
@@ -55,10 +57,61 @@
 			],
 			"title": "Polyphonic Synth",
 			"type": "Polyphonic Synth",
-			"x": 557.0,
-			"y": 69.0
+			"x": 416.0,
+			"y": 196.0
+		},
+		{
+			"id": 1005173695,
+			"inputs": [],
+			"midiFile": "assets/chopin.mid",
+			"midiSource": 1,
+			"outputs": [
+				{
+					"id": 3706492645,
+					"name": "MIDI",
+					"type": "midi"
+				},
+				{
+					"id": 2199828507,
+					"name": "Pitch",
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 0.0,
+					"type": "control"
+				},
+				{
+					"id": 13061472,
+					"name": "Gate",
+					"type": "control"
+				}
+			],
+			"title": "MIDI Input",
+			"type": "MIDI Input",
+			"x": 24.0,
+			"y": 140.0
+		},
+		{
+			"id": 61692478,
+			"inputs": [
+				{
+					"id": 4129494749,
+					"name": "Input",
+					"type": "midi"
+				}
+			],
+			"outputs": [],
+			"title": "MIDI Probe",
+			"type": "MIDI Probe",
+			"x": 414.0,
+			"y": 54.0
 		}
 	],
 	"metadata": {},
-	"wires": []
+	"wires": [
+		{
+			"from": 3706492645,
+			"id": 3018329233,
+			"to": 4129494749
+		}
+	]
 }

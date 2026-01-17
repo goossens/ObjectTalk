@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <array>
 #include <functional>
 #include <memory>
 #include <mutex>
@@ -23,6 +24,7 @@
 #include "OtAsset.h"
 
 #include "OtAudioUtilities.h"
+#include "OtMidiBuffer.h"
 #include "OtMidiFile.h"
 #include "OtMidiFileAsset.h"
 #include "OtMidiMessage.h"
@@ -61,9 +63,9 @@ private:
 	// work variables
 	OtMidiFile midifile;
 
-	bool keyPressed[128];
+	std::array<bool, 128> keyPressed = {false};
 	int currentNote = 0;
-	std::vector<std::shared_ptr<OtMidiMessage>> messages;
+	OtMidiBuffer messages;
 
 	std::mutex mutex;
 };

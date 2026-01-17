@@ -27,6 +27,7 @@ class OtMidiInputCircuit : public OtCircuitClass {
 public:
 	// configure circuit
 	inline void configure() override {
+		midiOutput = addOutputPin("MIDI", OtCircuitPinClass::Type::midi);
 		pitchOutput = addOutputPin("Pitch", OtCircuitPinClass::Type::control)->hasTuning();
 		gateOutput = addOutputPin("Gate", OtCircuitPinClass::Type::control);
 	}
@@ -58,7 +59,12 @@ public:
 
 	// generate audio stream by evaluating MIDI messages
 	void execute() override {
+		auto& midiBuffer = midiOutput->getMidiOutputBuffer();
+		midiBuffer.clear();
+
 		midi.processEvents([&](std::shared_ptr<OtMidiMessage> message) {
+			midiBuffer.emplace_back(message);
+
 			if (message->isNoteOn()) {
 				pitch = OtAudioUtilities::midiNoteToPitch(message->getKeyNumber());
 				velocity = message->getVelocity() / 128.0f;
@@ -103,6 +109,7 @@ private:
 	bool gate = false;
 	bool noteOff = false;
 
+	OtCircuitPin midiOutput;
 	OtCircuitPin pitchOutput;
 	OtCircuitPin gateOutput;
 };

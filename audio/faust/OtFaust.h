@@ -311,7 +311,7 @@ public:
 		if (audioOutput->isDestinationConnected()) {
 			if (audioInput->isSourceConnected()) {
 				auto in = audioInput->getSamples();
-				auto out = audioOutput->getOutputBuffer().data();
+				auto out = audioOutput->getAudioOutputBuffer().data();
 				faustDsp.compute(OtAudioSettings::bufferSize, &in, &out);
 
 			} else {
@@ -377,9 +377,9 @@ public:
 				float* inputs[] = { leftIn.data(), rightIn.data() };
 				float* outputs[] = { leftOut.data(), rightOut.data() };
 
-				deinterleave(audioInput->getInputBuffer(), leftIn, rightIn);
+				deinterleave(audioInput->getAudioInputBuffer(), leftIn, rightIn);
 				faustDsp.compute(OtAudioSettings::bufferSize, inputs, outputs);
-				interleave(audioOutput->getOutputBuffer(), leftOut, rightOut);
+				interleave(audioOutput->getAudioOutputBuffer(), leftOut, rightOut);
 
 			} else {
 				audioOutput->setSamples(0.0f);

@@ -15,6 +15,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "nlohmann/json_fwd.hpp"
 
@@ -23,6 +24,7 @@
 #include "OtCircuitUtils.h"
 #include "OtCircuitUtils.h"
 #include "OtAudioBuffer.h"
+#include "OtMidiBuffer.h"
 
 
 //
@@ -45,7 +47,8 @@ public:
 	enum class Type {
 		mono,
 		stereo,
-		control
+		control,
+		midi
 	};
 
 	enum class Direction {
@@ -56,7 +59,8 @@ public:
 	static constexpr const char* typeNames[] = {
 		"mono",
 		"stereo",
-		"control"
+		"control",
+		"midi"
 	};
 
 	// constructor
@@ -66,15 +70,19 @@ public:
 		if (direction == Direction::output) {
 			switch (type) {
 				case Type::mono:
-					buffer = std::make_shared<OtAudioBuffer>(1);
+					audioBuffer = std::make_shared<OtAudioBuffer>(1);
 					break;
 
 				case Type::stereo:
-					buffer = std::make_shared<OtAudioBuffer>(2);
+					audioBuffer = std::make_shared<OtAudioBuffer>(2);
 					break;
 
 				case Type::control:
-					buffer = std::make_shared<OtAudioBuffer>(1);
+					audioBuffer = std::make_shared<OtAudioBuffer>(1);
+					break;
+
+				case Type::midi:
+					midiBuffer = std::make_shared<OtMidiBuffer>();
 					break;
 			}
 		}
@@ -108,14 +116,17 @@ public:
 	// access incoming and outgoing samples
 	float getSample(size_t channel, size_t sample);
 	inline float getSample(size_t sample) { return getSample(0, sample); }
-	inline float* getSamples() { return sourcePin->buffer->data(); }
+	inline float* getSamples() { return sourcePin->audioBuffer->data(); }
 
 	void setSample(size_t channel, size_t sample, float value);
 	inline void setSample(size_t sample, float value) { setSample(0, sample, value); }
 	void setSamples(float value);
 
-	inline OtAudioBuffer& getInputBuffer() { return *(sourcePin->buffer); }
-	inline OtAudioBuffer& getOutputBuffer() { return *buffer; }
+	inline OtAudioBuffer& getAudioInputBuffer() { return *(sourcePin->audioBuffer); }
+	inline OtAudioBuffer& getAudioOutputBuffer() { return *audioBuffer; }
+
+	inline OtMidiBuffer& getMidiInputBuffer() { return *(sourcePin->midiBuffer); }
+	inline OtMidiBuffer& getMidiOutputBuffer() { return *midiBuffer; }
 
 	// (de)serialize
 	nlohmann::json serialize(std::string* basedir=nullptr);
@@ -137,7 +148,8 @@ public:
 	float tuningCents = 0.0f;
 	OtCircuitClass* circuit;
 
-	std::shared_ptr<OtAudioBuffer> buffer;
+	std::shared_ptr<OtAudioBuffer> audioBuffer;
+	std::shared_ptr<OtMidiBuffer> midiBuffer;
 	OtCircuitPin sourcePin;
 	int destinationConnections = 0;
 };

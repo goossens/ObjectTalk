@@ -14,6 +14,7 @@
 
 #include <array>
 
+#include "imgui.h"
 #include "nlohmann/json_fwd.hpp"
 
 #include "OtAudioFilter.h"
@@ -29,8 +30,8 @@ class OtSynth {
 public:
 	// UI to change synth properties
 	bool renderUI(float itemWidth);
-	inline float getRenderWidth() { return midi.getRenderWidth(); }
-	float getRenderHeight();
+	inline float getRenderWidth() { return 250.0f; }
+	inline float getRenderHeight() { return ImGui::GetFrameHeightWithSpacing() * (numberOfOscillators + 2); }
 
 	// (de)serialize data
 	void serialize(nlohmann::json* data, std::string* basedir);
@@ -54,7 +55,6 @@ private:
 
 	std::array<Oscillator, numberOfOscillators> oscillators;
 	Filter filter;
-	OtMidi midi;
 
 	// support functions
 	bool renderOscillator(size_t id);

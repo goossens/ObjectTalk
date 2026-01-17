@@ -30,25 +30,6 @@ public:
 		input = addInputPin("Input", OtCircuitPinClass::Type::mono);
 	}
 
-	// process samples
-	inline void execute() override {
-		if (input->isSourceConnected()) {
-			customW = width;
-			customH = height;
-
-			// add input signal to data buffer
-			std::lock_guard<std::mutex> guard(mutex);
-			data.insert(input->getSamples(), OtAudioSettings::bufferSize);
-
-		} else {
-			customW = width;
-			customH = ImGui::GetFrameHeightWithSpacing();
-
-		}
-
-		needsSizing = true;
-	}
-
 	// render custom fields
 	inline bool customRendering(float itemWidth) override {
 		if (input->isSourceConnected()) {
@@ -73,6 +54,7 @@ public:
 			}
 
 		} else {
+			ImGui::AlignTextToFramePadding();
 			ImGui::TextUnformatted("No input signal");
 		}
 
@@ -87,6 +69,25 @@ public:
 		return customH + ImGui::GetStyle().ItemSpacing.y;
 	}
 
+	// process samples
+	inline void execute() override {
+		if (input->isSourceConnected()) {
+			customW = width;
+			customH = height;
+
+			// add input signal to data buffer
+			std::lock_guard<std::mutex> guard(mutex);
+			data.insert(input->getSamples(), OtAudioSettings::bufferSize);
+
+		} else {
+			customW = width;
+			customH = ImGui::GetFrameHeight();
+
+		}
+
+		needsSizing = true;
+	}
+
 	static constexpr const char* circuitName = "Oscilloscope";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::probe;
 	static constexpr float width = 300.0f;
@@ -98,6 +99,7 @@ private:
 	// properties
 	OtCircuitPin input;
 
+	// work variables
 	float customW;
 	float customH;
 

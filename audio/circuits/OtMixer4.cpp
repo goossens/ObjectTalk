@@ -45,7 +45,7 @@ public:
 	};
 
 	static constexpr const char* circuitName = "4 Channel Mixer";
-	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::converter;
+	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::processor;
 
 private:
 	// properties

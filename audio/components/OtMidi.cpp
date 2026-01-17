@@ -17,7 +17,6 @@
 #include "OtMidi.h"
 
 
-
 //
 //	Constants
 //

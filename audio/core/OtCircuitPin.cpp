@@ -24,7 +24,7 @@
 //
 
 float OtCircuitPinClass::getSample(size_t channel, size_t sample) {
-	float value = sourcePin->buffer->get(channel, sample);
+	float value = sourcePin->audioBuffer->get(channel, sample);
 
 	if (attenuationFlag) {
 		return value * attenuation;
@@ -44,13 +44,13 @@ float OtCircuitPinClass::getSample(size_t channel, size_t sample) {
 
 void OtCircuitPinClass::setSample(size_t channel, size_t sample, float value) {
 	if (attenuationFlag) {
-		buffer->set(channel, sample, value * attenuation);
+		audioBuffer->set(channel, sample, value * attenuation);
 
 	} else if (tuningFlag) {
-		buffer->set(channel, sample, OtAudioUtilities::tuneCV(value, tuningOctaves, tuningSemitones, tuningCents));
+		audioBuffer->set(channel, sample, OtAudioUtilities::tuneCV(value, tuningOctaves, tuningSemitones, tuningCents));
 
 	} else {
-		buffer->set(channel, sample, value);
+		audioBuffer->set(channel, sample, value);
 	}
 }
 
@@ -62,13 +62,13 @@ void OtCircuitPinClass::setSample(size_t channel, size_t sample, float value) {
 
 void OtCircuitPinClass::setSamples(float value) {
 	if (attenuationFlag) {
-		buffer->clear(value * attenuation);
+		audioBuffer->clear(value * attenuation);
 
 	} else if (tuningFlag) {
-		buffer->clear(OtAudioUtilities::tuneCV(value, tuningOctaves, tuningSemitones, tuningCents));
+		audioBuffer->clear(OtAudioUtilities::tuneCV(value, tuningOctaves, tuningSemitones, tuningCents));
 
 	} else {
-		buffer->clear(value);
+		audioBuffer->clear(value);
 	}
 }
 

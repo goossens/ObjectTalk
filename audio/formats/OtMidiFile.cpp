@@ -23,7 +23,7 @@
 
 void OtMidiFile::load(const std::string& path) {
 	stop();
-	messages = std::make_shared<std::vector<Event>>();
+	events = std::make_shared<std::vector<Event>>();
 
 	smf::MidiFile midi;
 
@@ -36,13 +36,13 @@ void OtMidiFile::load(const std::string& path) {
 		OtLogError("Can't load MIDI midi [{}]", path);
 	}
 
-	// build a list of relevant messages
+	// build a list of relevant events
 	midi.joinTracks();
 
 	for (auto i = 0; i < midi[0].getEventCount(); i++) {
 		auto& event = midi[0][i];
 
-		messages->emplace_back(
+		events->emplace_back(
 			static_cast<float>(midi.getTimeInSeconds(0, i)),
 			reinterpret_cast<uint8_t*>(event.data()), event.size());
 	}
@@ -56,7 +56,7 @@ void OtMidiFile::clear() {
 		sendAllNotesOff = true;
 	}
 
-	messages = nullptr;
+	events = nullptr;
 }
 
 
@@ -65,7 +65,7 @@ void OtMidiFile::clear() {
 //
 
 void OtMidiFile::start() {
-	if (messages->size()) {
+	if (events->size()) {
 		currentPlay = 0.0f;
 		nextEvent = 0;
 		lastEventTime = SDL_GetTicks();
@@ -121,18 +121,18 @@ void OtMidiFile::resume() {
 //
 
 void OtMidiFile::process(std::function<void(std::shared_ptr<OtMidiMessage>)> callback) {
-	if (messages && playingFlag) {
+	if (events && playingFlag) {
 		// determine current play time by adding interval since last run
 		auto now = SDL_GetTicks();
 		currentPlay += static_cast<float>(now - lastEventTime) / 1000.0f;
 		lastEventTime = now;
 
-		// process all messages that are due
-		while (playingFlag && messages->at(nextEvent).time < currentPlay) {
-			callback((*messages)[nextEvent].message);
+		// process all events that are due
+		while (playingFlag && events->at(nextEvent).time < currentPlay) {
+			callback((*events)[nextEvent].message);
 
 			// if we reach the end of the MIDI stream, either loop or stop
-			if (++nextEvent == messages->size()) {
+			if (++nextEvent == events->size()) {
 				if (loopingFlag) {
 					currentPlay = 0.0f;
 					nextEvent = 0;

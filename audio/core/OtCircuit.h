@@ -39,6 +39,7 @@ public:
 		input,
 		output,
 		generator,
+		processor,
 		effect,
 		converter,
 		probe
@@ -48,6 +49,7 @@ public:
 		"Input",
 		"Output",
 		"Generator",
+		"Processor",
 		"Effect",
 		"Converter",
 		"Probe"

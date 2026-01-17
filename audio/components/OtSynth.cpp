@@ -10,7 +10,6 @@
 //
 
 #include "fmt/format.h"
-#include "imgui.h"
 #include "nlohmann/json.hpp"
 
 #include "OtUi.h"
@@ -38,22 +37,8 @@ bool OtSynth::renderUI(float itemWidth) {
 	// render amplifier
 	// changed |= renderAmplifier();
 
-	ImGui::Separator();
-	changed |= midi.renderUI();
 	ImGui::PopItemWidth();
 	return changed;
-}
-
-
-//
-//	OtSynth::getRenderHeight
-//
-
-float OtSynth::getRenderHeight() {
-	return
-		ImGui::GetFrameHeightWithSpacing() * numberOfOscillators +
-		filter.parameters.getRenderHeight() +
-		midi.getRenderHeight();
 }
 
 
@@ -62,8 +47,6 @@ float OtSynth::getRenderHeight() {
 //
 
 void OtSynth::serialize(nlohmann::json* data, std::string* basedir) {
-	midi.serialize(data, basedir);
-
 	auto oscillatorArray = nlohmann::json::array();
 
 	for (auto& oscillator : oscillators) {
@@ -87,7 +70,6 @@ void OtSynth::serialize(nlohmann::json* data, std::string* basedir) {
 //
 
 void OtSynth::deserialize(nlohmann::json* data, std::string* basedir) {
-	midi.deserialize(data, basedir);
 	oscillators.fill(Oscillator{});
 	size_t index = 0;
 

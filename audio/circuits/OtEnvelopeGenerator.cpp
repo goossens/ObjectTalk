@@ -79,7 +79,7 @@ public:
 				}
 
 			} else {
-				envelopeOutput->buffer->clear(0.0f);
+				envelopeOutput->audioBuffer->clear(0.0f);
 			}
 		}
 	}

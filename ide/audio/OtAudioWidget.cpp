@@ -45,6 +45,7 @@ static constexpr ImU32 circuitColors[] = {
 	IM_COL32(125, 45, 75, 255),		// input
 	IM_COL32(60, 30, 40, 255),		// output
 	IM_COL32(0, 70, 170, 255),		// generator
+	IM_COL32(200, 190, 120, 255),	// processor
 	IM_COL32(15, 125, 115, 255),	// effect
 	IM_COL32(80, 130, 170, 255),	// converter
 	IM_COL32(50, 50, 90, 255)		// probe
@@ -53,7 +54,8 @@ static constexpr ImU32 circuitColors[] = {
 static constexpr ImU32 pinColors[] = {
 	IM_COL32(180, 90, 0, 255),		// mono
 	IM_COL32(100, 160, 100, 255),	// stereo
-	IM_COL32(0, 100, 200, 255)		// control
+	IM_COL32(0, 100, 200, 255),		// control
+	IM_COL32(150, 55, 255, 200)		// MIDI
 };
 
 static constexpr float gridSpacing = 64.0f;

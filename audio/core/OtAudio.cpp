@@ -69,8 +69,8 @@ void OtAudio::provideSignal(OtAudioBuffer& buffer) {
 					if (pin->isSourceConnected()) {
 						auto source = pin->getSource();
 
-						if (source->buffer) {
-							buffer.mix(*source->buffer);
+						if (source->audioBuffer) {
+							buffer.mix(*source->audioBuffer);
 						}
 					}
 				});

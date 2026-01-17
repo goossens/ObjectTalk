@@ -46,7 +46,7 @@ public:
 	};
 
 	static constexpr const char* circuitName = "VCA";
-	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::effect;
+	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::processor;
 
 private:
 	// work variables

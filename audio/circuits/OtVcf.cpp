@@ -71,7 +71,7 @@ public:
 	};
 
 	static constexpr const char* circuitName = "VCF";
-	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::effect;
+	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::processor;
 
 private:
 	// properties

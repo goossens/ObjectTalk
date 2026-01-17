@@ -35,25 +35,6 @@ public:
 		input = addInputPin("Input", OtCircuitPinClass::Type::mono);
 	}
 
-	// process samples
-	inline void execute() override {
-		if (input->isSourceConnected()) {
-			customW = width;
-			customH = height;
-
-			// add input signal to data buffer
-			std::lock_guard<std::mutex> guard(mutex);
-			data.insert(input->getSamples(), OtAudioSettings::bufferSize);
-
-		} else {
-			customW = width;
-			customH = ImGui::GetFrameHeightWithSpacing();
-
-		}
-
-		needsSizing = true;
-	}
-
 	// render custom fields
 	inline bool customRendering(float itemWidth) override {
 		static constexpr double ticks[] = {
@@ -72,7 +53,7 @@ public:
 			ImPlot::PushStyleColor(ImPlotCol_AxisText, ImVec4(0.6f, 0.6f, 0.6f, 1.0f));
 			ImPlot::PushStyleVar(ImPlotStyleVar_FillAlpha, 0.25f);
 
-			if (ImPlot::BeginPlot("##Spectrum", ImVec2(itemWidth, customH), ImPlotFlags_CanvasOnly | ImPlotFlags_NoInputs)) {
+			if (ImPlot::BeginPlot("##Spectrum", ImVec2(itemWidth, height), ImPlotFlags_CanvasOnly | ImPlotFlags_NoInputs)) {
 				{
 					// quickly copy signal to separate buffer
 					// to avoid race conditions and to not hold up audio thread
@@ -104,6 +85,7 @@ public:
 			ImPlot::PopStyleColor();
 
 		} else {
+			ImGui::AlignTextToFramePadding();
 			ImGui::TextUnformatted("No input signal");
 		}
 
@@ -118,6 +100,23 @@ public:
 		return customH + ImGui::GetStyle().ItemSpacing.y;
 	}
 
+	// process samples
+	inline void execute() override {
+		if (input->isSourceConnected()) {
+			customW = width;
+			customH = height + ImGui::GetStyle().ItemSpacing.y;
+
+			// add input signal to data buffer
+			std::lock_guard<std::mutex> guard(mutex);
+			data.insert(input->getSamples(), OtAudioSettings::bufferSize);
+
+		} else {
+			customW = width;
+			customH = ImGui::GetFrameHeight();
+		}
+
+		needsSizing = true;
+	}
 	static constexpr const char* circuitName = "Spectrum Analyzer";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::probe;
 	static constexpr float width = 600.0f;

@@ -64,12 +64,17 @@ public:
 
 	// generate samples
 	void execute() override {
-		if (audioOutput->isDestinationConnected() && parameters.isReady()) {
-			for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-				state.frequency = frequencyInput->isSourceConnected() ? OtAudioUtilities::cvToPitch(frequencyInput->getSample(i)) : parameters.frequency;
-				state.pulseWidth = pulseWidthInput->isSourceConnected() ? pulseWidthInput->getSample(i) : parameters.pulseWidth;
-				state.shape = shapeInput->isSourceConnected() ? shapeInput->getSample(i) : parameters.shape;
-				audioOutput->setSample(i, OtOscillator::get(parameters, state));
+		if (audioOutput->isDestinationConnected()) {
+			if (parameters.isReady()) {
+				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
+					state.frequency = frequencyInput->isSourceConnected() ? OtAudioUtilities::cvToPitch(frequencyInput->getSample(i)) : parameters.frequency;
+					state.pulseWidth = pulseWidthInput->isSourceConnected() ? pulseWidthInput->getSample(i) : parameters.pulseWidth;
+					state.shape = shapeInput->isSourceConnected() ? shapeInput->getSample(i) : parameters.shape;
+					audioOutput->setSample(i, OtOscillator::get(parameters, state));
+				}
+
+			} else {
+				audioOutput->setSamples(0.0f);
 			}
 		}
 	};

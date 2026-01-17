@@ -25,6 +25,7 @@
 #include "OtAudioUtilities.h"
 #include "OtMidiFile.h"
 #include "OtMidiFileAsset.h"
+#include "OtMidiMessage.h"
 
 
 //
@@ -33,8 +34,6 @@
 
 class OtMidi {
 public:
-	using Event = smf::MidiEvent;
-
 	// UI to change properties
 	bool renderUI();
 	float getLabelWidth();
@@ -46,7 +45,7 @@ public:
 	virtual void deserialize(nlohmann::json* data, std::string* basedir);
 
 	// process MIDI events
-	void processEvents(std::function<void(Event*)> callback);
+	void processEvents(std::function<void(std::shared_ptr<OtMidiMessage>)> callback);
 
 private:
 	// properties
@@ -61,8 +60,10 @@ private:
 
 	// work variables
 	OtMidiFile midifile;
+
 	bool keyPressed[128];
 	int currentNote = 0;
-	std::vector<std::unique_ptr<Event>> events;
+	std::vector<std::shared_ptr<OtMidiMessage>> messages;
+
 	std::mutex mutex;
 };

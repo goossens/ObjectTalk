@@ -23,7 +23,7 @@
 class OtFontAudio {
 public:
 	// access font
-	inline static const uint8_t* data() { return fontData; }
+	inline static uint8_t* data() { return fontData; }
 	inline static size_t size() { return fontSize; }
 
 	// glyph information
@@ -184,6 +184,6 @@ public:
 	inline static constexpr const char* zoomOut = u8"\uf19b";
 
 private:
-	static const uint8_t fontData[36812];
+	static uint8_t fontData[36812];
 	inline static constexpr size_t fontSize = 36812;
 };

@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include "MidiFile.h"
+
 #include "OtPath.h"
 #include "OtLog.h"
 
@@ -20,28 +22,41 @@
 //
 
 void OtMidiFile::load(const std::string& path) {
-	midi = std::make_shared<smf::MidiFile>();
+	stop();
+	messages = std::make_shared<std::vector<Event>>();
+
+	smf::MidiFile midi;
 
 	// sanity checks
 	if (!OtPath::exists(path)) {
-		midi = nullptr;
 		OtLogError("Can't open MIDI midi [{}]", path);
 	}
 
-	if (!midi->read(path)) {
-		midi = nullptr;
+	if (!midi.read(path)) {
 		OtLogError("Can't load MIDI midi [{}]", path);
 	}
 
-	// build a list of relevant events
-	midi->joinTracks();
-	events.clear();
+	// build a list of relevant messages
+	midi.joinTracks();
 
-	for (auto i = 0; i < getEventCount(0); i++) {
-		if (isNote(0, i)) {
-			events.emplace_back(getTimeInSeconds(0, i), &(*midi)[0][i]);
-		}
+	for (auto i = 0; i < midi[0].getEventCount(); i++) {
+		auto& event = midi[0][i];
+
+		messages->emplace_back(
+			static_cast<float>(midi.getTimeInSeconds(0, i)),
+			reinterpret_cast<uint8_t*>(event.data()), event.size());
 	}
+
+	playEnd = static_cast<float>(midi.getFileDurationInSeconds());
+}
+
+void OtMidiFile::clear() {
+	if (playingFlag || pausingFlag) {
+		stop();
+		sendAllNotesOff = true;
+	}
+
+	messages = nullptr;
 }
 
 
@@ -50,31 +65,12 @@ void OtMidiFile::load(const std::string& path) {
 //
 
 void OtMidiFile::start() {
-	if (events.size()) {
+	if (messages->size()) {
 		currentPlay = 0.0f;
-		playEnd = static_cast<float>(midi->getFileDurationInSeconds());
 		nextEvent = 0;
 		lastEventTime = SDL_GetTicks();
 		playingFlag = true;
 		pausingFlag = false;
-		loopingFlag = false;
-	}
-}
-
-
-//
-//	OtMidiFile::loop
-//
-
-void OtMidiFile::loop() {
-	if (events.size()) {
-		currentPlay = 0.0f;
-		playEnd = static_cast<float>(midi->getFileDurationInSeconds());
-		nextEvent = 0;
-		lastEventTime = SDL_GetTicks();
-		playingFlag = true;
-		pausingFlag = false;
-		loopingFlag = true;
 	}
 }
 
@@ -90,7 +86,7 @@ void OtMidiFile::stop() {
 	lastEventTime = 0;
 	playingFlag = false;
 	pausingFlag = false;
-	loopingFlag = false;
+	sendAllNotesOff = true;
 }
 
 
@@ -102,6 +98,7 @@ void OtMidiFile::pause() {
 	if (playingFlag) {
 		playingFlag = false;
 		pausingFlag = true;
+		sendAllNotesOff = true;
 	}
 }
 
@@ -123,20 +120,19 @@ void OtMidiFile::resume() {
 //	OtMidiFile::process
 //
 
-void OtMidiFile::process(std::function<void(bool, int, int)> callback) {
-	if (playingFlag) {
+void OtMidiFile::process(std::function<void(std::shared_ptr<OtMidiMessage>)> callback) {
+	if (messages && playingFlag) {
 		// determine current play time by adding interval since last run
 		auto now = SDL_GetTicks();
 		currentPlay += static_cast<float>(now - lastEventTime) / 1000.0f;
 		lastEventTime = now;
 
-		// process all events that are due
-		while (playingFlag && events[nextEvent].time < currentPlay) {
-			auto& midiEvent = *events[nextEvent].event;
-			callback(midiEvent.isNoteOn(), midiEvent.getKeyNumber(), midiEvent.getVelocity());
+		// process all messages that are due
+		while (playingFlag && messages->at(nextEvent).time < currentPlay) {
+			callback((*messages)[nextEvent].message);
 
 			// if we reach the end of the MIDI stream, either loop or stop
-			if (++nextEvent == events.size()) {
+			if (++nextEvent == messages->size()) {
 				if (loopingFlag) {
 					currentPlay = 0.0f;
 					nextEvent = 0;
@@ -146,21 +142,11 @@ void OtMidiFile::process(std::function<void(bool, int, int)> callback) {
 				}
 			}
 		}
-	}
-}
 
-
-//
-//	OtMidiFile::display
-//
-
-void OtMidiFile::display() {
-	for (auto& event : events) {
-		OtLogDebug(
-			"{}, {}, {}, {}",
-			event.time,
-			event.event->isNoteOn() ? "On" : "Off",
-			event.event->getKeyNumber(),
-			event.event->getVelocity());
+	} else if (sendAllNotesOff) {
+		auto message = std::make_shared<OtMidiMessage>();
+		message->makeAllNotesOff(0);
+		callback(message);
+		sendAllNotesOff = false;
 	}
 }

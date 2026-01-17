@@ -56,17 +56,17 @@ public:
 		midi.deserialize(data, basedir);
 	}
 
-	// generate samples
+	// generate audio stream by evaluating MIDI messages
 	void execute() override {
-		midi.processEvents([&](OtMidi::Event* event) {
-			if (event->isNoteOn()) {
-				pitch = OtAudioUtilities::midiNoteToPitch(event->getKeyNumber());
-				velocity = event->getVelocity() / 128.0f;
+		midi.processEvents([&](std::shared_ptr<OtMidiMessage> message) {
+			if (message->isNoteOn()) {
+				pitch = OtAudioUtilities::midiNoteToPitch(message->getKeyNumber());
+				velocity = message->getVelocity() / 128.0f;
 				gate = true;
 
-			} else if (event->isNoteOff()) {
-				pitch = OtAudioUtilities::midiNoteToPitch(event->getKeyNumber());
-				velocity = event->getVelocity() / 128.0f;
+			} else if (message->isNoteOff()) {
+				pitch = OtAudioUtilities::midiNoteToPitch(message->getKeyNumber());
+				velocity = message->getVelocity() / 128.0f;
 				gate = false;
 				noteOff |= true;
 			}

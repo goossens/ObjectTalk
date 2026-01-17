@@ -19,7 +19,7 @@
 
 #include "SDL3/SDL.h"
 
-#include "MidiFile.h"
+#include "OtMidiMessage.h"
 
 
 //
@@ -32,56 +32,47 @@ public:
 	void load(const std::string& path);
 
 	// clear the MIDI midi
-	inline void clear() { midi = nullptr; }
+	void clear();
 
 	// get information
-	inline bool isValid() { return midi != nullptr; }
-	inline int getTrackCount() { return midi->getTrackCount(); }
-	inline int getEventCount(int track) { return (*midi)[track].getEventCount(); }
-
-	// access events
-	inline float getTimeInSeconds(int track, int event) { return static_cast<float>(midi->getTimeInSeconds(track, event)); }
-	inline bool isNote(int track, int event) { return (*midi)[track][event].isNote(); }
-	inline bool isNoteOn(int track, int event) { return (*midi)[track][event].isNoteOn(); }
-	inline bool isNoteOff(int track, int event) { return (*midi)[track][event].isNoteOff(); }
-	inline int getKeyNumber(int track, int event) { return (*midi)[track][event].getKeyNumber(); }
-	inline int getVelocity(int track, int event) { return (*midi)[track][event].getVelocity(); }
+	inline bool isValid() { return messages != nullptr; }
+	inline size_t getMessageCount() { return messages->size(); }
+	inline float getMessageTime(size_t index) { return (*messages)[index].time; }
+	inline std::shared_ptr<OtMidiMessage> getMessage(size_t index) { return (*messages)[index].message; }
 
 	// playback control
 	void start();
-	void loop();
 	void stop();
 	void pause();
 	void resume();
+	inline void setLooping(bool looping) {loopingFlag = looping; }
 
 	// get playback status
 	inline bool isPlaying() { return playingFlag; }
 	inline bool isLooping() { return loopingFlag; }
-	inline bool isPaused() { return pausingFlag; }
+	inline bool isPausing() { return pausingFlag; }
 
 	// process next event (if required)
-	// callbacks are called for relevant events
-	void process(std::function<void(bool, int, int)> callback);
-
-	// display events list (for debugging only)
-	void display();
+	// callbacks are called for relevant messages
+	void process(std::function<void(std::shared_ptr<OtMidiMessage>)> callback);
 
 	// see if MIDI files are identical
-	inline bool operator==(OtMidiFile& rhs) { return midi == rhs.midi; }
+	inline bool operator==(OtMidiFile& rhs) { return messages == rhs.messages; }
 	inline bool operator!=(OtMidiFile& rhs) { return !operator==(rhs); }
 
 private:
-	// MIDI data from file
-	std::shared_ptr<smf::MidiFile> midi;
-
-	// list of relevant events with timestamps
+	// list of messages with timestamps
 	struct Event {
-		Event(float t, smf::MidiEvent* e) : time(t), event(e) {}
+		Event(float t, uint8_t* msg, size_t size) {
+			time = t;
+			message = std::make_shared<OtMidiMessage>(msg, size);
+		}
+
+		std::shared_ptr<OtMidiMessage> message;
 		float time;
-		smf::MidiEvent* event;
 	};
 
-	std::vector<Event> events;
+	std::shared_ptr<std::vector<Event>> messages;
 
 	// play parameters
 	float currentPlay;
@@ -91,4 +82,5 @@ private:
 	bool playingFlag = false;
 	bool pausingFlag = false;
 	bool loopingFlag = false;
+	bool sendAllNotesOff = false;
 };

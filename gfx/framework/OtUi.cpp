@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstring>
 #include <string>
 
 #include "fmt/format.h"
@@ -21,9 +22,45 @@
 #include "nlohmann/json.hpp"
 
 #include "OtNumbers.h"
-
 #include "OtPath.h"
+
+#include "OtDejaVu.h"
+#include "OtFontAudio.h"
 #include "OtUi.h"
+
+
+//
+//	OtUi::loadFonts
+//
+
+void OtUi::loadFonts() {
+	auto& io = ImGui::GetIO();
+	io.Fonts->Clear();
+
+	ImFontConfig textConfig;
+	std::memcpy(textConfig.Name, "DejaVu", 7);
+	textConfig.FontDataOwnedByAtlas = false;
+	textConfig.OversampleH = 1;
+	textConfig.OversampleV = 1;
+
+	textFont = io.Fonts->AddFontFromMemoryTTF(
+		reinterpret_cast<void*>(OtDejaVu::data()),
+		static_cast<int>(OtDejaVu::size()),
+		15.0f,
+		&textConfig);
+
+	ImFontConfig audioConfig;
+	std::memcpy(audioConfig.Name, "FontAudio", 14);
+	audioConfig.FontDataOwnedByAtlas = false;
+	audioConfig.OversampleH = 1;
+	audioConfig.OversampleV = 1;
+
+	audioFont = io.Fonts->AddFontFromMemoryTTF(
+		reinterpret_cast<void*>(OtFontAudio::data()),
+		static_cast<int>(OtFontAudio::size()),
+		15.0f,
+		&audioConfig);
+}
 
 
 //

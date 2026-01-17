@@ -37,12 +37,6 @@
 
 class OtUi {
 public:
-	enum class Font {
-		standard = 0,
-		editor,
-		audio
-	};
-
 	enum class Alignment {
 		none,
 		left,
@@ -52,6 +46,11 @@ public:
 		middle,
 		bottom
 	};
+
+	// load and acces the fonts
+	static void loadFonts();
+	static ImFont* getTextFont() { return textFont; }
+	static ImFont* getAudioFont() { return audioFont; }
 
 	// adjust cursor position based on alignment
 	static void align(ImVec2 size, Alignment horizontal, Alignment vertical);
@@ -203,6 +202,10 @@ private:
 
 	// generic splitter
 	static bool splitter(bool vertical, float* size, float minSize, float maxSize);
+
+	// fonts
+	inline static ImFont* textFont = nullptr;
+	inline static ImFont* audioFont = nullptr;
 };
 
 

@@ -55,7 +55,6 @@ public:
 	// node categories
 	enum class Category {
 		input,
-		output,
 		field,
 		math,
 		image,
@@ -71,7 +70,6 @@ public:
 
 	static constexpr const char* categoryNames[] = {
 		"Input",
-		"Output",
 		"Field",
 		"Math",
 		"Image",

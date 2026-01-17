@@ -43,12 +43,10 @@ static constexpr ImU32 errorTooltipColor = IM_COL32(128, 0, 32, 255);
 
 static constexpr ImU32 nodeColors[] = {
 	IM_COL32(125, 45, 75, 255),		// input
-	IM_COL32(60, 30, 40, 255),		// output
 	IM_COL32(150, 60, 110, 255),	// field
 	IM_COL32(55, 95, 130, 255),		// math
-	IM_COL32(50, 100, 40, 255),		// generator
-	IM_COL32(115, 70, 30, 255),		// filter
-	IM_COL32(35, 60, 130, 255),		// transform
+	IM_COL32(165, 155, 85, 255),	// image
+	IM_COL32(115, 70, 30, 255),		// texture
 	IM_COL32(80, 130, 170, 255),	// shape
 	IM_COL32(30, 110, 90, 255),		// geometry
 	IM_COL32(15, 125, 115, 255),	// manifold

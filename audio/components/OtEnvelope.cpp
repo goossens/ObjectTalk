@@ -19,13 +19,6 @@
 
 
 //
-//	Constants
-
-static constexpr size_t envelopeDataSize = 1024;
-static constexpr float envelopeHeight = 100.0f;
-
-
-//
 //	Support Functions
 //
 
@@ -49,7 +42,7 @@ static inline float* fillVisualizationBuffer(float* p, int samples, float start,
 //	OtOscillator::Parameters::renderUI
 //
 
-bool OtEnvelope::Parameters::renderUI(std::vector<float>* values, bool update) {
+bool OtEnvelope::Parameters::renderUI() {
 	if (update) {
 		// get total envelope length and length of each phase in samples
 		auto totalLengthInTime = (attackTime + holdTime + decayTime + releaseTime) * 1.25f;
@@ -62,8 +55,7 @@ bool OtEnvelope::Parameters::renderUI(std::vector<float>* values, bool update) {
 		auto roundingSamples = envelopeDataSize - attackSamples - holdSamples - decaySamples - sustainSamples - releaseSamples;
 
 		// populate output buffer
-		values->resize(envelopeDataSize);
-		auto p = values->data();
+		auto p = graph.data();
 		p = fillVisualizationBuffer(p, attackSamples, 0.0f, 1.0f);
 		p = fillVisualizationBuffer(p, holdSamples, 1.0f, 1.0f);
 		p = fillVisualizationBuffer(p, decaySamples, 1.0f, sustainLevel);
@@ -78,7 +70,7 @@ bool OtEnvelope::Parameters::renderUI(std::vector<float>* values, bool update) {
 		ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoTickLabels);
 		ImPlot::SetupAxisLimits(ImAxis_X1, 0.0, envelopeDataSize);
 		ImPlot::SetupAxisLimits(ImAxis_Y1, -0.02, 1.02);
-		ImPlot::PlotLine("Signal", values->data(), envelopeDataSize);
+		ImPlot::PlotLine("Signal", graph.data(), envelopeDataSize);
 		ImPlot::EndPlot();
 	}
 
@@ -134,4 +126,5 @@ void OtEnvelope::Parameters::deserialize(nlohmann::json* data, [[maybe_unused]] 
 	decayTime = data->value("decay", 1.0f);
 	sustainLevel = data->value("sustain", 0.8f);
 	releaseTime = data->value("release", 0.2f);
+	update = true;
 }

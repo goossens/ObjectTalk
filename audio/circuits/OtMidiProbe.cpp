@@ -27,7 +27,7 @@ class OtMidiProbe : public OtCircuitClass {
 public:
 	// configure circuit
 	inline void configure() override {
-		input = addInputPin("Input", OtCircuitPinClass::Type::midi);
+		input = addInputPin("MIDI", OtCircuitPinClass::Type::midi);
 	}
 
 	// render custom fields

@@ -96,7 +96,7 @@ public:
 		inline void synchronize(float phase=0.0f) {phase = OtAudioUtilities::fraction<float>(phase); }
 
 		// properties
-		float frequency = 0.0f;
+		float frequency = 440.0f;
 		float pulseWidth = 0.5f;
 		float shape = 0.0f;
 		float phase = 0.0f;
@@ -144,7 +144,7 @@ public:
 		return value;
 	}
 
-	// fill a buffer with samples
+	// fill a buffer with next samples
 	inline static void get(float* buffer, size_t size, Parameters& parameters, State& state) {
 		switch (parameters.waveForm) {
 			case WaveForm::sine:

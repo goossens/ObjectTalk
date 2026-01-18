@@ -47,7 +47,7 @@ public:
 	virtual void deserialize(nlohmann::json* data, std::string* basedir);
 
 	// process MIDI events
-	void processEvents(std::function<void(std::shared_ptr<OtMidiMessage>)> callback);
+	void processEvents(std::function<void(OtMidiMessage)> callback);
 
 private:
 	// properties

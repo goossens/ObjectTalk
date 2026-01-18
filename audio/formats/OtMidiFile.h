@@ -38,7 +38,7 @@ public:
 	inline bool isValid() { return events != nullptr; }
 	inline size_t getMessageCount() { return events->size(); }
 	inline float getMessageTime(size_t index) { return (*events)[index].time; }
-	inline std::shared_ptr<OtMidiMessage> getMessage(size_t index) { return (*events)[index].message; }
+	inline OtMidiMessage getMessage(size_t index) { return (*events)[index].message; }
 
 	// playback control
 	void start();
@@ -54,7 +54,7 @@ public:
 
 	// process next event (if required)
 	// callbacks are called for relevant events
-	void process(std::function<void(std::shared_ptr<OtMidiMessage>)> callback);
+	void process(std::function<void(OtMidiMessage)> callback);
 
 	// see if MIDI files are identical
 	inline bool operator==(OtMidiFile& rhs) { return events == rhs.events; }
@@ -65,10 +65,10 @@ private:
 	struct Event {
 		Event(float t, uint8_t* msg, size_t size) {
 			time = t;
-			message = std::make_shared<OtMidiMessage>(msg, size);
+			message = std::make_shared<OtMidiMessageClass>(msg, size);
 		}
 
-		std::shared_ptr<OtMidiMessage> message;
+		OtMidiMessage message;
 		float time;
 	};
 

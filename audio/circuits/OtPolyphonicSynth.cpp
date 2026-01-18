@@ -21,6 +21,7 @@ class OtPolyphonicSynth : public OtCircuitClass {
 public:
 	// configure circuit
 	inline void configure() override {
+		midiInput = addInputPin("MIDI", OtCircuitPinClass::Type::midi);
 		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono)->hasAttenuation();
 	}
 
@@ -49,6 +50,11 @@ public:
 	// process samples
 	void execute() override {
 		if (audioOutput->isDestinationConnected()) {
+			if (midiInput->isSourceConnected()) {
+				for (auto& message : midiInput->getMidiInputBuffer()) {
+					synth.processMidiMessage(message);
+				}
+			}
 		}
 	};
 
@@ -60,6 +66,7 @@ private:
 	OtSynth synth;
 
 	// work variables
+	OtCircuitPin midiInput;
 	OtCircuitPin audioOutput;
 };
 

@@ -9,13 +9,7 @@
 //	Include files
 //
 
-#include <vector>
-
-#include "imgui.h"
-#include "implot.h"
 #include "nlohmann/json.hpp"
-
-#include "OtUi.h"
 
 #include "OtEnvelope.h"
 #include "OtCircuitFactory.h"
@@ -35,7 +29,7 @@ public:
 
 	// render custom fields
 	inline bool customRendering([[maybe_unused]] float itemWidth) override {
-		bool changed = parameters.renderUI(&plotData, updateVisualization);
+		bool changed = parameters.renderUI();
 		return changed;
 	}
 
@@ -54,7 +48,6 @@ public:
 
 	inline void customDeserialize(nlohmann::json* data, std::string* basedir) override {
 		parameters.deserialize(data, basedir);
-		updateVisualization = true;
 	}
 
 	// generate samples
@@ -98,8 +91,6 @@ private:
 	OtCircuitPin envelopeOutput;
 
 	bool triggerState = false;
-	std::vector<float> plotData;
-	bool updateVisualization = true;
 };
 
 static OtCircuitFactoryRegister<OtEnvelopeGenerator> registration;

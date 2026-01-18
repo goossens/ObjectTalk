@@ -62,7 +62,7 @@ public:
 		auto& midiBuffer = midiOutput->getMidiOutputBuffer();
 		midiBuffer.clear();
 
-		midi.processEvents([&](std::shared_ptr<OtMidiMessage> message) {
+		midi.processEvents([&](OtMidiMessage message) {
 			midiBuffer.emplace_back(message);
 
 			if (message->isNoteOn()) {
@@ -71,7 +71,6 @@ public:
 				gate = true;
 
 			} else if (message->isNoteOff()) {
-				pitch = OtAudioUtilities::midiNoteToPitch(message->getKeyNumber());
 				velocity = message->getVelocity() / 128.0f;
 				gate = false;
 				noteOff |= true;
@@ -104,7 +103,7 @@ private:
 	OtMidi midi;
 
 	// work variables
-	float pitch = 500.0f;
+	float pitch = 440.0f;
 	float velocity = 0.0f;
 	bool gate = false;
 	bool noteOff = false;

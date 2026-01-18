@@ -20,37 +20,40 @@
 //	OtMidiMessage
 //
 
-class OtMidiMessage : public std::vector<uint8_t> {
+class OtMidiMessageClass;
+using OtMidiMessage = std::shared_ptr<OtMidiMessageClass> ;
+
+class OtMidiMessageClass : public std::vector<uint8_t> {
 public:
 	// constructors
-	OtMidiMessage() = default;
-	OtMidiMessage(int command) : std::vector<uint8_t>(1, static_cast<uint8_t>(command)) {}
+	OtMidiMessageClass() = default;
+	OtMidiMessageClass(int command) : std::vector<uint8_t>(1, static_cast<uint8_t>(command)) {}
 
-	OtMidiMessage(int command, int p1) : std::vector<uint8_t>(2) {
+	OtMidiMessageClass(int command, int p1) : std::vector<uint8_t>(2) {
 		(*this)[0] = static_cast<uint8_t>(command);
 		(*this)[1] = static_cast<uint8_t>(p1);
 	}
 
-	OtMidiMessage(int command, int p1, int p2) : vector<uint8_t>(3) {
+	OtMidiMessageClass(int command, int p1, int p2) : vector<uint8_t>(3) {
 		(*this)[0] = static_cast<uint8_t>(command);
 		(*this)[1] = static_cast<uint8_t>(p1);
 		(*this)[2] = static_cast<uint8_t>(p2);
 	}
 
-	OtMidiMessage(const OtMidiMessage& message) : vector<uint8_t>() {
+	OtMidiMessageClass(const OtMidiMessage& message) : vector<uint8_t>() {
 		(*this) = message;
 	}
 
-	OtMidiMessage(const std::vector<uint8_t>& message) : vector<uint8_t>() {
+	OtMidiMessageClass(const std::vector<uint8_t>& message) : vector<uint8_t>() {
 		setMessage(message);
 	}
 
-	OtMidiMessage(uint8_t* message, size_t size) : vector<uint8_t>() {
+	OtMidiMessageClass(uint8_t* message, size_t size) : vector<uint8_t>() {
 		setMessage(message, size);
 	}
 
 	// assignment operator
-	inline OtMidiMessage& operator=(const OtMidiMessage& message) {
+	inline OtMidiMessageClass& operator=(const OtMidiMessageClass& message) {
 		std::vector<uint8_t>::operator=(static_cast<const std::vector<uint8_t> &>(message));
 		return *this;
 	}
@@ -101,7 +104,7 @@ public:
 	inline bool isAllSoundsOff() { return isController() && (*this)[1] == 120; }
 	inline bool isAllNotesOff() { return isController() && (*this)[1] == 123; }
 
-	// helper functions to create various MidiMessages:
+	// helper functions to create various MIDI messages
 	inline void makeNoteOn(int channel, int key, int velocity) {
 		resize(3);
 		(*this)[0] = static_cast<uint8_t>(0x90 | (0x0F & channel));
@@ -116,7 +119,7 @@ public:
 		(*this)[2] = static_cast<uint8_t>(velocity & 0x7F);
 	}
 
-	inline void makeControlChangeMessage(int channel, int type, int value) {
+	inline void makeControlChange(int channel, int type, int value) {
 		resize(3);
 		(*this)[0] = static_cast<uint8_t>(0xB0 | (0x0F & channel));
 		(*this)[1] = static_cast<uint8_t>(type & 0x7F);
@@ -124,11 +127,11 @@ public:
 	}
 
 	inline void makeAllSoundsOff(int channel) {
-		makeControlChangeMessage(channel, 120, 0);
+		makeControlChange(channel, 120, 0);
 	}
 
 	inline void makeAllNotesOff(int channel) {
-		makeControlChangeMessage(channel, 123, 0);
+		makeControlChange(channel, 123, 0);
 	}
 
 	inline void makePitchBend(int channel, int value) {
@@ -140,3 +143,44 @@ public:
 		(*this)[2] = static_cast<uint8_t>(0xF & msb);
 	}
 };
+
+
+//
+//	Helper functions
+//
+
+inline OtMidiMessage OtMidiNoteOn(int channel, int key, int velocity) {
+	auto message = std::make_shared<OtMidiMessageClass>();
+	message->makeNoteOn(channel, key, velocity);
+	return message;
+}
+
+inline OtMidiMessage OtMidiNoteOff(int channel, int key, int velocity) {
+	auto message = std::make_shared<OtMidiMessageClass>();
+	message->makeNoteOff(channel, key, velocity);
+	return message;
+}
+
+inline OtMidiMessage OtMidiControlChange(int channel, int type, int value) {
+	auto message = std::make_shared<OtMidiMessageClass>();
+	message->makeControlChange(channel, type, value);
+	return message;
+}
+
+inline OtMidiMessage OtMidiAllSoundsOff(int channel) {
+	auto message = std::make_shared<OtMidiMessageClass>();
+	message->makeAllSoundsOff(channel);
+	return message;
+}
+
+inline OtMidiMessage OtMidiAllNotesOff(int channel) {
+	auto message = std::make_shared<OtMidiMessageClass>();
+	message->makeAllNotesOff(channel);
+	return message;
+}
+
+inline OtMidiMessage OtMidiPitchBend(int channel, int value) {
+	auto message = std::make_shared<OtMidiMessageClass>();
+	message->makePitchBend(channel, value);
+	return message;
+}

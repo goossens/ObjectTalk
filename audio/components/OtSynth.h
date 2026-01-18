@@ -13,14 +13,14 @@
 //
 
 #include <array>
+#include <list>
+#include <string>
+#include <unordered_map>
 
-#include "imgui.h"
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtAudioFilter.h"
-#include "OtMidi.h"
-#include "OtOscillator.h"
-
+#include "OtMidiMessage.h"
+#include "OtVoice.h"
 
 //
 //	OtSynth
@@ -28,35 +28,37 @@
 
 class OtSynth {
 public:
+	// constructor
+	OtSynth();
+
+	// configurable number of concurrent voice per synth
+	inline static constexpr size_t numberOfVoices = 16;
+
 	// UI to change synth properties
-	bool renderUI(float itemWidth);
-	inline float getRenderWidth() { return 250.0f; }
-	inline float getRenderHeight() { return ImGui::GetFrameHeightWithSpacing() * (numberOfOscillators + 2); }
+	inline bool renderUI(float itemWidth) { return parameters.renderUI(itemWidth); }
+	inline float getRenderWidth() { return parameters.getRenderWidth(); }
+	inline float getRenderHeight() { return parameters.getRenderHeight(); }
 
 	// (de)serialize data
-	void serialize(nlohmann::json* data, std::string* basedir);
-	void deserialize(nlohmann::json* data, std::string* basedir);
+	inline void serialize(nlohmann::json* data, std::string* basedir) { parameters.serialize(data, basedir); }
+	inline void deserialize(nlohmann::json* data, std::string* basedir) { parameters.deserialize(data, basedir); }
+
+	// process MIDI messages
+	void processMidiMessage(OtMidiMessage message);
+
+	// get the next sample(s)
+	float get();
+	void get(float* buffer, size_t size);
 
 private:
 	// properties
-	inline static constexpr size_t numberOfOscillators = 4;
-
-	struct Oscillator {
-		bool power = false;
-		OtOscillator::Parameters parameters;
-		OtOscillator::State state;
-	};
-
-	struct Filter {
-		bool power = false;
-		OtAudioFilter::Parameters parameters;
-		OtAudioFilter::State state;
-	};
-
-	std::array<Oscillator, numberOfOscillators> oscillators;
-	Filter filter;
+	OtVoice::Parameters parameters;
+	std::array<OtVoice::State, numberOfVoices> voices;
+	std::unordered_map<int, size_t> index;
+	std::list<size_t> nextVoice;
 
 	// support functions
-	bool renderOscillator(size_t id);
-	bool renderFilter();
+	void noteOn(int note, int velocity);
+	void noteOff(int note, int velocity);
+	void AllNotesOff();
 };

@@ -13,9 +13,9 @@
 //
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <string>
-#include <vector>
 
 #include "nlohmann/json_fwd.hpp"
 
@@ -42,7 +42,7 @@ public:
 	class Parameters {
 	public:
 		// UI to change envelope parameters
-		bool renderUI(std::vector<float>* values, bool update);
+		bool renderUI();
 		float getRenderWidth();
 		float getRenderHeight();
 
@@ -56,6 +56,12 @@ public:
 		float decayTime = 1.0f;
 		float sustainLevel = 0.8f;
 		float releaseTime = 0.3f;
+
+		// work variables
+		inline static constexpr size_t envelopeDataSize = 1024;
+		inline static constexpr float envelopeHeight = 100.0f;
+		std::array<float, envelopeDataSize> graph;
+		bool update = true;
 	};
 
 	// state of the envelope generator allowing multiple instances with identical parameters

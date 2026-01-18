@@ -22,6 +22,6 @@
 //	OtMidiBuffer
 //
 
-class OtMidiBuffer : public std::vector<std::shared_ptr<OtMidiMessage>> {
+class OtMidiBuffer : public std::vector<OtMidiMessage> {
 public:
 };

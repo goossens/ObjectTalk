@@ -120,7 +120,7 @@ void OtMidiFile::resume() {
 //	OtMidiFile::process
 //
 
-void OtMidiFile::process(std::function<void(std::shared_ptr<OtMidiMessage>)> callback) {
+void OtMidiFile::process(std::function<void(OtMidiMessage)> callback) {
 	if (events && playingFlag) {
 		// determine current play time by adding interval since last run
 		auto now = SDL_GetTicks();
@@ -144,7 +144,7 @@ void OtMidiFile::process(std::function<void(std::shared_ptr<OtMidiMessage>)> cal
 		}
 
 	} else if (sendAllNotesOff) {
-		auto message = std::make_shared<OtMidiMessage>();
+		auto message = std::make_shared<OtMidiMessageClass>();
 		message->makeAllNotesOff(0);
 		callback(message);
 		sendAllNotesOff = false;

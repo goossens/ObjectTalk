@@ -19,6 +19,7 @@
 //
 
 OtSynth::OtSynth() {
+	nextVoice.resize(numberOfVoices);
 	std::iota(nextVoice.begin(), nextVoice.end(), 0);
 }
 
@@ -39,20 +40,56 @@ void OtSynth::processMidiMessage(OtMidiMessage message) {
 	}
 }
 
+float OtSynth::get() {
+	auto sample = 0.0f;
+
+	for (auto& voice : voices) {
+		if (OtVoice::isActive(voice)) {
+			sample += OtVoice::get(parameters, voice);
+		}
+	}
+
+	return sample;
+}
+
+
+//
+//	OtSynth::get
+//
+
+void OtSynth::get(float* buffer, size_t size) {
+	for (size_t i = 0; i < size; i++) {
+		*buffer++ = get();
+	}
+}
+
 
 //
 //	OtSynth::noteOn
 //
 
 void OtSynth::noteOn(int note, int velocity) {
-	if (index.count(note)) {
-		voices[index[note]].cancel();
+	// get next available voice
+	auto openVoice = nextVoice.end();
+
+	for (auto i = nextVoice.begin(); i != nextVoice.end() && openVoice == nextVoice.end(); i++) {
+		if (!OtVoice::isActive(voices[*i])) {
+			openVoice = i;
+		}
 	}
 
-	auto voice = nextVoice.front();
-	nextVoice.splice(nextVoice.end(), nextVoice, nextVoice.begin());
+	// if we ran out of voices, we steal the oldest voice
+	if (openVoice == nextVoice.end()) {
+		openVoice = nextVoice.begin();
+		OtVoice::cancel(parameters, voices[*openVoice]);
+	}
 
-	voices[voice].noteOn(&parameters, note, velocity);
+	// put voice at the end of the list and add index entry
+	nextVoice.splice(nextVoice.end(), nextVoice, openVoice);
+	index[note] = *openVoice;
+
+	// turn voice on
+	OtVoice::noteOn(parameters, voices[*openVoice], note, velocity);
 }
 
 
@@ -60,8 +97,8 @@ void OtSynth::noteOn(int note, int velocity) {
 //	OtSynth::noteOff
 //
 
-void OtSynth::noteOff(int note, int velocity) {
-	voices[index[note]].noteOff(note, velocity);
+void OtSynth::noteOff([[maybe_unused]] int note, [[maybe_unused]] int velocity) {
+	OtVoice::noteOff(parameters, voices[index[note]]);
 }
 
 
@@ -71,7 +108,7 @@ void OtSynth::noteOff(int note, int velocity) {
 
 void OtSynth::AllNotesOff() {
 	for (auto& voice : voices) {
-		if (voice.isActive()) {
+		if (OtVoice::isActive(voice)) {
 			noteOff(voice.note, 0);
 		}
 	}

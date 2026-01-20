@@ -77,6 +77,11 @@ public:
 		float pulseWidth = 0.5f;
 		float shape = 0.0f;
 		float sampleFileFrequency = 0.0f;
+		float volume = 1.0f;
+		float tuningOctaves = 0.0f;
+		float tuningSemitones = 0.0f;
+		float tuningCents = 0.0f;
+
 		OtAsset<OtSampleFileAsset> sampleFileAsset;
 		OtSampleFile sampleFile;
 		OtAsset<OtWaveTableAsset> waveTableAsset;
@@ -87,6 +92,8 @@ public:
 		float frequencyKnobHigh = 0.0f;
 		bool showPulseWidthKnob = false;
 		bool showShapeKnob = false;
+		bool showVolumeKnob = false;
+		bool showTuningButton = false;
 	};
 
 	// state of the oscillator allowing multiple instances with identical parameters

@@ -45,19 +45,17 @@ static inline float* fillVisualizationBuffer(float* p, int samples, float start,
 bool OtEnvelope::Parameters::renderUI() {
 	if (update) {
 		// get total envelope length and length of each phase in samples
-		auto totalLengthInTime = (attackTime + holdTime + decayTime + releaseTime) * 1.25f;
+		auto totalLengthInTime = (attackTime + decayTime + releaseTime) * 1.25f;
 		auto sampleRate = static_cast<float>(envelopeDataSize) / totalLengthInTime;
 		auto attackSamples = durationInSamples(attackTime, sampleRate);
-		auto holdSamples = durationInSamples(holdTime, sampleRate);
 		auto decaySamples = durationInSamples(decayTime, sampleRate);
 		auto sustainSamples = durationInSamples(totalLengthInTime * 0.2f, sampleRate);
 		auto releaseSamples = durationInSamples(releaseTime, sampleRate);
-		auto roundingSamples = envelopeDataSize - attackSamples - holdSamples - decaySamples - sustainSamples - releaseSamples;
+		auto roundingSamples = envelopeDataSize - attackSamples - decaySamples - sustainSamples - releaseSamples;
 
 		// populate output buffer
 		auto p = graph.data();
 		p = fillVisualizationBuffer(p, attackSamples, 0.0f, 1.0f);
-		p = fillVisualizationBuffer(p, holdSamples, 1.0f, 1.0f);
 		p = fillVisualizationBuffer(p, decaySamples, 1.0f, sustainLevel);
 		p = fillVisualizationBuffer(p, sustainSamples, sustainLevel, sustainLevel);
 		p = fillVisualizationBuffer(p, releaseSamples, sustainLevel, 0.0f);
@@ -77,7 +75,6 @@ bool OtEnvelope::Parameters::renderUI() {
 	// render envelope control knobs
 	bool changed = false;
 	changed |= OtUi::knob("Attack", &attackTime, 0.0f, 10.0f, "%.2fs", true); ImGui::SameLine();
-	changed |= OtUi::knob("Hold", &holdTime, 0.0f, 10.0f, "%.2fs", true); ImGui::SameLine();
 	changed |= OtUi::knob("Decay", &decayTime, 0.0f, 10.0f, "%.2fs", true); ImGui::SameLine();
 	changed |= OtUi::knob("Sustain", &sustainLevel, 0.0f, 1.0f, "%.2f", false); ImGui::SameLine();
 	changed |= OtUi::knob("Release", &releaseTime, 0.0f, 10.0f, "%.2fs", true);
@@ -90,7 +87,7 @@ bool OtEnvelope::Parameters::renderUI() {
 //
 
 float OtEnvelope::Parameters::getRenderWidth() {
-	return OtUi::knobWidth(5);
+	return OtUi::knobWidth(4);
 }
 
 
@@ -109,7 +106,6 @@ float OtEnvelope::Parameters::getRenderHeight() {
 
 void OtEnvelope::Parameters::serialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) {
 	(*data)["attack"] = attackTime;
-	(*data)["hold"] = holdTime;
 	(*data)["decay"] = decayTime;
 	(*data)["sustain"] = sustainLevel;
 	(*data)["release"] = releaseTime;
@@ -122,7 +118,6 @@ void OtEnvelope::Parameters::serialize(nlohmann::json* data, [[maybe_unused]] st
 
 void OtEnvelope::Parameters::deserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) {
 	attackTime = data->value("attack", 1.0f);
-	holdTime = data->value("hold", 0.0f);
 	decayTime = data->value("decay", 1.0f);
 	sustainLevel = data->value("sustain", 0.8f);
 	releaseTime = data->value("release", 0.2f);

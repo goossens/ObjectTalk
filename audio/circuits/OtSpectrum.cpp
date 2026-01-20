@@ -117,10 +117,11 @@ public:
 
 		needsSizing = true;
 	}
+
 	static constexpr const char* circuitName = "Spectrum Analyzer";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::probe;
-	static constexpr float width = 600.0f;
-	static constexpr float height = 250.0f;
+	static constexpr float width = 300.0f;
+	static constexpr float height = 150.0f;
 	static constexpr size_t N = 4096;
 
 private:

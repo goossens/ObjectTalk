@@ -32,7 +32,6 @@ public:
 	enum class Phase {
 		idle,
 		attack,
-		hold,
 		decay,
 		sustain,
 		release
@@ -52,7 +51,6 @@ public:
 
 		// properties
 		float attackTime = 1.0f;
-		float holdTime = 0.0f;
 		float decayTime = 1.0f;
 		float sustainLevel = 0.8f;
 		float releaseTime = 0.3f;
@@ -76,16 +74,15 @@ public:
 	};
 
 	// set state
-	inline static void mute(Parameters& parameters, State& state) { enterPhase(parameters, state, Phase::idle); }
 	inline static void noteOn(Parameters& parameters, State& state) { enterPhase(parameters, state, Phase::attack); }
 	inline static void noteOff(Parameters& parameters, State& state) { enterPhase(parameters, state, Phase::release); }
+	inline static void cancel(Parameters& parameters, State& state) { enterPhase(parameters, state, Phase::idle); }
 
 		// get the next envelope sample
 	inline static float process(Parameters& parameters, State& state) {
 		switch (state.phase) {
 			case Phase::idle: break;
-			case Phase::attack: updatePhase(parameters, state, Phase::hold); break;
-			case Phase::hold: updatePhase(parameters, state, Phase::decay); break;
+			case Phase::attack: updatePhase(parameters, state, Phase::decay); break;
 			case Phase::decay: updatePhase(parameters, state, Phase::sustain); break;
 			case Phase::sustain: break;
 			case Phase::release: updatePhase(parameters, state, Phase::idle); break;
@@ -100,6 +97,9 @@ public:
 			*buffer++ *= process(parameters, state);
 		}
 	}
+
+	// see if envelope is still active
+	inline static bool isActive(State& state) { return state.phase != Phase::idle; }
 
 private:
 	// support functions
@@ -122,7 +122,6 @@ private:
 		switch (nextPhase) {
 			case Phase::idle: state.value = 0.0; break;
 			case Phase::attack: configurePhase(state, state.value, 1.0f, parameters.attackTime); break;
-			case Phase::hold: configurePhase(state, 1.0f, 1.0f, parameters.holdTime); break;
 			case Phase::decay: configurePhase(state, 1.0f, parameters.sustainLevel, parameters.decayTime); break;
 			case Phase::sustain: state.value = parameters.sustainLevel; break;
 			case Phase::release: configurePhase(state, state.value, 0.0f, parameters.releaseTime);

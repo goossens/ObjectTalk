@@ -63,22 +63,7 @@ bool OtOscillator::Parameters::renderUI() {
 
 	changed |= OtUi::selectorEnum("Type", &waveForm, waveForms, waveFormCount);
 
-	if (showFrequencyKnob) {
-		changed |= OtUi::knob("Freq", &frequency, frequencyKnobLow, frequencyKnobHigh, "%.1fhz", true);
-		knobs++;
-	}
-
-	if (waveForm == WaveForm::square) {
-		if (showPulseWidthKnob) {
-			if (knobs) {
-				ImGui::SameLine();
-			}
-
-			changed |= OtUi::knob("Pulse Width", &pulseWidth, 0.0f, 1.0f, "%.2f", false);
-			knobs++;
-		}
-
-	} else if (waveForm == WaveForm::sample) {
+	if (waveForm == WaveForm::sample) {
 		if (sampleFileAsset.renderUI("File")) {
 			if (sampleFileAsset.isNull()) {
 				sampleFile.clear();
@@ -92,17 +77,9 @@ bool OtOscillator::Parameters::renderUI() {
 
 			changed |= true;
 		}
+	}
 
-	} else if (waveForm == WaveForm::wavetable) {
-		if (showShapeKnob && waveTable.isValid()) {
-			if (knobs) {
-				ImGui::SameLine();
-			}
-
-			changed |= OtUi::knob("Shape", &shape, 0.0f, static_cast<float>(waveTable.getShapeCount()), "%.0f", false);
-			knobs++;
-		}
-
+	if (waveForm == WaveForm::wavetable) {
 		if (waveTableAsset.renderUI("File")) {
 			if (waveTableAsset.isNull()) {
 				waveTable.clear();
@@ -116,6 +93,32 @@ bool OtOscillator::Parameters::renderUI() {
 
 			changed |= true;
 		}
+	}
+
+	if (showFrequencyKnob) {
+		changed |= OtUi::knob("Freq", &frequency, frequencyKnobLow, frequencyKnobHigh, "%.1fhz", true);
+		knobs++;
+	}
+
+	if (showPulseWidthKnob) {
+		if (knobs) { ImGui::SameLine(); }
+		if (waveForm != WaveForm::square) { ImGui::BeginDisabled(); }
+		changed |= OtUi::knob("PW", &pulseWidth, 0.0f, 1.0f, "%.2f");
+		if (waveForm != WaveForm::square) { ImGui::EndDisabled(); }
+		knobs++;
+	}
+
+	if (showShapeKnob) {
+		if (knobs) { ImGui::SameLine(); }
+		if (!(waveForm == WaveForm::wavetable && waveTable.isValid())) { ImGui::BeginDisabled(); }
+		changed |= OtUi::knob("Shape", &shape, 0.0f, static_cast<float>(waveTable.getShapeCount()), "%.0f");
+		if (!(waveForm == WaveForm::wavetable && waveTable.isValid())) { ImGui::EndDisabled(); }
+		knobs++;
+	}
+
+	if (showVolumeKnob) {
+		if (knobs) { ImGui::SameLine(); }
+		changed |= OtUi::knob("Volume", &volume, 0.0f, 1.0f, "%.0f");
 	}
 
 	return changed;
@@ -136,12 +139,7 @@ float OtOscillator::Parameters::getLabelWidth() {
 //
 
 float OtOscillator::Parameters::getRenderWidth() {
-	if (waveForm == WaveForm::sample || waveForm == WaveForm::wavetable) {
-		return 200.0f;
-
-	} else {
-		return OtUi::knobWidth(2);
-	}
+	return 200.0f;
 }
 
 
@@ -154,10 +152,12 @@ float OtOscillator::Parameters::getRenderHeight() {
 	size_t knobs = 0;
 
 	if (showFrequencyKnob) { knobs++; }
-	if (waveForm == WaveForm::square && showPulseWidthKnob) { knobs++; }
-	if (waveForm == WaveForm::wavetable && showShapeKnob && waveTable.isValid()) { knobs++; }
+	if (showPulseWidthKnob) { knobs++; }
+	if (showShapeKnob) { knobs++; }
+	if (showVolumeKnob) { knobs++; }
+	if (showTuningButton) { knobs++; }
 
-	height += OtUi::knobHeight(knobs);
+	height += OtUi::knobHeight(knobs > 0 ? 1 : 0);
 
 	if (waveForm == WaveForm::sample || waveForm == WaveForm::wavetable) {
 		height += ImGui::GetFrameHeightWithSpacing();
@@ -178,6 +178,10 @@ void OtOscillator::Parameters::serialize(nlohmann::json* data, std::string* base
 	(*data)["sampleFileFrequency"] = sampleFileFrequency;
 	(*data)["sampleFile"] = OtAssetSerialize(sampleFileAsset.getPath(), basedir);
 	(*data)["waveTable"] = OtAssetSerialize(waveTableAsset.getPath(), basedir);
+	(*data)["tuningOctaves"] = tuningOctaves;
+	(*data)["tuningSemitones"] = tuningSemitones;
+	(*data)["tuningCents"] = tuningCents;
+	(*data)["volume"] = volume;
 }
 
 
@@ -192,4 +196,8 @@ void OtOscillator::Parameters::deserialize(nlohmann::json* data, std::string* ba
 	sampleFileFrequency = data->value("sampleFileFrequency", 0.0f);
 	sampleFileAsset = OtAssetDeserialize(data, "sampleFile", basedir);
 	waveTableAsset = OtAssetDeserialize(data, "waveTable", basedir);
+	tuningOctaves = data->value("tuningOctaves", 0.0f);
+	tuningSemitones = data->value("tuningSemitones", 0.0f);
+	tuningCents = data->value("tuningCents", 0.0f);
+	volume = data->value("volume", 1.0f);
 }

@@ -27,15 +27,27 @@
 			],
 			"title": "MIDI Input",
 			"type": "MIDI Input",
-			"x": 24.0,
-			"y": 140.0
+			"x": 49.0,
+			"y": 157.0
 		},
 		{
+			"amp": {
+				"attack": 0.029999999329447746,
+				"decay": 0.019999999552965164,
+				"power": true,
+				"release": 0.010000000707805157,
+				"sustain": 0.6600000262260437
+			},
 			"filter": {
+				"attack": 1.0,
+				"decay": 1.0,
+				"envelopePower": false,
 				"frequency": 1000.0,
 				"mode": 4,
 				"power": true,
-				"resonance": 0.5
+				"release": 0.20000000298023224,
+				"resonance": 0.5,
+				"sustain": 0.800000011920929
 			},
 			"id": 2696420272,
 			"inputs": [
@@ -52,16 +64,24 @@
 					"pulseWidth": 0.5,
 					"sampleFile": "",
 					"sampleFileFrequency": 0.0,
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 0.0,
+					"volume": 1.0,
 					"waveForm": 1,
 					"waveTable": ""
 				},
 				{
 					"frequency": 440.0,
-					"power": false,
+					"power": true,
 					"pulseWidth": 0.5,
 					"sampleFile": "",
 					"sampleFileFrequency": 0.0,
-					"waveForm": 0,
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 0.0,
+					"volume": 1.0,
+					"waveForm": 2,
 					"waveTable": ""
 				},
 				{
@@ -70,22 +90,16 @@
 					"pulseWidth": 0.5,
 					"sampleFile": "",
 					"sampleFileFrequency": 0.0,
-					"waveForm": 0,
-					"waveTable": ""
-				},
-				{
-					"frequency": 440.0,
-					"power": false,
-					"pulseWidth": 0.5,
-					"sampleFile": "",
-					"sampleFileFrequency": 0.0,
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 0.0,
+					"volume": 1.0,
 					"waveForm": 0,
 					"waveTable": ""
 				}
 			],
 			"outputs": [
 				{
-					"attenuation": 1.0,
 					"id": 3568801586,
 					"name": "Output",
 					"type": "mono"
@@ -93,8 +107,8 @@
 			],
 			"title": "Polyphonic Synth",
 			"type": "Polyphonic Synth",
-			"x": 416.0,
-			"y": 196.0
+			"x": 408.0,
+			"y": 157.0
 		},
 		{
 			"id": 61692478,
@@ -108,8 +122,96 @@
 			"outputs": [],
 			"title": "MIDI Probe",
 			"type": "MIDI Probe",
-			"x": 414.0,
-			"y": 54.0
+			"x": 47.0,
+			"y": 18.0
+		},
+		{
+			"Blend": 0.5,
+			"Dwell": 0.20000000298023224,
+			"Tension": 0.0,
+			"id": 4112773547,
+			"inputs": [
+				{
+					"id": 2872103593,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"outputs": [
+				{
+					"id": 2503869085,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"title": "Reverb",
+			"type": "Reverb",
+			"x": 617.0,
+			"y": 18.0
+		},
+		{
+			"id": 306787339,
+			"inputs": [
+				{
+					"id": 3178962024,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"leftDelayTime": 0.0,
+			"outputs": [
+				{
+					"id": 1472752109,
+					"name": "Output",
+					"type": "stereo"
+				}
+			],
+			"panLevel": 0.0,
+			"rightDelayTime": 0.0,
+			"title": "Mono to Stereo",
+			"type": "Mono to Stereo",
+			"x": 926.0,
+			"y": 230.0
+		},
+		{
+			"delay": 0.029999999329447746,
+			"depth": 0.05000000074505806,
+			"freq": 2.0,
+			"id": 716732438,
+			"inputs": [
+				{
+					"id": 1498424643,
+					"name": "Input",
+					"type": "stereo"
+				}
+			],
+			"level": 0.5,
+			"outputs": [
+				{
+					"id": 2380854781,
+					"name": "Output",
+					"type": "stereo"
+				}
+			],
+			"title": "Chorus",
+			"type": "Chorus",
+			"x": 926.0,
+			"y": 18.0
+		},
+		{
+			"id": 848111515,
+			"inputs": [
+				{
+					"id": 2324075142,
+					"name": "Input",
+					"type": "stereo"
+				}
+			],
+			"outputs": [],
+			"title": "Speaker Out",
+			"type": "Speaker Out",
+			"x": 1274.0,
+			"y": 18.0
 		}
 	],
 	"metadata": {},
@@ -123,6 +225,26 @@
 			"from": 3706492645,
 			"id": 3456949747,
 			"to": 1527275208
+		},
+		{
+			"from": 2503869085,
+			"id": 3642507654,
+			"to": 3178962024
+		},
+		{
+			"from": 1472752109,
+			"id": 2329853171,
+			"to": 1498424643
+		},
+		{
+			"from": 2380854781,
+			"id": 3196174959,
+			"to": 2324075142
+		},
+		{
+			"from": 3568801586,
+			"id": 883162338,
+			"to": 2872103593
 		}
 	]
 }

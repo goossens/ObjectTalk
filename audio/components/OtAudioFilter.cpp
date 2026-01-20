@@ -23,7 +23,7 @@
 
 bool OtAudioFilter::Parameters::renderUI() {
 	bool changed = false;
-	changed |= OtUi::selectorEnum("Filter Mode", &mode, modes, modesCount);
+	changed |= OtUi::selectorEnum("Mode", &mode, modes, modesCount);
 
 	if (mode != Mode::off) {
 		changed |= OtUi::knob("Freq", &frequency, 80.0f, 8000.0f, "%.0fhz", true); ImGui::SameLine();
@@ -39,7 +39,7 @@ bool OtAudioFilter::Parameters::renderUI() {
 //
 
 float OtAudioFilter::Parameters::getLabelWidth() {
-	return ImGui::CalcTextSize("X").x * 10.0f + ImGui::GetStyle().ItemInnerSpacing.x;
+	return ImGui::CalcTextSize("X").x * 4.0f + ImGui::GetStyle().ItemInnerSpacing.x;
 }
 
 
@@ -48,7 +48,7 @@ float OtAudioFilter::Parameters::getLabelWidth() {
 //
 
 float OtAudioFilter::Parameters::getRenderWidth() {
-	return OtUi::knobWidth(3);
+	return OtUi::knobWidth(2) + getLabelWidth();
 }
 
 

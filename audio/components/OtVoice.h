@@ -50,12 +50,14 @@ public:
 		};
 
 		struct Filter {
-			bool power = false;
-			OtAudioFilter::Parameters parameters;
+			bool filterPower = false;
+			OtAudioFilter::Parameters filterParameters;
+			bool envelopePower = false;
+			OtEnvelope::Parameters envelopeParameters;
 		};
 
 		struct Amp {
-			bool power = false;
+			bool power = true;
 			OtEnvelope::Parameters parameters;
 		};
 
@@ -63,36 +65,31 @@ public:
 		std::array<Oscillator, numberOfOscillators> oscillators;
 		Filter filter;
 		Amp amp;
-
-
-		// support functions
-		bool renderOscillator(struct Oscillator& oscillator, int id);
-		bool renderFilter();
-		bool renderAmp();
 	};
 
 	// state of a voice allowing multiple instances with identical parameters
 	struct State {
 		// properties
-		Parameters* parameters;
 		int note;
 		float velocity;
 
 		std::array<OtOscillator::State, numberOfOscillators> oscillators;
-		OtAudioFilter::State state;
-
-		// voice state
-		void noteOn(Parameters* parameters, int note, int velocity);
-		void noteOff(int note, int velocity);
-		void cancel();
-
-		// voice status
-		bool isActive();
-		inline int getNote() { return note; }
-		inline int getVelocity() { return note; }
-
-		// get the next sample(s)
-		static float get(Parameters& parameters, State& state);
-		static void get(Parameters& parameters, State& state, float* buffer, size_t size);
+		OtAudioFilter::State filterState;
+		OtEnvelope::State filterEnvelopeState;
+		OtEnvelope::State ampEnvelopeState;
 	};
+
+	// voice state
+	static void noteOn(Parameters& parameters, State& state, int note, int velocity);
+	static void noteOff(Parameters& parameters, State& state);
+	static void cancel(Parameters& parameters, State& state);
+
+	// voice status
+	static bool isActive(State& state);
+	static inline int getNote(State& state) { return state.note; }
+	static inline int getVelocity(State& state) { return state.velocity; }
+
+	// get the next sample(s)
+	static float get(Parameters& parameters, State& state);
+	static void get(Parameters& parameters, State& state, float* buffer, size_t size);
 };

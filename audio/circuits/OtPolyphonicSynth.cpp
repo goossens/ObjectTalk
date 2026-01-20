@@ -9,6 +9,9 @@
 //	Include files
 //
 
+#include "imgui.h"
+
+#include "OtAudioSettings.h"
 #include "OtCircuitFactory.h"
 #include "OtSynth.h"
 
@@ -22,20 +25,31 @@ public:
 	// configure circuit
 	inline void configure() override {
 		midiInput = addInputPin("MIDI", OtCircuitPinClass::Type::midi);
-		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono)->hasAttenuation();
+		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
 	}
 
 	// render custom fields
 	inline bool customRendering(float itemWidth) override {
-		return synth.renderUI(itemWidth);
+		auto changed = false;
+
+		if (ImGui::Button("Edit", ImVec2(itemWidth, 0.0f))) {
+			ImGui::OpenPopup("synthEdit");
+		}
+
+		if (ImGui::BeginPopup("synthEdit")) {
+			changed |= synth.renderUI(itemWidth);
+			ImGui::EndPopup();
+		}
+
+		return changed;
 	}
 
 	inline float getCustomRenderingWidth() override {
-		return synth.getRenderWidth();
+		return ImGui::CalcTextSize("X").x * 6.0f;
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return synth.getRenderHeight();
+		return ImGui::GetFrameHeightWithSpacing();
 	}
 
 	// (de)serialize circuit
@@ -54,6 +68,8 @@ public:
 				for (auto& message : midiInput->getMidiInputBuffer()) {
 					synth.processMidiMessage(message);
 				}
+
+				synth.get(audioOutput->getAudioOutputBuffer().data(), OtAudioSettings::bufferSize);
 			}
 		}
 	};

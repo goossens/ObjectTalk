@@ -7,6 +7,11 @@
 			"midiSource": 1,
 			"outputs": [
 				{
+					"id": 2194206050,
+					"name": "MIDI",
+					"type": "midi"
+				},
+				{
 					"id": 2197641789,
 					"name": "Pitch",
 					"tuningCents": 0.0,
@@ -22,13 +27,12 @@
 			],
 			"title": "MIDI Input",
 			"type": "MIDI Input",
-			"x": 24.0,
-			"y": 226.0
+			"x": 19.0,
+			"y": 173.0
 		},
 		{
 			"attack": 0.10000000149011612,
 			"decay": 0.5,
-			"hold": 0.010000000707805157,
 			"id": 3801042963,
 			"inputs": [
 				{
@@ -48,8 +52,8 @@
 			"sustain": 0.5,
 			"title": "Envelope Generator",
 			"type": "Envelope Generator",
-			"x": 412.0,
-			"y": 416.0
+			"x": 394.0,
+			"y": 359.0
 		},
 		{
 			"frequency": 440.0,
@@ -82,11 +86,15 @@
 			"sampleFile": "",
 			"sampleFileFrequency": 0.0,
 			"title": "VCO",
+			"tuningCents": 0.0,
+			"tuningOctaves": 0.0,
+			"tuningSemitones": 0.0,
 			"type": "VCO",
+			"volume": 1.0,
 			"waveForm": 5,
 			"waveTable": "assets/brass.wav",
-			"x": 465.0,
-			"y": 201.0
+			"x": 442.0,
+			"y": 144.0
 		},
 		{
 			"id": 3569591617,
@@ -113,8 +121,8 @@
 			],
 			"title": "VCA",
 			"type": "VCA",
-			"x": 923.0,
-			"y": 577.0
+			"x": 766.0,
+			"y": 483.0
 		},
 		{
 			"id": 1460307938,
@@ -137,8 +145,33 @@
 			"rightDelayTime": 0.0,
 			"title": "Mono to Stereo",
 			"type": "Mono to Stereo",
-			"x": 1125.0,
-			"y": 577.0
+			"x": 947.0,
+			"y": 483.0
+		},
+		{
+			"delay": 0.019999999552965164,
+			"depth": 0.10000000149011612,
+			"freq": 3.640000104904175,
+			"id": 1976569357,
+			"inputs": [
+				{
+					"id": 1468005658,
+					"name": "Input",
+					"type": "stereo"
+				}
+			],
+			"level": 0.47999998927116394,
+			"outputs": [
+				{
+					"id": 136917770,
+					"name": "Output",
+					"type": "stereo"
+				}
+			],
+			"title": "Chorus",
+			"type": "Chorus",
+			"x": 1210.0,
+			"y": 483.0
 		},
 		{
 			"id": 278093283,
@@ -152,8 +185,8 @@
 			"outputs": [],
 			"title": "Speaker Out",
 			"type": "Speaker Out",
-			"x": 1393.0,
-			"y": 577.0
+			"x": 1381.0,
+			"y": 377.0
 		},
 		{
 			"id": 1203394735,
@@ -167,8 +200,8 @@
 			"outputs": [],
 			"title": "Oscilloscope",
 			"type": "Oscilloscope",
-			"x": 923.0,
-			"y": 342.0
+			"x": 766.0,
+			"y": 256.0
 		},
 		{
 			"id": 3944626751,
@@ -182,17 +215,12 @@
 			"outputs": [],
 			"title": "Spectrum Analyzer",
 			"type": "Spectrum Analyzer",
-			"x": 923.0,
-			"y": 7.0
+			"x": 766.0,
+			"y": 12.0
 		}
 	],
 	"metadata": {},
 	"wires": [
-		{
-			"from": 1492965834,
-			"id": 809450030,
-			"to": 248961618
-		},
 		{
 			"from": 470986240,
 			"id": 217853430,
@@ -232,6 +260,16 @@
 			"from": 3111468910,
 			"id": 747831206,
 			"to": 2718563792
+		},
+		{
+			"from": 1492965834,
+			"id": 1960534976,
+			"to": 1468005658
+		},
+		{
+			"from": 136917770,
+			"id": 536203725,
+			"to": 248961618
 		}
 	]
 }

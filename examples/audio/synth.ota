@@ -4,10 +4,19 @@
 			"id": 1315334498,
 			"inputs": [],
 			"midiFile": "",
+			"midiSource": 0,
 			"outputs": [
+				{
+					"id": 2904210449,
+					"name": "MIDI",
+					"type": "midi"
+				},
 				{
 					"id": 2197641789,
 					"name": "Pitch",
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 0.0,
 					"type": "control"
 				},
 				{
@@ -18,8 +27,8 @@
 			],
 			"title": "MIDI Input",
 			"type": "MIDI Input",
-			"x": 9.0,
-			"y": 508.0
+			"x": 10.0,
+			"y": 532.0
 		},
 		{
 			"id": 1112908790,
@@ -100,7 +109,11 @@
 			"sampleFile": "",
 			"sampleFileFrequency": 0.0,
 			"title": "VCO",
+			"tuningCents": 0.0,
+			"tuningOctaves": 0.0,
+			"tuningSemitones": 0.0,
 			"type": "VCO",
+			"volume": 1.0,
 			"waveForm": 3,
 			"waveTable": "",
 			"x": 491.0,
@@ -109,7 +122,6 @@
 		{
 			"attack": 0.25,
 			"decay": 2.0,
-			"hold": 0.010000000707805157,
 			"id": 3801042963,
 			"inputs": [
 				{
@@ -129,8 +141,8 @@
 			"sustain": 0.699999988079071,
 			"title": "Envelope Generator",
 			"type": "Envelope Generator",
-			"x": 673.0,
-			"y": 338.0
+			"x": 740.0,
+			"y": 346.0
 		},
 		{
 			"frequency": 1.0,
@@ -147,10 +159,14 @@
 			"sampleFile": "",
 			"sampleFileFrequency": 0.0,
 			"title": "LFO",
+			"tuningCents": 0.0,
+			"tuningOctaves": 0.0,
+			"tuningSemitones": 0.0,
 			"type": "LFO",
+			"volume": 1.0,
 			"waveForm": 0,
 			"waveTable": "",
-			"x": 1048.0,
+			"x": 1068.0,
 			"y": 629.0
 		},
 		{
@@ -184,7 +200,11 @@
 			"sampleFile": "",
 			"sampleFileFrequency": 0.0,
 			"title": "VCO",
+			"tuningCents": 0.0,
+			"tuningOctaves": 0.0,
+			"tuningSemitones": 0.0,
 			"type": "VCO",
+			"volume": 1.0,
 			"waveForm": 1,
 			"waveTable": "",
 			"x": 491.0,
@@ -221,7 +241,11 @@
 			"sampleFile": "",
 			"sampleFileFrequency": 0.0,
 			"title": "VCO",
+			"tuningCents": 0.0,
+			"tuningOctaves": 0.0,
+			"tuningSemitones": 0.0,
 			"type": "VCO",
+			"volume": 1.0,
 			"waveForm": 3,
 			"waveTable": "",
 			"x": 491.0,
@@ -264,8 +288,8 @@
 			],
 			"title": "4 Channel Mixer",
 			"type": "4 Channel Mixer",
-			"x": 673.0,
-			"y": 165.0
+			"x": 754.0,
+			"y": 173.0
 		},
 		{
 			"id": 3569591617,
@@ -292,8 +316,8 @@
 			],
 			"title": "VCA",
 			"type": "VCA",
-			"x": 879.0,
-			"y": 165.0
+			"x": 935.0,
+			"y": 161.0
 		},
 		{
 			"frequency": 800.0,
@@ -328,7 +352,7 @@
 			"resonance": 0.6800000071525574,
 			"title": "VCF",
 			"type": "VCF",
-			"x": 1053.0,
+			"x": 1073.0,
 			"y": 359.0
 		},
 		{
@@ -352,8 +376,8 @@
 			],
 			"title": "Reverb",
 			"type": "Reverb",
-			"x": 1299.0,
-			"y": 497.0
+			"x": 1330.0,
+			"y": 498.0
 		},
 		{
 			"Depth": 50.0,
@@ -376,8 +400,8 @@
 			],
 			"title": "Phaser",
 			"type": "Phaser",
-			"x": 1299.0,
-			"y": 293.0
+			"x": 1330.0,
+			"y": 294.0
 		},
 		{
 			"id": 1460307938,
@@ -400,8 +424,8 @@
 			"rightDelayTime": 0.0,
 			"title": "Mono to Stereo",
 			"type": "Mono to Stereo",
-			"x": 1299.0,
-			"y": 89.0
+			"x": 1330.0,
+			"y": 90.0
 		},
 		{
 			"id": 278093283,
@@ -415,8 +439,8 @@
 			"outputs": [],
 			"title": "Speaker Out",
 			"type": "Speaker Out",
-			"x": 1406.0,
-			"y": 13.0
+			"x": 1437.0,
+			"y": 14.0
 		}
 	],
 	"metadata": {},

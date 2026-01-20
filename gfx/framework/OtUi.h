@@ -72,6 +72,7 @@ public:
 
 	// toggle button
 	static bool toggleButton(const char* label, bool* value);
+	static bool headerWithToggleButton(const char* label, bool* value);
 
 	// latch button
 	static bool latchButton(const char* label, bool* value, const ImVec2& size=ImVec2(0.0f, 0.0f));

@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <algorithm>
+
 #include "fmt/format.h"
 #include "nlohmann/json.hpp"
 
@@ -22,114 +24,81 @@
 //	OtVoice::Parameters::renderUI
 //
 
-bool OtVoice::Parameters::renderUI(float itemWidth) {
-	// setup UI
-	ImGui::PushItemWidth(itemWidth - (ImGui::CalcTextSize("X").x * 12.0f + ImGui::GetStyle().ItemInnerSpacing.x));
+bool OtVoice::Parameters::renderUI([[maybe_unused]]float itemWidth) {
 	bool changed = false;
 
-	// edit VCOs
-	for (size_t i = 0; i < numberOfOscillators; i++) {
-		changed |= renderOscillator(oscillators[i], i + 1);
+	// determine dimensions
+	auto frameHeight = ImGui::GetFrameHeightWithSpacing();
+	auto width = 0.0f;
+	auto height = 0.0f;
+
+	for (auto& oscillator : oscillators) {
+		width = std::max(width, oscillator.parameters.getRenderWidth());
+		height += frameHeight + oscillator.parameters.getRenderHeight();
 	}
+
+	height = std::max(height, frameHeight + filter.filterParameters.getRenderHeight()+ filter.envelopeParameters.getRenderHeight());
+	height = std::max(height, frameHeight + amp.parameters.getRenderHeight());
+
+	auto& style = ImGui::GetStyle();
+	auto paddingX = style.WindowPadding.x * 2.0f;
+	auto paddingY = style.WindowPadding.y * 2.0f;
+	width += paddingX;
+	height += paddingY;
+
+	// edit oscillators
+	ImGui::BeginChild("Oscillators", ImVec2(width, height), ImGuiChildFlags_Borders);
+
+	for (size_t i = 0; i < numberOfOscillators; i++) {
+		auto& oscillator = oscillators[i];
+		oscillator.parameters.showPulseWidthKnob = true;
+		oscillator.parameters.showShapeKnob = true;
+		oscillator.parameters.showVolumeKnob = true;
+		oscillator.parameters.showTuningButton = true;
+
+		ImGui::PushID(i);
+		auto label = fmt::format("Oscillator {}", i + 1);
+		changed |= OtUi::headerWithToggleButton(label.c_str(), &oscillator.power);
+		if (!oscillator.power) { ImGui::BeginDisabled(); }
+		ImGui::PushItemWidth(oscillator.parameters.getRenderWidth() - oscillator.parameters.getLabelWidth());
+		changed |= oscillator.parameters.renderUI();
+		ImGui::PopItemWidth();
+		if (!oscillator.power) { ImGui::EndDisabled(); }
+		ImGui::PopID();
+	}
+
+	ImGui::EndChild();
 
 	// edit filter
-	changed |= renderFilter();
+	ImGui::SameLine();
+	ImGui::BeginChild("Filter", ImVec2(filter.envelopeParameters.getRenderWidth() + paddingX, height), ImGuiChildFlags_Borders);
+	ImGui::PushID("filter");
+	changed |= OtUi::headerWithToggleButton("Filter", &filter.filterPower);
+	if (!filter.filterPower) { ImGui::BeginDisabled(); }
+	ImGui::PushItemWidth(filter.filterParameters.getRenderWidth() - filter.filterParameters.getLabelWidth());
+	changed |= filter.filterParameters.renderUI();
+	ImGui::PopItemWidth();
+
+	changed |= OtUi::headerWithToggleButton("Filter Envelope", &filter.envelopePower);
+	if (!filter.envelopePower) { ImGui::BeginDisabled(); }
+	changed |= filter.envelopeParameters.renderUI();
+	if (!filter.envelopePower) { ImGui::EndDisabled(); }
+
+	if (!filter.filterPower) { ImGui::EndDisabled(); }
+	ImGui::PopID();
+	ImGui::EndChild();
 
 	// render amplifier
-	changed |= renderAmp();
-
-	ImGui::PopItemWidth();
-	return changed;
-}
-
-//
-//	OtVoice::renderOscillator
-//
-
-bool OtVoice::Parameters::renderOscillator(Oscillator& oscillator, int id) {
-	bool changed = false;
-	ImGui::PushID(id);
-	auto left = ImGui::GetCursorScreenPos().x;
-	changed |= OtUi::toggleButton("##power", &oscillator.power);
-
 	ImGui::SameLine();
-	if (!oscillator.power) { ImGui::BeginDisabled(); }
-	auto buttonWidth = ImGui::CalcItemWidth() - (ImGui::GetCursorScreenPos().x - left);
-	auto popup = fmt::format("OscillatorPopup{}", id);
-	if (ImGui::Button("Edit", ImVec2(buttonWidth, 0.0f))) { ImGui::OpenPopup(popup.c_str()); }
-	if (!oscillator.power) { ImGui::EndDisabled(); }
-	ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-	ImGui::Text("Oscillator %d", id);
-
-	if (ImGui::BeginPopup(popup.c_str())) {
-		OtUi::header("Oscillator Editor");
-		changed |= oscillator.parameters.renderUI();
-		ImGui::EndPopup();
-	}
-
-	ImGui::PopID();
-	return changed;
-}
-
-
-//
-//	OtVoice::renderFilter
-//
-
-bool OtVoice::Parameters::renderFilter() {
-	bool changed = false;
-	ImGui::PushID("filter");
-	auto left = ImGui::GetCursorScreenPos().x;
-	changed |= OtUi::toggleButton("##power", &filter.power);
-
-	ImGui::SameLine();
-	if (!filter.power) { ImGui::BeginDisabled(); }
-	auto buttonWidth = ImGui::CalcItemWidth() - (ImGui::GetCursorScreenPos().x - left);
-	if (ImGui::Button("Edit", ImVec2(buttonWidth, 0.0f))) { ImGui::OpenPopup("filterPopup"); }
-	if (!filter.power) { ImGui::EndDisabled(); }
-	ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-	ImGui::TextUnformatted("Filter");
-
-	if (ImGui::BeginPopup("filterPopup")) {
-		ImGui::PushItemWidth(filter.parameters.getRenderWidth() - filter.parameters.getLabelWidth());
-		OtUi::header("Filter Editor");
-		changed |= filter.parameters.renderUI();
-		ImGui::PopItemWidth();
-		ImGui::EndPopup();
-	}
-
-	ImGui::PopID();
-	return changed;
-}
-
-
-//
-//	OtVoice::Parameters::renderAmp
-//
-
-bool OtVoice::Parameters::renderAmp() {
-	bool changed = false;
-	ImGui::PushID("amp");
-	auto left = ImGui::GetCursorScreenPos().x;
-	changed |= OtUi::toggleButton("##power", &amp.power);
-
-	ImGui::SameLine();
+	ImGui::BeginChild("Amplifier", ImVec2(amp.parameters.getRenderWidth() + paddingX, height), ImGuiChildFlags_Borders);
+	ImGui::PushID("amplifier");
+	changed |= OtUi::headerWithToggleButton("Amplifier", &amp.power);
 	if (!amp.power) { ImGui::BeginDisabled(); }
-	auto buttonWidth = ImGui::CalcItemWidth() - (ImGui::GetCursorScreenPos().x - left);
-	if (ImGui::Button("Edit", ImVec2(buttonWidth, 0.0f))) { ImGui::OpenPopup("ampPopup"); }
+	changed |= amp.parameters.renderUI();
 	if (!amp.power) { ImGui::EndDisabled(); }
-	ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-	ImGui::TextUnformatted("Amp");
-
-	if (ImGui::BeginPopup("ampPopup")) {
-		ImGui::PushItemWidth(amp.parameters.getRenderWidth());
-		OtUi::header("Amp Editor");
-		changed |= amp.parameters.renderUI();
-		ImGui::PopItemWidth();
-		ImGui::EndPopup();
-	}
-
 	ImGui::PopID();
+	ImGui::EndChild();
+
 	return changed;
 }
 
@@ -151,13 +120,15 @@ void OtVoice::Parameters::serialize(nlohmann::json_abi_v3_12_0::json *data, std:
 	(*data)["oscillators"] = oscillatorArray;
 
 	auto filterData = nlohmann::json::object();
-	filterData["power"] = filter.power;
-	filter.parameters.serialize(&filterData, basedir);
+	filterData["power"] = filter.filterPower;
+	filter.filterParameters.serialize(&filterData, basedir);
+	filterData["envelopePower"] = filter.envelopePower;
+	filter.envelopeParameters.serialize(&filterData, basedir);
 	(*data)["filter"] = filterData;
 
 	auto ampData = nlohmann::json::object();
-	ampData["power"] = filter.power;
-	filter.parameters.serialize(&ampData, basedir);
+	ampData["power"] = amp.power;
+	amp.parameters.serialize(&ampData, basedir);
 	(*data)["amp"] = ampData;
 }
 
@@ -177,57 +148,110 @@ void OtVoice::Parameters::deserialize(nlohmann::json_abi_v3_12_0::json *data, st
 	}
 
 	if (data->contains("filter")) {
-		filter.power = (*data)["filter"].value("power", false);
-		filter.parameters.deserialize(&(*data)["filter"], basedir);
+		filter.filterPower = (*data)["filter"].value("power", false);
+		filter.filterParameters.deserialize(&(*data)["filter"], basedir);
+		filter.envelopePower = (*data)["filter"].value("envelopePower", false);
+		filter.envelopeParameters.deserialize(&(*data)["filter"], basedir);
 	}
 
 	if (data->contains("amp")) {
-		amp.power = (*data)["amp"].value("power", false);
+		amp.power = (*data)["amp"].value("power", true);
 		amp.parameters.deserialize(&(*data)["amp"], basedir);
 	}
 }
 
 
 //
-//	OtVoice::State::noteOn
+//	OtVoice::noteOn
 //
 
-void OtVoice::State::noteOn(Parameters* p, int n, int v) {
+void OtVoice::noteOn(Parameters& parameters, State& state, int note, int velocity) {
 	// store information
-	parameters = p;
-	note = n;
-	velocity = static_cast<float>(v) / 127.0f;
+	state.note = note;
+	state.velocity = static_cast<float>(velocity) / 127.0f;
 
 	// configure oscillators
-	for (auto& oscillator : oscillators) {
+	for (auto& oscillator : state.oscillators) {
 		oscillator.frequency = OtAudioUtilities::midiNoteToPitch(note);
 	}
 
 	// start envelopes
-
+	OtEnvelope::noteOn(parameters.filter.envelopeParameters, state.filterEnvelopeState);
+	OtEnvelope::noteOn(parameters.amp.parameters, state.ampEnvelopeState);
 }
 
 
 //
-//	OtVoice::State::noteOff
+//	OtVoice::noteOff
 //
 
-void OtVoice::State::noteOff([[maybe_unused]] int note, [[maybe_unused]] int velocity) {
+void OtVoice::noteOff(Parameters& parameters, State& state) {
+	// inform envelopes (if required)
+	if (parameters.filter.envelopePower) {
+		OtEnvelope::noteOff(parameters.filter.envelopeParameters, state.filterEnvelopeState);
+	}
+
+	if (parameters.amp.power) {
+		OtEnvelope::noteOff(parameters.amp.parameters, state.ampEnvelopeState);
+	}
 }
 
 
 //
-//	OtVoice::State::cancel
-//
+//	OtVoice::cancel
 
-void OtVoice::State::cancel() {
+void OtVoice::cancel(Parameters& parameters, State& state) {
+	// cancel envelopes
+	OtEnvelope::cancel(parameters.filter.envelopeParameters, state.filterEnvelopeState);
+	OtEnvelope::cancel(parameters.amp.parameters, state.ampEnvelopeState);
 }
 
 
 //
-//	OtVoice::State::isActive
+//	OtVoice::isActive
 //
 
-bool OtVoice::State::isActive() {
-	return false;
+bool OtVoice::isActive(State& state) {
+	return OtEnvelope::isActive(state.filterEnvelopeState) || OtEnvelope::isActive(state.ampEnvelopeState);
+}
+
+
+//
+//	OtVoice::get
+//
+
+float OtVoice::get(Parameters& parameters, State& state) {
+	auto sample = 0.0f;
+
+	// process all active oscillators
+	for (size_t i = 0; i < numberOfOscillators; i++) {
+		if (parameters.oscillators[i].power) {
+			sample += OtOscillator::get(parameters.oscillators[i].parameters, state.oscillators[i]);
+		}
+	}
+
+	// apply filter
+	// sample = OtAudioFilter::apply(sample);
+	if (parameters.filter.envelopePower) {
+		OtEnvelope::process(parameters.filter.envelopeParameters, state.filterEnvelopeState);
+	}
+
+	// apply amp envelope
+	if (parameters.amp.power) {
+		sample *= OtEnvelope::process(parameters.amp.parameters, state.ampEnvelopeState);
+	}
+
+	return sample;
+}
+
+
+//
+//	OtVoice::get
+//
+
+void OtVoice::get(Parameters& parameters, State& state, float* buffer, size_t size) {
+	for (size_t i = 0; i < size; i++) {
+		*buffer = get(parameters, state);
+		buffer++;
+	}
 }

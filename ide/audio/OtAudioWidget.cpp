@@ -517,7 +517,7 @@ void OtAudioWidget::renderPinTuning(OtCircuitPin pin, float width) {
 
 	if (ImGui::BeginPopup("tuningPopup")) {
 		auto oldState = pin->circuit->captureState();
-		bool changed = false;
+		auto changed = false;
 
 		changed |= OtUi::knob("Octaves", &pin->tuningOctaves, -4, +4); ImGui::SameLine();
 		changed |= OtUi::knob("Semitones", &pin->tuningSemitones, -12, +12); ImGui::SameLine();

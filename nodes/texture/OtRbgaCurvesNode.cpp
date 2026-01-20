@@ -39,7 +39,7 @@ public:
 
 	// render custom fields
 	inline void customRendering(float itemWidth) override {
-		bool changed = false;
+		auto changed = false;
 		auto old = serialize().dump();
 
 		ImGui::PushID("Mode");

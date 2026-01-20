@@ -25,7 +25,7 @@
 //
 
 bool OtVoice::Parameters::renderUI([[maybe_unused]]float itemWidth) {
-	bool changed = false;
+	auto changed = false;
 
 	// determine dimensions
 	auto frameHeight = ImGui::GetFrameHeightWithSpacing();

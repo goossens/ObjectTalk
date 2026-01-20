@@ -22,7 +22,7 @@
 //
 
 bool OtMessageComponent::renderUI() {
-	bool changed = OtUi::inputMultilineText("Message", &message, ImVec2(0.0f, ImGui::GetTextLineHeightWithSpacing() * 3.0f));
+	auto changed = OtUi::inputMultilineText("Message", &message, ImVec2(0.0f, ImGui::GetTextLineHeightWithSpacing() * 3.0f));
 	changed |= ImGui::DragFloat("Visible (seconds)", &visibleTime, 0.5f, 0.0f, 60.0f);
 	changed |= ImGui::DragFloat("Fade (seconds)", &fadeTime, 0.1f, 0.0f, 2.0f);
 	return changed;

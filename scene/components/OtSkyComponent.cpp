@@ -22,7 +22,7 @@
 //
 
 bool OtSkyComponent::renderUI() {
-	bool changed = false;
+	auto changed = false;
 	changed |= OtUi::dragFloat("Sun Elevation", &elevation, -90.0f, 90.0f);
 	changed |= OtUi::dragFloat("Sun Azimuth", &azimuth, 0.0f, 360.0f);
 	changed |= OtUi::toggleButton("Cast Shadow", &castShadow);

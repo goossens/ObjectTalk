@@ -20,7 +20,7 @@
 //
 
 bool OtGeometryComponent::renderUI() {
-	bool changed = asset.renderUI("Path##GeometryPath");
+	auto changed = asset.renderUI("Path##GeometryPath");
 	changed |= OtUi::toggleButton("Transparent", &transparent);
 	changed |= OtUi::toggleButton("Cull Back Faces", &cullBack);
 	changed |= OtUi::toggleButton("Cast Shadow", &castShadow);

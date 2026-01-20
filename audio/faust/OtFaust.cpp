@@ -22,8 +22,8 @@
 //
 
 bool OtFaust::render() {
-	bool first = true;
-	bool changed = false;
+	auto first = true;
+	auto changed = false;
 
 	for (auto control : ui.controls) {
 		if (first) {

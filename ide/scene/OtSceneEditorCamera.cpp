@@ -28,7 +28,7 @@
 //
 
 bool OtSceneEditorCamera::renderUI() {
-	bool changed = false;
+	auto changed = false;
 	changed |= OtUi::editVec3("Position", &position);
 	changed |= OtUi::dragFloat("Pitch (Deg)", &pitch, -90.0f, 90.0f);
 	changed |= OtUi::dragFloat("Yaw (Deg)", &yaw, -180.0f, 180.0f);

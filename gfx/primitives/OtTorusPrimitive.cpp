@@ -62,7 +62,7 @@ void OtTorusPrimitive::createMesh(OtMesh* mesh) {
 //
 
 bool OtTorusPrimitive::renderUI() {
-	bool changed = false;
+	auto changed = false;
 	changed |= OtUi::dragFloat("Radius", &radius, 0.0f, 1.0f);
 	changed |= OtUi::dragFloat("Tube Radius", &tubeRadius, 0.0f, 1.0f);
 	changed |= OtUi::dragInt("Radial Segments", &radialSegments, 1, 64);

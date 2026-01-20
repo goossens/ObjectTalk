@@ -27,7 +27,7 @@
 #define W() ImGui::SetNextItemWidth(250.0f)
 
 bool OtMaterial::renderUI() {
-	bool changed = false;
+	auto changed = false;
 
 	// render button
 	if (ImGui::Button("Edit", ImVec2(ImGui::CalcItemWidth(), 0.0f))) {

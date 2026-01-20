@@ -34,7 +34,7 @@ public:
 	// render custom fields
 	inline bool customRendering(float itemWidth) override {
 		ImGui::PushItemWidth(itemWidth - parameters.getLabelWidth());
-		bool changed = parameters.renderUI();
+		auto changed = parameters.renderUI();
 		ImGui::PopItemWidth();
 		return changed;
 	}

@@ -197,7 +197,7 @@ bool OtUi::toggleButton(const char* labelPlusID, bool* value) {
 	ImVec4* colors = ImGui::GetStyle().Colors;
 	ImVec2 p = ImGui::GetCursorScreenPos();
 	ImDrawList* drawlist = ImGui::GetWindowDrawList();
-	bool changed = false;
+	auto changed = false;
 
 	float height = ImGui::GetFrameHeight();
 	float width = height * 1.55f;
@@ -256,7 +256,7 @@ bool OtUi::headerWithToggleButton(const char* label, bool* value) {
 
 	ImVec4* colors = ImGui::GetStyle().Colors;
 	ImDrawList* drawlist = ImGui::GetWindowDrawList();
-	bool changed = false;
+	auto changed = false;
 
 	auto id = fmt::format("##{}Button", label);
 	ImGui::InvisibleButton(id.c_str(), ImVec2(width, height));
@@ -302,7 +302,7 @@ bool OtUi::headerWithToggleButton(const char* label, bool* value) {
 //
 
 bool OtUi::latchButton(const char* label, bool* value, const ImVec2& size) {
-	bool changed = false;
+	auto changed = false;
 	ImVec4* colors = ImGui::GetStyle().Colors;
 
 	if (*value) {
@@ -576,7 +576,7 @@ void OtUi::viewVecX(const char* labelPlusID, const float* value, int components)
 
 bool OtUi::editVecX(const char* labelPlusID, float* value, int components, float minv, float maxv) {
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
-	bool changed = false;
+	auto changed = false;
 
 	std::string label;
 	std::string id;
@@ -714,7 +714,7 @@ bool OtUi::fileSelector(const char* label, std::string* path, const char* filter
 
 	// render widgets
 	ImGui::PushID(id.c_str());
-	bool changed = false;
+	auto changed = false;
 
 	// get the filename without the path
 	auto filename = OtPath::getFilename(*path);
@@ -845,7 +845,7 @@ bool OtUi::splitterHorizontal(float* size, float minSize, float maxSize) {
 //
 
 bool OtUi::selectorPowerOfTwo(const char* label, int* value, int startValue, int endValue) {
-	bool changed = false;
+	auto changed = false;
 
 	if (ImGui::BeginCombo(label, std::to_string(*value).c_str())) {
 		for (auto size = startValue; size <= endValue; size <<= 1) {
@@ -976,7 +976,7 @@ bool OtUi::bezier(const char* label, float P[4]) {
 	bezierTable<smoothness>(Q, results);
 
 	// handle grabbers
-	bool changed = false;
+	auto changed = false;
 
 	for (int i = 0; i < 2; i++) {
 		float& px = P[i * 2 + 0];

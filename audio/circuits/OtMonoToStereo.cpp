@@ -40,7 +40,7 @@ public:
 
 	// render custom fields
 	inline bool customRendering([[maybe_unused]] float itemWidth) override {
-		bool changed = panControl->renderKnob(); ImGui::SameLine();
+		auto changed = panControl->renderKnob(); ImGui::SameLine();
 		changed |= leftDelayControl->renderKnob(); ImGui::SameLine();
 		changed |= rightDelayControl->renderKnob();
 		return changed;

@@ -86,7 +86,7 @@ OtNodesComponent::~OtNodesComponent() {
 //
 
 bool OtNodesComponent::renderUI() {
-	bool changed = asset.renderUI("Path##NodesPath", [](const std::string& path) {
+	auto changed = asset.renderUI("Path##NodesPath", [](const std::string& path) {
 		// create a new nodes file
 		OtText::save(path, flowTemplate);
 	});

@@ -22,7 +22,7 @@
 //
 
 bool OtModelComponent::renderUI() {
-	bool changed = false;
+	auto changed = false;
 	changed |= asset.renderUI("Model");
 	changed |= OtUi::toggleButton("Cast Shadow", &castShadow);
 

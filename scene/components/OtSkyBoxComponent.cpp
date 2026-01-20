@@ -23,7 +23,7 @@
 //
 
 bool OtSkyBoxComponent::renderUI() {
-	bool changed = false;
+	auto changed = false;
 	changed |= cubemap.renderUI("Cube Map");
 	changed |= OtUi::dragFloat("Brightness", &brightness, 0.1f, 4.0f);
 	changed |= OtUi::dragFloat("Gamma", &gamma, 0.1f, 4.0f);

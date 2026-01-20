@@ -80,8 +80,8 @@ public:
 	// radio button
 	template <typename T>
 	static bool radioButton(const char* label, T* value, T buttonValue, const ImVec2& size=ImVec2(0.0f, 0.0f)) {
-		bool changed = false;
-		ImVec4* colors = ImGui::GetStyle().Colors;
+		auto changed = false;
+		auto colors = ImGui::GetStyle().Colors;
 
 		if (*value == buttonValue) {
 			ImGui::PushStyleColor(ImGuiCol_Button, colors[ImGuiCol_ButtonActive]);
@@ -159,7 +159,7 @@ public:
 	// selectors
 	template <typename T>
 	static bool selectorEnum(const char* label, T* value, const char* const names[], size_t count) {
-		bool changed = false;
+		auto changed = false;
 
 		if (ImGui::BeginCombo(label, names[static_cast<size_t>(*value)])) {
 			for (size_t i = 0; i < count; i++) {

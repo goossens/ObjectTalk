@@ -58,7 +58,7 @@ bool OtOscillator::Parameters::isReady() {
 //
 
 bool OtOscillator::Parameters::renderUI() {
-	bool changed = false;
+	auto changed = false;
 	size_t knobs = 0;
 
 	changed |= OtUi::selectorEnum("Type", &waveForm, waveForms, waveFormCount);

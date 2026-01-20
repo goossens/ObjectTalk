@@ -43,7 +43,7 @@ public:
 		if (ImGui::BeginPopup("primitivePopup")) {
 			auto old = serialize().dump();
 
-			bool changed = false;
+			auto changed = false;
 
 			if (ImGui::BeginCombo("Type", geometryType)) {
 				factory.each([&](const char* name) {

@@ -27,7 +27,7 @@
 //
 
 bool OtGrass::renderUI() {
-	bool changed = false;
+	auto changed = false;
 	changed |= OtUi::dragFloat("Patch Width", &patchWidth, 1.0f, 100.0f);
 	changed |= OtUi::dragFloat("Patch Depth", &patchDepth, 1.0f, 100.0f);
 	changed |= OtUi::dragInt("Blades", &blades, 1, 1000000);

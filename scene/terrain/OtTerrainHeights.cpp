@@ -23,7 +23,7 @@
 
 bool OtTerrainHeights::renderUI() {
 	// function result
-	bool changed = false;
+	auto changed = false;
 
 	// render button + label
 	if (ImGui::Button("Edit##Heights", ImVec2(ImGui::CalcItemWidth(), 0.0f))) {

@@ -22,7 +22,7 @@
 //
 
 bool OtAudioFilter::Parameters::renderUI() {
-	bool changed = false;
+	auto changed = false;
 	changed |= OtUi::selectorEnum("Mode", &mode, modes, modesCount);
 
 	if (mode != Mode::off) {

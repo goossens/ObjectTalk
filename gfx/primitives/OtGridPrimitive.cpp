@@ -54,7 +54,7 @@ void OtGridPrimitive::createMesh(OtMesh* mesh) {
 //
 
 bool OtGridPrimitive::renderUI() {
-	bool changed = false;
+	auto changed = false;
 	changed |= OtUi::dragInt("Width Segments", &widthSegments, 1, 256);
 	changed |= OtUi::dragInt("Depth Segments", &depthSegments, 1, 256);
 	return changed;

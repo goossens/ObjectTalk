@@ -39,7 +39,7 @@ bool OtMidi::renderUI() {
 
 	static constexpr size_t MidiSourceCount = sizeof(MidiSources) / sizeof(*MidiSources);
 
-	bool changed = OtUi::selectorEnum("MIDI Source", &midiSource, MidiSources, MidiSourceCount);
+	auto changed = OtUi::selectorEnum("MIDI Source", &midiSource, MidiSources, MidiSourceCount);
 
 	if (changed) {
 		messages.clear();

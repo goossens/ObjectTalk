@@ -77,7 +77,7 @@ bool OtEnvelope::Parameters::renderUI() {
 	}
 
 	// render envelope control knobs
-	bool changed = false;
+	auto changed = false;
 	changed |= OtUi::knob("Attack", &attackTime, 0.0f, 10.0f, "%.2fs", true); ImGui::SameLine();
 	changed |= OtUi::knob("Decay", &decayTime, 0.0f, 10.0f, "%.2fs", true); ImGui::SameLine();
 	changed |= OtUi::knob("Sustain", &sustainLevel, 0.0f, 1.0f, "%.2f", false); ImGui::SameLine();

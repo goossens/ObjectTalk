@@ -22,7 +22,7 @@
 //
 
 bool OtCubePrimitive::renderUI() {
-	bool changed = false;
+	auto changed = false;
 	changed |= OtUi::dragInt("X Segments", &widthSegments, 1, 20);
 	changed |= OtUi::dragInt("Y Segments", &heightSegments, 1, 20);
 	changed |= OtUi::dragInt("Z Segments", &depthSegments, 1, 20);

@@ -35,7 +35,7 @@ public:
 	// render custom fields
 	inline bool customRendering(float itemWidth) override {
 		ImGui::PushItemWidth(itemWidth - midi.getLabelWidth());
-		bool changed = midi.renderUI();
+		auto changed = midi.renderUI();
 		ImGui::PopItemWidth();
 		return changed;
 	}

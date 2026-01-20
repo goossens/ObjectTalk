@@ -70,7 +70,7 @@ void OtSpherePrimitive::createMesh(OtMesh* mesh) {
 //
 
 bool OtSpherePrimitive::renderUI() {
-	bool changed = false;
+	auto changed = false;
 	changed |= OtUi::dragInt("Phi Segments", &phiSegments, 1, 200);
 	changed |= OtUi::dragFloat("Phi Start", &phiStart, 0.0f, 360.0f);
 	changed |= OtUi::dragFloat("Phi Length", &phiLength, 0.0f, 360.0f);

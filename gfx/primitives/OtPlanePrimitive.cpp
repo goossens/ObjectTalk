@@ -62,7 +62,7 @@ void OtPlanePrimitive::createMesh(OtMesh* mesh) {
 //
 
 bool OtPlanePrimitive::renderUI() {
-	bool changed = false;
+	auto changed = false;
 	changed |= OtUi::dragInt("Width Segments", &widthSegments, 1, 256);
 	changed |= OtUi::dragInt("Height Segments", &heightSegments, 1, 256);
 	return changed;

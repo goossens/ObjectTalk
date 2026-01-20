@@ -621,7 +621,7 @@ void TextEditor::renderPanScrollIndicator() {
 //
 
 static bool latchButton(const char* label, bool* value, const ImVec2& size) {
-	bool changed = false;
+	auto changed = false;
 	ImVec4* colors = ImGui::GetStyle().Colors;
 
 	if (*value) {

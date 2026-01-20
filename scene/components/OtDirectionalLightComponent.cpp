@@ -24,7 +24,7 @@
 //
 
 bool OtDirectionalLightComponent::renderUI() {
-	bool changed = false;
+	auto changed = false;
 	changed |= OtUi::dragFloat("Elevation", &elevation, -90.0f, 90.0f);
 	changed |= OtUi::dragFloat("Azimuth", &azimuth, 0.0f, 360.0f);
 	changed |= ImGui::ColorEdit3("Color", glm::value_ptr(color));

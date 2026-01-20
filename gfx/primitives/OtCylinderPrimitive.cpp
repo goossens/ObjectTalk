@@ -131,7 +131,7 @@ void OtCylinderPrimitive::generateCap(OtMesh* mesh, bool top) {
 //
 
 bool OtCylinderPrimitive::renderUI() {
-	bool changed = false;
+	auto changed = false;
 	changed |= OtUi::dragFloat("Top Radius", &topRadius, 0.0f, 1.0f);
 	changed |= OtUi::dragFloat("Bottom Radius", &bottomRadius, 0.0f, 1.0f);
 	changed |= OtUi::dragInt("Radial Segments", &radialSegments, 1, 64);

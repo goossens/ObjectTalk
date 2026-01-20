@@ -29,8 +29,7 @@ public:
 
 	// render custom fields
 	inline bool customRendering([[maybe_unused]] float itemWidth) override {
-		bool changed = parameters.renderUI();
-		return changed;
+		return parameters.renderUI();
 	}
 
 	inline float getCustomRenderingWidth() override {

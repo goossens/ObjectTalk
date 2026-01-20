@@ -24,7 +24,7 @@
 //
 
 bool OtPointLightComponent::renderUI() {
-	bool changed = false;
+	auto changed = false;
 	changed |= OtUi::editVec3("Offset", &offset);
 	changed |= OtUi::dragFloat("Radius", &radius, 0.0f);
 	changed |= ImGui::ColorEdit3("Color", glm::value_ptr(color));

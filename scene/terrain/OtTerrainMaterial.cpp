@@ -27,7 +27,7 @@
 #define W2() ImGui::SetNextItemWidth(100.0f)
 
 bool OtTerrainMaterial::renderUI() {
-	bool changed = false;
+	auto changed = false;
 
 	// render button + label
 	if (ImGui::Button("Edit##Material", ImVec2(ImGui::CalcItemWidth(), 0.0f))) {

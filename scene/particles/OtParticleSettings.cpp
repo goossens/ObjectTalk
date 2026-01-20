@@ -26,7 +26,7 @@
 //
 
 bool OtParticleSettings::renderUI() {
-	bool changed = false;
+	auto changed = false;
 	changed |= OtUi::dragSizeT("Particle Count", &particles, 1, 10000);
 	changed |= ImGui::RangeSliderFloat("Lifespan Range", &lifeSpanLow, &lifeSpanHigh, 0.1f, 5.0f);
 

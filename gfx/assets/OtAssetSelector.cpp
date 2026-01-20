@@ -95,7 +95,7 @@ bool OtAssetSelector::renderUI(Info& info) {
 
 	// render widgets
 	ImGui::PushID(id.c_str());
-	bool changed = false;
+	auto changed = false;
 	static bool creating = false;
 
 	if (info.virtualMode && *info.virtualMode) {

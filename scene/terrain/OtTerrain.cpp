@@ -55,7 +55,7 @@
 //
 
 bool OtTerrain::renderUI() {
-	bool changed = false;
+	auto changed = false;
 	changed |= OtUi::selectorPowerOfTwo("Tile Size", &tileSize, 4, 64);
 	changed |= OtUi::dragInt("Levels of Detail", &lod, 1, 10);
 

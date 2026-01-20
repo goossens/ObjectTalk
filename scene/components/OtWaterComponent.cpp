@@ -25,7 +25,7 @@
 //
 
 bool OtWaterComponent::renderUI() {
-	bool changed = false;
+	auto changed = false;
 
 	changed |= OtUi::dragFloat("Level", &level, -100.0f, 1000.0f);
 	changed |= OtUi::dragFloat("Distance", &distance, 1.0f, 1000.0f);

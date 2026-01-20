@@ -90,16 +90,17 @@ public:
 		double k;
 		double t1;
 		double t2;
-	};
 
-	//	process a sample
-	static float process(Parameters& parameters, State&state, float sample);
 
-	//	filter an entire buffer
-	inline static void process(Parameters& parameters, State& state, float* buffer, size_t size) {
-		for (size_t i = 0; i < size; i++) {
-			*buffer = process(parameters, state, *buffer);
-			buffer++;
+		//	process a sample
+		float process(Parameters& parameters, float sample);
+
+		//	filter an entire buffer
+		inline void process(Parameters& parameters, float* buffer, size_t size) {
+			for (size_t i = 0; i < size; i++) {
+				*buffer = process(parameters, *buffer);
+				buffer++;
+			}
 		}
-	}
+	};
 };

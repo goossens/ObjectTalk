@@ -28,5 +28,5 @@ public:
 
 private:
 	static uint8_t fontData[340712];
-	inline static constexpr size_t fontSize = 340712;
+	static constexpr size_t fontSize = 340712;
 };

@@ -67,20 +67,20 @@
 					"tuningCents": 0.0,
 					"tuningOctaves": 0.0,
 					"tuningSemitones": 0.0,
-					"volume": 1.0,
+					"volume": 7.0,
 					"waveForm": 3,
 					"waveTable": ""
 				},
 				{
 					"frequency": 440.0,
 					"power": true,
-					"pulseWidth": 0.5,
+					"pulseWidth": 0.4399999976158142,
 					"sampleFile": "",
 					"sampleFileFrequency": 0.0,
 					"tuningCents": 0.0,
 					"tuningOctaves": 0.0,
 					"tuningSemitones": 0.0,
-					"volume": 1.0,
+					"volume": 7.0,
 					"waveForm": 1,
 					"waveTable": ""
 				},
@@ -93,7 +93,7 @@
 					"tuningCents": 0.0,
 					"tuningOctaves": 0.0,
 					"tuningSemitones": 0.0,
-					"volume": 1.0,
+					"volume": 7.0,
 					"waveForm": 0,
 					"waveTable": ""
 				}

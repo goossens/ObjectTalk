@@ -118,7 +118,7 @@ bool OtOscillator::Parameters::renderUI() {
 
 	if (showVolumeKnob) {
 		if (knobs) { ImGui::SameLine(); }
-		changed |= OtUi::knob("Volume", &volume, 0.0f, 1.0f, "%.0f");
+		changed |= OtUi::knob("Volume", &volume, 0.0f, 10.0f, "%.0f");
 	}
 
 	return changed;
@@ -199,5 +199,5 @@ void OtOscillator::Parameters::deserialize(nlohmann::json* data, std::string* ba
 	tuningOctaves = data->value("tuningOctaves", 0.0f);
 	tuningSemitones = data->value("tuningSemitones", 0.0f);
 	tuningCents = data->value("tuningCents", 0.0f);
-	volume = data->value("volume", 1.0f);
+	volume = data->value("volume", 7.0f);
 }

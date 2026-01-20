@@ -61,7 +61,7 @@ public:
 		if (output->isDestinationConnected()) {
 			// process all the samples
 			for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-				output->setSample(i, OtOscillator::get(parameters, state));
+				output->setSample(i, state.get(parameters));
 			}
 		}
 	};

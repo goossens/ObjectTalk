@@ -61,7 +61,7 @@ public:
 		if (audioOutput->isDestinationConnected()) {
 			if (audioInput->isSourceConnected()) {
 				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-					audioOutput->setSample(i, OtAudioFilter::process(parameters, state, audioInput->getSample(i)));
+					audioOutput->setSample(i, state.process(parameters, audioInput->getSample(i)));
 				}
 
 			} else {

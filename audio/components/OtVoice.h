@@ -30,10 +30,11 @@
 class OtVoice {
 public:
 	// configurable number of oscillators per voice
-	inline static constexpr size_t numberOfOscillators = 3;
+	static constexpr size_t numberOfOscillators = 3;
 
 	// set of parameters that drive a voice
-	struct Parameters {
+	class Parameters {
+	public:
 		// UI to change envelope parameters
 		bool renderUI(float itemWidth);
 		inline float getRenderWidth() { return 250.0f; }
@@ -62,34 +63,42 @@ public:
 		};
 
 		// properties
+		friend class State;
 		std::array<Oscillator, numberOfOscillators> oscillators;
 		Filter filter;
 		Amp amp;
 	};
 
 	// state of a voice allowing multiple instances with identical parameters
-	struct State {
-		// properties
-		int note;
-		float velocity;
+	class State {
+	public:
+		// voice state
+		void noteOn(Parameters& parameters, int note, int velocity);
+		void noteOff(Parameters& parameters);
+		void cancel(Parameters& parameters);
 
+		// get voice status
+		inline bool isActive() { return filterEnvelopeState.isActive() || ampEnvelopeState.isActive(); }
+		inline int getNote() { return note; }
+		inline int getVelocity() { return velocity; }
+
+		// get the next sample(s)
+		float get(Parameters& parameters);
+
+		inline void get(Parameters& parameters, float* buffer, size_t size) {
+			for (size_t i = 0; i < size; i++) {
+				*buffer = get(parameters);
+				buffer++;
+			}
+		}
+
+	private:
+		// properties
 		std::array<OtOscillator::State, numberOfOscillators> oscillators;
 		OtAudioFilter::State filterState;
 		OtEnvelope::State filterEnvelopeState;
 		OtEnvelope::State ampEnvelopeState;
+		int note;
+		int velocity;
 	};
-
-	// voice state
-	static void noteOn(Parameters& parameters, State& state, int note, int velocity);
-	static void noteOff(Parameters& parameters, State& state);
-	static void cancel(Parameters& parameters, State& state);
-
-	// voice status
-	static bool isActive(State& state);
-	static inline int getNote(State& state) { return state.note; }
-	static inline int getVelocity(State& state) { return state.velocity; }
-
-	// get the next sample(s)
-	static float get(Parameters& parameters, State& state);
-	static void get(Parameters& parameters, State& state, float* buffer, size_t size);
 };

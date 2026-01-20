@@ -162,72 +162,63 @@ void OtVoice::Parameters::deserialize(nlohmann::json_abi_v3_12_0::json *data, st
 
 
 //
-//	OtVoice::noteOn
+//	OtVoice::State::noteOn
 //
 
-void OtVoice::noteOn(Parameters& parameters, State& state, int note, int velocity) {
-	// store information
-	state.note = note;
-	state.velocity = static_cast<float>(velocity) / 127.0f;
+void OtVoice::State::noteOn(Parameters& parameters, int n, int v) {
+	// store values
+	note = n;
+	velocity = v;
 
 	// configure oscillators
-	for (auto& oscillator : state.oscillators) {
+	for (auto& oscillator : oscillators) {
 		oscillator.frequency = OtAudioUtilities::midiNoteToPitch(note);
 	}
 
 	// start envelopes
-	OtEnvelope::noteOn(parameters.filter.envelopeParameters, state.filterEnvelopeState);
-	OtEnvelope::noteOn(parameters.amp.parameters, state.ampEnvelopeState);
+	filterEnvelopeState.noteOn(parameters.filter.envelopeParameters);
+	ampEnvelopeState.noteOn(parameters.amp.parameters);
 }
 
 
 //
-//	OtVoice::noteOff
+//	OtVoice::State::noteOff
 //
 
-void OtVoice::noteOff(Parameters& parameters, State& state) {
+void OtVoice::State::noteOff(Parameters& parameters) {
 	// inform envelopes (if required)
 	if (parameters.filter.envelopePower) {
-		OtEnvelope::noteOff(parameters.filter.envelopeParameters, state.filterEnvelopeState);
+		filterEnvelopeState.noteOff(parameters.filter.envelopeParameters);
 	}
 
 	if (parameters.amp.power) {
-		OtEnvelope::noteOff(parameters.amp.parameters, state.ampEnvelopeState);
+		ampEnvelopeState.noteOff(parameters.amp.parameters);
 	}
 }
 
 
 //
-//	OtVoice::cancel
+//	OtVoice::State::cancel
 
-void OtVoice::cancel(Parameters& parameters, State& state) {
+void OtVoice::State::cancel(Parameters& parameters) {
 	// cancel envelopes
-	OtEnvelope::cancel(parameters.filter.envelopeParameters, state.filterEnvelopeState);
-	OtEnvelope::cancel(parameters.amp.parameters, state.ampEnvelopeState);
+	filterEnvelopeState.cancel(parameters.filter.envelopeParameters);
+	ampEnvelopeState.cancel(parameters.amp.parameters);
 }
 
 
 //
-//	OtVoice::isActive
+//	OtVoice::State::get
 //
 
-bool OtVoice::isActive(State& state) {
-	return OtEnvelope::isActive(state.filterEnvelopeState) || OtEnvelope::isActive(state.ampEnvelopeState);
-}
-
-
-//
-//	OtVoice::get
-//
-
-float OtVoice::get(Parameters& parameters, State& state) {
+float OtVoice::State::get(Parameters& parameters) {
 	auto sample = 0.0f;
 	auto count = 0;
 
 	// mix all active oscillators
 	for (size_t i = 0; i < numberOfOscillators; i++) {
 		if (parameters.oscillators[i].power) {
-			sample += OtOscillator::get(parameters.oscillators[i].parameters, state.oscillators[i]);
+			sample += oscillators[i].get(parameters.oscillators[i].parameters);
 			count++;
 		}
 	}
@@ -239,25 +230,13 @@ float OtVoice::get(Parameters& parameters, State& state) {
 	// apply filter
 	// sample = OtAudioFilter::apply(sample);
 	if (parameters.filter.envelopePower) {
-		OtEnvelope::process(parameters.filter.envelopeParameters, state.filterEnvelopeState);
+		filterEnvelopeState.process(parameters.filter.envelopeParameters);
 	}
 
 	// apply amp envelope
 	if (parameters.amp.power) {
-		sample *= OtEnvelope::process(parameters.amp.parameters, state.ampEnvelopeState);
+		sample *= ampEnvelopeState.process(parameters.amp.parameters);
 	}
 
 	return sample;
-}
-
-
-//
-//	OtVoice::get
-//
-
-void OtVoice::get(Parameters& parameters, State& state, float* buffer, size_t size) {
-	for (size_t i = 0; i < size; i++) {
-		*buffer = get(parameters, state);
-		buffer++;
-	}
 }

@@ -70,7 +70,7 @@ public:
 					state.frequency = frequencyInput->isSourceConnected() ? OtAudioUtilities::cvToPitch(frequencyInput->getSample(i)) : parameters.frequency;
 					state.pulseWidth = pulseWidthInput->isSourceConnected() ? pulseWidthInput->getSample(i) : parameters.pulseWidth;
 					state.shape = shapeInput->isSourceConnected() ? shapeInput->getSample(i) : parameters.shape;
-					audioOutput->setSample(i, OtOscillator::get(parameters, state));
+					audioOutput->setSample(i, state.get(parameters));
 				}
 
 			} else {

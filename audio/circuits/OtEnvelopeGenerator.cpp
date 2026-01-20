@@ -59,16 +59,16 @@ public:
 
 					if (newTriggerState != triggerState) {
 						if (newTriggerState) {
-							OtEnvelope::noteOn(parameters, state);
+							state.noteOn(parameters);
 
 						} else {
-							OtEnvelope::noteOff(parameters, state);
+							state.noteOff(parameters);
 						}
 
 						triggerState = newTriggerState;
 					}
 
-					envelopeOutput->setSample(i, OtEnvelope::process(parameters, state));
+					envelopeOutput->setSample(i, state.process(parameters));
 				}
 
 			} else {

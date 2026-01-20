@@ -44,8 +44,8 @@ float OtSynth::get() {
 	auto sample = 0.0f;
 
 	for (auto& voice : voices) {
-		if (OtVoice::isActive(voice)) {
-			sample += OtVoice::get(parameters, voice);
+		if (voice.isActive()) {
+			sample += voice.get(parameters);
 		}
 	}
 
@@ -73,7 +73,7 @@ void OtSynth::noteOn(int note, int velocity) {
 	auto openVoice = nextVoice.end();
 
 	for (auto i = nextVoice.begin(); i != nextVoice.end() && openVoice == nextVoice.end(); i++) {
-		if (!OtVoice::isActive(voices[*i])) {
+		if (!voices[*i].isActive()) {
 			openVoice = i;
 		}
 	}
@@ -81,7 +81,7 @@ void OtSynth::noteOn(int note, int velocity) {
 	// if we ran out of voices, we steal the oldest voice
 	if (openVoice == nextVoice.end()) {
 		openVoice = nextVoice.begin();
-		OtVoice::cancel(parameters, voices[*openVoice]);
+		voices[*openVoice].cancel(parameters);
 	}
 
 	// put voice at the end of the list and add index entry
@@ -89,7 +89,7 @@ void OtSynth::noteOn(int note, int velocity) {
 	index[note] = *openVoice;
 
 	// turn voice on
-	OtVoice::noteOn(parameters, voices[*openVoice], note, velocity);
+	voices[*openVoice].noteOn(parameters, note, velocity);
 }
 
 
@@ -98,7 +98,7 @@ void OtSynth::noteOn(int note, int velocity) {
 //
 
 void OtSynth::noteOff([[maybe_unused]] int note, [[maybe_unused]] int velocity) {
-	OtVoice::noteOff(parameters, voices[index[note]]);
+	voices[index[note]].noteOff(parameters);
 }
 
 
@@ -108,8 +108,8 @@ void OtSynth::noteOff([[maybe_unused]] int note, [[maybe_unused]] int velocity) 
 
 void OtSynth::AllNotesOff() {
 	for (auto& voice : voices) {
-		if (OtVoice::isActive(voice)) {
-			noteOff(voice.note, 0);
+		if (voice.isActive()) {
+			noteOff(voice.getNote(), 0);
 		}
 	}
 }

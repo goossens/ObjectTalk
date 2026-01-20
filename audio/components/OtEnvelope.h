@@ -56,8 +56,9 @@ public:
 		float releaseTime = 0.3f;
 
 		// work variables
-		inline static constexpr size_t envelopeDataSize = 1024;
-		inline static constexpr float envelopeHeight = 100.0f;
+	// configuration
+	static constexpr size_t envelopeDataSize = 1024;
+	static constexpr float envelopeHeight = 100.0f;
 		std::array<float, envelopeDataSize> graph;
 		bool update = true;
 	};
@@ -71,74 +72,69 @@ public:
 		float startValue;
 		float valueRange;
 		float value = 0.0f;
-	};
 
-	// set state
-	inline static void noteOn(Parameters& parameters, State& state) { enterPhase(parameters, state, Phase::attack); }
-	inline static void noteOff(Parameters& parameters, State& state) { enterPhase(parameters, state, Phase::release); }
-	inline static void cancel(Parameters& parameters, State& state) { enterPhase(parameters, state, Phase::idle); }
+		// set state
+		inline void noteOn(Parameters& parameters) { enterPhase(parameters, Phase::attack); }
+		inline void noteOff(Parameters& parameters) { enterPhase(parameters, Phase::release); }
+		inline void cancel(Parameters& parameters) { enterPhase(parameters, Phase::idle); }
 
 		// get the next envelope sample
-	inline static float process(Parameters& parameters, State& state) {
-		switch (state.phase) {
-			case Phase::idle: break;
-			case Phase::attack: updatePhase(parameters, state, Phase::decay); break;
-			case Phase::decay: updatePhase(parameters, state, Phase::sustain); break;
-			case Phase::sustain: break;
-			case Phase::release: updatePhase(parameters, state, Phase::idle); break;
+		inline float process(Parameters& parameters) {
+			switch (phase) {
+				case Phase::idle: break;
+				case Phase::attack: updatePhase(parameters, Phase::decay); break;
+				case Phase::decay: updatePhase(parameters, Phase::sustain); break;
+				case Phase::sustain: break;
+				case Phase::release: updatePhase(parameters, Phase::idle); break;
+			}
+
+			return value;
 		}
 
-		return state.value;
-	}
-
-	//	process an entire buffer
-	inline static void process(Parameters& parameters, State& state, float* buffer, size_t size) {
-		for (size_t i = 0; i < size; i++) {
-			*buffer++ *= process(parameters, state);
+		//	process an entire buffer
+		inline void process(Parameters& parameters, float* buffer, size_t size) {
+			for (size_t i = 0; i < size; i++) {
+				*buffer++ *= process(parameters);
+			}
 		}
-	}
 
-	// see if envelope is still active
-	inline static bool isActive(State& state) { return state.phase != Phase::idle; }
+		// see if envelope is still active
+		inline bool isActive() { return phase != Phase::idle; }
 
-private:
-	// support functions
-	inline static int durationInSamples(float seconds, float sampleRate=OtAudioSettings::sampleRate) {
-		return std::max(1, static_cast<int>(std::floor(seconds * sampleRate)));
-	}
-
-
-	inline static void configurePhase(State& state, float start, float end, float seconds) {
-		state.duration = durationInSamples(seconds);
-		state.currentSample = 0;
-		state.startValue = start;
-		state.valueRange = end - start;
-		state.value = start;
-	}
-
-	inline static void enterPhase(Parameters& parameters, State& state, Phase nextPhase) {
-		state.phase = nextPhase;
-
-		switch (nextPhase) {
-			case Phase::idle: state.value = 0.0; break;
-			case Phase::attack: configurePhase(state, state.value, 1.0f, parameters.attackTime); break;
-			case Phase::decay: configurePhase(state, 1.0f, parameters.sustainLevel, parameters.decayTime); break;
-			case Phase::sustain: state.value = parameters.sustainLevel; break;
-			case Phase::release: configurePhase(state, state.value, 0.0f, parameters.releaseTime);
+	private:
+		// support functions
+		inline void configurePhase(float start, float end, float seconds) {
+			duration = std::max(1, static_cast<int>(std::floor(seconds * OtAudioSettings::sampleRate)));
+			currentSample = 0;
+			startValue = start;
+			valueRange = end - start;
+			value = start;
 		}
-	}
 
-	template <typename T>
-	inline static T easing(T t) {
-		return t * (static_cast<T>(2) - t);
-	}
+		inline void enterPhase(Parameters& parameters, Phase nextPhase) {
+			phase = nextPhase;
 
-	inline static void updatePhase(Parameters& parameters, State& state, Phase nextPhase) {
-		if (state.currentSample++ >= state.duration) {
-			enterPhase(parameters, state, nextPhase);
-
-		} else {
-			state.value = state.startValue + state.valueRange * easing(static_cast<float>(state.currentSample) / static_cast<float>(state.duration));
+			switch (nextPhase) {
+				case Phase::idle: value = 0.0; break;
+				case Phase::attack: configurePhase(value, 1.0f, parameters.attackTime); break;
+				case Phase::decay: configurePhase(1.0f, parameters.sustainLevel, parameters.decayTime); break;
+				case Phase::sustain: value = parameters.sustainLevel; break;
+				case Phase::release: configurePhase(value, 0.0f, parameters.releaseTime);
+			}
 		}
-	}
+
+		template <typename T>
+		inline T easing(T t) {
+			return t * (static_cast<T>(2) - t);
+		}
+
+		inline void updatePhase(Parameters& parameters, Phase nextPhase) {
+			if (currentSample++ >= duration) {
+				enterPhase(parameters, nextPhase);
+
+			} else {
+				value = startValue + valueRange * easing(static_cast<float>(currentSample) / static_cast<float>(duration));
+			}
+		}
+	};
 };

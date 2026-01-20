@@ -93,11 +93,11 @@ private:
 	float centerZ;
 
 	// create terrain entities
-	static inline constexpr int noDegenerate = 0;
-	static inline constexpr int topDegenerate = 1;
-	static inline constexpr int leftDegenerate = 2;
-	static inline constexpr int bottomDegenerate = 4;
-	static inline constexpr int rightDegenerate = 8;
+	static constexpr int noDegenerate = 0;
+	static constexpr int topDegenerate = 1;
+	static constexpr int leftDegenerate = 2;
+	static constexpr int bottomDegenerate = 4;
+	static constexpr int rightDegenerate = 8;
 
 	void initialize();
 	void clear();

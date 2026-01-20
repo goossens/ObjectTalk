@@ -77,10 +77,10 @@ public:
 		float pulseWidth = 0.5f;
 		float shape = 0.0f;
 		float sampleFileFrequency = 0.0f;
-		float volume = 1.0f;
 		float tuningOctaves = 0.0f;
 		float tuningSemitones = 0.0f;
 		float tuningCents = 0.0f;
+		float volume = 7.0f;
 
 		OtAsset<OtSampleFileAsset> sampleFileAsset;
 		OtSampleFile sampleFile;
@@ -107,153 +107,145 @@ public:
 		float pulseWidth = 0.5f;
 		float shape = 0.0f;
 		float phase = 0.0f;
+
+		// get the next sample
+		inline float get(Parameters& parameters) {
+			float value;
+
+			switch (parameters.waveForm) {
+				case WaveForm::sine:
+					value = sineFunction();
+					updatePhase();
+					break;
+
+				case WaveForm::square:
+					value = squareFunction(parameters.pulseWidth);
+					updatePhase();
+					break;
+
+				case WaveForm::triangle:
+					value = triangleFunction(frequency);
+					updatePhase();
+					break;
+
+				case WaveForm::sawtooth:
+					value = sawtoothFunction(frequency);
+					updatePhase();
+					break;
+
+				case WaveForm::wavetable:
+					value = wavetableFunction(parameters.waveTable, shape);
+					updatePhase();
+					break;
+
+				default:
+					value = 0.0f;
+					break;
+			}
+
+			return value * parameters.volume / 10.0f;
+		}
+
+		// fill a buffer with next samples
+		inline void get(Parameters& parameters, float* buffer, size_t size) {
+			switch (parameters.waveForm) {
+				case WaveForm::sine:
+					for (size_t i = 0; i < size; i++) {
+						*buffer++ = sineFunction() * parameters.volume / 10.0f;
+						updatePhase();
+					}
+
+					break;
+
+				case WaveForm::square:
+					for (size_t i = 0; i < size; i++) {
+						*buffer++ = squareFunction(parameters.pulseWidth) * parameters.volume / 10.0f;
+						updatePhase();
+					}
+
+					break;
+
+				case WaveForm::triangle:
+					for (size_t i = 0; i < size; i++) {
+						*buffer++ = triangleFunction(frequency) * parameters.volume / 10.0f;
+						updatePhase();
+					}
+
+					break;
+
+				case WaveForm::sawtooth:
+					for (size_t i = 0; i < size; i++) {
+						*buffer++ = sawtoothFunction(frequency) * parameters.volume / 10.0f;
+						updatePhase();
+					}
+
+					break;
+
+				case WaveForm::wavetable:
+					for (size_t i = 0; i < size; i++) {
+						*buffer++ = wavetableFunction(parameters.waveTable, shape) * parameters.volume / 10.0f;
+						updatePhase();
+					}
+
+					break;
+
+				default:
+					for (size_t i = 0; i < size; i++) {
+						*buffer++ = 0.0f;
+					}
+
+					break;
+			}
+		}
+
+	private:
+		// oscillator functions
+		inline float sineFunction() {
+			return std::sin(OtAudioSettings::pi2 * phase);
+		}
+
+		inline float squareFunction(float pulseWidth) {
+			return phase < pulseWidth ? 1.0f : -1.0f;
+		}
+
+		inline float triangleFunction(float frequency) {
+			auto t1 = OtAudioUtilities::fraction<float>(phase + 0.25f);
+			auto t2 = OtAudioUtilities::fraction<float>(phase + 0.75f);
+			auto y = phase * 4.0f;
+
+			if (y >= 3.0f) {
+				y -= 4.0f;
+
+			} else if (y > 1.0f) {
+				y = 2.0f - y;
+			}
+
+			auto dt = frequency * OtAudioSettings::dt;
+			return y + 4 * dt * (OtAudioUtilities::blamp<float>(t1, dt) - OtAudioUtilities::blamp<float>(t2, dt));
+		}
+
+		inline float sawtoothFunction(float frequency) {
+				auto t1 = OtAudioUtilities::fraction<float>(phase + 0.5f);
+				auto y = 2.0f * t1 - 1.0f;
+				return y - OtAudioUtilities::blep<float>(t1, frequency * OtAudioSettings::dt);
+		}
+
+		inline float wavetableFunction(OtWaveTable& waveTable, float shape) {
+			if (waveTable.isValid()) {
+				return waveTable.get(phase, shape);
+
+			} else {
+				return 0.0f;
+			}
+		}
+
+		// update the oscillator phase
+		inline void updatePhase() {
+			phase += frequency * OtAudioSettings::dt;
+
+			if (phase > 1.0f) {
+				phase -= 1.0f;
+			}
+		}
 	};
-
-	// get the next sample
-	inline static float get(Parameters& parameters, State& state) {
-		float value;
-
-		switch (parameters.waveForm) {
-			case WaveForm::sine:
-				value = sineFunction(state.phase);
-				updatePhase(state);
-				break;
-
-			case WaveForm::square: {
-				value = squareFunction(state.phase, parameters.pulseWidth);
-				updatePhase(state);
-				break;
-			}
-
-			case WaveForm::triangle: {
-				value = triangleFunction(state.phase, state.frequency);
-				updatePhase(state);
-				break;
-			}
-
-			case WaveForm::sawtooth: {
-				value = sawtoothFunction(state.phase, state.frequency);
-				updatePhase(state);
-				break;
-			}
-
-			case WaveForm::wavetable: {
-				value = wavetableFunction(parameters.waveTable, state.phase, state.shape);
-				updatePhase(state);
-				break;
-			}
-
-			default:
-				value = 0.0f;
-				break;
-		}
-
-		return value;
-	}
-
-	// fill a buffer with next samples
-	inline static void get(float* buffer, size_t size, Parameters& parameters, State& state) {
-		switch (parameters.waveForm) {
-			case WaveForm::sine:
-				for (size_t i = 0; i < size; i++) {
-					*buffer++ = sineFunction(state.phase);
-					updatePhase(state);
-				}
-
-				break;
-
-			case WaveForm::square: {
-				for (size_t i = 0; i < size; i++) {
-					*buffer++ = squareFunction(state.phase, parameters.pulseWidth);
-					updatePhase(state);
-				}
-
-				break;
-			}
-
-			case WaveForm::triangle: {
-				for (size_t i = 0; i < size; i++) {
-					*buffer++ = triangleFunction(state.phase, state.frequency);
-					updatePhase(state);
-				}
-
-				break;
-			}
-
-			case WaveForm::sawtooth: {
-				for (size_t i = 0; i < size; i++) {
-					*buffer++ = sawtoothFunction(state.phase, state.frequency);
-					updatePhase(state);
-				}
-
-				break;
-			}
-
-			case WaveForm::wavetable: {
-				for (size_t i = 0; i < size; i++) {
-					*buffer++ = wavetableFunction(parameters.waveTable, state.phase, state.shape);
-					updatePhase(state);
-				}
-
-				break;
-			}
-
-			default:
-				for (size_t i = 0; i < size; i++) {
-					*buffer++ = 0.0f;
-				}
-
-				break;
-		}
-	}
-
-private:
-	// oscillator functions
-	inline static float sineFunction(float phase) {
-		return std::sin(OtAudioSettings::pi2 * phase);
-	}
-
-	inline static float squareFunction(float phase, float pulseWidth) {
-		return phase < pulseWidth ? 1.0f : -1.0f;
-	}
-
-	inline static float triangleFunction(float phase, float frequency) {
-		auto t1 = OtAudioUtilities::fraction<float>(phase + 0.25f);
-		auto t2 = OtAudioUtilities::fraction<float>(phase + 0.75f);
-		auto y = phase * 4.0f;
-
-		if (y >= 3.0f) {
-			y -= 4.0f;
-
-		} else if (y > 1.0f) {
-			y = 2.0f - y;
-		}
-
-		auto dt = frequency * OtAudioSettings::dt;
-		return y + 4 * dt * (OtAudioUtilities::blamp<float>(t1, dt) - OtAudioUtilities::blamp<float>(t2, dt));
-	}
-
-	inline static float sawtoothFunction(float phase, float frequency) {
-			auto t1 = OtAudioUtilities::fraction<float>(phase + 0.5f);
-			auto y = 2.0f * t1 - 1.0f;
-			return y - OtAudioUtilities::blep<float>(t1, frequency * OtAudioSettings::dt);
-	}
-
-	inline static float wavetableFunction(OtWaveTable& waveTable, float phase, float shape) {
-		if (waveTable.isValid()) {
-			return waveTable.get(phase, shape);
-
-		} else {
-			return 0.0f;
-		}
-	}
-
-	// update the oscillator phase
-	inline static void updatePhase(State& state) {
-		state.phase += state.frequency * OtAudioSettings::dt;
-
-		if (state.phase > 1.0f) {
-			state.phase -= 1.0f;
-		}
-	}
 };

@@ -37,6 +37,10 @@ static inline float* fillVisualizationBuffer(float* p, int samples, float start,
 	return p;
 }
 
+static inline int durationInSamples(float seconds, float sampleRate) {
+	return std::max(1, static_cast<int>(std::floor(seconds * sampleRate)));
+}
+
 
 //
 //	OtOscillator::Parameters::renderUI

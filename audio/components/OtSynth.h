@@ -32,7 +32,7 @@ public:
 	OtSynth();
 
 	// configurable number of concurrent voice per synth
-	inline static constexpr size_t numberOfVoices = 16;
+	static constexpr size_t numberOfVoices = 16;
 
 	// UI to change synth properties
 	inline bool renderUI(float itemWidth) { return parameters.renderUI(itemWidth); }

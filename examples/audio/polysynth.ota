@@ -68,7 +68,7 @@
 					"tuningOctaves": 0.0,
 					"tuningSemitones": 0.0,
 					"volume": 1.0,
-					"waveForm": 1,
+					"waveForm": 3,
 					"waveTable": ""
 				},
 				{
@@ -81,7 +81,7 @@
 					"tuningOctaves": 0.0,
 					"tuningSemitones": 0.0,
 					"volume": 1.0,
-					"waveForm": 2,
+					"waveForm": 1,
 					"waveTable": ""
 				},
 				{
@@ -126,8 +126,8 @@
 			"y": 18.0
 		},
 		{
-			"Blend": 0.5,
-			"Dwell": 0.20000000298023224,
+			"Blend": 0.7599999904632568,
+			"Dwell": 0.30000001192092896,
 			"Tension": 0.0,
 			"id": 4112773547,
 			"inputs": [
@@ -175,8 +175,8 @@
 		},
 		{
 			"delay": 0.029999999329447746,
-			"depth": 0.05000000074505806,
-			"freq": 2.0,
+			"depth": 0.03999999910593033,
+			"freq": 4.159999847412109,
 			"id": 716732438,
 			"inputs": [
 				{
@@ -185,7 +185,7 @@
 					"type": "stereo"
 				}
 			],
-			"level": 0.5,
+			"level": 0.27000001072883606,
 			"outputs": [
 				{
 					"id": 2380854781,

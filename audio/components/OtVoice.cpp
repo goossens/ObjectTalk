@@ -222,12 +222,18 @@ bool OtVoice::isActive(State& state) {
 
 float OtVoice::get(Parameters& parameters, State& state) {
 	auto sample = 0.0f;
+	auto count = 0;
 
-	// process all active oscillators
+	// mix all active oscillators
 	for (size_t i = 0; i < numberOfOscillators; i++) {
 		if (parameters.oscillators[i].power) {
 			sample += OtOscillator::get(parameters.oscillators[i].parameters, state.oscillators[i]);
+			count++;
 		}
+	}
+
+	if (count) {
+		sample /= static_cast<float>(count);
 	}
 
 	// apply filter

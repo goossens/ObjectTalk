@@ -33,12 +33,14 @@ public:
 		if (output->isDestinationConnected()) {
 			for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
 				float result = 0.0f;
+				int count = 0;
 
-				if (input1->isSourceConnected()) { result += input1->getSample(i); }
-				if (input2->isSourceConnected()) { result += input2->getSample(i); }
-				if (input3->isSourceConnected()) { result += input3->getSample(i); }
-				if (input4->isSourceConnected()) { result += input4->getSample(i); }
+				if (input1->isSourceConnected()) { result += input1->getSample(i); count++; }
+				if (input2->isSourceConnected()) { result += input2->getSample(i); count++; }
+				if (input3->isSourceConnected()) { result += input3->getSample(i); count++; }
+				if (input4->isSourceConnected()) { result += input4->getSample(i); count++; }
 
+				if (count) { result /= static_cast<float>(count); }
 				output->setSample(i, result);
 			}
 		}

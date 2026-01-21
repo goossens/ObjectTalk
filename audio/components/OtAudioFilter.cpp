@@ -9,11 +9,15 @@
 //	Include files
 //
 
+#include <algorithm>
+
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtFontAudio.h"
 #include "OtUi.h"
 
+#include "OtAudioUtilities.h"
 #include "OtAudioFilter.h"
 
 
@@ -23,13 +27,40 @@
 
 bool OtAudioFilter::Parameters::renderUI() {
 	auto changed = false;
-	changed |= OtUi::selectorEnum("Mode", &mode, modes, modesCount);
+	auto spacing = ImGui::GetStyle().ItemInnerSpacing.x;
 
-	if (mode != Mode::off) {
-		changed |= OtUi::knob("Freq", &frequency, 80.0f, 8000.0f, "%.0fhz", true); ImGui::SameLine();
-		changed |= OtUi::knob("Res", &resonance, 0.0f, 1.0f, "%.2f", false);
-	}
+	ImGui::PushID("Modes");
+	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
+	changed |= OtUi::radioButton(OtFontAudio::filterBypass, &mode, OtAudioFilter::Mode::off);
+	ImGui::PopFont();
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Off"); }
+	ImGui::SameLine(0.0f, spacing);
+	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
+	changed |= OtUi::radioButton(OtFontAudio::filterLowpass, &mode, OtAudioFilter::Mode::lowPass);
+	ImGui::PopFont();
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Low Pass"); }
+	ImGui::SameLine(0.0f, spacing);
+	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
+	changed |= OtUi::radioButton(OtFontAudio::filterHighpass, &mode, OtAudioFilter::Mode::highPass);
+	ImGui::PopFont();
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("High Pass"); }
+	ImGui::SameLine(0.0f, spacing);
+	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
+	changed |= OtUi::radioButton(OtFontAudio::filterBell, &mode, OtAudioFilter::Mode::bandPass);
+	ImGui::PopFont();
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Band Pass"); }
+	ImGui::SameLine(0.0f, spacing);
+	changed |= OtUi::radioButton("M", &mode, OtAudioFilter::Mode::moogLadder, ImVec2(OtUi::getAudioButtonWidth(), 0.0f));
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Moog Ladder"); }
+	ImGui::PopID();
 
+	if (mode == Mode::off) { ImGui::BeginDisabled(); }
+	changed |= OtUi::knob("Freq", &frequency, 80.0f, 8000.0f, "%.0fhz", true); ImGui::SameLine();
+	changed |= OtUi::knob("Res", &resonance, 0.0f, 1.0f, "%.2f"); ImGui::SameLine();
+	changed |= OtUi::knob("Contour", &contour, -4.0f, 4.0f, "%.2f");
+	if (mode == Mode::off) { ImGui::EndDisabled(); }
+
+	hasChanged |= changed;
 	return changed;
 }
 
@@ -48,7 +79,7 @@ float OtAudioFilter::Parameters::getLabelWidth() {
 //
 
 float OtAudioFilter::Parameters::getRenderWidth() {
-	return OtUi::knobWidth(2) + getLabelWidth();
+	return OtUi::knobWidth(3);
 }
 
 
@@ -57,13 +88,7 @@ float OtAudioFilter::Parameters::getRenderWidth() {
 //
 
 float OtAudioFilter::Parameters::getRenderHeight() {
-	float height = ImGui::GetFrameHeightWithSpacing();
-
-	if (mode != Mode::off) {
-		height += OtUi::knobHeight();
-	}
-
-	return height;
+	return OtUi::knobHeight() + ImGui::GetFrameHeightWithSpacing();
 }
 
 
@@ -75,6 +100,7 @@ void OtAudioFilter::Parameters::serialize(nlohmann::json* data, [[maybe_unused]]
 	(*data)["mode"] = mode;
 	(*data)["frequency"] = frequency;
 	(*data)["resonance"] = resonance;
+	(*data)["contour"] = contour;
 }
 
 
@@ -86,6 +112,8 @@ void OtAudioFilter::Parameters::deserialize(nlohmann::json* data, [[maybe_unused
 	mode = data->value("mode", Mode::off);
 	frequency = data->value("frequency", 1000.0f);
 	resonance = data->value("resonance", 0.5f);
+	contour = data->value("contour", 1.0f);
+	hasChanged = true;
 }
 
 
@@ -94,38 +122,43 @@ void OtAudioFilter::Parameters::deserialize(nlohmann::json* data, [[maybe_unused
 //
 
 float OtAudioFilter::State::process(Parameters& parameters, float sample) {
-	if (mode != parameters.mode || frequency != parameters.frequency || resonance != parameters.resonance) {
-		mode = parameters.mode ;
-		frequency = parameters.frequency;
-		resonance = parameters.resonance;
+	if (hasChanged || parameters.hasChanged) {
+		frequency = OtAudioUtilities::tune(parameters.frequency, frequencyModulation * parameters.contour);
 
-		switch (mode) {
+		switch (parameters.mode) {
 			case Mode::lowPass:
 			case Mode::bandPass:
 			case Mode::highPass:
 				gain = std::tan(OtAudioSettings::pi * frequency * OtAudioSettings::dt);
-				damping = std::min(1.0f - resonance, 0.999f);
+				damping = std::min(1.0f - parameters.resonance, 0.999f);
 				inverseDenominator = 1.0f / (1.0f + (2.0f * damping * gain) + gain * gain);
 				break;
 
-			case Mode::moogLadder:
+			case Mode::moogLadder: {
 				cutoff = 2.0f * frequency * OtAudioSettings::dt;
+				state1 = 0.0f;
+				state2 = 0.0f;
+				std::fill(stage, stage + 4, 0.0f);
+				std::fill(delay, stage + 4, 0.0f);
 
 				p = cutoff * (1.8f - 0.8f * cutoff);
 				k = 2.0f * std::sin(cutoff * OtAudioSettings::pi * 0.5f) - 1.0f;
-				t1 = (1.0f - p) * 1.386249f;
-				t2 = 12.0f + t1 * t1;
 
-				res = resonance * (t2 + 6.0f * t1) / (t2 - 6.0f * t1);
+				auto t1 = (1.0f - p) * 1.386249f;
+				auto t2 = 12.0f + t1 * t1;
+				res = parameters.resonance * (t2 + 6.0f * t1) / (t2 - 6.0f * t1);
 				break;
+			}
 
 			default:
 				break;
 		}
 
+		hasChanged = false;
+		parameters.hasChanged = false;
 	}
 
-	if (mode == Mode::moogLadder) {
+	if (parameters.mode == Mode::moogLadder) {
 		float x = sample - res * stage[3];
 
 		// 4 cascaded one-pole filters (bilinear transform)
@@ -144,7 +177,7 @@ float OtAudioFilter::State::process(Parameters& parameters, float sample) {
 
 		return stage[3];
 
-	} else if (mode != Mode::off) {
+	} else if (parameters.mode != Mode::off) {
 		auto highPass = (sample - (2.0f * damping + gain) * state1 - state2) * inverseDenominator;
 		auto bandPass = highPass * gain + state1;
 		auto lowPass = bandPass * gain + state2;
@@ -152,7 +185,7 @@ float OtAudioFilter::State::process(Parameters& parameters, float sample) {
 		state1 = gain * highPass + bandPass;
 		state2 = gain * bandPass + lowPass;
 
-		switch (mode) {
+		switch (parameters.mode) {
 			case Mode::lowPass:  return lowPass;
 			case Mode::bandPass: return bandPass;
 			case Mode::highPass: return highPass;

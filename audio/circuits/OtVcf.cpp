@@ -26,8 +26,7 @@ public:
 	// configure circuit
 	inline void configure() override {
 		audioInput = addInputPin("Input", OtCircuitPinClass::Type::mono);
-		fmInput = addInputPin("F Mod", OtCircuitPinClass::Type::control)->hasAttenuation();
-		qmInput = addInputPin("Q Mod", OtCircuitPinClass::Type::control)->hasAttenuation();
+		fmInput = addInputPin("F Mod", OtCircuitPinClass::Type::control);
 		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
 	}
 
@@ -61,7 +60,14 @@ public:
 		if (audioOutput->isDestinationConnected()) {
 			if (audioInput->isSourceConnected()) {
 				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-					audioOutput->setSample(i, state.process(parameters, audioInput->getSample(i)));
+					if (fmInput->isSourceConnected()) {
+						filter.setFrequencyModulation(fmInput->getSample(i));
+
+					} else {
+						filter.setFrequencyModulation(0.0f);
+					}
+
+					audioOutput->setSample(i, filter.process(parameters, audioInput->getSample(i)));
 				}
 
 			} else {
@@ -80,10 +86,9 @@ private:
 	// work variables
 	OtCircuitPin audioInput;
 	OtCircuitPin fmInput;
-	OtCircuitPin qmInput;
 	OtCircuitPin audioOutput;
 
-	OtAudioFilter::State state;
+	OtAudioFilter::State filter;
 };
 
 static OtCircuitFactoryRegister<OtVcf> registration;

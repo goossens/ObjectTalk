@@ -251,7 +251,7 @@ void OtMidi::processEvents(std::function<void(OtMidiMessage)> callback) {
 				} else if (message->isAllNotesOff()) {
 					for (size_t i = 0; i < 128; i++) {
 						if (keyPressed[i]) {
-							callback(OtMidiNoteOff(message->getChannel(), i, 0));
+							callback(OtMidiNoteOff(message->getChannel(), static_cast<int>(i), 0));
 							keyPressed[i] = false;
 						}
 					}

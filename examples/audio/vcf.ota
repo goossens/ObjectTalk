@@ -50,6 +50,7 @@
 					"type": "control"
 				}
 			],
+			"inverse": false,
 			"outputs": [
 				{
 					"id": 410275450,
@@ -61,7 +62,11 @@
 			"sampleFile": "",
 			"sampleFileFrequency": 0.0,
 			"title": "VCO",
+			"tuningCents": 0.0,
+			"tuningOctaves": 0.0,
+			"tuningSemitones": 0.0,
 			"type": "VCO",
+			"volume": 7.0,
 			"waveForm": 2,
 			"waveTable": "",
 			"x": 443.0,
@@ -70,7 +75,6 @@
 		{
 			"attack": 0.5,
 			"decay": 2.0,
-			"hold": 0.010000000707805157,
 			"id": 3801042963,
 			"inputs": [
 				{
@@ -94,9 +98,10 @@
 			"y": 321.0
 		},
 		{
-			"frequency": 6.800000190734863,
+			"frequency": 3.0,
 			"id": 3244187191,
 			"inputs": [],
+			"inverse": false,
 			"outputs": [
 				{
 					"id": 507672911,
@@ -108,11 +113,15 @@
 			"sampleFile": "",
 			"sampleFileFrequency": 0.0,
 			"title": "LFO",
+			"tuningCents": 0.0,
+			"tuningOctaves": 0.0,
+			"tuningSemitones": 0.0,
 			"type": "LFO",
-			"waveForm": 0,
+			"volume": 7.0,
+			"waveForm": 1,
 			"waveTable": "",
-			"x": 936.0,
-			"y": 360.0
+			"x": 839.0,
+			"y": 332.0
 		},
 		{
 			"id": 3569591617,
@@ -139,10 +148,11 @@
 			],
 			"title": "VCA",
 			"type": "VCA",
-			"x": 715.0,
+			"x": 754.0,
 			"y": 50.0
 		},
 		{
+			"contour": 2.0,
 			"frequency": 1000.0,
 			"id": 4064142102,
 			"inputs": [
@@ -152,19 +162,12 @@
 					"type": "mono"
 				},
 				{
-					"attenuation": 0.18000000715255737,
 					"id": 1145682991,
 					"name": "F Mod",
 					"type": "control"
-				},
-				{
-					"attenuation": 1.0,
-					"id": 1051869345,
-					"name": "Q Mod",
-					"type": "control"
 				}
 			],
-			"mode": 3,
+			"mode": 1,
 			"outputs": [
 				{
 					"id": 1734700177,
@@ -172,7 +175,7 @@
 					"type": "mono"
 				}
 			],
-			"resonance": 0.6800000071525574,
+			"resonance": 0.6000000238418579,
 			"title": "VCF",
 			"type": "VCF",
 			"x": 934.0,

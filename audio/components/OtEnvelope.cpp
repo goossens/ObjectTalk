@@ -55,7 +55,7 @@ bool OtEnvelope::Parameters::renderUI() {
 		auto decaySamples = durationInSamples(decayTime, sampleRate);
 		auto sustainSamples = durationInSamples(totalLengthInTime * 0.2f, sampleRate);
 		auto releaseSamples = durationInSamples(releaseTime, sampleRate);
-		auto roundingSamples = envelopeDataSize - attackSamples - decaySamples - sustainSamples - releaseSamples;
+		auto roundingSamples = static_cast<int>(envelopeDataSize) - attackSamples - decaySamples - sustainSamples - releaseSamples;
 
 		// populate output buffer
 		auto p = graph.data();

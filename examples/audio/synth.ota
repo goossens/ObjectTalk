@@ -27,56 +27,8 @@
 			],
 			"title": "MIDI Input",
 			"type": "MIDI Input",
-			"x": 10.0,
-			"y": 531.0
-		},
-		{
-			"id": 1112908790,
-			"inputs": [
-				{
-					"id": 2954467871,
-					"name": "Input",
-					"type": "control"
-				}
-			],
-			"outputs": [
-				{
-					"id": 3727072312,
-					"name": "Output 1",
-					"tuningCents": 0.0,
-					"tuningOctaves": 0.0,
-					"tuningSemitones": 0.0,
-					"type": "control"
-				},
-				{
-					"id": 1139661478,
-					"name": "Output 2",
-					"tuningCents": 0.0,
-					"tuningOctaves": 0.0,
-					"tuningSemitones": 4.0,
-					"type": "control"
-				},
-				{
-					"id": 3455565350,
-					"name": "Output 3",
-					"tuningCents": 0.0,
-					"tuningOctaves": -1.0,
-					"tuningSemitones": -5.0,
-					"type": "control"
-				},
-				{
-					"id": 3732857718,
-					"name": "Output 4",
-					"tuningCents": 0.0,
-					"tuningOctaves": 0.0,
-					"tuningSemitones": 0.0,
-					"type": "control"
-				}
-			],
-			"title": "Transposer",
-			"type": "Transposer",
-			"x": 341.0,
-			"y": 191.0
+			"x": 6.0,
+			"y": 396.0
 		},
 		{
 			"frequency": 440.0,
@@ -98,6 +50,7 @@
 					"type": "control"
 				}
 			],
+			"inverse": false,
 			"outputs": [
 				{
 					"id": 410275450,
@@ -113,11 +66,11 @@
 			"tuningOctaves": 0.0,
 			"tuningSemitones": 0.0,
 			"type": "VCO",
-			"volume": 1.0,
+			"volume": 7.0,
 			"waveForm": 3,
 			"waveTable": "",
-			"x": 491.0,
-			"y": 14.0
+			"x": 381.0,
+			"y": 16.0
 		},
 		{
 			"attack": 0.25,
@@ -138,77 +91,11 @@
 				}
 			],
 			"release": 0.8500000238418579,
-			"sustain": 0.699999988079071,
+			"sustain": 0.5,
 			"title": "Envelope Generator",
 			"type": "Envelope Generator",
-			"x": 740.0,
-			"y": 346.0
-		},
-		{
-			"frequency": 1.0,
-			"id": 3244187191,
-			"inputs": [],
-			"outputs": [
-				{
-					"id": 507672911,
-					"name": "Output",
-					"type": "control"
-				}
-			],
-			"pulseWidth": 0.5,
-			"sampleFile": "",
-			"sampleFileFrequency": 0.0,
-			"title": "LFO",
-			"tuningCents": 0.0,
-			"tuningOctaves": 0.0,
-			"tuningSemitones": 0.0,
-			"type": "LFO",
-			"volume": 1.0,
-			"waveForm": 0,
-			"waveTable": "",
-			"x": 1068.0,
-			"y": 629.0
-		},
-		{
-			"frequency": 440.0,
-			"id": 405217887,
-			"inputs": [
-				{
-					"id": 1699425502,
-					"name": "Pitch",
-					"type": "control"
-				},
-				{
-					"id": 4175452013,
-					"name": "Pulse Width",
-					"type": "control"
-				},
-				{
-					"id": 1965324768,
-					"name": "Shape",
-					"type": "control"
-				}
-			],
-			"outputs": [
-				{
-					"id": 2594101418,
-					"name": "Output",
-					"type": "mono"
-				}
-			],
-			"pulseWidth": 0.6499999761581421,
-			"sampleFile": "",
-			"sampleFileFrequency": 0.0,
-			"title": "VCO",
-			"tuningCents": 0.0,
-			"tuningOctaves": 0.0,
-			"tuningSemitones": 0.0,
-			"type": "VCO",
-			"volume": 1.0,
-			"waveForm": 1,
-			"waveTable": "",
-			"x": 491.0,
-			"y": 322.0
+			"x": 581.0,
+			"y": 393.0
 		},
 		{
 			"frequency": 440.0,
@@ -230,6 +117,7 @@
 					"type": "control"
 				}
 			],
+			"inverse": false,
 			"outputs": [
 				{
 					"id": 2129771409,
@@ -243,13 +131,13 @@
 			"title": "VCO",
 			"tuningCents": 0.0,
 			"tuningOctaves": 0.0,
-			"tuningSemitones": 0.0,
+			"tuningSemitones": 4.0,
 			"type": "VCO",
-			"volume": 1.0,
-			"waveForm": 3,
+			"volume": 7.0,
+			"waveForm": 4,
 			"waveTable": "",
-			"x": 491.0,
-			"y": 166.0
+			"x": 381.0,
+			"y": 168.0
 		},
 		{
 			"id": 1911635902,
@@ -288,8 +176,8 @@
 			],
 			"title": "4 Channel Mixer",
 			"type": "4 Channel Mixer",
-			"x": 754.0,
-			"y": 173.0
+			"x": 719.0,
+			"y": 160.0
 		},
 		{
 			"id": 3569591617,
@@ -316,11 +204,12 @@
 			],
 			"title": "VCA",
 			"type": "VCA",
-			"x": 935.0,
-			"y": 161.0
+			"x": 936.0,
+			"y": 160.0
 		},
 		{
-			"frequency": 800.0,
+			"contour": -2.0,
+			"frequency": 880.0,
 			"id": 4064142102,
 			"inputs": [
 				{
@@ -329,19 +218,12 @@
 					"type": "mono"
 				},
 				{
-					"attenuation": 0.25,
 					"id": 1145682991,
 					"name": "F Mod",
 					"type": "control"
-				},
-				{
-					"attenuation": 1.0,
-					"id": 1051869345,
-					"name": "Q Mod",
-					"type": "control"
 				}
 			],
-			"mode": 3,
+			"mode": 1,
 			"outputs": [
 				{
 					"id": 1734700177,
@@ -349,11 +231,11 @@
 					"type": "mono"
 				}
 			],
-			"resonance": 0.6800000071525574,
+			"resonance": 0.5,
 			"title": "VCF",
 			"type": "VCF",
-			"x": 1073.0,
-			"y": 359.0
+			"x": 1067.0,
+			"y": 404.0
 		},
 		{
 			"Blend": 0.6700000166893005,
@@ -451,26 +333,6 @@
 			"to": 2235339939
 		},
 		{
-			"from": 2197641789,
-			"id": 3314960292,
-			"to": 2954467871
-		},
-		{
-			"from": 3727072312,
-			"id": 3130288672,
-			"to": 3360538592
-		},
-		{
-			"from": 3455565350,
-			"id": 198392078,
-			"to": 1699425502
-		},
-		{
-			"from": 1139661478,
-			"id": 2355827045,
-			"to": 1370379221
-		},
-		{
 			"from": 653216130,
 			"id": 150475562,
 			"to": 1337454414
@@ -479,11 +341,6 @@
 			"from": 470986240,
 			"id": 217853430,
 			"to": 1254475580
-		},
-		{
-			"from": 507672911,
-			"id": 2124012413,
-			"to": 1145682991
 		},
 		{
 			"from": 1492965834,
@@ -501,11 +358,6 @@
 			"to": 3978828348
 		},
 		{
-			"from": 3111468910,
-			"id": 328678955,
-			"to": 2718563792
-		},
-		{
 			"from": 1734700177,
 			"id": 2702997593,
 			"to": 1736229986
@@ -521,9 +373,24 @@
 			"to": 1792904494
 		},
 		{
-			"from": 2594101418,
-			"id": 1453027308,
-			"to": 1310953057
+			"from": 2197641789,
+			"id": 2006348781,
+			"to": 1370379221
+		},
+		{
+			"from": 2197641789,
+			"id": 1159770337,
+			"to": 3360538592
+		},
+		{
+			"from": 3111468910,
+			"id": 328678955,
+			"to": 2718563792
+		},
+		{
+			"from": 3111468910,
+			"id": 2701136578,
+			"to": 1145682991
 		}
 	]
 }

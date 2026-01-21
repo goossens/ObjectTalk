@@ -12,6 +12,7 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtFontAudio.h"
 #include "OtUi.h"
 
 #include "OtOscillator.h"
@@ -59,9 +60,65 @@ bool OtOscillator::Parameters::isReady() {
 
 bool OtOscillator::Parameters::renderUI() {
 	auto changed = false;
-	size_t knobs = 0;
+	auto spacing = ImGui::GetStyle().ItemInnerSpacing.x;
 
-	changed |= OtUi::selectorEnum("Type", &waveForm, waveForms, waveFormCount);
+	ImGui::PushID("Modes");
+	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
+	changed |= OtUi::radioButton(OtFontAudio::filterBypass, &waveForm, OtOscillator::WaveForm::off);
+	ImGui::PopFont();
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Off"); }
+	ImGui::SameLine(0.0f, spacing);
+	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
+	changed |= OtUi::radioButton(OtFontAudio::modSine, &waveForm, OtOscillator::WaveForm::sine);
+	ImGui::PopFont();
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Sine"); }
+	ImGui::SameLine(0.0f, spacing);
+	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
+	changed |= OtUi::radioButton(OtFontAudio::modSquare, &waveForm, OtOscillator::WaveForm::square);
+	ImGui::PopFont();
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Square"); }
+	ImGui::SameLine(0.0f, spacing);
+	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
+	changed |= OtUi::radioButton(OtFontAudio::modTriangle, &waveForm, OtOscillator::WaveForm::triangle);
+	ImGui::PopFont();
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Triangle"); }
+	ImGui::SameLine(0.0f, spacing);
+	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
+	changed |= OtUi::radioButton(OtFontAudio::modSawUp, &waveForm, OtOscillator::WaveForm::sawtooth);
+	ImGui::PopFont();
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Saw Tooth"); }
+	ImGui::SameLine(0.0f, spacing);
+	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
+	changed |= OtUi::radioButton(OtFontAudio::logoAudiobus, &waveForm, OtOscillator::WaveForm::sample);
+	ImGui::PopFont();
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Sample File"); }
+	ImGui::SameLine(0.0f, spacing);
+	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
+	changed |= OtUi::radioButton(OtFontAudio::hExpand, &waveForm, OtOscillator::WaveForm::wavetable);
+	ImGui::PopFont();
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Wave Table"); }
+
+	ImGui::SameLine();
+	OtUi::hSpacer(15.0f);
+	auto buttonSize = ImVec2(OtUi::getAudioButtonWidth(), 0.0f);
+	changed |= OtUi::latchButton("I", &inverse, buttonSize);
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Inverse"); }
+	ImGui::SameLine(0.0f, spacing);
+
+	if (ImGui::Button("T", buttonSize)) {
+		ImGui::OpenPopup("tuningPopup");
+	}
+
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Tuning"); }
+
+	if (ImGui::BeginPopup("tuningPopup")) {
+		changed |= OtUi::knob("Octaves", &tuningOctaves, -4, +4); ImGui::SameLine();
+		changed |= OtUi::knob("Semitones", &tuningSemitones, -12, +12); ImGui::SameLine();
+		changed |= OtUi::knob("Cents", &tuningCents, -100, +100);
+		ImGui::EndPopup();
+	}
+
+	ImGui::PopID();
 
 	if (waveForm == WaveForm::sample) {
 		if (sampleFileAsset.renderUI("File")) {
@@ -94,6 +151,8 @@ bool OtOscillator::Parameters::renderUI() {
 			changed |= true;
 		}
 	}
+
+	size_t knobs = 0;
 
 	if (showFrequencyKnob) {
 		changed |= OtUi::knob("Freq", &frequency, frequencyKnobLow, frequencyKnobHigh, "%.1fhz", true);
@@ -139,7 +198,7 @@ float OtOscillator::Parameters::getLabelWidth() {
 //
 
 float OtOscillator::Parameters::getRenderWidth() {
-	return 200.0f;
+	return OtUi::getAudioButtonWidth() * 9.0f + ImGui::GetStyle().ItemInnerSpacing.x * 7.0f + 15.0f;
 }
 
 
@@ -155,7 +214,6 @@ float OtOscillator::Parameters::getRenderHeight() {
 	if (showPulseWidthKnob) { knobs++; }
 	if (showShapeKnob) { knobs++; }
 	if (showVolumeKnob) { knobs++; }
-	if (showTuningButton) { knobs++; }
 
 	height += OtUi::knobHeight(knobs > 0 ? 1 : 0);
 
@@ -178,6 +236,7 @@ void OtOscillator::Parameters::serialize(nlohmann::json* data, std::string* base
 	(*data)["sampleFileFrequency"] = sampleFileFrequency;
 	(*data)["sampleFile"] = OtAssetSerialize(sampleFileAsset.getPath(), basedir);
 	(*data)["waveTable"] = OtAssetSerialize(waveTableAsset.getPath(), basedir);
+	(*data)["inverse"] = inverse;
 	(*data)["tuningOctaves"] = tuningOctaves;
 	(*data)["tuningSemitones"] = tuningSemitones;
 	(*data)["tuningCents"] = tuningCents;
@@ -192,10 +251,11 @@ void OtOscillator::Parameters::serialize(nlohmann::json* data, std::string* base
 void OtOscillator::Parameters::deserialize(nlohmann::json* data, std::string* basedir) {
 	waveForm = data->value("waveForm", OtOscillator::WaveForm::sine);
 	frequency = data->value("frequency", 440.0f);
-	pulseWidth = data->value("pulseWidth", 0.5f);
+	pulseWidth = data->value("pulseWidth", 1.0f);
 	sampleFileFrequency = data->value("sampleFileFrequency", 0.0f);
 	sampleFileAsset = OtAssetDeserialize(data, "sampleFile", basedir);
 	waveTableAsset = OtAssetDeserialize(data, "waveTable", basedir);
+	inverse = data->value("inverse", false);
 	tuningOctaves = data->value("tuningOctaves", 0.0f);
 	tuningSemitones = data->value("tuningSemitones", 0.0f);
 	tuningCents = data->value("tuningCents", 0.0f);

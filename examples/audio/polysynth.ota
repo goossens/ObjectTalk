@@ -39,15 +39,15 @@
 				"sustain": 0.6600000262260437
 			},
 			"filter": {
-				"attack": 1.0,
-				"decay": 1.0,
-				"envelopePower": false,
-				"frequency": 1000.0,
-				"mode": 4,
-				"power": true,
-				"release": 0.20000000298023224,
-				"resonance": 0.5,
-				"sustain": 0.800000011920929
+				"attack": 0.029999999329447746,
+				"contour": 1.9800000190734863,
+				"decay": 0.019999999552965164,
+				"envelopePower": true,
+				"frequency": 440.0,
+				"mode": 1,
+				"release": 0.010000000707805157,
+				"resonance": 0.5899999737739563,
+				"sustain": 0.1899999976158142
 			},
 			"id": 2696420272,
 			"inputs": [
@@ -60,41 +60,41 @@
 			"oscillators": [
 				{
 					"frequency": 440.0,
-					"power": true,
+					"inverse": false,
 					"pulseWidth": 0.5,
 					"sampleFile": "",
 					"sampleFileFrequency": 0.0,
 					"tuningCents": 0.0,
 					"tuningOctaves": 0.0,
 					"tuningSemitones": 0.0,
-					"volume": 7.0,
+					"volume": 10.0,
 					"waveForm": 3,
 					"waveTable": ""
 				},
 				{
 					"frequency": 440.0,
-					"power": true,
+					"inverse": false,
 					"pulseWidth": 0.4399999976158142,
 					"sampleFile": "",
 					"sampleFileFrequency": 0.0,
 					"tuningCents": 0.0,
 					"tuningOctaves": 0.0,
 					"tuningSemitones": 0.0,
-					"volume": 7.0,
-					"waveForm": 1,
+					"volume": 2.0,
+					"waveForm": 4,
 					"waveTable": ""
 				},
 				{
 					"frequency": 440.0,
-					"power": false,
-					"pulseWidth": 0.5,
+					"inverse": false,
+					"pulseWidth": 0.7200000286102295,
 					"sampleFile": "",
 					"sampleFileFrequency": 0.0,
 					"tuningCents": 0.0,
-					"tuningOctaves": 0.0,
+					"tuningOctaves": -2.0,
 					"tuningSemitones": 0.0,
-					"volume": 7.0,
-					"waveForm": 0,
+					"volume": 5.0,
+					"waveForm": 3,
 					"waveTable": ""
 				}
 			],

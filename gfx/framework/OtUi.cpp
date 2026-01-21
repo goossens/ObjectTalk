@@ -9,6 +9,10 @@
 //	Include files
 //
 
+#if _WIN32
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include <algorithm>
 #include <cmath>
 #include <cstring>
@@ -38,7 +42,7 @@ void OtUi::loadFonts() {
 	io.Fonts->Clear();
 
 	ImFontConfig textConfig;
-	std::memcpy(textConfig.Name, "DejaVu", 7);
+	std::strncpy(textConfig.Name, "DejaVu", sizeof(textConfig.Name));
 	textConfig.FontDataOwnedByAtlas = false;
 	textConfig.OversampleH = 1;
 	textConfig.OversampleV = 1;
@@ -50,7 +54,7 @@ void OtUi::loadFonts() {
 		&textConfig);
 
 	ImFontConfig audioConfig;
-	std::memcpy(audioConfig.Name, "FontAudio", 14);
+	std::strncpy(audioConfig.Name, "FontAudio", sizeof(audioConfig.Name));
 	audioConfig.FontDataOwnedByAtlas = false;
 	audioConfig.OversampleH = 1;
 	audioConfig.OversampleV = 1;
@@ -60,6 +64,15 @@ void OtUi::loadFonts() {
 		static_cast<int>(OtFontAudio::size()),
 		15.0f,
 		&audioConfig);
+}
+
+
+//
+//	OtUi::getAudioButtonWidth
+//
+
+float OtUi::getAudioButtonWidth() {
+	return audioFont->CalcTextSizeA(15.0f, 100.0f, 100.0f, OtFontAudio::adr).x + ImGui::GetStyle().ItemInnerSpacing.x * 2.0f;
 }
 
 
@@ -1083,9 +1096,7 @@ bool OtUi::knob(const char* label, int* value, int minValue, int maxValue) {
 //
 
 float OtUi::knobWidth(size_t columns) {
-	return
-		ImGui::GetTextLineHeight() * 4.0f * columns +
-		ImGui::GetStyle().ItemSpacing.x * (columns - 1);
+	return (columns == 0) ? 0.0f : ImGui::GetTextLineHeight() * 4.0f * columns + ImGui::GetStyle().ItemSpacing.x * (columns - 1);
 }
 
 

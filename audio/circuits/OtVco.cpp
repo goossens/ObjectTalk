@@ -30,8 +30,8 @@ public:
 		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
 
 		parameters.showFrequencyKnob = true;
-		parameters.frequencyKnobLow = 80.0f;
-		parameters.frequencyKnobHigh = 8000.0f;
+		parameters.frequencyKnobLow = 50.0f;
+		parameters.frequencyKnobHigh = 5000.0f;
 	}
 
 	// render custom fields
@@ -67,10 +67,13 @@ public:
 		if (audioOutput->isDestinationConnected()) {
 			if (parameters.isReady()) {
 				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-					state.frequency = frequencyInput->isSourceConnected() ? OtAudioUtilities::cvToPitch(frequencyInput->getSample(i)) : parameters.frequency;
-					state.pulseWidth = pulseWidthInput->isSourceConnected() ? pulseWidthInput->getSample(i) : parameters.pulseWidth;
-					state.shape = shapeInput->isSourceConnected() ? shapeInput->getSample(i) : parameters.shape;
-					audioOutput->setSample(i, state.get(parameters));
+					oscillator.set(
+						parameters,
+						frequencyInput->isSourceConnected() ? OtAudioUtilities::cvToPitch(frequencyInput->getSample(i)) : parameters.frequency,
+						pulseWidthInput->isSourceConnected() ? pulseWidthInput->getSample(i) : parameters.pulseWidth,
+						shapeInput->isSourceConnected() ? shapeInput->getSample(i) : parameters.shape);
+
+					audioOutput->setSample(i, oscillator.get(parameters));
 				}
 
 			} else {
@@ -87,7 +90,7 @@ private:
 	OtOscillator::Parameters parameters;
 
 	// work variables
-	OtOscillator::State state;
+	OtOscillator::State oscillator;
 
 	OtCircuitPin frequencyInput;
 	OtCircuitPin pulseWidthInput;

@@ -37,19 +37,12 @@ public:
 		moogLadder
 	};
 
-	static constexpr const char* modes[] = {
-		"Off",
-		"Low Pass",
-		"Band Pass",
-		"High Pass",
-		"Moog Ladder"
-	};
-
-	static constexpr size_t modesCount = sizeof(modes) / sizeof(*modes);
-
 	// set of parameters that drive the filter
 	class Parameters {
 	public:
+		// see if filter is on
+		bool isOn() { return mode != Mode::off; }
+
 		// UI to change filter properties
 		bool renderUI();
 		float getLabelWidth();
@@ -64,33 +57,22 @@ public:
 		Mode mode = Mode::off;
 		float frequency = 1000.0f;
 		float resonance = 0.5f;
+		float contour = 0.0f;
+
+		// work variables
+		bool hasChanged = true;
 	};
 
 	// state of the filter allowing multiple instances with identical parameters
 	class State {
 	public:
-		Mode mode = Mode::off;
-		float frequency = 1000.0f;
-		float resonance = 0.5f;
-
-		float gain = 0.0f;
-		float damping = 0.0f;
-		float inverseDenominator = 0.0f;
-
-		float cutoff = 0.0f;
-		float res = 0.0f;
-
-		float state1 = 0.0f;
-		float state2 = 0.0f;
-
-		double stage[4] = {0.0f};
-		double delay[4] = {0.0f};
-
-		double p;
-		double k;
-		double t1;
-		double t2;
-
+		// set frequency modulation (1v/octave, negative is down positive is up)
+		inline void setFrequencyModulation(float fm) {
+			if (frequencyModulation != fm) {
+				frequencyModulation = fm;
+				hasChanged = true;
+			}
+		}
 
 		//	process a sample
 		float process(Parameters& parameters, float sample);
@@ -102,5 +84,24 @@ public:
 				buffer++;
 			}
 		}
+
+	private:
+		// work variables
+		float frequencyModulation = 0.0f;
+		bool hasChanged = true;
+		float frequency;
+
+		float gain;
+		float damping;
+		float inverseDenominator;
+
+		float cutoff;
+		float res;
+		float state1;
+		float state2 ;
+		float stage[4];
+		float delay[4];
+		float p;
+		float k;
 	};
 };

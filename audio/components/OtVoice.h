@@ -45,13 +45,7 @@ public:
 		void deserialize(nlohmann::json* data, std::string* basedir);
 
 		// local types
-		struct Oscillator {
-			bool power = false;
-			OtOscillator::Parameters parameters;
-		};
-
 		struct Filter {
-			bool filterPower = false;
 			OtAudioFilter::Parameters filterParameters;
 			bool envelopePower = false;
 			OtEnvelope::Parameters envelopeParameters;
@@ -64,7 +58,7 @@ public:
 
 		// properties
 		friend class State;
-		std::array<Oscillator, numberOfOscillators> oscillators;
+		std::array<OtOscillator::Parameters, numberOfOscillators> oscillators;
 		Filter filter;
 		Amp amp;
 	};
@@ -95,7 +89,7 @@ public:
 	private:
 		// properties
 		std::array<OtOscillator::State, numberOfOscillators> oscillators;
-		OtAudioFilter::State filterState;
+		OtAudioFilter::State filter;
 		OtEnvelope::State filterEnvelopeState;
 		OtEnvelope::State ampEnvelopeState;
 		int note;

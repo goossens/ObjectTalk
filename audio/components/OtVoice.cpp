@@ -33,8 +33,8 @@ bool OtVoice::Parameters::renderUI([[maybe_unused]]float itemWidth) {
 	auto height = 0.0f;
 
 	for (auto& oscillator : oscillators) {
-		width = std::max(width, oscillator.parameters.getRenderWidth());
-		height += frameHeight + oscillator.parameters.getRenderHeight();
+		width = std::max(width, oscillator.getRenderWidth());
+		height += frameHeight + oscillator.getRenderHeight();
 	}
 
 	height = std::max(height, frameHeight + filter.filterParameters.getRenderHeight()+ filter.envelopeParameters.getRenderHeight());
@@ -51,19 +51,15 @@ bool OtVoice::Parameters::renderUI([[maybe_unused]]float itemWidth) {
 
 	for (size_t i = 0; i < numberOfOscillators; i++) {
 		auto& oscillator = oscillators[i];
-		oscillator.parameters.showPulseWidthKnob = true;
-		oscillator.parameters.showShapeKnob = true;
-		oscillator.parameters.showVolumeKnob = true;
-		oscillator.parameters.showTuningButton = true;
+		oscillator.showPulseWidthKnob = true;
+		oscillator.showShapeKnob = true;
+		oscillator.showVolumeKnob = true;
+		oscillator.showTuningButton = true;
 
-		ImGui::PushID(i);
-		auto label = fmt::format("Oscillator {}", i + 1);
-		changed |= OtUi::headerWithToggleButton(label.c_str(), &oscillator.power);
-		if (!oscillator.power) { ImGui::BeginDisabled(); }
-		ImGui::PushItemWidth(oscillator.parameters.getRenderWidth() - oscillator.parameters.getLabelWidth());
-		changed |= oscillator.parameters.renderUI();
-		ImGui::PopItemWidth();
-		if (!oscillator.power) { ImGui::EndDisabled(); }
+		ImGui::PushID(static_cast<int>(i));
+		auto label = fmt::format("Oscillator {}", static_cast<int>(i + 1));
+		OtUi::header(label.c_str());
+		changed |= oscillator.renderUI();
 		ImGui::PopID();
 	}
 
@@ -73,8 +69,7 @@ bool OtVoice::Parameters::renderUI([[maybe_unused]]float itemWidth) {
 	ImGui::SameLine();
 	ImGui::BeginChild("Filter", ImVec2(filter.envelopeParameters.getRenderWidth() + paddingX, height), ImGuiChildFlags_Borders);
 	ImGui::PushID("filter");
-	changed |= OtUi::headerWithToggleButton("Filter", &filter.filterPower);
-	if (!filter.filterPower) { ImGui::BeginDisabled(); }
+	OtUi::header("Filter");
 	ImGui::PushItemWidth(filter.filterParameters.getRenderWidth() - filter.filterParameters.getLabelWidth());
 	changed |= filter.filterParameters.renderUI();
 	ImGui::PopItemWidth();
@@ -84,7 +79,6 @@ bool OtVoice::Parameters::renderUI([[maybe_unused]]float itemWidth) {
 	changed |= filter.envelopeParameters.renderUI();
 	if (!filter.envelopePower) { ImGui::EndDisabled(); }
 
-	if (!filter.filterPower) { ImGui::EndDisabled(); }
 	ImGui::PopID();
 	ImGui::EndChild();
 
@@ -107,20 +101,18 @@ bool OtVoice::Parameters::renderUI([[maybe_unused]]float itemWidth) {
 //	OtVoice::Parameters::serialize
 //
 
-void OtVoice::Parameters::serialize(nlohmann::json_abi_v3_12_0::json *data, std::__1::string *basedir) {
+void OtVoice::Parameters::serialize(nlohmann::json_abi_v3_12_0::json *data, std::string *basedir) {
 	auto oscillatorArray = nlohmann::json::array();
 
 	for (auto& oscillator : oscillators) {
 		auto oscillatorData = nlohmann::json::object();
-		oscillatorData["power"] = oscillator.power;
-		oscillator.parameters.serialize(&oscillatorData, basedir);
+		oscillator.serialize(&oscillatorData, basedir);
 		oscillatorArray.emplace_back(oscillatorData);
 	}
 
 	(*data)["oscillators"] = oscillatorArray;
 
 	auto filterData = nlohmann::json::object();
-	filterData["power"] = filter.filterPower;
 	filter.filterParameters.serialize(&filterData, basedir);
 	filterData["envelopePower"] = filter.envelopePower;
 	filter.envelopeParameters.serialize(&filterData, basedir);
@@ -137,18 +129,16 @@ void OtVoice::Parameters::serialize(nlohmann::json_abi_v3_12_0::json *data, std:
 //	OtVoice::Parameters::deserialize
 //
 
-void OtVoice::Parameters::deserialize(nlohmann::json_abi_v3_12_0::json *data, std::__1::string *basedir) {
-	oscillators.fill(Parameters::Oscillator{});
+void OtVoice::Parameters::deserialize(nlohmann::json_abi_v3_12_0::json *data, std::string *basedir) {
+	oscillators.fill(OtOscillator::Parameters{});
 	size_t index = 0;
 
 	for (auto& oscillatorData : (*data)["oscillators"]) {
 		auto& oscillator = oscillators[index++];
-		oscillator.power = oscillatorData.value("power", false);
-		oscillator.parameters.deserialize(&oscillatorData, basedir);
+		oscillator.deserialize(&oscillatorData, basedir);
 	}
 
 	if (data->contains("filter")) {
-		filter.filterPower = (*data)["filter"].value("power", false);
 		filter.filterParameters.deserialize(&(*data)["filter"], basedir);
 		filter.envelopePower = (*data)["filter"].value("envelopePower", false);
 		filter.envelopeParameters.deserialize(&(*data)["filter"], basedir);
@@ -171,8 +161,8 @@ void OtVoice::State::noteOn(Parameters& parameters, int n, int v) {
 	velocity = v;
 
 	// configure oscillators
-	for (auto& oscillator : oscillators) {
-		oscillator.frequency = OtAudioUtilities::midiNoteToPitch(note);
+	for (size_t i = 0; i < numberOfOscillators; i++) {
+		oscillators[i].set(parameters.oscillators[i], OtAudioUtilities::midiNoteToPitch(note));
 	}
 
 	// start envelopes
@@ -217,8 +207,8 @@ float OtVoice::State::get(Parameters& parameters) {
 
 	// mix all active oscillators
 	for (size_t i = 0; i < numberOfOscillators; i++) {
-		if (parameters.oscillators[i].power) {
-			sample += oscillators[i].get(parameters.oscillators[i].parameters);
+		if (parameters.oscillators[i].isOn()) {
+			sample += oscillators[i].get(parameters.oscillators[i]);
 			count++;
 		}
 	}
@@ -228,10 +218,12 @@ float OtVoice::State::get(Parameters& parameters) {
 	}
 
 	// apply filter
-	// sample = OtAudioFilter::apply(sample);
-	if (parameters.filter.envelopePower) {
-		filterEnvelopeState.process(parameters.filter.envelopeParameters);
-	}
+	filter.setFrequencyModulation(
+		(parameters.filter.envelopePower)
+			? filterEnvelopeState.process(parameters.filter.envelopeParameters)
+			: 0.0f);
+
+	sample = filter.process(parameters.filter.filterParameters, sample);
 
 	// apply amp envelope
 	if (parameters.amp.power) {

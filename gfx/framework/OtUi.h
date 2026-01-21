@@ -47,10 +47,12 @@ public:
 		bottom
 	};
 
-	// load and acces the fonts
+	// load and access the fonts
 	static void loadFonts();
-	static ImFont* getTextFont() { return textFont; }
-	static ImFont* getAudioFont() { return audioFont; }
+	inline static ImFont* getTextFont() { return textFont; }
+	inline static ImFont* getAudioFont() { return audioFont; }
+	static float getAudioButtonWidth();
+
 
 	// adjust cursor position based on alignment
 	static void align(ImVec2 size, Alignment horizontal, Alignment vertical);
@@ -189,6 +191,7 @@ public:
 	static float knobWidth(size_t columns=1);
 	static float knobHeight(size_t rows=1);
 
+	// trim sliders
 	static bool trimSlider(float* value);
 	static float trimSliderWidth();
 	static float trimSliderHeight();

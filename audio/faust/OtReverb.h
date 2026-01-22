@@ -29,7 +29,7 @@ static double OtReverb_faustpower2_f(double value) {
 }
 
 class OtReverb : public OtFaust {
-private:
+protected:
 	int IOTA0;
 	double fVec0[8192];
 	int fSampleRate;
@@ -483,7 +483,7 @@ private:
 		ui_interface->closeBox();
 	}
 	
-	void compute(int count, float** inputs, float** outputs) override {
+	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
 		double fSlow0 = fConst7 * static_cast<double>(fHslider0);
@@ -686,4 +686,30 @@ private:
 			fRec19[1] = fRec19[0];
 		}
 	}
+
+	struct Parameters {
+		float dwell;
+		float tension;
+		float blend;
+	};
+
+	inline void setParameters(Parameters& parameters) {
+		fHslider0 = parameters.dwell;
+		fHslider1 = parameters.tension;
+		fHslider2 = parameters.blend;
+	}
+
+	inline void getParameters(Parameters& parameters) {
+		parameters.dwell = fHslider0;
+		parameters.tension = fHslider1;
+		parameters.blend = fHslider2;
+	}
+
+	inline void setDwell(float value) { fHslider0 = value; }
+	inline void setTension(float value) { fHslider1 = value; }
+	inline void setBlend(float value) { fHslider2 = value; }
+
+	inline float getDwell() { return fHslider0; }
+	inline float getTension() { return fHslider1; }
+	inline float getBlend() { return fHslider2; }
 };

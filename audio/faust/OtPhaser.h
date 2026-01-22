@@ -29,7 +29,7 @@ static double OtPhaser_faustpower2_f(double value) {
 }
 
 class OtPhaser : public OtFaust {
-private:
+protected:
 	int fSampleRate;
 	double fConst0;
 	double fConst1;
@@ -213,7 +213,7 @@ private:
 		ui_interface->closeBox();
 	}
 	
-	void compute(int count, float** inputs, float** outputs) override {
+	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
 		double fSlow0 = fConst1 * static_cast<double>(fHslider0);
@@ -266,4 +266,30 @@ private:
 			fRec1[1] = fRec1[0];
 		}
 	}
+
+	struct Parameters {
+		float speed;
+		float depth;
+		float feedback;
+	};
+
+	inline void setParameters(Parameters& parameters) {
+		fHslider2 = parameters.speed;
+		fHslider0 = parameters.depth;
+		fHslider1 = parameters.feedback;
+	}
+
+	inline void getParameters(Parameters& parameters) {
+		parameters.speed = fHslider2;
+		parameters.depth = fHslider0;
+		parameters.feedback = fHslider1;
+	}
+
+	inline void setSpeed(float value) { fHslider2 = value; }
+	inline void setDepth(float value) { fHslider0 = value; }
+	inline void setFeedback(float value) { fHslider1 = value; }
+
+	inline float getSpeed() { return fHslider2; }
+	inline float getDepth() { return fHslider0; }
+	inline float getFeedback() { return fHslider1; }
 };

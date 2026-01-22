@@ -25,7 +25,7 @@
 //
 
 class OtChorusSIG0 {
-private:	
+protected:	
 	int iRec1[2];
 
 public:	
@@ -49,6 +49,7 @@ public:
 			iRec1[1] = iRec1[0];
 		}
 	}
+
 };
 
 static OtChorusSIG0* newOtChorusSIG0() { return (OtChorusSIG0*)new OtChorusSIG0(); }
@@ -57,7 +58,7 @@ static void deleteOtChorusSIG0(OtChorusSIG0* dsp) { delete dsp; }
 static double ftbl0OtChorusSIG0[65536];
 
 class OtChorus : public OtFaust {
-private:
+protected:
 	int IOTA0;
 	double fVec0[65536];
 	float fHslider0;
@@ -82,9 +83,11 @@ private:
 	OtChorus& operator=(const OtChorus&) = default;
 	
 	void metadata(Meta* m) override { 
-		m->declare("author", "Albert Graef");
+		m->declare("category", "Effect");
 		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtChorus -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
 		m->declare("filename", "OtChorus.dsp");
+		m->declare("id", "chorus");
+		m->declare("license", "MIT");
 		m->declare("math.lib/author", "GRAME");
 		m->declare("math.lib/copyright", "GRAME");
 		m->declare("math.lib/deprecated", "This library is deprecated and is not maintained anymore. It will be removed in August 2017.");
@@ -97,8 +100,7 @@ private:
 		m->declare("music.lib/license", "LGPL with exception");
 		m->declare("music.lib/name", "Music Library");
 		m->declare("music.lib/version", "1.0");
-		m->declare("name", "chorus -- a simple chorus effect");
-		m->declare("version", "1.0");
+		m->declare("name", "Chorus");
 	}
 
 	int getNumInputs() override {
@@ -163,14 +165,18 @@ private:
 	
 	void buildUserInterface(UI* ui_interface) override {
 		ui_interface->openVerticalBox("chorus");
-		ui_interface->addHorizontalSlider("delay", &fHslider1, float(0.025), float(0.0), float(0.2), float(0.001));
-		ui_interface->addHorizontalSlider("depth", &fHslider2, float(0.02), float(0.0), float(1.0), float(0.001));
-		ui_interface->addHorizontalSlider("freq", &fHslider3, float(2.0), float(0.0), float(1e+01), float(0.01));
-		ui_interface->addHorizontalSlider("level", &fHslider0, float(0.5), float(0.0), float(1.0), float(0.01));
+		ui_interface->declare(&fHslider0, "0", "");
+		ui_interface->addHorizontalSlider("Level", &fHslider0, float(0.5), float(0.0), float(1.0), float(0.01));
+		ui_interface->declare(&fHslider3, "1", "");
+		ui_interface->addHorizontalSlider("Freq", &fHslider3, float(2.0), float(0.0), float(1e+01), float(0.01));
+		ui_interface->declare(&fHslider1, "2", "");
+		ui_interface->addHorizontalSlider("Delay", &fHslider1, float(0.025), float(0.0), float(0.2), float(0.001));
+		ui_interface->declare(&fHslider2, "3", "");
+		ui_interface->addHorizontalSlider("Depth", &fHslider2, float(0.02), float(0.0), float(1.0), float(0.001));
 		ui_interface->closeBox();
 	}
 	
-	void compute(int count, float** inputs, float** outputs) override {
+	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
 		float* input0 = inputs[0];
 		float* input1 = inputs[1];
 		float* output0 = outputs[0];
@@ -201,4 +207,35 @@ private:
 			fRec0[1] = fRec0[0];
 		}
 	}
+
+	struct Parameters {
+		float level;
+		float freq;
+		float delay;
+		float depth;
+	};
+
+	inline void setParameters(Parameters& parameters) {
+		fHslider0 = parameters.level;
+		fHslider3 = parameters.freq;
+		fHslider1 = parameters.delay;
+		fHslider2 = parameters.depth;
+	}
+
+	inline void getParameters(Parameters& parameters) {
+		parameters.level = fHslider0;
+		parameters.freq = fHslider3;
+		parameters.delay = fHslider1;
+		parameters.depth = fHslider2;
+	}
+
+	inline void setLevel(float value) { fHslider0 = value; }
+	inline void setFreq(float value) { fHslider3 = value; }
+	inline void setDelay(float value) { fHslider1 = value; }
+	inline void setDepth(float value) { fHslider2 = value; }
+
+	inline float getLevel() { return fHslider0; }
+	inline float getFreq() { return fHslider3; }
+	inline float getDelay() { return fHslider1; }
+	inline float getDepth() { return fHslider2; }
 };

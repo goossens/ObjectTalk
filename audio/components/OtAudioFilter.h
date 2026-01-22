@@ -57,7 +57,7 @@ public:
 		Mode mode = Mode::off;
 		float frequency = 1000.0f;
 		float resonance = 0.5f;
-		float contour = 0.0f;
+		float drive = 0.0f;
 
 		// work variables
 		bool hasChanged = true;

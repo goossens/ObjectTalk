@@ -25,7 +25,7 @@
 //
 
 class OtCompressor : public OtFaust {
-private:
+protected:
 	int fSampleRate;
 	double fConst0;
 	double fConst1;
@@ -169,7 +169,7 @@ private:
 		ui_interface->closeBox();
 	}
 	
-	void compute(int count, float** inputs, float** outputs) override {
+	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
 		double fSlow0 = fConst1 * static_cast<double>(fHslider0);
@@ -202,4 +202,35 @@ private:
 			fRec0[1] = fRec0[0];
 		}
 	}
+
+	struct Parameters {
+		float ratio;
+		float thresh;
+		float attack;
+		float release;
+	};
+
+	inline void setParameters(Parameters& parameters) {
+		fHslider3 = parameters.ratio;
+		fHslider2 = parameters.thresh;
+		fHslider1 = parameters.attack;
+		fHslider0 = parameters.release;
+	}
+
+	inline void getParameters(Parameters& parameters) {
+		parameters.ratio = fHslider3;
+		parameters.thresh = fHslider2;
+		parameters.attack = fHslider1;
+		parameters.release = fHslider0;
+	}
+
+	inline void setRatio(float value) { fHslider3 = value; }
+	inline void setThresh(float value) { fHslider2 = value; }
+	inline void setAttack(float value) { fHslider1 = value; }
+	inline void setRelease(float value) { fHslider0 = value; }
+
+	inline float getRatio() { return fHslider3; }
+	inline float getThresh() { return fHslider2; }
+	inline float getAttack() { return fHslider1; }
+	inline float getRelease() { return fHslider0; }
 };

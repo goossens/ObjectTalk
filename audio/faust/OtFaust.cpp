@@ -25,24 +25,39 @@ bool OtFaust::render() {
 	auto first = true;
 	auto changed = false;
 
-	for (auto control : ui.controls) {
-		if (first) {
-			first = false;
+	for (auto& element : ui.elements) {
+		switch (element.getType()) {
+			case UiElement::Type::box:
+			case UiElement::Type::vertical:
+			case UiElement::Type::horizontal:
+			case UiElement::Type::close:
+				break;
 
-		} else {
-			ImGui::SameLine();
+			case UiElement::Type::button:
+				if (first) { first = false; } else { ImGui::SameLine(); }
+
+				changed |= OtUi::buttonKnob(
+					element.getLabel(),
+					element.getVariable(),
+					element.getOnLabel(),
+					element.getOffLabel());
+
+				break;
+
+			case UiElement::Type::control:
+				if (first) { first = false; } else { ImGui::SameLine(); }
+				ImGui::PushID(&element);
+
+				changed |= OtUi::knob(
+					element.getLabel(),
+					element.getVariable(),
+					element.getMin(),
+					element.getMax(),
+					element.getFormat());
+
+				ImGui::PopID();
+				break;
 		}
-
-		ImGui::PushID(control.get());
-
-		changed |=OtUi::knob(
-			control->getLabel(),
-			control->getVariable(),
-			control->getMin(),
-			control->getMax(),
-			control->getFormat());
-
-		ImGui::PopID();
 	}
 
 	return changed;
@@ -54,7 +69,7 @@ bool OtFaust::render() {
 //
 
 float OtFaust::getWidth() {
-	return OtUi::knobWidth(ui.controls.size());
+	return OtUi::knobWidth(ui.cols);
 }
 
 
@@ -63,7 +78,7 @@ float OtFaust::getWidth() {
 //
 
 float OtFaust::getHeight() {
-	return OtUi::knobHeight();
+	return OtUi::knobHeight(ui.rows);
 }
 
 
@@ -72,8 +87,12 @@ float OtFaust::getHeight() {
 //
 
 void OtFaust::serialize(nlohmann::json* data) {
-	for (auto control : ui.controls) {
-		(*data)[control->getName()] = control->get();
+	for (auto& element : ui.elements) {
+		auto variable = element.getVariable();
+
+		if (variable) {
+			(*data)[element.getLabel()] = *variable;
+		}
 	}
 }
 
@@ -83,7 +102,11 @@ void OtFaust::serialize(nlohmann::json* data) {
 //
 
 void OtFaust::deserialize(nlohmann::json* data) {
-	for (auto control : ui.controls) {
-		control->set(data->value(control->getName(), control->getDefault()));
+	for (auto& element : ui.elements) {
+		auto variable = element.getVariable();
+
+		if (variable) {
+			*variable = data->value(element.getLabel(), element.getDefault());
+		}
 	}
 }

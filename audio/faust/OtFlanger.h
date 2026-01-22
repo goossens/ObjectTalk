@@ -25,7 +25,7 @@
 //
 
 class OtFlanger : public OtFaust {
-private:
+protected:
 	int fSampleRate;
 	double fConst0;
 	float fHslider0;
@@ -145,7 +145,7 @@ private:
 		ui_interface->closeBox();
 	}
 	
-	void compute(int count, float** inputs, float** outputs) override {
+	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
 		double fSlow0 = fConst0 * static_cast<double>(fHslider0);
@@ -170,4 +170,30 @@ private:
 			fRec3[1] = fRec3[0];
 		}
 	}
+
+	struct Parameters {
+		float delay;
+		float depth;
+		float feedback;
+	};
+
+	inline void setParameters(Parameters& parameters) {
+		fHslider1 = parameters.delay;
+		fHslider2 = parameters.depth;
+		fHslider0 = parameters.feedback;
+	}
+
+	inline void getParameters(Parameters& parameters) {
+		parameters.delay = fHslider1;
+		parameters.depth = fHslider2;
+		parameters.feedback = fHslider0;
+	}
+
+	inline void setDelay(float value) { fHslider1 = value; }
+	inline void setDepth(float value) { fHslider2 = value; }
+	inline void setFeedback(float value) { fHslider0 = value; }
+
+	inline float getDelay() { return fHslider1; }
+	inline float getDepth() { return fHslider2; }
+	inline float getFeedback() { return fHslider0; }
 };

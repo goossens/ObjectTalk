@@ -57,7 +57,7 @@ bool OtAudioFilter::Parameters::renderUI() {
 	if (mode == Mode::off) { ImGui::BeginDisabled(); }
 	changed |= OtUi::knob("Freq", &frequency, 80.0f, 8000.0f, "%.0fhz", true); ImGui::SameLine();
 	changed |= OtUi::knob("Res", &resonance, 0.0f, 1.0f, "%.2f"); ImGui::SameLine();
-	changed |= OtUi::knob("Contour", &contour, -4.0f, 4.0f, "%.2f");
+	changed |= OtUi::knob("Drive", &drive, -4.0f, 4.0f, "%.2f");
 	if (mode == Mode::off) { ImGui::EndDisabled(); }
 
 	hasChanged |= changed;
@@ -100,7 +100,7 @@ void OtAudioFilter::Parameters::serialize(nlohmann::json* data, [[maybe_unused]]
 	(*data)["mode"] = mode;
 	(*data)["frequency"] = frequency;
 	(*data)["resonance"] = resonance;
-	(*data)["contour"] = contour;
+	(*data)["drive"] = drive;
 }
 
 
@@ -112,7 +112,7 @@ void OtAudioFilter::Parameters::deserialize(nlohmann::json* data, [[maybe_unused
 	mode = data->value("mode", Mode::off);
 	frequency = data->value("frequency", 1000.0f);
 	resonance = data->value("resonance", 0.5f);
-	contour = data->value("contour", 1.0f);
+	drive = data->value("drive", 1.0f);
 	hasChanged = true;
 }
 
@@ -123,7 +123,7 @@ void OtAudioFilter::Parameters::deserialize(nlohmann::json* data, [[maybe_unused
 
 float OtAudioFilter::State::process(Parameters& parameters, float sample) {
 	if (hasChanged || parameters.hasChanged) {
-		frequency = OtAudioUtilities::tune(parameters.frequency, frequencyModulation * parameters.contour);
+		frequency = OtAudioUtilities::tune(parameters.frequency, frequencyModulation * parameters.drive);
 
 		switch (parameters.mode) {
 			case Mode::lowPass:

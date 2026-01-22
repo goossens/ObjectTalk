@@ -40,8 +40,8 @@
 			},
 			"filter": {
 				"attack": 0.029999999329447746,
-				"contour": 1.9800000190734863,
 				"decay": 0.019999999552965164,
+				"drive": 1.9800000190734863,
 				"envelopePower": true,
 				"frequency": 440.0,
 				"mode": 1,
@@ -67,21 +67,21 @@
 					"tuningCents": 0.0,
 					"tuningOctaves": 0.0,
 					"tuningSemitones": 0.0,
-					"volume": 10.0,
+					"volume": 5.0,
 					"waveForm": 3,
 					"waveTable": ""
 				},
 				{
 					"frequency": 440.0,
 					"inverse": false,
-					"pulseWidth": 0.4399999976158142,
+					"pulseWidth": 0.30000001192092896,
 					"sampleFile": "",
 					"sampleFileFrequency": 0.0,
 					"tuningCents": 0.0,
-					"tuningOctaves": 0.0,
+					"tuningOctaves": -2.0,
 					"tuningSemitones": 0.0,
-					"volume": 2.0,
-					"waveForm": 4,
+					"volume": 5.0,
+					"waveForm": 3,
 					"waveTable": ""
 				},
 				{
@@ -94,7 +94,7 @@
 					"tuningOctaves": -2.0,
 					"tuningSemitones": 0.0,
 					"volume": 5.0,
-					"waveForm": 3,
+					"waveForm": 0,
 					"waveTable": ""
 				}
 			],
@@ -174,9 +174,10 @@
 			"y": 230.0
 		},
 		{
-			"delay": 0.029999999329447746,
-			"depth": 0.03999999910593033,
-			"freq": 4.159999847412109,
+			"Delay": 0.02500000037252903,
+			"Depth": 0.019999999552965164,
+			"Freq": 2.0,
+			"Level": 0.5,
 			"id": 716732438,
 			"inputs": [
 				{
@@ -185,7 +186,6 @@
 					"type": "stereo"
 				}
 			],
-			"level": 0.27000001072883606,
 			"outputs": [
 				{
 					"id": 2380854781,

@@ -32,11 +32,6 @@
 //
 
 class OtFaust {
-private:
-	// work variables
-	OtCircuitPin pitchInput;
-	OtCircuitPin audioOutput;
-
 protected:
 	// Faust metadata collector
 	class Meta {
@@ -55,171 +50,128 @@ protected:
 	struct Soundfile{};
 
 	// interface builder
+	class UiElement {
+	public:
+		// element types
+		enum class Type {
+			box,
+			horizontal,
+			vertical,
+			close,
+			button,
+			control
+		};
+
+		// constructors
+		UiElement(Type t, const char* l="") : type(t), label(l) {}
+		UiElement(const char* l, float* v) : type(Type::button), label(l), variable(v), def(*v), max(1.0f) {}
+
+		UiElement(const char* l, float* v, float d, float mn, float mx, float s) :
+			type(Type::control),
+			label(l),
+			variable(v),
+			def(d),
+			min(mn),
+			max(mx),
+			step(s)	{}
+
+		// post process metadata declarations and other values
+		inline void processMetaData(std::unordered_map<std::string, std::string>& data) {
+			if (data.find("format") != data.end()) { format = data["format"]; }
+			if (data.find("off") != data.end()) { offLabel = data["off"]; }
+			if (data.find("on") != data.end()) { onLabel = data["on"]; }
+
+			if (format.size() == 0) {
+				if (step <= 0.01f) {
+					format = "%.2f";
+
+				} else if (step <= 0.1f) {
+					format = "%.1f";
+
+				} else {
+					format = "%.0f";
+				}
+			}
+		}
+
+		// access properties
+		inline Type getType() { return type; }
+		inline const char* getLabel() { return label.c_str(); }
+		inline const char* getFormat() { return format.c_str(); }
+		inline float* getVariable() { return variable; }
+		inline float getDefault() { return def; }
+		inline float getMin() { return min; }
+		inline float getMax() { return max; }
+		inline float getStep() { return step; }
+
+		inline const char* getOnLabel() { return onLabel.c_str(); }
+		inline const char* getOffLabel() { return offLabel.c_str(); }
+
+	private:
+		// properties
+		Type type;
+		std::string label;
+		std::string format;
+		float* variable = nullptr;
+		float def = 0.0f;
+		float min = 0.0f;
+		float max = 0.0f;
+		float step = 0.0f;
+
+		std::string onLabel;
+		std::string offLabel;
+	};
+
 	class UI {
 	public:
 		// UI methods
-		void openTabBox(const char* boxLabel) { pushName(boxLabel); }
-		void openHorizontalBox(const char* boxLabel) { pushName(boxLabel); }
-		void openVerticalBox(const char* boxLabel) { pushName(boxLabel); }
-		void closeBox() { popName(); }
+		void openTabBox(const char* label) { elements.emplace_back(UiElement::Type::box, label); }
+		void openHorizontalBox(const char* label) { elements.emplace_back(UiElement::Type::horizontal, label); }
+		void openVerticalBox(const char* label) { elements.emplace_back(UiElement::Type::vertical, label); }
+		void closeBox() { elements.emplace_back(UiElement::Type::close); }
 
-		void addButton(const char* name, float* value) { addControl(name, value, *value, 0.0f, 1.0f); }
-		void addCheckButton(const char* name, float* value) { addControl(name, value, *value, 0.0f, 1.0f); }
-		void addVerticalSlider(const char* name, float* value, float init, float min, float max, float step) { addControl(name, value, init, min, max, step); }
-		void addHorizontalSlider(const char* name, float* value, float init, float min, float max, float step) { addControl(name, value, init, min, max, step); }
-		void addNumEntry(const char* name, float* value, float init, float min, float max, float step) { addControl(name, value, init, min, max, step); }
+		void addButton([[maybe_unused]] const char* label, [[maybe_unused]] float* value) {}
+		void addCheckButton(const char* label, float* value) { elements.emplace_back(label, value); }
+		void addVerticalSlider(const char* label, float* value, float init, float min, float max, float step) { elements.emplace_back(label, value, init, min, max, step); }
+		void addHorizontalSlider(const char* label, float* value, float init, float min, float max, float step) { elements.emplace_back(label, value, init, min, max, step); }
+		void addNumEntry(const char* label, float* value, float init, float min, float max, float step) { elements.emplace_back(label, value, init, min, max, step); }
 
 		void addHorizontalBargraph([[maybe_unused]] const char* name, [[maybe_unused]] float* value, [[maybe_unused]] float min, [[maybe_unused]] float max) {}
 		void addVerticalBargraph([[maybe_unused]] const char* name, [[maybe_unused]] float* value, [[maybe_unused]] float min, [[maybe_unused]] float max) {}
 
 		void addSoundfile([[maybe_unused]] const char* name, [[maybe_unused]] const char* filename, [[maybe_unused]] Soundfile** sf) {}
 
-		void declare([[maybe_unused]] float* variable, const char* key, const char* value) {
-			if (std::strcmp(key, "alias") == 0) {
-				aliasing = true;
-
-			} else if (std::strcmp(key, "format") == 0) {
-				format = value;
-
-			} else if (std::strcmp(key, "name") == 0) {
-				label = value;
-			}
+		void declare(float* variable, const char* key, const char* value) {
+			metadata[variable][key] = value;
 		}
 
-		// control definition
-		class Control {
-		public:
-			Control(
-				const std::string& n,
-				const std::string& l,
-				const std::string& f,
-				float* v,
-				float d,
-				float mn,
-				float mx,
-				float s=1.0f,
-				const char** sn=nullptr) :
-					name(n),
-					label(l),
-					format(f),
-					variable(v),
-					def(d),
-					min(mn),
-					max(mx),
-					step(s),
-					stepNames(sn) {
+		// post process all elements
+		void postProcessUiElements() {
+			// process metadata (if required) and determine maximum number of rows and columns
+			for (auto& element : elements) {
+				element.processMetaData(metadata[element.getVariable()]);
 
-				// set label to name if not specified
-				if (label.size() == 0) {
-					label = name;
-				}
+				switch (element.getType()) {
+					case UiElement::Type::vertical:
+						rows++;
+						break;
 
-				// set default value
-				*v = def;
+					case UiElement::Type::button:
+					case UiElement::Type::control:
+						cols++;
+						break;
 
-				// determine formating base on step size
-				if (format.size() == 0) {
-					if (step <= 0.01f) {
-						format = "%.2f";
-
-					} else if (step <= 0.1f) {
-						format = "%.1f";
-
-					} else {
-						format = "%.0f";
-					}
+					default:
+						break;
 				}
 			}
-
-			const char* getName() { return name.c_str(); }
-			const char* getLabel() { return label.c_str(); }
-			const char* getFormat() { return format.c_str(); }
-			float* getVariable() { return variable; }
-			float getDefault() { return def; }
-			float getMin() { return min; }
-			float getMax() { return max; }
-			float getStep() { return step; }
-			const char* getStepName(int seqno) { return stepNames ? stepNames[seqno] : ""; }
-
-			float get() { return *variable; }
-
-			void set(float value) {
-				*variable = value;
-
-				for (auto i = subControls.begin(); i != subControls.end(); i++)
-					(*i)->set(value);
-			}
-
-			void addControl(std::shared_ptr<Control> control) {
-				subControls.push_back(control);
-			}
-
-			std::string name;
-			std::string label;
-			std::string format;
-			float* variable;
-			float def;
-			float min;
-			float max;
-			float step;
-			const char** stepNames;
-
-			std::vector<std::shared_ptr<Control>> subControls;
-		};
-
-		// update label prefix
-		void updatePrefix() {
-			prefix = "";
-
-			for (auto& entry : prefixStack) {
-				prefix += entry + ".";
-			}
-		}
-
-		// add a new prefix label
-		void pushName(const char* boxLabel) {
-			prefixStack.push_back(boxLabel);
-			updatePrefix();
-		}
-
-		// remove the last prefix label
-		void popName() {
-			prefixStack.pop_back();
-			updatePrefix();
-		}
-
-		void addControl(const char* name, float* variable, float def, float min, float max, float step=1.0f, const char** stepNames=nullptr) {
-			std::string prefixedName = prefix + name;
-
-			if (aliasing) {
-				if (index.find(name) == index.end()) {
-					auto group = std::make_shared<Control>(prefixedName, label, format, variable, def, min, max, step, stepNames);
-					controls.push_back(group);
-					index[name] = group;
-				}
-
-				index.find(name)->second->addControl(std::make_shared<Control>(prefixedName, label, format, variable, def, min, max, step, stepNames));
-				aliasing = false;
-
-			} else {
-				auto control = std::make_shared<Control>(name, label, format, variable, def, min, max, step, stepNames);
-				controls.push_back(control);
-				index[prefixedName] = control;
-			}
-
-			label.clear();
-			format.clear();
 		}
 
 		// UI properties
-		std::vector<std::shared_ptr<Control>> controls;
-		std::unordered_map<std::string, std::shared_ptr<Control>> index;
-
-		std::vector<std::string> prefixStack;
-		std::string prefix;
-		bool aliasing = false;
-		std::string format;
-		std::string label;
+		std::unordered_map<float*, std::unordered_map<std::string, std::string>> metadata;
+		std::vector<UiElement> elements;
+		size_t rows = 0;
+		size_t cols = 0;
 	};
 
 	Meta meta;
@@ -234,6 +186,7 @@ public:
 		init(OtAudioSettings::sampleRate);
 		metadata(&meta);
 		buildUserInterface(&ui);
+		ui.postProcessUiElements();
 	}
 
 	// collect metadata
@@ -267,6 +220,43 @@ public:
 
 
 //
+//	OtFaustComponent
+//
+
+template<typename T>
+class OtFaustComponent {
+public:
+	// set of parameters that drive the component
+	class Parameters {
+	public:
+		Parameters() { dsp.initialize(); }
+
+		// UI to change component properties
+		inline bool renderUI(){ return dsp.render(); }
+		inline float getRenderWidth() { return dsp.getWidth(); }
+		inline float getRenderHeight() { return dsp.getHeight(); }
+
+		// (de)serialize filter parameters
+		inline void serialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) { dsp.serialize(data); }
+		inline void deserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) { dsp.deserialize(data); }
+
+		// process samples
+		inline void process(float* buffer, size_t size) { dsp.compute(static_cast<int>(size), &buffer, &buffer); };
+
+		// target Faust processor
+		T dsp;
+	};
+
+	// state of the component allowing multiple instances with identical parameters
+	class State {
+	public:
+		// target Faust processor
+		T dsp;
+	};
+};
+
+
+//
 //	OtFaustCircuitMono
 //
 
@@ -275,10 +265,10 @@ class OtFaustCircuitMono : public OtCircuitClass {
 public:
 	// configure circuit
 	inline void configure() override {
-		faustDsp.initialize();
+		dsp.initialize();
 
-		OtAssert(faustDsp.getNumInputs() == 1);
-		OtAssert(faustDsp.getNumOutputs() == 1);
+		OtAssert(dsp.getNumInputs() == 1);
+		OtAssert(dsp.getNumOutputs() == 1);
 
 		audioInput = addInputPin("Input", OtCircuitPinClass::Type::mono);
 		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
@@ -286,24 +276,24 @@ public:
 
 	// render custom fields
 	inline bool customRendering([[maybe_unused]] float itemWidth) override {
-		return faustDsp.render();
+		return dsp.render();
 	}
 
 	inline float getCustomRenderingWidth() override {
-		return faustDsp.getWidth();
+		return dsp.getWidth();
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return faustDsp.getHeight();
+		return dsp.getHeight();
 	}
 
 	// (de)serialize circuit
 	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
-		faustDsp.serialize(data);
+		dsp.serialize(data);
 	}
 
 	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
-		faustDsp.deserialize(data);
+		dsp.deserialize(data);
 	}
 
 	// process samples
@@ -312,7 +302,7 @@ public:
 			if (audioInput->isSourceConnected()) {
 				auto in = audioInput->getSamples();
 				auto out = audioOutput->getAudioOutputBuffer().data();
-				faustDsp.compute(OtAudioSettings::bufferSize, &in, &out);
+				dsp.compute(OtAudioSettings::bufferSize, &in, &out);
 
 			} else {
 				audioOutput->setSamples(0.0f);
@@ -326,7 +316,7 @@ private:
 	OtCircuitPin audioOutput;
 
 	// target Faust processor
-	T faustDsp;
+	T dsp;
 };
 
 
@@ -339,10 +329,10 @@ class OtFaustCircuitStereo : public OtCircuitClass {
 public:
 	// configure circuit
 	inline void configure() override {
-		faustDsp.initialize();
+		dsp.initialize();
 
-		OtAssert(faustDsp.getNumInputs() == 2);
-		OtAssert(faustDsp.getNumOutputs() == 2);
+		OtAssert(dsp.getNumInputs() == 2);
+		OtAssert(dsp.getNumOutputs() == 2);
 
 		audioInput = addInputPin("Input", OtCircuitPinClass::Type::stereo);
 		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::stereo);
@@ -350,24 +340,24 @@ public:
 
 	// render custom fields
 	inline bool customRendering([[maybe_unused]] float itemWidth) override {
-		return faustDsp.render();
+		return dsp.render();
 	}
 
 	inline float getCustomRenderingWidth() override {
-		return faustDsp.getWidth();
+		return dsp.getWidth();
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return faustDsp.getHeight();
+		return dsp.getHeight();
 	}
 
 	// (de)serialize circuit
 	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
-		faustDsp.serialize(data);
+		dsp.serialize(data);
 	}
 
 	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
-		faustDsp.deserialize(data);
+		dsp.deserialize(data);
 	}
 
 	// process samples
@@ -378,7 +368,7 @@ public:
 				float* outputs[] = { leftOut.data(), rightOut.data() };
 
 				deinterleave(audioInput->getAudioInputBuffer(), leftIn, rightIn);
-				faustDsp.compute(OtAudioSettings::bufferSize, inputs, outputs);
+				dsp.compute(OtAudioSettings::bufferSize, inputs, outputs);
 				interleave(audioOutput->getAudioOutputBuffer(), leftOut, rightOut);
 
 			} else {
@@ -398,7 +388,7 @@ private:
 	OtAudioBuffer rightOut{1};
 
 	// target Faust processor
-	T faustDsp;
+	T dsp;
 
 	// interleave two mono buffers into one stereo buffer
 	void interleave(OtAudioBuffer& stereo, OtAudioBuffer& left, OtAudioBuffer& right) {

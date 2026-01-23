@@ -22,9 +22,12 @@ def findKey(data, key):
 # switch directory to script location
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-# read standard header
+# read standard header and footer
 with open("OtFaustHeader.h", "r") as file:
 	header = file.read()
+
+with open("OtFaustFooter.h", "r") as file:
+	footer = file.read()
 
 # process all DSP files and generate code
 for sourceFileName in glob.iglob("*.dsp"):
@@ -113,9 +116,18 @@ for sourceFileName in glob.iglob("*.dsp"):
 	text = text.replace("virtual void buildUserInterface(UI* ui_interface)", "void buildUserInterface(UI* ui_interface) override")
 	text = text.replace("virtual void compute(int count, float** inputs, float** outputs)", "void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override")
 	text = text.replace("int sample_rate", "[[maybe_unused]] int sample_rate")
-	text += extraDefinitions + "};\n"
+
+	headerText = header.replace("CLASS", className)
+
+	footerText = footer \
+		.replace("PARAMETERS", "\n".join(variableDefinition)) \
+		.replace("LOAD", "\n".join(variableLoad)) \
+		.replace("SAVE", "\n".join(variableSave)) \
+		.replace("SETTERS", "\n".join(setters)) \
+		.replace("GETTERS", "\n".join(getters))
+
+	code = headerText + text + footerText + "};\n"
 
 	# write code to target file
 	with open(os.path.join("..", className + ".h"), "w") as output:
-		output.write(header.replace("CLASS", className))
-		output.write(text)
+		output.write(code)

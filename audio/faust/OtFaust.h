@@ -364,12 +364,12 @@ public:
 	void execute() override {
 		if (audioOutput->isDestinationConnected()) {
 			if (audioInput->isSourceConnected()) {
-				float* inputs[] = { leftIn.data(), rightIn.data() };
-				float* outputs[] = { leftOut.data(), rightOut.data() };
+				auto& input = audioInput->getAudioInputBuffer();
+				auto& output = audioOutput->getAudioOutputBuffer();
 
-				deinterleave(audioInput->getAudioInputBuffer(), leftIn, rightIn);
+				float* inputs[] = { input.getChannelData(0), input.getChannelData(1) };
+				float* outputs[] = { output.getChannelData(0), output.getChannelData(1) };
 				dsp.compute(OtAudioSettings::bufferSize, inputs, outputs);
-				interleave(audioOutput->getAudioOutputBuffer(), leftOut, rightOut);
 
 			} else {
 				audioOutput->setSamples(0.0f);
@@ -382,35 +382,6 @@ private:
 	OtCircuitPin audioInput;
 	OtCircuitPin audioOutput;
 
-	OtAudioBuffer leftIn{1};
-	OtAudioBuffer rightIn{1};
-	OtAudioBuffer leftOut{1};
-	OtAudioBuffer rightOut{1};
-
 	// target Faust processor
 	T dsp;
-
-	// interleave two mono buffers into one stereo buffer
-	void interleave(OtAudioBuffer& stereo, OtAudioBuffer& left, OtAudioBuffer& right) {
-		auto sp = stereo.data();
-		auto lp = left.data();
-		auto rp = right.data();
-
-		for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-			*sp++ = *lp++;
-			*sp++ = *rp++;
-		}
-	}
-
-	// de-interleave a stereo buffer into two mono buffers
-	void deinterleave(OtAudioBuffer& stereo, OtAudioBuffer& left, OtAudioBuffer& right) {
-		auto sp = stereo.data();
-		auto lp = left.data();
-		auto rp = right.data();
-
-		for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-			*lp++ = *sp++;
-			*rp++ = *sp++;
-		}
-	}
 };

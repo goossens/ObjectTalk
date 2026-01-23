@@ -81,6 +81,20 @@ void OtAudio::provideSignal(OtAudioBuffer& buffer) {
 		}
 	}
 
+	// interleave the audio as expected by SDL3
+	static constexpr size_t stereoBufferSize = OtAudioSettings::bufferSize * 2;
+	float tmp[stereoBufferSize];
+	auto output = buffer.data();
+	std::copy(output, output + stereoBufferSize, tmp);
+
+	auto left = tmp;
+	auto right = tmp + OtAudioSettings::bufferSize;
+
+	for (size_t i = 0; i < OtAudioSettings::bufferSize * 2; i++) {
+		*output++ = *left++;
+		*output++ = *right++;
+	}
+
 	static int report = 0;
 
 	if (++report == 100) {

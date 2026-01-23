@@ -1117,7 +1117,7 @@ bool OtUi::buttonKnob(const char* labelPlusID, float* value, const char* onLabel
 	bool changed = false;
 	changed |= ImGui::RadioButton(onLabel, &v, 1);
 	changed |= ImGui::RadioButton(offLabel, &v, 0);
-	*value = static_cast<int>(v);
+	*value = static_cast<float>(v);
 
 	// cleanup
 	ImGui::EndGroup();

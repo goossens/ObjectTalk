@@ -58,16 +58,16 @@ public:
 
 	// access buffer members
 	inline void set(size_t channel, size_t sample, float value) {
-		buffer[channels * sample + channel] = value;
+		buffer[channel * samples + sample] = value;
 	}
 
 	inline float& get(size_t channel, size_t sample) {
-		return buffer[channels * sample + channel];
+		return buffer[channel * samples + sample];
 	}
 
 	// mix signal with buffer
 	inline void mix(size_t channel, size_t sample, float value) {
-		buffer[channels * sample + channel] += value;
+		buffer[channel * samples + sample] += value;
 	}
 
 	inline void mix(const OtAudioBuffer& input) {
@@ -82,6 +82,7 @@ public:
 	// get buffer information
 	inline size_t getChannelCount() { return channels; }
 	inline size_t getSampleCount() { return samples; }
+	inline float* getChannelData(size_t channel) { return buffer.data() + channel * samples; }
 	inline float getDurationInSeconds() { return static_cast<float>(samples) * OtAudioSettings::dt; }
 
 	inline float* data() { return buffer.data(); }
@@ -92,7 +93,7 @@ public:
 	inline float* end() { return buffer.data() + buffer.size(); }
 
 private:
-	// signal buffer (channels are interleaved)
+	// buffer (channels are interleaved)
 	size_t channels = 0;
 	size_t samples = 0;
 	std::vector<float> buffer;

@@ -4,7 +4,6 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-declare id "adsr";
 declare name "ADSR";
 declare category "Envelope";
 declare license "MIT";

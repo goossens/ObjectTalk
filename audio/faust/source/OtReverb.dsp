@@ -10,8 +10,8 @@ declare license "MIT";
 
 import("stdfaust.lib");
 
-dwell = hslider("[0]Dwell", 0.2, 0, 1, 0.01): si.smoo;
-tension = hslider("[1]Tension", 0, 0, 1, 0.01): si.smoo;
-blend = hslider("[2]Blend", 0.5, 0, 1, 0.01): si.smoo;
+dwell = hslider("[0]Dwell[style:knob]", 0.2, 0, 1, 0.01): si.smoo;
+tension = hslider("[1]Tension[style:knob]", 0, 0, 1, 0.01): si.smoo;
+blend = hslider("[2]Blend[style:knob]", 0.5, 0, 1, 0.01): si.smoo;
 
-process = re.springreverb(dwell, blend, 0.5, tension, 2);
+process = hgroup("Reverb", re.springreverb(dwell, blend, 0.5, tension, 2));

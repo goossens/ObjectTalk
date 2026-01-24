@@ -11,8 +11,8 @@ declare license "MIT";
 import("stdfaust.lib");
 
 ratio = hslider("[0]Ratio", 4, 1, 20, 0.1): si.smoo;
-threshold = hslider("[1]Thresh[format: %.0fdB]", -10, -50, 0, 1): si.smoo;
-attack = hslider("[2]Attack[format: %.0fms]", 10, 0, 200, 1): si.smoo;
-release = hslider("[3]Release[format: %.0fms]", 200, 5, 1000, 1): si.smoo;
+threshold = hslider("[1]Thresh[style:knob][format: %.0fdB]", -10, -50, 0, 1): si.smoo;
+attack = hslider("[2]Attack[style:knob][format: %.0fms]", 10, 0, 200, 1): si.smoo;
+release = hslider("[3]Release[style:knob][format: %.0fms]", 200, 5, 1000, 1): si.smoo;
 
-process = co.compressor_mono(ratio, threshold, attack / 1000.0, release / 1000.0);
+process = hgroup("Compressor", co.compressor_mono(ratio, threshold, attack / 1000.0, release / 1000.0));

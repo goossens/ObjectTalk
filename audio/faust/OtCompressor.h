@@ -72,7 +72,6 @@ protected:
 		m->declare("compressors.lib/name", "Faust Compressor Effect Library");
 		m->declare("compressors.lib/version", "1.6.0");
 		m->declare("filename", "OtCompressor.dsp");
-		m->declare("id", "compressor");
 		m->declare("license", "MIT");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
@@ -152,23 +151,7 @@ protected:
 	int getSampleRate() override {
 		return fSampleRate;
 	}
-	
-	void buildUserInterface(UI* ui_interface) override {
-		ui_interface->openVerticalBox("Compressor");
-		ui_interface->declare(&fHslider3, "0", "");
-		ui_interface->addHorizontalSlider("Ratio", &fHslider3, float(4.0), float(1.0), float(2e+01), float(0.1));
-		ui_interface->declare(&fHslider2, "1", "");
-		ui_interface->declare(&fHslider2, "format", "%.0fdB");
-		ui_interface->addHorizontalSlider("Thresh", &fHslider2, float(-1e+01), float(-5e+01), float(0.0), float(1.0));
-		ui_interface->declare(&fHslider1, "2", "");
-		ui_interface->declare(&fHslider1, "format", "%.0fms");
-		ui_interface->addHorizontalSlider("Attack", &fHslider1, float(1e+01), float(0.0), float(2e+02), float(1.0));
-		ui_interface->declare(&fHslider0, "3", "");
-		ui_interface->declare(&fHslider0, "format", "%.0fms");
-		ui_interface->addHorizontalSlider("Release", &fHslider0, float(2e+02), float(5.0), float(1e+03), float(1.0));
-		ui_interface->closeBox();
-	}
-	
+		
 	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
@@ -203,6 +186,49 @@ protected:
 		}
 	}
 
+	inline bool renderUI() {
+		bool changed = false;
+		ImGui::BeginChild("Compressor", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
+		changed |= OtUi::knob("Thresh", &fHslider2, -50.0f, 0.0f, "%.0fdB");
+		ImGui::SameLine();
+		changed |= OtUi::knob("Attack", &fHslider1, 0.0f, 200.0f, "%.0fms");
+		ImGui::SameLine();
+		changed |= OtUi::knob("Release", &fHslider0, 5.0f, 1000.0f, "%.0fms");
+		ImGui::EndChild();
+		return changed;
+	}
+
+	inline float getRenderWidth() {
+		if (width == -1.0f) {
+			auto knobWidth = OtUi::knobWidth();
+			auto spacing = ImGui::GetStyle().ItemSpacing.x;
+			auto width1 = 0.0f;
+			width1 += 0.0f;
+			width1 += knobWidth;
+			width1 += spacing;
+			width1 += knobWidth;
+			width1 += spacing;
+			width1 += knobWidth;
+			width = width1;
+		}
+
+		return width;
+	}
+
+	inline float getRenderHeight() {
+		if (height == -1.0f) {
+			auto knobHeight = OtUi::knobHeight();
+			auto height1 = 0.0f;
+			height1 = std::max(height1, 0.0f);
+			height1 = std::max(height1, knobHeight);
+			height1 = std::max(height1, knobHeight);
+			height1 = std::max(height1, knobHeight);
+			height = height1;
+		}
+
+		return height;
+}
+
 	struct Parameters {
 		float ratio;
 		float thresh;
@@ -210,18 +236,25 @@ protected:
 		float release;
 	};
 
-	inline void setParameters(Parameters& parameters) {
+	inline void setParameters([[maybe_unused]] Parameters& parameters) {
 		fHslider3 = parameters.ratio;
 		fHslider2 = parameters.thresh;
 		fHslider1 = parameters.attack;
 		fHslider0 = parameters.release;
 	}
 
-	inline void getParameters(Parameters& parameters) {
+	inline void getParameters([[maybe_unused]] Parameters& parameters) {
 		parameters.ratio = fHslider3;
 		parameters.thresh = fHslider2;
 		parameters.attack = fHslider1;
 		parameters.release = fHslider0;
+	}
+
+	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
+		callback("ratio", &fHslider3, 4.0f);
+		callback("thresh", &fHslider2, -10.0f);
+		callback("attack", &fHslider1, 10.0f);
+		callback("release", &fHslider0, 200.0f);
 	}
 
 	inline void setRatio(float value) { fHslider3 = value; }
@@ -233,4 +266,8 @@ protected:
 	inline float getThresh() { return fHslider2; }
 	inline float getAttack() { return fHslider1; }
 	inline float getRelease() { return fHslider0; }
+
+private:
+	float width = -1.0f;
+	float height = -1.0f;
 };

@@ -37,7 +37,7 @@ bool OtVoice::Parameters::renderUI([[maybe_unused]]float itemWidth) {
 		height += frameHeight + oscillator.getRenderHeight();
 	}
 
-	height += frameHeight + noise.getRenderHeight();
+	height += frameHeight;
 
 	height = std::max(height, frameHeight + filter.filterParameters.getRenderHeight()+ filter.envelopeParameters.getRenderHeight());
 	height = std::max(height, frameHeight + amp.parameters.getRenderHeight());
@@ -65,8 +65,8 @@ bool OtVoice::Parameters::renderUI([[maybe_unused]]float itemWidth) {
 		ImGui::PopID();
 	}
 
-	OtUi::header("Noise");
-	changed |= noise.renderUI();
+	// OtUi::header("Noise");
+	// changed |= noise.renderUI();
 
 	ImGui::EndChild();
 
@@ -117,9 +117,9 @@ void OtVoice::Parameters::serialize(nlohmann::json_abi_v3_12_0::json *data, std:
 
 	(*data)["oscillators"] = oscillatorArray;
 
-	auto noiseData = nlohmann::json::object();
-	noise.serialize(&noiseData, basedir);
-	(*data)["noise"] = noiseData;
+	// auto noiseData = nlohmann::json::object();
+	// noise.serialize(&noiseData, basedir);
+	// (*data)["noise"] = noiseData;
 
 	auto filterData = nlohmann::json::object();
 	filter.filterParameters.serialize(&filterData, basedir);
@@ -148,9 +148,9 @@ void OtVoice::Parameters::deserialize(nlohmann::json_abi_v3_12_0::json *data, st
 		}
 	}
 
-	if (data->contains("noise")) {
-		noise.deserialize(&(*data)["noise"], basedir);
-	}
+	// if (data->contains("noise")) {
+	// 	noise.deserialize(&(*data)["noise"], basedir);
+	// }
 
 	if (data->contains("filter")) {
 		filter.filterParameters.deserialize(&(*data)["filter"], basedir);

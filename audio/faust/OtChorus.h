@@ -86,7 +86,6 @@ protected:
 		m->declare("category", "Effect");
 		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtChorus -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
 		m->declare("filename", "OtChorus.dsp");
-		m->declare("id", "chorus");
 		m->declare("license", "MIT");
 		m->declare("math.lib/author", "GRAME");
 		m->declare("math.lib/copyright", "GRAME");
@@ -162,20 +161,7 @@ protected:
 	int getSampleRate() override {
 		return fSampleRate;
 	}
-	
-	void buildUserInterface(UI* ui_interface) override {
-		ui_interface->openVerticalBox("chorus");
-		ui_interface->declare(&fHslider0, "0", "");
-		ui_interface->addHorizontalSlider("Level", &fHslider0, float(0.5), float(0.0), float(1.0), float(0.01));
-		ui_interface->declare(&fHslider3, "1", "");
-		ui_interface->addHorizontalSlider("Freq", &fHslider3, float(2.0), float(0.0), float(1e+01), float(0.01));
-		ui_interface->declare(&fHslider1, "2", "");
-		ui_interface->addHorizontalSlider("Delay", &fHslider1, float(0.025), float(0.0), float(0.2), float(0.001));
-		ui_interface->declare(&fHslider2, "3", "");
-		ui_interface->addHorizontalSlider("Depth", &fHslider2, float(0.02), float(0.0), float(1.0), float(0.001));
-		ui_interface->closeBox();
-	}
-	
+		
 	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
 		float* input0 = inputs[0];
 		float* input1 = inputs[1];
@@ -208,6 +194,52 @@ protected:
 		}
 	}
 
+	inline bool renderUI() {
+		bool changed = false;
+		ImGui::BeginChild("Chorus", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
+		changed |= OtUi::knob("Level", &fHslider0, 0.0f, 1.0f, "%.0f");
+		ImGui::SameLine();
+		changed |= OtUi::knob("Freq", &fHslider3, 0.0f, 10.0f, "%.0f");
+		ImGui::SameLine();
+		changed |= OtUi::knob("Delay", &fHslider1, 0.0f, 0.2f, "%.0f");
+		ImGui::SameLine();
+		changed |= OtUi::knob("Depth", &fHslider2, 0.0f, 1.0f, "%.0f");
+		ImGui::EndChild();
+		return changed;
+	}
+
+	inline float getRenderWidth() {
+		if (width == -1.0f) {
+			auto knobWidth = OtUi::knobWidth();
+			auto spacing = ImGui::GetStyle().ItemSpacing.x;
+			auto width1 = 0.0f;
+			width1 += knobWidth;
+			width1 += spacing;
+			width1 += knobWidth;
+			width1 += spacing;
+			width1 += knobWidth;
+			width1 += spacing;
+			width1 += knobWidth;
+			width = width1;
+		}
+
+		return width;
+	}
+
+	inline float getRenderHeight() {
+		if (height == -1.0f) {
+			auto knobHeight = OtUi::knobHeight();
+			auto height1 = 0.0f;
+			height1 = std::max(height1, knobHeight);
+			height1 = std::max(height1, knobHeight);
+			height1 = std::max(height1, knobHeight);
+			height1 = std::max(height1, knobHeight);
+			height = height1;
+		}
+
+		return height;
+}
+
 	struct Parameters {
 		float level;
 		float freq;
@@ -215,18 +247,25 @@ protected:
 		float depth;
 	};
 
-	inline void setParameters(Parameters& parameters) {
+	inline void setParameters([[maybe_unused]] Parameters& parameters) {
 		fHslider0 = parameters.level;
 		fHslider3 = parameters.freq;
 		fHslider1 = parameters.delay;
 		fHslider2 = parameters.depth;
 	}
 
-	inline void getParameters(Parameters& parameters) {
+	inline void getParameters([[maybe_unused]] Parameters& parameters) {
 		parameters.level = fHslider0;
 		parameters.freq = fHslider3;
 		parameters.delay = fHslider1;
 		parameters.depth = fHslider2;
+	}
+
+	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
+		callback("level", &fHslider0, 0.5f);
+		callback("freq", &fHslider3, 2.0f);
+		callback("delay", &fHslider1, 0.025f);
+		callback("depth", &fHslider2, 0.02f);
 	}
 
 	inline void setLevel(float value) { fHslider0 = value; }
@@ -238,4 +277,8 @@ protected:
 	inline float getFreq() { return fHslider3; }
 	inline float getDelay() { return fHslider1; }
 	inline float getDepth() { return fHslider2; }
+
+private:
+	float width = -1.0f;
+	float height = -1.0f;
 };

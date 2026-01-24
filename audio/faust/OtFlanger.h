@@ -55,7 +55,6 @@ protected:
 		m->declare("delays.lib/name", "Faust Delay Library");
 		m->declare("delays.lib/version", "1.2.0");
 		m->declare("filename", "OtFlanger.dsp");
-		m->declare("id", "flanger");
 		m->declare("license", "MIT");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
@@ -130,21 +129,7 @@ protected:
 	int getSampleRate() override {
 		return fSampleRate;
 	}
-	
-	void buildUserInterface(UI* ui_interface) override {
-		ui_interface->openVerticalBox("Flanger");
-		ui_interface->declare(&fHslider1, "0", "");
-		ui_interface->declare(&fHslider1, "format", "%.1fms");
-		ui_interface->addHorizontalSlider("Delay", &fHslider1, float(0.2), float(0.0), float(1e+01), float(0.1));
-		ui_interface->declare(&fHslider2, "1", "");
-		ui_interface->declare(&fHslider2, "format", "%.0f%%");
-		ui_interface->addHorizontalSlider("Depth", &fHslider2, float(5e+01), float(0.0), float(1e+02), float(1.0));
-		ui_interface->declare(&fHslider0, "2", "");
-		ui_interface->declare(&fHslider0, "format", "%.0f%%");
-		ui_interface->addHorizontalSlider("Feedback", &fHslider0, float(6e+01), float(0.0), float(1e+02), float(1.0));
-		ui_interface->closeBox();
-	}
-	
+		
 	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
@@ -171,22 +156,69 @@ protected:
 		}
 	}
 
+	inline bool renderUI() {
+		bool changed = false;
+		ImGui::BeginChild("Flanger", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
+		changed |= OtUi::knob("Delay", &fHslider1, 0.0f, 10.0f, "%.1fms");
+		ImGui::SameLine();
+		changed |= OtUi::knob("Depth", &fHslider2, 0.0f, 100.0f, "%.0f%%");
+		ImGui::SameLine();
+		changed |= OtUi::knob("Feedback", &fHslider0, 0.0f, 100.0f, "%.0f%%");
+		ImGui::EndChild();
+		return changed;
+	}
+
+	inline float getRenderWidth() {
+		if (width == -1.0f) {
+			auto knobWidth = OtUi::knobWidth();
+			auto spacing = ImGui::GetStyle().ItemSpacing.x;
+			auto width1 = 0.0f;
+			width1 += knobWidth;
+			width1 += spacing;
+			width1 += knobWidth;
+			width1 += spacing;
+			width1 += knobWidth;
+			width = width1;
+		}
+
+		return width;
+	}
+
+	inline float getRenderHeight() {
+		if (height == -1.0f) {
+			auto knobHeight = OtUi::knobHeight();
+			auto height1 = 0.0f;
+			height1 = std::max(height1, knobHeight);
+			height1 = std::max(height1, knobHeight);
+			height1 = std::max(height1, knobHeight);
+			height = height1;
+		}
+
+		return height;
+}
+
 	struct Parameters {
 		float delay;
 		float depth;
 		float feedback;
 	};
 
-	inline void setParameters(Parameters& parameters) {
+	inline void setParameters([[maybe_unused]] Parameters& parameters) {
 		fHslider1 = parameters.delay;
 		fHslider2 = parameters.depth;
 		fHslider0 = parameters.feedback;
 	}
 
-	inline void getParameters(Parameters& parameters) {
+	inline void getParameters([[maybe_unused]] Parameters& parameters) {
 		parameters.delay = fHslider1;
 		parameters.depth = fHslider2;
 		parameters.feedback = fHslider0;
+	}
+
+	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
+		callback("delay", &fHslider1, 0.2f);
+		callback("depth", &fHslider2, 50.0f);
+		callback("feedback", &fHslider0, 60.0f);
 	}
 
 	inline void setDelay(float value) { fHslider1 = value; }
@@ -196,4 +228,8 @@ protected:
 	inline float getDelay() { return fHslider1; }
 	inline float getDepth() { return fHslider2; }
 	inline float getFeedback() { return fHslider0; }
+
+private:
+	float width = -1.0f;
+	float height = -1.0f;
 };

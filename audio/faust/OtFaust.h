@@ -13,6 +13,7 @@
 //
 
 #include <cstring>
+#include <functional>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -21,6 +22,8 @@
 #include "nlohmann/json_fwd.hpp"
 
 #include "OtAssert.h"
+
+#include "OtUi.h"
 
 #include "OtAudioSettings.h"
 #include "OtCircuitFactory.h"
@@ -44,138 +47,10 @@ protected:
 	private:
 		// properties
 		std::unordered_map<std::string, std::string> metadata;
-	};
+	} meta;
 
 	// unused for now
 	struct Soundfile{};
-
-	// interface builder
-	class UiElement {
-	public:
-		// element types
-		enum class Type {
-			box,
-			horizontal,
-			vertical,
-			close,
-			button,
-			control
-		};
-
-		// constructors
-		UiElement(Type t, const char* l="") : type(t), label(l) {}
-		UiElement(const char* l, float* v) : type(Type::button), label(l), variable(v), def(*v), max(1.0f) {}
-
-		UiElement(const char* l, float* v, float d, float mn, float mx, float s) :
-			type(Type::control),
-			label(l),
-			variable(v),
-			def(d),
-			min(mn),
-			max(mx),
-			step(s)	{}
-
-		// post process metadata declarations and other values
-		inline void processMetaData(std::unordered_map<std::string, std::string>& data) {
-			if (data.find("format") != data.end()) { format = data["format"]; }
-			if (data.find("off") != data.end()) { offLabel = data["off"]; }
-			if (data.find("on") != data.end()) { onLabel = data["on"]; }
-
-			if (format.size() == 0) {
-				if (step <= 0.01f) {
-					format = "%.2f";
-
-				} else if (step <= 0.1f) {
-					format = "%.1f";
-
-				} else {
-					format = "%.0f";
-				}
-			}
-		}
-
-		// access properties
-		inline Type getType() { return type; }
-		inline const char* getLabel() { return label.c_str(); }
-		inline const char* getFormat() { return format.c_str(); }
-		inline float* getVariable() { return variable; }
-		inline float getDefault() { return def; }
-		inline float getMin() { return min; }
-		inline float getMax() { return max; }
-		inline float getStep() { return step; }
-
-		inline const char* getOnLabel() { return onLabel.c_str(); }
-		inline const char* getOffLabel() { return offLabel.c_str(); }
-
-	private:
-		// properties
-		Type type;
-		std::string label;
-		std::string format;
-		float* variable = nullptr;
-		float def = 0.0f;
-		float min = 0.0f;
-		float max = 0.0f;
-		float step = 0.0f;
-
-		std::string onLabel;
-		std::string offLabel;
-	};
-
-	class UI {
-	public:
-		// UI methods
-		void openTabBox(const char* label) { elements.emplace_back(UiElement::Type::box, label); }
-		void openHorizontalBox(const char* label) { elements.emplace_back(UiElement::Type::horizontal, label); }
-		void openVerticalBox(const char* label) { elements.emplace_back(UiElement::Type::vertical, label); }
-		void closeBox() { elements.emplace_back(UiElement::Type::close); }
-
-		void addButton([[maybe_unused]] const char* label, [[maybe_unused]] float* value) {}
-		void addCheckButton(const char* label, float* value) { elements.emplace_back(label, value); }
-		void addVerticalSlider(const char* label, float* value, float init, float min, float max, float step) { elements.emplace_back(label, value, init, min, max, step); }
-		void addHorizontalSlider(const char* label, float* value, float init, float min, float max, float step) { elements.emplace_back(label, value, init, min, max, step); }
-		void addNumEntry(const char* label, float* value, float init, float min, float max, float step) { elements.emplace_back(label, value, init, min, max, step); }
-
-		void addHorizontalBargraph([[maybe_unused]] const char* name, [[maybe_unused]] float* value, [[maybe_unused]] float min, [[maybe_unused]] float max) {}
-		void addVerticalBargraph([[maybe_unused]] const char* name, [[maybe_unused]] float* value, [[maybe_unused]] float min, [[maybe_unused]] float max) {}
-
-		void addSoundfile([[maybe_unused]] const char* name, [[maybe_unused]] const char* filename, [[maybe_unused]] Soundfile** sf) {}
-
-		void declare(float* variable, const char* key, const char* value) {
-			metadata[variable][key] = value;
-		}
-
-		// post process all elements
-		void postProcessUiElements() {
-			// process metadata (if required) and determine maximum number of rows and columns
-			for (auto& element : elements) {
-				element.processMetaData(metadata[element.getVariable()]);
-
-				switch (element.getType()) {
-					case UiElement::Type::vertical:
-						rows++;
-						break;
-
-					case UiElement::Type::button:
-					case UiElement::Type::control:
-						cols++;
-						break;
-
-					default:
-						break;
-				}
-			}
-		}
-
-		// UI properties
-		std::unordered_map<float*, std::unordered_map<std::string, std::string>> metadata;
-		std::vector<UiElement> elements;
-		size_t rows = 0;
-		size_t cols = 0;
-	};
-
-	Meta meta;
-	UI ui;
 
 public:
 	// destructor
@@ -185,8 +60,6 @@ public:
 	void initialize() {
 		init(OtAudioSettings::sampleRate);
 		metadata(&meta);
-		buildUserInterface(&ui);
-		ui.postProcessUiElements();
 	}
 
 	// collect metadata
@@ -195,9 +68,6 @@ public:
 	// return number of audio inputs/outputs
 	virtual int getNumInputs() = 0;
 	virtual int getNumOutputs() = 0;
-
-	// construct a user interface
-	virtual void buildUserInterface(UI* ui) = 0;
 
 	// return the sample rate
 	virtual int getSampleRate() = 0;
@@ -208,14 +78,11 @@ public:
 	// run the Faust DSP unit
 	virtual void compute(int count, float** inputs, float** outputs) = 0;
 
-	// user interface
-	bool render();
-	float getWidth();
-	float getHeight();
-
 	// (de)serialize variables
 	void serialize(nlohmann::json* data);
 	void deserialize(nlohmann::json* data);
+
+	virtual void iterateParameters(std::function<void(const char*, float*, float)>) = 0;
 };
 
 
@@ -230,11 +97,6 @@ public:
 	class Parameters {
 	public:
 		Parameters() { dsp.initialize(); }
-
-		// UI to change component properties
-		inline bool renderUI(){ return dsp.render(); }
-		inline float getRenderWidth() { return dsp.getWidth(); }
-		inline float getRenderHeight() { return dsp.getHeight(); }
 
 		// (de)serialize filter parameters
 		inline void serialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) { dsp.serialize(data); }
@@ -276,15 +138,15 @@ public:
 
 	// render custom fields
 	inline bool customRendering([[maybe_unused]] float itemWidth) override {
-		return dsp.render();
+		return dsp.renderUI();
 	}
 
 	inline float getCustomRenderingWidth() override {
-		return dsp.getWidth();
+		return dsp.getRenderWidth();
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return dsp.getHeight();
+		return dsp.getRenderHeight();
 	}
 
 	// (de)serialize circuit
@@ -340,15 +202,15 @@ public:
 
 	// render custom fields
 	inline bool customRendering([[maybe_unused]] float itemWidth) override {
-		return dsp.render();
+		return dsp.renderUI();
 	}
 
 	inline float getCustomRenderingWidth() override {
-		return dsp.getWidth();
+		return dsp.getRenderWidth();
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return dsp.getHeight();
+		return dsp.getRenderHeight();
 	}
 
 	// (de)serialize circuit

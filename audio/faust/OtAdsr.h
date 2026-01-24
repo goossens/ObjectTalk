@@ -62,7 +62,6 @@ protected:
 		m->declare("envelopes.lib/name", "Faust Envelope Library");
 		m->declare("envelopes.lib/version", "1.3.0");
 		m->declare("filename", "OtAdsr.dsp");
-		m->declare("id", "adsr");
 		m->declare("license", "MIT");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
@@ -131,26 +130,7 @@ protected:
 	int getSampleRate() override {
 		return fSampleRate;
 	}
-	
-	void buildUserInterface(UI* ui_interface) override {
-		ui_interface->openVerticalBox("ADSR");
-		ui_interface->declare(&fButton0, "0", "");
-		ui_interface->addButton("Gate", &fButton0);
-		ui_interface->declare(&fHslider1, "1", "");
-		ui_interface->declare(&fHslider1, "format", "%.2fms");
-		ui_interface->addHorizontalSlider("Attack", &fHslider1, float(1.0), float(0.0), float(1e+01), float(0.1));
-		ui_interface->declare(&fHslider2, "2", "");
-		ui_interface->declare(&fHslider2, "format", "%.2fms");
-		ui_interface->addHorizontalSlider("Decay", &fHslider2, float(1.0), float(0.0), float(1e+01), float(0.1));
-		ui_interface->declare(&fHslider3, "3", "");
-		ui_interface->declare(&fHslider3, "format", "%.2f%%");
-		ui_interface->addHorizontalSlider("Sustain", &fHslider3, float(0.8), float(0.0), float(1.0), float(1.0));
-		ui_interface->declare(&fHslider0, "4", "");
-		ui_interface->declare(&fHslider0, "format", "%.2fms");
-		ui_interface->addHorizontalSlider("Release", &fHslider0, float(1.0), float(0.0), float(1e+01), float(0.1));
-		ui_interface->closeBox();
-	}
-	
+		
 	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
 		float* output0 = outputs[0];
 		int iSlow0 = static_cast<double>(fButton0) > 0.0;
@@ -177,39 +157,93 @@ protected:
 		}
 	}
 
+	inline bool renderUI() {
+		bool changed = false;
+		ImGui::BeginChild("ADSR", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
+		changed |= OtUi::knob("Attack", &fHslider1, 0.0f, 10.0f, "%.2fms");
+		ImGui::SameLine();
+		changed |= OtUi::knob("Decay", &fHslider2, 0.0f, 10.0f, "%.2fms");
+		ImGui::SameLine();
+		changed |= OtUi::knob("Sustain", &fHslider3, 0.0f, 1.0f, "%.2f%%");
+		ImGui::SameLine();
+		changed |= OtUi::knob("Release", &fHslider0, 0.0f, 10.0f, "%.2fms");
+		ImGui::EndChild();
+		return changed;
+	}
+
+	inline float getRenderWidth() {
+		if (width == -1.0f) {
+			auto knobWidth = OtUi::knobWidth();
+			auto spacing = ImGui::GetStyle().ItemSpacing.x;
+			auto width1 = 0.0f;
+			width1 += 0.0f;
+			width1 += knobWidth;
+			width1 += spacing;
+			width1 += knobWidth;
+			width1 += spacing;
+			width1 += knobWidth;
+			width1 += spacing;
+			width1 += knobWidth;
+			width = width1;
+		}
+
+		return width;
+	}
+
+	inline float getRenderHeight() {
+		if (height == -1.0f) {
+			auto knobHeight = OtUi::knobHeight();
+			auto height1 = 0.0f;
+			height1 = std::max(height1, 0.0f);
+			height1 = std::max(height1, knobHeight);
+			height1 = std::max(height1, knobHeight);
+			height1 = std::max(height1, knobHeight);
+			height1 = std::max(height1, knobHeight);
+			height = height1;
+		}
+
+		return height;
+}
+
 	struct Parameters {
-		float gate;
 		float attack;
 		float decay;
 		float sustain;
 		float release;
 	};
 
-	inline void setParameters(Parameters& parameters) {
-		fButton0 = parameters.gate;
+	inline void setParameters([[maybe_unused]] Parameters& parameters) {
 		fHslider1 = parameters.attack;
 		fHslider2 = parameters.decay;
 		fHslider3 = parameters.sustain;
 		fHslider0 = parameters.release;
 	}
 
-	inline void getParameters(Parameters& parameters) {
-		parameters.gate = fButton0;
+	inline void getParameters([[maybe_unused]] Parameters& parameters) {
 		parameters.attack = fHslider1;
 		parameters.decay = fHslider2;
 		parameters.sustain = fHslider3;
 		parameters.release = fHslider0;
 	}
 
-	inline void setGate(float value) { fButton0 = value; }
+	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
+		callback("attack", &fHslider1, 1.0f);
+		callback("decay", &fHslider2, 1.0f);
+		callback("sustain", &fHslider3, 0.8f);
+		callback("release", &fHslider0, 1.0f);
+	}
+
 	inline void setAttack(float value) { fHslider1 = value; }
 	inline void setDecay(float value) { fHslider2 = value; }
 	inline void setSustain(float value) { fHslider3 = value; }
 	inline void setRelease(float value) { fHslider0 = value; }
 
-	inline float getGate() { return fButton0; }
 	inline float getAttack() { return fHslider1; }
 	inline float getDecay() { return fHslider2; }
 	inline float getSustain() { return fHslider3; }
 	inline float getRelease() { return fHslider0; }
+
+private:
+	float width = -1.0f;
+	float height = -1.0f;
 };

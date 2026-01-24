@@ -4,33 +4,205 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-import glob, json, os, pathlib, subprocess, sys
+import glob, json, os, pathlib, re, subprocess, sys
 
-# recursively find specified key in list or dictionary
-def findKey(data, key):
-	if isinstance(data, list):
-		for item in data:
-			yield from findKey(item, key)
+# patterns in original source code
+buildUserInterfacePattern = r"\n\tvoid buildUserInterface(.*?)\}\n"
 
-	if isinstance(data, dict):
-		if key in data.keys():
-			yield data[key]
+# process UI and generate UI and parameter code
+class UI:
+	def __init__(self, item, className):
+		self.ui = []
+		self.width = []
+		self.height = []
+		self.parameters = []
+		self.level = 1
 
-		for item in data.values():
-			yield from findKey(item, key)
+		w, h = self.processItem(item)
+		self.width.append(f"\t\t\twidth = {w};")
+		self.height.append(f"\t\t\theight = {h};")
 
-# switch directory to script location
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+	def processItem(self, item):
+		match item["type"]:
+			case "vgroup":
+				return self.vgroup(item)
 
-# read standard header and footer
-with open("OtFaustHeader.h", "r") as file:
-	header = file.read()
+			case "hgroup":
+				return self.hgroup(item)
 
-with open("OtFaustFooter.h", "r") as file:
-	footer = file.read()
+			case "vslider":
+				return self.slider(item, True)
 
-# process all DSP files and generate code
-for sourceFileName in glob.iglob("*.dsp"):
+			case "hslider":
+				return self.slider(item, False)
+
+			case _:
+				return "0.0f", "0.0f"
+
+	def vgroup(self, item):
+		width = f"width{self.level}"
+		height = f"height{self.level}"
+		self.width.append(f"\t\t\tauto {width} = 0.0f;")
+		self.height.append(f"\t\t\tauto {height} = 0.0f;")
+
+		extraFlags = "" if self.level == 1 else " | ImGuiChildFlags_Border"
+		self.ui.append(f"\t\tImGui::BeginChild(\"{item["label"]}\", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY{extraFlags});")
+
+		if self.level > 1:
+			self.ui.append(f"\t\tOtUi::Header(\"{item["label"]}\");")
+
+		self.level += 1
+
+		for child in item["items"]:
+			w, h = self.processItem(child)
+			self.width.append(f"\t\t\t{width} = std::max({width}, {w});")
+			self.height.append(f"\t\t\t{height} += {h};")
+
+		self.level -= 1
+		self.ui.append("\t\tImGui::EndChild();")
+		return width, height
+
+	def hgroup(self, item):
+		width = f"width{self.level}"
+		height = f"height{self.level}"
+		self.width.append(f"\t\t\tauto {width} = 0.0f;")
+		self.height.append(f"\t\t\tauto {height} = 0.0f;")
+
+
+		extraFlags = "" if self.level == 1 else " | ImGuiChildFlags_Border"
+		self.ui.append(f"\t\tImGui::BeginChild(\"{item["label"]}\", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY{extraFlags});")
+
+		if self.level > 1:
+			self.ui.append(f"\t\tOtUi::Header(\"{item["label"]}\");")
+
+		self.level += 1
+		start = len(self.ui)
+
+		for child in item["items"]:
+			if len(self.ui) != start:
+				self.ui.append("\t\tImGui::SameLine();")
+				self.width.append(f"\t\t\t{width} += spacing;")
+
+			w, h = self.processItem(child)
+			self.width.append(f"\t\t\t{width} += {w};")
+			self.height.append(f"\t\t\t{height} = std::max({height}, {h});")
+
+		self.level -= 1
+		self.ui.append("\t\tImGui::EndChild();")
+		return width, height
+
+	def slider(self, item, vertical):
+		meta = self.metaToDict(item.get("meta", []))
+		style = meta.get("style", "")
+		label = item.get("label", "")
+		varname = item.get("varname", "")
+		address = self.fixAddress(item.get("address", ""))
+		initValue = self.numberToString(item.get("init", 0))
+		minValue = self.numberToString(item.get("min", 0))
+		maxValue = self.numberToString(item.get("max", 0))
+		stepValue = self.numberToString(item.get("max", 0))
+		format = meta.get("format", self.formatFromStepValue(stepValue))
+
+		self.parameters.append({
+			"label": label,
+			"varname": varname,
+			"address": address,
+			"init": initValue,
+			"min": minValue,
+			"max": maxValue,
+			"max": stepValue})
+
+		if style == "knob":
+			self.ui.append(f"\t\tchanged |= OtUi::knob(\"{label}\", &{varname}, {minValue}, {maxValue}, \"{format}\");")
+			return "knobWidth", "knobHeight"
+
+		else:
+			return "0.0f", "0.0f"
+
+	def getRenderUI(self):
+		return "\n".join(self.ui)
+
+	def getSizeIntro(self, text):
+		intro = ""
+		if "knobWidth" in text: intro += "\t\t\tauto knobWidth = OtUi::knobWidth();\n"
+		if "knobHeight" in text: intro += "\t\t\tauto knobHeight = OtUi::knobHeight();\n"
+		if "spacing" in text: intro += "\t\t\tauto spacing = ImGui::GetStyle().ItemSpacing.x;\n"
+		return intro
+
+	def getRenderWidth(self):
+		if self.width:
+			text = "\n".join(self.width)
+			return self.getSizeIntro(text) + text
+
+		else:
+			return "\t\treturn 0.0f;"
+
+	def getRenderHeight(self):
+		if self.height:
+			text = "\n".join(self.height)
+			return self.getSizeIntro(text) + text
+
+		else:
+			return "\t\treturn 0.0f;"
+
+	def getParametersStruct(self):
+		if self.parameters:
+			return "\n".join([f"\t\tfloat {parameter["address"]};" for parameter in self.parameters])
+
+		else:
+			return "\t\tfloat dummy;"
+
+	def getSetParameters(self):
+		return "\n".join([f"\t\t{parameter["varname"]} = parameters.{parameter["address"]};" for parameter in self.parameters])
+
+	def getGetParameters(self):
+		return "\n".join([f"\t\tparameters.{parameter["address"]} = {parameter["varname"]};" for parameter in self.parameters])
+
+	def getIterateParameters(self):
+		return "\n".join([f"\t\tcallback(\"{parameter["address"]}\", &{parameter["varname"]}, {parameter["init"]});" for parameter in self.parameters])
+
+	def getSetters(self):
+		return "\n".join([f"\tinline void set{parameter["label"]}(float value) {{ {parameter["varname"]} = value; }}" for parameter in self.parameters])
+
+	def getGetters(self):
+		return "\n".join([f"\tinline float get{parameter["label"]}() {{ return {parameter["varname"]}; }}" for parameter in self.parameters])
+
+	def metaToDict(self, meta):
+		result = {}
+
+		for item in meta:
+			result |= item
+
+		return result
+
+	def numberToString(self, number):
+		result = str(number)
+		result += "" if "." in result else ".0"
+		result += "f"
+		return result
+
+	def fixAddress(self, address):
+		if address[0] == "/":
+			address = address[1:]
+			address = address[address.find("/"):]
+			address = address.replace("/", "")
+
+		return address[0].lower() + address[1:]
+
+	def formatFromStepValue(self, stepValue):
+		stepValue = float(stepValue[0:-1])
+
+		if stepValue <= 0.01:
+			return "%.2f"
+
+		elif stepValue <= 0.1:
+			return "%.1f"
+
+		else:
+			return "%.0f"
+
+# process DSP file and generate code
+def processDspFile(sourceFileName):
 	className = pathlib.Path(sourceFileName).stem
 	jsonName = sourceFileName + ".json"
 
@@ -74,35 +246,12 @@ for sourceFileName in glob.iglob("*.dsp"):
 
 	text = "".join(text[line:-4])
 
-	# convert metadata to getters, setters and parameter structures
-	variableDefinition = []
-	variableLoad = []
-	variableSave = []
-	getters = []
-	setters = []
-
-	for variables in findKey(metadata, "items"):
-		for variable in variables:
-			if "varname" in variable:
-				name = variable["varname"]
-				label = variable["label"]
-				labelLC = label.lower()
-				variableDefinition.append(f"\t\tfloat {labelLC};")
-				variableLoad.append(f"\t\t{name} = parameters.{labelLC};")
-				variableSave.append(f"\t\tparameters.{labelLC} = {name};")
-				getters.append(f"\tinline float get{label}() {{ return {name}; }}")
-				setters.append(f"\tinline void set{label}(float value) {{ {name} = value; }}")
-
-	if variableDefinition:
-		extraDefinitions = f"\n\tstruct Parameters {{\n{"\n".join(variableDefinition)}\n\t}};\n"
-		extraDefinitions += f"\n\tinline void setParameters(Parameters& parameters) {{\n{"\n".join(variableLoad)}\n\t}}\n"
-		extraDefinitions += f"\n\tinline void getParameters(Parameters& parameters) {{\n{"\n".join(variableSave)}\n\t}}\n"
-		extraDefinitions += f"\n{"\n".join(setters)}\n\n{"\n".join(getters)}\n"
-
-	else:
-		extraDefinitions = ""
+	# process UI
+	ui = UI(metadata["ui"][0], className)
 
 	# patch generated code so it works for us (and looks a little better :-)
+	headerText = header.replace("CLASS", className)
+
 	text = text.replace("FAUSTFLOAT", "float")
 	text = text.replace("RESTRICT ", "")
 	text = text.replace("\t\n private:\n\t", "protected:")
@@ -116,18 +265,39 @@ for sourceFileName in glob.iglob("*.dsp"):
 	text = text.replace("virtual void buildUserInterface(UI* ui_interface)", "void buildUserInterface(UI* ui_interface) override")
 	text = text.replace("virtual void compute(int count, float** inputs, float** outputs)", "void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override")
 	text = text.replace("int sample_rate", "[[maybe_unused]] int sample_rate")
-
-	headerText = header.replace("CLASS", className)
+	text = re.sub(buildUserInterfacePattern, "", text, flags=re.DOTALL)
 
 	footerText = footer \
-		.replace("PARAMETERS", "\n".join(variableDefinition)) \
-		.replace("LOAD", "\n".join(variableLoad)) \
-		.replace("SAVE", "\n".join(variableSave)) \
-		.replace("SETTERS", "\n".join(setters)) \
-		.replace("GETTERS", "\n".join(getters))
+		.replace("RENDERUI", ui.getRenderUI()) \
+		.replace("GETRENDERWIDTH", ui.getRenderWidth()) \
+		.replace("GETRENDERHEIGHT", ui.getRenderHeight()) \
+		.replace("PARAMETERSSTRUCT", ui.getParametersStruct()) \
+		.replace("SETPARAMETERS", ui.getSetParameters()) \
+		.replace("GETPARAMETERS", ui.getGetParameters()) \
+		.replace("ITERATEPARAMETERS", ui.getIterateParameters()) \
+		.replace("SETTERS", ui.getSetters()) \
+		.replace("GETTERS", ui.getGetters())
 
-	code = headerText + text + footerText + "};\n"
+	code = headerText + text + footerText
 
 	# write code to target file
 	with open(os.path.join("..", className + ".h"), "w") as output:
 		output.write(code)
+
+#
+#	Main
+#
+
+# switch directory to script location
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+# read standard header and footer
+with open("OtFaustHeader.h", "r") as file:
+	header = file.read()
+
+with open("OtFaustFooter.h", "r") as file:
+	footer = file.read()
+
+# process all DSP files and generate code
+for sourceFileName in glob.iglob("*.dsp"):
+	processDspFile(sourceFileName)

@@ -27,7 +27,7 @@
 class OtNoise : public OtFaust {
 protected:
 	float fHslider0;
-	float fCheckbox0;
+	float fHslider1;
 	int iRec0[2];
 	double fRec1[4];
 	int fSampleRate;
@@ -55,7 +55,6 @@ protected:
 		m->declare("filters.lib/lowpass0_highpass1", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/name", "Faust Filters Library");
 		m->declare("filters.lib/version", "1.7.1");
-		m->declare("id", "Noise");
 		m->declare("license", "MIT");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
@@ -83,7 +82,7 @@ protected:
 	
 	virtual void instanceResetUserInterface() {
 		fHslider0 = static_cast<float>(0.0);
-		fCheckbox0 = static_cast<float>(0.0);
+		fHslider1 = static_cast<float>(0.0);
 	}
 	
 	virtual void instanceClear() {
@@ -113,22 +112,11 @@ protected:
 	int getSampleRate() override {
 		return fSampleRate;
 	}
-	
-	void buildUserInterface(UI* ui_interface) override {
-		ui_interface->openVerticalBox("Noise");
-		ui_interface->declare(&fCheckbox0, "0", "");
-		ui_interface->declare(&fCheckbox0, "off", "White");
-		ui_interface->declare(&fCheckbox0, "on", "Pink");
-		ui_interface->addCheckButton("Type", &fCheckbox0);
-		ui_interface->declare(&fHslider0, "1", "");
-		ui_interface->addHorizontalSlider("Volume", &fHslider0, float(0.0), float(0.0), float(1.0), float(0.01));
-		ui_interface->closeBox();
-	}
-	
+		
 	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
 		float* output0 = outputs[0];
 		double fSlow0 = static_cast<double>(fHslider0);
-		int iSlow1 = static_cast<int>(static_cast<double>(fCheckbox0));
+		int iSlow1 = static_cast<int>(static_cast<double>(fHslider1));
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
 			iRec0[0] = 1103515245 * iRec0[1] + 12345;
 			double fTemp0 = 4.656612875245797e-10 * static_cast<double>(iRec0[0]);
@@ -141,24 +129,65 @@ protected:
 		}
 	}
 
+	inline bool renderUI() {
+		bool changed = false;
+		ImGui::BeginChild("Noise", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
+		changed |= OtUi::knob("Volume", &fHslider0, 0.0f, 1.0f, "%.0f");
+		ImGui::EndChild();
+		return changed;
+	}
+
+	inline float getRenderWidth() {
+		if (width == -1.0f) {
+			auto knobWidth = OtUi::knobWidth();
+			auto width1 = 0.0f;
+			width1 += 0.0f;
+			width1 += knobWidth;
+			width = width1;
+		}
+
+		return width;
+	}
+
+	inline float getRenderHeight() {
+		if (height == -1.0f) {
+			auto knobHeight = OtUi::knobHeight();
+			auto height1 = 0.0f;
+			height1 = std::max(height1, 0.0f);
+			height1 = std::max(height1, knobHeight);
+			height = height1;
+		}
+
+		return height;
+}
+
 	struct Parameters {
 		float type;
 		float volume;
 	};
 
-	inline void setParameters(Parameters& parameters) {
-		fCheckbox0 = parameters.type;
+	inline void setParameters([[maybe_unused]] Parameters& parameters) {
+		fHslider1 = parameters.type;
 		fHslider0 = parameters.volume;
 	}
 
-	inline void getParameters(Parameters& parameters) {
-		parameters.type = fCheckbox0;
+	inline void getParameters([[maybe_unused]] Parameters& parameters) {
+		parameters.type = fHslider1;
 		parameters.volume = fHslider0;
 	}
 
-	inline void setType(float value) { fCheckbox0 = value; }
+	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
+		callback("type", &fHslider1, 0.0f);
+		callback("volume", &fHslider0, 0.0f);
+	}
+
+	inline void setType(float value) { fHslider1 = value; }
 	inline void setVolume(float value) { fHslider0 = value; }
 
-	inline float getType() { return fCheckbox0; }
+	inline float getType() { return fHslider1; }
 	inline float getVolume() { return fHslider0; }
+
+private:
+	float width = -1.0f;
+	float height = -1.0f;
 };

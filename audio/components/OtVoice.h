@@ -20,8 +20,6 @@
 
 #include "OtAudioFilter.h"
 #include "OtEnvelope.h"
-#include "OtFaust.h"
-#include "OtNoise.h"
 #include "OtOscillator.h"
 
 
@@ -61,7 +59,6 @@ public:
 		// properties
 		friend class State;
 		std::array<OtOscillator::Parameters, numberOfOscillators> oscillators;
-		OtFaustComponent<OtNoise>::Parameters noise;
 		Filter filter;
 		Amp amp;
 	};
@@ -92,7 +89,6 @@ public:
 	private:
 		// properties
 		std::array<OtOscillator::State, numberOfOscillators> oscillators;
-		OtFaustComponent<OtNoise>::State noise;
 
 		OtAudioFilter::State filter;
 		OtEnvelope::State filterEnvelopeState;

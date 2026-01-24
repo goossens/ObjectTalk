@@ -87,7 +87,6 @@ protected:
 		m->declare("filters.lib/tf2:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/tf2:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/version", "1.7.1");
-		m->declare("id", "phaser");
 		m->declare("license", "MIT");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
@@ -199,20 +198,7 @@ protected:
 	int getSampleRate() override {
 		return fSampleRate;
 	}
-	
-	void buildUserInterface(UI* ui_interface) override {
-		ui_interface->openVerticalBox("Phaser");
-		ui_interface->declare(&fHslider2, "0", "");
-		ui_interface->declare(&fHslider2, "format", "%.01fhz");
-		ui_interface->addHorizontalSlider("Speed", &fHslider2, float(1.0), float(0.001), float(2e+01), float(0.01));
-		ui_interface->declare(&fHslider0, "1", "");
-		ui_interface->declare(&fHslider0, "format", "%.0f%%");
-		ui_interface->addHorizontalSlider("Depth", &fHslider0, float(5e+01), float(0.0), float(1e+02), float(1.0));
-		ui_interface->declare(&fHslider1, "3", "");
-		ui_interface->addHorizontalSlider("Feedback", &fHslider1, float(0.0), float(-1.0), float(1.0), float(0.01));
-		ui_interface->closeBox();
-	}
-	
+		
 	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
@@ -267,22 +253,69 @@ protected:
 		}
 	}
 
+	inline bool renderUI() {
+		bool changed = false;
+		ImGui::BeginChild("Phaser", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
+		changed |= OtUi::knob("Speed", &fHslider2, 0.001f, 20.0f, "%.01fhz");
+		ImGui::SameLine();
+		changed |= OtUi::knob("Depth", &fHslider0, 0.0f, 100.0f, "%.0f%%");
+		ImGui::SameLine();
+		changed |= OtUi::knob("Feedback", &fHslider1, -1.0f, 1.0f, "%.0f");
+		ImGui::EndChild();
+		return changed;
+	}
+
+	inline float getRenderWidth() {
+		if (width == -1.0f) {
+			auto knobWidth = OtUi::knobWidth();
+			auto spacing = ImGui::GetStyle().ItemSpacing.x;
+			auto width1 = 0.0f;
+			width1 += knobWidth;
+			width1 += spacing;
+			width1 += knobWidth;
+			width1 += spacing;
+			width1 += knobWidth;
+			width = width1;
+		}
+
+		return width;
+	}
+
+	inline float getRenderHeight() {
+		if (height == -1.0f) {
+			auto knobHeight = OtUi::knobHeight();
+			auto height1 = 0.0f;
+			height1 = std::max(height1, knobHeight);
+			height1 = std::max(height1, knobHeight);
+			height1 = std::max(height1, knobHeight);
+			height = height1;
+		}
+
+		return height;
+}
+
 	struct Parameters {
 		float speed;
 		float depth;
 		float feedback;
 	};
 
-	inline void setParameters(Parameters& parameters) {
+	inline void setParameters([[maybe_unused]] Parameters& parameters) {
 		fHslider2 = parameters.speed;
 		fHslider0 = parameters.depth;
 		fHslider1 = parameters.feedback;
 	}
 
-	inline void getParameters(Parameters& parameters) {
+	inline void getParameters([[maybe_unused]] Parameters& parameters) {
 		parameters.speed = fHslider2;
 		parameters.depth = fHslider0;
 		parameters.feedback = fHslider1;
+	}
+
+	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
+		callback("speed", &fHslider2, 1.0f);
+		callback("depth", &fHslider0, 50.0f);
+		callback("feedback", &fHslider1, 0.0f);
 	}
 
 	inline void setSpeed(float value) { fHslider2 = value; }
@@ -292,4 +325,8 @@ protected:
 	inline float getSpeed() { return fHslider2; }
 	inline float getDepth() { return fHslider0; }
 	inline float getFeedback() { return fHslider1; }
+
+private:
+	float width = -1.0f;
+	float height = -1.0f;
 };

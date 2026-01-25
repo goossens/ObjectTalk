@@ -48,6 +48,8 @@ public:
 	}
 
 	inline int GetTabSize() const { return document.getTabSize(); }
+	inline void SetInsertSpacesOnTabs(bool value) { document.setInsertSpacesOnTabs(value); }
+	inline bool IsInsertSpacesOnTabs() const { return document.isInsertSpacesOnTabs(); }
 	inline void SetLineSpacing(float value) { lineSpacing = std::max(1.0f, std::min(2.0f, value)); }
 	inline float GetLineSpacing() const { return lineSpacing; }
 	inline void SetReadOnlyEnabled(bool value) { readOnly = value; }
@@ -673,9 +675,11 @@ protected:
 		// constructor
 		Document() { emplace_back(); }
 
-		// access document's tab size
-		inline void setTabSize(int ts) { tabSize = ts; }
+		// access document's tab size and processing options
+		inline void setTabSize(int value) { tabSize = value; }
 		inline int getTabSize() const { return tabSize; }
+		inline void setInsertSpacesOnTabs(bool value) { insertSpacesOnTabs = value; }
+		inline bool isInsertSpacesOnTabs() const { return insertSpacesOnTabs; }
 
 		// manipulate document text (strings should be UTF-8 encoded)
 		void setText(const std::string_view& text);
@@ -736,6 +740,7 @@ protected:
 
 	private:
 		int tabSize = 4;
+		bool insertSpacesOnTabs = false;
 		int maxColumn = 0;
 		bool updated = false;
 	} document;

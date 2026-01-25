@@ -33,6 +33,13 @@ void TextEditor::Document::setText(const std::string_view& text) {
 		if (character == '\n') {
 			emplace_back();
 
+		} else if (insertSpacesOnTabs && character == '\t') {
+			auto spaces = ((back().size() / tabSize) + 1) * tabSize - back().size();
+
+			for (size_t i = 0; i < spaces; i++) {
+				back().emplace_back(Glyph(' ', Color::text));
+			}
+
 		} else if (character != '\r') {
 			back().emplace_back(Glyph(character, Color::text));
 		}
@@ -63,7 +70,14 @@ void TextEditor::Document::setText(const std::vector<std::string_view>& text) {
 				ImWchar character;
 				i = CodePoint::read(i, end, &character);
 
-				if (character != '\r') {
+				if (insertSpacesOnTabs && character == '\t') {
+					auto spaces = ((back().size() / tabSize) + 1) * tabSize - back().size();
+
+					for (size_t i = 0; i < spaces; i++) {
+						back().emplace_back(Glyph(' ', Color::text));
+					}
+
+				} else if (character != '\r') {
 					back().emplace_back(Glyph(character, Color::text));
 				}
 			}
@@ -109,6 +123,13 @@ TextEditor::Coordinate TextEditor::Document::insertText(Coordinate start, const 
 			line->erase(line->begin() + index, line->end());
 			line = nextLine;
 			index = 0;
+
+		} else if (insertSpacesOnTabs && character == '\t') {
+			auto spaces = ((index / tabSize) + 1) * tabSize - index;
+
+			for (size_t i = 0; i < spaces; i++) {
+				line->insert(line->begin() + (index++), Glyph(' ', Color::text));
+			}
 
 		} else if (character != '\r') {
 			// insert next glyph

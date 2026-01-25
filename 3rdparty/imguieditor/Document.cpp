@@ -36,7 +36,7 @@ void TextEditor::Document::setText(const std::string_view& text) {
 		} else if (insertSpacesOnTabs && character == '\t') {
 			auto spaces = ((back().size() / tabSize) + 1) * tabSize - back().size();
 
-			for (size_t i = 0; i < spaces; i++) {
+			for (size_t s = 0; s < spaces; s++) {
 				back().emplace_back(Glyph(' ', Color::text));
 			}
 
@@ -73,7 +73,7 @@ void TextEditor::Document::setText(const std::vector<std::string_view>& text) {
 				if (insertSpacesOnTabs && character == '\t') {
 					auto spaces = ((back().size() / tabSize) + 1) * tabSize - back().size();
 
-					for (size_t i = 0; i < spaces; i++) {
+					for (size_t s = 0; s < spaces; s++) {
 						back().emplace_back(Glyph(' ', Color::text));
 					}
 
@@ -127,7 +127,7 @@ TextEditor::Coordinate TextEditor::Document::insertText(Coordinate start, const 
 		} else if (insertSpacesOnTabs && character == '\t') {
 			auto spaces = ((index / tabSize) + 1) * tabSize - index;
 
-			for (size_t i = 0; i < spaces; i++) {
+			for (size_t s = 0; s < spaces; s++) {
 				line->insert(line->begin() + (index++), Glyph(' ', Color::text));
 			}
 

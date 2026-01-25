@@ -387,6 +387,10 @@
                     Left mouse clicking or dragging over line numbers select
                     line(s).
                   </li>
+                  <li>
+                    When multiple cursors are active, hitting the ESC key
+                    cancels them.
+                  </li>
                 </ul>
               </li>
               <li>
@@ -453,6 +457,20 @@
                     cursors.
                   </li>
                   <li>Ctrl-g finds next instance of search text.</li>
+                  <li>
+                    If text is selected when Ctrl-f is hit, the selected text is
+                    used as the search term if the start and end are on the same
+                    line.
+                  </li>
+                  <li>
+                    Else if the cursor is over a word when Ctrl-f is hit, that
+                    word is used as the search term.
+                  </li>
+                  <li>In all other cases, the previous search term is used.</li>
+                  <li>
+                    When the search and replace window is visible, hitting the
+                    ESC button closes it.
+                  </li>
                 </ul>
               </li>
               <li>
@@ -489,7 +507,7 @@
       </div>
       <div class="row flex-shrink-0 py-1 manual-footer" id="copyright">
         <p class="mx-auto py-0 my-0 small">
-          Copyright (c) 1993-2026 Johan A. Goossens. All rights reserved.
+          Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
         </p>
       </div>
     </div>

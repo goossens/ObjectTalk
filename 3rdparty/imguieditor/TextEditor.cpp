@@ -772,8 +772,11 @@ void TextEditor::renderFindReplace(ImVec2 pos, float width) {
 		ImGui::SameLine();
 
 		if (ImGui::Button("x", ImVec2(optionWidth, 0.0f))) {
-			findReplaceVisible = false;
-			focusOnEditor = true;
+			closeFindReplace();
+		}
+
+		if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+			closeFindReplace();
 		}
 
 		if (!readOnly) {
@@ -920,6 +923,11 @@ void TextEditor::handleKeyboardInputs() {
 			} else {
 				handleCharacter('\t');
 			}
+		}
+
+		// handle escape key
+		else if (!findReplaceVisible && ImGui::IsKeyPressed(ImGuiKey_Escape) && cursors.hasMultiple()) {
+			cursors.clearAdditional();
 		}
 
 		// handle regular text
@@ -1100,7 +1108,8 @@ void TextEditor::handleMouseInteractions() {
 						}
 					}
 
-					// select word if it wasn't a bracketed section
+					// select "word" if it wasn't a bracketed section
+					// includes whitespace and operator sequences as well
 					if (!handled && !document.isEndOfLine(glyphCoordinate)) {
 						auto start = document.findWordStart(glyphCoordinate);
 						auto end = document.findWordEnd(glyphCoordinate);
@@ -1564,8 +1573,39 @@ void TextEditor::replaceTextInAllCursors(const std::string_view& text) {
 //
 
 void TextEditor::openFindReplace() {
+	// get main cursor location
+	auto cursor = cursors.getMain();
+
+	// see if we have a current selection that's on one line
+	if (cursor.hasSelection()) {
+		if (cursor.getSelectionStart().line == cursor.getSelectionEnd().line) {
+			// use it as the default search
+			findText = document.getSectionText(cursor.getSelectionStart(), cursor.getSelectionEnd());
+		}
+
+	} else {
+		// if cursor is inside "real" word, use that as the default
+		auto start = document.findWordStart(cursor.getSelectionStart(), true);
+		auto end = document.findWordEnd(cursor.getSelectionStart(), true);
+
+		if (start != end) {
+			findText = document.getSectionText(start, end);
+		}
+	}
+
 	findReplaceVisible = true;
 	focusOnFind = true;
+}
+
+
+//
+//	TextEditor::closeFindReplace
+//
+
+void TextEditor::closeFindReplace() {
+	findReplaceVisible = false;
+	focusOnFind = false;
+	focusOnEditor = true;
 }
 
 

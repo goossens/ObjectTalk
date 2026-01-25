@@ -443,7 +443,7 @@ TextEditor::Coordinate TextEditor::Document::getEndOfLine(Coordinate from) const
 //	TextEditor::Document::findWordStart
 //
 
-TextEditor::Coordinate TextEditor::Document::findWordStart(Coordinate from) const {
+TextEditor::Coordinate TextEditor::Document::findWordStart(Coordinate from, bool wordOnly) const {
 	auto& line = at(from.line);
 	auto lineSize = line.size();
 
@@ -459,7 +459,7 @@ TextEditor::Coordinate TextEditor::Document::findWordStart(Coordinate from) cons
 
 		auto firstCharacter = line[index].codepoint;
 
-		if (CodePoint::isWhiteSpace(firstCharacter)) {
+		if (!wordOnly && CodePoint::isWhiteSpace(firstCharacter)) {
 			while (index > 0 && CodePoint::isWhiteSpace(line[index - 1].codepoint)) {
 				index--;
 			}
@@ -470,7 +470,7 @@ TextEditor::Coordinate TextEditor::Document::findWordStart(Coordinate from) cons
 			}
 
 		} else {
-			while (index > 0 && !CodePoint::isWord(line[index - 1].codepoint) && !CodePoint::isWhiteSpace(line[index - 1].codepoint)) {
+			while (!wordOnly && index > 0 && !CodePoint::isWord(line[index - 1].codepoint) && !CodePoint::isWhiteSpace(line[index - 1].codepoint)) {
 				index--;
 			}
 		}
@@ -484,7 +484,7 @@ TextEditor::Coordinate TextEditor::Document::findWordStart(Coordinate from) cons
 //	TextEditor::Document::findWordEnd
 //
 
-TextEditor::Coordinate TextEditor::Document::findWordEnd(Coordinate from) const {
+TextEditor::Coordinate TextEditor::Document::findWordEnd(Coordinate from, bool wordOnly) const {
 	auto& line = at(from.line);
 	auto index = getIndex(from);
 	auto size = line.size();
@@ -495,7 +495,7 @@ TextEditor::Coordinate TextEditor::Document::findWordEnd(Coordinate from) const 
 	} else {
 		auto firstCharacter = line[index].codepoint;
 
-		if (CodePoint::isWhiteSpace(firstCharacter)) {
+		if (!wordOnly && CodePoint::isWhiteSpace(firstCharacter)) {
 			while (index < size && CodePoint::isWhiteSpace(line[index].codepoint)) {
 				index++;
 			}
@@ -506,7 +506,7 @@ TextEditor::Coordinate TextEditor::Document::findWordEnd(Coordinate from) const 
 			}
 
 		} else {
-			while (index < size && !CodePoint::isWord(line[index].codepoint) && !CodePoint::isWhiteSpace(line[index].codepoint)) {
+			while (!wordOnly && index < size && !CodePoint::isWord(line[index].codepoint) && !CodePoint::isWhiteSpace(line[index].codepoint)) {
 				index++;
 			}
 		}

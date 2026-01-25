@@ -66,6 +66,7 @@ has a console for output and highlighting for errors. A visual debugger is also 
 	- Alt-Shift-RightArrow (on MacOS) and Ctrl-Shift-RightArrow (on Linux and Windows) grows all selections to outer blocks. First just the content of the block, than including the curly brackets. Continuously hitting the key combination keeps growing the selections.
 	- Alt-Shift-LeftArrow (on MacOS) and Ctrl-Shift-LeftArrow (on Linux and Windows) shrinks all selections to inner blocks. First including the curly brackets, that just the content of the block. Continuously hitting the key combination keeps shrinking the selections.
 	- Left mouse clicking or dragging over line numbers select line(s).
+	- When multiple cursors are active, hitting the ESC key cancels them.
 
 - Clipboard Operations:
 	- Ctrl-X or Shift-Delete cuts selected text or current line if no selection.
@@ -95,6 +96,10 @@ has a console for output and highlighting for errors. A visual debugger is also 
 	- Ctrl-f opens the find and replace window.
 	- Shift-Ctrl-f finds all instances and makes them separate cursors.
 	- Ctrl-g finds next instance of search text.
+	- If text is selected when Ctrl-f is hit, the selected text is used as the search term if the start and end are on the same line.
+	- Else if the cursor is over a word when Ctrl-f is hit, that word is used as the search term.
+	- In all other cases, the previous search term is used.
+	- When the search and replace window is visible, hitting the ESC button closes it.
 
 - Font Size:
 	- Ctrl-plus increases the font size.

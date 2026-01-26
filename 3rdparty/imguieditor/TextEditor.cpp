@@ -23,6 +23,15 @@
 
 
 //
+//	TextEditor::TextEditor
+//
+
+TextEditor::TextEditor() {
+	SetPalette(defaultPalette);
+}
+
+
+//
 //	TextEditor::setText
 //
 
@@ -504,10 +513,11 @@ void TextEditor::renderDecorations() {
 		auto cursorScreenPos = ImGui::GetCursorScreenPos();
 		auto position = ImVec2(ImGui::GetWindowPos().x + decorationOffset, cursorScreenPos.y + glyphSize.y * firstVisibleLine);
 		auto widthInPixels = (decoratorWidth < 0.0f) ? -decoratorWidth * glyphSize.x: decoratorWidth;
-		Decorator decorator{0, widthInPixels, glyphSize.y, glyphSize};
+		Decorator decorator{0, widthInPixels, glyphSize.y, glyphSize, nullptr};
 
 		for (int i = firstVisibleLine; i <= lastVisibleLine; i++) {
 			decorator.line = i;
+			decorator.userData = document.getUserData(i);
 			ImGui::SetCursorScreenPos(position);
 			ImGui::PushID(i);
 			decoratorCallback(decorator);

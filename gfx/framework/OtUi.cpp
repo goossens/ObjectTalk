@@ -48,7 +48,7 @@ void OtUi::loadFonts() {
 	textConfig.OversampleV = 1;
 
 	textFont = io.Fonts->AddFontFromMemoryTTF(
-		reinterpret_cast<void*>(OtDejaVu::data()),
+		static_cast<void*>(OtDejaVu::data()),
 		static_cast<int>(OtDejaVu::size()),
 		15.0f,
 		&textConfig);
@@ -60,7 +60,7 @@ void OtUi::loadFonts() {
 	audioConfig.OversampleV = 1;
 
 	audioFont = io.Fonts->AddFontFromMemoryTTF(
-		reinterpret_cast<void*>(OtFontAudio::data()),
+		static_cast<void*>(OtFontAudio::data()),
 		static_cast<int>(OtFontAudio::size()),
 		15.0f,
 		&audioConfig);

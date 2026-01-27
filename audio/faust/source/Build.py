@@ -10,17 +10,19 @@ import glob, json, os, pathlib, re, subprocess, sys
 buildUserInterfacePattern = r"\n\tvoid buildUserInterface(.*?)\}\n"
 
 # process UI and generate UI and parameter code
+windowFlags = "ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY"
+
 class UI:
 	def __init__(self, item, className):
 		self.ui = []
-		self.width = []
-		self.height = []
+		self.size = []
 		self.parameters = []
+		self.variables = []
 		self.level = 1
 
 		w, h = self.processItem(item)
-		self.width.append(f"\t\t\twidth = {w};")
-		self.height.append(f"\t\t\theight = {h};")
+		self.size.append(f"\t\twidth = {w};")
+		self.size.append(f"\t\theight = {h};")
 
 	def processItem(self, item):
 		match item["type"]:
@@ -42,21 +44,24 @@ class UI:
 	def vgroup(self, item):
 		width = f"width{self.level}"
 		height = f"height{self.level}"
-		self.width.append(f"\t\t\tauto {width} = 0.0f;")
-		self.height.append(f"\t\t\tauto {height} = 0.0f;")
+		self.variables.append(f"\tfloat {width};")
+		self.variables.append(f"\tfloat {height};")
 
-		extraFlags = "" if self.level == 1 else " | ImGuiChildFlags_Border"
-		self.ui.append(f"\t\tImGui::BeginChild(\"{item["label"]}\", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY{extraFlags});")
+		if self.level == 1 or item["label"] == "0x00":
+			self.ui.append(f"\t\tImGui::BeginChild(\"{item["label"]}\", ImVec2(), {windowFlags});")
 
-		if self.level > 1:
+		else:
+			self.ui.append(f"\t\tImGui::BeginChild(\"{item["label"]}\", ImVec2(), {windowFlags} | ImGuiChildFlags_Border);")
 			self.ui.append(f"\t\tOtUi::Header(\"{item["label"]}\");")
+			self.size.append(f"\t\t{width} += border * 2.0f + padding.x * 2.0f;")
+			self.size.append(f"\t\t{height} += frame + border * 2.0f + padding.y * 2.0f;")
 
 		self.level += 1
 
 		for child in item["items"]:
 			w, h = self.processItem(child)
-			self.width.append(f"\t\t\t{width} = std::max({width}, {w});")
-			self.height.append(f"\t\t\t{height} += {h};")
+			self.size.append(f"\t\t{width} = std::max({width}, {w});")
+			self.size.append(f"\t\t{height} += {h};")
 
 		self.level -= 1
 		self.ui.append("\t\tImGui::EndChild();")
@@ -65,15 +70,17 @@ class UI:
 	def hgroup(self, item):
 		width = f"width{self.level}"
 		height = f"height{self.level}"
-		self.width.append(f"\t\t\tauto {width} = 0.0f;")
-		self.height.append(f"\t\t\tauto {height} = 0.0f;")
+		self.variables.append(f"\tfloat {width};")
+		self.variables.append(f"\tfloat {height};")
 
+		if self.level == 1 or item["label"] == "0x00":
+			self.ui.append(f"\t\tImGui::BeginChild(\"{item["label"]}\", ImVec2(), {windowFlags});")
 
-		extraFlags = "" if self.level == 1 else " | ImGuiChildFlags_Border"
-		self.ui.append(f"\t\tImGui::BeginChild(\"{item["label"]}\", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY{extraFlags});")
-
-		if self.level > 1:
+		else:
+			self.ui.append(f"\t\tImGui::BeginChild(\"{item["label"]}\", ImVec2(), {windowFlags} | ImGuiChildFlags_Border);")
 			self.ui.append(f"\t\tOtUi::Header(\"{item["label"]}\");")
+			self.size.append(f"\t\t{width} = border * 2.0f + padding.x * 2.0f;")
+			self.size.append(f"\t\t{height} = frame + border * 2.0f + padding.y * 2.0f;")
 
 		self.level += 1
 		start = len(self.ui)
@@ -81,11 +88,11 @@ class UI:
 		for child in item["items"]:
 			if len(self.ui) != start:
 				self.ui.append("\t\tImGui::SameLine();")
-				self.width.append(f"\t\t\t{width} += spacing;")
+				self.size.append(f"\t\t{width} += spacing;")
 
 			w, h = self.processItem(child)
-			self.width.append(f"\t\t\t{width} += {w};")
-			self.height.append(f"\t\t\t{height} = std::max({height}, {h});")
+			self.size.append(f"\t\t{width} += {w};")
+			self.size.append(f"\t\t{height} = std::max({height}, {h});")
 
 		self.level -= 1
 		self.ui.append("\t\tImGui::EndChild();")
@@ -97,20 +104,22 @@ class UI:
 		label = item.get("label", "")
 		varname = item.get("varname", "")
 		address = self.fixAddress(item.get("address", ""))
+		parname = address[0].lower() + address[1:]
 		initValue = self.numberToString(item.get("init", 0))
 		minValue = self.numberToString(item.get("min", 0))
 		maxValue = self.numberToString(item.get("max", 0))
-		stepValue = self.numberToString(item.get("max", 0))
+		stepValue = self.numberToString(item.get("step", 0))
 		format = meta.get("format", self.formatFromStepValue(stepValue))
 
 		self.parameters.append({
 			"label": label,
 			"varname": varname,
+			"parname": parname,
 			"address": address,
 			"init": initValue,
 			"min": minValue,
 			"max": maxValue,
-			"max": stepValue})
+			"step": stepValue})
 
 		if style == "knob":
 			self.ui.append(f"\t\tchanged |= OtUi::knob(\"{label}\", &{varname}, {minValue}, {maxValue}, \"{format}\");")
@@ -119,53 +128,44 @@ class UI:
 		else:
 			return "0.0f", "0.0f"
 
+	def getSize(self):
+		text = "\n".join(self.size)
+		intro = ""
+		if "knobWidth" in text: intro += "\t\tauto knobWidth = OtUi::knobWidth();\n"
+		if "knobHeight" in text: intro += "\t\tauto knobHeight = OtUi::knobHeight();\n"
+		if "spacing" in text: intro += "\t\tauto spacing = ImGui::GetStyle().ItemSpacing.x;\n"
+		if "frame" in text: intro += "\t\tauto frame = ImGui::GetFrameHeightWithSpacing();\n"
+		if "border" in text: intro += "\t\tauto border = ImGui::GetStyle().ChildBorderSize;\n"
+		if "padding" in text: intro += "\t\tauto padding = ImGui::GetStyle().WindowPadding;\n"
+		return intro + text
+
 	def getRenderUI(self):
 		return "\n".join(self.ui)
 
-	def getSizeIntro(self, text):
-		intro = ""
-		if "knobWidth" in text: intro += "\t\t\tauto knobWidth = OtUi::knobWidth();\n"
-		if "knobHeight" in text: intro += "\t\t\tauto knobHeight = OtUi::knobHeight();\n"
-		if "spacing" in text: intro += "\t\t\tauto spacing = ImGui::GetStyle().ItemSpacing.x;\n"
-		return intro
-
-	def getRenderWidth(self):
-		if self.width:
-			text = "\n".join(self.width)
-			return self.getSizeIntro(text) + text
-
-		else:
-			return "\t\treturn 0.0f;"
-
-	def getRenderHeight(self):
-		if self.height:
-			text = "\n".join(self.height)
-			return self.getSizeIntro(text) + text
-
-		else:
-			return "\t\treturn 0.0f;"
-
 	def getParametersStruct(self):
 		if self.parameters:
-			return "\n".join([f"\t\tfloat {parameter["address"]};" for parameter in self.parameters])
+			return "\n".join([f"\t\tfloat {parameter["parname"]};" for parameter in self.parameters])
 
 		else:
 			return "\t\tfloat dummy;"
 
 	def getSetParameters(self):
-		return "\n".join([f"\t\t{parameter["varname"]} = parameters.{parameter["address"]};" for parameter in self.parameters])
+		return "\n".join([f"\t\t{parameter["varname"]} = parameters.{parameter["parname"]};" for parameter in self.parameters])
 
 	def getGetParameters(self):
-		return "\n".join([f"\t\tparameters.{parameter["address"]} = {parameter["varname"]};" for parameter in self.parameters])
+		return "\n".join([f"\t\tparameters.{parameter["parname"]} = {parameter["varname"]};" for parameter in self.parameters])
 
 	def getIterateParameters(self):
-		return "\n".join([f"\t\tcallback(\"{parameter["address"]}\", &{parameter["varname"]}, {parameter["init"]});" for parameter in self.parameters])
+		return "\n".join([f"\t\tcallback(\"{parameter["parname"]}\", &{parameter["varname"]}, {parameter["init"]});" for parameter in self.parameters])
 
 	def getSetters(self):
-		return "\n".join([f"\tinline void set{parameter["label"]}(float value) {{ {parameter["varname"]} = value; }}" for parameter in self.parameters])
+		return "\n".join([f"\tinline void set{parameter["address"]}(float value) {{ {parameter["varname"]} = value; }}" for parameter in self.parameters])
 
 	def getGetters(self):
-		return "\n".join([f"\tinline float get{parameter["label"]}() {{ return {parameter["varname"]}; }}" for parameter in self.parameters])
+		return "\n".join([f"\tinline float get{parameter["address"]}() {{ return {parameter["varname"]}; }}" for parameter in self.parameters])
+
+	def getVariables(self):
+		return "\n".join(self.variables)
 
 	def metaToDict(self, meta):
 		result = {}
@@ -187,15 +187,16 @@ class UI:
 			address = address[address.find("/"):]
 			address = address.replace("/", "")
 
-		return address[0].lower() + address[1:]
+		address = address.replace("0x00", "")
+		return address
 
 	def formatFromStepValue(self, stepValue):
 		stepValue = float(stepValue[0:-1])
 
-		if stepValue <= 0.01:
+		if stepValue < 0.1:
 			return "%.2f"
 
-		elif stepValue <= 0.1:
+		elif stepValue < 1.0:
 			return "%.1f"
 
 		else:
@@ -268,15 +269,15 @@ def processDspFile(sourceFileName):
 	text = re.sub(buildUserInterfacePattern, "", text, flags=re.DOTALL)
 
 	footerText = footer \
+		.replace("SIZE", ui.getSize()) \
 		.replace("RENDERUI", ui.getRenderUI()) \
-		.replace("GETRENDERWIDTH", ui.getRenderWidth()) \
-		.replace("GETRENDERHEIGHT", ui.getRenderHeight()) \
 		.replace("PARAMETERSSTRUCT", ui.getParametersStruct()) \
 		.replace("SETPARAMETERS", ui.getSetParameters()) \
 		.replace("GETPARAMETERS", ui.getGetParameters()) \
 		.replace("ITERATEPARAMETERS", ui.getIterateParameters()) \
 		.replace("SETTERS", ui.getSetters()) \
-		.replace("GETTERS", ui.getGetters())
+		.replace("GETTERS", ui.getGetters()) \
+		.replace("VARIABLES", ui.getVariables())
 
 	code = headerText + text + footerText
 

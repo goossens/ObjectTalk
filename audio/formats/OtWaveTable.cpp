@@ -88,15 +88,15 @@ void OtWaveTable::load(const std::string& path) {
 		} else if (chunkType == "data") {
 			if (channels == 1) {
 				// read mono file
-				buffer = std::make_shared<OtAudioBuffer>(1, chunkSize / 4);
+				buffer = std::make_shared<OtSampleBuffer>(1, chunkSize / 4);
 				readData(ifs, reinterpret_cast<char*>(buffer->data()), chunkSize);
 
 			} else if (channels == 2) {
 				// read stereo file (just extract left channel)
 				auto fileSamples = chunkSize / 2 / 4;
-				auto tmp = std::make_shared<OtAudioBuffer>(2, fileSamples);
+				auto tmp = std::make_shared<OtSampleBuffer>(2, fileSamples);
 				readData(ifs, reinterpret_cast<char*>(tmp->data()), chunkSize);
-				buffer = std::make_shared<OtAudioBuffer>(1, fileSamples);
+				buffer = std::make_shared<OtSampleBuffer>(1, fileSamples);
 
 				for (size_t i = 0; i < fileSamples; i++) {
 					buffer->set(0, i, tmp->get(0, i));

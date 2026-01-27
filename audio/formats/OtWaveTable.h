@@ -18,7 +18,7 @@
 
 #include "OtLog.h"
 
-#include "OtAudioBuffer.h"
+#include "OtSampleBuffer.h"
 
 //
 //	OtWaveTable
@@ -48,7 +48,7 @@ public:
 
 private:
 	// properties
-	std::shared_ptr<OtAudioBuffer> buffer;
+	std::shared_ptr<OtSampleBuffer> buffer;
 
 	// work variables
 	size_t samplesPerShape = 0;

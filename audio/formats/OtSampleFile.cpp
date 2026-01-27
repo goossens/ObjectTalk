@@ -55,7 +55,7 @@ void OtSampleFile::load(const std::string& path) {
 
 	// now turn it into an audio buffer
 	auto sampleCount = static_cast<size_t>(len / 4);
-	sound = std::make_shared<OtAudioBuffer>(static_cast<size_t>(spec.channels), sampleCount);
+	sound = std::make_shared<OtSampleBuffer>(static_cast<size_t>(spec.channels), sampleCount);
 	std::copy(reinterpret_cast<float*>(buffer), reinterpret_cast<float*>(buffer) + sampleCount, sound->data());
 	SDL_free(buffer);
 }

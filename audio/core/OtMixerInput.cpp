@@ -163,7 +163,7 @@ void OtMixerInput::getStreamData([[maybe_unused]] int additional, [[maybe_unused
 		buffer.clear(0.0f);
 	}
 
-	if (!SDL_PutAudioStreamData(stream, buffer.data(), static_cast<int>(OtAudioSettings::bufferSize * sizeof(float) * 2))) {
+	if (!SDL_PutAudioStreamData(stream, buffer.data(), static_cast<int>(buffer.size() * sizeof(float)))) {
 		OtLogFatal("Error in SDL_PutAudioStreamData: {}", SDL_GetError());
 	}
 }

@@ -26,7 +26,6 @@
 
 class OtAdsr : public OtFaust {
 protected:
-	float fButton0;
 	int iVec0[2];
 	float fHslider0;
 	int iRec1[2];
@@ -76,7 +75,7 @@ protected:
 	}
 
 	int getNumInputs() override {
-		return 0;
+		return 1;
 	}
 	int getNumOutputs() override {
 		return 1;
@@ -93,7 +92,6 @@ protected:
 	}
 	
 	virtual void instanceResetUserInterface() {
-		fButton0 = static_cast<float>(0.0);
 		fHslider0 = static_cast<float>(1.0);
 		fHslider1 = static_cast<float>(1.0);
 		fHslider2 = static_cast<float>(1.0);
@@ -132,24 +130,25 @@ protected:
 	}
 		
 	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
+		float* input0 = inputs[0];
 		float* output0 = outputs[0];
-		int iSlow0 = static_cast<double>(fButton0) > 0.0;
-		double fSlow1 = 0.001 * static_cast<double>(fHslider0);
-		double fSlow2 = static_cast<double>(fHslider1);
-		int iSlow3 = static_cast<int>(fConst1 * fSlow2);
-		double fSlow4 = 0.001 * static_cast<double>(fHslider2);
-		double fSlow5 = 0.001 * fSlow2;
-		double fSlow6 = static_cast<double>(iSlow0);
-		double fSlow7 = static_cast<double>(fHslider3) * fSlow6;
+		double fSlow0 = 0.001 * static_cast<double>(fHslider0);
+		double fSlow1 = static_cast<double>(fHslider1);
+		int iSlow2 = static_cast<int>(fConst1 * fSlow1);
+		double fSlow3 = 0.001 * static_cast<double>(fHslider2);
+		double fSlow4 = 0.001 * fSlow1;
+		double fSlow5 = static_cast<double>(fHslider3);
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
-			iVec0[0] = iSlow0;
-			iRec1[0] = iSlow0 * (iRec1[1] + 1);
-			int iTemp0 = iSlow0 - iVec0[1];
-			int iTemp1 = (iRec1[0] < iSlow3) | (iTemp0 * (iTemp0 > 0));
-			double fTemp2 = 0.1447178002894356 * ((iSlow0) ? ((iTemp1) ? fSlow5 : fSlow4) : fSlow1);
-			int iTemp3 = std::fabs(fTemp2) < 2.220446049250313e-16;
-			double fTemp4 = ((iTemp3) ? 0.0 : std::exp(-(fConst2 / ((iTemp3) ? 1.0 : fTemp2))));
-			fRec0[0] = (1.0 - fTemp4) * ((iSlow0) ? ((iTemp1) ? fSlow6 : fSlow7) : 0.0) + fTemp4 * fRec0[1];
+			int iTemp0 = static_cast<double>(input0[i0]) > 0.0;
+			iVec0[0] = iTemp0;
+			iRec1[0] = iTemp0 * (iRec1[1] + 1);
+			int iTemp1 = iTemp0 - iVec0[1];
+			int iTemp2 = (iRec1[0] < iSlow2) | (iTemp1 * (iTemp1 > 0));
+			double fTemp3 = 0.1447178002894356 * ((iTemp0) ? ((iTemp2) ? fSlow4 : fSlow3) : fSlow0);
+			int iTemp4 = std::fabs(fTemp3) < 2.220446049250313e-16;
+			double fTemp5 = ((iTemp4) ? 0.0 : std::exp(-(fConst2 / ((iTemp4) ? 1.0 : fTemp3))));
+			double fTemp6 = static_cast<double>(iTemp0);
+			fRec0[0] = (1.0 - fTemp5) * ((iTemp0) ? ((iTemp2) ? fTemp6 : fSlow5 * fTemp6) : 0.0) + fTemp5 * fRec0[1];
 			output0[i0] = static_cast<float>(fRec0[0]);
 			iVec0[1] = iVec0[0];
 			iRec1[1] = iRec1[0];
@@ -157,7 +156,31 @@ protected:
 		}
 	}
 
+	inline void calculateSizes() {
+		auto knobWidth = OtUi::knobWidth();
+		auto knobHeight = OtUi::knobHeight();
+		auto spacing = ImGui::GetStyle().ItemSpacing.x;
+		width1 += knobWidth;
+		height1 = std::max(height1, knobHeight);
+		width1 += spacing;
+		width1 += knobWidth;
+		height1 = std::max(height1, knobHeight);
+		width1 += spacing;
+		width1 += knobWidth;
+		height1 = std::max(height1, knobHeight);
+		width1 += spacing;
+		width1 += knobWidth;
+		height1 = std::max(height1, knobHeight);
+		width = width1;
+		height = height1;
+		initialized = true;
+	}
+
 	inline bool renderUI() {
+		if (!initialized) {
+			calculateSizes();
+		}
+
 		bool changed = false;
 		ImGui::BeginChild("ADSR", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
 		changed |= OtUi::knob("Attack", &fHslider1, 0.0f, 10.0f, "%.2fms");
@@ -172,38 +195,20 @@ protected:
 	}
 
 	inline float getRenderWidth() {
-		if (width == -1.0f) {
-			auto knobWidth = OtUi::knobWidth();
-			auto spacing = ImGui::GetStyle().ItemSpacing.x;
-			auto width1 = 0.0f;
-			width1 += 0.0f;
-			width1 += knobWidth;
-			width1 += spacing;
-			width1 += knobWidth;
-			width1 += spacing;
-			width1 += knobWidth;
-			width1 += spacing;
-			width1 += knobWidth;
-			width = width1;
+		if (!initialized) {
+			calculateSizes();
 		}
 
 		return width;
 	}
 
 	inline float getRenderHeight() {
-		if (height == -1.0f) {
-			auto knobHeight = OtUi::knobHeight();
-			auto height1 = 0.0f;
-			height1 = std::max(height1, 0.0f);
-			height1 = std::max(height1, knobHeight);
-			height1 = std::max(height1, knobHeight);
-			height1 = std::max(height1, knobHeight);
-			height1 = std::max(height1, knobHeight);
-			height = height1;
+		if (!initialized) {
+			calculateSizes();
 		}
 
 		return height;
-}
+	}
 
 	struct Parameters {
 		float attack;
@@ -244,6 +249,9 @@ protected:
 	inline float getRelease() { return fHslider0; }
 
 private:
+	bool initialized = false;
 	float width = -1.0f;
 	float height = -1.0f;
+	float width1;
+	float height1;
 };

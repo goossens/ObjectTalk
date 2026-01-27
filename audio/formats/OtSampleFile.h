@@ -17,7 +17,7 @@
 
 #include "SDL3/SDL.h"
 
-#include "OtAudioBuffer.h"
+#include "OtSampleBuffer.h"
 
 
 //
@@ -34,7 +34,7 @@ public:
 
 	// get/set information
 	inline bool isValid() { return sound != nullptr; }
-	inline std::shared_ptr<OtAudioBuffer> getAudioBuffer() { return sound; }
+	inline std::shared_ptr<OtSampleBuffer> getBuffer() { return sound; }
 
 	inline void setRootFrequency(float rf) { rootFrequency = rf; }
 	inline float getRootFrequency() { return rootFrequency; }
@@ -45,6 +45,6 @@ public:
 
 private:
 	// properties
-	std::shared_ptr<OtAudioBuffer> sound;
+	std::shared_ptr<OtSampleBuffer> sound;
 	float rootFrequency = 0.0f;
 };

@@ -194,51 +194,59 @@ protected:
 		}
 	}
 
+	inline void calculateSizes() {
+		auto knobWidth = OtUi::knobWidth();
+		auto knobHeight = OtUi::knobHeight();
+		auto spacing = ImGui::GetStyle().ItemSpacing.x;
+		width1 += knobWidth;
+		height1 = std::max(height1, knobHeight);
+		width1 += spacing;
+		width1 += knobWidth;
+		height1 = std::max(height1, knobHeight);
+		width1 += spacing;
+		width1 += knobWidth;
+		height1 = std::max(height1, knobHeight);
+		width1 += spacing;
+		width1 += knobWidth;
+		height1 = std::max(height1, knobHeight);
+		width = width1;
+		height = height1;
+		initialized = true;
+	}
+
 	inline bool renderUI() {
+		if (!initialized) {
+			calculateSizes();
+		}
+
 		bool changed = false;
 		ImGui::BeginChild("Chorus", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
-		changed |= OtUi::knob("Level", &fHslider0, 0.0f, 1.0f, "%.0f");
+		changed |= OtUi::knob("Level", &fHslider0, 0.0f, 1.0f, "%.2f");
 		ImGui::SameLine();
-		changed |= OtUi::knob("Freq", &fHslider3, 0.0f, 10.0f, "%.0f");
+		changed |= OtUi::knob("Freq", &fHslider3, 0.0f, 10.0f, "%.2f");
 		ImGui::SameLine();
-		changed |= OtUi::knob("Delay", &fHslider1, 0.0f, 0.2f, "%.0f");
+		changed |= OtUi::knob("Delay", &fHslider1, 0.0f, 0.2f, "%.2f");
 		ImGui::SameLine();
-		changed |= OtUi::knob("Depth", &fHslider2, 0.0f, 1.0f, "%.0f");
+		changed |= OtUi::knob("Depth", &fHslider2, 0.0f, 1.0f, "%.2f");
 		ImGui::EndChild();
 		return changed;
 	}
 
 	inline float getRenderWidth() {
-		if (width == -1.0f) {
-			auto knobWidth = OtUi::knobWidth();
-			auto spacing = ImGui::GetStyle().ItemSpacing.x;
-			auto width1 = 0.0f;
-			width1 += knobWidth;
-			width1 += spacing;
-			width1 += knobWidth;
-			width1 += spacing;
-			width1 += knobWidth;
-			width1 += spacing;
-			width1 += knobWidth;
-			width = width1;
+		if (!initialized) {
+			calculateSizes();
 		}
 
 		return width;
 	}
 
 	inline float getRenderHeight() {
-		if (height == -1.0f) {
-			auto knobHeight = OtUi::knobHeight();
-			auto height1 = 0.0f;
-			height1 = std::max(height1, knobHeight);
-			height1 = std::max(height1, knobHeight);
-			height1 = std::max(height1, knobHeight);
-			height1 = std::max(height1, knobHeight);
-			height = height1;
+		if (!initialized) {
+			calculateSizes();
 		}
 
 		return height;
-}
+	}
 
 	struct Parameters {
 		float level;
@@ -279,6 +287,9 @@ protected:
 	inline float getDepth() { return fHslider2; }
 
 private:
+	bool initialized = false;
 	float width = -1.0f;
 	float height = -1.0f;
+	float width1;
+	float height1;
 };

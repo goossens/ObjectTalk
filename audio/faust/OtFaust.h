@@ -162,7 +162,7 @@ public:
 	void execute() override {
 		if (audioOutput->isDestinationConnected()) {
 			if (audioInput->isSourceConnected()) {
-				auto in = audioInput->getSamples();
+				auto in = audioInput->getAudioInputBuffer().data();
 				auto out = audioOutput->getAudioOutputBuffer().data();
 				dsp.compute(OtAudioSettings::bufferSize, &in, &out);
 

@@ -27,17 +27,8 @@
 class OtAudioBuffer {
 public:
 	// constructor
-	inline OtAudioBuffer(size_t c, size_t s=OtAudioSettings::bufferSize) : channels(c), samples(s) {
-		buffer.resize(channels * samples);
-	}
-
-	// resize the buffer
-	inline void resize(size_t c, size_t s=OtAudioSettings::bufferSize) {
-		if (channels != c || samples != s) {
-			channels = c;
-			samples = s;
-			buffer.resize(channels * samples);
-		}
+	inline OtAudioBuffer(size_t c) : channels(c) {
+		buffer.resize(channels * OtAudioSettings::bufferSize);
 	}
 
 	// clear the buffer with specified value
@@ -45,34 +36,23 @@ public:
 		std::fill(begin(), end(), value);
 	}
 
-	// resize and load the buffer
-	inline void load(float* data, size_t newChannels, size_t newSamples) {
-		buffer.resize(newChannels * newSamples);
-		channels = newChannels;
-		samples = newSamples;
-
-		for (size_t i = 0; i < size(); i++) {
-			buffer[i] += data[i];
-		}
-	}
-
 	// access buffer members
 	inline void set(size_t channel, size_t sample, float value) {
-		buffer[channel * samples + sample] = value;
+		buffer[channel * OtAudioSettings::bufferSize + sample] = value;
 	}
 
 	inline float& get(size_t channel, size_t sample) {
-		return buffer[channel * samples + sample];
+		return buffer[channel * OtAudioSettings::bufferSize + sample];
 	}
 
 	// mix signal with buffer
 	inline void mix(size_t channel, size_t sample, float value) {
-		buffer[channel * samples + sample] += value;
+		buffer[channel * OtAudioSettings::bufferSize + sample] += value;
 	}
 
 	inline void mix(const OtAudioBuffer& input) {
 		// sanity check
-		OtAssert(channels == input.channels && samples == input.samples);
+		OtAssert(channels == input.channels);
 
 		for (size_t i = 0; i < size(); i++) {
 			buffer[i] += input.buffer[i];
@@ -81,9 +61,7 @@ public:
 
 	// get buffer information
 	inline size_t getChannelCount() { return channels; }
-	inline size_t getSampleCount() { return samples; }
-	inline float* getChannelData(size_t channel) { return buffer.data() + channel * samples; }
-	inline float getDurationInSeconds() { return static_cast<float>(samples) * OtAudioSettings::dt; }
+	inline float* getChannelData(size_t channel) { return buffer.data() + channel * OtAudioSettings::bufferSize; }
 
 	inline float* data() { return buffer.data(); }
 	inline size_t size() { return buffer.size(); }
@@ -93,8 +71,7 @@ public:
 	inline float* end() { return buffer.data() + buffer.size(); }
 
 private:
-	// buffer (channels are interleaved)
+	// buffer
 	size_t channels = 0;
-	size_t samples = 0;
 	std::vector<float> buffer;
 };

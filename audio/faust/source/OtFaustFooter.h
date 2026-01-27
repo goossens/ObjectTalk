@@ -1,25 +1,34 @@
 
+	inline void calculateSizes() {
+SIZE
+		initialized = true;
+	}
+
 	inline bool renderUI() {
+		if (!initialized) {
+			calculateSizes();
+		}
+
 		bool changed = false;
 RENDERUI
 		return changed;
 	}
 
 	inline float getRenderWidth() {
-		if (width == -1.0f) {
-GETRENDERWIDTH
+		if (!initialized) {
+			calculateSizes();
 		}
 
 		return width;
 	}
 
 	inline float getRenderHeight() {
-		if (height == -1.0f) {
-GETRENDERHEIGHT
+		if (!initialized) {
+			calculateSizes();
 		}
 
 		return height;
-}
+	}
 
 	struct Parameters {
 PARAMETERSSTRUCT
@@ -42,6 +51,8 @@ SETTERS
 GETTERS
 
 private:
+	bool initialized = false;
 	float width = -1.0f;
 	float height = -1.0f;
+VARIABLES
 };

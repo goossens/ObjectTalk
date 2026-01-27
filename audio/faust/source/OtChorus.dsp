@@ -10,10 +10,10 @@ declare license "MIT";
 
 import("music.lib");
 
-level	= hslider("[0]Level[style:knob]", 0.5, 0, 1, 0.01);
-freq	= hslider("[1]Freq[style:knob]", 2, 0, 10, 0.01);
-dtime	= hslider("[2]Delay[style:knob]", 0.025, 0, 0.2, 0.001);
-depth	= hslider("[3]Depth[style:knob]", 0.02, 0, 1, 0.001);
+level = hslider("[0]Level[style:knob]", 0.5, 0, 1, 0.01);
+freq = hslider("[1]Freq[style:knob]", 2, 0, 10, 0.01);
+dtime = hslider("[2]Delay[style:knob]", 0.025, 0, 0.2, 0.001);
+depth = hslider("[3]Depth[style:knob]", 0.02, 0, 1, 0.001);
 
 tblosc(n, f, freq, mod) = (1 - d) * rdtable(n, wave, i & (n - 1)) + d * rdtable(n, wave, (i + 1) & (n - 1)) with {
 	wave = time * (2.0 *PI) / n : f;

@@ -23,7 +23,6 @@ has a console for output and highlighting for errors. A visual debugger is also 
 ### Default Keyboard and Mouse Actions
 
 - In the mappings listed below, the following modifier keys are used:
-	- Super: this refers to the Control key on MacOS (Dear ImGui reverses Command and Control key on that platform).
 	- Ctrl: this refers to the Command key on MacOS and the Control key on Linux and Windows.
 	- Alt: this refers to the Option key on MacOS and the Alt key on Linux and Windows.
 	- Shift: as you would expect on all platforms.

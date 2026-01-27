@@ -90,7 +90,7 @@ void OtAudio::provideSignal(OtAudioBuffer& buffer) {
 	auto left = tmp;
 	auto right = tmp + OtAudioSettings::bufferSize;
 
-	for (size_t i = 0; i < OtAudioSettings::bufferSize * 2; i++) {
+	for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
 		*output++ = *left++;
 		*output++ = *right++;
 	}
@@ -111,6 +111,7 @@ void OtAudio::provideSignal(OtAudioBuffer& buffer) {
 
 OtAudio::~OtAudio() {
 	mixerInput.stop();
+	mixerInput.setSignalProvider(nullptr);
 	clear();
 }
 

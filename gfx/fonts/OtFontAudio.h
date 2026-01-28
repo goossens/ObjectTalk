@@ -36,7 +36,7 @@ public:
 	static constexpr const char* arpDown = u8"\uf107";
 	static constexpr const char* arpDownAndUp = u8"\uf108";
 	static constexpr const char* arpDownUp = u8"\uf109";
-	static constexpr const char* arpPlayArder = u8"\uf10a";
+	static constexpr const char* arpPlayer = u8"\uf10a";
 	static constexpr const char* arpRandom = u8"\uf10b";
 	static constexpr const char* arpUp = u8"\uf10c";
 	static constexpr const char* arpUpAnDown = u8"\uf10d";
@@ -60,7 +60,7 @@ public:
 	static constexpr const char* digitalDot = u8"\uf11f";
 	static constexpr const char* digital0 = u8"\uf120";
 	static constexpr const char* digital1 = u8"\uf121";
-	static constexpr const char* cigital2 = u8"\uf122";
+	static constexpr const char* digital2 = u8"\uf122";
 	static constexpr const char* digital3 = u8"\uf123";
 	static constexpr const char* digital4 = u8"\uf124";
 	static constexpr const char* digital5 = u8"\uf125";

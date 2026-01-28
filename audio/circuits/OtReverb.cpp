@@ -18,7 +18,7 @@
 //	OtReverbCircuit
 //
 
-class OtReverbCircuit : public OtFaustCircuitMono<OtReverb> {
+class OtReverbCircuit : public OtFaustEffectMono<OtReverb> {
 public:
 	static constexpr const char* circuitName = "Reverb";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::effect;

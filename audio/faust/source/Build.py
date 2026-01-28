@@ -11,6 +11,8 @@ buildUserInterfacePattern = r"\n\tvoid buildUserInterface(.*?)\}\n"
 
 # process UI and generate UI and parameter code
 windowFlags = "ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY"
+sliderLength = "100.0f"
+sliderWidth = "20.0f"
 
 class UI:
 	def __init__(self, item, className):
@@ -19,18 +21,17 @@ class UI:
 		self.parameters = []
 		self.variables = []
 		self.level = 1
+		self.child = 1
 
-		w, h = self.processItem(item)
-		self.size.append(f"\t\twidth = {w};")
-		self.size.append(f"\t\theight = {h};")
+		self.processItem(item)
 
 	def processItem(self, item):
 		match item["type"]:
 			case "vgroup":
-				return self.vgroup(item)
+				return self.group(item, True)
 
 			case "hgroup":
-				return self.hgroup(item)
+				return self.group(item, False)
 
 			case "vslider":
 				return self.slider(item, True)
@@ -41,58 +42,39 @@ class UI:
 			case _:
 				return "0.0f", "0.0f"
 
-	def vgroup(self, item):
+	def group(self, item, vertical):
 		width = f"width{self.level}"
 		height = f"height{self.level}"
 		self.variables.append(f"\tfloat {width};")
 		self.variables.append(f"\tfloat {height};")
+		label = self.generateChildLabel(item["label"])
 
 		if self.level == 1 or item["label"] == "0x00":
-			self.ui.append(f"\t\tImGui::BeginChild(\"{item["label"]}\", ImVec2(), {windowFlags});")
+			self.ui.append(f"\t\tImGui::BeginChild(\"{label}\", ImVec2(), {windowFlags});")
 
 		else:
-			self.ui.append(f"\t\tImGui::BeginChild(\"{item["label"]}\", ImVec2(), {windowFlags} | ImGuiChildFlags_Border);")
+			self.ui.append(f"\t\tImGui::BeginChild(\"{label}\", ImVec2(), {windowFlags} | ImGuiChildFlags_Border);")
 			self.ui.append(f"\t\tOtUi::Header(\"{item["label"]}\");")
 			self.size.append(f"\t\t{width} += border * 2.0f + padding.x * 2.0f;")
 			self.size.append(f"\t\t{height} += frame + border * 2.0f + padding.y * 2.0f;")
 
 		self.level += 1
-
-		for child in item["items"]:
-			w, h = self.processItem(child)
-			self.size.append(f"\t\t{width} = std::max({width}, {w});")
-			self.size.append(f"\t\t{height} += {h};")
-
-		self.level -= 1
-		self.ui.append("\t\tImGui::EndChild();")
-		return width, height
-
-	def hgroup(self, item):
-		width = f"width{self.level}"
-		height = f"height{self.level}"
-		self.variables.append(f"\tfloat {width};")
-		self.variables.append(f"\tfloat {height};")
-
-		if self.level == 1 or item["label"] == "0x00":
-			self.ui.append(f"\t\tImGui::BeginChild(\"{item["label"]}\", ImVec2(), {windowFlags});")
-
-		else:
-			self.ui.append(f"\t\tImGui::BeginChild(\"{item["label"]}\", ImVec2(), {windowFlags} | ImGuiChildFlags_Border);")
-			self.ui.append(f"\t\tOtUi::Header(\"{item["label"]}\");")
-			self.size.append(f"\t\t{width} = border * 2.0f + padding.x * 2.0f;")
-			self.size.append(f"\t\t{height} = frame + border * 2.0f + padding.y * 2.0f;")
-
-		self.level += 1
 		start = len(self.ui)
 
 		for child in item["items"]:
-			if len(self.ui) != start:
-				self.ui.append("\t\tImGui::SameLine();")
-				self.size.append(f"\t\t{width} += spacing;")
+			if vertical:
+				w, h = self.processItem(child)
+				self.size.append(f"\t\t{width} = std::max({width}, {w});")
+				self.size.append(f"\t\t{height} += {h};")
 
-			w, h = self.processItem(child)
-			self.size.append(f"\t\t{width} += {w};")
-			self.size.append(f"\t\t{height} = std::max({height}, {h});")
+			else:
+				if len(self.ui) != start:
+					self.ui.append("\t\tImGui::SameLine();")
+					self.size.append(f"\t\t{width} += spacing;")
+
+				w, h = self.processItem(child)
+				self.size.append(f"\t\t{width} += {w};")
+				self.size.append(f"\t\t{height} = std::max({height}, {h});")
 
 		self.level -= 1
 		self.ui.append("\t\tImGui::EndChild();")
@@ -125,8 +107,14 @@ class UI:
 			self.ui.append(f"\t\tchanged |= OtUi::knob(\"{label}\", &{varname}, {minValue}, {maxValue}, \"{format}\");")
 			return "knobWidth", "knobHeight"
 
+		elif vertical:
+			self.ui.append(f"\t\tchanged |= ImGui::VSliderFloat(\"{label}\", ImVec2({sliderWidth}, {sliderLength}), &{varname}, {minValue}, {maxValue}, \"{format}\");")
+			return sliderWidth, sliderLength
+
 		else:
-			return "0.0f", "0.0f"
+			self.ui.append(f"\t\tImGui::SetNextItemWidth({sliderLength});")
+			self.ui.append(f"\t\tchanged |= ImGui::SliderFloat(\"{label}\", ImVec2({sliderLength}, {sliderWidth}), &{varname}, {minValue}, {maxValue}, \"{format}\");")
+			return sliderLength, sliderWidth
 
 	def getSize(self):
 		text = "\n".join(self.size)
@@ -180,6 +168,13 @@ class UI:
 		result += "" if "." in result else ".0"
 		result += "f"
 		return result
+
+	def generateChildLabel(self, label):
+		if label == "0x00":
+			label = f"Label{self.child}"
+			self.child += 1
+
+		return label
 
 	def fixAddress(self, address):
 		if address[0] == "/":

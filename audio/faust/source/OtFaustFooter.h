@@ -19,7 +19,7 @@ RENDERUI
 			calculateSizes();
 		}
 
-		return width;
+		return width1;
 	}
 
 	inline float getRenderHeight() {
@@ -27,7 +27,7 @@ RENDERUI
 			calculateSizes();
 		}
 
-		return height;
+		return height1;
 	}
 
 	struct Parameters {
@@ -52,7 +52,5 @@ GETTERS
 
 private:
 	bool initialized = false;
-	float width = -1.0f;
-	float height = -1.0f;
 VARIABLES
 };

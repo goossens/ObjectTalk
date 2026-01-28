@@ -18,7 +18,7 @@
 //	OtCompressorCircuit
 //
 
-class OtCompressorCircuit : public OtFaustCircuitMono<OtCompressor> {
+class OtCompressorCircuit : public OtFaustEffectMono<OtCompressor> {
 public:
 	static constexpr const char* circuitName = "Compressor";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::effect;

@@ -87,54 +87,19 @@ public:
 
 
 //
-//	OtFaustComponent
+//	OtFaustCircuit
 //
 
 template<typename T>
-class OtFaustComponent {
-public:
-	// set of parameters that drive the component
-	class Parameters {
-	public:
-		Parameters() { dsp.initialize(); }
-
-		// (de)serialize filter parameters
-		inline void serialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) { dsp.serialize(data); }
-		inline void deserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) { dsp.deserialize(data); }
-
-		// process samples
-		inline void process(float* buffer, size_t size) { dsp.compute(static_cast<int>(size), &buffer, &buffer); };
-
-		// target Faust processor
-		T dsp;
-	};
-
-	// state of the component allowing multiple instances with identical parameters
-	class State {
-	public:
-		// target Faust processor
-		T dsp;
-	};
-};
-
-
-//
-//	OtFaustCircuitMono
-//
-
-template<typename T>
-class OtFaustCircuitMono : public OtCircuitClass {
+class OtFaustCircuit : public OtCircuitClass {
 public:
 	// configure circuit
 	inline void configure() override {
 		dsp.initialize();
-
-		OtAssert(dsp.getNumInputs() == 1);
-		OtAssert(dsp.getNumOutputs() == 1);
-
-		audioInput = addInputPin("Input", OtCircuitPinClass::Type::mono);
-		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
+		configurePins();
 	}
+
+	virtual void configurePins() {}
 
 	// render custom fields
 	inline bool customRendering([[maybe_unused]] float itemWidth) override {
@@ -158,13 +123,35 @@ public:
 		dsp.deserialize(data);
 	}
 
+protected:
+	// target Faust processor
+	T dsp;
+};
+
+
+//
+//	OtFaustEffectMono
+//
+
+template<typename T>
+class OtFaustEffectMono : public OtFaustCircuit<T> {
+public:
+	// configure circuit pins
+	inline void configurePins() override {
+		OtAssert(this->dsp.getNumInputs() == 1);
+		OtAssert(this->dsp.getNumOutputs() == 1);
+
+		audioInput = this->addInputPin("Input", OtCircuitPinClass::Type::mono);
+		audioOutput = this->addOutputPin("Output", OtCircuitPinClass::Type::mono);
+	}
+
 	// process samples
 	void execute() override {
 		if (audioOutput->isDestinationConnected()) {
 			if (audioInput->isSourceConnected()) {
 				auto in = audioInput->getAudioInputBuffer().data();
 				auto out = audioOutput->getAudioOutputBuffer().data();
-				dsp.compute(OtAudioSettings::bufferSize, &in, &out);
+				this->dsp.compute(OtAudioSettings::bufferSize, &in, &out);
 
 			} else {
 				audioOutput->setSamples(0.0f);
@@ -176,50 +163,23 @@ private:
 	// circuit work variables
 	OtCircuitPin audioInput;
 	OtCircuitPin audioOutput;
-
-	// target Faust processor
-	T dsp;
 };
 
 
 //
-//	OtFaustCircuitStereo
+//	OtFaustEffectStereo
 //
 
 template<typename T>
-class OtFaustCircuitStereo : public OtCircuitClass {
+class OtFaustEffectStereo : public OtFaustCircuit<T> {
 public:
-	// configure circuit
-	inline void configure() override {
-		dsp.initialize();
+	// configure circuit pins
+	inline void configurePins() override {
+		OtAssert(this->dsp.getNumInputs() == 2);
+		OtAssert(this->dsp.getNumOutputs() == 2);
 
-		OtAssert(dsp.getNumInputs() == 2);
-		OtAssert(dsp.getNumOutputs() == 2);
-
-		audioInput = addInputPin("Input", OtCircuitPinClass::Type::stereo);
-		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::stereo);
-	}
-
-	// render custom fields
-	inline bool customRendering([[maybe_unused]] float itemWidth) override {
-		return dsp.renderUI();
-	}
-
-	inline float getCustomRenderingWidth() override {
-		return dsp.getRenderWidth();
-	}
-
-	inline float getCustomRenderingHeight() override {
-		return dsp.getRenderHeight();
-	}
-
-	// (de)serialize circuit
-	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
-		dsp.serialize(data);
-	}
-
-	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
-		dsp.deserialize(data);
+		audioInput = this->addInputPin("Input", OtCircuitPinClass::Type::stereo);
+		audioOutput = this->addOutputPin("Output", OtCircuitPinClass::Type::stereo);
 	}
 
 	// process samples
@@ -231,7 +191,7 @@ public:
 
 				float* inputs[] = { input.getChannelData(0), input.getChannelData(1) };
 				float* outputs[] = { output.getChannelData(0), output.getChannelData(1) };
-				dsp.compute(OtAudioSettings::bufferSize, inputs, outputs);
+				this->dsp.compute(OtAudioSettings::bufferSize, inputs, outputs);
 
 			} else {
 				audioOutput->setSamples(0.0f);
@@ -243,7 +203,4 @@ private:
 	// circuit work variables
 	OtCircuitPin audioInput;
 	OtCircuitPin audioOutput;
-
-	// target Faust processor
-	T dsp;
 };

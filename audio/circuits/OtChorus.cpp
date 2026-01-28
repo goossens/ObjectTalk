@@ -18,7 +18,7 @@
 //	OtChorusCircuit
 //
 
-class OtChorusCircuit : public OtFaustCircuitStereo<OtChorus> {
+class OtChorusCircuit : public OtFaustEffectStereo<OtChorus> {
 public:
 	static constexpr const char* circuitName = "Chorus";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::effect;

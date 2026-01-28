@@ -17,6 +17,7 @@
 #include "OtFontAudio.h"
 #include "OtUi.h"
 
+#include "OtAudioUi.h"
 #include "OtAudioUtilities.h"
 #include "OtAudioFilter.h"
 
@@ -30,27 +31,15 @@ bool OtAudioFilter::Parameters::renderUI() {
 	auto spacing = ImGui::GetStyle().ItemInnerSpacing.x;
 
 	ImGui::PushID("Modes");
-	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
-	changed |= OtUi::radioButton(OtFontAudio::filterBypass, &mode, OtAudioFilter::Mode::off);
-	ImGui::PopFont();
-	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Off"); }
+	changed |= OtAudioUi::audioRadioButton(OtFontAudio::filterBypass, &mode, OtAudioFilter::Mode::off, "Off");
 	ImGui::SameLine(0.0f, spacing);
-	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
-	changed |= OtUi::radioButton(OtFontAudio::filterLowpass, &mode, OtAudioFilter::Mode::lowPass);
-	ImGui::PopFont();
-	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Low Pass"); }
+	changed |= OtAudioUi::audioRadioButton(OtFontAudio::filterLowpass, &mode, OtAudioFilter::Mode::lowPass, "Low Pass");
 	ImGui::SameLine(0.0f, spacing);
-	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
-	changed |= OtUi::radioButton(OtFontAudio::filterHighpass, &mode, OtAudioFilter::Mode::highPass);
-	ImGui::PopFont();
-	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("High Pass"); }
+	changed |= OtAudioUi::audioRadioButton(OtFontAudio::filterHighpass, &mode, OtAudioFilter::Mode::highPass, "High Pass");
 	ImGui::SameLine(0.0f, spacing);
-	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
-	changed |= OtUi::radioButton(OtFontAudio::filterBell, &mode, OtAudioFilter::Mode::bandPass);
-	ImGui::PopFont();
-	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Band Pass"); }
+	changed |= OtAudioUi::audioRadioButton(OtFontAudio::filterBell, &mode, OtAudioFilter::Mode::bandPass, "Band Pass");
 	ImGui::SameLine(0.0f, spacing);
-	changed |= OtUi::radioButton("M", &mode, OtAudioFilter::Mode::moogLadder, ImVec2(OtUi::getAudioButtonWidth(), 0.0f));
+	changed |= OtUi::radioButton("M", &mode, OtAudioFilter::Mode::moogLadder, ImVec2(OtAudioUi::getAudioButtonWidth(), 0.0f));
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Moog Ladder"); }
 	ImGui::PopID();
 

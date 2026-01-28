@@ -51,7 +51,6 @@ public:
 	static void loadFonts();
 	inline static ImFont* getTextFont() { return textFont; }
 	inline static ImFont* getAudioFont() { return audioFont; }
-	static float getAudioButtonWidth();
 
 	// adjust cursor position based on alignment
 	static void align(ImVec2 size, Alignment horizontal, Alignment vertical);
@@ -200,7 +199,7 @@ public:
 	// bezier curve editor
 	static bool bezier(const char* label, float P[4]);
 
-private:
+protected:
 	// generic glm tools
 	static void viewVecX(const char* labelPlusID, const float* value, int components);
 	static bool editVecX(const char* labelPlusID, float* value, int components, float minv, float maxv);

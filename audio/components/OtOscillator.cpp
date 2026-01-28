@@ -15,6 +15,7 @@
 #include "OtFontAudio.h"
 #include "OtUi.h"
 
+#include "OtAudioUi.h"
 #include "OtOscillator.h"
 
 
@@ -63,44 +64,23 @@ bool OtOscillator::Parameters::renderUI() {
 	auto spacing = ImGui::GetStyle().ItemInnerSpacing.x;
 
 	ImGui::PushID("Modes");
-	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
-	changed |= OtUi::radioButton(OtFontAudio::filterBypass, &waveForm, OtOscillator::WaveForm::off);
-	ImGui::PopFont();
-	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Off"); }
+	changed |= OtAudioUi::audioRadioButton(OtFontAudio::filterBypass, &waveForm, OtOscillator::WaveForm::off, "Off");
 	ImGui::SameLine(0.0f, spacing);
-	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
-	changed |= OtUi::radioButton(OtFontAudio::modSine, &waveForm, OtOscillator::WaveForm::sine);
-	ImGui::PopFont();
-	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Sine"); }
+	changed |= OtAudioUi::audioRadioButton(OtFontAudio::modSine, &waveForm, OtOscillator::WaveForm::sine, "Sine");
 	ImGui::SameLine(0.0f, spacing);
-	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
-	changed |= OtUi::radioButton(OtFontAudio::modSquare, &waveForm, OtOscillator::WaveForm::square);
-	ImGui::PopFont();
-	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Square"); }
+	changed |= OtAudioUi::audioRadioButton(OtFontAudio::modSquare, &waveForm, OtOscillator::WaveForm::square, "Square");
 	ImGui::SameLine(0.0f, spacing);
-	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
-	changed |= OtUi::radioButton(OtFontAudio::modTriangle, &waveForm, OtOscillator::WaveForm::triangle);
-	ImGui::PopFont();
-	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Triangle"); }
+	changed |= OtAudioUi::audioRadioButton(OtFontAudio::modTriangle, &waveForm, OtOscillator::WaveForm::triangle, "Triangle");
 	ImGui::SameLine(0.0f, spacing);
-	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
-	changed |= OtUi::radioButton(OtFontAudio::modSawUp, &waveForm, OtOscillator::WaveForm::sawtooth);
-	ImGui::PopFont();
-	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Saw Tooth"); }
+	changed |= OtAudioUi::audioRadioButton(OtFontAudio::modSawUp, &waveForm, OtOscillator::WaveForm::sawtooth, "Saw Tooth");
 	ImGui::SameLine(0.0f, spacing);
-	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
-	changed |= OtUi::radioButton(OtFontAudio::logoAudiobus, &waveForm, OtOscillator::WaveForm::sample);
-	ImGui::PopFont();
-	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Sample File"); }
+	changed |= OtAudioUi::audioRadioButton(OtFontAudio::logoAudiobus, &waveForm, OtOscillator::WaveForm::sample, "Sample File");
 	ImGui::SameLine(0.0f, spacing);
-	ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
-	changed |= OtUi::radioButton(OtFontAudio::hExpand, &waveForm, OtOscillator::WaveForm::wavetable);
-	ImGui::PopFont();
-	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Wave Table"); }
+	changed |= OtAudioUi::audioRadioButton(OtFontAudio::hExpand, &waveForm, OtOscillator::WaveForm::wavetable, "Wave Table");
 
 	ImGui::SameLine();
 	OtUi::hSpacer(15.0f);
-	auto buttonSize = ImVec2(OtUi::getAudioButtonWidth(), 0.0f);
+	auto buttonSize = ImVec2(OtAudioUi::getAudioButtonWidth(), 0.0f);
 	changed |= OtUi::latchButton("I", &inverse, buttonSize);
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) { ImGui::SetTooltip("Inverse"); }
 	ImGui::SameLine(0.0f, spacing);
@@ -198,7 +178,7 @@ float OtOscillator::Parameters::getLabelWidth() {
 //
 
 float OtOscillator::Parameters::getRenderWidth() {
-	return OtUi::getAudioButtonWidth() * 9.0f + ImGui::GetStyle().ItemInnerSpacing.x * 7.0f + 15.0f;
+	return OtAudioUi::getAudioButtonWidth() * 9.0f + ImGui::GetStyle().ItemInnerSpacing.x * 7.0f + 15.0f;
 }
 
 

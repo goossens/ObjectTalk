@@ -68,15 +68,6 @@ void OtUi::loadFonts() {
 
 
 //
-//	OtUi::getAudioButtonWidth
-//
-
-float OtUi::getAudioButtonWidth() {
-	return audioFont->CalcTextSizeA(15.0f, 100.0f, 100.0f, OtFontAudio::adr).x + ImGui::GetStyle().ItemInnerSpacing.x * 2.0f;
-}
-
-
-//
 //	OtUi::align
 //
 

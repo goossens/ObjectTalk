@@ -18,7 +18,7 @@
 //	OtFlangerCircuit
 //
 
-class OtFlangerCircuit : public OtFaustCircuitMono<OtFlanger> {
+class OtFlangerCircuit : public OtFaustEffectMono<OtFlanger> {
 public:
 	static constexpr const char* circuitName = "Flanger";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::effect;

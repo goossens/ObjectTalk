@@ -27,15 +27,15 @@
 class OtAdsr : public OtFaust {
 protected:
 	int iVec0[2];
-	float fHslider0;
+	float fVslider0;
 	int iRec1[2];
 	int fSampleRate;
 	double fConst0;
 	double fConst1;
-	float fHslider1;
-	float fHslider2;
+	float fVslider1;
+	float fVslider2;
 	double fConst2;
-	float fHslider3;
+	float fVslider3;
 	double fRec0[2];
 	
  public:
@@ -92,10 +92,10 @@ protected:
 	}
 	
 	virtual void instanceResetUserInterface() {
-		fHslider0 = static_cast<float>(1.0);
-		fHslider1 = static_cast<float>(1.0);
-		fHslider2 = static_cast<float>(1.0);
-		fHslider3 = static_cast<float>(0.8);
+		fVslider0 = static_cast<float>(1.0);
+		fVslider1 = static_cast<float>(1.0);
+		fVslider2 = static_cast<float>(1.0);
+		fVslider3 = static_cast<float>(0.8);
 	}
 	
 	virtual void instanceClear() {
@@ -132,12 +132,12 @@ protected:
 	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
-		double fSlow0 = 0.001 * static_cast<double>(fHslider0);
-		double fSlow1 = static_cast<double>(fHslider1);
+		double fSlow0 = 0.001 * static_cast<double>(fVslider0);
+		double fSlow1 = static_cast<double>(fVslider1);
 		int iSlow2 = static_cast<int>(fConst1 * fSlow1);
-		double fSlow3 = 0.001 * static_cast<double>(fHslider2);
+		double fSlow3 = 0.001 * static_cast<double>(fVslider2);
 		double fSlow4 = 0.001 * fSlow1;
-		double fSlow5 = static_cast<double>(fHslider3);
+		double fSlow5 = static_cast<double>(fVslider3);
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
 			int iTemp0 = static_cast<double>(input0[i0]) > 0.0;
 			iVec0[0] = iTemp0;
@@ -171,8 +171,6 @@ protected:
 		width1 += spacing;
 		width1 += knobWidth;
 		height1 = std::max(height1, knobHeight);
-		width = width1;
-		height = height1;
 		initialized = true;
 	}
 
@@ -183,13 +181,13 @@ protected:
 
 		bool changed = false;
 		ImGui::BeginChild("ADSR", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
-		changed |= OtUi::knob("Attack", &fHslider1, 0.0f, 10.0f, "%.2fms");
+		changed |= OtUi::knob("Attack", &fVslider1, 0.0f, 10.0f, "%.2fms");
 		ImGui::SameLine();
-		changed |= OtUi::knob("Decay", &fHslider2, 0.0f, 10.0f, "%.2fms");
+		changed |= OtUi::knob("Decay", &fVslider2, 0.0f, 10.0f, "%.2fms");
 		ImGui::SameLine();
-		changed |= OtUi::knob("Sustain", &fHslider3, 0.0f, 1.0f, "%.2f%%");
+		changed |= OtUi::knob("Sustain", &fVslider3, 0.0f, 1.0f, "%.2f%%");
 		ImGui::SameLine();
-		changed |= OtUi::knob("Release", &fHslider0, 0.0f, 10.0f, "%.2fms");
+		changed |= OtUi::knob("Release", &fVslider0, 0.0f, 10.0f, "%.2fms");
 		ImGui::EndChild();
 		return changed;
 	}
@@ -199,7 +197,7 @@ protected:
 			calculateSizes();
 		}
 
-		return width;
+		return width1;
 	}
 
 	inline float getRenderHeight() {
@@ -207,7 +205,7 @@ protected:
 			calculateSizes();
 		}
 
-		return height;
+		return height1;
 	}
 
 	struct Parameters {
@@ -218,40 +216,38 @@ protected:
 	};
 
 	inline void setParameters([[maybe_unused]] Parameters& parameters) {
-		fHslider1 = parameters.attack;
-		fHslider2 = parameters.decay;
-		fHslider3 = parameters.sustain;
-		fHslider0 = parameters.release;
+		fVslider1 = parameters.attack;
+		fVslider2 = parameters.decay;
+		fVslider3 = parameters.sustain;
+		fVslider0 = parameters.release;
 	}
 
 	inline void getParameters([[maybe_unused]] Parameters& parameters) {
-		parameters.attack = fHslider1;
-		parameters.decay = fHslider2;
-		parameters.sustain = fHslider3;
-		parameters.release = fHslider0;
+		parameters.attack = fVslider1;
+		parameters.decay = fVslider2;
+		parameters.sustain = fVslider3;
+		parameters.release = fVslider0;
 	}
 
 	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
-		callback("attack", &fHslider1, 1.0f);
-		callback("decay", &fHslider2, 1.0f);
-		callback("sustain", &fHslider3, 0.8f);
-		callback("release", &fHslider0, 1.0f);
+		callback("attack", &fVslider1, 1.0f);
+		callback("decay", &fVslider2, 1.0f);
+		callback("sustain", &fVslider3, 0.8f);
+		callback("release", &fVslider0, 1.0f);
 	}
 
-	inline void setAttack(float value) { fHslider1 = value; }
-	inline void setDecay(float value) { fHslider2 = value; }
-	inline void setSustain(float value) { fHslider3 = value; }
-	inline void setRelease(float value) { fHslider0 = value; }
+	inline void setAttack(float value) { fVslider1 = value; }
+	inline void setDecay(float value) { fVslider2 = value; }
+	inline void setSustain(float value) { fVslider3 = value; }
+	inline void setRelease(float value) { fVslider0 = value; }
 
-	inline float getAttack() { return fHslider1; }
-	inline float getDecay() { return fHslider2; }
-	inline float getSustain() { return fHslider3; }
-	inline float getRelease() { return fHslider0; }
+	inline float getAttack() { return fVslider1; }
+	inline float getDecay() { return fVslider2; }
+	inline float getSustain() { return fVslider3; }
+	inline float getRelease() { return fVslider0; }
 
 private:
 	bool initialized = false;
-	float width = -1.0f;
-	float height = -1.0f;
 	float width1;
 	float height1;
 };

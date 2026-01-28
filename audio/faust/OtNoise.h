@@ -130,14 +130,10 @@ protected:
 	}
 
 	inline void calculateSizes() {
-		auto knobWidth = OtUi::knobWidth();
-		auto knobHeight = OtUi::knobHeight();
-		width1 += 0.0f;
-		height1 = std::max(height1, 0.0f);
-		width1 += knobWidth;
-		height1 = std::max(height1, knobHeight);
-		width = width1;
-		height = height1;
+		width1 = std::max(width1, 100.0f);
+		height1 += 20.0f;
+		width1 = std::max(width1, 100.0f);
+		height1 += 20.0f;
 		initialized = true;
 	}
 
@@ -148,7 +144,10 @@ protected:
 
 		bool changed = false;
 		ImGui::BeginChild("Noise", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
-		changed |= OtUi::knob("Volume", &fHslider0, 0.0f, 1.0f, "%.2f");
+		ImGui::SetNextItemWidth(100.0f);
+		changed |= ImGui::SliderFloat("Type", ImVec2(100.0f, 20.0f), &fHslider1, 0.0f, 1.0f, "%.0f");
+		ImGui::SetNextItemWidth(100.0f);
+		changed |= ImGui::SliderFloat("Volume", ImVec2(100.0f, 20.0f), &fHslider0, 0.0f, 1.0f, "%.2f");
 		ImGui::EndChild();
 		return changed;
 	}
@@ -158,7 +157,7 @@ protected:
 			calculateSizes();
 		}
 
-		return width;
+		return width1;
 	}
 
 	inline float getRenderHeight() {
@@ -166,7 +165,7 @@ protected:
 			calculateSizes();
 		}
 
-		return height;
+		return height1;
 	}
 
 	struct Parameters {
@@ -197,8 +196,6 @@ protected:
 
 private:
 	bool initialized = false;
-	float width = -1.0f;
-	float height = -1.0f;
 	float width1;
 	float height1;
 };

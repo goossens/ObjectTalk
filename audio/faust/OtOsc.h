@@ -35,10 +35,10 @@ protected:
 	int fSampleRate;
 	double fConst0;
 	double fConst1;
-	float fHslider2;
 	int iVec0[2];
 	double fConst2;
 	double fConst3;
+	float fHslider2;
 	double fRec1[2];
 	double fVec1[2];
 	int IOTA0;
@@ -90,7 +90,7 @@ protected:
 	}
 
 	int getNumInputs() override {
-		return 0;
+		return 2;
 	}
 	int getNumOutputs() override {
 		return 1;
@@ -111,7 +111,7 @@ protected:
 	virtual void instanceResetUserInterface() {
 		fHslider0 = static_cast<float>(7.0);
 		fHslider1 = static_cast<float>(0.0);
-		fHslider2 = static_cast<float>(4.4e+02);
+		fHslider2 = static_cast<float>(7.0);
 		fHslider3 = static_cast<float>(0.5);
 	}
 	
@@ -157,50 +157,43 @@ protected:
 	}
 		
 	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
+		float* input0 = inputs[0];
+		float* input1 = inputs[1];
 		float* output0 = outputs[0];
 		double fSlow0 = 0.09090909090909091 * static_cast<double>(fHslider0);
 		double fSlow1 = static_cast<double>(fHslider1);
 		int iSlow2 = fSlow1 >= 2.0;
 		int iSlow3 = fSlow1 >= 1.0;
-		double fSlow4 = static_cast<double>(fHslider2);
-		double fSlow5 = fConst1 * fSlow4;
-		double fSlow6 = std::max<double>(fSlow4, 23.44894968246214);
-		double fSlow7 = std::max<double>(2e+01, std::fabs(fSlow6));
-		double fSlow8 = fConst2 / fSlow7;
-		double fSlow9 = fConst3 * fSlow7;
-		double fSlow10 = std::max<double>(0.0, std::min<double>(2047.0, fConst4 / fSlow6));
-		double fSlow11 = std::floor(fSlow10);
-		double fSlow12 = fSlow11 + (1.0 - fSlow10);
-		int iSlow13 = static_cast<int>(fSlow10);
-		double fSlow14 = fSlow10 - fSlow11;
-		int iSlow15 = iSlow13 + 1;
-		double fSlow16 = std::max<double>(2.220446049250313e-16, std::fabs(fSlow4));
-		double fSlow17 = fConst3 * fSlow16;
-		double fSlow18 = 1.0 - fConst0 / fSlow16;
-		int iSlow19 = fSlow1 >= 3.0;
-		double fSlow20 = std::max<double>(0.0, std::min<double>(2047.0, fConst0 * (static_cast<double>(fHslider3) / fSlow6)));
-		double fSlow21 = std::floor(fSlow20);
-		double fSlow22 = fSlow21 + (1.0 - fSlow20);
-		int iSlow23 = static_cast<int>(fSlow20);
-		double fSlow24 = fSlow20 - fSlow21;
-		int iSlow25 = iSlow23 + 1;
+		double fSlow4 = 0.1 * static_cast<double>(fHslider2);
+		int iSlow5 = fSlow1 >= 3.0;
+		double fSlow6 = fConst0 * static_cast<double>(fHslider3);
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
 			iVec0[0] = 1;
-			double fTemp0 = ((1 - iVec0[1]) ? 0.0 : fSlow9 + fRec1[1]);
-			fRec1[0] = fTemp0 - std::floor(fTemp0);
-			double fTemp1 = OtOsc_faustpower2_f(2.0 * fRec1[0] + -1.0);
-			fVec1[0] = fTemp1;
-			double fTemp2 = fSlow8 * static_cast<double>(iVec0[1]) * (fTemp1 - fVec1[1]);
-			fVec2[IOTA0 & 4095] = fTemp2;
-			fRec0[0] = 0.999 * fRec0[1] + fTemp2 - (fSlow12 * fVec2[(IOTA0 - iSlow13) & 4095] + fSlow14 * fVec2[(IOTA0 - iSlow15) & 4095]);
-			double fTemp3 = fSlow5 * fRec0[0];
-			double fTemp4 = fSlow17 + fRec2[1] + -1.0;
-			int iTemp5 = fTemp4 < 0.0;
-			double fTemp6 = fSlow17 + fRec2[1];
-			fRec2[0] = ((iTemp5) ? fTemp6 : fTemp4);
-			double fRec3 = ((iTemp5) ? fTemp6 : fSlow17 + fRec2[1] + fSlow18 * fTemp4);
-			double fTemp7 = 2.0 * fRec3;
-			output0[i0] = static_cast<float>(fSlow0 * ((iSlow2) ? ((iSlow19) ? fTemp2 - (fSlow22 * fVec2[(IOTA0 - iSlow23) & 4095] + fSlow24 * fVec2[(IOTA0 - iSlow25) & 4095]) : fTemp7 + -1.0) : ((iSlow3) ? 0.5 * (fTemp7 + fTemp3 + -1.0) : fTemp3)));
+			double fTemp0 = static_cast<double>(input0[i0]) + fSlow4 * static_cast<double>(input1[i0]);
+			double fTemp1 = std::max<double>(fTemp0, 23.44894968246214);
+			double fTemp2 = std::max<double>(2e+01, std::fabs(fTemp1));
+			double fTemp3 = ((1 - iVec0[1]) ? 0.0 : fRec1[1] + fConst3 * fTemp2);
+			fRec1[0] = fTemp3 - std::floor(fTemp3);
+			double fTemp4 = OtOsc_faustpower2_f(2.0 * fRec1[0] + -1.0);
+			fVec1[0] = fTemp4;
+			double fTemp5 = static_cast<double>(iVec0[1]) * (fTemp4 - fVec1[1]) / fTemp2;
+			fVec2[IOTA0 & 4095] = fTemp5;
+			double fTemp6 = std::max<double>(0.0, std::min<double>(2047.0, fConst4 / fTemp1));
+			int iTemp7 = static_cast<int>(fTemp6);
+			double fTemp8 = std::floor(fTemp6);
+			fRec0[0] = 0.999 * fRec0[1] + fConst2 * (fTemp5 - fVec2[(IOTA0 - iTemp7) & 4095] * (fTemp8 + (1.0 - fTemp6)) - (fTemp6 - fTemp8) * fVec2[(IOTA0 - (iTemp7 + 1)) & 4095]);
+			double fTemp9 = fConst1 * fRec0[0] * fTemp0;
+			double fTemp10 = std::max<double>(2.220446049250313e-16, std::fabs(fTemp0));
+			double fTemp11 = fRec2[1] + fConst3 * fTemp10;
+			double fTemp12 = fTemp11 + -1.0;
+			int iTemp13 = fTemp12 < 0.0;
+			fRec2[0] = ((iTemp13) ? fTemp11 : fTemp12);
+			double fRec3 = ((iTemp13) ? fTemp11 : fTemp11 + fTemp12 * (1.0 - fConst0 / fTemp10));
+			double fTemp14 = 2.0 * fRec3;
+			double fTemp15 = std::max<double>(0.0, std::min<double>(2047.0, fSlow6 / fTemp1));
+			int iTemp16 = static_cast<int>(fTemp15);
+			double fTemp17 = std::floor(fTemp15);
+			output0[i0] = static_cast<float>(fSlow0 * ((iSlow2) ? ((iSlow5) ? fConst2 * (fTemp5 - fVec2[(IOTA0 - iTemp16) & 4095] * (fTemp17 + (1.0 - fTemp15)) - (fTemp15 - fTemp17) * fVec2[(IOTA0 - (iTemp16 + 1)) & 4095]) : fTemp14 + -1.0) : ((iSlow3) ? 0.5 * (fTemp14 + fTemp9 + -1.0) : fTemp9)));
 			iVec0[1] = iVec0[0];
 			fRec1[1] = fRec1[0];
 			fVec1[1] = fVec1[0];
@@ -211,23 +204,14 @@ protected:
 	}
 
 	inline void calculateSizes() {
-		auto knobWidth = OtUi::knobWidth();
-		auto knobHeight = OtUi::knobHeight();
-		auto spacing = ImGui::GetStyle().ItemSpacing.x;
-		width2 += knobWidth;
-		height2 = std::max(height2, knobHeight);
-		width2 += spacing;
-		width2 += knobWidth;
-		height2 = std::max(height2, knobHeight);
-		width2 += spacing;
-		width2 += knobWidth;
-		height2 = std::max(height2, knobHeight);
-		width1 = std::max(width1, width2);
-		height1 += height2;
-		width1 = std::max(width1, 0.0f);
-		height1 += 0.0f;
-		width = width1;
-		height = height1;
+		width1 = std::max(width1, 100.0f);
+		height1 += 20.0f;
+		width1 = std::max(width1, 100.0f);
+		height1 += 20.0f;
+		width1 = std::max(width1, 100.0f);
+		height1 += 20.0f;
+		width1 = std::max(width1, 100.0f);
+		height1 += 20.0f;
 		initialized = true;
 	}
 
@@ -238,13 +222,14 @@ protected:
 
 		bool changed = false;
 		ImGui::BeginChild("Oscillator", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
-		ImGui::BeginChild("0x00", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
-		changed |= OtUi::knob("Freq", &fHslider2, 60.0f, 6000.0f, "%.0f");
-		ImGui::SameLine();
-		changed |= OtUi::knob("PW", &fHslider3, 0.0f, 1.0f, "%.2f");
-		ImGui::SameLine();
-		changed |= OtUi::knob("Gain", &fHslider0, 0.0f, 11.0f, "%.2f");
-		ImGui::EndChild();
+		ImGui::SetNextItemWidth(100.0f);
+		changed |= ImGui::SliderFloat("WaveForm", ImVec2(100.0f, 20.0f), &fHslider1, 0.0f, 4.0f, "%.0f");
+		ImGui::SetNextItemWidth(100.0f);
+		changed |= ImGui::SliderFloat("PW", ImVec2(100.0f, 20.0f), &fHslider3, 0.0f, 1.0f, "%.2f");
+		ImGui::SetNextItemWidth(100.0f);
+		changed |= ImGui::SliderFloat("Mod", ImVec2(100.0f, 20.0f), &fHslider2, 0.0f, 10.0f, "%.2f");
+		ImGui::SetNextItemWidth(100.0f);
+		changed |= ImGui::SliderFloat("Gain", ImVec2(100.0f, 20.0f), &fHslider0, 0.0f, 11.0f, "%.2f");
 		ImGui::EndChild();
 		return changed;
 	}
@@ -254,7 +239,7 @@ protected:
 			calculateSizes();
 		}
 
-		return width;
+		return width1;
 	}
 
 	inline float getRenderHeight() {
@@ -262,53 +247,49 @@ protected:
 			calculateSizes();
 		}
 
-		return height;
+		return height1;
 	}
 
 	struct Parameters {
-		float freq;
-		float pW;
-		float gain;
 		float waveForm;
+		float pW;
+		float mod;
+		float gain;
 	};
 
 	inline void setParameters([[maybe_unused]] Parameters& parameters) {
-		fHslider2 = parameters.freq;
-		fHslider3 = parameters.pW;
-		fHslider0 = parameters.gain;
 		fHslider1 = parameters.waveForm;
+		fHslider3 = parameters.pW;
+		fHslider2 = parameters.mod;
+		fHslider0 = parameters.gain;
 	}
 
 	inline void getParameters([[maybe_unused]] Parameters& parameters) {
-		parameters.freq = fHslider2;
-		parameters.pW = fHslider3;
-		parameters.gain = fHslider0;
 		parameters.waveForm = fHslider1;
+		parameters.pW = fHslider3;
+		parameters.mod = fHslider2;
+		parameters.gain = fHslider0;
 	}
 
 	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
-		callback("freq", &fHslider2, 440.0f);
-		callback("pW", &fHslider3, 0.5f);
-		callback("gain", &fHslider0, 7.0f);
 		callback("waveForm", &fHslider1, 0.0f);
+		callback("pW", &fHslider3, 0.5f);
+		callback("mod", &fHslider2, 7.0f);
+		callback("gain", &fHslider0, 7.0f);
 	}
 
-	inline void setFreq(float value) { fHslider2 = value; }
-	inline void setPW(float value) { fHslider3 = value; }
-	inline void setGain(float value) { fHslider0 = value; }
 	inline void setWaveForm(float value) { fHslider1 = value; }
+	inline void setPW(float value) { fHslider3 = value; }
+	inline void setMod(float value) { fHslider2 = value; }
+	inline void setGain(float value) { fHslider0 = value; }
 
-	inline float getFreq() { return fHslider2; }
-	inline float getPW() { return fHslider3; }
-	inline float getGain() { return fHslider0; }
 	inline float getWaveForm() { return fHslider1; }
+	inline float getPW() { return fHslider3; }
+	inline float getMod() { return fHslider2; }
+	inline float getGain() { return fHslider0; }
 
 private:
 	bool initialized = false;
-	float width = -1.0f;
-	float height = -1.0f;
 	float width1;
 	float height1;
-	float width2;
-	float height2;
 };

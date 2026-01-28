@@ -18,7 +18,7 @@
 //	OtPhaserCircuit
 //
 
-class OtPhaserCircuit : public OtFaustCircuitMono<OtPhaser> {
+class OtPhaserCircuit : public OtFaustEffectMono<OtPhaser> {
 public:
 	static constexpr const char* circuitName = "Phaser";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::effect;

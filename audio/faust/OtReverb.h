@@ -728,16 +728,18 @@ protected:
 		float blend;
 	};
 
-	inline void setParameters([[maybe_unused]] Parameters& parameters) {
+	inline void setParameters([[maybe_unused]] const Parameters& parameters) {
 		fVslider0 = parameters.dwell;
 		fVslider1 = parameters.tension;
 		fVslider2 = parameters.blend;
 	}
 
-	inline void getParameters([[maybe_unused]] Parameters& parameters) {
+	inline Parameters getParameters() {
+		Parameters parameters;
 		parameters.dwell = fVslider0;
 		parameters.tension = fVslider1;
 		parameters.blend = fVslider2;
+		return parameters;
 	}
 
 	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {

@@ -145,9 +145,9 @@ protected:
 		bool changed = false;
 		ImGui::BeginChild("Noise", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
 		ImGui::SetNextItemWidth(100.0f);
-		changed |= ImGui::SliderFloat("Type", ImVec2(100.0f, 20.0f), &fHslider1, 0.0f, 1.0f, "%.0f");
+		changed |= ImGui::SliderFloat("Type", &fHslider1, 0.0f, 1.0f, "%.0f");
 		ImGui::SetNextItemWidth(100.0f);
-		changed |= ImGui::SliderFloat("Volume", ImVec2(100.0f, 20.0f), &fHslider0, 0.0f, 1.0f, "%.2f");
+		changed |= ImGui::SliderFloat("Volume", &fHslider0, 0.0f, 1.0f, "%.2f");
 		ImGui::EndChild();
 		return changed;
 	}
@@ -173,14 +173,16 @@ protected:
 		float volume;
 	};
 
-	inline void setParameters([[maybe_unused]] Parameters& parameters) {
+	inline void setParameters([[maybe_unused]] const Parameters& parameters) {
 		fHslider1 = parameters.type;
 		fHslider0 = parameters.volume;
 	}
 
-	inline void getParameters([[maybe_unused]] Parameters& parameters) {
+	inline Parameters getParameters() {
+		Parameters parameters;
 		parameters.type = fHslider1;
 		parameters.volume = fHslider0;
+		return parameters;
 	}
 
 	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {

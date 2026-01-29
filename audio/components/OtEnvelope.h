@@ -56,9 +56,8 @@ public:
 		float releaseTime = 0.3f;
 
 		// work variables
-	// configuration
-	static constexpr size_t envelopeDataSize = 1024;
-	static constexpr float envelopeHeight = 100.0f;
+		static constexpr size_t envelopeDataSize = 1024;
+		static constexpr float envelopeHeight = 100.0f;
 		std::array<float, envelopeDataSize> graph;
 		bool update = true;
 	};

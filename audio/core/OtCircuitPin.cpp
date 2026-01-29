@@ -39,6 +39,19 @@ float OtCircuitPinClass::getSample(size_t channel, size_t sample) {
 
 
 //
+//	OtCircuitPinClass::getSamples
+//
+
+void OtCircuitPinClass::getSamples(float* samples) {
+	for (size_t c = 0; c < sourcePin->audioBuffer->getChannelCount(); c++) {
+		for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
+			*samples++ = getSample(c, i);
+		}
+	}
+}
+
+
+//
 //	OtCircuitPinClass::setSample
 //
 
@@ -59,6 +72,18 @@ void OtCircuitPinClass::setSample(size_t channel, size_t sample, float value) {
 //	OtCircuitPinClass::setSamples
 //
 
+void OtCircuitPinClass::setSamples(float* value) {
+	for (size_t c = 0; c < audioBuffer->getChannelCount(); c++) {
+		for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
+			setSample(c, i, *value++);
+		}
+	}
+}
+
+
+//
+//	OtCircuitPinClass::setSamples
+//
 
 void OtCircuitPinClass::setSamples(float value) {
 	if (attenuationFlag) {

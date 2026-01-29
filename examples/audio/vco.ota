@@ -3,10 +3,20 @@
 		{
 			"id": 1315334498,
 			"inputs": [],
+			"midiFile": "",
+			"midiSource": 0,
 			"outputs": [
+				{
+					"id": 2842390282,
+					"name": "MIDI",
+					"type": "midi"
+				},
 				{
 					"id": 2197641789,
 					"name": "Pitch",
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 0.0,
 					"type": "control"
 				},
 				{
@@ -17,8 +27,8 @@
 			],
 			"title": "MIDI Input",
 			"type": "MIDI Input",
-			"x": 14.0,
-			"y": 622.0
+			"x": 15.0,
+			"y": 332.0
 		},
 		{
 			"id": 2557146591,
@@ -26,11 +36,6 @@
 				{
 					"id": 3360538592,
 					"name": "Pitch",
-					"type": "control"
-				},
-				{
-					"id": 4000249913,
-					"name": "Pulse Width",
 					"type": "control"
 				}
 			],
@@ -41,13 +46,11 @@
 					"type": "mono"
 				}
 			],
-			"frequency": 440.0,
-			"pulseWidth": 0.5,
 			"title": "VCO",
 			"type": "VCO",
-			"waveForm": 3,
-			"x": 596.0,
-			"y": 335.0
+			"waveForm": 3.0,
+			"x": 366.0,
+			"y": 308.0
 		},
 		{
 			"id": 1460307938,
@@ -70,8 +73,8 @@
 			"rightDelayTime": 0.0,
 			"title": "Mono to Stereo",
 			"type": "Mono to Stereo",
-			"x": 1066.0,
-			"y": 50.0
+			"x": 818.0,
+			"y": 24.0
 		},
 		{
 			"id": 278093283,
@@ -85,8 +88,8 @@
 			"outputs": [],
 			"title": "Speaker Out",
 			"type": "Speaker Out",
-			"x": 1413.0,
-			"y": 50.0
+			"x": 1084.0,
+			"y": 24.0
 		},
 		{
 			"id": 736233516,
@@ -100,8 +103,8 @@
 			"outputs": [],
 			"title": "Oscilloscope",
 			"type": "Oscilloscope",
-			"x": 1201.0,
-			"y": 261.0
+			"x": 872.0,
+			"y": 235.0
 		},
 		{
 			"id": 942025815,
@@ -115,8 +118,8 @@
 			"outputs": [],
 			"title": "Spectrum Analyzer",
 			"type": "Spectrum Analyzer",
-			"x": 901.0,
-			"y": 482.0
+			"x": 653.0,
+			"y": 456.0
 		}
 	],
 	"metadata": {},

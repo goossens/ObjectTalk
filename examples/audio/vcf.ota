@@ -27,48 +27,32 @@
 			],
 			"title": "MIDI Input",
 			"type": "MIDI Input",
-			"x": 36.0,
-			"y": 584.0
+			"x": 45.0,
+			"y": 297.0
 		},
 		{
-			"frequency": 440.0,
 			"id": 2557146591,
 			"inputs": [
 				{
 					"id": 3360538592,
 					"name": "Pitch",
-					"type": "control"
-				},
-				{
-					"id": 4000249913,
-					"name": "Pulse Width",
-					"type": "control"
-				},
-				{
-					"id": 3964443000,
-					"name": "Shape",
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 0.0,
 					"type": "control"
 				}
 			],
-			"inverse": false,
 			"outputs": [
 				{
+					"attenuation": 1.0,
 					"id": 410275450,
 					"name": "Output",
 					"type": "mono"
 				}
 			],
-			"pulseWidth": 0.5,
-			"sampleFile": "",
-			"sampleFileFrequency": 0.0,
 			"title": "VCO",
-			"tuningCents": 0.0,
-			"tuningOctaves": 0.0,
-			"tuningSemitones": 0.0,
 			"type": "VCO",
-			"volume": 7.0,
-			"waveForm": 2,
-			"waveTable": "",
+			"waveForm": 3.0,
 			"x": 443.0,
 			"y": 50.0
 		},

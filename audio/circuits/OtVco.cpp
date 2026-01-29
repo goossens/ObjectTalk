@@ -13,68 +13,35 @@
 
 #include "OtAudioSettings.h"
 #include "OtCircuitFactory.h"
-#include "OtOscillator.h"
+#include "OtOsc.h"
+#include "OtOscUi.h"
 
 
 //
 //	OtVco
 //
 
-class OtVco : public OtCircuitClass {
+class OtVco : public OtFaustCircuit<OtOsc, OtOscUi> {
 public:
-	// configure circuit
-	inline void configure() override {
-		frequencyInput = addInputPin("Pitch", OtCircuitPinClass::Type::control);
-		pulseWidthInput = addInputPin("Pulse Width", OtCircuitPinClass::Type::control);
-		shapeInput = addInputPin("Shape", OtCircuitPinClass::Type::control);
-		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
-
-		parameters.showFrequencyKnob = true;
-		parameters.frequencyKnobLow = 50.0f;
-		parameters.frequencyKnobHigh = 5000.0f;
-	}
-
-	// render custom fields
-	inline bool customRendering(float itemWidth) override {
-		ImGui::PushItemWidth(itemWidth - parameters.getLabelWidth());
-		auto changed = parameters.renderUI();
-		ImGui::PopItemWidth();
-		return changed;
-	}
-
-	inline float getCustomRenderingWidth() override {
-		return parameters.getRenderWidth();
-	}
-
-	inline float getCustomRenderingHeight() override {
-		parameters.showFrequencyKnob = !frequencyInput->isSourceConnected();
-		parameters.showPulseWidthKnob = parameters.waveForm == OtOscillator::WaveForm::square && !pulseWidthInput->isSourceConnected();
-		parameters.showShapeKnob = parameters.waveForm == OtOscillator::WaveForm::wavetable && !shapeInput->isSourceConnected();
-		return parameters.getRenderHeight();
-	}
-
-	// (de)serialize circuit
-	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		parameters.serialize(data, basedir);
-	}
-
-	inline void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		parameters.deserialize(data, basedir);
+	// configure pins
+	inline void configurePins() override {
+		frequencyInput = addInputPin("Pitch", OtCircuitPinClass::Type::control)->hasTuning(true);
+		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono)->hasAttenuation(true);
 	}
 
 	// generate samples
 	void execute() override {
 		if (audioOutput->isDestinationConnected()) {
-			if (parameters.isReady()) {
-				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-					oscillator.set(
-						parameters,
-						frequencyInput->isSourceConnected() ? OtAudioUtilities::cvToPitch(frequencyInput->getSample(i)) : parameters.frequency,
-						pulseWidthInput->isSourceConnected() ? pulseWidthInput->getSample(i) : parameters.pulseWidth,
-						shapeInput->isSourceConnected() ? shapeInput->getSample(i) : parameters.shape);
+			if (frequencyInput->isSourceConnected()) {
+				float input[OtAudioSettings::bufferSize];
+				float output[OtAudioSettings::bufferSize];
 
-					audioOutput->setSample(i, oscillator.get(parameters));
-				}
+				auto in = input;
+				auto out = output;
+
+				frequencyInput->getSamples(input);
+				dsp.compute(OtAudioSettings::bufferSize, &in, &out);
+				audioOutput->setSamples(output);
 
 			} else {
 				audioOutput->setSamples(0.0f);
@@ -86,15 +53,8 @@ public:
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::generator;
 
 private:
-	// properties
-	OtOscillator::Parameters parameters;
-
 	// work variables
-	OtOscillator::State oscillator;
-
 	OtCircuitPin frequencyInput;
-	OtCircuitPin pulseWidthInput;
-	OtCircuitPin shapeInput;
 	OtCircuitPin audioOutput;
 };
 

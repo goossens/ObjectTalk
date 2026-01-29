@@ -34,12 +34,14 @@ RENDERUI
 PARAMETERSSTRUCT
 	};
 
-	inline void setParameters([[maybe_unused]] Parameters& parameters) {
+	inline void setParameters([[maybe_unused]] const Parameters& parameters) {
 SETPARAMETERS
 	}
 
-	inline void getParameters([[maybe_unused]] Parameters& parameters) {
+	inline Parameters getParameters() {
+		Parameters parameters;
 GETPARAMETERS
+		return parameters;
 	}
 
 	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {

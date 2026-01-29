@@ -215,18 +215,20 @@ protected:
 		float release;
 	};
 
-	inline void setParameters([[maybe_unused]] Parameters& parameters) {
+	inline void setParameters([[maybe_unused]] const Parameters& parameters) {
 		fVslider1 = parameters.attack;
 		fVslider2 = parameters.decay;
 		fVslider3 = parameters.sustain;
 		fVslider0 = parameters.release;
 	}
 
-	inline void getParameters([[maybe_unused]] Parameters& parameters) {
+	inline Parameters getParameters() {
+		Parameters parameters;
 		parameters.attack = fVslider1;
 		parameters.decay = fVslider2;
 		parameters.sustain = fVslider3;
 		parameters.release = fVslider0;
+		return parameters;
 	}
 
 	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {

@@ -24,6 +24,44 @@
 //  OtOsc
 //
 
+class OtOscSIG0 {
+protected:	
+	int iVec0[2];
+	int iRec0[2];
+
+public:	
+	int getNumInputsOtOscSIG0() {
+		return 0;
+	}
+	int getNumOutputsOtOscSIG0() {
+		return 1;
+	}
+	
+	void instanceInitOtOscSIG0([[maybe_unused]] int sample_rate) {
+		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
+			iVec0[l0] = 0;
+		}
+		for (int l1 = 0; l1 < 2; l1 = l1 + 1) {
+			iRec0[l1] = 0;
+		}
+	}
+	
+	void fillOtOscSIG0(int count, double* table) {
+		for (int i1 = 0; i1 < count; i1 = i1 + 1) {
+			iVec0[0] = 1;
+			iRec0[0] = (iVec0[1] + iRec0[1]) % 65536;
+			table[i1] = std::sin(9.587379924285257e-05 * static_cast<double>(iRec0[0]));
+			iVec0[1] = iVec0[0];
+			iRec0[1] = iRec0[0];
+		}
+	}
+
+};
+
+static OtOscSIG0* newOtOscSIG0() { return (OtOscSIG0*)new OtOscSIG0(); }
+static void deleteOtOscSIG0(OtOscSIG0* dsp) { delete dsp; }
+
+static double ftbl0OtOscSIG0[65536];
 static double OtOsc_faustpower2_f(double value) {
 	return value * value;
 }
@@ -31,22 +69,22 @@ static double OtOsc_faustpower2_f(double value) {
 class OtOsc : public OtFaust {
 protected:
 	float fHslider0;
-	float fHslider1;
+	int iVec1[2];
 	int fSampleRate;
 	double fConst0;
 	double fConst1;
-	int iVec0[2];
+	double fRec1[2];
 	double fConst2;
 	double fConst3;
-	float fHslider2;
-	double fRec1[2];
-	double fVec1[2];
-	int IOTA0;
-	double fVec2[4096];
 	double fConst4;
-	double fRec0[2];
+	double fRec3[2];
+	double fVec2[2];
+	int IOTA0;
+	double fVec3[1024];
+	double fConst5;
 	double fRec2[2];
-	float fHslider3;
+	double fRec4[2];
+	double fConst6;
 	
  public:
 	OtOsc() {
@@ -64,7 +102,7 @@ protected:
 		m->declare("category", "Generator");
 		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtOsc -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
 		m->declare("filename", "OtOsc.dsp");
-		m->declare("filters.lib/lowpass0_highpass1", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/lowpass0_highpass1", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/name", "Faust Filters Library");
 		m->declare("filters.lib/pole:author", "Julius O. Smith III");
 		m->declare("filters.lib/pole:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
@@ -90,50 +128,56 @@ protected:
 	}
 
 	int getNumInputs() override {
-		return 2;
+		return 1;
 	}
 	int getNumOutputs() override {
 		return 1;
 	}
 	
 	static void classInit([[maybe_unused]] int sample_rate) {
+		OtOscSIG0* sig0 = newOtOscSIG0();
+		sig0->instanceInitOtOscSIG0(sample_rate);
+		sig0->fillOtOscSIG0(65536, ftbl0OtOscSIG0);
+		deleteOtOscSIG0(sig0);
 	}
 	
 	virtual void instanceConstants([[maybe_unused]] int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
-		fConst1 = 4.0 / fConst0;
-		fConst2 = 0.25 * fConst0;
-		fConst3 = 1.0 / fConst0;
-		fConst4 = 0.5 * fConst0;
+		fConst1 = 4.4e+02 / fConst0;
+		fConst2 = 1.76e+03 / fConst0;
+		fConst3 = 0.25 * fConst0;
+		fConst4 = 1.0 / fConst0;
+		fConst5 = 0.5 * fConst0;
+		fConst6 = 0.7 * fConst0;
 	}
 	
 	virtual void instanceResetUserInterface() {
-		fHslider0 = static_cast<float>(7.0);
-		fHslider1 = static_cast<float>(0.0);
-		fHslider2 = static_cast<float>(7.0);
-		fHslider3 = static_cast<float>(0.5);
+		fHslider0 = static_cast<float>(1.0);
 	}
 	
 	virtual void instanceClear() {
-		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
-			iVec0[l0] = 0;
-		}
-		for (int l1 = 0; l1 < 2; l1 = l1 + 1) {
-			fRec1[l1] = 0.0;
-		}
 		for (int l2 = 0; l2 < 2; l2 = l2 + 1) {
-			fVec1[l2] = 0.0;
+			iVec1[l2] = 0;
 		}
-		IOTA0 = 0;
-		for (int l3 = 0; l3 < 4096; l3 = l3 + 1) {
-			fVec2[l3] = 0.0;
+		for (int l3 = 0; l3 < 2; l3 = l3 + 1) {
+			fRec1[l3] = 0.0;
 		}
 		for (int l4 = 0; l4 < 2; l4 = l4 + 1) {
-			fRec0[l4] = 0.0;
+			fRec3[l4] = 0.0;
 		}
 		for (int l5 = 0; l5 < 2; l5 = l5 + 1) {
-			fRec2[l5] = 0.0;
+			fVec2[l5] = 0.0;
+		}
+		IOTA0 = 0;
+		for (int l6 = 0; l6 < 1024; l6 = l6 + 1) {
+			fVec3[l6] = 0.0;
+		}
+		for (int l7 = 0; l7 < 2; l7 = l7 + 1) {
+			fRec2[l7] = 0.0;
+		}
+		for (int l8 = 0; l8 < 2; l8 = l8 + 1) {
+			fRec4[l8] = 0.0;
 		}
 	}
 	
@@ -158,58 +202,57 @@ protected:
 		
 	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
 		float* input0 = inputs[0];
-		float* input1 = inputs[1];
 		float* output0 = outputs[0];
-		double fSlow0 = 0.09090909090909091 * static_cast<double>(fHslider0);
-		double fSlow1 = static_cast<double>(fHslider1);
-		int iSlow2 = fSlow1 >= 2.0;
-		int iSlow3 = fSlow1 >= 1.0;
-		double fSlow4 = 0.1 * static_cast<double>(fHslider2);
-		int iSlow5 = fSlow1 >= 3.0;
-		double fSlow6 = fConst0 * static_cast<double>(fHslider3);
+		double fSlow0 = static_cast<double>(fHslider0);
+		int iSlow1 = fSlow0 >= 4.0;
+		int iSlow2 = fSlow0 >= 2.0;
+		int iSlow3 = fSlow0 >= 1.0;
+		int iSlow4 = fSlow0 >= 3.0;
+		int iSlow5 = fSlow0 >= 6.0;
+		int iSlow6 = fSlow0 >= 5.0;
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
-			iVec0[0] = 1;
-			double fTemp0 = static_cast<double>(input0[i0]) + fSlow4 * static_cast<double>(input1[i0]);
-			double fTemp1 = std::max<double>(fTemp0, 23.44894968246214);
-			double fTemp2 = std::max<double>(2e+01, std::fabs(fTemp1));
-			double fTemp3 = ((1 - iVec0[1]) ? 0.0 : fRec1[1] + fConst3 * fTemp2);
-			fRec1[0] = fTemp3 - std::floor(fTemp3);
-			double fTemp4 = OtOsc_faustpower2_f(2.0 * fRec1[0] + -1.0);
-			fVec1[0] = fTemp4;
-			double fTemp5 = static_cast<double>(iVec0[1]) * (fTemp4 - fVec1[1]) / fTemp2;
-			fVec2[IOTA0 & 4095] = fTemp5;
-			double fTemp6 = std::max<double>(0.0, std::min<double>(2047.0, fConst4 / fTemp1));
-			int iTemp7 = static_cast<int>(fTemp6);
-			double fTemp8 = std::floor(fTemp6);
-			fRec0[0] = 0.999 * fRec0[1] + fConst2 * (fTemp5 - fVec2[(IOTA0 - iTemp7) & 4095] * (fTemp8 + (1.0 - fTemp6)) - (fTemp6 - fTemp8) * fVec2[(IOTA0 - (iTemp7 + 1)) & 4095]);
-			double fTemp9 = fConst1 * fRec0[0] * fTemp0;
-			double fTemp10 = std::max<double>(2.220446049250313e-16, std::fabs(fTemp0));
-			double fTemp11 = fRec2[1] + fConst3 * fTemp10;
-			double fTemp12 = fTemp11 + -1.0;
-			int iTemp13 = fTemp12 < 0.0;
-			fRec2[0] = ((iTemp13) ? fTemp11 : fTemp12);
-			double fRec3 = ((iTemp13) ? fTemp11 : fTemp11 + fTemp12 * (1.0 - fConst0 / fTemp10));
-			double fTemp14 = 2.0 * fRec3;
-			double fTemp15 = std::max<double>(0.0, std::min<double>(2047.0, fSlow6 / fTemp1));
-			int iTemp16 = static_cast<int>(fTemp15);
-			double fTemp17 = std::floor(fTemp15);
-			output0[i0] = static_cast<float>(fSlow0 * ((iSlow2) ? ((iSlow5) ? fConst2 * (fTemp5 - fVec2[(IOTA0 - iTemp16) & 4095] * (fTemp17 + (1.0 - fTemp15)) - (fTemp15 - fTemp17) * fVec2[(IOTA0 - (iTemp16 + 1)) & 4095]) : fTemp14 + -1.0) : ((iSlow3) ? 0.5 * (fTemp14 + fTemp9 + -1.0) : fTemp9)));
-			iVec0[1] = iVec0[0];
+			iVec1[0] = 1;
+			int iTemp0 = 1 - iVec1[1];
+			double fTemp1 = std::pow(2.0, static_cast<double>(input0[i0]));
+			double fTemp2 = ((iTemp0) ? 0.0 : fRec1[1] + fConst1 * fTemp1);
+			fRec1[0] = fTemp2 - std::floor(fTemp2);
+			double fTemp3 = 4.4e+02 * fTemp1;
+			double fTemp4 = std::max<double>(fTemp3, 23.44894968246214);
+			double fTemp5 = std::max<double>(2e+01, std::fabs(fTemp4));
+			double fTemp6 = ((iTemp0) ? 0.0 : fRec3[1] + fConst4 * fTemp5);
+			fRec3[0] = fTemp6 - std::floor(fTemp6);
+			double fTemp7 = OtOsc_faustpower2_f(2.0 * fRec3[0] + -1.0);
+			fVec2[0] = fTemp7;
+			double fTemp8 = static_cast<double>(iVec1[1]) * (fTemp7 - fVec2[1]) / fTemp5;
+			fVec3[IOTA0 & 1023] = fTemp8;
+			double fTemp9 = std::max<double>(0.0, std::min<double>(2047.0, fConst5 / fTemp4));
+			int iTemp10 = static_cast<int>(fTemp9);
+			double fTemp11 = std::floor(fTemp9);
+			double fTemp12 = fConst3 * (fTemp8 - fVec3[(IOTA0 - iTemp10) & 1023] * (fTemp11 + (1.0 - fTemp9)) - (fTemp9 - fTemp11) * fVec3[(IOTA0 - (iTemp10 + 1)) & 1023]);
+			fRec2[0] = 0.999 * fRec2[1] + fTemp12;
+			double fTemp13 = fConst2 * fRec2[0] * fTemp1;
+			double fTemp14 = std::max<double>(2.220446049250313e-16, std::fabs(fTemp3));
+			double fTemp15 = fRec4[1] + fConst4 * fTemp14;
+			double fTemp16 = fTemp15 + -1.0;
+			int iTemp17 = fTemp16 < 0.0;
+			fRec4[0] = ((iTemp17) ? fTemp15 : fTemp16);
+			double fRec5 = ((iTemp17) ? fTemp15 : fTemp15 + (1.0 - fConst0 / fTemp14) * fTemp16);
+			double fTemp18 = 2.0 * fRec5;
+			double fTemp19 = std::max<double>(0.0, std::min<double>(2047.0, fConst6 / fTemp4));
+			int iTemp20 = static_cast<int>(fTemp19);
+			double fTemp21 = std::floor(fTemp19);
+			output0[i0] = static_cast<float>(((iSlow1) ? ((iSlow5) ? fConst3 * (fTemp8 - fVec3[(IOTA0 - iTemp20) & 1023] * (fTemp21 + (1.0 - fTemp19)) - (fTemp19 - fTemp21) * fVec3[(IOTA0 - (iTemp20 + 1)) & 1023]) : ((iSlow6) ? fTemp12 : fTemp18 + -1.0)) : ((iSlow2) ? ((iSlow4) ? 0.6666666666666666 * (fTemp18 + fTemp13 + -1.0) : fTemp13) : ((iSlow3) ? ftbl0OtOscSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec1[0]), 65535))] : 0.0))));
+			iVec1[1] = iVec1[0];
 			fRec1[1] = fRec1[0];
-			fVec1[1] = fVec1[0];
+			fRec3[1] = fRec3[0];
+			fVec2[1] = fVec2[0];
 			IOTA0 = IOTA0 + 1;
-			fRec0[1] = fRec0[0];
 			fRec2[1] = fRec2[0];
+			fRec4[1] = fRec4[0];
 		}
 	}
 
 	inline void calculateSizes() {
-		width1 = std::max(width1, 100.0f);
-		height1 += 20.0f;
-		width1 = std::max(width1, 100.0f);
-		height1 += 20.0f;
-		width1 = std::max(width1, 100.0f);
-		height1 += 20.0f;
 		width1 = std::max(width1, 100.0f);
 		height1 += 20.0f;
 		initialized = true;
@@ -223,13 +266,7 @@ protected:
 		bool changed = false;
 		ImGui::BeginChild("Oscillator", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
 		ImGui::SetNextItemWidth(100.0f);
-		changed |= ImGui::SliderFloat("WaveForm", ImVec2(100.0f, 20.0f), &fHslider1, 0.0f, 4.0f, "%.0f");
-		ImGui::SetNextItemWidth(100.0f);
-		changed |= ImGui::SliderFloat("PW", ImVec2(100.0f, 20.0f), &fHslider3, 0.0f, 1.0f, "%.2f");
-		ImGui::SetNextItemWidth(100.0f);
-		changed |= ImGui::SliderFloat("Mod", ImVec2(100.0f, 20.0f), &fHslider2, 0.0f, 10.0f, "%.2f");
-		ImGui::SetNextItemWidth(100.0f);
-		changed |= ImGui::SliderFloat("Gain", ImVec2(100.0f, 20.0f), &fHslider0, 0.0f, 11.0f, "%.2f");
+		changed |= ImGui::SliderFloat("WaveForm", &fHslider0, 0.0f, 7.0f, "%.0f");
 		ImGui::EndChild();
 		return changed;
 	}
@@ -252,41 +289,25 @@ protected:
 
 	struct Parameters {
 		float waveForm;
-		float pW;
-		float mod;
-		float gain;
 	};
 
-	inline void setParameters([[maybe_unused]] Parameters& parameters) {
-		fHslider1 = parameters.waveForm;
-		fHslider3 = parameters.pW;
-		fHslider2 = parameters.mod;
-		fHslider0 = parameters.gain;
+	inline void setParameters([[maybe_unused]] const Parameters& parameters) {
+		fHslider0 = parameters.waveForm;
 	}
 
-	inline void getParameters([[maybe_unused]] Parameters& parameters) {
-		parameters.waveForm = fHslider1;
-		parameters.pW = fHslider3;
-		parameters.mod = fHslider2;
-		parameters.gain = fHslider0;
+	inline Parameters getParameters() {
+		Parameters parameters;
+		parameters.waveForm = fHslider0;
+		return parameters;
 	}
 
 	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
-		callback("waveForm", &fHslider1, 0.0f);
-		callback("pW", &fHslider3, 0.5f);
-		callback("mod", &fHslider2, 7.0f);
-		callback("gain", &fHslider0, 7.0f);
+		callback("waveForm", &fHslider0, 1.0f);
 	}
 
-	inline void setWaveForm(float value) { fHslider1 = value; }
-	inline void setPW(float value) { fHslider3 = value; }
-	inline void setMod(float value) { fHslider2 = value; }
-	inline void setGain(float value) { fHslider0 = value; }
+	inline void setWaveForm(float value) { fHslider0 = value; }
 
-	inline float getWaveForm() { return fHslider1; }
-	inline float getPW() { return fHslider3; }
-	inline float getMod() { return fHslider2; }
-	inline float getGain() { return fHslider0; }
+	inline float getWaveForm() { return fHslider0; }
 
 private:
 	bool initialized = false;

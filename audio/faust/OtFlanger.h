@@ -209,16 +209,18 @@ protected:
 		float feedback;
 	};
 
-	inline void setParameters([[maybe_unused]] Parameters& parameters) {
+	inline void setParameters([[maybe_unused]] const Parameters& parameters) {
 		fVslider1 = parameters.delay;
 		fVslider2 = parameters.depth;
 		fVslider0 = parameters.feedback;
 	}
 
-	inline void getParameters([[maybe_unused]] Parameters& parameters) {
+	inline Parameters getParameters() {
+		Parameters parameters;
 		parameters.delay = fVslider1;
 		parameters.depth = fVslider2;
 		parameters.feedback = fVslider0;
+		return parameters;
 	}
 
 	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {

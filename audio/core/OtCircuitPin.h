@@ -116,14 +116,12 @@ public:
 	// access incoming and outgoing samples
 	float getSample(size_t channel, size_t sample);
 	inline float getSample(size_t sample) { return getSample(0, sample); }
-	inline float* getSamples() { return sourcePin->audioBuffer->data(); }
+	void getSamples(float* samples);
 
 	void setSample(size_t channel, size_t sample, float value);
 	inline void setSample(size_t sample, float value) { setSample(0, sample, value); }
+	void setSamples(float* value);
 	void setSamples(float value);
-
-	inline OtAudioBuffer& getAudioInputBuffer() { return *(sourcePin->audioBuffer); }
-	inline OtAudioBuffer& getAudioOutputBuffer() { return *audioBuffer; }
 
 	inline OtMidiBuffer& getMidiInputBuffer() { return *(sourcePin->midiBuffer); }
 	inline OtMidiBuffer& getMidiOutputBuffer() { return *midiBuffer; }

@@ -76,13 +76,15 @@ public:
 			customH = height;
 
 			// add input signal to data buffer
+			float buffer[OtAudioSettings::bufferSize];
+			input->getSamples(buffer);
+
 			std::lock_guard<std::mutex> guard(mutex);
-			data.insert(input->getSamples(), OtAudioSettings::bufferSize);
+			data.insert(buffer, OtAudioSettings::bufferSize);
 
 		} else {
 			customW = width;
 			customH = ImGui::GetFrameHeight();
-
 		}
 
 		needsSizing = true;

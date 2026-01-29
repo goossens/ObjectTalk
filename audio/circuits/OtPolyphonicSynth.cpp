@@ -69,7 +69,9 @@ public:
 					synth.processMidiMessage(message);
 				}
 
-				synth.get(audioOutput->getAudioOutputBuffer().data(), OtAudioSettings::bufferSize);
+				float buffer[OtAudioSettings::bufferSize];
+				synth.get(buffer, OtAudioSettings::bufferSize);
+				audioOutput->setSamples(buffer);
 			}
 		}
 	};

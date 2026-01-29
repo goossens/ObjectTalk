@@ -10,15 +10,16 @@ declare license "MIT";
 
 import("stdfaust.lib");
 
-osc(freq, pw, wf) =
+osc(freq, wf) =
+	0,
+	os.oscsin(freq),
 	os.triangle(freq),
-	(os.triangle(freq) + os.sawtooth(freq)) / 2,
+	(os.triangle(freq) + os.sawtooth(freq)) / 1.5,
 	os.sawtooth(freq),
-	os.pulsetrain(freq, pw) : ba.selectn(4, wf);
+	os.square(freq),
+	os.pulsetrain(freq, 0.7) : ba.selectn(7, wf);
 
-wf = hslider("[1]WaveForm", 0, 0, 4, 1);
-pw = hslider("[2]PW", 0.5, 0, 1, 0.01);
-modGain = hslider("[3]Mod", 7, 0, 10, 0.01);
-gain = hslider("[4]Gain", 7, 0, 11, 0.01);
+wf = hslider("[1]WaveForm", 1, 0, 7, 1);
 
-process(freq, mod) = osc(freq + mod * modGain / 10, pw, wf) * (gain / 11);
+cv2hz(cv) = 440 * 2 ^ cv;
+process(cv) = osc(cv2hz(cv), wf);

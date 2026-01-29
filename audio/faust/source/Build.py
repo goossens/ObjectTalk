@@ -113,7 +113,7 @@ class UI:
 
 		else:
 			self.ui.append(f"\t\tImGui::SetNextItemWidth({sliderLength});")
-			self.ui.append(f"\t\tchanged |= ImGui::SliderFloat(\"{label}\", ImVec2({sliderLength}, {sliderWidth}), &{varname}, {minValue}, {maxValue}, \"{format}\");")
+			self.ui.append(f"\t\tchanged |= ImGui::SliderFloat(\"{label}\", &{varname}, {minValue}, {maxValue}, \"{format}\");")
 			return sliderLength, sliderWidth
 
 	def getSize(self):
@@ -294,6 +294,9 @@ with open("OtFaustHeader.h", "r") as file:
 with open("OtFaustFooter.h", "r") as file:
 	footer = file.read()
 
-# process all DSP files and generate code
+# process all DSP files (that are new or changed) and generate code
 for sourceFileName in glob.iglob("*.dsp"):
-	processDspFile(sourceFileName)
+	targetFileName = os.path.join("..", (pathlib.Path(sourceFileName).stem) + ".h")
+
+	if not os.path.exists(targetFileName) or os.path.getmtime(sourceFileName) > os.path.getmtime(targetFileName):
+		processDspFile(sourceFileName)

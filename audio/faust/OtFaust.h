@@ -90,8 +90,59 @@ public:
 //	OtFaustCircuit
 //
 
-template<typename T>
+template<typename T, typename U>
 class OtFaustCircuit : public OtCircuitClass {
+public:
+	// configure circuit
+	inline void configure() override {
+		dsp.initialize();
+		configurePins();
+	}
+
+	virtual void configurePins() {}
+
+	// render custom fields
+	inline bool customRendering([[maybe_unused]] float itemWidth) override {
+		auto changed = ui.renderUI();
+
+		if (changed) {
+			dsp.setParameters(ui.getParameters());
+		}
+
+		return changed;
+	}
+
+	inline float getCustomRenderingWidth() override {
+		return ui.getRenderWidth();
+	}
+
+	inline float getCustomRenderingHeight() override {
+		return ui.getRenderHeight();
+	}
+
+	// (de)serialize circuit
+	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
+		ui.serialize(data, basedir);
+	}
+
+	inline void customDeserialize(nlohmann::json* data, std::string* basedir) override {
+		ui.deserialize(data, basedir);
+		dsp.setParameters(ui.getParameters());
+	}
+
+protected:
+	// target Faust processor
+	T dsp;
+	U ui;
+};
+
+
+//
+//	OtFaustEffect
+//
+
+template<typename T>
+class OtFaustEffect : public OtCircuitClass {
 public:
 	// configure circuit
 	inline void configure() override {
@@ -134,7 +185,7 @@ protected:
 //
 
 template<typename T>
-class OtFaustEffectMono : public OtFaustCircuit<T> {
+class OtFaustEffectMono : public OtFaustEffect<T> {
 public:
 	// configure circuit pins
 	inline void configurePins() override {
@@ -149,15 +200,21 @@ public:
 	void execute() override {
 		if (audioOutput->isDestinationConnected()) {
 			if (audioInput->isSourceConnected()) {
-				auto in = audioInput->getAudioInputBuffer().data();
-				auto out = audioOutput->getAudioOutputBuffer().data();
+				float input[OtAudioSettings::bufferSize];
+				float output[OtAudioSettings::bufferSize];
+
+				auto in = input;
+				auto out = output;
+
+				audioInput->getSamples(input);
 				this->dsp.compute(OtAudioSettings::bufferSize, &in, &out);
+				audioOutput->setSamples(output);
 
 			} else {
 				audioOutput->setSamples(0.0f);
 			}
 		}
-	};
+	}
 
 private:
 	// circuit work variables
@@ -171,7 +228,7 @@ private:
 //
 
 template<typename T>
-class OtFaustEffectStereo : public OtFaustCircuit<T> {
+class OtFaustEffectStereo : public OtFaustEffect<T> {
 public:
 	// configure circuit pins
 	inline void configurePins() override {
@@ -186,18 +243,21 @@ public:
 	void execute() override {
 		if (audioOutput->isDestinationConnected()) {
 			if (audioInput->isSourceConnected()) {
-				auto& input = audioInput->getAudioInputBuffer();
-				auto& output = audioOutput->getAudioOutputBuffer();
+				float input[OtAudioSettings::bufferSize * 2];
+				float output[OtAudioSettings::bufferSize * 2];
 
-				float* inputs[] = { input.getChannelData(0), input.getChannelData(1) };
-				float* outputs[] = { output.getChannelData(0), output.getChannelData(1) };
-				this->dsp.compute(OtAudioSettings::bufferSize, inputs, outputs);
+				float* in[] = { input, input + OtAudioSettings::bufferSize };
+				float* out[] = { output, output + OtAudioSettings::bufferSize };
+
+				audioInput->getSamples(input);
+				this->dsp.compute(OtAudioSettings::bufferSize, in, out);
+				audioOutput->setSamples(output);
 
 			} else {
 				audioOutput->setSamples(0.0f);
 			}
 		}
-	};
+	}
 
 private:
 	// circuit work variables

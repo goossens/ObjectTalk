@@ -100,9 +100,11 @@ public:
 	}
 
 	virtual void configurePins() {}
+	virtual void configureUI() {}
 
 	// render custom fields
 	inline bool customRendering([[maybe_unused]] float itemWidth) override {
+		configureUI();
 		auto changed = ui.renderUI();
 
 		if (changed) {

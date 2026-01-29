@@ -247,10 +247,10 @@ protected:
 	}
 
 	struct Parameters {
-		float level;
-		float freq;
-		float delay;
-		float depth;
+		float level = 0.5f;
+		float freq = 2.0f;
+		float delay = 0.025f;
+		float depth = 0.02f;
 	};
 
 	inline void setParameters([[maybe_unused]] const Parameters& parameters) {

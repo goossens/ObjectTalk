@@ -204,9 +204,9 @@ protected:
 	}
 
 	struct Parameters {
-		float delay;
-		float depth;
-		float feedback;
+		float delay = 0.2f;
+		float depth = 50.0f;
+		float feedback = 60.0f;
 	};
 
 	inline void setParameters([[maybe_unused]] const Parameters& parameters) {

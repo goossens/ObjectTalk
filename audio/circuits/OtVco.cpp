@@ -13,20 +13,26 @@
 
 #include "OtAudioSettings.h"
 #include "OtCircuitFactory.h"
-#include "OtOsc.h"
-#include "OtOscUi.h"
+#include "OtVcoDsp.h"
+#include "OtVcoUi.h"
 
 
 //
 //	OtVco
 //
 
-class OtVco : public OtFaustCircuit<OtOsc, OtOscUi> {
+class OtVco : public OtFaustCircuit<OtVcoDsp, OtVcoUi> {
 public:
 	// configure pins
 	inline void configurePins() override {
 		frequencyInput = addInputPin("Pitch", OtCircuitPinClass::Type::control)->hasTuning(true);
 		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono)->hasAttenuation(true);
+	}
+
+	// configure UI
+	inline void configureUI() override {
+		ui.showFrequency(!frequencyInput->isSourceConnected());
+		needsSizing = true;
 	}
 
 	// generate samples
@@ -44,7 +50,7 @@ public:
 				audioOutput->setSamples(output);
 
 			} else {
-				audioOutput->setSamples(0.0f);
+				audioOutput->setSamples(OtAudioUtilities::pitchToCv(ui.getFrequency()));
 			}
 		}
 	};

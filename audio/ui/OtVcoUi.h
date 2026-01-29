@@ -16,30 +16,33 @@
 
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtAudioUtilities.h"
-#include "OtOsc.h"
+#include "OtVcoDsp.h"
 
 
 //
-//	OtOscUi
+//	OtVcoUi
 //
 
-class OtOscUi {
+class OtVcoUi {
 public:
-	// UI to change oscillator properties
+	// UI to change properties
+	inline void showFrequency(bool flag) { showingFrequency = flag; }
 	bool renderUI();
 	float getRenderWidth();
 	float getRenderHeight();
 
-	// (de)serialize oscillator parameters
+	// (de)serialize parameters
 	void serialize(nlohmann::json* data, std::string* basedir);
 	void deserialize(nlohmann::json* data, std::string* basedir);
 
 	// access parameters
-	inline void setParameters(OtOsc::Parameters& p) { parameters = p; }
-	inline OtOsc::Parameters getParameters() { return parameters; }
+	inline void setParameters(OtVcoDsp::Parameters& p) { parameters = p; }
+	inline OtVcoDsp::Parameters getParameters() { return parameters; }
+	inline float getFrequency() { return frequency; }
 
 private:
 	// properties
-	OtOsc::Parameters parameters;
+	OtVcoDsp::Parameters parameters;
+	float frequency = 440.0f;
+	bool showingFrequency = false;
 };

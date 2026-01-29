@@ -239,10 +239,10 @@ protected:
 	}
 
 	struct Parameters {
-		float ratio;
-		float thresh;
-		float attack;
-		float release;
+		float ratio = 4.0f;
+		float thresh = -10.0f;
+		float attack = 10.0f;
+		float release = 200.0f;
 	};
 
 	inline void setParameters([[maybe_unused]] const Parameters& parameters) {

@@ -723,9 +723,9 @@ protected:
 	}
 
 	struct Parameters {
-		float dwell;
-		float tension;
-		float blend;
+		float dwell = 0.2f;
+		float tension = 0.0f;
+		float blend = 0.5f;
 	};
 
 	inline void setParameters([[maybe_unused]] const Parameters& parameters) {

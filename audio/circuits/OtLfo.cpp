@@ -12,56 +12,46 @@
 #include "nlohmann/json.hpp"
 
 #include "OtAudioSettings.h"
+#include "OtAudioUtilities.h"
 #include "OtCircuitFactory.h"
-#include "OtOscillator.h"
+#include "OtLfoDsp.h"
+#include "OtLfoUi.h"
 
 
 //
 //	OtLfo
 //
 
-class OtLfo : public OtCircuitClass {
+class OtLfo : public OtFaustCircuit<OtLfoDsp, OtLfoUi> {
 public:
-	// configure circuit
-	inline void configure() override {
-		output = addOutputPin("Output", OtCircuitPinClass::Type::control);
-
-		parameters.showFrequencyKnob = true;
-		parameters.frequencyKnobLow = 0.1f;
-		parameters.frequencyKnobHigh = 200.0f;
+	// configure pins
+	inline void configurePins() override {
+		frequencyInput = addInputPin("Freq", OtCircuitPinClass::Type::control)->hasTuning(true);
+		signalOutput = addOutputPin("Output", OtCircuitPinClass::Type::control);
 	}
 
-	// render custom fields
-	inline bool customRendering(float itemWidth) override {
-		ImGui::PushItemWidth(itemWidth - parameters.getLabelWidth());
-		auto changed = parameters.renderUI();
-		ImGui::PopItemWidth();
-		return changed;
-	}
-
-	inline float getCustomRenderingWidth() override {
-		return parameters.getRenderWidth();
-	}
-
-	inline float getCustomRenderingHeight() override {
-		return parameters.getRenderHeight();
-	}
-
-	// (de)serialize circuit
-	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		parameters.serialize(data, basedir);
-	}
-
-	inline void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		parameters.deserialize(data, basedir);
+	// configure UI
+	inline void configureUI() override {
+		ui.showFrequency(!frequencyInput->isSourceConnected());
+		needsSizing = true;
 	}
 
 	// generate samples
 	void execute() override {
-		if (output->isDestinationConnected()) {
-			// process all the samples
-			for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-				output->setSample(i, state.get(parameters));
+		if (signalOutput->isDestinationConnected()) {
+			if (frequencyInput->isSourceConnected()) {
+				float input[OtAudioSettings::bufferSize];
+				float output[OtAudioSettings::bufferSize];
+
+				auto in = input;
+				auto out = output;
+
+				frequencyInput->getSamples(input);
+				dsp.compute(OtAudioSettings::bufferSize, &in, &out);
+				signalOutput->setSamples(output);
+
+			} else {
+				signalOutput->setSamples(OtAudioUtilities::pitchToCv(ui.getFrequency()));
 			}
 		}
 	};
@@ -70,12 +60,9 @@ public:
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::generator;
 
 private:
-	// properties
-	OtOscillator::Parameters parameters;
-
 	// work variables
-	OtOscillator::State state;
-	OtCircuitPin output;
+	OtCircuitPin frequencyInput;
+	OtCircuitPin signalOutput;
 };
 
 static OtCircuitFactoryRegister<OtLfo> registration;

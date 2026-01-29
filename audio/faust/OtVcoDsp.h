@@ -21,23 +21,23 @@
 
 
 //
-//  OtOsc
+//  OtVcoDsp
 //
 
-class OtOscSIG0 {
+class OtVcoDspSIG0 {
 protected:	
 	int iVec0[2];
 	int iRec0[2];
 
 public:	
-	int getNumInputsOtOscSIG0() {
+	int getNumInputsOtVcoDspSIG0() {
 		return 0;
 	}
-	int getNumOutputsOtOscSIG0() {
+	int getNumOutputsOtVcoDspSIG0() {
 		return 1;
 	}
 	
-	void instanceInitOtOscSIG0([[maybe_unused]] int sample_rate) {
+	void instanceInitOtVcoDspSIG0([[maybe_unused]] int sample_rate) {
 		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
 			iVec0[l0] = 0;
 		}
@@ -46,7 +46,7 @@ public:
 		}
 	}
 	
-	void fillOtOscSIG0(int count, double* table) {
+	void fillOtVcoDspSIG0(int count, double* table) {
 		for (int i1 = 0; i1 < count; i1 = i1 + 1) {
 			iVec0[0] = 1;
 			iRec0[0] = (iVec0[1] + iRec0[1]) % 65536;
@@ -58,15 +58,15 @@ public:
 
 };
 
-static OtOscSIG0* newOtOscSIG0() { return (OtOscSIG0*)new OtOscSIG0(); }
-static void deleteOtOscSIG0(OtOscSIG0* dsp) { delete dsp; }
+static OtVcoDspSIG0* newOtVcoDspSIG0() { return (OtVcoDspSIG0*)new OtVcoDspSIG0(); }
+static void deleteOtVcoDspSIG0(OtVcoDspSIG0* dsp) { delete dsp; }
 
-static double ftbl0OtOscSIG0[65536];
-static double OtOsc_faustpower2_f(double value) {
+static double ftbl0OtVcoDspSIG0[65536];
+static double OtVcoDsp_faustpower2_f(double value) {
 	return value * value;
 }
 
-class OtOsc : public OtFaust {
+class OtVcoDsp : public OtFaust {
 protected:
 	float fHslider0;
 	int iVec1[2];
@@ -87,21 +87,21 @@ protected:
 	double fConst6;
 	
  public:
-	OtOsc() {
+	OtVcoDsp() {
 	}
 	
-	OtOsc(const OtOsc&) = default;
+	OtVcoDsp(const OtVcoDsp&) = default;
 	
-	virtual ~OtOsc() = default;
+	virtual ~OtVcoDsp() = default;
 	
-	OtOsc& operator=(const OtOsc&) = default;
+	OtVcoDsp& operator=(const OtVcoDsp&) = default;
 	
 	void metadata(Meta* m) override { 
 		m->declare("basics.lib/name", "Faust Basic Element Library");
 		m->declare("basics.lib/version", "1.22.0");
 		m->declare("category", "Generator");
-		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtOsc -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
-		m->declare("filename", "OtOsc.dsp");
+		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtVcoDsp -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
+		m->declare("filename", "OtVcoDsp.dsp");
 		m->declare("filters.lib/lowpass0_highpass1", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/name", "Faust Filters Library");
 		m->declare("filters.lib/pole:author", "Julius O. Smith III");
@@ -135,10 +135,10 @@ protected:
 	}
 	
 	static void classInit([[maybe_unused]] int sample_rate) {
-		OtOscSIG0* sig0 = newOtOscSIG0();
-		sig0->instanceInitOtOscSIG0(sample_rate);
-		sig0->fillOtOscSIG0(65536, ftbl0OtOscSIG0);
-		deleteOtOscSIG0(sig0);
+		OtVcoDspSIG0* sig0 = newOtVcoDspSIG0();
+		sig0->instanceInitOtVcoDspSIG0(sample_rate);
+		sig0->fillOtVcoDspSIG0(65536, ftbl0OtVcoDspSIG0);
+		deleteOtVcoDspSIG0(sig0);
 	}
 	
 	virtual void instanceConstants([[maybe_unused]] int sample_rate) {
@@ -192,8 +192,8 @@ protected:
 		instanceClear();
 	}
 	
-	virtual OtOsc* clone() {
-		return new OtOsc(*this);
+	virtual OtVcoDsp* clone() {
+		return new OtVcoDsp(*this);
 	}
 	
 	int getSampleRate() override {
@@ -221,7 +221,7 @@ protected:
 			double fTemp5 = std::max<double>(2e+01, std::fabs(fTemp4));
 			double fTemp6 = ((iTemp0) ? 0.0 : fRec3[1] + fConst4 * fTemp5);
 			fRec3[0] = fTemp6 - std::floor(fTemp6);
-			double fTemp7 = OtOsc_faustpower2_f(2.0 * fRec3[0] + -1.0);
+			double fTemp7 = OtVcoDsp_faustpower2_f(2.0 * fRec3[0] + -1.0);
 			fVec2[0] = fTemp7;
 			double fTemp8 = static_cast<double>(iVec1[1]) * (fTemp7 - fVec2[1]) / fTemp5;
 			fVec3[IOTA0 & 1023] = fTemp8;
@@ -241,7 +241,7 @@ protected:
 			double fTemp19 = std::max<double>(0.0, std::min<double>(2047.0, fConst6 / fTemp4));
 			int iTemp20 = static_cast<int>(fTemp19);
 			double fTemp21 = std::floor(fTemp19);
-			output0[i0] = static_cast<float>(((iSlow1) ? ((iSlow5) ? fConst3 * (fTemp8 - fVec3[(IOTA0 - iTemp20) & 1023] * (fTemp21 + (1.0 - fTemp19)) - (fTemp19 - fTemp21) * fVec3[(IOTA0 - (iTemp20 + 1)) & 1023]) : ((iSlow6) ? fTemp12 : fTemp18 + -1.0)) : ((iSlow2) ? ((iSlow4) ? 0.6666666666666666 * (fTemp18 + fTemp13 + -1.0) : fTemp13) : ((iSlow3) ? ftbl0OtOscSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec1[0]), 65535))] : 0.0))));
+			output0[i0] = static_cast<float>(((iSlow1) ? ((iSlow5) ? fConst3 * (fTemp8 - fVec3[(IOTA0 - iTemp20) & 1023] * (fTemp21 + (1.0 - fTemp19)) - (fTemp19 - fTemp21) * fVec3[(IOTA0 - (iTemp20 + 1)) & 1023]) : ((iSlow6) ? fTemp12 : fTemp18 + -1.0)) : ((iSlow2) ? ((iSlow4) ? 0.6666666666666666 * (fTemp18 + fTemp13 + -1.0) : fTemp13) : ((iSlow3) ? ftbl0OtVcoDspSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec1[0]), 65535))] : 0.0))));
 			iVec1[1] = iVec1[0];
 			fRec1[1] = fRec1[0];
 			fRec3[1] = fRec3[0];
@@ -288,7 +288,7 @@ protected:
 	}
 
 	struct Parameters {
-		float waveForm;
+		float waveForm = 1.0f;
 	};
 
 	inline void setParameters([[maybe_unused]] const Parameters& parameters) {

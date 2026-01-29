@@ -209,10 +209,10 @@ protected:
 	}
 
 	struct Parameters {
-		float attack;
-		float decay;
-		float sustain;
-		float release;
+		float attack = 1.0f;
+		float decay = 1.0f;
+		float sustain = 0.8f;
+		float release = 1.0f;
 	};
 
 	inline void setParameters([[maybe_unused]] const Parameters& parameters) {

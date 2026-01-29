@@ -132,7 +132,7 @@ class UI:
 
 	def getParametersStruct(self):
 		if self.parameters:
-			return "\n".join([f"\t\tfloat {parameter["parname"]};" for parameter in self.parameters])
+			return "\n".join([f"\t\tfloat {parameter["parname"]} = {parameter["init"]};" for parameter in self.parameters])
 
 		else:
 			return "\t\tfloat dummy;"
@@ -198,7 +198,7 @@ class UI:
 			return "%.0f"
 
 # process DSP file and generate code
-def processDspFile(sourceFileName):
+def processDspFile(sourceFileName, targetFileName):
 	className = pathlib.Path(sourceFileName).stem
 	jsonName = sourceFileName + ".json"
 
@@ -277,7 +277,7 @@ def processDspFile(sourceFileName):
 	code = headerText + text + footerText
 
 	# write code to target file
-	with open(os.path.join("..", className + ".h"), "w") as output:
+	with open(targetFileName, "w") as output:
 		output.write(code)
 
 #
@@ -299,4 +299,5 @@ for sourceFileName in glob.iglob("*.dsp"):
 	targetFileName = os.path.join("..", (pathlib.Path(sourceFileName).stem) + ".h")
 
 	if not os.path.exists(targetFileName) or os.path.getmtime(sourceFileName) > os.path.getmtime(targetFileName):
-		processDspFile(sourceFileName)
+		print(f"Compiling [{sourceFileName}]...")
+		processDspFile(sourceFileName, targetFileName)

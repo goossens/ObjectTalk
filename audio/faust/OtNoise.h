@@ -115,13 +115,12 @@ protected:
 		
 	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
 		float* output0 = outputs[0];
-		double fSlow0 = static_cast<double>(fHslider0);
-		int iSlow1 = static_cast<int>(static_cast<double>(fHslider1));
+		double fSlow0 = 4.656612875245797e-10 * static_cast<double>(fHslider0) * static_cast<double>(fHslider1);
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
 			iRec0[0] = 1103515245 * iRec0[1] + 12345;
-			double fTemp0 = 4.656612875245797e-10 * static_cast<double>(iRec0[0]);
-			fRec1[0] = 0.5221894 * fRec1[3] + fTemp0 + 2.494956002 * fRec1[1] - 2.017265875 * fRec1[2];
-			output0[i0] = static_cast<float>(fSlow0 * ((iSlow1) ? 0.049922035 * fRec1[0] + 0.050612699 * fRec1[2] - (0.095993537 * fRec1[1] + 0.004408786 * fRec1[3]) : fTemp0));
+			double fTemp0 = static_cast<double>(iRec0[0]);
+			fRec1[0] = 0.5221894 * fRec1[3] + 4.656612875245797e-10 * fTemp0 + 2.494956002 * fRec1[1] - 2.017265875 * fRec1[2];
+			output0[i0] = static_cast<float>(fSlow0 * fTemp0 * (0.049922035 * fRec1[0] + 0.050612699 * fRec1[2] - (0.095993537 * fRec1[1] + 0.004408786 * fRec1[3])));
 			iRec0[1] = iRec0[0];
 			for (int j0 = 3; j0 > 0; j0 = j0 - 1) {
 				fRec1[j0] = fRec1[j0 - 1];
@@ -145,9 +144,9 @@ protected:
 		bool changed = false;
 		ImGui::BeginChild("Noise", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
 		ImGui::SetNextItemWidth(100.0f);
-		changed |= ImGui::SliderFloat("Type", &fHslider1, 0.0f, 1.0f, "%.0f");
+		changed |= ImGui::SliderFloat("White", &fHslider0, 0.0f, 1.0f, "%.2f");
 		ImGui::SetNextItemWidth(100.0f);
-		changed |= ImGui::SliderFloat("Volume", &fHslider0, 0.0f, 1.0f, "%.2f");
+		changed |= ImGui::SliderFloat("Pink", &fHslider1, 0.0f, 1.0f, "%.2f");
 		ImGui::EndChild();
 		return changed;
 	}
@@ -169,32 +168,32 @@ protected:
 	}
 
 	struct Parameters {
-		float type;
-		float volume;
+		float white = 0.0f;
+		float pink = 0.0f;
 	};
 
 	inline void setParameters([[maybe_unused]] const Parameters& parameters) {
-		fHslider1 = parameters.type;
-		fHslider0 = parameters.volume;
+		fHslider0 = parameters.white;
+		fHslider1 = parameters.pink;
 	}
 
 	inline Parameters getParameters() {
 		Parameters parameters;
-		parameters.type = fHslider1;
-		parameters.volume = fHslider0;
+		parameters.white = fHslider0;
+		parameters.pink = fHslider1;
 		return parameters;
 	}
 
 	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
-		callback("type", &fHslider1, 0.0f);
-		callback("volume", &fHslider0, 0.0f);
+		callback("white", &fHslider0, 0.0f);
+		callback("pink", &fHslider1, 0.0f);
 	}
 
-	inline void setType(float value) { fHslider1 = value; }
-	inline void setVolume(float value) { fHslider0 = value; }
+	inline void setWhite(float value) { fHslider0 = value; }
+	inline void setPink(float value) { fHslider1 = value; }
 
-	inline float getType() { return fHslider1; }
-	inline float getVolume() { return fHslider0; }
+	inline float getWhite() { return fHslider0; }
+	inline float getPink() { return fHslider1; }
 
 private:
 	bool initialized = false;

@@ -301,9 +301,9 @@ protected:
 	}
 
 	struct Parameters {
-		float speed;
-		float depth;
-		float feedback;
+		float speed = 1.0f;
+		float depth = 50.0f;
+		float feedback = 0.0f;
 	};
 
 	inline void setParameters([[maybe_unused]] const Parameters& parameters) {

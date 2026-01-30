@@ -182,6 +182,9 @@ void TextEditor::Document::deleteText(Coordinate start, Coordinate end) {
 		deleteLines(start.line + 1, end.line);
 	}
 
+	// remove marker
+	startLine.marker = 0;
+
 	// mark affected lines for colorization
 	auto last = (start.line == lineCount() - 1) ? start.line : start.line + 1;
 
@@ -871,7 +874,7 @@ void TextEditor::Document::deleteLines(int start, int end) {
 		}
 	}
 
-	erase(begin() + start, begin() + end);
+	erase(begin() + start, begin() + end + 1);
 }
 
 

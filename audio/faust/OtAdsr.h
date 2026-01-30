@@ -31,10 +31,9 @@ protected:
 	int iRec1[2];
 	int fSampleRate;
 	double fConst0;
-	double fConst1;
 	float fVslider1;
 	float fVslider2;
-	double fConst2;
+	double fConst1;
 	float fVslider3;
 	double fRec0[2];
 	
@@ -87,14 +86,13 @@ protected:
 	virtual void instanceConstants([[maybe_unused]] int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
-		fConst1 = 0.001 * fConst0;
-		fConst2 = 1.0 / fConst0;
+		fConst1 = 1.0 / fConst0;
 	}
 	
 	virtual void instanceResetUserInterface() {
-		fVslider0 = static_cast<float>(1.0);
-		fVslider1 = static_cast<float>(1.0);
-		fVslider2 = static_cast<float>(1.0);
+		fVslider0 = static_cast<float>(0.03);
+		fVslider1 = static_cast<float>(0.01);
+		fVslider2 = static_cast<float>(0.05);
 		fVslider3 = static_cast<float>(0.8);
 	}
 	
@@ -132,23 +130,22 @@ protected:
 	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
-		double fSlow0 = 0.001 * static_cast<double>(fVslider0);
+		double fSlow0 = static_cast<double>(fVslider0);
 		double fSlow1 = static_cast<double>(fVslider1);
-		int iSlow2 = static_cast<int>(fConst1 * fSlow1);
-		double fSlow3 = 0.001 * static_cast<double>(fVslider2);
-		double fSlow4 = 0.001 * fSlow1;
-		double fSlow5 = static_cast<double>(fVslider3);
+		int iSlow2 = static_cast<int>(fConst0 * fSlow1);
+		double fSlow3 = static_cast<double>(fVslider2);
+		double fSlow4 = static_cast<double>(fVslider3);
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
 			int iTemp0 = static_cast<double>(input0[i0]) > 0.0;
 			iVec0[0] = iTemp0;
 			iRec1[0] = iTemp0 * (iRec1[1] + 1);
 			int iTemp1 = iTemp0 - iVec0[1];
 			int iTemp2 = (iRec1[0] < iSlow2) | (iTemp1 * (iTemp1 > 0));
-			double fTemp3 = 0.1447178002894356 * ((iTemp0) ? ((iTemp2) ? fSlow4 : fSlow3) : fSlow0);
+			double fTemp3 = 0.1447178002894356 * ((iTemp0) ? ((iTemp2) ? fSlow1 : fSlow3) : fSlow0);
 			int iTemp4 = std::fabs(fTemp3) < 2.220446049250313e-16;
-			double fTemp5 = ((iTemp4) ? 0.0 : std::exp(-(fConst2 / ((iTemp4) ? 1.0 : fTemp3))));
+			double fTemp5 = ((iTemp4) ? 0.0 : std::exp(-(fConst1 / ((iTemp4) ? 1.0 : fTemp3))));
 			double fTemp6 = static_cast<double>(iTemp0);
-			fRec0[0] = (1.0 - fTemp5) * ((iTemp0) ? ((iTemp2) ? fTemp6 : fSlow5 * fTemp6) : 0.0) + fTemp5 * fRec0[1];
+			fRec0[0] = (1.0 - fTemp5) * ((iTemp0) ? ((iTemp2) ? fTemp6 : fSlow4 * fTemp6) : 0.0) + fTemp5 * fRec0[1];
 			output0[i0] = static_cast<float>(fRec0[0]);
 			iVec0[1] = iVec0[0];
 			iRec1[1] = iRec1[0];
@@ -181,13 +178,13 @@ protected:
 
 		bool changed = false;
 		ImGui::BeginChild("ADSR", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
-		changed |= OtUi::knob("Attack", &fVslider1, 0.0f, 10.0f, "%.2fms");
+		changed |= OtUi::knob("Attack", &fVslider1, 0.0f, 10.0f, "%.3fs");
 		ImGui::SameLine();
-		changed |= OtUi::knob("Decay", &fVslider2, 0.0f, 10.0f, "%.2fms");
+		changed |= OtUi::knob("Decay", &fVslider2, 0.0f, 10.0f, "%.3fs");
 		ImGui::SameLine();
-		changed |= OtUi::knob("Sustain", &fVslider3, 0.0f, 1.0f, "%.2f%%");
+		changed |= OtUi::knob("Sustain", &fVslider3, 0.0f, 1.0f, "%.2f");
 		ImGui::SameLine();
-		changed |= OtUi::knob("Release", &fVslider0, 0.0f, 10.0f, "%.2fms");
+		changed |= OtUi::knob("Release", &fVslider0, 0.0f, 10.0f, "%.3fs");
 		ImGui::EndChild();
 		return changed;
 	}
@@ -209,10 +206,10 @@ protected:
 	}
 
 	struct Parameters {
-		float attack = 1.0f;
-		float decay = 1.0f;
+		float attack = 0.01f;
+		float decay = 0.05f;
 		float sustain = 0.8f;
-		float release = 1.0f;
+		float release = 0.03f;
 	};
 
 	inline void setParameters([[maybe_unused]] const Parameters& parameters) {
@@ -232,10 +229,10 @@ protected:
 	}
 
 	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
-		callback("attack", &fVslider1, 1.0f);
-		callback("decay", &fVslider2, 1.0f);
+		callback("attack", &fVslider1, 0.01f);
+		callback("decay", &fVslider2, 0.05f);
 		callback("sustain", &fVslider3, 0.8f);
-		callback("release", &fVslider0, 1.0f);
+		callback("release", &fVslider0, 0.03f);
 	}
 
 	inline void setAttack(float value) { fVslider1 = value; }

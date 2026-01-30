@@ -36,7 +36,7 @@ public:
 
 	// access parameters
 	inline void setParameters(OtAdsr::Parameters& p) { parameters = p; }
-	inline void getParameters(OtAdsr::Parameters& p) { p = parameters; }
+	inline OtAdsr::Parameters getParameters() { return parameters; }
 
 	private:
 	// properties

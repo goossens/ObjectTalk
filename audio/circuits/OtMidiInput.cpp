@@ -59,6 +59,7 @@ public:
 
 	// generate audio stream by evaluating MIDI messages
 	void execute() override {
+		bool noteOff = false;
 		auto& midiBuffer = midiOutput->getMidiOutputBuffer();
 		midiBuffer.clear();
 
@@ -73,24 +74,27 @@ public:
 			} else if (message->isNoteOff()) {
 				velocity = message->getVelocity() / 128.0f;
 				gate = false;
-				noteOff |= true;
+				noteOff = true;
 			}
 		});
 
 		// send pitch signal (if connected)
 		if (pitchOutput->isDestinationConnected()) {
 			pitchOutput->setSamples(OtAudioUtilities::pitchToCv(pitch));
+
+		} else {
+			pitchOutput->setSamples(0.0f);
 		}
 
 		// send gate signal (if connected)
 		if (gateOutput->isDestinationConnected()) {
-			gateOutput->setSamples(gate ? 1.0f : 0.0f);
+			gateOutput->setSamples((gate && !noteOff) ? 1.0f : 0.0f);
 
-			if (gate && noteOff) {
-				gateOutput->setSample(0, 0.0f);
-				noteOff = false;
-			}
+		} else {
+			gateOutput->setSamples(0.0f);
 		}
+
+		noteOff = false;
 	}
 
 	static constexpr const char* circuitName = "MIDI Input";
@@ -106,7 +110,6 @@ private:
 	float pitch = 440.0f;
 	float velocity = 0.0f;
 	bool gate = false;
-	bool noteOff = false;
 
 	OtCircuitPin midiOutput;
 	OtCircuitPin pitchOutput;

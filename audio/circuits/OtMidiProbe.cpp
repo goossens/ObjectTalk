@@ -91,7 +91,6 @@ public:
 					keyPressed[message->getKeyNumber()] = true;
 
 				} else if (message->isNoteOff()) {
-
 					keyPressed[message->getKeyNumber()] = false;
 
 				} else if (message->isAllNotesOff()) {

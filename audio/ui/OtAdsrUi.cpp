@@ -78,10 +78,10 @@ bool OtAdsrUi::renderUI() {
 
 	// render envelope control knobs
 	auto changed = false;
-	changed |= OtUi::knob("Attack", &parameters.attack, 0.0f, 10.0f, "%.2fs", true); ImGui::SameLine();
-	changed |= OtUi::knob("Decay", &parameters.decay, 0.0f, 10.0f, "%.2fs", true); ImGui::SameLine();
+	changed |= OtUi::knob("Attack", &parameters.attack, 0.0f, 10.0f, "%.3fs", true); ImGui::SameLine();
+	changed |= OtUi::knob("Decay", &parameters.decay, 0.0f, 10.0f, "%.3fs", true); ImGui::SameLine();
 	changed |= OtUi::knob("Sustain", &parameters.sustain, 0.0f, 1.0f, "%.2f", false); ImGui::SameLine();
-	changed |= OtUi::knob("Release", &parameters.release, 0.0f, 10.0f, "%.2fs", true);
+	changed |= OtUi::knob("Release", &parameters.release, 0.0f, 10.0f, "%.3fs", true);
 	return changed;
 }
 

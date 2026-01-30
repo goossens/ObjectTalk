@@ -3,10 +3,20 @@
 		{
 			"id": 1315334498,
 			"inputs": [],
+			"midiFile": "",
+			"midiSource": 0,
 			"outputs": [
+				{
+					"id": 608218665,
+					"name": "MIDI",
+					"type": "midi"
+				},
 				{
 					"id": 2197641789,
 					"name": "Pitch",
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 0.0,
 					"type": "control"
 				},
 				{
@@ -17,42 +27,39 @@
 			],
 			"title": "MIDI Input",
 			"type": "MIDI Input",
-			"x": 40.0,
-			"y": 436.0
+			"x": 48.0,
+			"y": 181.0
 		},
 		{
+			"frequency": 440.0,
 			"id": 2557146591,
 			"inputs": [
 				{
 					"id": 3360538592,
 					"name": "Pitch",
-					"type": "control"
-				},
-				{
-					"id": 4000249913,
-					"name": "Pulse Width",
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 0.0,
 					"type": "control"
 				}
 			],
 			"outputs": [
 				{
+					"attenuation": 1.0,
 					"id": 410275450,
 					"name": "Output",
 					"type": "mono"
 				}
 			],
-			"frequency": 440.0,
-			"pulseWidth": 0.5,
 			"title": "VCO",
 			"type": "VCO",
-			"waveForm": 3,
-			"x": 523.0,
-			"y": 50.0
+			"waveForm": 3.0,
+			"x": 439.0,
+			"y": 30.0
 		},
 		{
 			"attack": 0.5,
 			"decay": 0.5,
-			"hold": 0.010000000707805157,
 			"id": 3801042963,
 			"inputs": [
 				{
@@ -72,8 +79,8 @@
 			"sustain": 0.5,
 			"title": "Envelope Generator",
 			"type": "Envelope Generator",
-			"x": 523.0,
-			"y": 436.0
+			"x": 439.0,
+			"y": 181.0
 		},
 		{
 			"id": 3569591617,
@@ -84,6 +91,7 @@
 					"type": "mono"
 				},
 				{
+					"attenuation": 1.0,
 					"id": 2718563792,
 					"name": "CV",
 					"type": "control"
@@ -91,6 +99,7 @@
 			],
 			"outputs": [
 				{
+					"attenuation": 1.0,
 					"id": 470986240,
 					"name": "Output",
 					"type": "mono"
@@ -98,9 +107,8 @@
 			],
 			"title": "VCA",
 			"type": "VCA",
-			"volume": 7.0,
-			"x": 938.0,
-			"y": 50.0
+			"x": 747.0,
+			"y": 30.0
 		},
 		{
 			"id": 1460307938,
@@ -120,11 +128,11 @@
 				}
 			],
 			"panLevel": 0.0,
-			"rightDelayTime": 20.0,
+			"rightDelayTime": 0.0,
 			"title": "Mono to Stereo",
 			"type": "Mono to Stereo",
-			"x": 1145.0,
-			"y": 50.0
+			"x": 921.0,
+			"y": 30.0
 		},
 		{
 			"id": 278093283,
@@ -138,8 +146,8 @@
 			"outputs": [],
 			"title": "Speaker Out",
 			"type": "Speaker Out",
-			"x": 1413.0,
-			"y": 50.0
+			"x": 1144.0,
+			"y": 30.0
 		},
 		{
 			"id": 1203394735,
@@ -153,8 +161,8 @@
 			"outputs": [],
 			"title": "Oscilloscope",
 			"type": "Oscilloscope",
-			"x": 1136.0,
-			"y": 331.0
+			"x": 921.0,
+			"y": 253.0
 		}
 	],
 	"metadata": {},
@@ -185,14 +193,14 @@
 			"to": 2235339939
 		},
 		{
-			"from": 3111468910,
-			"id": 516761903,
-			"to": 2718563792
-		},
-		{
 			"from": 470986240,
 			"id": 368892597,
 			"to": 2271235433
+		},
+		{
+			"from": 3111468910,
+			"id": 516761903,
+			"to": 2718563792
 		}
 	]
 }

@@ -11,7 +11,8 @@
 
 #include "nlohmann/json.hpp"
 
-#include "OtEnvelope.h"
+#include "OtAdsr.h"
+#include "OtAdsrUi.h"
 #include "OtCircuitFactory.h"
 
 
@@ -19,55 +20,35 @@
 //	OtEnvelopeGenerator
 //
 
-class OtEnvelopeGenerator : public OtCircuitClass {
+class OtEnvelopeGenerator : public OtFaustCircuit<OtAdsr, OtAdsrUi> {
 public:
-	// configure circuit
-	inline void configure() override {
+	// configure pins
+	inline void configurePins() override {
 		triggerInput = addInputPin("Trigger", OtCircuitPinClass::Type::control);
 		envelopeOutput = addOutputPin("Output", OtCircuitPinClass::Type::control);
-	}
-
-	// render custom fields
-	inline bool customRendering([[maybe_unused]] float itemWidth) override {
-		return parameters.renderUI();
-	}
-
-	inline float getCustomRenderingWidth() override {
-		return parameters.getRenderWidth();
-	}
-
-	inline float getCustomRenderingHeight() override {
-		return parameters.getRenderHeight();
-	}
-
-	// (de)serialize circuit
-	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		parameters.serialize(data, basedir);
-	}
-
-	inline void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		parameters.deserialize(data, basedir);
 	}
 
 	// generate samples
 	void execute() override {
 		if (envelopeOutput->isDestinationConnected()) {
 			if (triggerInput->isSourceConnected()) {
-				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-					auto newTriggerState = triggerInput->getSample(i) > 0.5f;
+				float input[OtAudioSettings::bufferSize];
+				float output[OtAudioSettings::bufferSize];
 
-					if (newTriggerState != triggerState) {
-						if (newTriggerState) {
-							state.noteOn(parameters);
+				auto in = input;
+				auto out = output;
 
-						} else {
-							state.noteOff(parameters);
-						}
+				triggerInput->getSamples(input);
 
-						triggerState = newTriggerState;
-					}
+				if (input[0] > 0.1f) {
+					input[0] = 0.11f;
+				}
 
-					envelopeOutput->setSample(i, state.process(parameters));
+				dsp.compute(OtAudioSettings::bufferSize, &in, &out);
+				envelopeOutput->setSamples(output);
+
+				if (output[0] > 0.1f) {
+					output[0] = 0.11f;
 				}
 
 			} else {
@@ -80,16 +61,8 @@ public:
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::generator;
 
 private:
-	// properties
-	OtEnvelope::Parameters parameters;
-
-	// work variables
-	OtEnvelope::State state;
-
 	OtCircuitPin triggerInput;
 	OtCircuitPin envelopeOutput;
-
-	bool triggerState = false;
 };
 
 static OtCircuitFactoryRegister<OtEnvelopeGenerator> registration;

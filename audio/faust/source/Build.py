@@ -19,11 +19,12 @@ class UI:
 		self.ui = []
 		self.size = []
 		self.parameters = []
-		self.variables = []
 		self.level = 1
 		self.child = 1
 
-		self.processItem(item)
+		w, h = self.processItem(item)
+		self.size.append(f"\t\twidth = {w};")
+		self.size.append(f"\t\theight = {h};")
 
 	def processItem(self, item):
 		match item["type"]:
@@ -43,20 +44,24 @@ class UI:
 				return "0.0f", "0.0f"
 
 	def group(self, item, vertical):
-		width = f"width{self.level}"
-		height = f"height{self.level}"
-		self.variables.append(f"\tfloat {width};")
-		self.variables.append(f"\tfloat {height};")
-		label = self.generateChildLabel(item["label"])
+		label = item["label"]
+
+		if label == "0x00":
+			label = f"Label{self.child}"
+
+		width = f"width{self.child}"
+		height = f"height{self.child}"
+		self.child += 1
+
+		self.size.append(f"\t\tfloat {width} = 0.0f;")
+		self.size.append(f"\t\tfloat {height} = 0.0f;")
 
 		if self.level == 1 or item["label"] == "0x00":
 			self.ui.append(f"\t\tImGui::BeginChild(\"{label}\", ImVec2(), {windowFlags});")
 
 		else:
-			self.ui.append(f"\t\tImGui::BeginChild(\"{label}\", ImVec2(), {windowFlags} | ImGuiChildFlags_Border);")
-			self.ui.append(f"\t\tOtUi::Header(\"{item["label"]}\");")
-			self.size.append(f"\t\t{width} += border * 2.0f + padding.x * 2.0f;")
-			self.size.append(f"\t\t{height} += frame + border * 2.0f + padding.y * 2.0f;")
+			self.ui.append(f"\t\tImGui::BeginChild(\"{label}\", ImVec2(), {windowFlags} | ImGuiChildFlags_Borders);")
+			self.ui.append(f"\t\tOtUi::header(\"{item["label"]}\");")
 
 		self.level += 1
 		start = len(self.ui)
@@ -70,13 +75,18 @@ class UI:
 			else:
 				if len(self.ui) != start:
 					self.ui.append("\t\tImGui::SameLine();")
-					self.size.append(f"\t\t{width} += spacing;")
+					self.size.append(f"\t\t{width} += spacing.x;")
 
 				w, h = self.processItem(child)
 				self.size.append(f"\t\t{width} += {w};")
 				self.size.append(f"\t\t{height} = std::max({height}, {h});")
 
 		self.level -= 1
+
+		if self.level != 1 and item["label"] != "0x00":
+			self.size.append(f"\t\t{width} += padding.x * 2.0f;")
+			self.size.append(f"\t\t{height} += frame + padding.y * 2.0f;")
+
 		self.ui.append("\t\tImGui::EndChild();")
 		return width, height
 
@@ -121,9 +131,8 @@ class UI:
 		intro = ""
 		if "knobWidth" in text: intro += "\t\tauto knobWidth = OtUi::knobWidth();\n"
 		if "knobHeight" in text: intro += "\t\tauto knobHeight = OtUi::knobHeight();\n"
-		if "spacing" in text: intro += "\t\tauto spacing = ImGui::GetStyle().ItemSpacing.x;\n"
+		if "spacing" in text: intro += "\t\tauto spacing = ImGui::GetStyle().ItemSpacing;\n"
 		if "frame" in text: intro += "\t\tauto frame = ImGui::GetFrameHeightWithSpacing();\n"
-		if "border" in text: intro += "\t\tauto border = ImGui::GetStyle().ChildBorderSize;\n"
 		if "padding" in text: intro += "\t\tauto padding = ImGui::GetStyle().WindowPadding;\n"
 		return intro + text
 
@@ -152,9 +161,6 @@ class UI:
 	def getGetters(self):
 		return "\n".join([f"\tinline float get{parameter["address"]}() {{ return {parameter["varname"]}; }}" for parameter in self.parameters])
 
-	def getVariables(self):
-		return "\n".join(self.variables)
-
 	def metaToDict(self, meta):
 		result = {}
 
@@ -168,13 +174,6 @@ class UI:
 		result += "" if "." in result else ".0"
 		result += "f"
 		return result
-
-	def generateChildLabel(self, label):
-		if label == "0x00":
-			label = f"Label{self.child}"
-			self.child += 1
-
-		return label
 
 	def fixAddress(self, address):
 		if address[0] == "/":
@@ -271,8 +270,7 @@ def processDspFile(sourceFileName, targetFileName):
 		.replace("GETPARAMETERS", ui.getGetParameters()) \
 		.replace("ITERATEPARAMETERS", ui.getIterateParameters()) \
 		.replace("SETTERS", ui.getSetters()) \
-		.replace("GETTERS", ui.getGetters()) \
-		.replace("VARIABLES", ui.getVariables())
+		.replace("GETTERS", ui.getGetters())
 
 	code = headerText + text + footerText
 
@@ -285,7 +283,8 @@ def processDspFile(sourceFileName, targetFileName):
 #
 
 # switch directory to script location
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+scriptPath = os.path.abspath(__file__)
+os.chdir(os.path.dirname(scriptPath))
 
 # read standard header and footer
 with open("OtFaustHeader.h", "r") as file:
@@ -297,7 +296,10 @@ with open("OtFaustFooter.h", "r") as file:
 # process all DSP files (that are new or changed) and generate code
 for sourceFileName in glob.iglob("*.dsp"):
 	targetFileName = os.path.join("..", (pathlib.Path(sourceFileName).stem) + ".h")
+	exists = os.path.exists(targetFileName)
+	sourceNewer = exists and os.path.getmtime(sourceFileName) > os.path.getmtime(targetFileName)
+	scriptNewer = exists and os.path.getmtime(scriptPath) > os.path.getmtime(targetFileName)
 
-	if not os.path.exists(targetFileName) or os.path.getmtime(sourceFileName) > os.path.getmtime(targetFileName):
+	if not exists or sourceNewer or scriptNewer:
 		print(f"Compiling [{sourceFileName}]...")
 		processDspFile(sourceFileName, targetFileName)

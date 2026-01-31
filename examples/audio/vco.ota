@@ -31,16 +31,21 @@
 			"y": 332.0
 		},
 		{
+			"frequency": 440.0,
 			"id": 2557146591,
 			"inputs": [
 				{
 					"id": 3360538592,
 					"name": "Pitch",
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 0.0,
 					"type": "control"
 				}
 			],
 			"outputs": [
 				{
+					"attenuation": 1.0,
 					"id": 410275450,
 					"name": "Output",
 					"type": "mono"
@@ -51,6 +56,34 @@
 			"waveForm": 3.0,
 			"x": 366.0,
 			"y": 308.0
+		},
+		{
+			"highFreq": 4806.0,
+			"highLevel": -15.0,
+			"id": 3101366614,
+			"inputs": [
+				{
+					"id": 1871387064,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"lowFreq": 1961.0,
+			"lowLevel": 1.600000023841858,
+			"notchFreq": 3972.0,
+			"notchLevel": -36.20000076293945,
+			"notchQ": 264.79998779296875,
+			"outputs": [
+				{
+					"id": 2212498092,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"title": "Eq",
+			"type": "Eq",
+			"x": 672.0,
+			"y": 152.0
 		},
 		{
 			"id": 1460307938,
@@ -73,8 +106,8 @@
 			"rightDelayTime": 0.0,
 			"title": "Mono to Stereo",
 			"type": "Mono to Stereo",
-			"x": 818.0,
-			"y": 24.0
+			"x": 1047.0,
+			"y": 25.0
 		},
 		{
 			"id": 278093283,
@@ -88,8 +121,8 @@
 			"outputs": [],
 			"title": "Speaker Out",
 			"type": "Speaker Out",
-			"x": 1084.0,
-			"y": 24.0
+			"x": 1347.0,
+			"y": 25.0
 		},
 		{
 			"id": 736233516,
@@ -103,8 +136,8 @@
 			"outputs": [],
 			"title": "Oscilloscope",
 			"type": "Oscilloscope",
-			"x": 872.0,
-			"y": 235.0
+			"x": 1047.0,
+			"y": 267.0
 		},
 		{
 			"id": 942025815,
@@ -118,8 +151,8 @@
 			"outputs": [],
 			"title": "Spectrum Analyzer",
 			"type": "Spectrum Analyzer",
-			"x": 653.0,
-			"y": 456.0
+			"x": 1047.0,
+			"y": 580.0
 		}
 	],
 	"metadata": {},
@@ -130,24 +163,29 @@
 			"to": 248961618
 		},
 		{
-			"from": 410275450,
-			"id": 3946171600,
-			"to": 3978828348
-		},
-		{
-			"from": 410275450,
-			"id": 31414758,
-			"to": 3989792102
-		},
-		{
-			"from": 410275450,
-			"id": 510579969,
-			"to": 1847356709
-		},
-		{
 			"from": 2197641789,
 			"id": 3314960292,
 			"to": 3360538592
+		},
+		{
+			"from": 410275450,
+			"id": 3829335082,
+			"to": 1871387064
+		},
+		{
+			"from": 2212498092,
+			"id": 3793537359,
+			"to": 3978828348
+		},
+		{
+			"from": 2212498092,
+			"id": 911059304,
+			"to": 3989792102
+		},
+		{
+			"from": 2212498092,
+			"id": 1034675020,
+			"to": 1847356709
 		}
 	]
 }

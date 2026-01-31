@@ -37,38 +37,23 @@
 				{
 					"id": 3360538592,
 					"name": "Pitch",
-					"type": "control"
-				},
-				{
-					"id": 4000249913,
-					"name": "Pulse Width",
-					"type": "control"
-				},
-				{
-					"id": 1670933237,
-					"name": "Shape",
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 0.0,
 					"type": "control"
 				}
 			],
-			"inverse": false,
 			"outputs": [
 				{
+					"attenuation": 1.0,
 					"id": 410275450,
 					"name": "Output",
 					"type": "mono"
 				}
 			],
-			"pulseWidth": 0.5,
-			"sampleFile": "",
-			"sampleFileFrequency": 0.0,
 			"title": "VCO",
-			"tuningCents": 0.0,
-			"tuningOctaves": 0.0,
-			"tuningSemitones": 0.0,
 			"type": "VCO",
-			"volume": 7.0,
-			"waveForm": 3,
-			"waveTable": "",
+			"waveForm": 3.0,
 			"x": 381.0,
 			"y": 16.0
 		},
@@ -104,38 +89,23 @@
 				{
 					"id": 1370379221,
 					"name": "Pitch",
-					"type": "control"
-				},
-				{
-					"id": 268018805,
-					"name": "Pulse Width",
-					"type": "control"
-				},
-				{
-					"id": 2542135573,
-					"name": "Shape",
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 0.0,
 					"type": "control"
 				}
 			],
-			"inverse": false,
 			"outputs": [
 				{
+					"attenuation": 1.0,
 					"id": 2129771409,
 					"name": "Output",
 					"type": "mono"
 				}
 			],
-			"pulseWidth": 0.5,
-			"sampleFile": "",
-			"sampleFileFrequency": 0.0,
 			"title": "VCO",
-			"tuningCents": 0.0,
-			"tuningOctaves": 0.0,
-			"tuningSemitones": 4.0,
 			"type": "VCO",
-			"volume": 7.0,
-			"waveForm": 4,
-			"waveTable": "",
+			"waveForm": 4.0,
 			"x": 381.0,
 			"y": 168.0
 		},
@@ -238,9 +208,8 @@
 			"y": 404.0
 		},
 		{
-			"Blend": 0.6700000166893005,
-			"Dwell": 0.20000000298023224,
-			"Tension": 0.0,
+			"blend": 0.5,
+			"dwell": 0.20000000298023224,
 			"id": 3241247108,
 			"inputs": [
 				{
@@ -256,15 +225,15 @@
 					"type": "mono"
 				}
 			],
+			"tension": 0.0,
 			"title": "Reverb",
 			"type": "Reverb",
 			"x": 1330.0,
 			"y": 498.0
 		},
 		{
-			"Depth": 50.0,
-			"Feedback": 0.20000000298023224,
-			"Speed": 1.7999999523162842,
+			"depth": 50.0,
+			"feedback": 0.0,
 			"id": 3452463202,
 			"inputs": [
 				{
@@ -280,6 +249,7 @@
 					"type": "mono"
 				}
 			],
+			"speed": 1.0,
 			"title": "Phaser",
 			"type": "Phaser",
 			"x": 1330.0,

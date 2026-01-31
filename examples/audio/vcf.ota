@@ -31,6 +31,7 @@
 			"y": 297.0
 		},
 		{
+			"frequency": 440.0,
 			"id": 2557146591,
 			"inputs": [
 				{
@@ -57,7 +58,7 @@
 			"y": 50.0
 		},
 		{
-			"attack": 0.5,
+			"attack": 0.3330000042915344,
 			"decay": 2.0,
 			"id": 3801042963,
 			"inputs": [
@@ -84,8 +85,16 @@
 		{
 			"frequency": 3.0,
 			"id": 3244187191,
-			"inputs": [],
-			"inverse": false,
+			"inputs": [
+				{
+					"id": 1877398871,
+					"name": "Freq",
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 0.0,
+					"type": "control"
+				}
+			],
 			"outputs": [
 				{
 					"id": 507672911,
@@ -93,17 +102,9 @@
 					"type": "control"
 				}
 			],
-			"pulseWidth": 0.5,
-			"sampleFile": "",
-			"sampleFileFrequency": 0.0,
 			"title": "LFO",
-			"tuningCents": 0.0,
-			"tuningOctaves": 0.0,
-			"tuningSemitones": 0.0,
 			"type": "LFO",
-			"volume": 7.0,
-			"waveForm": 1,
-			"waveTable": "",
+			"waveForm": 1.0,
 			"x": 839.0,
 			"y": 332.0
 		},
@@ -151,7 +152,7 @@
 					"type": "control"
 				}
 			],
-			"mode": 1,
+			"mode": 0,
 			"outputs": [
 				{
 					"id": 1734700177,
@@ -238,11 +239,6 @@
 			"to": 1337454414
 		},
 		{
-			"from": 470986240,
-			"id": 217853430,
-			"to": 1254475580
-		},
-		{
 			"from": 2895604225,
 			"id": 3790351241,
 			"to": 2235339939
@@ -253,19 +249,24 @@
 			"to": 2718563792
 		},
 		{
-			"from": 507672911,
-			"id": 1515309229,
-			"to": 1145682991
+			"from": 1734700177,
+			"id": 3366563499,
+			"to": 2271235433
+		},
+		{
+			"from": 470986240,
+			"id": 614593982,
+			"to": 1254475580
 		},
 		{
 			"from": 1734700177,
-			"id": 4008899388,
+			"id": 276483048,
 			"to": 3978828348
 		},
 		{
-			"from": 1734700177,
-			"id": 353214337,
-			"to": 2271235433
+			"from": 507672911,
+			"id": 3018510449,
+			"to": 1145682991
 		}
 	]
 }

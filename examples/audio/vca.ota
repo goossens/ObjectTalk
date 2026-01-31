@@ -58,8 +58,8 @@
 			"y": 30.0
 		},
 		{
-			"attack": 0.5,
-			"decay": 0.5,
+			"attack": 0.10000000149011612,
+			"decay": 0.800000011920929,
 			"id": 3801042963,
 			"inputs": [
 				{
@@ -76,7 +76,7 @@
 				}
 			],
 			"release": 1.0,
-			"sustain": 0.5,
+			"sustain": 0.6200000047683716,
 			"title": "Envelope Generator",
 			"type": "Envelope Generator",
 			"x": 439.0,

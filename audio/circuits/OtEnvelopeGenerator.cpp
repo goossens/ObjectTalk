@@ -40,16 +40,8 @@ public:
 
 				triggerInput->getSamples(input);
 
-				if (input[0] > 0.1f) {
-					input[0] = 0.11f;
-				}
-
 				dsp.compute(OtAudioSettings::bufferSize, &in, &out);
 				envelopeOutput->setSamples(output);
-
-				if (output[0] > 0.1f) {
-					output[0] = 0.11f;
-				}
 
 			} else {
 				envelopeOutput->audioBuffer->clear(0.0f);

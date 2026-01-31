@@ -253,8 +253,12 @@ protected:
 	}
 
 	inline void calculateSizes() {
+		float width1 = 0.0f;
+		float height1 = 0.0f;
 		width1 = std::max(width1, 100.0f);
 		height1 += 20.0f;
+		width = width1;
+		height = height1;
 		initialized = true;
 	}
 
@@ -276,7 +280,7 @@ protected:
 			calculateSizes();
 		}
 
-		return width1;
+		return width;
 	}
 
 	inline float getRenderHeight() {
@@ -284,7 +288,7 @@ protected:
 			calculateSizes();
 		}
 
-		return height1;
+		return height;
 	}
 
 	struct Parameters {
@@ -311,6 +315,6 @@ protected:
 
 private:
 	bool initialized = false;
-	float width1;
-	float height1;
+	float width;
+	float height;
 };

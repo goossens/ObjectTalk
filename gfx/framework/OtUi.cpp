@@ -1061,9 +1061,9 @@ bool OtUi::bezier(const char* label, float P[4]) {
 //	OtUi::knob
 //
 
-bool OtUi::knob(const char* label, float* value, float minValue, float maxValue, const char* format, bool logarithmic) {
-	static constexpr float pi = static_cast<float>(std::numbers::pi);
+static constexpr float pi = static_cast<float>(std::numbers::pi);
 
+bool OtUi::knob(const char* label, float* value, float minValue, float maxValue, const char* format, bool logarithmic) {
 	return ImGuiKnobs::Knob(
 		label, value, minValue, maxValue, 0.0f,
 		format, ImGuiKnobVariant_WiperDot,
@@ -1072,50 +1072,11 @@ bool OtUi::knob(const char* label, float* value, float minValue, float maxValue,
 }
 
 bool OtUi::knob(const char* label, int* value, int minValue, int maxValue) {
-	static constexpr float pi = static_cast<float>(std::numbers::pi);
-
 	return ImGuiKnobs::KnobInt(
 		label, value, minValue, maxValue, 0.0f,
 		"%i", ImGuiKnobVariant_WiperDot,
 		0.0f, 0, 10,
 		pi * 0.6f, pi * 2.4f);
-}
-
-
-//
-//	OtUi::buttonKnob
-//
-
-bool OtUi::buttonKnob(const char* labelPlusID, float* value, const char* onLabel, const char* offLabel) {
-	// split label and ID
-	std::string label;
-	std::string id;
-	splitLabel(labelPlusID, label, id);
-
-	// setup width
-	auto width = ImGui::GetTextLineHeight() * 4.0f;
-	ImGui::PushID(id.c_str());
-	ImGui::PushItemWidth(width);
-	ImGui::BeginGroup();
-
-	// render title
-	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (width - ImGui::CalcTextSize(label.c_str(), nullptr, false, width).x) * 0.5f);
-	ImGui::Text("%s", label.c_str());
-	ImGui::InvisibleButton("spacer", ImVec2(width, ImGui::GetFrameHeight() * 0.5f));
-
-	// render buttons
-	int v = static_cast<int>(*value);
-	bool changed = false;
-	changed |= ImGui::RadioButton(onLabel, &v, 1);
-	changed |= ImGui::RadioButton(offLabel, &v, 0);
-	*value = static_cast<float>(v);
-
-	// cleanup
-	ImGui::EndGroup();
-	ImGui::PopItemWidth();
-	ImGui::PopID();
-
-	return changed;
 }
 
 

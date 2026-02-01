@@ -36,23 +36,33 @@ protected:
 	float fHslider0;
 	float fHslider1;
 	double fVec0[2];
-	double fRec4[2];
-	double fRec3[3];
-	float fHslider2;
 	double fRec6[2];
 	double fRec5[3];
+	float fHslider2;
+	double fRec8[2];
+	double fRec7[3];
 	float fHslider3;
-	double fRec7[2];
+	double fRec9[2];
 	float fHslider4;
 	float fHslider5;
 	double fConst2;
+	double fRec4[3];
+	float fHslider6;
+	double fRec10[2];
+	float fHslider7;
+	float fHslider8;
+	double fRec3[3];
+	float fHslider9;
+	double fRec11[2];
+	float fHslider10;
+	float fHslider11;
 	double fRec2[3];
 	double fVec1[2];
 	double fRec1[2];
 	double fRec0[3];
-	float fHslider6;
-	double fRec9[2];
-	double fRec8[3];
+	float fHslider12;
+	double fRec13[2];
+	double fRec12[3];
 	
  public:
 	OtEq() {
@@ -146,12 +156,18 @@ protected:
 	
 	virtual void instanceResetUserInterface() {
 		fHslider0 = static_cast<float>(8e+03);
-		fHslider1 = static_cast<float>(2e+02);
+		fHslider1 = static_cast<float>(1e+02);
 		fHslider2 = static_cast<float>(0.0);
-		fHslider3 = static_cast<float>(1e+03);
+		fHslider3 = static_cast<float>(1e+02);
 		fHslider4 = static_cast<float>(0.0);
 		fHslider5 = static_cast<float>(4e+01);
-		fHslider6 = static_cast<float>(0.0);
+		fHslider6 = static_cast<float>(1e+02);
+		fHslider7 = static_cast<float>(0.0);
+		fHslider8 = static_cast<float>(4e+01);
+		fHslider9 = static_cast<float>(1e+02);
+		fHslider10 = static_cast<float>(0.0);
+		fHslider11 = static_cast<float>(4e+01);
+		fHslider12 = static_cast<float>(0.0);
 	}
 	
 	virtual void instanceClear() {
@@ -159,37 +175,49 @@ protected:
 			fVec0[l0] = 0.0;
 		}
 		for (int l1 = 0; l1 < 2; l1 = l1 + 1) {
-			fRec4[l1] = 0.0;
+			fRec6[l1] = 0.0;
 		}
 		for (int l2 = 0; l2 < 3; l2 = l2 + 1) {
-			fRec3[l2] = 0.0;
+			fRec5[l2] = 0.0;
 		}
 		for (int l3 = 0; l3 < 2; l3 = l3 + 1) {
-			fRec6[l3] = 0.0;
+			fRec8[l3] = 0.0;
 		}
 		for (int l4 = 0; l4 < 3; l4 = l4 + 1) {
-			fRec5[l4] = 0.0;
+			fRec7[l4] = 0.0;
 		}
 		for (int l5 = 0; l5 < 2; l5 = l5 + 1) {
-			fRec7[l5] = 0.0;
+			fRec9[l5] = 0.0;
 		}
 		for (int l6 = 0; l6 < 3; l6 = l6 + 1) {
-			fRec2[l6] = 0.0;
+			fRec4[l6] = 0.0;
 		}
 		for (int l7 = 0; l7 < 2; l7 = l7 + 1) {
-			fVec1[l7] = 0.0;
+			fRec10[l7] = 0.0;
 		}
-		for (int l8 = 0; l8 < 2; l8 = l8 + 1) {
-			fRec1[l8] = 0.0;
+		for (int l8 = 0; l8 < 3; l8 = l8 + 1) {
+			fRec3[l8] = 0.0;
 		}
-		for (int l9 = 0; l9 < 3; l9 = l9 + 1) {
-			fRec0[l9] = 0.0;
+		for (int l9 = 0; l9 < 2; l9 = l9 + 1) {
+			fRec11[l9] = 0.0;
 		}
-		for (int l10 = 0; l10 < 2; l10 = l10 + 1) {
-			fRec9[l10] = 0.0;
+		for (int l10 = 0; l10 < 3; l10 = l10 + 1) {
+			fRec2[l10] = 0.0;
 		}
-		for (int l11 = 0; l11 < 3; l11 = l11 + 1) {
-			fRec8[l11] = 0.0;
+		for (int l11 = 0; l11 < 2; l11 = l11 + 1) {
+			fVec1[l11] = 0.0;
+		}
+		for (int l12 = 0; l12 < 2; l12 = l12 + 1) {
+			fRec1[l12] = 0.0;
+		}
+		for (int l13 = 0; l13 < 3; l13 = l13 + 1) {
+			fRec0[l13] = 0.0;
+		}
+		for (int l14 = 0; l14 < 2; l14 = l14 + 1) {
+			fRec13[l14] = 0.0;
+		}
+		for (int l15 = 0; l15 < 3; l15 = l15 + 1) {
+			fRec12[l15] = 0.0;
 		}
 	}
 	
@@ -235,52 +263,92 @@ protected:
 		double fSlow17 = static_cast<double>(fHslider5);
 		double fSlow18 = fConst1 * (std::pow(1e+01, 0.05 * std::fabs(fSlow15)) / fSlow17);
 		double fSlow19 = fConst1 / fSlow17;
-		double fSlow20 = (fSlow1 + -1.0000000000000004) / fSlow0 + 1.0;
-		double fSlow21 = OtEq_faustpower2_f(fSlow0);
-		double fSlow22 = 2.0 * (1.0 - 1.0 / fSlow21);
-		double fSlow23 = std::pow(1e+01, 0.05 * static_cast<double>(fHslider6)) / fSlow21;
+		double fSlow20 = 0.0010000000000000009 * static_cast<double>(fHslider6);
+		double fSlow21 = static_cast<double>(fHslider7);
+		int iSlow22 = fSlow21 > 0.0;
+		double fSlow23 = static_cast<double>(fHslider8);
+		double fSlow24 = fConst1 * (std::pow(1e+01, 0.05 * std::fabs(fSlow21)) / fSlow23);
+		double fSlow25 = fConst1 / fSlow23;
+		double fSlow26 = 0.0010000000000000009 * static_cast<double>(fHslider9);
+		double fSlow27 = static_cast<double>(fHslider10);
+		int iSlow28 = fSlow27 > 0.0;
+		double fSlow29 = static_cast<double>(fHslider11);
+		double fSlow30 = fConst1 * (std::pow(1e+01, 0.05 * std::fabs(fSlow27)) / fSlow29);
+		double fSlow31 = fConst1 / fSlow29;
+		double fSlow32 = (fSlow1 + -1.0000000000000004) / fSlow0 + 1.0;
+		double fSlow33 = OtEq_faustpower2_f(fSlow0);
+		double fSlow34 = 2.0 * (1.0 - 1.0 / fSlow33);
+		double fSlow35 = std::pow(1e+01, 0.05 * static_cast<double>(fHslider12)) / fSlow33;
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
 			double fTemp0 = static_cast<double>(input0[i0]);
 			fVec0[0] = fTemp0;
-			fRec4[0] = -(fSlow9 * (fSlow10 * fRec4[1] - fSlow6 * (fTemp0 - fVec0[1])));
-			fRec3[0] = fRec4[0] - fSlow7 * (fSlow11 * fRec3[2] + fSlow12 * fRec3[1]);
-			fRec6[0] = -(fSlow9 * (fSlow10 * fRec6[1] - (fTemp0 + fVec0[1])));
+			fRec6[0] = -(fSlow9 * (fSlow10 * fRec6[1] - fSlow6 * (fTemp0 - fVec0[1])));
 			fRec5[0] = fRec6[0] - fSlow7 * (fSlow11 * fRec5[2] + fSlow12 * fRec5[1]);
-			fRec7[0] = fSlow14 + 0.999 * fRec7[1];
-			double fTemp1 = std::tan(fConst1 * fRec7[0]);
+			fRec8[0] = -(fSlow9 * (fSlow10 * fRec8[1] - (fTemp0 + fVec0[1])));
+			fRec7[0] = fRec8[0] - fSlow7 * (fSlow11 * fRec7[2] + fSlow12 * fRec7[1]);
+			fRec9[0] = fSlow14 + 0.999 * fRec9[1];
+			double fTemp1 = std::tan(fConst1 * fRec9[0]);
 			double fTemp2 = 1.0 / fTemp1;
-			double fTemp3 = fRec7[0] / std::sin(fConst2 * fRec7[0]);
+			double fTemp3 = fRec9[0] / std::sin(fConst2 * fRec9[0]);
 			double fTemp4 = fSlow18 * fTemp3;
 			double fTemp5 = fSlow19 * fTemp3;
 			double fTemp6 = ((iSlow16) ? fTemp5 : fTemp4);
-			double fTemp7 = 2.0 * fRec2[1] * (1.0 - 1.0 / OtEq_faustpower2_f(fTemp1));
+			double fTemp7 = 2.0 * fRec4[1] * (1.0 - 1.0 / OtEq_faustpower2_f(fTemp1));
 			double fTemp8 = (fTemp2 + fTemp6) / fTemp1 + 1.0;
-			fRec2[0] = fSlow7 * (fSlow8 * (fRec3[2] + (fRec3[0] - 2.0 * fRec3[1])) + fSlow13 * (fRec5[2] + fRec5[0] + 2.0 * fRec5[1])) - (fRec2[2] * ((fTemp2 - fTemp6) / fTemp1 + 1.0) + fTemp7) / fTemp8;
+			fRec4[0] = fSlow7 * (fSlow8 * (fRec5[2] + (fRec5[0] - 2.0 * fRec5[1])) + fSlow13 * (fRec7[2] + fRec7[0] + 2.0 * fRec7[1])) - (fRec4[2] * ((fTemp2 - fTemp6) / fTemp1 + 1.0) + fTemp7) / fTemp8;
 			double fTemp9 = ((iSlow16) ? fTemp4 : fTemp5);
-			double fTemp10 = (fTemp7 + fRec2[0] * ((fTemp2 + fTemp9) / fTemp1 + 1.0) + fRec2[2] * ((fTemp2 - fTemp9) / fTemp1 + 1.0)) / fTemp8;
-			fVec1[0] = fTemp10;
-			fRec1[0] = -(fSlow3 * (fSlow4 * fRec1[1] - (fTemp10 + fVec1[1])));
-			fRec0[0] = fRec1[0] - fSlow2 * (fSlow20 * fRec0[2] + fSlow22 * fRec0[1]);
-			fRec9[0] = -(fSlow3 * (fSlow4 * fRec9[1] - fSlow1 * (fTemp10 - fVec1[1])));
-			fRec8[0] = fRec9[0] - fSlow2 * (fSlow20 * fRec8[2] + fSlow22 * fRec8[1]);
-			output0[i0] = static_cast<float>(fSlow2 * (fRec0[2] + fRec0[0] + 2.0 * fRec0[1] + fSlow23 * (fRec8[2] + (fRec8[0] - 2.0 * fRec8[1]))));
+			fRec10[0] = fSlow20 + 0.999 * fRec10[1];
+			double fTemp10 = std::tan(fConst1 * fRec10[0]);
+			double fTemp11 = 1.0 / fTemp10;
+			double fTemp12 = fRec10[0] / std::sin(fConst2 * fRec10[0]);
+			double fTemp13 = fSlow24 * fTemp12;
+			double fTemp14 = fSlow25 * fTemp12;
+			double fTemp15 = ((iSlow22) ? fTemp14 : fTemp13);
+			double fTemp16 = 2.0 * fRec3[1] * (1.0 - 1.0 / OtEq_faustpower2_f(fTemp10));
+			double fTemp17 = (fTemp11 + fTemp15) / fTemp10 + 1.0;
+			fRec3[0] = (fTemp7 + fRec4[0] * ((fTemp2 + fTemp9) / fTemp1 + 1.0) + fRec4[2] * ((fTemp2 - fTemp9) / fTemp1 + 1.0)) / fTemp8 - (fRec3[2] * ((fTemp11 - fTemp15) / fTemp10 + 1.0) + fTemp16) / fTemp17;
+			double fTemp18 = ((iSlow22) ? fTemp13 : fTemp14);
+			fRec11[0] = fSlow26 + 0.999 * fRec11[1];
+			double fTemp19 = std::tan(fConst1 * fRec11[0]);
+			double fTemp20 = 1.0 / fTemp19;
+			double fTemp21 = fRec11[0] / std::sin(fConst2 * fRec11[0]);
+			double fTemp22 = fSlow30 * fTemp21;
+			double fTemp23 = fSlow31 * fTemp21;
+			double fTemp24 = ((iSlow28) ? fTemp23 : fTemp22);
+			double fTemp25 = 2.0 * fRec2[1] * (1.0 - 1.0 / OtEq_faustpower2_f(fTemp19));
+			double fTemp26 = (fTemp20 + fTemp24) / fTemp19 + 1.0;
+			fRec2[0] = (fTemp16 + fRec3[0] * ((fTemp11 + fTemp18) / fTemp10 + 1.0) + fRec3[2] * ((fTemp11 - fTemp18) / fTemp10 + 1.0)) / fTemp17 - (fRec2[2] * ((fTemp20 - fTemp24) / fTemp19 + 1.0) + fTemp25) / fTemp26;
+			double fTemp27 = ((iSlow28) ? fTemp22 : fTemp23);
+			double fTemp28 = (fTemp25 + fRec2[0] * ((fTemp20 + fTemp27) / fTemp19 + 1.0) + fRec2[2] * ((fTemp20 - fTemp27) / fTemp19 + 1.0)) / fTemp26;
+			fVec1[0] = fTemp28;
+			fRec1[0] = -(fSlow3 * (fSlow4 * fRec1[1] - (fTemp28 + fVec1[1])));
+			fRec0[0] = fRec1[0] - fSlow2 * (fSlow32 * fRec0[2] + fSlow34 * fRec0[1]);
+			fRec13[0] = -(fSlow3 * (fSlow4 * fRec13[1] - fSlow1 * (fTemp28 - fVec1[1])));
+			fRec12[0] = fRec13[0] - fSlow2 * (fSlow32 * fRec12[2] + fSlow34 * fRec12[1]);
+			output0[i0] = static_cast<float>(fSlow2 * (fRec0[2] + fRec0[0] + 2.0 * fRec0[1] + fSlow35 * (fRec12[2] + (fRec12[0] - 2.0 * fRec12[1]))));
 			fVec0[1] = fVec0[0];
-			fRec4[1] = fRec4[0];
-			fRec3[2] = fRec3[1];
-			fRec3[1] = fRec3[0];
 			fRec6[1] = fRec6[0];
 			fRec5[2] = fRec5[1];
 			fRec5[1] = fRec5[0];
+			fRec8[1] = fRec8[0];
+			fRec7[2] = fRec7[1];
 			fRec7[1] = fRec7[0];
+			fRec9[1] = fRec9[0];
+			fRec4[2] = fRec4[1];
+			fRec4[1] = fRec4[0];
+			fRec10[1] = fRec10[0];
+			fRec3[2] = fRec3[1];
+			fRec3[1] = fRec3[0];
+			fRec11[1] = fRec11[0];
 			fRec2[2] = fRec2[1];
 			fRec2[1] = fRec2[0];
 			fVec1[1] = fVec1[0];
 			fRec1[1] = fRec1[0];
 			fRec0[2] = fRec0[1];
 			fRec0[1] = fRec0[0];
-			fRec9[1] = fRec9[0];
-			fRec8[2] = fRec8[1];
-			fRec8[1] = fRec8[0];
+			fRec13[1] = fRec13[0];
+			fRec12[2] = fRec12[1];
+			fRec12[1] = fRec12[0];
 		}
 	}
 
@@ -322,10 +390,36 @@ protected:
 		height4 += knobHeight;
 		width4 = std::max(width4, knobWidth);
 		height4 += knobHeight;
+		width4 = std::max(width4, knobWidth);
+		height4 += knobHeight;
 		width4 += padding.x * 2.0f;
 		height4 += frame + padding.y * 2.0f;
 		width1 += width4;
 		height1 = std::max(height1, height4);
+		width1 += spacing.x;
+		float width5 = 0.0f;
+		float height5 = 0.0f;
+		width5 = std::max(width5, knobWidth);
+		height5 += knobHeight;
+		width5 = std::max(width5, knobWidth);
+		height5 += knobHeight;
+		width5 = std::max(width5, knobWidth);
+		height5 += knobHeight;
+		width5 += padding.x * 2.0f;
+		height5 += frame + padding.y * 2.0f;
+		width1 += width5;
+		height1 = std::max(height1, height5);
+		width1 += spacing.x;
+		float width6 = 0.0f;
+		float height6 = 0.0f;
+		width6 = std::max(width6, knobWidth);
+		height6 += knobHeight;
+		width6 = std::max(width6, knobWidth);
+		height6 += knobHeight;
+		width6 += padding.x * 2.0f;
+		height6 += frame + padding.y * 2.0f;
+		width1 += width6;
+		height1 = std::max(height1, height6);
 		width = width1;
 		height = height1;
 		initialized = true;
@@ -340,21 +434,35 @@ protected:
 		ImGui::BeginChild("Parametric EQ", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
 		ImGui::BeginChild("Low", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Borders);
 		OtUi::header("Low");
-		changed |= OtUi::knob("Level", &fHslider2, -40.0f, 40.0f, "%.1f");
-		changed |= OtUi::knob("Freq", &fHslider1, 1.0f, 5000.0f, "%.0f");
+		changed |= OtUi::knob("Level", &fHslider2, -40.0f, 40.0f, "%.1fdB");
+		changed |= OtUi::knob("Freq", &fHslider1, 1.0f, 1000.0f, "%.0fhz");
 		ImGui::EndChild();
 		ImGui::SameLine();
-		ImGui::BeginChild("Notch", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Borders);
-		OtUi::header("Notch");
-		changed |= OtUi::knob("Level", &fHslider4, -40.0f, 40.0f, "%.1f");
-		changed |= OtUi::knob("Freq", &fHslider3, 20.0f, 10000.0f, "%.0f");
+		ImGui::BeginChild("Peak1", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Borders);
+		OtUi::header("Peak1");
+		changed |= OtUi::knob("Level", &fHslider4, -40.0f, 40.0f, "%.1fdB");
+		changed |= OtUi::knob("Freq", &fHslider3, 20.0f, 10000.0f, "%.0fhz");
 		changed |= OtUi::knob("Q", &fHslider5, 1.0f, 1000.0f, "%.1f");
+		ImGui::EndChild();
+		ImGui::SameLine();
+		ImGui::BeginChild("Peak2", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Borders);
+		OtUi::header("Peak2");
+		changed |= OtUi::knob("Level", &fHslider7, -40.0f, 40.0f, "%.1fdB");
+		changed |= OtUi::knob("Freq", &fHslider6, 20.0f, 10000.0f, "%.0fhz");
+		changed |= OtUi::knob("Q", &fHslider8, 1.0f, 1000.0f, "%.1f");
+		ImGui::EndChild();
+		ImGui::SameLine();
+		ImGui::BeginChild("Peak3", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Borders);
+		OtUi::header("Peak3");
+		changed |= OtUi::knob("Level", &fHslider10, -40.0f, 40.0f, "%.1fdB");
+		changed |= OtUi::knob("Freq", &fHslider9, 20.0f, 10000.0f, "%.0fhz");
+		changed |= OtUi::knob("Q", &fHslider11, 1.0f, 1000.0f, "%.1f");
 		ImGui::EndChild();
 		ImGui::SameLine();
 		ImGui::BeginChild("High", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Borders);
 		OtUi::header("High");
-		changed |= OtUi::knob("Level", &fHslider6, -40.0f, 40.0f, "%.1f");
-		changed |= OtUi::knob("Freq", &fHslider0, 20.0f, 10000.0f, "%.0f");
+		changed |= OtUi::knob("Level", &fHslider12, -40.0f, 40.0f, "%.1fdB");
+		changed |= OtUi::knob("Freq", &fHslider0, 20.0f, 10000.0f, "%.0fhz");
 		ImGui::EndChild();
 		ImGui::EndChild();
 		return changed;
@@ -378,10 +486,16 @@ protected:
 
 	struct Parameters {
 		float lowLevel = 0.0f;
-		float lowFreq = 200.0f;
-		float notchLevel = 0.0f;
-		float notchFreq = 1000.0f;
-		float notchQ = 40.0f;
+		float lowFreq = 100.0f;
+		float peak1Level = 0.0f;
+		float peak1Freq = 100.0f;
+		float peak1Q = 40.0f;
+		float peak2Level = 0.0f;
+		float peak2Freq = 100.0f;
+		float peak2Q = 40.0f;
+		float peak3Level = 0.0f;
+		float peak3Freq = 100.0f;
+		float peak3Q = 40.0f;
 		float highLevel = 0.0f;
 		float highFreq = 8000.0f;
 	};
@@ -389,10 +503,16 @@ protected:
 	inline void setParameters([[maybe_unused]] const Parameters& parameters) {
 		fHslider2 = parameters.lowLevel;
 		fHslider1 = parameters.lowFreq;
-		fHslider4 = parameters.notchLevel;
-		fHslider3 = parameters.notchFreq;
-		fHslider5 = parameters.notchQ;
-		fHslider6 = parameters.highLevel;
+		fHslider4 = parameters.peak1Level;
+		fHslider3 = parameters.peak1Freq;
+		fHslider5 = parameters.peak1Q;
+		fHslider7 = parameters.peak2Level;
+		fHslider6 = parameters.peak2Freq;
+		fHslider8 = parameters.peak2Q;
+		fHslider10 = parameters.peak3Level;
+		fHslider9 = parameters.peak3Freq;
+		fHslider11 = parameters.peak3Q;
+		fHslider12 = parameters.highLevel;
 		fHslider0 = parameters.highFreq;
 	}
 
@@ -400,38 +520,62 @@ protected:
 		Parameters parameters;
 		parameters.lowLevel = fHslider2;
 		parameters.lowFreq = fHslider1;
-		parameters.notchLevel = fHslider4;
-		parameters.notchFreq = fHslider3;
-		parameters.notchQ = fHslider5;
-		parameters.highLevel = fHslider6;
+		parameters.peak1Level = fHslider4;
+		parameters.peak1Freq = fHslider3;
+		parameters.peak1Q = fHslider5;
+		parameters.peak2Level = fHslider7;
+		parameters.peak2Freq = fHslider6;
+		parameters.peak2Q = fHslider8;
+		parameters.peak3Level = fHslider10;
+		parameters.peak3Freq = fHslider9;
+		parameters.peak3Q = fHslider11;
+		parameters.highLevel = fHslider12;
 		parameters.highFreq = fHslider0;
 		return parameters;
 	}
 
 	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
 		callback("lowLevel", &fHslider2, 0.0f);
-		callback("lowFreq", &fHslider1, 200.0f);
-		callback("notchLevel", &fHslider4, 0.0f);
-		callback("notchFreq", &fHslider3, 1000.0f);
-		callback("notchQ", &fHslider5, 40.0f);
-		callback("highLevel", &fHslider6, 0.0f);
+		callback("lowFreq", &fHslider1, 100.0f);
+		callback("peak1Level", &fHslider4, 0.0f);
+		callback("peak1Freq", &fHslider3, 100.0f);
+		callback("peak1Q", &fHslider5, 40.0f);
+		callback("peak2Level", &fHslider7, 0.0f);
+		callback("peak2Freq", &fHslider6, 100.0f);
+		callback("peak2Q", &fHslider8, 40.0f);
+		callback("peak3Level", &fHslider10, 0.0f);
+		callback("peak3Freq", &fHslider9, 100.0f);
+		callback("peak3Q", &fHslider11, 40.0f);
+		callback("highLevel", &fHslider12, 0.0f);
 		callback("highFreq", &fHslider0, 8000.0f);
 	}
 
 	inline void setLowLevel(float value) { fHslider2 = value; }
 	inline void setLowFreq(float value) { fHslider1 = value; }
-	inline void setNotchLevel(float value) { fHslider4 = value; }
-	inline void setNotchFreq(float value) { fHslider3 = value; }
-	inline void setNotchQ(float value) { fHslider5 = value; }
-	inline void setHighLevel(float value) { fHslider6 = value; }
+	inline void setPeak1Level(float value) { fHslider4 = value; }
+	inline void setPeak1Freq(float value) { fHslider3 = value; }
+	inline void setPeak1Q(float value) { fHslider5 = value; }
+	inline void setPeak2Level(float value) { fHslider7 = value; }
+	inline void setPeak2Freq(float value) { fHslider6 = value; }
+	inline void setPeak2Q(float value) { fHslider8 = value; }
+	inline void setPeak3Level(float value) { fHslider10 = value; }
+	inline void setPeak3Freq(float value) { fHslider9 = value; }
+	inline void setPeak3Q(float value) { fHslider11 = value; }
+	inline void setHighLevel(float value) { fHslider12 = value; }
 	inline void setHighFreq(float value) { fHslider0 = value; }
 
 	inline float getLowLevel() { return fHslider2; }
 	inline float getLowFreq() { return fHslider1; }
-	inline float getNotchLevel() { return fHslider4; }
-	inline float getNotchFreq() { return fHslider3; }
-	inline float getNotchQ() { return fHslider5; }
-	inline float getHighLevel() { return fHslider6; }
+	inline float getPeak1Level() { return fHslider4; }
+	inline float getPeak1Freq() { return fHslider3; }
+	inline float getPeak1Q() { return fHslider5; }
+	inline float getPeak2Level() { return fHslider7; }
+	inline float getPeak2Freq() { return fHslider6; }
+	inline float getPeak2Q() { return fHslider8; }
+	inline float getPeak3Level() { return fHslider10; }
+	inline float getPeak3Freq() { return fHslider9; }
+	inline float getPeak3Q() { return fHslider11; }
+	inline float getHighLevel() { return fHslider12; }
 	inline float getHighFreq() { return fHslider0; }
 
 private:

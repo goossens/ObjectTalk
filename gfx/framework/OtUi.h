@@ -186,7 +186,6 @@ public:
 	// knobs
 	static bool knob(const char* label, float* value, float minValue, float maxValue, const char* format="%.0f", bool logarithmic=false);
 	static bool knob(const char* label, int* value, int minValue, int maxValue);
-	static bool buttonKnob(const char* label, float* value, const char* onLabel, const char* offLabel);
 
 	static float knobWidth(size_t columns=1);
 	static float knobHeight(size_t rows=1);

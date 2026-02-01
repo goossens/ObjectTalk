@@ -27,8 +27,8 @@
 			],
 			"title": "MIDI Input",
 			"type": "MIDI Input",
-			"x": 15.0,
-			"y": 332.0
+			"x": 1.0,
+			"y": 333.0
 		},
 		{
 			"frequency": 440.0,
@@ -54,12 +54,12 @@
 			"title": "VCO",
 			"type": "VCO",
 			"waveForm": 3.0,
-			"x": 366.0,
-			"y": 308.0
+			"x": 348.0,
+			"y": 309.0
 		},
 		{
-			"highFreq": 4806.0,
-			"highLevel": -15.0,
+			"highFreq": 4172.0,
+			"highLevel": 5.5,
 			"id": 3101366614,
 			"inputs": [
 				{
@@ -68,11 +68,8 @@
 					"type": "mono"
 				}
 			],
-			"lowFreq": 1961.0,
-			"lowLevel": 1.600000023841858,
-			"notchFreq": 3972.0,
-			"notchLevel": -36.20000076293945,
-			"notchQ": 264.79998779296875,
+			"lowFreq": 100.0,
+			"lowLevel": -1.2999999523162842,
 			"outputs": [
 				{
 					"id": 2212498092,
@@ -80,10 +77,19 @@
 					"type": "mono"
 				}
 			],
+			"peak1Freq": 1000.0,
+			"peak1Level": 40.0,
+			"peak1Q": 40.0,
+			"peak2Freq": 1000.0,
+			"peak2Level": 0.0,
+			"peak2Q": 40.0,
+			"peak3Freq": 1000.0,
+			"peak3Level": 0.0,
+			"peak3Q": 40.0,
 			"title": "Eq",
 			"type": "Eq",
-			"x": 672.0,
-			"y": 152.0
+			"x": 599.0,
+			"y": 160.0
 		},
 		{
 			"id": 1460307938,
@@ -106,8 +112,8 @@
 			"rightDelayTime": 0.0,
 			"title": "Mono to Stereo",
 			"type": "Mono to Stereo",
-			"x": 1047.0,
-			"y": 25.0
+			"x": 1074.0,
+			"y": 26.0
 		},
 		{
 			"id": 278093283,
@@ -121,8 +127,8 @@
 			"outputs": [],
 			"title": "Speaker Out",
 			"type": "Speaker Out",
-			"x": 1347.0,
-			"y": 25.0
+			"x": 1374.0,
+			"y": 26.0
 		},
 		{
 			"id": 736233516,
@@ -136,8 +142,8 @@
 			"outputs": [],
 			"title": "Oscilloscope",
 			"type": "Oscilloscope",
-			"x": 1047.0,
-			"y": 267.0
+			"x": 1074.0,
+			"y": 268.0
 		},
 		{
 			"id": 942025815,
@@ -151,8 +157,8 @@
 			"outputs": [],
 			"title": "Spectrum Analyzer",
 			"type": "Spectrum Analyzer",
-			"x": 1047.0,
-			"y": 580.0
+			"x": 1074.0,
+			"y": 581.0
 		}
 	],
 	"metadata": {},

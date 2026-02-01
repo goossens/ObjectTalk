@@ -61,7 +61,7 @@ static constexpr ImU32 pinColors[] = {
 static constexpr float gridSpacing = 64.0f;
 static constexpr float circuitRounding = 4.0f;
 
-static constexpr float fontSize = 14.0f;
+static constexpr float fontSize = 13.0f;
 
 static constexpr float pinRadius = 5.0f;
 static constexpr float pinBox = pinRadius * 2.0f + 2.0f;

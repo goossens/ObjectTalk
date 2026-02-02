@@ -27,8 +27,8 @@
 class OtNoise : public OtFaust {
 protected:
 	float fHslider0;
-	float fHslider1;
 	int iRec0[2];
+	float fHslider1;
 	double fRec1[4];
 	int fSampleRate;
 	
@@ -115,12 +115,13 @@ protected:
 		
 	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
 		float* output0 = outputs[0];
-		double fSlow0 = 4.656612875245797e-10 * static_cast<double>(fHslider0) * static_cast<double>(fHslider1);
+		double fSlow0 = 4.656612875245797e-10 * static_cast<double>(fHslider0);
+		double fSlow1 = static_cast<double>(fHslider1);
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
 			iRec0[0] = 1103515245 * iRec0[1] + 12345;
 			double fTemp0 = static_cast<double>(iRec0[0]);
 			fRec1[0] = 0.5221894 * fRec1[3] + 4.656612875245797e-10 * fTemp0 + 2.494956002 * fRec1[1] - 2.017265875 * fRec1[2];
-			output0[i0] = static_cast<float>(fSlow0 * fTemp0 * (0.049922035 * fRec1[0] + 0.050612699 * fRec1[2] - (0.095993537 * fRec1[1] + 0.004408786 * fRec1[3])));
+			output0[i0] = static_cast<float>(fSlow0 * fTemp0 + fSlow1 * (0.049922035 * fRec1[0] + 0.050612699 * fRec1[2] - (0.095993537 * fRec1[1] + 0.004408786 * fRec1[3])));
 			iRec0[1] = iRec0[0];
 			for (int j0 = 3; j0 > 0; j0 = j0 - 1) {
 				fRec1[j0] = fRec1[j0 - 1];
@@ -129,12 +130,16 @@ protected:
 	}
 
 	inline void calculateSizes() {
+		auto knobWidth = OtUi::knobWidth();
+		auto knobHeight = OtUi::knobHeight();
+		auto spacing = ImGui::GetStyle().ItemSpacing;
 		float width1 = 0.0f;
 		float height1 = 0.0f;
-		width1 = std::max(width1, 100.0f);
-		height1 += 20.0f;
-		width1 = std::max(width1, 100.0f);
-		height1 += 20.0f;
+		width1 += knobWidth;
+		height1 = std::max(height1, knobHeight);
+		width1 += spacing.x;
+		width1 += knobWidth;
+		height1 = std::max(height1, knobHeight);
 		width = width1;
 		height = height1;
 		initialized = true;
@@ -147,10 +152,9 @@ protected:
 
 		bool changed = false;
 		ImGui::BeginChild("Noise", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
-		ImGui::SetNextItemWidth(100.0f);
-		changed |= ImGui::SliderFloat("White", &fHslider0, 0.0f, 1.0f, "%.2f");
-		ImGui::SetNextItemWidth(100.0f);
-		changed |= ImGui::SliderFloat("Pink", &fHslider1, 0.0f, 1.0f, "%.2f");
+		changed |= OtUi::knob("White", &fHslider0, 0.0f, 1.0f, "%.2f");
+		ImGui::SameLine();
+		changed |= OtUi::knob("Pink", &fHslider1, 0.0f, 1.0f, "%.2f");
 		ImGui::EndChild();
 		return changed;
 	}

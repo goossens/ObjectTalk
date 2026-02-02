@@ -13,7 +13,7 @@
 				},
 				{
 					"id": 2197641789,
-					"name": "Pitch",
+					"name": "Freq",
 					"tuningCents": 0.0,
 					"tuningOctaves": 0.0,
 					"tuningSemitones": 0.0,
@@ -50,8 +50,8 @@
 			],
 			"release": 0.5,
 			"sustain": 0.5,
-			"title": "Envelope Generator",
-			"type": "Envelope Generator",
+			"title": "Envelope",
+			"type": "Envelope",
 			"x": 394.0,
 			"y": 359.0
 		},
@@ -61,7 +61,7 @@
 			"inputs": [
 				{
 					"id": 2102266532,
-					"name": "Pitch",
+					"name": "Freq",
 					"type": "control"
 				},
 				{

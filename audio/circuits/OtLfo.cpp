@@ -14,15 +14,15 @@
 #include "OtAudioSettings.h"
 #include "OtAudioUtilities.h"
 #include "OtCircuitFactory.h"
-#include "OtLfoDsp.h"
+#include "OtLfo.h"
 #include "OtLfoUi.h"
 
 
 //
-//	OtLfo
+//	OtLfoCircuit
 //
 
-class OtLfo : public OtFaustCircuit<OtLfoDsp, OtLfoUi> {
+class OtLfoCircuit : public OtFaustCircuitUI<OtLfo, OtLfoUi> {
 public:
 	// configure pins
 	inline void configurePins() override {
@@ -39,20 +39,25 @@ public:
 	// generate samples
 	void execute() override {
 		if (signalOutput->isDestinationConnected()) {
+			float input[OtAudioSettings::bufferSize];
+			float output[OtAudioSettings::bufferSize];
+
 			if (frequencyInput->isSourceConnected()) {
-				float input[OtAudioSettings::bufferSize];
-				float output[OtAudioSettings::bufferSize];
-
-				auto in = input;
-				auto out = output;
-
 				frequencyInput->getSamples(input);
-				dsp.compute(OtAudioSettings::bufferSize, &in, &out);
-				signalOutput->setSamples(output);
 
 			} else {
-				signalOutput->setSamples(OtAudioUtilities::pitchToCv(ui.getFrequency()));
+				auto freq = OtAudioUtilities::freqToCv(ui.getFrequency());
+
+				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
+					input[i] = freq;
+				}
 			}
+
+			auto in = input;
+			auto out = output;
+
+			dsp.compute(OtAudioSettings::bufferSize, &in, &out);
+			signalOutput->setSamples(output);
 		}
 	};
 
@@ -65,4 +70,4 @@ private:
 	OtCircuitPin signalOutput;
 };
 
-static OtCircuitFactoryRegister<OtLfo> registration;
+static OtCircuitFactoryRegister<OtLfoCircuit> registration;

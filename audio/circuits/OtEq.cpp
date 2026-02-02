@@ -20,7 +20,7 @@
 
 class OtEqCircuit : public OtFaustEffectMono<OtEq> {
 public:
-	static constexpr const char* circuitName = "Eq";
+	static constexpr const char* circuitName = "Equalizer";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::effect;
 };
 

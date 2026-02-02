@@ -1,0 +1,132 @@
+{
+	"circuits": [
+		{
+			"id": 3246016607,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 538500407,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"pink": 0.6899999976158142,
+			"title": "Noise",
+			"type": "Noise",
+			"white": 0.8199999928474426,
+			"x": 60.0,
+			"y": 191.0
+		},
+		{
+			"highFreq": 8000.0,
+			"highLevel": -24.0,
+			"id": 3231716969,
+			"inputs": [
+				{
+					"id": 921682217,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"lowFreq": 220.0,
+			"lowLevel": 0.0,
+			"outputs": [
+				{
+					"id": 2711804634,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"peak1Freq": 500.0,
+			"peak1Level": 24.0,
+			"peak1Q": 3.0,
+			"peak2Freq": 1500.0,
+			"peak2Level": 0.0,
+			"peak2Q": 3.0,
+			"peak3Freq": 3000.0,
+			"peak3Level": 17.0,
+			"peak3Q": 3.0,
+			"title": "Equalizer",
+			"type": "Equalizer",
+			"x": 279.0,
+			"y": 46.0
+		},
+		{
+			"id": 235705912,
+			"inputs": [
+				{
+					"id": 2591914044,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"outputs": [],
+			"title": "Spectrum Analyzer",
+			"type": "Spectrum Analyzer",
+			"x": 754.0,
+			"y": 245.0
+		},
+		{
+			"id": 4126066360,
+			"inputs": [
+				{
+					"id": 2223452062,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"leftDelayTime": 0.0,
+			"outputs": [
+				{
+					"id": 4107369936,
+					"name": "Output",
+					"type": "stereo"
+				}
+			],
+			"panLevel": 0.0,
+			"rightDelayTime": 0.0,
+			"title": "Mono to Stereo",
+			"type": "Mono to Stereo",
+			"x": 754.0,
+			"y": 46.0
+		},
+		{
+			"id": 15444731,
+			"inputs": [
+				{
+					"id": 2706523152,
+					"name": "Input",
+					"type": "stereo"
+				}
+			],
+			"outputs": [],
+			"title": "Speaker Out",
+			"type": "Speaker Out",
+			"x": 977.0,
+			"y": 46.0
+		}
+	],
+	"metadata": {},
+	"wires": [
+		{
+			"from": 4107369936,
+			"id": 1373693138,
+			"to": 2706523152
+		},
+		{
+			"from": 538500407,
+			"id": 518202038,
+			"to": 921682217
+		},
+		{
+			"from": 2711804634,
+			"id": 1992475357,
+			"to": 2223452062
+		},
+		{
+			"from": 2711804634,
+			"id": 2728374058,
+			"to": 2591914044
+		}
+	]
+}

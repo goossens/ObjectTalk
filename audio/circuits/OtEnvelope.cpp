@@ -17,10 +17,10 @@
 
 
 //
-//	OtEnvelopeGenerator
+//	OtEnvelopeCircuit
 //
 
-class OtEnvelopeGenerator : public OtFaustCircuit<OtAdsr, OtAdsrUi> {
+class OtEnvelopeCircuit : public OtFaustCircuitUI<OtAdsr, OtAdsrUi> {
 public:
 	// configure pins
 	inline void configurePins() override {
@@ -49,7 +49,7 @@ public:
 		}
 	}
 
-	static constexpr const char* circuitName = "Envelope Generator";
+	static constexpr const char* circuitName = "Envelope";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::generator;
 
 private:
@@ -57,4 +57,4 @@ private:
 	OtCircuitPin envelopeOutput;
 };
 
-static OtCircuitFactoryRegister<OtEnvelopeGenerator> registration;
+static OtCircuitFactoryRegister<OtEnvelopeCircuit> registration;

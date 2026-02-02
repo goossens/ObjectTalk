@@ -28,7 +28,7 @@ public:
 	// configure circuit
 	inline void configure() override {
 		midiOutput = addOutputPin("MIDI", OtCircuitPinClass::Type::midi);
-		pitchOutput = addOutputPin("Pitch", OtCircuitPinClass::Type::control)->hasTuning();
+		pitchOutput = addOutputPin("Freq", OtCircuitPinClass::Type::control)->hasTuning();
 		gateOutput = addOutputPin("Gate", OtCircuitPinClass::Type::control);
 	}
 
@@ -67,7 +67,7 @@ public:
 			midiBuffer.emplace_back(message);
 
 			if (message->isNoteOn()) {
-				pitch = OtAudioUtilities::midiNoteToPitch(message->getKeyNumber());
+				freq = OtAudioUtilities::midiNoteToPitch(message->getKeyNumber());
 				velocity = message->getVelocity() / 128.0f;
 				gate = true;
 
@@ -78,9 +78,9 @@ public:
 			}
 		});
 
-		// send pitch signal (if connected)
+		// send freq signal (if connected)
 		if (pitchOutput->isDestinationConnected()) {
-			pitchOutput->setSamples(OtAudioUtilities::pitchToCv(pitch));
+			pitchOutput->setSamples(OtAudioUtilities::freqToCv(freq));
 
 		} else {
 			pitchOutput->setSamples(0.0f);
@@ -107,7 +107,7 @@ private:
 	OtMidi midi;
 
 	// work variables
-	float pitch = 440.0f;
+	float freq = 440.0f;
 	float velocity = 0.0f;
 	bool gate = false;
 

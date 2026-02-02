@@ -16,7 +16,7 @@
 
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtLfoDsp.h"
+#include "OtLfo.h"
 
 
 //
@@ -36,13 +36,13 @@ public:
 	void deserialize(nlohmann::json* data, std::string* basedir);
 
 	// access parameters
-	inline void setParameters(OtLfoDsp::Parameters& p) { parameters = p; }
-	inline OtLfoDsp::Parameters getParameters() { return parameters; }
+	inline void setParameters(OtLfo::Parameters& p) { parameters = p; }
+	inline OtLfo::Parameters getParameters() { return parameters; }
 	inline float getFrequency() { return frequency; }
 
 private:
 	// properties
-	OtLfoDsp::Parameters parameters;
+	OtLfo::Parameters parameters;
 	float frequency = 2.0f;
 	bool showingFrequency = false;
 };

@@ -13,7 +13,7 @@
 				},
 				{
 					"id": 2197641789,
-					"name": "Pitch",
+					"name": "Freq",
 					"tuningCents": 0.0,
 					"tuningOctaves": 0.0,
 					"tuningSemitones": 0.0,
@@ -36,7 +36,7 @@
 			"inputs": [
 				{
 					"id": 3360538592,
-					"name": "Pitch",
+					"name": "Freq",
 					"tuningCents": 0.0,
 					"tuningOctaves": 0.0,
 					"tuningSemitones": 0.0,
@@ -55,7 +55,7 @@
 			"type": "VCO",
 			"waveForm": 3.0,
 			"x": 381.0,
-			"y": 16.0
+			"y": 9.0
 		},
 		{
 			"attack": 0.25,
@@ -77,9 +77,9 @@
 			],
 			"release": 0.8500000238418579,
 			"sustain": 0.5,
-			"title": "Envelope Generator",
-			"type": "Envelope Generator",
-			"x": 581.0,
+			"title": "Envelope",
+			"type": "Envelope",
+			"x": 596.0,
 			"y": 393.0
 		},
 		{
@@ -88,7 +88,7 @@
 			"inputs": [
 				{
 					"id": 1370379221,
-					"name": "Pitch",
+					"name": "Freq",
 					"tuningCents": 0.0,
 					"tuningOctaves": 0.0,
 					"tuningSemitones": 0.0,
@@ -105,9 +105,9 @@
 			],
 			"title": "VCO",
 			"type": "VCO",
-			"waveForm": 4.0,
+			"waveForm": 6.0,
 			"x": 381.0,
-			"y": 168.0
+			"y": 160.0
 		},
 		{
 			"id": 1911635902,
@@ -179,7 +179,7 @@
 		},
 		{
 			"drive": -2.0,
-			"frequency": 880.0,
+			"frequency": 1600.0,
 			"id": 4064142102,
 			"inputs": [
 				{
@@ -193,7 +193,7 @@
 					"type": "control"
 				}
 			],
-			"mode": 1,
+			"mode": 2,
 			"outputs": [
 				{
 					"id": 1734700177,
@@ -291,8 +291,8 @@
 			"outputs": [],
 			"title": "Speaker Out",
 			"type": "Speaker Out",
-			"x": 1437.0,
-			"y": 14.0
+			"x": 1425.0,
+			"y": 9.0
 		}
 	],
 	"metadata": {},

@@ -16,7 +16,7 @@
 
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtVcoDsp.h"
+#include "OtVco.h"
 
 
 //
@@ -36,13 +36,13 @@ public:
 	void deserialize(nlohmann::json* data, std::string* basedir);
 
 	// access parameters
-	inline void setParameters(OtVcoDsp::Parameters& p) { parameters = p; }
-	inline OtVcoDsp::Parameters getParameters() { return parameters; }
+	inline void setParameters(OtVco::Parameters& p) { parameters = p; }
+	inline OtVco::Parameters getParameters() { return parameters; }
 	inline float getFrequency() { return frequency; }
 
 private:
 	// properties
-	OtVcoDsp::Parameters parameters;
+	OtVco::Parameters parameters;
 	float frequency = 440.0f;
 	bool showingFrequency = false;
 };

@@ -111,6 +111,9 @@ protected:
 		m->declare("filters.lib/peak_eq:author", "Julius O. Smith III");
 		m->declare("filters.lib/peak_eq:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/peak_eq:license", "MIT-style STK-4.3 license");
+		m->declare("filters.lib/peak_eq_cq:author", "Julius O. Smith III");
+		m->declare("filters.lib/peak_eq_cq:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/peak_eq_cq:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/tf1:author", "Julius O. Smith III");
 		m->declare("filters.lib/tf1:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/tf1:license", "MIT-style STK-4.3 license");
@@ -160,13 +163,13 @@ protected:
 		fHslider2 = static_cast<float>(0.0);
 		fHslider3 = static_cast<float>(1e+02);
 		fHslider4 = static_cast<float>(0.0);
-		fHslider5 = static_cast<float>(4e+01);
+		fHslider5 = static_cast<float>(1.0);
 		fHslider6 = static_cast<float>(1e+02);
 		fHslider7 = static_cast<float>(0.0);
-		fHslider8 = static_cast<float>(4e+01);
+		fHslider8 = static_cast<float>(1.0);
 		fHslider9 = static_cast<float>(1e+02);
 		fHslider10 = static_cast<float>(0.0);
-		fHslider11 = static_cast<float>(4e+01);
+		fHslider11 = static_cast<float>(1.0);
 		fHslider12 = static_cast<float>(0.0);
 	}
 	
@@ -442,21 +445,21 @@ protected:
 		OtUi::header("Peak1");
 		changed |= OtUi::knob("Level", &fHslider4, -40.0f, 40.0f, "%.1fdB");
 		changed |= OtUi::knob("Freq", &fHslider3, 20.0f, 10000.0f, "%.0fhz");
-		changed |= OtUi::knob("Q", &fHslider5, 1.0f, 1000.0f, "%.1f");
+		changed |= OtUi::knob("Q", &fHslider5, 0.5f, 10.0f, "%.1f");
 		ImGui::EndChild();
 		ImGui::SameLine();
 		ImGui::BeginChild("Peak2", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Borders);
 		OtUi::header("Peak2");
 		changed |= OtUi::knob("Level", &fHslider7, -40.0f, 40.0f, "%.1fdB");
 		changed |= OtUi::knob("Freq", &fHslider6, 20.0f, 10000.0f, "%.0fhz");
-		changed |= OtUi::knob("Q", &fHslider8, 1.0f, 1000.0f, "%.1f");
+		changed |= OtUi::knob("Q", &fHslider8, 0.5f, 10.0f, "%.1f");
 		ImGui::EndChild();
 		ImGui::SameLine();
 		ImGui::BeginChild("Peak3", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Borders);
 		OtUi::header("Peak3");
 		changed |= OtUi::knob("Level", &fHslider10, -40.0f, 40.0f, "%.1fdB");
 		changed |= OtUi::knob("Freq", &fHslider9, 20.0f, 10000.0f, "%.0fhz");
-		changed |= OtUi::knob("Q", &fHslider11, 1.0f, 1000.0f, "%.1f");
+		changed |= OtUi::knob("Q", &fHslider11, 0.5f, 10.0f, "%.1f");
 		ImGui::EndChild();
 		ImGui::SameLine();
 		ImGui::BeginChild("High", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Borders);
@@ -489,13 +492,13 @@ protected:
 		float lowFreq = 100.0f;
 		float peak1Level = 0.0f;
 		float peak1Freq = 100.0f;
-		float peak1Q = 40.0f;
+		float peak1Q = 1.0f;
 		float peak2Level = 0.0f;
 		float peak2Freq = 100.0f;
-		float peak2Q = 40.0f;
+		float peak2Q = 1.0f;
 		float peak3Level = 0.0f;
 		float peak3Freq = 100.0f;
-		float peak3Q = 40.0f;
+		float peak3Q = 1.0f;
 		float highLevel = 0.0f;
 		float highFreq = 8000.0f;
 	};
@@ -539,13 +542,13 @@ protected:
 		callback("lowFreq", &fHslider1, 100.0f);
 		callback("peak1Level", &fHslider4, 0.0f);
 		callback("peak1Freq", &fHslider3, 100.0f);
-		callback("peak1Q", &fHslider5, 40.0f);
+		callback("peak1Q", &fHslider5, 1.0f);
 		callback("peak2Level", &fHslider7, 0.0f);
 		callback("peak2Freq", &fHslider6, 100.0f);
-		callback("peak2Q", &fHslider8, 40.0f);
+		callback("peak2Q", &fHslider8, 1.0f);
 		callback("peak3Level", &fHslider10, 0.0f);
 		callback("peak3Freq", &fHslider9, 100.0f);
-		callback("peak3Q", &fHslider11, 40.0f);
+		callback("peak3Q", &fHslider11, 1.0f);
 		callback("highLevel", &fHslider12, 0.0f);
 		callback("highFreq", &fHslider0, 8000.0f);
 	}

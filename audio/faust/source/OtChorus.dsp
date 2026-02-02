@@ -23,8 +23,7 @@ tblosc(n, f, freq, mod) = (1 - d) * rdtable(n, wave, i & (n - 1)) + d * rdtable(
 	d = decimal(modphase);
 };
 
-chorus(d,freq,depth) = fdelay(1 << 16, t)
-with {
+chorus(d,freq,depth) = fdelay(1 << 16, t) with {
 	t = SR * d / 2 * (1 + depth * tblosc(1 << 16, sin, freq, 0));
 };
 

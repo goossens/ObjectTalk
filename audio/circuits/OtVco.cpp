@@ -13,19 +13,19 @@
 
 #include "OtAudioSettings.h"
 #include "OtCircuitFactory.h"
-#include "OtVcoDsp.h"
+#include "OtVco.h"
 #include "OtVcoUi.h"
 
 
 //
-//	OtVco
+//	OtVcoCircuit
 //
 
-class OtVco : public OtFaustCircuit<OtVcoDsp, OtVcoUi> {
+class OtVcoCircuit : public OtFaustCircuitUI<OtVco, OtVcoUi> {
 public:
 	// configure pins
 	inline void configurePins() override {
-		frequencyInput = addInputPin("Pitch", OtCircuitPinClass::Type::control)->hasTuning(true);
+		frequencyInput = addInputPin("Freq", OtCircuitPinClass::Type::control)->hasTuning(true);
 		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono)->hasAttenuation(true);
 	}
 
@@ -38,20 +38,25 @@ public:
 	// generate samples
 	void execute() override {
 		if (audioOutput->isDestinationConnected()) {
+			float input[OtAudioSettings::bufferSize];
+			float output[OtAudioSettings::bufferSize];
+
 			if (frequencyInput->isSourceConnected()) {
-				float input[OtAudioSettings::bufferSize];
-				float output[OtAudioSettings::bufferSize];
-
-				auto in = input;
-				auto out = output;
-
 				frequencyInput->getSamples(input);
-				dsp.compute(OtAudioSettings::bufferSize, &in, &out);
-				audioOutput->setSamples(output);
 
 			} else {
-				audioOutput->setSamples(OtAudioUtilities::pitchToCv(ui.getFrequency()));
+				auto freq = OtAudioUtilities::freqToCv(ui.getFrequency());
+
+				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
+					input[i] = freq;
+				}
 			}
+
+			auto in = input;
+			auto out = output;
+
+			dsp.compute(OtAudioSettings::bufferSize, &in, &out);
+			audioOutput->setSamples(output);
 		}
 	};
 
@@ -64,4 +69,4 @@ private:
 	OtCircuitPin audioOutput;
 };
 
-static OtCircuitFactoryRegister<OtVco> registration;
+static OtCircuitFactoryRegister<OtVcoCircuit> registration;

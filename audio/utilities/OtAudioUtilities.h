@@ -69,10 +69,10 @@ public:
 		}
 	}
 
-	inline static float tune(float pitch, float octaves, float semitones=0.0f, float cents=0.0f) {
+	inline static float tune(float freq, float octaves, float semitones=0.0f, float cents=0.0f) {
 		auto totalCents = (octaves * 1200.0f) + (semitones * 100.0f) + cents;
 		auto ratio = std::pow(2.0f, totalCents / 1200.0f);
-		return pitch * ratio;
+		return freq * ratio;
 	}
 
 	inline static float tuneCV(float cv, float octaves, float semitones=0.0f, float cents=0.0f) {
@@ -107,11 +107,11 @@ public:
 		return std::pow(10.0f, x / 20.0f) * 0.775f;
 	}
 
-	inline static float pitchToCv(float f) {
+	inline static float freqToCv(float f) {
 		return std::log2(f / 440.0f);
 	}
 
-	inline static float cvToPitch(float cv) {
+	inline static float cvToFreq(float cv) {
 		return 440.0f * std::pow(2.0f, cv);
 	}
 

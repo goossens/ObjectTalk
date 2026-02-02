@@ -79,8 +79,8 @@ public:
 	virtual void compute(int count, float** inputs, float** outputs) = 0;
 
 	// (de)serialize variables
-	void serialize(nlohmann::json* data);
-	void deserialize(nlohmann::json* data);
+	void serialize(nlohmann::json* data, std::string* basedir);
+	void deserialize(nlohmann::json* data, std::string* basedir);
 
 	virtual void iterateParameters(std::function<void(const char*, float*, float)>) = 0;
 };
@@ -90,8 +90,51 @@ public:
 //	OtFaustCircuit
 //
 
-template<typename T, typename U>
+template<typename T>
 class OtFaustCircuit : public OtCircuitClass {
+public:
+	// configure circuit
+	inline void configure() override {
+		dsp.initialize();
+		configurePins();
+	}
+
+	virtual void configurePins() {}
+
+	// render custom fields
+	inline bool customRendering([[maybe_unused]] float itemWidth) override {
+		return dsp.renderUI();
+	}
+
+	inline float getCustomRenderingWidth() override {
+		return dsp.getRenderWidth();
+	}
+
+	inline float getCustomRenderingHeight() override {
+		return dsp.getRenderHeight();
+	}
+
+	// (de)serialize circuit
+	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
+		dsp.serialize(data, basedir);
+	}
+
+	inline void customDeserialize(nlohmann::json* data, std::string* basedir) override {
+		dsp.deserialize(data, basedir);
+	}
+
+protected:
+	// target Faust processor
+	T dsp;
+};
+
+
+//
+//	OtFaustCircuitUI
+//
+
+template<typename T, typename U>
+class OtFaustCircuitUI : public OtCircuitClass {
 public:
 	// configure circuit
 	inline void configure() override {
@@ -133,7 +176,7 @@ public:
 	}
 
 protected:
-	// target Faust processor
+	// target Faust processor and User Interface
 	T dsp;
 	U ui;
 };
@@ -168,12 +211,12 @@ public:
 	}
 
 	// (de)serialize circuit
-	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
-		dsp.serialize(data);
+	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
+		dsp.serialize(data, basedir);
 	}
 
-	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
-		dsp.deserialize(data);
+	inline void customDeserialize(nlohmann::json* data, std::string* basedir) override {
+		dsp.deserialize(data, basedir);
 	}
 
 protected:

@@ -21,7 +21,7 @@
 //	OtFaust::serialize
 //
 
-void OtFaust::serialize(nlohmann::json* data) {
+void OtFaust::serialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) {
 	iterateParameters([data](const char* name, float* variable, float) {
 		(*data)[name] = *variable;
 	});
@@ -32,7 +32,7 @@ void OtFaust::serialize(nlohmann::json* data) {
 //	OtFaust::deserialize
 //
 
-void OtFaust::deserialize(nlohmann::json* data) {
+void OtFaust::deserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) {
 	iterateParameters([data](const char* name, float* variable, float init) {
 		*variable = data->value(name, init);
 	});

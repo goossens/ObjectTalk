@@ -21,23 +21,23 @@
 
 
 //
-//  OtLfoDsp
+//  OtLfo
 //
 
-class OtLfoDspSIG0 {
+class OtLfoSIG0 {
 protected:	
 	int iVec0[2];
 	int iRec0[2];
 
 public:	
-	int getNumInputsOtLfoDspSIG0() {
+	int getNumInputsOtLfoSIG0() {
 		return 0;
 	}
-	int getNumOutputsOtLfoDspSIG0() {
+	int getNumOutputsOtLfoSIG0() {
 		return 1;
 	}
 	
-	void instanceInitOtLfoDspSIG0([[maybe_unused]] int sample_rate) {
+	void instanceInitOtLfoSIG0([[maybe_unused]] int sample_rate) {
 		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
 			iVec0[l0] = 0;
 		}
@@ -46,7 +46,7 @@ public:
 		}
 	}
 	
-	void fillOtLfoDspSIG0(int count, double* table) {
+	void fillOtLfoSIG0(int count, double* table) {
 		for (int i1 = 0; i1 < count; i1 = i1 + 1) {
 			iVec0[0] = 1;
 			iRec0[0] = (iVec0[1] + iRec0[1]) % 65536;
@@ -58,12 +58,12 @@ public:
 
 };
 
-static OtLfoDspSIG0* newOtLfoDspSIG0() { return (OtLfoDspSIG0*)new OtLfoDspSIG0(); }
-static void deleteOtLfoDspSIG0(OtLfoDspSIG0* dsp) { delete dsp; }
+static OtLfoSIG0* newOtLfoSIG0() { return (OtLfoSIG0*)new OtLfoSIG0(); }
+static void deleteOtLfoSIG0(OtLfoSIG0* dsp) { delete dsp; }
 
-static double ftbl0OtLfoDspSIG0[65536];
+static double ftbl0OtLfoSIG0[65536];
 
-class OtLfoDsp : public OtFaust {
+class OtLfo : public OtFaust {
 protected:
 	float fHslider0;
 	int iVec1[2];
@@ -72,21 +72,21 @@ protected:
 	double fRec1[2];
 	
  public:
-	OtLfoDsp() {
+	OtLfo() {
 	}
 	
-	OtLfoDsp(const OtLfoDsp&) = default;
+	OtLfo(const OtLfo&) = default;
 	
-	virtual ~OtLfoDsp() = default;
+	virtual ~OtLfo() = default;
 	
-	OtLfoDsp& operator=(const OtLfoDsp&) = default;
+	OtLfo& operator=(const OtLfo&) = default;
 	
 	void metadata(Meta* m) override { 
 		m->declare("basics.lib/name", "Faust Basic Element Library");
 		m->declare("basics.lib/version", "1.22.0");
 		m->declare("category", "Generator");
-		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtLfoDsp -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
-		m->declare("filename", "OtLfoDsp.dsp");
+		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtLfo -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
+		m->declare("filename", "OtLfo.dsp");
 		m->declare("license", "MIT");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
@@ -114,10 +114,10 @@ protected:
 	}
 	
 	static void classInit([[maybe_unused]] int sample_rate) {
-		OtLfoDspSIG0* sig0 = newOtLfoDspSIG0();
-		sig0->instanceInitOtLfoDspSIG0(sample_rate);
-		sig0->fillOtLfoDspSIG0(65536, ftbl0OtLfoDspSIG0);
-		deleteOtLfoDspSIG0(sig0);
+		OtLfoSIG0* sig0 = newOtLfoSIG0();
+		sig0->instanceInitOtLfoSIG0(sample_rate);
+		sig0->fillOtLfoSIG0(65536, ftbl0OtLfoSIG0);
+		deleteOtLfoSIG0(sig0);
 	}
 	
 	virtual void instanceConstants([[maybe_unused]] int sample_rate) {
@@ -149,8 +149,8 @@ protected:
 		instanceClear();
 	}
 	
-	virtual OtLfoDsp* clone() {
-		return new OtLfoDsp(*this);
+	virtual OtLfo* clone() {
+		return new OtLfo(*this);
 	}
 	
 	int getSampleRate() override {
@@ -171,7 +171,7 @@ protected:
 			double fTemp0 = ((1 - iVec1[1]) ? 0.0 : fRec1[1] + fConst0 * std::pow(2.0, static_cast<double>(input0[i0])));
 			fRec1[0] = fTemp0 - std::floor(fTemp0);
 			double fTemp1 = 2.0 * fRec1[0] + -1.0;
-			output0[i0] = static_cast<float>(((iSlow1) ? ((iSlow4) ? 2.0 * static_cast<double>(fRec1[0] <= 0.7) + -1.0 : ((iSlow5) ? 2.0 * static_cast<double>(fRec1[0] <= 0.5) + -1.0 : fTemp1)) : ((iSlow2) ? 2.0 * (1.0 - std::fabs(fTemp1)) + -1.0 : ((iSlow3) ? ftbl0OtLfoDspSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec1[0]), 65535))] : 0.0))));
+			output0[i0] = static_cast<float>(((iSlow1) ? ((iSlow4) ? 2.0 * static_cast<double>(fRec1[0] <= 0.7) + -1.0 : ((iSlow5) ? 2.0 * static_cast<double>(fRec1[0] <= 0.5) + -1.0 : fTemp1)) : ((iSlow2) ? 2.0 * (1.0 - std::fabs(fTemp1)) + -1.0 : ((iSlow3) ? ftbl0OtLfoSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec1[0]), 65535))] : 0.0))));
 			iVec1[1] = iVec1[0];
 			fRec1[1] = fRec1[0];
 		}

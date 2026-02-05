@@ -178,8 +178,6 @@ protected:
 	}
 
 	inline void calculateSizes() {
-		float width1 = 0.0f;
-		float height1 = 0.0f;
 		width1 = std::max(width1, 100.0f);
 		height1 += 20.0f;
 		width = width1;
@@ -193,7 +191,7 @@ protected:
 		}
 
 		bool changed = false;
-		ImGui::BeginChild("LFO", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
+		ImGui::BeginChild("LFO", ImVec2(width1, height1));
 		ImGui::SetNextItemWidth(100.0f);
 		changed |= ImGui::SliderFloat("WaveForm", &fHslider0, 0.0f, 6.0f, "%.0f");
 		ImGui::EndChild();
@@ -242,4 +240,6 @@ private:
 	bool initialized = false;
 	float width;
 	float height;
+	float width1 = 0.0f;
+	float height1 = 0.0f;
 };

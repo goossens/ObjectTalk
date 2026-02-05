@@ -19,6 +19,7 @@ class UI:
 		self.ui = []
 		self.size = []
 		self.parameters = []
+		self.variables = []
 		self.level = 1
 		self.child = 1
 
@@ -40,6 +41,9 @@ class UI:
 			case "hslider":
 				return self.slider(item, False)
 
+			case "checkbox":
+				return self.checkbox(item, )
+
 			case _:
 				return "0.0f", "0.0f"
 
@@ -53,15 +57,16 @@ class UI:
 		height = f"height{self.child}"
 		self.child += 1
 
-		self.size.append(f"\t\tfloat {width} = 0.0f;")
-		self.size.append(f"\t\tfloat {height} = 0.0f;")
+		self.variables.append(f"\tfloat {width} = 0.0f;")
+		self.variables.append(f"\tfloat {height} = 0.0f;")
 
 		if self.level == 1 or item["label"] == "0x00":
-			self.ui.append(f"\t\tImGui::BeginChild(\"{label}\", ImVec2(), {windowFlags});")
+			self.ui.append(f"\t\tImGui::BeginChild(\"{label}\", ImVec2({width}, {height}));")
 
 		else:
-			self.ui.append(f"\t\tImGui::BeginChild(\"{label}\", ImVec2(), {windowFlags} | ImGuiChildFlags_Borders);")
-			self.ui.append(f"\t\tOtUi::header(\"{item["label"]}\");")
+			self.ui.append(f"\t\tImGui::BeginChild(\"{label}\", ImVec2({width}, {height}), ImGuiChildFlags_Borders);")
+			self.ui.append(f"\t\tOtUi::header(\"{label}\");")
+			self.size.append(f"\t\t{width} = std::max({width}, OtUi::headerWidth(\"{label}\"));")
 
 		self.level += 1
 		start = len(self.ui)
@@ -126,6 +131,50 @@ class UI:
 			self.ui.append(f"\t\tchanged |= ImGui::SliderFloat(\"{label}\", &{varname}, {minValue}, {maxValue}, \"{format}\");")
 			return sliderLength, sliderWidth
 
+	def checkbox(self, item):
+		label = item.get("label", "")
+		varname = item.get("varname", "")
+		address = self.fixAddress(item.get("address", ""))
+		parname = address[0].lower() + address[1:]
+
+		self.parameters.append({
+			"label": label,
+			"varname": varname,
+			"parname": parname,
+			"address": address,
+			"init": "0.0f",
+			"min": "0.0f",
+			"max": "1.0f",
+			"step": "1.0f"})
+
+		meta = self.metaToDict(item.get("meta", []))
+		labels = meta.get("labels", "Off|On")
+		offLabel, onLabel = labels.split("|")
+
+		if len(offLabel):
+			self.ui.append(f"\t\tImGui::AlignTextToFramePadding();")
+			self.ui.append(f"\t\tImGui::TextUnformatted(\"{offLabel}\");")
+			self.ui.append(f"\t\tImGui::SameLine();")
+
+		self.ui.append(f"\t\tchanged |= OtAudioUi::toggleButton(\"##{label}\", &{varname});")
+
+		if len(onLabel):
+			self.ui.append(f"\t\tImGui::SameLine();")
+			self.ui.append(f"\t\tImGui::AlignTextToFramePadding();")
+			self.ui.append(f"\t\tImGui::TextUnformatted(\"{onLabel}\");")
+
+		checkBoxWidth = ""
+
+		if len(offLabel):
+			checkBoxWidth += f"ImGui::CalcTextSize(\"{offLabel}\").x + spacing.x + "
+
+		checkBoxWidth += "OtUi::toggleButtonWidth()"
+
+		if len(onLabel):
+			checkBoxWidth += f" + ImGui::CalcTextSize(\"{onLabel}\").x + spacing.x);"
+
+		return checkBoxWidth, "frame"
+
 	def getSize(self):
 		text = "\n".join(self.size)
 		intro = ""
@@ -160,6 +209,9 @@ class UI:
 
 	def getGetters(self):
 		return "\n".join([f"\tinline float get{parameter["address"]}() {{ return {parameter["varname"]}; }}" for parameter in self.parameters])
+
+	def getVariables(self):
+		return "\n".join(self.variables)
 
 	def metaToDict(self, meta):
 		result = {}
@@ -270,7 +322,8 @@ def processDspFile(sourceFileName, targetFileName):
 		.replace("GETPARAMETERS", ui.getGetParameters()) \
 		.replace("ITERATEPARAMETERS", ui.getIterateParameters()) \
 		.replace("SETTERS", ui.getSetters()) \
-		.replace("GETTERS", ui.getGetters())
+		.replace("GETTERS", ui.getGetters()) \
+		.replace("VARIABLES", ui.getVariables())
 
 	code = headerText + text + footerText
 

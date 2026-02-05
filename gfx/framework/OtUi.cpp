@@ -190,6 +190,15 @@ void OtUi::header(const char* label, float width) {
 
 
 //
+//	OtUi::headerWidth
+//
+
+float OtUi::headerWidth(const char* label) {
+	return ImGui::CalcTextSize(label).x + ImGui::GetStyle().FramePadding.x * 2.0f;
+}
+
+
+//
 //	OtUi::toggleButton
 //
 
@@ -241,6 +250,15 @@ bool OtUi::toggleButton(const char* labelPlusID, bool* value) {
 	}
 
 	return changed;
+}
+
+
+//
+//	OtUi::toggleButtonWidth
+//
+
+float OtUi::toggleButtonWidth() {
+	return ImGui::GetFrameHeight() * 1.55f;
 }
 
 

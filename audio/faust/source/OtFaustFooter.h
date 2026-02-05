@@ -56,4 +56,5 @@ private:
 	bool initialized = false;
 	float width;
 	float height;
+VARIABLES
 };

@@ -69,9 +69,11 @@ public:
 
 	// header with specified width
 	static void header(const char* label, float width=0.0f);
+	static float headerWidth(const char* label);
 
 	// toggle button
 	static bool toggleButton(const char* label, bool* value);
+	static float toggleButtonWidth();
 	static bool headerWithToggleButton(const char* label, bool* value);
 
 	// latch button

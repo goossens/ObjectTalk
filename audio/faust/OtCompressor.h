@@ -190,8 +190,6 @@ protected:
 		auto knobWidth = OtUi::knobWidth();
 		auto knobHeight = OtUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
-		float width1 = 0.0f;
-		float height1 = 0.0f;
 		width1 += knobWidth;
 		height1 = std::max(height1, knobHeight);
 		width1 += spacing.x;
@@ -214,7 +212,7 @@ protected:
 		}
 
 		bool changed = false;
-		ImGui::BeginChild("Compressor", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
+		ImGui::BeginChild("Compressor", ImVec2(width1, height1));
 		changed |= OtUi::knob("Ratio", &fVslider3, 1.0f, 20.0f, "%.1f");
 		ImGui::SameLine();
 		changed |= OtUi::knob("Thresh", &fVslider2, -50.0f, 0.0f, "%.0fdB");
@@ -286,4 +284,6 @@ private:
 	bool initialized = false;
 	float width;
 	float height;
+	float width1 = 0.0f;
+	float height1 = 0.0f;
 };

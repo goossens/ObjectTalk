@@ -257,8 +257,6 @@ protected:
 		auto knobWidth = OtUi::knobWidth();
 		auto knobHeight = OtUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
-		float width1 = 0.0f;
-		float height1 = 0.0f;
 		width1 += knobWidth;
 		height1 = std::max(height1, knobHeight);
 		width1 += spacing.x;
@@ -278,7 +276,7 @@ protected:
 		}
 
 		bool changed = false;
-		ImGui::BeginChild("Phaser", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
+		ImGui::BeginChild("Phaser", ImVec2(width1, height1));
 		changed |= OtUi::knob("Speed", &fVslider2, 0.001f, 20.0f, "%.01fhz");
 		ImGui::SameLine();
 		changed |= OtUi::knob("Depth", &fVslider0, 0.0f, 100.0f, "%.0f%%");
@@ -342,4 +340,6 @@ private:
 	bool initialized = false;
 	float width;
 	float height;
+	float width1 = 0.0f;
+	float height1 = 0.0f;
 };

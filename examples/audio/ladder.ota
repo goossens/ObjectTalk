@@ -1,0 +1,174 @@
+{
+	"circuits": [
+		{
+			"frequency": 440.0,
+			"id": 3377639378,
+			"inputs": [
+				{
+					"id": 1723571676,
+					"name": "Freq",
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 0.0,
+					"type": "control"
+				}
+			],
+			"outputs": [
+				{
+					"attenuation": 1.0,
+					"id": 3960609197,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"title": "VCO",
+			"type": "VCO",
+			"waveForm": 5.0,
+			"x": 107.0,
+			"y": 75.0
+		},
+		{
+			"controlOne": 0.0,
+			"controlTwo": 0.0,
+			"filterContour": 0.0,
+			"filterCutoff": 0.0,
+			"filterEmphasis": 1.0,
+			"id": 2444562142,
+			"inputs": [
+				{
+					"id": 2176487822,
+					"name": "Input",
+					"type": "mono"
+				},
+				{
+					"id": 3870520227,
+					"name": "Freq",
+					"type": "control"
+				},
+				{
+					"id": 4129567100,
+					"name": "Mod 1",
+					"type": "control"
+				},
+				{
+					"id": 3820959156,
+					"name": "Mod 2",
+					"type": "control"
+				}
+			],
+			"outputs": [
+				{
+					"id": 2625073430,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"title": "Ladder",
+			"type": "Ladder",
+			"x": 430.0,
+			"y": 178.0
+		},
+		{
+			"id": 2607309084,
+			"inputs": [
+				{
+					"attenuation": 1.0,
+					"id": 3631887285,
+					"name": "Input 1",
+					"type": "mono"
+				},
+				{
+					"attenuation": 1.0,
+					"id": 1019624956,
+					"name": "Input 2",
+					"type": "mono"
+				},
+				{
+					"attenuation": 1.0,
+					"id": 4065190553,
+					"name": "Input 3",
+					"type": "mono"
+				},
+				{
+					"attenuation": 1.0,
+					"id": 607166555,
+					"name": "Input 4",
+					"type": "mono"
+				}
+			],
+			"outputs": [
+				{
+					"id": 4005773729,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"title": "4 Channel Mixer",
+			"type": "4 Channel Mixer",
+			"x": 897.0,
+			"y": 75.0
+		},
+		{
+			"id": 19126836,
+			"inputs": [
+				{
+					"id": 847268500,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"leftDelayTime": 0.0,
+			"outputs": [
+				{
+					"id": 3199169865,
+					"name": "Output",
+					"type": "stereo"
+				}
+			],
+			"panLevel": 0.0,
+			"rightDelayTime": 0.0,
+			"title": "Mono to Stereo",
+			"type": "Mono to Stereo",
+			"x": 1077.0,
+			"y": 75.0
+		},
+		{
+			"id": 3564521070,
+			"inputs": [
+				{
+					"id": 3551349604,
+					"name": "Input",
+					"type": "stereo"
+				}
+			],
+			"outputs": [],
+			"title": "Speaker Out",
+			"type": "Speaker Out",
+			"x": 1372.0,
+			"y": 75.0
+		}
+	],
+	"metadata": {},
+	"wires": [
+		{
+			"from": 3199169865,
+			"id": 2750883602,
+			"to": 3551349604
+		},
+		{
+			"from": 3960609197,
+			"id": 3332518908,
+			"to": 2176487822
+		},
+		{
+			"from": 4005773729,
+			"id": 503473643,
+			"to": 847268500
+		},
+		{
+			"from": 2625073430,
+			"id": 1580687968,
+			"to": 1019624956
+		}
+	]
+}

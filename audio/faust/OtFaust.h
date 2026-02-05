@@ -26,8 +26,8 @@
 #include "OtUi.h"
 
 #include "OtAudioSettings.h"
-#include "OtCircuitFactory.h"
-#include "OtAudioBuffer.h"
+#include "OtAudioUi.h"
+#include "OtCircuit.h"
 
 
 //

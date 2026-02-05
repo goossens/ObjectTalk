@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include "OtFontAudio.h"
 #include "OtUi.h"
 
 
@@ -41,5 +42,16 @@ public:
 		}
 
 		return changed;
+	}
+
+	inline static bool toggleButton(const char* label, float* value) {
+		bool flag = *value != 0.0f;
+		bool result = OtUi::toggleButton(label, &flag);
+
+		if (result) {
+			*value = static_cast<float>(flag);
+		}
+
+		return result;
 	}
 };

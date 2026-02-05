@@ -198,8 +198,6 @@ protected:
 		auto knobWidth = OtUi::knobWidth();
 		auto knobHeight = OtUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
-		float width1 = 0.0f;
-		float height1 = 0.0f;
 		width1 += knobWidth;
 		height1 = std::max(height1, knobHeight);
 		width1 += spacing.x;
@@ -222,7 +220,7 @@ protected:
 		}
 
 		bool changed = false;
-		ImGui::BeginChild("Chorus", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
+		ImGui::BeginChild("Chorus", ImVec2(width1, height1));
 		changed |= OtUi::knob("Level", &fVslider0, 0.0f, 1.0f, "%.2f");
 		ImGui::SameLine();
 		changed |= OtUi::knob("Freq", &fVslider3, 0.0f, 10.0f, "%.2f");
@@ -294,4 +292,6 @@ private:
 	bool initialized = false;
 	float width;
 	float height;
+	float width1 = 0.0f;
+	float height1 = 0.0f;
 };

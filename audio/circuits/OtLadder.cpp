@@ -24,9 +24,9 @@ public:
 	// configure pins
 	inline void configurePins() override {
 		signalInput = addInputPin("Input", OtCircuitPinClass::Type::mono);
-		freqInput = addInputPin("Freq", OtCircuitPinClass::Type::control);
-		mod1Input = addInputPin("Mod 1", OtCircuitPinClass::Type::control);
-		mod2Input = addInputPin("Mod 2", OtCircuitPinClass::Type::control);
+		freqInput = addInputPin("Freq", OtCircuitPinClass::Type::control)->hasAttenuation();
+		mod1Input = addInputPin("Mod 1", OtCircuitPinClass::Type::control)->hasAttenuation();
+		mod2Input = addInputPin("Mod 2", OtCircuitPinClass::Type::control)->hasAttenuation();
 		ladderOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
 	}
 
@@ -50,11 +50,11 @@ public:
 			}
 
 			if (mod1Input->isSourceConnected()) {
-				mod1Input->getSamples(freq);
+				mod1Input->getSamples(mod1);
 			}
 
 			if (mod2Input->isSourceConnected()) {
-				mod2Input->getSamples(freq);
+				mod2Input->getSamples(mod2);
 			}
 
 			dsp.compute(OtAudioSettings::bufferSize, in, &out);

@@ -149,11 +149,13 @@ protected:
 		}
 
 		bool changed = false;
-		ImGui::BeginChild("Noise", ImVec2(width1, height1));
+		ImGui::BeginGroup();
+		ImGui::PushID("Noise");
 		changed |= OtUi::knob("White", &fHslider0, 0.0f, 1.0f, "%.2f");
 		ImGui::SameLine();
 		changed |= OtUi::knob("Pink", &fHslider1, 0.0f, 1.0f, "%.2f");
-		ImGui::EndChild();
+		ImGui::PopID();
+		ImGui::EndGroup();
 		return changed;
 	}
 

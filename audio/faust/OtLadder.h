@@ -32,11 +32,12 @@ class OtLadder : public OtFaust {
 protected:
 	int fSampleRate;
 	double fConst0;
+	double fConst1;
+	double fConst2;
 	float fVslider0;
+	double fConst3;
+	double fRec5[2];
 	float fVslider1;
-	float fCheckbox0;
-	float fCheckbox1;
-	float fVslider2;
 	double fRec0[2];
 	double fRec1[2];
 	double fRec2[2];
@@ -67,8 +68,8 @@ protected:
 		m->declare("platform.lib/version", "1.3.0");
 		m->declare("signals.lib/name", "Faust Signal Routing Library");
 		m->declare("signals.lib/version", "1.6.0");
-		m->declare("vaeffects.lib/moogLadder:author", "Dario Sanfilippo");
-		m->declare("vaeffects.lib/moogLadder:license", "MIT-style STK-4.3 license");
+		m->declare("vaeffects.lib/lowpassLadder4:author", "Dario Sanfilippo");
+		m->declare("vaeffects.lib/lowpassLadder4:license", "MIT License");
 		m->declare("vaeffects.lib/name", "Faust Virtual Analog Filter Effect Library");
 		m->declare("vaeffects.lib/version", "1.4.0");
 	}
@@ -85,29 +86,32 @@ protected:
 	
 	virtual void instanceConstants([[maybe_unused]] int sample_rate) {
 		fSampleRate = sample_rate;
-		fConst0 = 6.283185307179586 / std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
+		fConst0 = std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
+		fConst1 = 3.141592653589793 / fConst0;
+		fConst2 = 44.1 / fConst0;
+		fConst3 = 1.0 - fConst2;
 	}
 	
 	virtual void instanceResetUserInterface() {
-		fVslider0 = static_cast<float>(0.0);
-		fVslider1 = static_cast<float>(0.0);
-		fCheckbox0 = static_cast<float>(0.0);
-		fCheckbox1 = static_cast<float>(0.0);
-		fVslider2 = static_cast<float>(1.0);
+		fVslider0 = static_cast<float>(8e+02);
+		fVslider1 = static_cast<float>(0.5);
 	}
 	
 	virtual void instanceClear() {
 		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
-			fRec0[l0] = 0.0;
+			fRec5[l0] = 0.0;
 		}
 		for (int l1 = 0; l1 < 2; l1 = l1 + 1) {
-			fRec1[l1] = 0.0;
+			fRec0[l1] = 0.0;
 		}
 		for (int l2 = 0; l2 < 2; l2 = l2 + 1) {
-			fRec2[l2] = 0.0;
+			fRec1[l2] = 0.0;
 		}
 		for (int l3 = 0; l3 < 2; l3 = l3 + 1) {
-			fRec3[l3] = 0.0;
+			fRec2[l3] = 0.0;
+		}
+		for (int l4 = 0; l4 < 2; l4 = l4 + 1) {
+			fRec3[l4] = 0.0;
 		}
 	}
 	
@@ -136,14 +140,13 @@ protected:
 		float* input2 = inputs[2];
 		float* input3 = inputs[3];
 		float* output0 = outputs[0];
-		double fSlow0 = static_cast<double>(fVslider0);
-		double fSlow1 = static_cast<double>(fVslider1);
-		double fSlow2 = 0.3333333333333333 * (static_cast<double>(fCheckbox0) + 2.0 * static_cast<double>(fCheckbox1));
-		double fSlow3 = 0.16465720916692744 * (static_cast<double>(fVslider2) + -0.7071067811865475);
+		double fSlow0 = fConst2 * static_cast<double>(fVslider0);
+		double fSlow1 = 4.0 * static_cast<double>(fVslider1);
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
-			double fTemp0 = std::tan(fConst0 * std::pow(1e+01, 1.32e+03 * std::pow(2.0, fSlow0 + fSlow1 * (static_cast<double>(input2[i0]) + static_cast<double>(input3[i0])) + fSlow2 * static_cast<double>(input1[i0])) + 1.0));
+			fRec5[0] = fSlow0 + fConst3 * fRec5[1];
+			double fTemp0 = std::tan(fConst1 * fRec5[0] * std::pow(2.0, static_cast<double>(input3[i0]) + static_cast<double>(input1[i0]) + static_cast<double>(input2[i0])));
 			double fTemp1 = fTemp0 + 1.0;
-			double fTemp2 = fTemp0 * ((static_cast<double>(input0[i0]) - fSlow3 * (1.0 - fTemp0 / fTemp1) * (fRec3[1] + fTemp0 * (fRec2[1] + fTemp0 * (fRec1[1] + fTemp0 * fRec0[1] / fTemp1) / fTemp1) / fTemp1)) / (fSlow3 * (OtLadder_faustpower4_f(fTemp0) / OtLadder_faustpower4_f(fTemp1)) + 1.0) - fRec0[1]) / fTemp1;
+			double fTemp2 = fTemp0 * ((static_cast<double>(input0[i0]) - fSlow1 * (1.0 - fTemp0 / fTemp1) * (fRec3[1] + fTemp0 * (fRec2[1] + fTemp0 * (fRec1[1] + fTemp0 * fRec0[1] / fTemp1) / fTemp1) / fTemp1)) / (fSlow1 * (OtLadder_faustpower4_f(fTemp0) / OtLadder_faustpower4_f(fTemp1)) + 1.0) - fRec0[1]) / fTemp1;
 			fRec0[0] = fRec0[1] + 2.0 * fTemp2;
 			double fTemp3 = fTemp0 * (fRec0[1] + fTemp2 - fRec1[1]) / fTemp1;
 			fRec1[0] = fRec1[1] + 2.0 * fTemp3;
@@ -153,6 +156,7 @@ protected:
 			fRec3[0] = fRec3[1] + 2.0 * fTemp5;
 			double fRec4 = fRec3[1] + fTemp5;
 			output0[i0] = static_cast<float>(fRec4);
+			fRec5[1] = fRec5[0];
 			fRec0[1] = fRec0[0];
 			fRec1[1] = fRec1[0];
 			fRec2[1] = fRec2[0];
@@ -164,31 +168,11 @@ protected:
 		auto knobWidth = OtUi::knobWidth();
 		auto knobHeight = OtUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
-		auto frame = ImGui::GetFrameHeightWithSpacing();
-		auto padding = ImGui::GetStyle().WindowPadding;
-		width2 = std::max(width2, OtUi::headerWidth("Filter"));
-		width2 += knobWidth;
-		height2 = std::max(height2, knobHeight);
-		width2 += spacing.x;
-		width2 += knobWidth;
-		height2 = std::max(height2, knobHeight);
-		width2 += spacing.x;
-		width2 += knobWidth;
-		height2 = std::max(height2, knobHeight);
-		width2 += padding.x * 2.0f;
-		height2 += frame + padding.y * 2.0f;
-		width1 += width2;
-		height1 = std::max(height1, height2);
+		width1 += knobWidth;
+		height1 = std::max(height1, knobHeight);
 		width1 += spacing.x;
-		width3 = std::max(width3, OtUi::headerWidth("Control"));
-		width3 = std::max(width3, ImGui::CalcTextSize("1").x + spacing.x + OtUi::toggleButtonWidth());
-		height3 += frame;
-		width3 = std::max(width3, ImGui::CalcTextSize("2").x + spacing.x + OtUi::toggleButtonWidth());
-		height3 += frame;
-		width3 += padding.x * 2.0f;
-		height3 += frame + padding.y * 2.0f;
-		width1 += width3;
-		height1 = std::max(height1, height3);
+		width1 += knobWidth;
+		height1 = std::max(height1, knobHeight);
 		width = width1;
 		height = height1;
 		initialized = true;
@@ -200,28 +184,13 @@ protected:
 		}
 
 		bool changed = false;
-		ImGui::BeginChild("Ladder", ImVec2(width1, height1));
-		ImGui::BeginChild("Filter", ImVec2(width2, height2), ImGuiChildFlags_Borders);
-		OtUi::header("Filter");
-		changed |= OtUi::knob("Cutoff", &fVslider0, -4.0f, 4.0f, "%.1f");
+		ImGui::BeginGroup();
+		ImGui::PushID("Ladder");
+		changed |= OtUi::knob("Freq", &fVslider0, 80.0f, 8000.0f, "%.0fhz");
 		ImGui::SameLine();
-		changed |= OtUi::knob("Emphasis", &fVslider2, 0.707f, 25.0f, "%.2f");
-		ImGui::SameLine();
-		changed |= OtUi::knob("Contour", &fVslider1, 0.0f, 1.0f, "%.2f");
-		ImGui::EndChild();
-		ImGui::SameLine();
-		ImGui::BeginChild("Control", ImVec2(width3, height3), ImGuiChildFlags_Borders);
-		OtUi::header("Control");
-		ImGui::AlignTextToFramePadding();
-		ImGui::TextUnformatted("1");
-		ImGui::SameLine();
-		changed |= OtAudioUi::toggleButton("##One", &fCheckbox0);
-		ImGui::AlignTextToFramePadding();
-		ImGui::TextUnformatted("2");
-		ImGui::SameLine();
-		changed |= OtAudioUi::toggleButton("##Two", &fCheckbox1);
-		ImGui::EndChild();
-		ImGui::EndChild();
+		changed |= OtUi::knob("Res", &fVslider1, 0.0f, 1.0f, "%.2f");
+		ImGui::PopID();
+		ImGui::EndGroup();
 		return changed;
 	}
 
@@ -242,50 +211,32 @@ protected:
 	}
 
 	struct Parameters {
-		float filterCutoff = 0.0f;
-		float filterEmphasis = 1.0f;
-		float filterContour = 0.0f;
-		float controlOne = 0.0f;
-		float controlTwo = 0.0f;
+		float freq = 800.0f;
+		float res = 0.5f;
 	};
 
 	inline void setParameters([[maybe_unused]] const Parameters& parameters) {
-		fVslider0 = parameters.filterCutoff;
-		fVslider2 = parameters.filterEmphasis;
-		fVslider1 = parameters.filterContour;
-		fCheckbox0 = parameters.controlOne;
-		fCheckbox1 = parameters.controlTwo;
+		fVslider0 = parameters.freq;
+		fVslider1 = parameters.res;
 	}
 
 	inline Parameters getParameters() {
 		Parameters parameters;
-		parameters.filterCutoff = fVslider0;
-		parameters.filterEmphasis = fVslider2;
-		parameters.filterContour = fVslider1;
-		parameters.controlOne = fCheckbox0;
-		parameters.controlTwo = fCheckbox1;
+		parameters.freq = fVslider0;
+		parameters.res = fVslider1;
 		return parameters;
 	}
 
 	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
-		callback("filterCutoff", &fVslider0, 0.0f);
-		callback("filterEmphasis", &fVslider2, 1.0f);
-		callback("filterContour", &fVslider1, 0.0f);
-		callback("controlOne", &fCheckbox0, 0.0f);
-		callback("controlTwo", &fCheckbox1, 0.0f);
+		callback("freq", &fVslider0, 800.0f);
+		callback("res", &fVslider1, 0.5f);
 	}
 
-	inline void setFilterCutoff(float value) { fVslider0 = value; }
-	inline void setFilterEmphasis(float value) { fVslider2 = value; }
-	inline void setFilterContour(float value) { fVslider1 = value; }
-	inline void setControlOne(float value) { fCheckbox0 = value; }
-	inline void setControlTwo(float value) { fCheckbox1 = value; }
+	inline void setFreq(float value) { fVslider0 = value; }
+	inline void setRes(float value) { fVslider1 = value; }
 
-	inline float getFilterCutoff() { return fVslider0; }
-	inline float getFilterEmphasis() { return fVslider2; }
-	inline float getFilterContour() { return fVslider1; }
-	inline float getControlOne() { return fCheckbox0; }
-	inline float getControlTwo() { return fCheckbox1; }
+	inline float getFreq() { return fVslider0; }
+	inline float getRes() { return fVslider1; }
 
 private:
 	bool initialized = false;
@@ -293,8 +244,4 @@ private:
 	float height;
 	float width1 = 0.0f;
 	float height1 = 0.0f;
-	float width2 = 0.0f;
-	float height2 = 0.0f;
-	float width3 = 0.0f;
-	float height3 = 0.0f;
 };

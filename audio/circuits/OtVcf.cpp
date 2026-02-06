@@ -9,86 +9,62 @@
 //	Include files
 //
 
-#include "nlohmann/json.hpp"
-
-#include "OtAudioFilter.h"
 #include "OtAudioSettings.h"
-#include "OtAudioUtilities.h"
 #include "OtCircuitFactory.h"
+#include "OtFaust.h"
+#include "OtVcf.h"
 
 
 //
-//	OtVcf
+//	OtVcfCircuit
 //
 
-class OtVcf : public OtCircuitClass {
+class OtVcfCircuit : public OtFaustCircuit<OtVcf> {
 public:
-	// configure circuit
-	inline void configure() override {
-		audioInput = addInputPin("Input", OtCircuitPinClass::Type::mono);
-		fmInput = addInputPin("F Mod", OtCircuitPinClass::Type::control);
-		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
+	// configure pins
+	inline void configurePins() override {
+		signalInput = addInputPin("Input", OtCircuitPinClass::Type::mono);
+		mod1Input = addInputPin("Mod 1", OtCircuitPinClass::Type::control)->hasAttenuation();
+		mod2Input = addInputPin("Mod 2", OtCircuitPinClass::Type::control)->hasAttenuation();
+		signalOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
 	}
 
-	// render custom fields
-	inline bool customRendering(float itemWidth) override {
-		ImGui::PushItemWidth(itemWidth - parameters.getLabelWidth());
-		auto changed = parameters.renderUI();
-		ImGui::PopItemWidth();
-		return changed;
-	}
-
-	inline float getCustomRenderingWidth() override {
-		return parameters.getRenderWidth();
-	}
-
-	inline float getCustomRenderingHeight() override {
-		return parameters.getRenderHeight();
-	}
-
-	// (de)serialize circuit
-	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		parameters.serialize(data, basedir);
-	}
-
-	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
-		parameters.deserialize(data, basedir);
-	}
-
-	// process samples
+	// generate samples
 	void execute() override {
-		if (audioOutput->isDestinationConnected()) {
-			if (audioInput->isSourceConnected()) {
-				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-					if (fmInput->isSourceConnected()) {
-						filter.setFrequencyModulation(fmInput->getSample(i));
+		float output[OtAudioSettings::bufferSize] = {0.0f};
 
-					} else {
-						filter.setFrequencyModulation(0.0f);
-					}
+		if (signalOutput->isDestinationConnected() && signalInput->isSourceConnected()) {
+			float signal[OtAudioSettings::bufferSize];
+			float mod1[OtAudioSettings::bufferSize] = {0.0f};
+			float mod2[OtAudioSettings::bufferSize] = {0.0f};
 
-					audioOutput->setSample(i, filter.process(parameters, audioInput->getSample(i)));
-				}
+			float* in[] = {signal, mod1, mod2};
+			auto out = output;
 
-			} else {
-				audioOutput->setSamples(0.0f);
+			signalInput->getSamples(signal);
+
+			if (mod1Input->isSourceConnected()) {
+				mod1Input->getSamples(mod1);
 			}
+
+			if (mod2Input->isSourceConnected()) {
+				mod2Input->getSamples(mod2);
+			}
+
+			dsp.compute(OtAudioSettings::bufferSize, in, &out);
 		}
-	};
+
+		signalOutput->setSamples(output);
+	}
 
 	static constexpr const char* circuitName = "VCF";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::processor;
 
 private:
-	// properties
-	OtAudioFilter::Parameters parameters;
-
-	// work variables
-	OtCircuitPin audioInput;
-	OtCircuitPin fmInput;
-	OtCircuitPin audioOutput;
-
-	OtAudioFilter::State filter;
+	OtCircuitPin signalInput;
+	OtCircuitPin mod1Input;
+	OtCircuitPin mod2Input;
+	OtCircuitPin signalOutput;
 };
 
-static OtCircuitFactoryRegister<OtVcf> registration;
+static OtCircuitFactoryRegister<OtVcfCircuit> registration;

@@ -100,7 +100,7 @@ float OtAdsrUi::getRenderWidth() {
 //
 
 float OtAdsrUi::getRenderHeight() {
-	return envelopeHeight + OtUi::knobHeight();
+	return envelopeHeight + ImGui::GetStyle().ItemSpacing.y + OtUi::knobHeight();
 }
 
 

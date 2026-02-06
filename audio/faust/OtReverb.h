@@ -698,13 +698,15 @@ protected:
 		}
 
 		bool changed = false;
-		ImGui::BeginChild("Reverb", ImVec2(width1, height1));
+		ImGui::BeginGroup();
+		ImGui::PushID("Reverb");
 		changed |= OtUi::knob("Dwell", &fVslider0, 0.0f, 1.0f, "%.2f");
 		ImGui::SameLine();
 		changed |= OtUi::knob("Tension", &fVslider1, 0.0f, 1.0f, "%.2f");
 		ImGui::SameLine();
 		changed |= OtUi::knob("Blend", &fVslider2, 0.0f, 1.0f, "%.2f");
-		ImGui::EndChild();
+		ImGui::PopID();
+		ImGui::EndGroup();
 		return changed;
 	}
 

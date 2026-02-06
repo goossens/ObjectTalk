@@ -212,7 +212,8 @@ protected:
 		}
 
 		bool changed = false;
-		ImGui::BeginChild("Compressor", ImVec2(width1, height1));
+		ImGui::BeginGroup();
+		ImGui::PushID("Compressor");
 		changed |= OtUi::knob("Ratio", &fVslider3, 1.0f, 20.0f, "%.1f");
 		ImGui::SameLine();
 		changed |= OtUi::knob("Thresh", &fVslider2, -50.0f, 0.0f, "%.0fdB");
@@ -220,7 +221,8 @@ protected:
 		changed |= OtUi::knob("Attack", &fVslider1, 0.0f, 200.0f, "%.0fms");
 		ImGui::SameLine();
 		changed |= OtUi::knob("Release", &fVslider0, 5.0f, 1000.0f, "%.0fms");
-		ImGui::EndChild();
+		ImGui::PopID();
+		ImGui::EndGroup();
 		return changed;
 	}
 

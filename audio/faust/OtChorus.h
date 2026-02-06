@@ -220,7 +220,8 @@ protected:
 		}
 
 		bool changed = false;
-		ImGui::BeginChild("Chorus", ImVec2(width1, height1));
+		ImGui::BeginGroup();
+		ImGui::PushID("Chorus");
 		changed |= OtUi::knob("Level", &fVslider0, 0.0f, 1.0f, "%.2f");
 		ImGui::SameLine();
 		changed |= OtUi::knob("Freq", &fVslider3, 0.0f, 10.0f, "%.2f");
@@ -228,7 +229,8 @@ protected:
 		changed |= OtUi::knob("Delay", &fVslider1, 0.0f, 0.2f, "%.2f");
 		ImGui::SameLine();
 		changed |= OtUi::knob("Depth", &fVslider2, 0.0f, 1.0f, "%.2f");
-		ImGui::EndChild();
+		ImGui::PopID();
+		ImGui::EndGroup();
 		return changed;
 	}
 

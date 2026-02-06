@@ -59,14 +59,8 @@ class UI:
 
 		self.variables.append(f"\tfloat {width} = 0.0f;")
 		self.variables.append(f"\tfloat {height} = 0.0f;")
-
-		if self.level == 1 or item["label"] == "0x00":
-			self.ui.append(f"\t\tImGui::BeginChild(\"{label}\", ImVec2({width}, {height}));")
-
-		else:
-			self.ui.append(f"\t\tImGui::BeginChild(\"{label}\", ImVec2({width}, {height}), ImGuiChildFlags_Borders);")
-			self.ui.append(f"\t\tOtUi::header(\"{label}\");")
-			self.size.append(f"\t\t{width} = std::max({width}, OtUi::headerWidth(\"{label}\"));")
+		self.ui.append(f"\t\tImGui::BeginGroup();")
+		self.ui.append(f"\t\tImGui::PushID(\"{label}\");")
 
 		self.level += 1
 		start = len(self.ui)
@@ -87,12 +81,8 @@ class UI:
 				self.size.append(f"\t\t{height} = std::max({height}, {h});")
 
 		self.level -= 1
-
-		if self.level != 1 and item["label"] != "0x00":
-			self.size.append(f"\t\t{width} += padding.x * 2.0f;")
-			self.size.append(f"\t\t{height} += frame + padding.y * 2.0f;")
-
-		self.ui.append("\t\tImGui::EndChild();")
+		self.ui.append("\t\tImGui::PopID();")
+		self.ui.append("\t\tImGui::EndGroup();")
 		return width, height
 
 	def slider(self, item, vertical):
@@ -182,7 +172,6 @@ class UI:
 		if "knobHeight" in text: intro += "\t\tauto knobHeight = OtUi::knobHeight();\n"
 		if "spacing" in text: intro += "\t\tauto spacing = ImGui::GetStyle().ItemSpacing;\n"
 		if "frame" in text: intro += "\t\tauto frame = ImGui::GetFrameHeightWithSpacing();\n"
-		if "padding" in text: intro += "\t\tauto padding = ImGui::GetStyle().WindowPadding;\n"
 		return intro + text
 
 	def getRenderUI(self):

@@ -1112,17 +1112,15 @@ float OtUi::knobWidth(size_t columns) {
 //
 
 float OtUi::knobHeight(size_t rows) {
-	// title height
-	auto height = ImGui::GetFrameHeightWithSpacing();
+	if (rows == 0) {
+		return 0.0f;
 
-	// knob height
-	height += ImGui::GetTextLineHeight() * 4.0f;
-
-	// field height
-	height += ImGui::GetFrameHeightWithSpacing();
-
-	// return total height of knob widget
-	return height * rows;
+	} else {
+		auto height = ImGui::GetFrameHeightWithSpacing();
+		height += ImGui::GetTextLineHeight() * 4.0f;
+		height += ImGui::GetFrameHeight();
+		return height * rows + ImGui::GetStyle().ItemSpacing.y * rows;
+	}
 }
 
 

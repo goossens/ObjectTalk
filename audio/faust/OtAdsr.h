@@ -179,7 +179,8 @@ protected:
 		}
 
 		bool changed = false;
-		ImGui::BeginChild("ADSR", ImVec2(width1, height1));
+		ImGui::BeginGroup();
+		ImGui::PushID("ADSR");
 		changed |= OtUi::knob("Attack", &fVslider1, 0.0f, 10.0f, "%.3fs");
 		ImGui::SameLine();
 		changed |= OtUi::knob("Decay", &fVslider2, 0.0f, 10.0f, "%.3fs");
@@ -187,7 +188,8 @@ protected:
 		changed |= OtUi::knob("Sustain", &fVslider3, 0.0f, 1.0f, "%.2f");
 		ImGui::SameLine();
 		changed |= OtUi::knob("Release", &fVslider0, 0.0f, 10.0f, "%.3fs");
-		ImGui::EndChild();
+		ImGui::PopID();
+		ImGui::EndGroup();
 		return changed;
 	}
 

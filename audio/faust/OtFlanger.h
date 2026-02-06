@@ -179,13 +179,15 @@ protected:
 		}
 
 		bool changed = false;
-		ImGui::BeginChild("Flanger", ImVec2(width1, height1));
+		ImGui::BeginGroup();
+		ImGui::PushID("Flanger");
 		changed |= OtUi::knob("Delay", &fVslider1, 0.0f, 10.0f, "%.1fms");
 		ImGui::SameLine();
 		changed |= OtUi::knob("Depth", &fVslider2, 0.0f, 100.0f, "%.0f%%");
 		ImGui::SameLine();
 		changed |= OtUi::knob("Feedback", &fVslider0, 0.0f, 100.0f, "%.0f%%");
-		ImGui::EndChild();
+		ImGui::PopID();
+		ImGui::EndGroup();
 		return changed;
 	}
 

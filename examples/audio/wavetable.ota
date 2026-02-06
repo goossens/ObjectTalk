@@ -62,37 +62,23 @@
 				{
 					"id": 2102266532,
 					"name": "Freq",
-					"type": "control"
-				},
-				{
-					"id": 3298700112,
-					"name": "Pulse Width",
-					"type": "control"
-				},
-				{
-					"id": 3819302355,
-					"name": "Shape",
+					"tuningCents": 0.0,
+					"tuningOctaves": 0.0,
+					"tuningSemitones": 0.0,
 					"type": "control"
 				}
 			],
 			"outputs": [
 				{
+					"attenuation": 1.0,
 					"id": 3138308028,
 					"name": "Output",
 					"type": "mono"
 				}
 			],
-			"pulseWidth": 0.5,
-			"sampleFile": "",
-			"sampleFileFrequency": 0.0,
 			"title": "VCO",
-			"tuningCents": 0.0,
-			"tuningOctaves": 0.0,
-			"tuningSemitones": 0.0,
 			"type": "VCO",
-			"volume": 7.0,
-			"waveForm": 5,
-			"waveTable": "assets/brass.wav",
+			"waveForm": 3.0,
 			"x": 442.0,
 			"y": 144.0
 		},
@@ -250,11 +236,6 @@
 			"from": 3138308028,
 			"id": 555657550,
 			"to": 1337454414
-		},
-		{
-			"from": 3111468910,
-			"id": 2461571299,
-			"to": 3819302355
 		},
 		{
 			"from": 3111468910,

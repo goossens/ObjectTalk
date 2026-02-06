@@ -276,13 +276,15 @@ protected:
 		}
 
 		bool changed = false;
-		ImGui::BeginChild("Phaser", ImVec2(width1, height1));
+		ImGui::BeginGroup();
+		ImGui::PushID("Phaser");
 		changed |= OtUi::knob("Speed", &fVslider2, 0.001f, 20.0f, "%.01fhz");
 		ImGui::SameLine();
 		changed |= OtUi::knob("Depth", &fVslider0, 0.0f, 100.0f, "%.0f%%");
 		ImGui::SameLine();
-		changed |= OtUi::knob("Feedback", &fVslider1, -1.0f, 1.0f, "%.2f");
-		ImGui::EndChild();
+		changed |= OtUi::knob("Feedbck", &fVslider1, -1.0f, 1.0f, "%.2f");
+		ImGui::PopID();
+		ImGui::EndGroup();
 		return changed;
 	}
 
@@ -305,36 +307,36 @@ protected:
 	struct Parameters {
 		float speed = 1.0f;
 		float depth = 50.0f;
-		float feedback = 0.0f;
+		float feedbck = 0.0f;
 	};
 
 	inline void setParameters([[maybe_unused]] const Parameters& parameters) {
 		fVslider2 = parameters.speed;
 		fVslider0 = parameters.depth;
-		fVslider1 = parameters.feedback;
+		fVslider1 = parameters.feedbck;
 	}
 
 	inline Parameters getParameters() {
 		Parameters parameters;
 		parameters.speed = fVslider2;
 		parameters.depth = fVslider0;
-		parameters.feedback = fVslider1;
+		parameters.feedbck = fVslider1;
 		return parameters;
 	}
 
 	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
 		callback("speed", &fVslider2, 1.0f);
 		callback("depth", &fVslider0, 50.0f);
-		callback("feedback", &fVslider1, 0.0f);
+		callback("feedbck", &fVslider1, 0.0f);
 	}
 
 	inline void setSpeed(float value) { fVslider2 = value; }
 	inline void setDepth(float value) { fVslider0 = value; }
-	inline void setFeedback(float value) { fVslider1 = value; }
+	inline void setFeedbck(float value) { fVslider1 = value; }
 
 	inline float getSpeed() { return fVslider2; }
 	inline float getDepth() { return fVslider0; }
-	inline float getFeedback() { return fVslider1; }
+	inline float getFeedbck() { return fVslider1; }
 
 private:
 	bool initialized = false;

@@ -191,10 +191,12 @@ protected:
 		}
 
 		bool changed = false;
-		ImGui::BeginChild("LFO", ImVec2(width1, height1));
+		ImGui::BeginGroup();
+		ImGui::PushID("LFO");
 		ImGui::SetNextItemWidth(100.0f);
 		changed |= ImGui::SliderFloat("WaveForm", &fHslider0, 0.0f, 6.0f, "%.0f");
-		ImGui::EndChild();
+		ImGui::PopID();
+		ImGui::EndGroup();
 		return changed;
 	}
 

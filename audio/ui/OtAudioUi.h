@@ -54,4 +54,16 @@ public:
 
 		return result;
 	}
+
+	// trim sliders
+	static inline bool trimSlider(float* value) {
+		ImGui::PushID(value);
+		ImGui::SetNextItemWidth(ImGui::GetTextLineHeight() * 4.0f);
+		auto result = ImGui::SliderFloat("", value, 0.0f, 2.0f, "%.2f");
+		ImGui::PopID();
+		return result;
+	}
+
+	static inline float trimSliderWidth() { return ImGui::GetTextLineHeight() * 4.0f; }
+	static inline float trimSliderHeight() { return ImGui::GetTextLineHeight(); }
 };

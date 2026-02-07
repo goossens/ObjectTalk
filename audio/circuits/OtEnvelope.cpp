@@ -24,6 +24,9 @@ class OtEnvelopeCircuit : public OtFaustCircuitUI<OtAdsr, OtAdsrUi> {
 public:
 	// configure pins
 	inline void configurePins() override {
+		OtAssert(this->dsp.getNumInputs() == 1);
+		OtAssert(this->dsp.getNumOutputs() == 1);
+
 		triggerInput = addInputPin("Trigger", OtCircuitPinClass::Type::control);
 		envelopeOutput = addOutputPin("Output", OtCircuitPinClass::Type::control);
 	}

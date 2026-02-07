@@ -25,7 +25,7 @@ public:
 		input2 = addInputPin("Input 2", OtCircuitPinClass::Type::mono)->hasAttenuation();
 		input3 = addInputPin("Input 3", OtCircuitPinClass::Type::mono)->hasAttenuation();
 		input4 = addInputPin("Input 4", OtCircuitPinClass::Type::mono)->hasAttenuation();
-		output = addOutputPin("Output", OtCircuitPinClass::Type::mono);
+		output = addOutputPin("Output", OtCircuitPinClass::Type::mono)->hasAttenuation();
 	}
 
 	// process samples
@@ -46,7 +46,7 @@ public:
 		}
 	};
 
-	static constexpr const char* circuitName = "4 Channel Mixer";
+	static constexpr const char* circuitName = "Mixer4";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::processor;
 
 private:

@@ -10,10 +10,10 @@
 					"type": "mono"
 				}
 			],
-			"pink": 0.6899999976158142,
+			"pink": 1.0,
 			"title": "Noise",
 			"type": "Noise",
-			"white": 0.8199999928474426,
+			"white": 0.46000000834465027,
 			"x": 60.0,
 			"y": 191.0
 		},
@@ -38,13 +38,13 @@
 				}
 			],
 			"peak1Freq": 500.0,
-			"peak1Level": 24.0,
+			"peak1Level": 19.799999237060547,
 			"peak1Q": 3.0,
 			"peak2Freq": 1500.0,
-			"peak2Level": 0.0,
+			"peak2Level": -10.199999809265137,
 			"peak2Q": 3.0,
 			"peak3Freq": 3000.0,
-			"peak3Level": 17.0,
+			"peak3Level": 17.700000762939453,
 			"peak3Q": 3.0,
 			"title": "Equalizer",
 			"type": "Equalizer",

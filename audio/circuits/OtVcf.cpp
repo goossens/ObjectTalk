@@ -23,6 +23,9 @@ class OtVcfCircuit : public OtFaustCircuit<OtVcf> {
 public:
 	// configure pins
 	inline void configurePins() override {
+		OtAssert(this->dsp.getNumInputs() == 3);
+		OtAssert(this->dsp.getNumOutputs() == 1);
+
 		signalInput = addInputPin("Input", OtCircuitPinClass::Type::mono);
 		mod1Input = addInputPin("Mod 1", OtCircuitPinClass::Type::control)->hasAttenuation();
 		mod2Input = addInputPin("Mod 2", OtCircuitPinClass::Type::control)->hasAttenuation();

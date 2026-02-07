@@ -25,6 +25,9 @@ class OtVcoCircuit : public OtFaustCircuitUI<OtVco, OtVcoUi> {
 public:
 	// configure pins
 	inline void configurePins() override {
+		OtAssert(this->dsp.getNumInputs() == 1);
+		OtAssert(this->dsp.getNumOutputs() == 1);
+
 		frequencyInput = addInputPin("Freq", OtCircuitPinClass::Type::control)->hasTuning(true);
 		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono)->hasAttenuation(true);
 	}

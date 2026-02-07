@@ -22,6 +22,7 @@
 
 #include "OtUi.h"
 
+#include "OtAudioUi.h"
 #include "OtAudioWidget.h"
 
 
@@ -480,18 +481,18 @@ void OtAudioWidget::renderPin(ImDrawList* drawlist, OtCircuitPin pin, float x, f
 
 void OtAudioWidget::renderPinAttenuator(OtCircuitPin pin, float width) {
 	if (pin->isInput()) {
-		ImGui::SameLine(0.0f, width - OtUi::trimSliderWidth());
+		ImGui::SameLine(0.0f, width - OtAudioUi::trimSliderWidth());
 	}
 
 	ImGui::PushID(pin.get());
 	auto oldState = pin->circuit->captureState();
 
-	if (OtUi::trimSlider(&pin->attenuation)) {
+	if (OtAudioUi::trimSlider(&pin->attenuation)) {
 		pin->circuit->captureStateTransaction(oldState);
 	}
 
 	if (!pin->isInput()) {
-		ImGui::SameLine(0.0f, width - OtUi::trimSliderWidth());
+		ImGui::SameLine(0.0f, width - OtAudioUi::trimSliderWidth());
 	}
 
 	ImGui::PopID();
@@ -585,7 +586,7 @@ void OtAudioWidget::calculateCircuitSize(OtCircuit circuit) {
 		auto pw = ImGui::CalcTextSize(pin->name).x;
 
 		if (pin->attenuationFlag) {
-			pw += OtUi::trimSliderWidth() + ImGui::GetStyle().ItemSpacing.x;
+			pw += OtAudioUi::trimSliderWidth() + ImGui::GetStyle().ItemSpacing.x;
 
 		} else if (pin->tuningFlag) {
 			pw += ImGui::CalcTextSize(tuningLabel).x + ImGui::GetStyle().FramePadding.x * 2.0f + ImGui::GetStyle().ItemSpacing.x;

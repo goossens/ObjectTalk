@@ -1125,37 +1125,6 @@ float OtUi::knobHeight(size_t rows) {
 
 
 //
-//	OtUi::trimSlider
-//
-
-bool OtUi::trimSlider(float* value) {
-	ImGui::PushID(value);
-	ImGui::SetNextItemWidth(ImGui::GetTextLineHeight() * 4.0f);
-	auto result = ImGui::SliderFloat("", value, 0.0f, 1.0f, "%.2f");
-	ImGui::PopID();
-	return result;
-}
-
-
-//
-//	OtUi::trimSliderWidth
-//
-
-float OtUi::trimSliderWidth() {
-	return ImGui::GetTextLineHeight() * 4.0f;
-}
-
-
-//
-//	OtUi::trimSliderHeight
-//
-
-float OtUi::trimSliderHeight() {
-	return ImGui::GetTextLineHeight();
-}
-
-
-//
 //	to/from_json
 //
 

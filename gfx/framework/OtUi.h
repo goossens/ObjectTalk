@@ -192,11 +192,6 @@ public:
 	static float knobWidth(size_t columns=1);
 	static float knobHeight(size_t rows=1);
 
-	// trim sliders
-	static bool trimSlider(float* value);
-	static float trimSliderWidth();
-	static float trimSliderHeight();
-
 	// bezier curve editor
 	static bool bezier(const char* label, float P[4]);
 

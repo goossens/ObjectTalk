@@ -116,7 +116,7 @@ protected:
 	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
 		float* output0 = outputs[0];
 		double fSlow0 = 4.656612875245797e-10 * static_cast<double>(fHslider0);
-		double fSlow1 = static_cast<double>(fHslider1);
+		double fSlow1 = 4.0 * static_cast<double>(fHslider1);
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
 			iRec0[0] = 1103515245 * iRec0[1] + 12345;
 			double fTemp0 = static_cast<double>(iRec0[0]);

@@ -70,7 +70,7 @@
 			],
 			"outputs": [
 				{
-					"attenuation": 1.0,
+					"attenuation": 0.6700000166893005,
 					"id": 3138308028,
 					"name": "Output",
 					"type": "mono"

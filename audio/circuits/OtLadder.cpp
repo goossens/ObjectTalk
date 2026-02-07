@@ -23,6 +23,9 @@ class OtLadderCircuit : public OtFaustCircuit<OtLadder> {
 public:
 	// configure pins
 	inline void configurePins() override {
+		OtAssert(this->dsp.getNumInputs() == 4);
+		OtAssert(this->dsp.getNumOutputs() == 1);
+
 		signalInput = addInputPin("Input", OtCircuitPinClass::Type::mono);
 		freqInput = addInputPin("Freq", OtCircuitPinClass::Type::control)->hasAttenuation();
 		mod1Input = addInputPin("Mod 1", OtCircuitPinClass::Type::control)->hasAttenuation();

@@ -9,14 +9,24 @@
 //	Include files
 //
 
+#include <algorithm>
+#include <array>
+#include <memory>
+#include <mutex>
+
 #include "ImGuiPiano.h"
 #include "nlohmann/json.hpp"
 
 #include "OtAsset.h"
+#include "OtFontAudio.h"
+#include "OtUi.h"
 
 #include "OtAudioUtilities.h"
 #include "OtCircuitFactory.h"
-#include "OtMidi.h"
+#include "OtMidiBuffer.h"
+#include "OtMidiFile.h"
+#include "OtMidiFileAsset.h"
+#include "OtMidiMessage.h"
 
 
 //
@@ -34,36 +44,220 @@ public:
 
 	// render custom fields
 	inline bool customRendering(float itemWidth) override {
-		ImGui::PushItemWidth(itemWidth - midi.getLabelWidth());
-		auto changed = midi.renderUI();
+		// input types
+		static constexpr const char* midiSources[] = {
+			"Keyboard",
+			"MIDI File",
+			"Device"
+		};
+
+		static constexpr size_t MidiSourceCount = sizeof(midiSources) / sizeof(*midiSources);
+
+		ImGui::PushItemWidth(itemWidth - (ImGui::CalcTextSize("X").x * 11.0f + ImGui::GetStyle().ItemInnerSpacing.x));
+		auto changed = OtUi::selectorEnum("MIDI Source", &midiSource, midiSources, MidiSourceCount);
+
+		if (changed) {
+			messages.clear();
+		}
+
+		switch (midiSource) {
+			case MidiSource::keyboard: {
+				ImGui::SetNextItemWidth(keyboardWidth);
+
+				ImGui_PianoKeyboard(
+					"Piano",
+					ImVec2(keyboardWidth, keyboardHeight),
+					&currentNote,
+					36, 83,
+					[](void* data, int msg, int key, float velocity) {
+						OtMidiInputCircuit* midi = (OtMidiInputCircuit*) data;
+
+						if (key >= 128) {
+							return false;
+						}
+
+						if (msg == NoteGetStatus) {
+							return midi->keyPressed[key];
+						}
+
+						if (msg == NoteOn) {
+							midi->keyPressed[key] = true;
+							std::lock_guard<std::mutex> guard(midi->mutex);
+							midi->messages.emplace_back(OtMidiNoteOn(1, key, static_cast<int>(velocity * 127.0f)));
+						}
+
+						if (msg == NoteOff) {
+							midi->keyPressed[key] = false;
+							std::lock_guard<std::mutex> guard(midi->mutex);
+							midi->messages.emplace_back(OtMidiNoteOff(1, key, static_cast<int>(velocity * 127.0f)));
+						}
+
+						return false;
+					}, this);
+
+				break;
+			}
+
+			case MidiSource::midiFile: {
+				std::lock_guard<std::mutex> guard(mutex);
+
+				if (asset.renderUI("MIDI File")) {
+					midifile.clear();
+					changed |= true;
+					break;
+				}
+
+				if (asset.isReady() && midifile != asset->getMidiFile()) {
+					midifile = asset->getMidiFile();
+				}
+
+				ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
+				if (!asset.isReady()) { ImGui::BeginDisabled(); }
+
+				bool playing = midifile.isPlaying();
+				bool looping = midifile.isLooping();
+				bool pausing = midifile.isPausing();
+
+				if (OtUi::latchButton(OtFontAudio::play, &playing)) {
+					if (playing) {
+						midifile.start();
+
+					} else {
+						midifile.stop();
+					}
+				}
+
+				ImGui::SameLine();
+
+				if (OtUi::latchButton(OtFontAudio::repeat, &looping)) {
+					midifile.setLooping(looping);
+
+					if (looping && !playing && !pausing) {
+						midifile.start();
+					}
+				}
+
+				if (playing || pausing) {
+					ImGui::SameLine();
+
+					if (OtUi::latchButton(OtFontAudio::pause, &pausing)) {
+						if (pausing) {
+							midifile.pause();
+
+						} else {
+							midifile.resume();
+						}
+					}
+				}
+
+				if (!asset.isReady()) { ImGui::EndDisabled(); }
+				ImGui::PopFont();
+			}
+
+			case MidiSource::device:
+				break;
+		}
+
 		ImGui::PopItemWidth();
 		return changed;
 	}
 
 	inline float getCustomRenderingWidth() override {
-		return midi.getRenderWidth();
+		return keyboardWidth;
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return midi.getRenderHeight();
+		auto height = ImGui::GetFrameHeightWithSpacing();
+
+		switch (midiSource) {
+			case MidiSource::keyboard:
+				height += keyboardHeight + ImGui::GetStyle().ItemSpacing.y;
+				break;
+
+			case MidiSource::midiFile: {
+				height += ImGui::GetFrameHeightWithSpacing() * 2.0f;
+				break;
+			}
+
+			case MidiSource::device: {
+				break;
+			}
+		}
+
+		return height;
 	}
 
 	// (de)serialize circuit
 	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		midi.serialize(data, basedir);
+		(*data)["midiSource"] = midiSource;
+		(*data)["midiFile"] = OtAssetSerialize(asset.getPath(), basedir);
 	}
 
 	inline void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		midi.deserialize(data, basedir);
+		midiSource = data->value("midiSource", MidiSource::keyboard);
+		asset = OtAssetDeserialize(data, "midiFile", basedir);
 	}
 
-	// generate audio stream by evaluating MIDI messages
+	// process MIDI events from selected source
+	void processEvents(std::function<void(OtMidiMessage)> callback) {
+		switch (midiSource) {
+			case MidiSource::keyboard: {
+				std::lock_guard<std::mutex> guard(mutex);
+
+				for (auto& message : messages) {
+					callback(message);
+				}
+
+				messages.clear();
+				break;
+			}
+
+			case MidiSource::midiFile: {
+				std::lock_guard<std::mutex> guard(mutex);
+
+				midifile.process([&](OtMidiMessage message) {
+					if (message->isNoteOn()) {
+						auto note = message->getKeyNumber();
+
+						if (!keyPressed[note]) {
+							keyPressed[note] = true;
+							callback(message);
+						}
+
+					} else if (message->isNoteOff()) {
+						auto note = message->getKeyNumber();
+
+						if (keyPressed[note]) {
+							keyPressed[note] = false;
+							callback(message);
+						}
+
+					} else if (message->isAllNotesOff()) {
+						for (size_t i = 0; i < 128; i++) {
+							if (keyPressed[i]) {
+								callback(OtMidiNoteOff(message->getChannel(), static_cast<int>(i), 0));
+								keyPressed[i] = false;
+							}
+						}
+					}
+				});
+
+				break;
+			}
+
+			case MidiSource::device: {
+				break;
+			}
+		}
+	}
+
+	// generate output by evaluating MIDI messages
 	void execute() override {
 		bool noteOff = false;
 		auto& midiBuffer = midiOutput->getMidiOutputBuffer();
 		midiBuffer.clear();
 
-		midi.processEvents([&](OtMidiMessage message) {
+		processEvents([&](OtMidiMessage message) {
 			midiBuffer.emplace_back(message);
 
 			if (message->isNoteOn()) {
@@ -104,12 +298,27 @@ public:
 
 private:
 	// properties
-	OtMidi midi;
+	enum class MidiSource {
+		keyboard,
+		midiFile,
+		device
+	};
+
+	MidiSource midiSource = MidiSource::keyboard;
+	OtAsset<OtMidiFileAsset> asset;
 
 	// work variables
 	float freq = 440.0f;
 	float velocity = 0.0f;
 	bool gate = false;
+
+	OtMidiFile midifile;
+
+	std::array<bool, 128> keyPressed = {false};
+	int currentNote = 0;
+	OtMidiBuffer messages;
+
+	std::mutex mutex;
 
 	OtCircuitPin midiOutput;
 	OtCircuitPin pitchOutput;

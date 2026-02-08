@@ -31,7 +31,7 @@ public:
 	// constructor
 	OtSynth();
 
-	// configurable number of concurrent voice per synth
+	// configurable number of concurrent voices per synth
 	static constexpr size_t numberOfVoices = 16;
 
 	// UI to change synth properties

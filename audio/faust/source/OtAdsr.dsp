@@ -14,5 +14,6 @@ attack = vslider("[1]Attack[format: %.3fs][style:knob]", 0.01, 0, 10, 0.1);
 decay = vslider("[2]Decay[format: %.3fs][style:knob]", 0.05, 0, 10, 0.1);
 sustain = vslider("[3]Sustain[format: %.2f][style:knob]", 0.8, 0, 1, 1);
 release = vslider("[4]Release[format: %.3fs][style:knob]", 0.03, 0, 10, 0.1);
+adsr(gate) = en.adsre(attack, decay, sustain, release, gate);
 
-process(gate) = hgroup("ADSR", en.adsre(attack, decay, sustain, release, gate));
+process(gate) = hgroup("ADSR", adsr(gate));

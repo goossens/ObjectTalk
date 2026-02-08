@@ -12,7 +12,7 @@
 #include "nlohmann/json.hpp"
 
 #include "OtAdsr.h"
-#include "OtAdsrUi.h"
+#include "OtAudioUi.h"
 #include "OtCircuitFactory.h"
 
 
@@ -20,7 +20,7 @@
 //	OtEnvelopeCircuit
 //
 
-class OtEnvelopeCircuit : public OtFaustCircuitUI<OtAdsr, OtAdsrUi> {
+class OtEnvelopeCircuit : public OtFaustCircuit<OtAdsr> {
 public:
 	// configure pins
 	inline void configurePins() override {
@@ -29,6 +29,34 @@ public:
 
 		triggerInput = addInputPin("Trigger", OtCircuitPinClass::Type::control);
 		envelopeOutput = addOutputPin("Output", OtCircuitPinClass::Type::control);
+	}
+
+	// render custom fields
+	bool customRendering(float itemWidth) override {
+		// render envelope
+		if (state.update) {
+			state.attack = dsp.getAttack();
+			state.decay = dsp.getDecay();
+			state.sustain = dsp.getSustain();
+			state.release = dsp.getRelease();
+		}
+
+		OtAudioUi::adsrEnvelope("##ADSR", state, ImVec2(itemWidth, envelopeHeight));
+
+		// render envelope control knobs
+		auto changed = dsp.renderUI();
+		state.update |= changed;
+		return changed;
+	}
+
+	float getCustomRenderingHeight() override {
+		return dsp.getRenderHeight() + envelopeHeight;
+	}
+
+	// deserialize circuit
+	inline void customDeserialize(nlohmann::json* data, std::string* basedir) override {
+		dsp.deserialize(data, basedir);
+		state.update = true;
 	}
 
 	// generate samples
@@ -56,8 +84,12 @@ public:
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::generator;
 
 private:
+	// work variables
 	OtCircuitPin triggerInput;
 	OtCircuitPin envelopeOutput;
+
+	OtAudioUi::AdsrState state;
+	static constexpr float envelopeHeight = 100.0f;
 };
 
 static OtCircuitFactoryRegister<OtEnvelopeCircuit> registration;

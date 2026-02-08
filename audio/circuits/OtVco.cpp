@@ -12,16 +12,16 @@
 #include "nlohmann/json.hpp"
 
 #include "OtAudioSettings.h"
+#include "OtAudioUi.h"
 #include "OtCircuitFactory.h"
 #include "OtVco.h"
-#include "OtVcoUi.h"
 
 
 //
 //	OtVcoCircuit
 //
 
-class OtVcoCircuit : public OtFaustCircuitUI<OtVco, OtVcoUi> {
+class OtVcoCircuit : public OtFaustCircuit<OtVco> {
 public:
 	// configure pins
 	inline void configurePins() override {
@@ -32,10 +32,39 @@ public:
 		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono)->hasAttenuation(true);
 	}
 
-	// configure UI
-	inline void configureUI() override {
-		ui.showFrequency(!frequencyInput->isSourceConnected());
-		needsSizing = true;
+	// render custom fields
+	inline bool customRendering([[maybe_unused]] float itemWidth) override {
+		auto waveform = dsp.getWaveForm();
+		auto changed = OtAudioUi::waveFormSelector(&waveform);
+
+		if (changed) {
+			dsp.setWaveForm(waveform);
+		}
+
+		if (!frequencyInput->isSourceConnected()) {
+			changed |= OtUi::knob("Freq", &frequency, 60.0f, 6000.0f, "%.0fhz", true);
+		}
+
+		return changed;
+	}
+
+	inline float getCustomRenderingWidth() override {
+		return OtAudioUi::waveFormSelectorWidth();
+	}
+
+	inline float getCustomRenderingHeight() override {
+		return OtAudioUi::waveFormSelectorHeight() + (frequencyInput->isSourceConnected() ? 0.0f : OtUi::knobHeight());
+	}
+
+	// (de)serialize circuit
+	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
+		dsp.serialize(data, basedir);
+		(*data)["frequency"] = frequency;
+	}
+
+	inline void customDeserialize(nlohmann::json* data, std::string* basedir) override {
+		dsp.deserialize(data, basedir);
+		frequency = data->value("frequency", 440.0f);
 	}
 
 	// generate samples
@@ -48,7 +77,7 @@ public:
 				frequencyInput->getSamples(input);
 
 			} else {
-				auto freq = OtAudioUtilities::freqToCv(ui.getFrequency());
+				auto freq = OtAudioUtilities::freqToCv(frequency);
 
 				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
 					input[i] = freq;
@@ -70,6 +99,7 @@ private:
 	// work variables
 	OtCircuitPin frequencyInput;
 	OtCircuitPin audioOutput;
+	float frequency = 440.0f;
 };
 
 static OtCircuitFactoryRegister<OtVcoCircuit> registration;

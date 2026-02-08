@@ -13,30 +13,55 @@
 
 #include "OtAudioSettings.h"
 #include "OtAudioUtilities.h"
+#include "OtAudioUi.h"
 #include "OtCircuitFactory.h"
 #include "OtLfo.h"
-#include "OtLfoUi.h"
 
 
 //
 //	OtLfoCircuit
 //
 
-class OtLfoCircuit : public OtFaustCircuitUI<OtLfo, OtLfoUi> {
+class OtLfoCircuit : public OtFaustCircuit<OtLfo> {
 public:
 	// configure pins
 	inline void configurePins() override {
 		OtAssert(this->dsp.getNumInputs() == 1);
 		OtAssert(this->dsp.getNumOutputs() == 1);
 
-		frequencyInput = addInputPin("Freq", OtCircuitPinClass::Type::control)->hasTuning(true);
 		signalOutput = addOutputPin("Output", OtCircuitPinClass::Type::control);
 	}
 
-	// configure UI
-	inline void configureUI() override {
-		ui.showFrequency(!frequencyInput->isSourceConnected());
-		needsSizing = true;
+	// render custom fields
+	inline bool customRendering([[maybe_unused]] float itemWidth) override {
+		auto waveform = dsp.getWaveForm();
+		auto changed = OtAudioUi::waveFormSelector(&waveform);
+
+		if (changed) {
+			dsp.setWaveForm(waveform);
+		}
+
+		changed |= OtUi::knob("Freq", &frequency, 60.0f, 6000.0f, "%.0fhz", true);
+		return changed;
+	}
+
+	inline float getCustomRenderingWidth() override {
+		return OtAudioUi::waveFormSelectorWidth();
+	}
+
+	inline float getCustomRenderingHeight() override {
+		return OtAudioUi::waveFormSelectorHeight() + OtUi::knobHeight();
+	}
+
+	// (de)serialize circuit
+	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
+		dsp.serialize(data, basedir);
+		(*data)["frequency"] = frequency;
+	}
+
+	inline void customDeserialize(nlohmann::json* data, std::string* basedir) override {
+		dsp.deserialize(data, basedir);
+		frequency = data->value("frequency", 440.0f);
 	}
 
 	// generate samples
@@ -45,15 +70,10 @@ public:
 			float input[OtAudioSettings::bufferSize];
 			float output[OtAudioSettings::bufferSize];
 
-			if (frequencyInput->isSourceConnected()) {
-				frequencyInput->getSamples(input);
+			auto freq = OtAudioUtilities::freqToCv(frequency);
 
-			} else {
-				auto freq = OtAudioUtilities::freqToCv(ui.getFrequency());
-
-				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-					input[i] = freq;
-				}
+			for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
+				input[i] = freq;
 			}
 
 			auto in = input;
@@ -69,8 +89,8 @@ public:
 
 private:
 	// work variables
-	OtCircuitPin frequencyInput;
 	OtCircuitPin signalOutput;
+	float frequency = 440.0f;
 };
 
 static OtCircuitFactoryRegister<OtLfoCircuit> registration;

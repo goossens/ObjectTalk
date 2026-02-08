@@ -130,59 +130,6 @@ protected:
 
 
 //
-//	OtFaustCircuitUI
-//
-
-template<typename T, typename U>
-class OtFaustCircuitUI : public OtCircuitClass {
-public:
-	// configure circuit
-	inline void configure() override {
-		dsp.initialize();
-		configurePins();
-	}
-
-	virtual void configurePins() {}
-	virtual void configureUI() {}
-
-	// render custom fields
-	inline bool customRendering([[maybe_unused]] float itemWidth) override {
-		configureUI();
-		auto changed = ui.renderUI();
-
-		if (changed) {
-			dsp.setParameters(ui.getParameters());
-		}
-
-		return changed;
-	}
-
-	inline float getCustomRenderingWidth() override {
-		return ui.getRenderWidth();
-	}
-
-	inline float getCustomRenderingHeight() override {
-		return ui.getRenderHeight();
-	}
-
-	// (de)serialize circuit
-	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		ui.serialize(data, basedir);
-	}
-
-	inline void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		ui.deserialize(data, basedir);
-		dsp.setParameters(ui.getParameters());
-	}
-
-protected:
-	// target Faust processor and User Interface
-	T dsp;
-	U ui;
-};
-
-
-//
 //	OtFaustEffect
 //
 

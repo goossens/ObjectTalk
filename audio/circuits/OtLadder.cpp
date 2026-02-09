@@ -22,7 +22,7 @@
 class OtLadderCircuit : public OtFaustCircuit<OtLadder> {
 public:
 	// configure pins
-	inline void configurePins() override {
+	inline void configure() override {
 		OtAssert(this->dsp.getNumInputs() == 4);
 		OtAssert(this->dsp.getNumOutputs() == 1);
 

@@ -6,11 +6,7 @@
 
 import glob, json, os, pathlib, re, subprocess, sys
 
-# patterns in original source code
-buildUserInterfacePattern = r"\n\tvoid buildUserInterface(.*?)\}\n"
-
 # process UI and generate UI and parameter code
-windowFlags = "ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY"
 sliderLength = "100.0f"
 sliderWidth = "20.0f"
 
@@ -18,8 +14,8 @@ class UI:
 	def __init__(self, item, className):
 		self.ui = []
 		self.size = []
+		self.editors = []
 		self.parameters = []
-		self.variables = []
 		self.level = 1
 		self.child = 1
 
@@ -42,7 +38,10 @@ class UI:
 				return self.slider(item, False)
 
 			case "checkbox":
-				return self.checkbox(item, )
+				return self.checkbox(item)
+
+			case "button":
+				return self.button(item)
 
 			case _:
 				return "0.0f", "0.0f"
@@ -57,8 +56,8 @@ class UI:
 		height = f"height{self.child}"
 		self.child += 1
 
-		self.variables.append(f"\tfloat {width} = 0.0f;")
-		self.variables.append(f"\tfloat {height} = 0.0f;")
+		self.size.append(f"\t\tfloat {width} = 0.0f;")
+		self.size.append(f"\t\tfloat {height} = 0.0f;")
 		self.ui.append(f"\t\tImGui::BeginGroup();")
 		self.ui.append(f"\t\tImGui::PushID(\"{label}\");")
 
@@ -109,16 +108,18 @@ class UI:
 			"step": stepValue})
 
 		if style == "knob":
-			self.ui.append(f"\t\tchanged |= OtUi::knob(\"{label}\", &{varname}, {minValue}, {maxValue}, \"{format}\");")
+			self.editors.append(f"\tinline bool edit{address}() {{ return OtUi::knob(\"{label}\", &{varname}, {minValue}, {maxValue}, \"{format}\"); }}")
+			self.ui.append(f"\t\tchanged |= edit{address}();")
 			return "knobWidth", "knobHeight"
 
 		elif vertical:
-			self.ui.append(f"\t\tchanged |= ImGui::VSliderFloat(\"{label}\", ImVec2({sliderWidth}, {sliderLength}), &{varname}, {minValue}, {maxValue}, \"{format}\");")
+			self.editors.append(f"\tinline bool edit{address}() {{ return ImGui::VSliderFloat(\"{label}\", ImVec2({sliderWidth}, {sliderLength}), &{varname}, {minValue}, {maxValue}, \"{format}\"); }}")
+			self.ui.append(f"\t\tchanged |= edit{address}();")
 			return sliderWidth, sliderLength
 
 		else:
-			self.ui.append(f"\t\tImGui::SetNextItemWidth({sliderLength});")
-			self.ui.append(f"\t\tchanged |= ImGui::SliderFloat(\"{label}\", &{varname}, {minValue}, {maxValue}, \"{format}\");")
+			self.editors.append(f"\tinline bool edit{address}() {{ ImGui::SetNextItemWidth({sliderLength}); return ImGui::SliderFloat(\"{label}\", &{varname}, {minValue}, {maxValue}, \"{format}\"); }}")
+			self.ui.append(f"\t\tchanged |= edit{address}();")
 			return sliderLength, sliderWidth
 
 	def checkbox(self, item):
@@ -165,6 +166,26 @@ class UI:
 
 		return checkBoxWidth, "frame"
 
+	def button(self, item):
+		label = item.get("label", "")
+		varname = item.get("varname", "")
+		address = self.fixAddress(item.get("address", ""))
+		parname = address[0].lower() + address[1:]
+
+		self.parameters.append({
+			"label": label,
+			"varname": varname,
+			"parname": parname,
+			"address": address,
+			"init": "0.0f",
+			"min": "0.0f",
+			"max": "1.0f",
+			"step": "1.0f"})
+
+		self.editors.append(f"\tinline bool edit{address}() {{ ImGui::Button(\"{label}\"); return ImGui::IsItemActive() ? 1.0f : 0.0f; }}")
+		self.ui.append(f"\t\tchanged |= edit{address}();")
+		return f"ImGui::CalcTextSize(\"{label}\").x + ImGui::GetStyle().FramePadding.x * 2.0f", "frame"
+
 	def getSize(self):
 		text = "\n".join(self.size)
 		intro = ""
@@ -193,14 +214,14 @@ class UI:
 	def getIterateParameters(self):
 		return "\n".join([f"\t\tcallback(\"{parameter["parname"]}\", &{parameter["varname"]}, {parameter["init"]});" for parameter in self.parameters])
 
+	def getEditors(self):
+		return "\n".join(self.editors)
+
 	def getSetters(self):
 		return "\n".join([f"\tinline void set{parameter["address"]}(float value) {{ {parameter["varname"]} = value; }}" for parameter in self.parameters])
 
 	def getGetters(self):
 		return "\n".join([f"\tinline float get{parameter["address"]}() {{ return {parameter["varname"]}; }}" for parameter in self.parameters])
-
-	def getVariables(self):
-		return "\n".join(self.variables)
 
 	def metaToDict(self, meta):
 		result = {}
@@ -293,15 +314,17 @@ def processDspFile(sourceFileName, targetFileName):
 	text = text.replace("\t\n private:\n\t", "protected:")
 	text = text.replace("\t\n  private:\n", "protected:")
 	text = text.replace("\t\n  public:\n", "\npublic:")
-	text = text.replace("void metadata(Meta* m)", "void metadata(Meta* m) override")
-	text = text.replace("virtual int getNumInputs()", "int getNumInputs() override")
-	text = text.replace("virtual int getNumOutputs()", "int getNumOutputs() override")
-	text = text.replace("virtual void init(int sample_rate)", "void init(int sample_rate) override")
-	text = text.replace("virtual int getSampleRate()", "int getSampleRate() override")
-	text = text.replace("virtual void buildUserInterface(UI* ui_interface)", "void buildUserInterface(UI* ui_interface) override")
-	text = text.replace("virtual void compute(int count, float** inputs, float** outputs)", "void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override")
+	text = text.replace("void metadata(Meta* m)", "inline void metadata(Meta* m)")
+	text = text.replace("virtual int", "inline int")
+	text = text.replace("virtual void", "inline void")
+	text = text.replace("virtual void compute(int count, float** inputs, float** outputs)", "inline void compute(int count, [[maybe_unused]] float** inputs, float** outputs)")
 	text = text.replace("int sample_rate", "[[maybe_unused]] int sample_rate")
-	text = re.sub(buildUserInterfacePattern, "", text, flags=re.DOTALL)
+	text = re.sub(rf"\t{className}\(\) \{{\n\t\}}\n", f"\t{className}() {{\n\t\tinit(OtAudioSettings::sampleRate);\n\t}}\n", text, flags=re.DOTALL)
+	text = re.sub(rf"\n\t{className}\(const {className}\&\) = default;\n", "", text, flags=re.DOTALL)
+	text = re.sub(rf"\n\tvirtual \~{className}\(\) = default;\n", "", text, flags=re.DOTALL)
+	text = re.sub(rf"\n\t{className}\& operator=\(const {className}\&\) = default;\n", "", text, flags=re.DOTALL)
+	text = re.sub(rf"\n\tvirtual {className}\* clone(.*?)\}}\n", "", text, flags=re.DOTALL)
+	text = re.sub(r"\n\tvirtual void buildUserInterface(.*?)\}\n", "", text, flags=re.DOTALL)
 
 	footerText = footer \
 		.replace("SIZE", ui.getSize()) \
@@ -310,9 +333,9 @@ def processDspFile(sourceFileName, targetFileName):
 		.replace("SETPARAMETERS", ui.getSetParameters()) \
 		.replace("GETPARAMETERS", ui.getGetParameters()) \
 		.replace("ITERATEPARAMETERS", ui.getIterateParameters()) \
+		.replace("EDITORS", ui.getEditors()) \
 		.replace("SETTERS", ui.getSetters()) \
-		.replace("GETTERS", ui.getGetters()) \
-		.replace("VARIABLES", ui.getVariables())
+		.replace("GETTERS", ui.getGetters())
 
 	code = headerText + text + footerText
 

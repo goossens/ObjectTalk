@@ -49,34 +49,9 @@ protected:
 		std::unordered_map<std::string, std::string> metadata;
 	} meta;
 
-	// unused for now
-	struct Soundfile{};
-
 public:
 	// destructor
 	virtual ~OtFaust() {}
-
-	// initialize processor
-	void initialize() {
-		init(OtAudioSettings::sampleRate);
-		metadata(&meta);
-	}
-
-	// collect metadata
-	virtual void metadata(Meta* meta) = 0;
-
-	// return number of audio inputs/outputs
-	virtual int getNumInputs() = 0;
-	virtual int getNumOutputs() = 0;
-
-	// return the sample rate
-	virtual int getSampleRate() = 0;
-
-	// initialize the DSP unit
-	virtual void init(int sampleRate) = 0;
-
-	// run the Faust DSP unit
-	virtual void compute(int count, float** inputs, float** outputs) = 0;
 
 	// (de)serialize variables
 	void serialize(nlohmann::json* data, std::string* basedir);
@@ -93,57 +68,6 @@ public:
 template<typename T>
 class OtFaustCircuit : public OtCircuitClass {
 public:
-	// configure circuit
-	inline void configure() override {
-		dsp.initialize();
-		configurePins();
-	}
-
-	virtual void configurePins() {}
-
-	// render custom fields
-	inline bool customRendering([[maybe_unused]] float itemWidth) override {
-		return dsp.renderUI();
-	}
-
-	inline float getCustomRenderingWidth() override {
-		return dsp.getRenderWidth();
-	}
-
-	inline float getCustomRenderingHeight() override {
-		return dsp.getRenderHeight();
-	}
-
-	// (de)serialize circuit
-	inline void customSerialize(nlohmann::json* data, std::string* basedir) override {
-		dsp.serialize(data, basedir);
-	}
-
-	inline void customDeserialize(nlohmann::json* data, std::string* basedir) override {
-		dsp.deserialize(data, basedir);
-	}
-
-protected:
-	// target Faust processor
-	T dsp;
-};
-
-
-//
-//	OtFaustEffect
-//
-
-template<typename T>
-class OtFaustEffect : public OtCircuitClass {
-public:
-	// configure circuit
-	inline void configure() override {
-		dsp.initialize();
-		configurePins();
-	}
-
-	virtual void configurePins() {}
-
 	// render custom fields
 	inline bool customRendering([[maybe_unused]] float itemWidth) override {
 		return dsp.renderUI();
@@ -177,10 +101,10 @@ protected:
 //
 
 template<typename T>
-class OtFaustEffectMono : public OtFaustEffect<T> {
+class OtFaustEffectMono : public OtFaustCircuit<T> {
 public:
 	// configure circuit pins
-	inline void configurePins() override {
+	inline void configure() override {
 		OtAssert(this->dsp.getNumInputs() == 1);
 		OtAssert(this->dsp.getNumOutputs() == 1);
 
@@ -220,10 +144,10 @@ private:
 //
 
 template<typename T>
-class OtFaustEffectStereo : public OtFaustEffect<T> {
+class OtFaustEffectStereo : public OtFaustCircuit<T> {
 public:
 	// configure circuit pins
-	inline void configurePins() override {
+	inline void configure() override {
 		OtAssert(this->dsp.getNumInputs() == 2);
 		OtAssert(this->dsp.getNumOutputs() == 2);
 

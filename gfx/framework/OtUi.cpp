@@ -263,63 +263,6 @@ float OtUi::toggleButtonWidth() {
 
 
 //
-//	OtUi::headerWithToggleButton
-//
-
-bool OtUi::headerWithToggleButton(const char* label, bool* value) {
-	auto pos = ImGui::GetCursorScreenPos();
-	auto regionWidth = ImGui::GetContentRegionAvail().x;
-	header(label);
-
-	float height = ImGui::GetFrameHeight();
-	float width = height * 1.4f;
-	pos.x += regionWidth - width;
-	ImGui::SetCursorScreenPos(pos);
-
-	ImVec4* colors = ImGui::GetStyle().Colors;
-	ImDrawList* drawlist = ImGui::GetWindowDrawList();
-	auto changed = false;
-
-	auto id = fmt::format("##{}Button", label);
-	ImGui::InvisibleButton(id.c_str(), ImVec2(width, height));
-
-	if (ImGui::IsItemClicked()) {
-		*value = !*value;
-		changed = true;
-	}
-
-	float spacing = 3.0f;
-	float diameter = height - spacing * 2.0f;
-	float radius = diameter * 0.5f;
-	pos += ImVec2(spacing, spacing);
-	height = diameter;
-	width = diameter * 1.55f;
-
-	if (ImGui::IsItemHovered()) {
-		drawlist->AddRectFilled(
-			pos,
-			ImVec2(pos.x + width, pos.y + height),
-			ImGui::GetColorU32(*value ? colors[ImGuiCol_ButtonActive] : colors[ImGuiCol_ScrollbarGrabActive]),
-			radius);
-
-	} else {
-		drawlist->AddRectFilled(
-			pos,
-			ImVec2(pos.x + width, pos.y + height),
-			ImGui::GetColorU32(*value ? colors[ImGuiCol_Button] : colors[ImGuiCol_ScrollbarGrab]),
-			radius);
-	}
-
-	drawlist->AddCircleFilled(
-		ImVec2(pos.x + radius + (*value ? 1.0f : 0.0f) * (width - radius * 2.0f), pos.y + radius),
-		radius - 1.5f,
-		IM_COL32(255, 255, 255, 255));
-
-	return changed;
-}
-
-
-//
 //	OtUi::latchButton
 //
 

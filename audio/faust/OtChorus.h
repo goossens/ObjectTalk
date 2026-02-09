@@ -74,15 +74,10 @@ protected:
 	
  public:
 	OtChorus() {
+		init(OtAudioSettings::sampleRate);
 	}
-	
-	OtChorus(const OtChorus&) = default;
-	
-	virtual ~OtChorus() = default;
-	
-	OtChorus& operator=(const OtChorus&) = default;
-	
-	void metadata(Meta* m) override { 
+				
+	inline void metadata(Meta* m) { 
 		m->declare("category", "Effect");
 		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtChorus -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
 		m->declare("filename", "OtChorus.dsp");
@@ -102,10 +97,10 @@ protected:
 		m->declare("name", "Chorus");
 	}
 
-	int getNumInputs() override {
+	inline int getNumInputs() {
 		return 2;
 	}
-	int getNumOutputs() override {
+	inline int getNumOutputs() {
 		return 2;
 	}
 	
@@ -116,21 +111,21 @@ protected:
 		deleteOtChorusSIG0(sig0);
 	}
 	
-	virtual void instanceConstants([[maybe_unused]] int sample_rate) {
+	inline void instanceConstants([[maybe_unused]] int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
 		fConst1 = 0.5 * fConst0;
 		fConst2 = 1.0 / fConst0;
 	}
 	
-	virtual void instanceResetUserInterface() {
+	inline void instanceResetUserInterface() {
 		fVslider0 = static_cast<float>(0.5);
 		fVslider1 = static_cast<float>(0.025);
 		fVslider2 = static_cast<float>(0.02);
 		fVslider3 = static_cast<float>(2.0);
 	}
 	
-	virtual void instanceClear() {
+	inline void instanceClear() {
 		IOTA0 = 0;
 		for (int l0 = 0; l0 < 65536; l0 = l0 + 1) {
 			fVec0[l0] = 0.0;
@@ -143,26 +138,39 @@ protected:
 		}
 	}
 	
-	void init([[maybe_unused]] int sample_rate) override {
+	inline void init([[maybe_unused]] int sample_rate) {
 		classInit(sample_rate);
 		instanceInit(sample_rate);
 	}
 	
-	virtual void instanceInit([[maybe_unused]] int sample_rate) {
+	inline void instanceInit([[maybe_unused]] int sample_rate) {
 		instanceConstants(sample_rate);
 		instanceResetUserInterface();
 		instanceClear();
 	}
-	
-	virtual OtChorus* clone() {
-		return new OtChorus(*this);
-	}
-	
-	int getSampleRate() override {
+		
+	inline int getSampleRate() {
 		return fSampleRate;
 	}
-		
-	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
+	
+	inline void buildUserInterface(UI* ui_interface) {
+		ui_interface->openHorizontalBox("Chorus");
+		ui_interface->declare(&fVslider0, "0", "");
+		ui_interface->declare(&fVslider0, "style", "knob");
+		ui_interface->addVerticalSlider("Level", &fVslider0, float(0.5), float(0.0), float(1.0), float(0.01));
+		ui_interface->declare(&fVslider3, "1", "");
+		ui_interface->declare(&fVslider3, "style", "knob");
+		ui_interface->addVerticalSlider("Freq", &fVslider3, float(2.0), float(0.0), float(1e+01), float(0.01));
+		ui_interface->declare(&fVslider1, "2", "");
+		ui_interface->declare(&fVslider1, "style", "knob");
+		ui_interface->addVerticalSlider("Delay", &fVslider1, float(0.025), float(0.0), float(0.2), float(0.001));
+		ui_interface->declare(&fVslider2, "3", "");
+		ui_interface->declare(&fVslider2, "style", "knob");
+		ui_interface->addVerticalSlider("Depth", &fVslider2, float(0.02), float(0.0), float(1.0), float(0.001));
+		ui_interface->closeBox();
+	}
+	
+	inline void compute(int count, float** inputs, float** outputs) {
 		float* input0 = inputs[0];
 		float* input1 = inputs[1];
 		float* output0 = outputs[0];
@@ -198,6 +206,8 @@ protected:
 		auto knobWidth = OtUi::knobWidth();
 		auto knobHeight = OtUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
+		float width1 = 0.0f;
+		float height1 = 0.0f;
 		width1 += knobWidth;
 		height1 = std::max(height1, knobHeight);
 		width1 += spacing.x;
@@ -222,13 +232,13 @@ protected:
 		bool changed = false;
 		ImGui::BeginGroup();
 		ImGui::PushID("Chorus");
-		changed |= OtUi::knob("Level", &fVslider0, 0.0f, 1.0f, "%.2f");
+		changed |= editLevel();
 		ImGui::SameLine();
-		changed |= OtUi::knob("Freq", &fVslider3, 0.0f, 10.0f, "%.2f");
+		changed |= editFreq();
 		ImGui::SameLine();
-		changed |= OtUi::knob("Delay", &fVslider1, 0.0f, 0.2f, "%.2f");
+		changed |= editDelay();
 		ImGui::SameLine();
-		changed |= OtUi::knob("Depth", &fVslider2, 0.0f, 1.0f, "%.2f");
+		changed |= editDepth();
 		ImGui::PopID();
 		ImGui::EndGroup();
 		return changed;
@@ -280,6 +290,11 @@ protected:
 		callback("depth", &fVslider2, 0.02f);
 	}
 
+	inline bool editLevel() { return OtUi::knob("Level", &fVslider0, 0.0f, 1.0f, "%.2f"); }
+	inline bool editFreq() { return OtUi::knob("Freq", &fVslider3, 0.0f, 10.0f, "%.2f"); }
+	inline bool editDelay() { return OtUi::knob("Delay", &fVslider1, 0.0f, 0.2f, "%.2f"); }
+	inline bool editDepth() { return OtUi::knob("Depth", &fVslider2, 0.0f, 1.0f, "%.2f"); }
+
 	inline void setLevel(float value) { fVslider0 = value; }
 	inline void setFreq(float value) { fVslider3 = value; }
 	inline void setDelay(float value) { fVslider1 = value; }
@@ -294,6 +309,4 @@ private:
 	bool initialized = false;
 	float width;
 	float height;
-	float width1 = 0.0f;
-	float height1 = 0.0f;
 };

@@ -44,15 +44,10 @@ protected:
 	
  public:
 	OtCompressor() {
+		init(OtAudioSettings::sampleRate);
 	}
-	
-	OtCompressor(const OtCompressor&) = default;
-	
-	virtual ~OtCompressor() = default;
-	
-	OtCompressor& operator=(const OtCompressor&) = default;
-	
-	void metadata(Meta* m) override { 
+				
+	inline void metadata(Meta* m) { 
 		m->declare("analyzers.lib/amp_follower_ar:author", "Jonatan Liljedahl, revised by Romain Michon");
 		m->declare("analyzers.lib/name", "Faust Analyzer Library");
 		m->declare("analyzers.lib/version", "1.3.0");
@@ -87,17 +82,17 @@ protected:
 		m->declare("signals.lib/version", "1.6.0");
 	}
 
-	int getNumInputs() override {
+	inline int getNumInputs() {
 		return 1;
 	}
-	int getNumOutputs() override {
+	inline int getNumOutputs() {
 		return 1;
 	}
 	
 	static void classInit([[maybe_unused]] int sample_rate) {
 	}
 	
-	virtual void instanceConstants([[maybe_unused]] int sample_rate) {
+	inline void instanceConstants([[maybe_unused]] int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
 		fConst1 = 44.1 / fConst0;
@@ -105,14 +100,14 @@ protected:
 		fConst3 = 1.0 / fConst0;
 	}
 	
-	virtual void instanceResetUserInterface() {
+	inline void instanceResetUserInterface() {
 		fVslider0 = static_cast<float>(2e+02);
 		fVslider1 = static_cast<float>(1e+01);
 		fVslider2 = static_cast<float>(-1e+01);
 		fVslider3 = static_cast<float>(4.0);
 	}
 	
-	virtual void instanceClear() {
+	inline void instanceClear() {
 		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
 			fRec2[l0] = 0.0;
 		}
@@ -133,26 +128,42 @@ protected:
 		}
 	}
 	
-	void init([[maybe_unused]] int sample_rate) override {
+	inline void init([[maybe_unused]] int sample_rate) {
 		classInit(sample_rate);
 		instanceInit(sample_rate);
 	}
 	
-	virtual void instanceInit([[maybe_unused]] int sample_rate) {
+	inline void instanceInit([[maybe_unused]] int sample_rate) {
 		instanceConstants(sample_rate);
 		instanceResetUserInterface();
 		instanceClear();
 	}
-	
-	virtual OtCompressor* clone() {
-		return new OtCompressor(*this);
-	}
-	
-	int getSampleRate() override {
+		
+	inline int getSampleRate() {
 		return fSampleRate;
 	}
-		
-	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
+	
+	inline void buildUserInterface(UI* ui_interface) {
+		ui_interface->openHorizontalBox("Compressor");
+		ui_interface->declare(&fVslider3, "0", "");
+		ui_interface->declare(&fVslider3, "style", "knob");
+		ui_interface->addVerticalSlider("Ratio", &fVslider3, float(4.0), float(1.0), float(2e+01), float(0.1));
+		ui_interface->declare(&fVslider2, "1", "");
+		ui_interface->declare(&fVslider2, "format", "%.0fdB");
+		ui_interface->declare(&fVslider2, "style", "knob");
+		ui_interface->addVerticalSlider("Thresh", &fVslider2, float(-1e+01), float(-5e+01), float(0.0), float(1.0));
+		ui_interface->declare(&fVslider1, "2", "");
+		ui_interface->declare(&fVslider1, "format", "%.0fms");
+		ui_interface->declare(&fVslider1, "style", "knob");
+		ui_interface->addVerticalSlider("Attack", &fVslider1, float(1e+01), float(0.0), float(2e+02), float(1.0));
+		ui_interface->declare(&fVslider0, "3", "");
+		ui_interface->declare(&fVslider0, "format", "%.0fms");
+		ui_interface->declare(&fVslider0, "style", "knob");
+		ui_interface->addVerticalSlider("Release", &fVslider0, float(2e+02), float(5.0), float(1e+03), float(1.0));
+		ui_interface->closeBox();
+	}
+	
+	inline void compute(int count, float** inputs, float** outputs) {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
 		double fSlow0 = fConst1 * static_cast<double>(fVslider0);
@@ -190,6 +201,8 @@ protected:
 		auto knobWidth = OtUi::knobWidth();
 		auto knobHeight = OtUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
+		float width1 = 0.0f;
+		float height1 = 0.0f;
 		width1 += knobWidth;
 		height1 = std::max(height1, knobHeight);
 		width1 += spacing.x;
@@ -214,13 +227,13 @@ protected:
 		bool changed = false;
 		ImGui::BeginGroup();
 		ImGui::PushID("Compressor");
-		changed |= OtUi::knob("Ratio", &fVslider3, 1.0f, 20.0f, "%.1f");
+		changed |= editRatio();
 		ImGui::SameLine();
-		changed |= OtUi::knob("Thresh", &fVslider2, -50.0f, 0.0f, "%.0fdB");
+		changed |= editThresh();
 		ImGui::SameLine();
-		changed |= OtUi::knob("Attack", &fVslider1, 0.0f, 200.0f, "%.0fms");
+		changed |= editAttack();
 		ImGui::SameLine();
-		changed |= OtUi::knob("Release", &fVslider0, 5.0f, 1000.0f, "%.0fms");
+		changed |= editRelease();
 		ImGui::PopID();
 		ImGui::EndGroup();
 		return changed;
@@ -272,6 +285,11 @@ protected:
 		callback("release", &fVslider0, 200.0f);
 	}
 
+	inline bool editRatio() { return OtUi::knob("Ratio", &fVslider3, 1.0f, 20.0f, "%.1f"); }
+	inline bool editThresh() { return OtUi::knob("Thresh", &fVslider2, -50.0f, 0.0f, "%.0fdB"); }
+	inline bool editAttack() { return OtUi::knob("Attack", &fVslider1, 0.0f, 200.0f, "%.0fms"); }
+	inline bool editRelease() { return OtUi::knob("Release", &fVslider0, 5.0f, 1000.0f, "%.0fms"); }
+
 	inline void setRatio(float value) { fVslider3 = value; }
 	inline void setThresh(float value) { fVslider2 = value; }
 	inline void setAttack(float value) { fVslider1 = value; }
@@ -286,6 +304,4 @@ private:
 	bool initialized = false;
 	float width;
 	float height;
-	float width1 = 0.0f;
-	float height1 = 0.0f;
 };

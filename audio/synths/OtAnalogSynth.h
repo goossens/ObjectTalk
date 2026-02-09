@@ -17,48 +17,46 @@
 #include <string>
 #include <unordered_map>
 
-#include "nlohmann/json_fwd.hpp"
-
+#include "OtAnalogVoice.h"
+#include "OtAudioUi.h"
 #include "OtMidiMessage.h"
-#include "OtVoice.h"
+
 
 //
-//	OtSynth
+//	OtAnalogSynth
 //
 
-class OtSynth {
+class OtAnalogSynth : public OtVoice {
 public:
 	// constructor
-	OtSynth();
+	OtAnalogSynth();
 
 	// configurable number of concurrent voices per synth
 	static constexpr size_t numberOfVoices = 16;
 
 	// UI to change synth properties
-	inline bool renderUI(float itemWidth) { return parameters.renderUI(itemWidth); }
-	inline float getRenderWidth() { return parameters.getRenderWidth(); }
-	inline float getRenderHeight() { return parameters.getRenderHeight(); }
-
-	// (de)serialize data
-	inline void serialize(nlohmann::json* data, std::string* basedir) { parameters.serialize(data, basedir); }
-	inline void deserialize(nlohmann::json* data, std::string* basedir) { parameters.deserialize(data, basedir); }
+	bool renderUI(float itemWidth);
 
 	// process MIDI messages
 	void processMidiMessage(OtMidiMessage message);
 
-	// get the next sample(s)
-	float get();
+	// get the next samples
 	void get(float* buffer, size_t size);
 
 private:
 	// properties
-	OtVoice::Parameters parameters;
-	std::array<OtVoice::State, numberOfVoices> voices;
+	std::array<OtAnalogVoice, numberOfVoices> voices;
 	std::unordered_map<int, size_t> index;
 	std::list<size_t> nextVoice;
+	OtAudioUi::AdsrState vcaAdsrState;
+	static constexpr float envelopeHeight = 100.0f;
 
 	// support functions
 	void noteOn(int note, int velocity);
 	void noteOff(int note, int velocity);
 	void AllNotesOff();
+
+	bool renderVco(float width, float height);
+	bool renderVcf(float width, float height);
+	bool renderVca(float width, float height);
 };

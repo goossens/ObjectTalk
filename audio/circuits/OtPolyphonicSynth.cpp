@@ -13,7 +13,7 @@
 
 #include "OtAudioSettings.h"
 #include "OtCircuitFactory.h"
-#include "OtSynth.h"
+#include "OtAnalogSynth.h"
 
 
 //
@@ -81,7 +81,7 @@ public:
 
 private:
 	// properties
-	OtSynth synth;
+	OtAnalogSynth synth;
 
 	// work variables
 	OtCircuitPin midiInput;

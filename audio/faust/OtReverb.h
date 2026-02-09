@@ -142,15 +142,10 @@ protected:
 	
  public:
 	OtReverb() {
+		init(OtAudioSettings::sampleRate);
 	}
-	
-	OtReverb(const OtReverb&) = default;
-	
-	virtual ~OtReverb() = default;
-	
-	OtReverb& operator=(const OtReverb&) = default;
-	
-	void metadata(Meta* m) override { 
+				
+	inline void metadata(Meta* m) { 
 		m->declare("aanl.lib/ADAA1:author", "Dario Sanfilippo");
 		m->declare("aanl.lib/ADAA1:copyright", "Copyright (C) 2021 Dario Sanfilippo     <sanfilippo.dario@gmail.com>");
 		m->declare("aanl.lib/ADAA1:license", "MIT License");
@@ -200,17 +195,17 @@ protected:
 		m->declare("signals.lib/version", "1.6.0");
 	}
 
-	int getNumInputs() override {
+	inline int getNumInputs() {
 		return 1;
 	}
-	int getNumOutputs() override {
+	inline int getNumOutputs() {
 		return 1;
 	}
 	
 	static void classInit([[maybe_unused]] int sample_rate) {
 	}
 	
-	virtual void instanceConstants([[maybe_unused]] int sample_rate) {
+	inline void instanceConstants([[maybe_unused]] int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
 		fConst1 = 1.0 / std::tan(471.23889803846896 / fConst0);
@@ -256,13 +251,13 @@ protected:
 		iConst41 = static_cast<int>(std::min<double>(std::round(0.029124999999999998 * fConst0), fConst10));
 	}
 	
-	virtual void instanceResetUserInterface() {
+	inline void instanceResetUserInterface() {
 		fVslider0 = static_cast<float>(0.2);
 		fVslider1 = static_cast<float>(0.0);
 		fVslider2 = static_cast<float>(0.5);
 	}
 	
-	virtual void instanceClear() {
+	inline void instanceClear() {
 		IOTA0 = 0;
 		for (int l0 = 0; l0 < 8192; l0 = l0 + 1) {
 			fVec0[l0] = 0.0;
@@ -452,26 +447,36 @@ protected:
 		}
 	}
 	
-	void init([[maybe_unused]] int sample_rate) override {
+	inline void init([[maybe_unused]] int sample_rate) {
 		classInit(sample_rate);
 		instanceInit(sample_rate);
 	}
 	
-	virtual void instanceInit([[maybe_unused]] int sample_rate) {
+	inline void instanceInit([[maybe_unused]] int sample_rate) {
 		instanceConstants(sample_rate);
 		instanceResetUserInterface();
 		instanceClear();
 	}
-	
-	virtual OtReverb* clone() {
-		return new OtReverb(*this);
-	}
-	
-	int getSampleRate() override {
+		
+	inline int getSampleRate() {
 		return fSampleRate;
 	}
-		
-	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
+	
+	inline void buildUserInterface(UI* ui_interface) {
+		ui_interface->openHorizontalBox("Reverb");
+		ui_interface->declare(&fVslider0, "0", "");
+		ui_interface->declare(&fVslider0, "style", "knob");
+		ui_interface->addVerticalSlider("Dwell", &fVslider0, float(0.2), float(0.0), float(1.0), float(0.01));
+		ui_interface->declare(&fVslider1, "1", "");
+		ui_interface->declare(&fVslider1, "style", "knob");
+		ui_interface->addVerticalSlider("Tension", &fVslider1, float(0.0), float(0.0), float(1.0), float(0.01));
+		ui_interface->declare(&fVslider2, "2", "");
+		ui_interface->declare(&fVslider2, "style", "knob");
+		ui_interface->addVerticalSlider("Blend", &fVslider2, float(0.5), float(0.0), float(1.0), float(0.01));
+		ui_interface->closeBox();
+	}
+	
+	inline void compute(int count, float** inputs, float** outputs) {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
 		double fSlow0 = fConst7 * static_cast<double>(fVslider0);
@@ -679,6 +684,8 @@ protected:
 		auto knobWidth = OtUi::knobWidth();
 		auto knobHeight = OtUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
+		float width1 = 0.0f;
+		float height1 = 0.0f;
 		width1 += knobWidth;
 		height1 = std::max(height1, knobHeight);
 		width1 += spacing.x;
@@ -700,11 +707,11 @@ protected:
 		bool changed = false;
 		ImGui::BeginGroup();
 		ImGui::PushID("Reverb");
-		changed |= OtUi::knob("Dwell", &fVslider0, 0.0f, 1.0f, "%.2f");
+		changed |= editDwell();
 		ImGui::SameLine();
-		changed |= OtUi::knob("Tension", &fVslider1, 0.0f, 1.0f, "%.2f");
+		changed |= editTension();
 		ImGui::SameLine();
-		changed |= OtUi::knob("Blend", &fVslider2, 0.0f, 1.0f, "%.2f");
+		changed |= editBlend();
 		ImGui::PopID();
 		ImGui::EndGroup();
 		return changed;
@@ -752,6 +759,10 @@ protected:
 		callback("blend", &fVslider2, 0.5f);
 	}
 
+	inline bool editDwell() { return OtUi::knob("Dwell", &fVslider0, 0.0f, 1.0f, "%.2f"); }
+	inline bool editTension() { return OtUi::knob("Tension", &fVslider1, 0.0f, 1.0f, "%.2f"); }
+	inline bool editBlend() { return OtUi::knob("Blend", &fVslider2, 0.0f, 1.0f, "%.2f"); }
+
 	inline void setDwell(float value) { fVslider0 = value; }
 	inline void setTension(float value) { fVslider1 = value; }
 	inline void setBlend(float value) { fVslider2 = value; }
@@ -764,6 +775,4 @@ private:
 	bool initialized = false;
 	float width;
 	float height;
-	float width1 = 0.0f;
-	float height1 = 0.0f;
 };

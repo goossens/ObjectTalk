@@ -73,15 +73,10 @@ protected:
 	
  public:
 	OtLfo() {
+		init(OtAudioSettings::sampleRate);
 	}
-	
-	OtLfo(const OtLfo&) = default;
-	
-	virtual ~OtLfo() = default;
-	
-	OtLfo& operator=(const OtLfo&) = default;
-	
-	void metadata(Meta* m) override { 
+				
+	inline void metadata(Meta* m) { 
 		m->declare("basics.lib/name", "Faust Basic Element Library");
 		m->declare("basics.lib/version", "1.22.0");
 		m->declare("category", "Generator");
@@ -106,10 +101,10 @@ protected:
 		m->declare("platform.lib/version", "1.3.0");
 	}
 
-	int getNumInputs() override {
+	inline int getNumInputs() {
 		return 1;
 	}
-	int getNumOutputs() override {
+	inline int getNumOutputs() {
 		return 1;
 	}
 	
@@ -120,16 +115,16 @@ protected:
 		deleteOtLfoSIG0(sig0);
 	}
 	
-	virtual void instanceConstants([[maybe_unused]] int sample_rate) {
+	inline void instanceConstants([[maybe_unused]] int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = 4.4e+02 / std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
 	}
 	
-	virtual void instanceResetUserInterface() {
+	inline void instanceResetUserInterface() {
 		fHslider0 = static_cast<float>(1.0);
 	}
 	
-	virtual void instanceClear() {
+	inline void instanceClear() {
 		for (int l2 = 0; l2 < 2; l2 = l2 + 1) {
 			iVec1[l2] = 0;
 		}
@@ -138,26 +133,29 @@ protected:
 		}
 	}
 	
-	void init([[maybe_unused]] int sample_rate) override {
+	inline void init([[maybe_unused]] int sample_rate) {
 		classInit(sample_rate);
 		instanceInit(sample_rate);
 	}
 	
-	virtual void instanceInit([[maybe_unused]] int sample_rate) {
+	inline void instanceInit([[maybe_unused]] int sample_rate) {
 		instanceConstants(sample_rate);
 		instanceResetUserInterface();
 		instanceClear();
 	}
-	
-	virtual OtLfo* clone() {
-		return new OtLfo(*this);
-	}
-	
-	int getSampleRate() override {
+		
+	inline int getSampleRate() {
 		return fSampleRate;
 	}
-		
-	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
+	
+	inline void buildUserInterface(UI* ui_interface) {
+		ui_interface->openVerticalBox("LFO");
+		ui_interface->declare(&fHslider0, "1", "");
+		ui_interface->addHorizontalSlider("WaveForm", &fHslider0, float(1.0), float(0.0), float(6.0), float(1.0));
+		ui_interface->closeBox();
+	}
+	
+	inline void compute(int count, float** inputs, float** outputs) {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
 		double fSlow0 = static_cast<double>(fHslider0);
@@ -178,6 +176,8 @@ protected:
 	}
 
 	inline void calculateSizes() {
+		float width1 = 0.0f;
+		float height1 = 0.0f;
 		width1 = std::max(width1, 100.0f);
 		height1 += 20.0f;
 		width = width1;
@@ -193,8 +193,7 @@ protected:
 		bool changed = false;
 		ImGui::BeginGroup();
 		ImGui::PushID("LFO");
-		ImGui::SetNextItemWidth(100.0f);
-		changed |= ImGui::SliderFloat("WaveForm", &fHslider0, 0.0f, 6.0f, "%.0f");
+		changed |= editWaveForm();
 		ImGui::PopID();
 		ImGui::EndGroup();
 		return changed;
@@ -234,6 +233,8 @@ protected:
 		callback("waveForm", &fHslider0, 1.0f);
 	}
 
+	inline bool editWaveForm() { ImGui::SetNextItemWidth(100.0f); return ImGui::SliderFloat("WaveForm", &fHslider0, 0.0f, 6.0f, "%.0f"); }
+
 	inline void setWaveForm(float value) { fHslider0 = value; }
 
 	inline float getWaveForm() { return fHslider0; }
@@ -242,6 +243,4 @@ private:
 	bool initialized = false;
 	float width;
 	float height;
-	float width1 = 0.0f;
-	float height1 = 0.0f;
 };

@@ -25,7 +25,7 @@
 class OtLfoCircuit : public OtFaustCircuit<OtLfo> {
 public:
 	// configure pins
-	inline void configurePins() override {
+	inline void configure() override {
 		OtAssert(this->dsp.getNumInputs() == 1);
 		OtAssert(this->dsp.getNumOutputs() == 1);
 

@@ -39,15 +39,10 @@ protected:
 	
  public:
 	OtAdsr() {
+		init(OtAudioSettings::sampleRate);
 	}
-	
-	OtAdsr(const OtAdsr&) = default;
-	
-	virtual ~OtAdsr() = default;
-	
-	OtAdsr& operator=(const OtAdsr&) = default;
-	
-	void metadata(Meta* m) override { 
+				
+	inline void metadata(Meta* m) { 
 		m->declare("basics.lib/name", "Faust Basic Element Library");
 		m->declare("basics.lib/version", "1.22.0");
 		m->declare("category", "Envelope");
@@ -73,30 +68,30 @@ protected:
 		m->declare("signals.lib/version", "1.6.0");
 	}
 
-	int getNumInputs() override {
+	inline int getNumInputs() {
 		return 1;
 	}
-	int getNumOutputs() override {
+	inline int getNumOutputs() {
 		return 1;
 	}
 	
 	static void classInit([[maybe_unused]] int sample_rate) {
 	}
 	
-	virtual void instanceConstants([[maybe_unused]] int sample_rate) {
+	inline void instanceConstants([[maybe_unused]] int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
 		fConst1 = 1.0 / fConst0;
 	}
 	
-	virtual void instanceResetUserInterface() {
+	inline void instanceResetUserInterface() {
 		fVslider0 = static_cast<float>(0.03);
 		fVslider1 = static_cast<float>(0.01);
 		fVslider2 = static_cast<float>(0.05);
 		fVslider3 = static_cast<float>(0.8);
 	}
 	
-	virtual void instanceClear() {
+	inline void instanceClear() {
 		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
 			iVec0[l0] = 0;
 		}
@@ -108,26 +103,43 @@ protected:
 		}
 	}
 	
-	void init([[maybe_unused]] int sample_rate) override {
+	inline void init([[maybe_unused]] int sample_rate) {
 		classInit(sample_rate);
 		instanceInit(sample_rate);
 	}
 	
-	virtual void instanceInit([[maybe_unused]] int sample_rate) {
+	inline void instanceInit([[maybe_unused]] int sample_rate) {
 		instanceConstants(sample_rate);
 		instanceResetUserInterface();
 		instanceClear();
 	}
-	
-	virtual OtAdsr* clone() {
-		return new OtAdsr(*this);
-	}
-	
-	int getSampleRate() override {
+		
+	inline int getSampleRate() {
 		return fSampleRate;
 	}
-		
-	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
+	
+	inline void buildUserInterface(UI* ui_interface) {
+		ui_interface->openHorizontalBox("ADSR");
+		ui_interface->declare(&fVslider1, "1", "");
+		ui_interface->declare(&fVslider1, "format", "%.3fs");
+		ui_interface->declare(&fVslider1, "style", "knob");
+		ui_interface->addVerticalSlider("Attack", &fVslider1, float(0.01), float(0.0), float(1e+01), float(0.1));
+		ui_interface->declare(&fVslider2, "2", "");
+		ui_interface->declare(&fVslider2, "format", "%.3fs");
+		ui_interface->declare(&fVslider2, "style", "knob");
+		ui_interface->addVerticalSlider("Decay", &fVslider2, float(0.05), float(0.0), float(1e+01), float(0.1));
+		ui_interface->declare(&fVslider3, "3", "");
+		ui_interface->declare(&fVslider3, "format", "%.2f");
+		ui_interface->declare(&fVslider3, "style", "knob");
+		ui_interface->addVerticalSlider("Sustain", &fVslider3, float(0.8), float(0.0), float(1.0), float(1.0));
+		ui_interface->declare(&fVslider0, "4", "");
+		ui_interface->declare(&fVslider0, "format", "%.3fs");
+		ui_interface->declare(&fVslider0, "style", "knob");
+		ui_interface->addVerticalSlider("Release", &fVslider0, float(0.03), float(0.0), float(1e+01), float(0.1));
+		ui_interface->closeBox();
+	}
+	
+	inline void compute(int count, float** inputs, float** outputs) {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
 		double fSlow0 = static_cast<double>(fVslider0);
@@ -157,6 +169,8 @@ protected:
 		auto knobWidth = OtUi::knobWidth();
 		auto knobHeight = OtUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
+		float width1 = 0.0f;
+		float height1 = 0.0f;
 		width1 += knobWidth;
 		height1 = std::max(height1, knobHeight);
 		width1 += spacing.x;
@@ -181,13 +195,13 @@ protected:
 		bool changed = false;
 		ImGui::BeginGroup();
 		ImGui::PushID("ADSR");
-		changed |= OtUi::knob("Attack", &fVslider1, 0.0f, 10.0f, "%.3fs");
+		changed |= editAttack();
 		ImGui::SameLine();
-		changed |= OtUi::knob("Decay", &fVslider2, 0.0f, 10.0f, "%.3fs");
+		changed |= editDecay();
 		ImGui::SameLine();
-		changed |= OtUi::knob("Sustain", &fVslider3, 0.0f, 1.0f, "%.2f");
+		changed |= editSustain();
 		ImGui::SameLine();
-		changed |= OtUi::knob("Release", &fVslider0, 0.0f, 10.0f, "%.3fs");
+		changed |= editRelease();
 		ImGui::PopID();
 		ImGui::EndGroup();
 		return changed;
@@ -239,6 +253,11 @@ protected:
 		callback("release", &fVslider0, 0.03f);
 	}
 
+	inline bool editAttack() { return OtUi::knob("Attack", &fVslider1, 0.0f, 10.0f, "%.3fs"); }
+	inline bool editDecay() { return OtUi::knob("Decay", &fVslider2, 0.0f, 10.0f, "%.3fs"); }
+	inline bool editSustain() { return OtUi::knob("Sustain", &fVslider3, 0.0f, 1.0f, "%.2f"); }
+	inline bool editRelease() { return OtUi::knob("Release", &fVslider0, 0.0f, 10.0f, "%.3fs"); }
+
 	inline void setAttack(float value) { fVslider1 = value; }
 	inline void setDecay(float value) { fVslider2 = value; }
 	inline void setSustain(float value) { fVslider3 = value; }
@@ -253,6 +272,4 @@ private:
 	bool initialized = false;
 	float width;
 	float height;
-	float width1 = 0.0f;
-	float height1 = 0.0f;
 };

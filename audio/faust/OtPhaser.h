@@ -60,15 +60,10 @@ protected:
 	
  public:
 	OtPhaser() {
+		init(OtAudioSettings::sampleRate);
 	}
-	
-	OtPhaser(const OtPhaser&) = default;
-	
-	virtual ~OtPhaser() = default;
-	
-	OtPhaser& operator=(const OtPhaser&) = default;
-	
-	void metadata(Meta* m) override { 
+				
+	inline void metadata(Meta* m) { 
 		m->declare("category", "Modulation");
 		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtPhaser -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
 		m->declare("filename", "OtPhaser.dsp");
@@ -104,17 +99,17 @@ protected:
 		m->declare("signals.lib/version", "1.6.0");
 	}
 
-	int getNumInputs() override {
+	inline int getNumInputs() {
 		return 1;
 	}
-	int getNumOutputs() override {
+	inline int getNumOutputs() {
 		return 1;
 	}
 	
 	static void classInit([[maybe_unused]] int sample_rate) {
 	}
 	
-	virtual void instanceConstants([[maybe_unused]] int sample_rate) {
+	inline void instanceConstants([[maybe_unused]] int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
 		fConst1 = 44.1 / fConst0;
@@ -126,13 +121,13 @@ protected:
 		fConst7 = OtPhaser_faustpower2_f(fConst3);
 	}
 	
-	virtual void instanceResetUserInterface() {
+	inline void instanceResetUserInterface() {
 		fVslider0 = static_cast<float>(5e+01);
 		fVslider1 = static_cast<float>(0.0);
 		fVslider2 = static_cast<float>(1.0);
 	}
 	
-	virtual void instanceClear() {
+	inline void instanceClear() {
 		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
 			iVec0[l0] = 0;
 		}
@@ -180,26 +175,38 @@ protected:
 		}
 	}
 	
-	void init([[maybe_unused]] int sample_rate) override {
+	inline void init([[maybe_unused]] int sample_rate) {
 		classInit(sample_rate);
 		instanceInit(sample_rate);
 	}
 	
-	virtual void instanceInit([[maybe_unused]] int sample_rate) {
+	inline void instanceInit([[maybe_unused]] int sample_rate) {
 		instanceConstants(sample_rate);
 		instanceResetUserInterface();
 		instanceClear();
 	}
-	
-	virtual OtPhaser* clone() {
-		return new OtPhaser(*this);
-	}
-	
-	int getSampleRate() override {
+		
+	inline int getSampleRate() {
 		return fSampleRate;
 	}
-		
-	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
+	
+	inline void buildUserInterface(UI* ui_interface) {
+		ui_interface->openHorizontalBox("Phaser");
+		ui_interface->declare(&fVslider2, "0", "");
+		ui_interface->declare(&fVslider2, "format", "%.01fhz");
+		ui_interface->declare(&fVslider2, "style", "knob");
+		ui_interface->addVerticalSlider("Speed", &fVslider2, float(1.0), float(0.001), float(2e+01), float(0.01));
+		ui_interface->declare(&fVslider0, "1", "");
+		ui_interface->declare(&fVslider0, "format", "%.0f%%");
+		ui_interface->declare(&fVslider0, "style", "knob");
+		ui_interface->addVerticalSlider("Depth", &fVslider0, float(5e+01), float(0.0), float(1e+02), float(1.0));
+		ui_interface->declare(&fVslider1, "3", "");
+		ui_interface->declare(&fVslider1, "style", "knob");
+		ui_interface->addVerticalSlider("Feedbck", &fVslider1, float(0.0), float(-1.0), float(1.0), float(0.01));
+		ui_interface->closeBox();
+	}
+	
+	inline void compute(int count, float** inputs, float** outputs) {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
 		double fSlow0 = fConst1 * static_cast<double>(fVslider0);
@@ -257,6 +264,8 @@ protected:
 		auto knobWidth = OtUi::knobWidth();
 		auto knobHeight = OtUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
+		float width1 = 0.0f;
+		float height1 = 0.0f;
 		width1 += knobWidth;
 		height1 = std::max(height1, knobHeight);
 		width1 += spacing.x;
@@ -278,11 +287,11 @@ protected:
 		bool changed = false;
 		ImGui::BeginGroup();
 		ImGui::PushID("Phaser");
-		changed |= OtUi::knob("Speed", &fVslider2, 0.001f, 20.0f, "%.01fhz");
+		changed |= editSpeed();
 		ImGui::SameLine();
-		changed |= OtUi::knob("Depth", &fVslider0, 0.0f, 100.0f, "%.0f%%");
+		changed |= editDepth();
 		ImGui::SameLine();
-		changed |= OtUi::knob("Feedbck", &fVslider1, -1.0f, 1.0f, "%.2f");
+		changed |= editFeedbck();
 		ImGui::PopID();
 		ImGui::EndGroup();
 		return changed;
@@ -330,6 +339,10 @@ protected:
 		callback("feedbck", &fVslider1, 0.0f);
 	}
 
+	inline bool editSpeed() { return OtUi::knob("Speed", &fVslider2, 0.001f, 20.0f, "%.01fhz"); }
+	inline bool editDepth() { return OtUi::knob("Depth", &fVslider0, 0.0f, 100.0f, "%.0f%%"); }
+	inline bool editFeedbck() { return OtUi::knob("Feedbck", &fVslider1, -1.0f, 1.0f, "%.2f"); }
+
 	inline void setSpeed(float value) { fVslider2 = value; }
 	inline void setDepth(float value) { fVslider0 = value; }
 	inline void setFeedbck(float value) { fVslider1 = value; }
@@ -342,6 +355,4 @@ private:
 	bool initialized = false;
 	float width;
 	float height;
-	float width1 = 0.0f;
-	float height1 = 0.0f;
 };

@@ -48,6 +48,8 @@ GETPARAMETERS
 ITERATEPARAMETERS
 	}
 
+EDITORS
+
 SETTERS
 
 GETTERS
@@ -56,5 +58,4 @@ private:
 	bool initialized = false;
 	float width;
 	float height;
-VARIABLES
 };

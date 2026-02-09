@@ -23,7 +23,7 @@
 class OtEnvelopeCircuit : public OtFaustCircuit<OtAdsr> {
 public:
 	// configure pins
-	inline void configurePins() override {
+	inline void configure() override {
 		OtAssert(this->dsp.getNumInputs() == 1);
 		OtAssert(this->dsp.getNumOutputs() == 1);
 
@@ -34,13 +34,10 @@ public:
 	// render custom fields
 	bool customRendering(float itemWidth) override {
 		// render envelope
-		if (state.update) {
-			state.attack = dsp.getAttack();
-			state.decay = dsp.getDecay();
-			state.sustain = dsp.getSustain();
-			state.release = dsp.getRelease();
-		}
-
+		state.attack = dsp.getAttack();
+		state.decay = dsp.getDecay();
+		state.sustain = dsp.getSustain();
+		state.release = dsp.getRelease();
 		OtAudioUi::adsrEnvelope("##ADSR", state, ImVec2(itemWidth, envelopeHeight));
 
 		// render envelope control knobs

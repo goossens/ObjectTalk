@@ -22,7 +22,7 @@
 class OtVcfCircuit : public OtFaustCircuit<OtVcf> {
 public:
 	// configure pins
-	inline void configurePins() override {
+	inline void configure() override {
 		OtAssert(this->dsp.getNumInputs() == 3);
 		OtAssert(this->dsp.getNumOutputs() == 1);
 

@@ -23,7 +23,7 @@
 class OtNoiseCircuit : public OtFaustCircuit<OtNoise> {
 public:
 	// configure pins
-	inline void configurePins() override {
+	inline void configure() override {
 		OtAssert(this->dsp.getNumInputs() == 0);
 		OtAssert(this->dsp.getNumOutputs() == 1);
 

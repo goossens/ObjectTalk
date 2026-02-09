@@ -34,15 +34,10 @@ protected:
 	
  public:
 	OtNoise() {
+		init(OtAudioSettings::sampleRate);
 	}
-	
-	OtNoise(const OtNoise&) = default;
-	
-	virtual ~OtNoise() = default;
-	
-	OtNoise& operator=(const OtNoise&) = default;
-	
-	void metadata(Meta* m) override { 
+				
+	inline void metadata(Meta* m) { 
 		m->declare("category", "Noise");
 		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtNoise -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
 		m->declare("filename", "OtNoise.dsp");
@@ -66,26 +61,26 @@ protected:
 		m->declare("noises.lib/version", "1.5.0");
 	}
 
-	int getNumInputs() override {
+	inline int getNumInputs() {
 		return 0;
 	}
-	int getNumOutputs() override {
+	inline int getNumOutputs() {
 		return 1;
 	}
 	
 	static void classInit([[maybe_unused]] int sample_rate) {
 	}
 	
-	virtual void instanceConstants([[maybe_unused]] int sample_rate) {
+	inline void instanceConstants([[maybe_unused]] int sample_rate) {
 		fSampleRate = sample_rate;
 	}
 	
-	virtual void instanceResetUserInterface() {
+	inline void instanceResetUserInterface() {
 		fHslider0 = static_cast<float>(0.0);
 		fHslider1 = static_cast<float>(0.0);
 	}
 	
-	virtual void instanceClear() {
+	inline void instanceClear() {
 		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
 			iRec0[l0] = 0;
 		}
@@ -94,26 +89,33 @@ protected:
 		}
 	}
 	
-	void init([[maybe_unused]] int sample_rate) override {
+	inline void init([[maybe_unused]] int sample_rate) {
 		classInit(sample_rate);
 		instanceInit(sample_rate);
 	}
 	
-	virtual void instanceInit([[maybe_unused]] int sample_rate) {
+	inline void instanceInit([[maybe_unused]] int sample_rate) {
 		instanceConstants(sample_rate);
 		instanceResetUserInterface();
 		instanceClear();
 	}
-	
-	virtual OtNoise* clone() {
-		return new OtNoise(*this);
-	}
-	
-	int getSampleRate() override {
+		
+	inline int getSampleRate() {
 		return fSampleRate;
 	}
-		
-	void compute(int count, [[maybe_unused]] float** inputs, float** outputs) override {
+	
+	inline void buildUserInterface(UI* ui_interface) {
+		ui_interface->openHorizontalBox("Noise");
+		ui_interface->declare(&fHslider0, "0", "");
+		ui_interface->declare(&fHslider0, "style", "knob");
+		ui_interface->addHorizontalSlider("White", &fHslider0, float(0.0), float(0.0), float(1.0), float(0.01));
+		ui_interface->declare(&fHslider1, "1", "");
+		ui_interface->declare(&fHslider1, "style", "knob");
+		ui_interface->addHorizontalSlider("Pink", &fHslider1, float(0.0), float(0.0), float(1.0), float(0.01));
+		ui_interface->closeBox();
+	}
+	
+	inline void compute(int count, float** inputs, float** outputs) {
 		float* output0 = outputs[0];
 		double fSlow0 = 4.656612875245797e-10 * static_cast<double>(fHslider0);
 		double fSlow1 = 4.0 * static_cast<double>(fHslider1);
@@ -133,6 +135,8 @@ protected:
 		auto knobWidth = OtUi::knobWidth();
 		auto knobHeight = OtUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
+		float width1 = 0.0f;
+		float height1 = 0.0f;
 		width1 += knobWidth;
 		height1 = std::max(height1, knobHeight);
 		width1 += spacing.x;
@@ -151,9 +155,9 @@ protected:
 		bool changed = false;
 		ImGui::BeginGroup();
 		ImGui::PushID("Noise");
-		changed |= OtUi::knob("White", &fHslider0, 0.0f, 1.0f, "%.2f");
+		changed |= editWhite();
 		ImGui::SameLine();
-		changed |= OtUi::knob("Pink", &fHslider1, 0.0f, 1.0f, "%.2f");
+		changed |= editPink();
 		ImGui::PopID();
 		ImGui::EndGroup();
 		return changed;
@@ -197,6 +201,9 @@ protected:
 		callback("pink", &fHslider1, 0.0f);
 	}
 
+	inline bool editWhite() { return OtUi::knob("White", &fHslider0, 0.0f, 1.0f, "%.2f"); }
+	inline bool editPink() { return OtUi::knob("Pink", &fHslider1, 0.0f, 1.0f, "%.2f"); }
+
 	inline void setWhite(float value) { fHslider0 = value; }
 	inline void setPink(float value) { fHslider1 = value; }
 
@@ -207,6 +214,4 @@ private:
 	bool initialized = false;
 	float width;
 	float height;
-	float width1 = 0.0f;
-	float height1 = 0.0f;
 };

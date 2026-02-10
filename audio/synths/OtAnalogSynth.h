@@ -48,6 +48,7 @@ private:
 	std::array<OtAnalogVoice, numberOfVoices> voices;
 	std::unordered_map<int, size_t> index;
 	std::list<size_t> nextVoice;
+	OtAudioUi::AdsrState vcfAdsrState;
 	OtAudioUi::AdsrState vcaAdsrState;
 	static constexpr float envelopeHeight = 100.0f;
 

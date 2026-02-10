@@ -41,7 +41,7 @@ public:
 			dsp.setWaveForm(waveform);
 		}
 
-		changed |= OtUi::knob("Freq", &frequency, 60.0f, 6000.0f, "%.0fhz", true);
+		changed |= OtUi::knob("Freq", &frequency, 0.1f, 100.0f, "%.1fhz", true);
 		return changed;
 	}
 

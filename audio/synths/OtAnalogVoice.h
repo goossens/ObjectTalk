@@ -26,7 +26,7 @@ public:
 	void noteOff();
 	void cancel();
 
-	bool isActive();
+	inline bool isActive() { return active; }
 	inline int getNote() { return note; }
 	inline int getVelocity() { return velocity; }
 
@@ -40,4 +40,5 @@ private:
 	int note;
 	int velocity;
 	float frequency;
+	bool active = false;
 };

@@ -147,29 +147,24 @@ protected:
 	inline int getSampleRate() {
 		return fSampleRate;
 	}
-	
-	inline void buildUserInterface(UI* ui_interface) {
-		ui_interface->openVerticalBox("LFO");
-		ui_interface->declare(&fHslider0, "1", "");
-		ui_interface->addHorizontalSlider("WaveForm", &fHslider0, float(1.0), float(0.0), float(6.0), float(1.0));
-		ui_interface->closeBox();
-	}
-	
-	inline void compute(int count, float** inputs, float** outputs) {
+		
+	inline void compute(int count, [[maybe_unused]] float** inputs, float** outputs) {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
 		double fSlow0 = static_cast<double>(fHslider0);
-		int iSlow1 = fSlow0 >= 3.0;
+		int iSlow1 = fSlow0 >= 4.0;
 		int iSlow2 = fSlow0 >= 2.0;
 		int iSlow3 = fSlow0 >= 1.0;
-		int iSlow4 = fSlow0 >= 5.0;
-		int iSlow5 = fSlow0 >= 4.0;
+		int iSlow4 = fSlow0 >= 3.0;
+		int iSlow5 = fSlow0 >= 6.0;
+		int iSlow6 = fSlow0 >= 5.0;
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
 			iVec1[0] = 1;
 			double fTemp0 = ((1 - iVec1[1]) ? 0.0 : fRec1[1] + fConst0 * std::pow(2.0, static_cast<double>(input0[i0])));
 			fRec1[0] = fTemp0 - std::floor(fTemp0);
 			double fTemp1 = 2.0 * fRec1[0] + -1.0;
-			output0[i0] = static_cast<float>(((iSlow1) ? ((iSlow4) ? 2.0 * static_cast<double>(fRec1[0] <= 0.7) + -1.0 : ((iSlow5) ? 2.0 * static_cast<double>(fRec1[0] <= 0.5) + -1.0 : fTemp1)) : ((iSlow2) ? 2.0 * (1.0 - std::fabs(fTemp1)) + -1.0 : ((iSlow3) ? ftbl0OtLfoSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec1[0]), 65535))] : 0.0))));
+			double fTemp2 = 1.0 - std::fabs(fTemp1);
+			output0[i0] = static_cast<float>(((iSlow1) ? ((iSlow5) ? 2.0 * static_cast<double>(fRec1[0] <= 0.7) + -1.0 : ((iSlow6) ? 2.0 * static_cast<double>(fRec1[0] <= 0.5) + -1.0 : fTemp1)) : ((iSlow2) ? ((iSlow4) ? -(1.3333333333333333 * (1.0 - (fRec1[0] + fTemp2))) : 2.0 * fTemp2 + -1.0) : ((iSlow3) ? ftbl0OtLfoSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec1[0]), 65535))] : 0.0))));
 			iVec1[1] = iVec1[0];
 			fRec1[1] = fRec1[0];
 		}
@@ -233,7 +228,7 @@ protected:
 		callback("waveForm", &fHslider0, 1.0f);
 	}
 
-	inline bool editWaveForm() { ImGui::SetNextItemWidth(100.0f); return ImGui::SliderFloat("WaveForm", &fHslider0, 0.0f, 6.0f, "%.0f"); }
+	inline bool editWaveForm() { ImGui::SetNextItemWidth(100.0f); return ImGui::SliderFloat("WaveForm", &fHslider0, 0.0f, 7.0f, "%.0f"); }
 
 	inline void setWaveForm(float value) { fHslider0 = value; }
 

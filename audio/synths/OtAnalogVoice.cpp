@@ -25,6 +25,7 @@ void OtAnalogVoice::noteOn(int n, int v) {
 	note = n;
 	velocity = v;
 	frequency = OtAudioUtilities::midiNoteToPitch(note);
+	active = true;
 }
 
 
@@ -46,15 +47,7 @@ void OtAnalogVoice::cancel() {
 	instanceClear();
 	gate = false;
 	endTime = 0;
-}
-
-
-//
-//	OtAnalogVoice::isActive
-//
-
-bool OtAnalogVoice::isActive() {
-	return gate == true || (gate == false && static_cast<float>(SDL_GetTicks()) < endTime);
+	active = false;
 }
 
 
@@ -64,10 +57,16 @@ bool OtAnalogVoice::isActive() {
 
 void OtAnalogVoice::get(Parameters& parameters, float* buffer, size_t size) {
 	setParameters(parameters);
+	setVcoFrequency1(frequency);
+	setVcoFrequency2(frequency);
+	setVcfGate(static_cast<float>(gate));
 	setVcaGate(static_cast<float>(gate));
-	setVcoFreq1(frequency);
-	setVcoFreq2(frequency);
 
 	float* output[] = {buffer};
 	compute(static_cast<int>(size), nullptr, output);
+
+	if (!gate && static_cast<float>(SDL_GetTicks()) > endTime) {
+		endTime = 0;
+		active = false;
+	}
 }

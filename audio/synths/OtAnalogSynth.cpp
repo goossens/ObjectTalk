@@ -33,7 +33,7 @@ OtAnalogSynth::OtAnalogSynth() {
 
 bool OtAnalogSynth::renderUI([[maybe_unused]] float itemWidth) {
 	auto width = OtUi::knobWidth(4) + ImGui::GetStyle().WindowPadding.x * 2.0f;
-	auto height = OtUi::knobHeight(3) + ImGui::GetFrameHeightWithSpacing() * 5.0f;
+	auto height = OtUi::knobHeight(3) + ImGui::GetFrameHeightWithSpacing() * 4.0f + envelopeHeight + ImGui::GetStyle().WindowPadding.y * 2.0f;
 	bool changed = false;
 
 	// render synth components
@@ -182,9 +182,34 @@ bool OtAnalogSynth::renderVcf(float width, float height) {
 
 	ImGui::BeginChild("VCF", ImVec2(width, height), ImGuiChildFlags_Borders);
 	OtUi::header("Filter");
+	changed |= editVcfCutoff(); ImGui::SameLine();
+	changed |= editVcfRes(); ImGui::SameLine();
+	changed |= editVcfEnv(); ImGui::SameLine();
+	changed |= editVcfLfo();
 
 	OtUi::header("Envelope");
+	vcfAdsrState.attack = getVcfAttack();
+	vcfAdsrState.decay = getVcfDecay();
+	vcfAdsrState.sustain = getVcfSustain();
+	vcfAdsrState.release = getVcfRelease();
 
+	OtAudioUi::adsrEnvelope("##ADSR", vcfAdsrState, ImVec2(OtUi::knobWidth(4), envelopeHeight));
+
+	changed |= editVcfAttack(); ImGui::SameLine();
+	changed |= editVcfDecay(); ImGui::SameLine();
+	changed |= editVcfSustain(); ImGui::SameLine();
+	changed |= editVcfRelease();
+	vcfAdsrState.update |= changed;
+
+	OtUi::header("LFO");
+	auto waveform = getVcfWaveForm();
+
+	if (OtAudioUi::waveFormSelector(&waveform)) {
+		setVcfWaveForm(waveform);
+		changed |= true;
+	}
+
+	changed |= editVcfFreq();
 	ImGui::EndChild();
 	return changed;
 }

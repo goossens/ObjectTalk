@@ -190,15 +190,8 @@ protected:
 	inline int getSampleRate() {
 		return fSampleRate;
 	}
-	
-	inline void buildUserInterface(UI* ui_interface) {
-		ui_interface->openVerticalBox("Oscillator");
-		ui_interface->declare(&fHslider0, "1", "");
-		ui_interface->addHorizontalSlider("WaveForm", &fHslider0, float(1.0), float(0.0), float(7.0), float(1.0));
-		ui_interface->closeBox();
-	}
-	
-	inline void compute(int count, float** inputs, float** outputs) {
+		
+	inline void compute(int count, [[maybe_unused]] float** inputs, float** outputs) {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
 		double fSlow0 = static_cast<double>(fHslider0);

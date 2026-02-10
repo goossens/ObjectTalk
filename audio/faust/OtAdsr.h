@@ -117,29 +117,8 @@ protected:
 	inline int getSampleRate() {
 		return fSampleRate;
 	}
-	
-	inline void buildUserInterface(UI* ui_interface) {
-		ui_interface->openHorizontalBox("ADSR");
-		ui_interface->declare(&fVslider1, "1", "");
-		ui_interface->declare(&fVslider1, "format", "%.3fs");
-		ui_interface->declare(&fVslider1, "style", "knob");
-		ui_interface->addVerticalSlider("Attack", &fVslider1, float(0.01), float(0.0), float(1e+01), float(0.1));
-		ui_interface->declare(&fVslider2, "2", "");
-		ui_interface->declare(&fVslider2, "format", "%.3fs");
-		ui_interface->declare(&fVslider2, "style", "knob");
-		ui_interface->addVerticalSlider("Decay", &fVslider2, float(0.05), float(0.0), float(1e+01), float(0.1));
-		ui_interface->declare(&fVslider3, "3", "");
-		ui_interface->declare(&fVslider3, "format", "%.2f");
-		ui_interface->declare(&fVslider3, "style", "knob");
-		ui_interface->addVerticalSlider("Sustain", &fVslider3, float(0.8), float(0.0), float(1.0), float(1.0));
-		ui_interface->declare(&fVslider0, "4", "");
-		ui_interface->declare(&fVslider0, "format", "%.3fs");
-		ui_interface->declare(&fVslider0, "style", "knob");
-		ui_interface->addVerticalSlider("Release", &fVslider0, float(0.03), float(0.0), float(1e+01), float(0.1));
-		ui_interface->closeBox();
-	}
-	
-	inline void compute(int count, float** inputs, float** outputs) {
+		
+	inline void compute(int count, [[maybe_unused]] float** inputs, float** outputs) {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
 		double fSlow0 = static_cast<double>(fVslider0);
@@ -253,10 +232,10 @@ protected:
 		callback("release", &fVslider0, 0.03f);
 	}
 
-	inline bool editAttack() { return OtUi::knob("Attack", &fVslider1, 0.0f, 10.0f, "%.3fs"); }
-	inline bool editDecay() { return OtUi::knob("Decay", &fVslider2, 0.0f, 10.0f, "%.3fs"); }
-	inline bool editSustain() { return OtUi::knob("Sustain", &fVslider3, 0.0f, 1.0f, "%.2f"); }
-	inline bool editRelease() { return OtUi::knob("Release", &fVslider0, 0.0f, 10.0f, "%.3fs"); }
+	inline bool editAttack() { return OtUi::knob("Attack", &fVslider1, 0.0f, 10.0f, "%.3fs", true); }
+	inline bool editDecay() { return OtUi::knob("Decay", &fVslider2, 0.0f, 10.0f, "%.3fs", true); }
+	inline bool editSustain() { return OtUi::knob("Sustain", &fVslider3, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editRelease() { return OtUi::knob("Release", &fVslider0, 0.0f, 10.0f, "%.3fs", true); }
 
 	inline void setAttack(float value) { fVslider1 = value; }
 	inline void setDecay(float value) { fVslider2 = value; }

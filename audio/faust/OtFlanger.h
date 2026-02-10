@@ -120,25 +120,8 @@ protected:
 	inline int getSampleRate() {
 		return fSampleRate;
 	}
-	
-	inline void buildUserInterface(UI* ui_interface) {
-		ui_interface->openHorizontalBox("Flanger");
-		ui_interface->declare(&fVslider1, "0", "");
-		ui_interface->declare(&fVslider1, "format", "%.1fms");
-		ui_interface->declare(&fVslider1, "style", "knob");
-		ui_interface->addVerticalSlider("Delay", &fVslider1, float(0.2), float(0.0), float(1e+01), float(0.1));
-		ui_interface->declare(&fVslider2, "1", "");
-		ui_interface->declare(&fVslider2, "format", "%.0f%%");
-		ui_interface->declare(&fVslider2, "style", "knob");
-		ui_interface->addVerticalSlider("Depth", &fVslider2, float(5e+01), float(0.0), float(1e+02), float(1.0));
-		ui_interface->declare(&fVslider0, "2", "");
-		ui_interface->declare(&fVslider0, "format", "%.0f%%");
-		ui_interface->declare(&fVslider0, "style", "knob");
-		ui_interface->addVerticalSlider("Feedback", &fVslider0, float(6e+01), float(0.0), float(1e+02), float(1.0));
-		ui_interface->closeBox();
-	}
-	
-	inline void compute(int count, float** inputs, float** outputs) {
+		
+	inline void compute(int count, [[maybe_unused]] float** inputs, float** outputs) {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
 		double fSlow0 = fConst0 * static_cast<double>(fVslider0);
@@ -243,9 +226,9 @@ protected:
 		callback("feedback", &fVslider0, 60.0f);
 	}
 
-	inline bool editDelay() { return OtUi::knob("Delay", &fVslider1, 0.0f, 10.0f, "%.1fms"); }
-	inline bool editDepth() { return OtUi::knob("Depth", &fVslider2, 0.0f, 100.0f, "%.0f%%"); }
-	inline bool editFeedback() { return OtUi::knob("Feedback", &fVslider0, 0.0f, 100.0f, "%.0f%%"); }
+	inline bool editDelay() { return OtUi::knob("Delay", &fVslider1, 0.0f, 10.0f, "%.1fms", false); }
+	inline bool editDepth() { return OtUi::knob("Depth", &fVslider2, 0.0f, 100.0f, "%.0f%%", false); }
+	inline bool editFeedback() { return OtUi::knob("Feedback", &fVslider0, 0.0f, 100.0f, "%.0f%%", false); }
 
 	inline void setDelay(float value) { fVslider1 = value; }
 	inline void setDepth(float value) { fVslider2 = value; }

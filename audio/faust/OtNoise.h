@@ -103,19 +103,8 @@ protected:
 	inline int getSampleRate() {
 		return fSampleRate;
 	}
-	
-	inline void buildUserInterface(UI* ui_interface) {
-		ui_interface->openHorizontalBox("Noise");
-		ui_interface->declare(&fHslider0, "0", "");
-		ui_interface->declare(&fHslider0, "style", "knob");
-		ui_interface->addHorizontalSlider("White", &fHslider0, float(0.0), float(0.0), float(1.0), float(0.01));
-		ui_interface->declare(&fHslider1, "1", "");
-		ui_interface->declare(&fHslider1, "style", "knob");
-		ui_interface->addHorizontalSlider("Pink", &fHslider1, float(0.0), float(0.0), float(1.0), float(0.01));
-		ui_interface->closeBox();
-	}
-	
-	inline void compute(int count, float** inputs, float** outputs) {
+		
+	inline void compute(int count, [[maybe_unused]] float** inputs, float** outputs) {
 		float* output0 = outputs[0];
 		double fSlow0 = 4.656612875245797e-10 * static_cast<double>(fHslider0);
 		double fSlow1 = 4.0 * static_cast<double>(fHslider1);
@@ -201,8 +190,8 @@ protected:
 		callback("pink", &fHslider1, 0.0f);
 	}
 
-	inline bool editWhite() { return OtUi::knob("White", &fHslider0, 0.0f, 1.0f, "%.2f"); }
-	inline bool editPink() { return OtUi::knob("Pink", &fHslider1, 0.0f, 1.0f, "%.2f"); }
+	inline bool editWhite() { return OtUi::knob("White", &fHslider0, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editPink() { return OtUi::knob("Pink", &fHslider1, 0.0f, 1.0f, "%.2f", false); }
 
 	inline void setWhite(float value) { fHslider0 = value; }
 	inline void setPink(float value) { fHslider1 = value; }

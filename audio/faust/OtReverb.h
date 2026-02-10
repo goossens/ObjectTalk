@@ -461,22 +461,8 @@ protected:
 	inline int getSampleRate() {
 		return fSampleRate;
 	}
-	
-	inline void buildUserInterface(UI* ui_interface) {
-		ui_interface->openHorizontalBox("Reverb");
-		ui_interface->declare(&fVslider0, "0", "");
-		ui_interface->declare(&fVslider0, "style", "knob");
-		ui_interface->addVerticalSlider("Dwell", &fVslider0, float(0.2), float(0.0), float(1.0), float(0.01));
-		ui_interface->declare(&fVslider1, "1", "");
-		ui_interface->declare(&fVslider1, "style", "knob");
-		ui_interface->addVerticalSlider("Tension", &fVslider1, float(0.0), float(0.0), float(1.0), float(0.01));
-		ui_interface->declare(&fVslider2, "2", "");
-		ui_interface->declare(&fVslider2, "style", "knob");
-		ui_interface->addVerticalSlider("Blend", &fVslider2, float(0.5), float(0.0), float(1.0), float(0.01));
-		ui_interface->closeBox();
-	}
-	
-	inline void compute(int count, float** inputs, float** outputs) {
+		
+	inline void compute(int count, [[maybe_unused]] float** inputs, float** outputs) {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
 		double fSlow0 = fConst7 * static_cast<double>(fVslider0);
@@ -759,9 +745,9 @@ protected:
 		callback("blend", &fVslider2, 0.5f);
 	}
 
-	inline bool editDwell() { return OtUi::knob("Dwell", &fVslider0, 0.0f, 1.0f, "%.2f"); }
-	inline bool editTension() { return OtUi::knob("Tension", &fVslider1, 0.0f, 1.0f, "%.2f"); }
-	inline bool editBlend() { return OtUi::knob("Blend", &fVslider2, 0.0f, 1.0f, "%.2f"); }
+	inline bool editDwell() { return OtUi::knob("Dwell", &fVslider0, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editTension() { return OtUi::knob("Tension", &fVslider1, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editBlend() { return OtUi::knob("Blend", &fVslider2, 0.0f, 1.0f, "%.2f", false); }
 
 	inline void setDwell(float value) { fVslider0 = value; }
 	inline void setTension(float value) { fVslider1 = value; }

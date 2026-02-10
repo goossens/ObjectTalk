@@ -124,21 +124,8 @@ protected:
 	inline int getSampleRate() {
 		return fSampleRate;
 	}
-	
-	inline void buildUserInterface(UI* ui_interface) {
-		ui_interface->declare(0, "0", "");
-		ui_interface->openHorizontalBox("Ladder");
-		ui_interface->declare(&fVslider0, "2", "");
-		ui_interface->declare(&fVslider0, "format", "%.0fhz");
-		ui_interface->declare(&fVslider0, "style", "knob");
-		ui_interface->addVerticalSlider("Freq", &fVslider0, float(8e+02), float(8e+01), float(8e+03), float(0.1));
-		ui_interface->declare(&fVslider1, "3", "");
-		ui_interface->declare(&fVslider1, "style", "knob");
-		ui_interface->addVerticalSlider("Res", &fVslider1, float(0.5), float(0.0), float(1.0), float(0.01));
-		ui_interface->closeBox();
-	}
-	
-	inline void compute(int count, float** inputs, float** outputs) {
+		
+	inline void compute(int count, [[maybe_unused]] float** inputs, float** outputs) {
 		float* input0 = inputs[0];
 		float* input1 = inputs[1];
 		float* input2 = inputs[2];
@@ -238,8 +225,8 @@ protected:
 		callback("res", &fVslider1, 0.5f);
 	}
 
-	inline bool editFreq() { return OtUi::knob("Freq", &fVslider0, 80.0f, 8000.0f, "%.0fhz"); }
-	inline bool editRes() { return OtUi::knob("Res", &fVslider1, 0.0f, 1.0f, "%.2f"); }
+	inline bool editFreq() { return OtUi::knob("Freq", &fVslider0, 80.0f, 8000.0f, "%.0fhz", false); }
+	inline bool editRes() { return OtUi::knob("Res", &fVslider1, 0.0f, 1.0f, "%.2f", false); }
 
 	inline void setFreq(float value) { fVslider0 = value; }
 	inline void setRes(float value) { fVslider1 = value; }

@@ -142,28 +142,8 @@ protected:
 	inline int getSampleRate() {
 		return fSampleRate;
 	}
-	
-	inline void buildUserInterface(UI* ui_interface) {
-		ui_interface->openHorizontalBox("Compressor");
-		ui_interface->declare(&fVslider3, "0", "");
-		ui_interface->declare(&fVslider3, "style", "knob");
-		ui_interface->addVerticalSlider("Ratio", &fVslider3, float(4.0), float(1.0), float(2e+01), float(0.1));
-		ui_interface->declare(&fVslider2, "1", "");
-		ui_interface->declare(&fVslider2, "format", "%.0fdB");
-		ui_interface->declare(&fVslider2, "style", "knob");
-		ui_interface->addVerticalSlider("Thresh", &fVslider2, float(-1e+01), float(-5e+01), float(0.0), float(1.0));
-		ui_interface->declare(&fVslider1, "2", "");
-		ui_interface->declare(&fVslider1, "format", "%.0fms");
-		ui_interface->declare(&fVslider1, "style", "knob");
-		ui_interface->addVerticalSlider("Attack", &fVslider1, float(1e+01), float(0.0), float(2e+02), float(1.0));
-		ui_interface->declare(&fVslider0, "3", "");
-		ui_interface->declare(&fVslider0, "format", "%.0fms");
-		ui_interface->declare(&fVslider0, "style", "knob");
-		ui_interface->addVerticalSlider("Release", &fVslider0, float(2e+02), float(5.0), float(1e+03), float(1.0));
-		ui_interface->closeBox();
-	}
-	
-	inline void compute(int count, float** inputs, float** outputs) {
+		
+	inline void compute(int count, [[maybe_unused]] float** inputs, float** outputs) {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
 		double fSlow0 = fConst1 * static_cast<double>(fVslider0);
@@ -285,10 +265,10 @@ protected:
 		callback("release", &fVslider0, 200.0f);
 	}
 
-	inline bool editRatio() { return OtUi::knob("Ratio", &fVslider3, 1.0f, 20.0f, "%.1f"); }
-	inline bool editThresh() { return OtUi::knob("Thresh", &fVslider2, -50.0f, 0.0f, "%.0fdB"); }
-	inline bool editAttack() { return OtUi::knob("Attack", &fVslider1, 0.0f, 200.0f, "%.0fms"); }
-	inline bool editRelease() { return OtUi::knob("Release", &fVslider0, 5.0f, 1000.0f, "%.0fms"); }
+	inline bool editRatio() { return OtUi::knob("Ratio", &fVslider3, 1.0f, 20.0f, "%.1f", false); }
+	inline bool editThresh() { return OtUi::knob("Thresh", &fVslider2, -50.0f, 0.0f, "%.0fdB", false); }
+	inline bool editAttack() { return OtUi::knob("Attack", &fVslider1, 0.0f, 200.0f, "%.0fms", false); }
+	inline bool editRelease() { return OtUi::knob("Release", &fVslider0, 5.0f, 1000.0f, "%.0fms", false); }
 
 	inline void setRatio(float value) { fVslider3 = value; }
 	inline void setThresh(float value) { fVslider2 = value; }

@@ -233,78 +233,8 @@ protected:
 	inline int getSampleRate() {
 		return fSampleRate;
 	}
-	
-	inline void buildUserInterface(UI* ui_interface) {
-		ui_interface->declare(0, "0", "");
-		ui_interface->openHorizontalBox("Parametric EQ");
-		ui_interface->declare(0, "1", "");
-		ui_interface->openVerticalBox("Low");
-		ui_interface->declare(&fHslider2, "0", "");
-		ui_interface->declare(&fHslider2, "format", "%.1fdB");
-		ui_interface->declare(&fHslider2, "style", "knob");
-		ui_interface->addHorizontalSlider("Level", &fHslider2, float(0.0), float(-4e+01), float(4e+01), float(0.1));
-		ui_interface->declare(&fHslider1, "1", "");
-		ui_interface->declare(&fHslider1, "format", "%.0fhz");
-		ui_interface->declare(&fHslider1, "style", "knob");
-		ui_interface->addHorizontalSlider("Freq", &fHslider1, float(1e+02), float(1.0), float(1e+03), float(1.0));
-		ui_interface->closeBox();
-		ui_interface->declare(0, "2", "");
-		ui_interface->openVerticalBox("Peak1");
-		ui_interface->declare(&fHslider4, "0", "");
-		ui_interface->declare(&fHslider4, "format", "%.1fdB");
-		ui_interface->declare(&fHslider4, "style", "knob");
-		ui_interface->addHorizontalSlider("Level", &fHslider4, float(0.0), float(-4e+01), float(4e+01), float(0.1));
-		ui_interface->declare(&fHslider3, "1", "");
-		ui_interface->declare(&fHslider3, "format", "%.0fhz");
-		ui_interface->declare(&fHslider3, "style", "knob");
-		ui_interface->addHorizontalSlider("Freq", &fHslider3, float(1e+02), float(2e+01), float(1e+04), float(1.0));
-		ui_interface->declare(&fHslider5, "2", "");
-		ui_interface->declare(&fHslider5, "style", "knob");
-		ui_interface->addHorizontalSlider("Q", &fHslider5, float(1.0), float(0.5), float(1e+01), float(0.1));
-		ui_interface->closeBox();
-		ui_interface->declare(0, "3", "");
-		ui_interface->openVerticalBox("Peak2");
-		ui_interface->declare(&fHslider7, "0", "");
-		ui_interface->declare(&fHslider7, "format", "%.1fdB");
-		ui_interface->declare(&fHslider7, "style", "knob");
-		ui_interface->addHorizontalSlider("Level", &fHslider7, float(0.0), float(-4e+01), float(4e+01), float(0.1));
-		ui_interface->declare(&fHslider6, "1", "");
-		ui_interface->declare(&fHslider6, "format", "%.0fhz");
-		ui_interface->declare(&fHslider6, "style", "knob");
-		ui_interface->addHorizontalSlider("Freq", &fHslider6, float(1e+02), float(2e+01), float(1e+04), float(1.0));
-		ui_interface->declare(&fHslider8, "2", "");
-		ui_interface->declare(&fHslider8, "style", "knob");
-		ui_interface->addHorizontalSlider("Q", &fHslider8, float(1.0), float(0.5), float(1e+01), float(0.1));
-		ui_interface->closeBox();
-		ui_interface->declare(0, "4", "");
-		ui_interface->openVerticalBox("Peak3");
-		ui_interface->declare(&fHslider10, "0", "");
-		ui_interface->declare(&fHslider10, "format", "%.1fdB");
-		ui_interface->declare(&fHslider10, "style", "knob");
-		ui_interface->addHorizontalSlider("Level", &fHslider10, float(0.0), float(-4e+01), float(4e+01), float(0.1));
-		ui_interface->declare(&fHslider9, "1", "");
-		ui_interface->declare(&fHslider9, "format", "%.0fhz");
-		ui_interface->declare(&fHslider9, "style", "knob");
-		ui_interface->addHorizontalSlider("Freq", &fHslider9, float(1e+02), float(2e+01), float(1e+04), float(1.0));
-		ui_interface->declare(&fHslider11, "2", "");
-		ui_interface->declare(&fHslider11, "style", "knob");
-		ui_interface->addHorizontalSlider("Q", &fHslider11, float(1.0), float(0.5), float(1e+01), float(0.1));
-		ui_interface->closeBox();
-		ui_interface->declare(0, "5", "");
-		ui_interface->openVerticalBox("High");
-		ui_interface->declare(&fHslider12, "0", "");
-		ui_interface->declare(&fHslider12, "format", "%.1fdB");
-		ui_interface->declare(&fHslider12, "style", "knob");
-		ui_interface->addHorizontalSlider("Level", &fHslider12, float(0.0), float(-4e+01), float(4e+01), float(0.1));
-		ui_interface->declare(&fHslider0, "1", "");
-		ui_interface->declare(&fHslider0, "format", "%.0fhz");
-		ui_interface->declare(&fHslider0, "style", "knob");
-		ui_interface->addHorizontalSlider("Freq", &fHslider0, float(8e+03), float(2e+01), float(1e+04), float(1.0));
-		ui_interface->closeBox();
-		ui_interface->closeBox();
-	}
-	
-	inline void compute(int count, float** inputs, float** outputs) {
+		
+	inline void compute(int count, [[maybe_unused]] float** inputs, float** outputs) {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
 		double fSlow0 = std::tan(fConst1 * static_cast<double>(fHslider0));
@@ -609,19 +539,19 @@ protected:
 		callback("highFreq", &fHslider0, 8000.0f);
 	}
 
-	inline bool editLowLevel() { return OtUi::knob("Level", &fHslider2, -40.0f, 40.0f, "%.1fdB"); }
-	inline bool editLowFreq() { return OtUi::knob("Freq", &fHslider1, 1.0f, 1000.0f, "%.0fhz"); }
-	inline bool editPeak1Level() { return OtUi::knob("Level", &fHslider4, -40.0f, 40.0f, "%.1fdB"); }
-	inline bool editPeak1Freq() { return OtUi::knob("Freq", &fHslider3, 20.0f, 10000.0f, "%.0fhz"); }
-	inline bool editPeak1Q() { return OtUi::knob("Q", &fHslider5, 0.5f, 10.0f, "%.1f"); }
-	inline bool editPeak2Level() { return OtUi::knob("Level", &fHslider7, -40.0f, 40.0f, "%.1fdB"); }
-	inline bool editPeak2Freq() { return OtUi::knob("Freq", &fHslider6, 20.0f, 10000.0f, "%.0fhz"); }
-	inline bool editPeak2Q() { return OtUi::knob("Q", &fHslider8, 0.5f, 10.0f, "%.1f"); }
-	inline bool editPeak3Level() { return OtUi::knob("Level", &fHslider10, -40.0f, 40.0f, "%.1fdB"); }
-	inline bool editPeak3Freq() { return OtUi::knob("Freq", &fHslider9, 20.0f, 10000.0f, "%.0fhz"); }
-	inline bool editPeak3Q() { return OtUi::knob("Q", &fHslider11, 0.5f, 10.0f, "%.1f"); }
-	inline bool editHighLevel() { return OtUi::knob("Level", &fHslider12, -40.0f, 40.0f, "%.1fdB"); }
-	inline bool editHighFreq() { return OtUi::knob("Freq", &fHslider0, 20.0f, 10000.0f, "%.0fhz"); }
+	inline bool editLowLevel() { return OtUi::knob("Level", &fHslider2, -40.0f, 40.0f, "%.1fdB", false); }
+	inline bool editLowFreq() { return OtUi::knob("Freq", &fHslider1, 1.0f, 1000.0f, "%.0fhz", false); }
+	inline bool editPeak1Level() { return OtUi::knob("Level", &fHslider4, -40.0f, 40.0f, "%.1fdB", false); }
+	inline bool editPeak1Freq() { return OtUi::knob("Freq", &fHslider3, 20.0f, 10000.0f, "%.0fhz", false); }
+	inline bool editPeak1Q() { return OtUi::knob("Q", &fHslider5, 0.5f, 10.0f, "%.1f", false); }
+	inline bool editPeak2Level() { return OtUi::knob("Level", &fHslider7, -40.0f, 40.0f, "%.1fdB", false); }
+	inline bool editPeak2Freq() { return OtUi::knob("Freq", &fHslider6, 20.0f, 10000.0f, "%.0fhz", false); }
+	inline bool editPeak2Q() { return OtUi::knob("Q", &fHslider8, 0.5f, 10.0f, "%.1f", false); }
+	inline bool editPeak3Level() { return OtUi::knob("Level", &fHslider10, -40.0f, 40.0f, "%.1fdB", false); }
+	inline bool editPeak3Freq() { return OtUi::knob("Freq", &fHslider9, 20.0f, 10000.0f, "%.0fhz", false); }
+	inline bool editPeak3Q() { return OtUi::knob("Q", &fHslider11, 0.5f, 10.0f, "%.1f", false); }
+	inline bool editHighLevel() { return OtUi::knob("Level", &fHslider12, -40.0f, 40.0f, "%.1fdB", false); }
+	inline bool editHighFreq() { return OtUi::knob("Freq", &fHslider0, 20.0f, 10000.0f, "%.0fhz", false); }
 
 	inline void setLowLevel(float value) { fHslider2 = value; }
 	inline void setLowFreq(float value) { fHslider1 = value; }

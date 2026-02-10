@@ -189,24 +189,8 @@ protected:
 	inline int getSampleRate() {
 		return fSampleRate;
 	}
-	
-	inline void buildUserInterface(UI* ui_interface) {
-		ui_interface->openHorizontalBox("Phaser");
-		ui_interface->declare(&fVslider2, "0", "");
-		ui_interface->declare(&fVslider2, "format", "%.01fhz");
-		ui_interface->declare(&fVslider2, "style", "knob");
-		ui_interface->addVerticalSlider("Speed", &fVslider2, float(1.0), float(0.001), float(2e+01), float(0.01));
-		ui_interface->declare(&fVslider0, "1", "");
-		ui_interface->declare(&fVslider0, "format", "%.0f%%");
-		ui_interface->declare(&fVslider0, "style", "knob");
-		ui_interface->addVerticalSlider("Depth", &fVslider0, float(5e+01), float(0.0), float(1e+02), float(1.0));
-		ui_interface->declare(&fVslider1, "3", "");
-		ui_interface->declare(&fVslider1, "style", "knob");
-		ui_interface->addVerticalSlider("Feedbck", &fVslider1, float(0.0), float(-1.0), float(1.0), float(0.01));
-		ui_interface->closeBox();
-	}
-	
-	inline void compute(int count, float** inputs, float** outputs) {
+		
+	inline void compute(int count, [[maybe_unused]] float** inputs, float** outputs) {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
 		double fSlow0 = fConst1 * static_cast<double>(fVslider0);
@@ -339,9 +323,9 @@ protected:
 		callback("feedbck", &fVslider1, 0.0f);
 	}
 
-	inline bool editSpeed() { return OtUi::knob("Speed", &fVslider2, 0.001f, 20.0f, "%.01fhz"); }
-	inline bool editDepth() { return OtUi::knob("Depth", &fVslider0, 0.0f, 100.0f, "%.0f%%"); }
-	inline bool editFeedbck() { return OtUi::knob("Feedbck", &fVslider1, -1.0f, 1.0f, "%.2f"); }
+	inline bool editSpeed() { return OtUi::knob("Speed", &fVslider2, 0.001f, 20.0f, "%.01fhz", false); }
+	inline bool editDepth() { return OtUi::knob("Depth", &fVslider0, 0.0f, 100.0f, "%.0f%%", false); }
+	inline bool editFeedbck() { return OtUi::knob("Feedbck", &fVslider1, -1.0f, 1.0f, "%.2f", false); }
 
 	inline void setSpeed(float value) { fVslider2 = value; }
 	inline void setDepth(float value) { fVslider0 = value; }

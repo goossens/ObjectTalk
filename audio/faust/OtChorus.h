@@ -152,25 +152,8 @@ protected:
 	inline int getSampleRate() {
 		return fSampleRate;
 	}
-	
-	inline void buildUserInterface(UI* ui_interface) {
-		ui_interface->openHorizontalBox("Chorus");
-		ui_interface->declare(&fVslider0, "0", "");
-		ui_interface->declare(&fVslider0, "style", "knob");
-		ui_interface->addVerticalSlider("Level", &fVslider0, float(0.5), float(0.0), float(1.0), float(0.01));
-		ui_interface->declare(&fVslider3, "1", "");
-		ui_interface->declare(&fVslider3, "style", "knob");
-		ui_interface->addVerticalSlider("Freq", &fVslider3, float(2.0), float(0.0), float(1e+01), float(0.01));
-		ui_interface->declare(&fVslider1, "2", "");
-		ui_interface->declare(&fVslider1, "style", "knob");
-		ui_interface->addVerticalSlider("Delay", &fVslider1, float(0.025), float(0.0), float(0.2), float(0.001));
-		ui_interface->declare(&fVslider2, "3", "");
-		ui_interface->declare(&fVslider2, "style", "knob");
-		ui_interface->addVerticalSlider("Depth", &fVslider2, float(0.02), float(0.0), float(1.0), float(0.001));
-		ui_interface->closeBox();
-	}
-	
-	inline void compute(int count, float** inputs, float** outputs) {
+		
+	inline void compute(int count, [[maybe_unused]] float** inputs, float** outputs) {
 		float* input0 = inputs[0];
 		float* input1 = inputs[1];
 		float* output0 = outputs[0];
@@ -290,10 +273,10 @@ protected:
 		callback("depth", &fVslider2, 0.02f);
 	}
 
-	inline bool editLevel() { return OtUi::knob("Level", &fVslider0, 0.0f, 1.0f, "%.2f"); }
-	inline bool editFreq() { return OtUi::knob("Freq", &fVslider3, 0.0f, 10.0f, "%.2f"); }
-	inline bool editDelay() { return OtUi::knob("Delay", &fVslider1, 0.0f, 0.2f, "%.2f"); }
-	inline bool editDepth() { return OtUi::knob("Depth", &fVslider2, 0.0f, 1.0f, "%.2f"); }
+	inline bool editLevel() { return OtUi::knob("Level", &fVslider0, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editFreq() { return OtUi::knob("Freq", &fVslider3, 0.0f, 10.0f, "%.2f", false); }
+	inline bool editDelay() { return OtUi::knob("Delay", &fVslider1, 0.0f, 0.2f, "%.2f", false); }
+	inline bool editDepth() { return OtUi::knob("Depth", &fVslider2, 0.0f, 1.0f, "%.2f", false); }
 
 	inline void setLevel(float value) { fVslider0 = value; }
 	inline void setFreq(float value) { fVslider3 = value; }

@@ -31,7 +31,7 @@ RENDERUI
 	}
 
 	struct Parameters {
-PARAMETERSSTRUCT
+STRUCTPARAMETERS
 	};
 
 	inline void setParameters([[maybe_unused]] const Parameters& parameters) {

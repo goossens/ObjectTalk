@@ -12,12 +12,9 @@
 					"type": "midi"
 				},
 				{
-					"id": 2197641789,
+					"id": 3935145354,
 					"name": "Freq",
-					"tuningCents": 0.0,
-					"tuningOctaves": 0.0,
-					"tuningSemitones": 0.0,
-					"type": "control"
+					"type": "frequency"
 				},
 				{
 					"id": 2895604225,
@@ -35,12 +32,10 @@
 			"id": 2557146591,
 			"inputs": [
 				{
-					"id": 3360538592,
+					"id": 342139898,
 					"name": "Freq",
-					"tuningCents": 0.0,
-					"tuningOctaves": 0.0,
-					"tuningSemitones": 0.0,
-					"type": "control"
+					"tuning": 0.0,
+					"type": "frequency"
 				}
 			],
 			"outputs": [
@@ -173,11 +168,6 @@
 			"to": 248961618
 		},
 		{
-			"from": 2197641789,
-			"id": 3314960292,
-			"to": 3360538592
-		},
-		{
 			"from": 410275450,
 			"id": 1272862781,
 			"to": 1337454414
@@ -201,6 +191,11 @@
 			"from": 3111468910,
 			"id": 516761903,
 			"to": 2718563792
+		},
+		{
+			"from": 3935145354,
+			"id": 4007098184,
+			"to": 342139898
 		}
 	]
 }

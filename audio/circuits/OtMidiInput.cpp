@@ -39,7 +39,7 @@ public:
 	// configure circuit
 	inline void configure() override {
 		midiOutput = addOutputPin("MIDI", OtCircuitPinClass::Type::midi);
-		pitchOutput = addOutputPin("Freq", OtCircuitPinClass::Type::control);
+		freqOutput = addOutputPin("Freq", OtCircuitPinClass::Type::frequency);
 		gateOutput = addOutputPin("Gate", OtCircuitPinClass::Type::control);
 	}
 
@@ -73,7 +73,7 @@ public:
 					[](void* data, int msg, int key, float velocity) {
 						OtMidiInputCircuit* midi = (OtMidiInputCircuit*) data;
 
-						if (key >= 128) {
+						if (key < 0 || key >= 128) {
 							return false;
 						}
 
@@ -274,11 +274,11 @@ public:
 		});
 
 		// send freq signal (if connected)
-		if (pitchOutput->isDestinationConnected()) {
-			pitchOutput->setSamples(OtAudioUtilities::freqToCv(freq));
+		if (freqOutput->isDestinationConnected()) {
+			freqOutput->setSamples(freq);
 
 		} else {
-			pitchOutput->setSamples(0.0f);
+			freqOutput->setSamples(0.0f);
 		}
 
 		// send gate signal (if connected)
@@ -316,13 +316,13 @@ private:
 	OtMidiFile midifile;
 
 	std::array<bool, 128> keyPressed = {false};
-	int currentNote = 0;
+	int currentNote = -1;
 	OtMidiBuffer messages;
 
 	std::mutex mutex;
 
 	OtCircuitPin midiOutput;
-	OtCircuitPin pitchOutput;
+	OtCircuitPin freqOutput;
 	OtCircuitPin gateOutput;
 };
 

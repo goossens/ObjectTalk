@@ -12,12 +12,9 @@
 					"type": "midi"
 				},
 				{
-					"id": 588193627,
+					"id": 4066359894,
 					"name": "Freq",
-					"tuningCents": 0.0,
-					"tuningOctaves": 0.0,
-					"tuningSemitones": 0.0,
-					"type": "control"
+					"type": "frequency"
 				},
 				{
 					"id": 2913129548,
@@ -35,12 +32,10 @@
 			"id": 3377639378,
 			"inputs": [
 				{
-					"id": 1723571676,
+					"id": 4021394996,
 					"name": "Freq",
-					"tuningCents": 0.0,
-					"tuningOctaves": 0.0,
-					"tuningSemitones": 0.0,
-					"type": "control"
+					"tuning": 0.0,
+					"type": "frequency"
 				}
 			],
 			"outputs": [
@@ -138,12 +133,6 @@
 				},
 				{
 					"attenuation": 1.0,
-					"id": 349209096,
-					"name": "Cutoff",
-					"type": "control"
-				},
-				{
-					"attenuation": 1.0,
 					"id": 4129567100,
 					"name": "Mod 1",
 					"type": "control"
@@ -152,6 +141,12 @@
 					"attenuation": 1.0,
 					"id": 3820959156,
 					"name": "Mod 2",
+					"type": "control"
+				},
+				{
+					"attenuation": 1.0,
+					"id": 4116510409,
+					"name": "Mod 3",
 					"type": "control"
 				}
 			],
@@ -221,14 +216,9 @@
 			"to": 847268500
 		},
 		{
-			"from": 588193627,
-			"id": 3772697357,
-			"to": 1723571676
-		},
-		{
 			"from": 2771681546,
 			"id": 513123003,
-			"to": 3820959156
+			"to": 4116510409
 		},
 		{
 			"from": 3960609197,
@@ -253,12 +243,12 @@
 		{
 			"from": 3585982669,
 			"id": 1257383794,
-			"to": 4129567100
+			"to": 3820959156
 		},
 		{
-			"from": 588193627,
-			"id": 2272335197,
-			"to": 349209096
+			"from": 4066359894,
+			"id": 1330157948,
+			"to": 4021394996
 		}
 	]
 }

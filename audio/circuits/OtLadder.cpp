@@ -27,9 +27,9 @@ public:
 		OtAssert(this->dsp.getNumOutputs() == 1);
 
 		signalInput = addInputPin("Input", OtCircuitPinClass::Type::mono);
-		cutoffInput = addInputPin("Cutoff", OtCircuitPinClass::Type::control)->hasAttenuation();
 		mod1Input = addInputPin("Mod 1", OtCircuitPinClass::Type::control)->hasAttenuation();
 		mod2Input = addInputPin("Mod 2", OtCircuitPinClass::Type::control)->hasAttenuation();
+		mod2Input = addInputPin("Mod 3", OtCircuitPinClass::Type::control)->hasAttenuation();
 		ladderOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
 	}
 
@@ -39,21 +39,21 @@ public:
 
 		if (ladderOutput->isDestinationConnected() && signalInput->isSourceConnected()) {
 			float signal[OtAudioSettings::bufferSize];
-			float cutoff[OtAudioSettings::bufferSize] = {0.0f};
 			float mod1[OtAudioSettings::bufferSize] = {0.0f};
 			float mod2[OtAudioSettings::bufferSize] = {0.0f};
+			float mod3[OtAudioSettings::bufferSize] = {0.0f};
 
-			float* in[] = {signal, cutoff, mod1, mod2};
+			float* in[] = {signal, mod1, mod2, mod3};
 			auto out = output;
 
 			signalInput->getSamples(signal);
 
-			if (cutoffInput->isSourceConnected()) {
-				cutoffInput->getSamples(cutoff);
-			}
-
 			if (mod1Input->isSourceConnected()) {
 				mod1Input->getSamples(mod1);
+			}
+
+			if (mod2Input->isSourceConnected()) {
+				mod2Input->getSamples(mod2);
 			}
 
 			if (mod2Input->isSourceConnected()) {
@@ -71,9 +71,9 @@ public:
 
 private:
 	OtCircuitPin signalInput;
-	OtCircuitPin cutoffInput;
 	OtCircuitPin mod1Input;
 	OtCircuitPin mod2Input;
+	OtCircuitPin mod3Input;
 	OtCircuitPin ladderOutput;
 };
 

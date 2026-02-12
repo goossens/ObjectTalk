@@ -48,6 +48,7 @@ public:
 		mono,
 		stereo,
 		control,
+		frequency,
 		midi
 	};
 
@@ -60,6 +61,7 @@ public:
 		"mono",
 		"stereo",
 		"control",
+		"frequency",
 		"midi"
 	};
 
@@ -70,15 +72,13 @@ public:
 		if (direction == Direction::output) {
 			switch (type) {
 				case Type::mono:
+				case Type::control:
+				case Type::frequency:
 					audioBuffer = std::make_shared<OtAudioBuffer>(1);
 					break;
 
 				case Type::stereo:
 					audioBuffer = std::make_shared<OtAudioBuffer>(2);
-					break;
-
-				case Type::control:
-					audioBuffer = std::make_shared<OtAudioBuffer>(1);
 					break;
 
 				case Type::midi:

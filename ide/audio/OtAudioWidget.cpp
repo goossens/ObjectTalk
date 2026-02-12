@@ -57,6 +57,7 @@ static constexpr ImU32 pinColors[] = {
 	IM_COL32(180, 90, 0, 255),		// mono
 	IM_COL32(100, 160, 100, 255),	// stereo
 	IM_COL32(0, 100, 200, 255),		// control
+	IM_COL32(0, 160, 220, 255),		// frequency
 	IM_COL32(150, 55, 255, 200)		// MIDI
 };
 

@@ -117,7 +117,7 @@ protected:
 	
 	inline void instanceConstants([[maybe_unused]] int sample_rate) {
 		fSampleRate = sample_rate;
-		fConst0 = 4.4e+02 / std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
+		fConst0 = 1.0 / std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
 	}
 	
 	inline void instanceResetUserInterface() {
@@ -160,7 +160,7 @@ protected:
 		int iSlow6 = fSlow0 >= 5.0;
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
 			iVec1[0] = 1;
-			double fTemp0 = ((1 - iVec1[1]) ? 0.0 : fRec1[1] + fConst0 * std::pow(2.0, static_cast<double>(input0[i0])));
+			double fTemp0 = ((1 - iVec1[1]) ? 0.0 : fRec1[1] + fConst0 * static_cast<double>(input0[i0]));
 			fRec1[0] = fTemp0 - std::floor(fTemp0);
 			double fTemp1 = 2.0 * fRec1[0] + -1.0;
 			double fTemp2 = 2.0 * (1.0 - std::fabs(fTemp1)) + -1.0;

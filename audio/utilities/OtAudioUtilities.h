@@ -23,60 +23,9 @@
 
 class OtAudioUtilities {
 public:
-	template<typename T>
-	inline static T fraction(T n) {
-		// get decimal part of floating point number
-		T whole;
-		return std::modf(n, &whole);
-	}
-
-	template<typename T>
-	inline static T square(T n) {
-		// calculate square of number
-		return n * n;
-	}
-
-	template<typename T>
-	inline static T blep(T t, T dt) {
-		// determine Band-Limited Step
-		// adapted from "Phaseshaping Oscillator Algorithms for Musical SoundSynthesis"
-		// by Jari Kleimola, Victor Lazzarini, Joseph Timoney, and Vesa Valimaki
-		// http://www.acoustics.hut.fi/publications/papers/smc2010-phaseshaping/
-
-		if (t < dt) {
-			return -square(t / dt - static_cast<T>(1));
-
-		} else if (t > 1.0 - dt) {
-			return square((t - static_cast<T>(1)) / dt + static_cast<T>(1));
-
-		} else {
-			return static_cast<T>(0);
-		}
-	}
-
-	template<typename T>
-	inline static T blamp(T t, T dt) {
-		if (t < dt) {
-			t = t / dt - static_cast<T>(1);
-			return -static_cast<T>(1)/ static_cast<T>(3) * square(t) * t;
-
-		} else if (t > static_cast<T>(1) - dt) {
-			t = (t - static_cast<T>(1)) / dt + static_cast<T>(1);
-			return static_cast<T>(1) / static_cast<T>(3) * square(t) * t;
-
-		} else {
-			return static_cast<T>(0);
-		}
-	}
-
 	inline static float tune(float freq, float cents) {
 		auto ratio = std::pow(2.0f, cents / 1200.0f);
 		return freq * ratio;
-	}
-
-	inline static float tuneCV(float cv, float cents) {
-		auto offset = cents / 1200.0f;
-		return cv + offset;
 	}
 
 	inline static float linearToDbv(float v) {

@@ -28,7 +28,7 @@ public:
 		OtAssert(this->dsp.getNumInputs() == 1);
 		OtAssert(this->dsp.getNumOutputs() == 1);
 
-		frequencyInput = addInputPin("Freq", OtCircuitPinClass::Type::control)->hasTuning(true);
+		frequencyInput = addInputPin("Freq", OtCircuitPinClass::Type::frequency)->hasTuning(true);
 		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono)->hasAttenuation(true);
 	}
 
@@ -77,10 +77,8 @@ public:
 				frequencyInput->getSamples(input);
 
 			} else {
-				auto freq = OtAudioUtilities::freqToCv(frequency);
-
 				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-					input[i] = freq;
+					input[i] = frequency;
 				}
 			}
 

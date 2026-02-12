@@ -21,5 +21,4 @@ osc(freq, wf) =
 
 wf = hslider("[1]WaveForm", 1, 0, 7, 1);
 
-cv2hz(cv) = 440 * 2 ^ cv;
-process(cv) = osc(cv2hz(cv), wf);
+process(freq) = osc(freq, wf);

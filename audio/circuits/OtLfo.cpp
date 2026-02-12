@@ -70,10 +70,8 @@ public:
 			float input[OtAudioSettings::bufferSize];
 			float output[OtAudioSettings::bufferSize];
 
-			auto freq = OtAudioUtilities::freqToCv(frequency);
-
 			for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-				input[i] = freq;
+				input[i] = frequency;
 			}
 
 			auto in = input;

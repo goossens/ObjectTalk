@@ -14,7 +14,7 @@ osc(freq, wf) =
 	0,
 	os.oscsin(freq),
 	os.lf_triangle(freq),
-	(os.lf_triangle(freq) + os.lf_saw(freq)) / 1.5,
+	os.lf_triangle(freq) * 0.75 + os.lf_saw(freq) * 0.25,
 	os.lf_saw(freq),
 	os.lf_squarewave(freq),
 	os.lf_pulsetrain(freq, 0.7) : ba.selectn(7, wf);

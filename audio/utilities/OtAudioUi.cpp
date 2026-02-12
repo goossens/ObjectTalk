@@ -21,37 +21,117 @@
 
 
 //
-//	OtAudioUi::headerWithToggleButton
+//	OtAudioUi::decoratedHeader
 //
 
-bool OtAudioUi::headerWithToggleButton(const char* label, bool* value) {
+bool OtAudioUi::decoratedHeader(const char* label, float* attenuation, float* tuning, float* power) {
+	// track changes
+	bool changed = false;
+
+	// determine right side of header
 	auto pos = ImGui::GetCursorScreenPos();
-	auto regionWidth = ImGui::GetContentRegionAvail().x;
+	pos.x += ImGui::GetContentRegionAvail().x;
+
+	// determine start of decorations
+	auto spacing = ImGui::GetStyle().ItemSpacing.x;
+
+	if (attenuation) { pos.x -= trimSliderWidth(); }
+	if (tuning && attenuation) { pos.x -= spacing; }
+	if (tuning) { pos.x -= audioButtonWidth(); }
+	if (power && (attenuation || tuning)) { pos.x -= spacing; }
+	if (power) { pos.x -= OtUi::toggleButtonWidth(); }
+
+	// render basic header
+	ImGui::PushID(label);
 	header(label);
 
-	float height = ImGui::GetFrameHeight();
-	float width = height * 1.4f;
-	pos.x += regionWidth - width;
+	// render decorations
 	ImGui::SetCursorScreenPos(pos);
 
-	ImVec4* colors = ImGui::GetStyle().Colors;
-	ImDrawList* drawlist = ImGui::GetWindowDrawList();
+	if (attenuation) {
+		changed |= trimSlider(attenuation);
+	}
+
+	if (tuning) {
+		if (attenuation) {
+			ImGui::SameLine();
+		}
+
+		changed |= tuningPopup(tuning);
+	}
+
+	if (power) {
+		if (attenuation || tuning) {
+			ImGui::SameLine();
+		}
+
+		auto id = fmt::format("##{}Power", label);
+		changed |= smallToggleButton(id.c_str(), power);
+	}
+
+	ImGui::PopID();
+	return changed;
+}
+
+
+//
+//	OtAudioUi::audioButtonWidth
+//
+
+float OtAudioUi::audioButtonWidth() {
+	return audioFont->CalcTextSizeA(
+		ImGui::GetFontSize(),
+		100.0f,
+		100.0f,
+		OtFontAudio::adr).x + ImGui::GetStyle().ItemInnerSpacing.x * 2.0f;
+}
+
+
+//
+//	OtAudioUi::toggleButton
+//
+
+bool OtAudioUi::toggleButton(const char* label, float* value) {
+	bool flag = *value != 0.0f;
+	bool result = OtUi::toggleButton(label, &flag);
+
+	if (result) {
+		*value = static_cast<float>(flag);
+	}
+
+	return result;
+}
+
+
+//
+//	OtAudioUi::smallToggleButton
+//
+
+bool OtAudioUi::smallToggleButton(const char* label, float* value) {
 	auto changed = false;
+
+	auto pos = ImGui::GetCursorScreenPos();
+	float height = ImGui::GetFrameHeight();
+	float width = height * 1.4f;
 
 	auto id = fmt::format("##{}Button", label);
 	ImGui::InvisibleButton(id.c_str(), ImVec2(width, height));
 
 	if (ImGui::IsItemClicked()) {
-		*value = !*value;
+		*value = *value == 0.0f ? 1.0f : 0.0f;
 		changed = true;
 	}
 
 	float spacing = 3.0f;
 	float diameter = height - spacing * 2.0f;
 	float radius = diameter * 0.5f;
+
 	pos += ImVec2(spacing, spacing);
 	height = diameter;
 	width = diameter * 1.55f;
+
+	ImVec4* colors = ImGui::GetStyle().Colors;
+	ImDrawList* drawlist = ImGui::GetWindowDrawList();
 
 	if (ImGui::IsItemHovered()) {
 		drawlist->AddRectFilled(
@@ -78,31 +158,11 @@ bool OtAudioUi::headerWithToggleButton(const char* label, bool* value) {
 
 
 //
-//	OtAudioUi::getAudioButtonWidth
+//	OtAudioUi::smallToggleButtonWidth
 //
 
-float OtAudioUi::getAudioButtonWidth() {
-	return audioFont->CalcTextSizeA(
-		15.0f,
-		100.0f,
-		100.0f,
-		OtFontAudio::adr).x + ImGui::GetStyle().ItemInnerSpacing.x * 2.0f;
-}
-
-
-//
-//	OtAudioUi::toggleButton
-//
-
-bool OtAudioUi::toggleButton(const char* label, float* value) {
-	bool flag = *value != 0.0f;
-	bool result = OtUi::toggleButton(label, &flag);
-
-	if (result) {
-		*value = static_cast<float>(flag);
-	}
-
-	return result;
+float OtAudioUi::smallToggleButtonWidth() {
+	return ImGui::GetFrameHeight() * 1.4f;;
 }
 
 
@@ -116,6 +176,34 @@ bool OtAudioUi::trimSlider(float* value) {
 	auto result = ImGui::SliderFloat("", value, 0.0f, 2.0f, "%.2f");
 	ImGui::PopID();
 	return result;
+}
+
+
+//
+//	OtAudioUi::tuningPopup
+//
+
+bool OtAudioUi::tuningPopup(float* tuning) {
+	ImGui::PushID(tuning);
+	bool changed = false;
+
+	if (OtAudioUi::audioButton(OtFontAudio::tuning)) {
+		ImGui::OpenPopup("tuningPopup");
+	}
+
+	if (ImGui::BeginPopup("tuningPopup")) {
+		auto cents = static_cast<int>(*tuning);
+
+		if (OtUi::knob("Cents", &cents, -4800, 4800)) {
+			*tuning = static_cast<float>(cents);
+			changed |= true;
+		}
+
+		ImGui::EndPopup();
+	}
+
+	ImGui::PopID();
+	return changed;
 }
 
 
@@ -134,7 +222,7 @@ bool OtAudioUi::waveFormSelector(float* waveform) {
 	ImGui::SameLine(0.0f, spacing);
 	changed |= audioRadioButton(OtFontAudio::modTriangle, waveform, 2.0f, "Triangle");
 	ImGui::SameLine(0.0f, spacing);
-	changed |= audioRadioButton(OtFontAudio::modSawDown, waveform, 3.0f, "Shark Tooth");
+	changed |= audioRadioButton(OtFontAudio::modSharkTooth, waveform, 3.0f, "Shark Tooth");
 	ImGui::SameLine(0.0f, spacing);
 	changed |= audioRadioButton(OtFontAudio::modSawUp, waveform, 4.0f, "Saw Tooth");
 	ImGui::SameLine(0.0f, spacing);

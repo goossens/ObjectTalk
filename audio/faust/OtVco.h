@@ -83,8 +83,9 @@ protected:
 	double fVec3[1024];
 	double fConst5;
 	double fRec2[2];
-	double fRec4[2];
 	double fConst6;
+	double fRec4[2];
+	double fConst7;
 	
  public:
 	OtVco() {
@@ -144,7 +145,8 @@ protected:
 		fConst3 = 0.25 * fConst0;
 		fConst4 = 1.0 / fConst0;
 		fConst5 = 0.5 * fConst0;
-		fConst6 = 0.7 * fConst0;
+		fConst6 = 1.32e+03 / fConst0;
+		fConst7 = 0.7 * fConst0;
 	}
 	
 	inline void instanceResetUserInterface() {
@@ -221,18 +223,18 @@ protected:
 			double fTemp11 = std::floor(fTemp9);
 			double fTemp12 = fConst3 * (fTemp8 - fVec3[(IOTA0 - iTemp10) & 1023] * (fTemp11 + (1.0 - fTemp9)) - (fTemp9 - fTemp11) * fVec3[(IOTA0 - (iTemp10 + 1)) & 1023]);
 			fRec2[0] = 0.999 * fRec2[1] + fTemp12;
-			double fTemp13 = fConst2 * fRec2[0] * fTemp1;
+			double fTemp13 = fRec2[0] * fTemp1;
 			double fTemp14 = std::max<double>(2.220446049250313e-16, std::fabs(fTemp3));
 			double fTemp15 = fRec4[1] + fConst4 * fTemp14;
 			double fTemp16 = fTemp15 + -1.0;
 			int iTemp17 = fTemp16 < 0.0;
 			fRec4[0] = ((iTemp17) ? fTemp15 : fTemp16);
 			double fRec5 = ((iTemp17) ? fTemp15 : fTemp15 + (1.0 - fConst0 / fTemp14) * fTemp16);
-			double fTemp18 = 2.0 * fRec5;
-			double fTemp19 = std::max<double>(0.0, std::min<double>(2047.0, fConst6 / fTemp4));
+			double fTemp18 = 2.0 * fRec5 + -1.0;
+			double fTemp19 = std::max<double>(0.0, std::min<double>(2047.0, fConst7 / fTemp4));
 			int iTemp20 = static_cast<int>(fTemp19);
 			double fTemp21 = std::floor(fTemp19);
-			output0[i0] = static_cast<float>(((iSlow1) ? ((iSlow5) ? fConst3 * (fTemp8 - fVec3[(IOTA0 - iTemp20) & 1023] * (fTemp21 + (1.0 - fTemp19)) - (fTemp19 - fTemp21) * fVec3[(IOTA0 - (iTemp20 + 1)) & 1023]) : ((iSlow6) ? fTemp12 : fTemp18 + -1.0)) : ((iSlow2) ? ((iSlow4) ? 0.6666666666666666 * (fTemp18 + fTemp13 + -1.0) : fTemp13) : ((iSlow3) ? ftbl0OtVcoSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec1[0]), 65535))] : 0.0))));
+			output0[i0] = static_cast<float>(((iSlow1) ? ((iSlow5) ? fConst3 * (fTemp8 - fVec3[(IOTA0 - iTemp20) & 1023] * (fTemp21 + (1.0 - fTemp19)) - (fTemp19 - fTemp21) * fVec3[(IOTA0 - (iTemp20 + 1)) & 1023]) : ((iSlow6) ? fTemp12 : fTemp18)) : ((iSlow2) ? ((iSlow4) ? fConst6 * fTemp13 + 0.25 * fTemp18 : fConst2 * fTemp13) : ((iSlow3) ? ftbl0OtVcoSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec1[0]), 65535))] : 0.0))));
 			iVec1[1] = iVec1[0];
 			fRec1[1] = fRec1[0];
 			fRec3[1] = fRec3[0];

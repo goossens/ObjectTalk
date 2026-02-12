@@ -32,14 +32,17 @@ OtAnalogSynth::OtAnalogSynth() {
 //
 
 bool OtAnalogSynth::renderUI([[maybe_unused]] float itemWidth) {
-	auto width = OtUi::knobWidth(4) + ImGui::GetStyle().WindowPadding.x * 2.0f;
-	auto height = OtUi::knobHeight(3) + ImGui::GetFrameHeightWithSpacing() * 4.0f + envelopeHeight + ImGui::GetStyle().WindowPadding.y * 2.0f;
+	auto size = ImVec2(
+		OtUi::knobWidth(4) + ImGui::GetStyle().WindowPadding.x * 2.0f,
+		OtUi::knobHeight(3) + ImGui::GetFrameHeightWithSpacing() * 4.0f + envelopeHeight + ImGui::GetStyle().WindowPadding.y * 2.0f
+	);
+
 	bool changed = false;
 
 	// render synth components
-	changed |= renderVco(width, height); ImGui::SameLine();
-	changed |= renderVcf(width, height); ImGui::SameLine();
-	changed |= renderVca(width, height);
+	changed |= renderVco(size); ImGui::SameLine();
+	changed |= renderVcf(size); ImGui::SameLine();
+	changed |= renderVca(size);
 
 	return changed;
 }
@@ -138,12 +141,18 @@ void OtAnalogSynth::AllNotesOff() {
 //	OtAnalogSynth::renderVco
 //
 
-bool OtAnalogSynth::renderVco(float width, float height) {
+bool OtAnalogSynth::renderVco(ImVec2 size) {
 	auto changed = false;
 
-	ImGui::BeginChild("VCO", ImVec2(width, height), ImGuiChildFlags_Borders);
-	OtUi::header("Oscillator 1");
+	ImGui::BeginChild("VCO", size, ImGuiChildFlags_Borders);
 	ImGui::PushID("Oscillator 1");
+	float tuning1 = getVcoTuning1();
+
+	if (OtAudioUi::decoratedHeader("Oscillator 1", nullptr, &tuning1, nullptr)) {
+		setVcoTuning1(tuning1);
+		changed |= true;
+	}
+
 	auto waveform1 = getVcoWaveForm1();
 
 	if (OtAudioUi::waveFormSelector(&waveform1)) {
@@ -152,8 +161,15 @@ bool OtAnalogSynth::renderVco(float width, float height) {
 	}
 
 	ImGui::PopID();
-	OtUi::header("Oscillator 2");
+
 	ImGui::PushID("Oscillator 2");
+	float tuning2 = getVcoTuning2();
+
+	if (OtAudioUi::decoratedHeader("Oscillator 2", nullptr, &tuning2, nullptr)) {
+		setVcoTuning2(tuning2);
+		changed |= true;
+	}
+
 	auto waveform2 = getVcoWaveForm2();
 
 	if (OtAudioUi::waveFormSelector(&waveform2)) {
@@ -177,17 +193,23 @@ bool OtAnalogSynth::renderVco(float width, float height) {
 //	OtAnalogSynth::renderVcf
 //
 
-bool OtAnalogSynth::renderVcf(float width, float height) {
+bool OtAnalogSynth::renderVcf(ImVec2 size) {
 	auto changed = false;
 
-	ImGui::BeginChild("VCF", ImVec2(width, height), ImGuiChildFlags_Borders);
+	ImGui::BeginChild("VCF", size, ImGuiChildFlags_Borders);
 	OtUi::header("Filter");
 	changed |= editVcfCutoff(); ImGui::SameLine();
-	changed |= editVcfRes(); ImGui::SameLine();
-	changed |= editVcfEnv(); ImGui::SameLine();
-	changed |= editVcfLfo();
+	changed |= editVcfRes();
 
-	OtUi::header("Envelope");
+	float mod1 = getVcfEnvMod();
+	float power1 = getVcfEnvPower();
+
+	if (OtAudioUi::decoratedHeader("Envelope", &mod1, nullptr, &power1)) {
+		setVcfEnvMod(mod1);
+		setVcfEnvPower(power1);
+		changed |= true;
+	}
+
 	vcfAdsrState.attack = getVcfAttack();
 	vcfAdsrState.decay = getVcfDecay();
 	vcfAdsrState.sustain = getVcfSustain();
@@ -201,7 +223,15 @@ bool OtAnalogSynth::renderVcf(float width, float height) {
 	changed |= editVcfRelease();
 	vcfAdsrState.update |= changed;
 
-	OtUi::header("LFO");
+	float mod2 = getVcfLfoMod();
+	float power2 = getVcfLfoPower();
+
+	if (OtAudioUi::decoratedHeader("LFO", &mod2, nullptr, &power2)) {
+		setVcfLfoMod(mod2);
+		setVcfLfoPower(power2);
+		changed |= true;
+	}
+
 	auto waveform = getVcfWaveForm();
 
 	if (OtAudioUi::waveFormSelector(&waveform)) {
@@ -209,7 +239,7 @@ bool OtAnalogSynth::renderVcf(float width, float height) {
 		changed |= true;
 	}
 
-	changed |= editVcfFreq();
+	changed |= editVcfLfoFreq();
 	ImGui::EndChild();
 	return changed;
 }
@@ -219,10 +249,10 @@ bool OtAnalogSynth::renderVcf(float width, float height) {
 //	OtAnalogSynth::renderVca
 //
 
-bool OtAnalogSynth::renderVca(float width, float height) {
+bool OtAnalogSynth::renderVca(ImVec2 size) {
 	auto changed = false;
 
-	ImGui::BeginChild("VCA", ImVec2(width, height), ImGuiChildFlags_Borders);
+	ImGui::BeginChild("VCA", size, ImGuiChildFlags_Borders);
 	OtUi::header("Amplifier");
 
 	OtUi::header("Envelope");

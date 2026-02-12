@@ -20,7 +20,6 @@
 //
 
 void OtAnalogVoice::noteOn(int n, int v) {
-	instanceClear();
 	gate = true;
 	note = n;
 	velocity = v;
@@ -44,7 +43,6 @@ void OtAnalogVoice::noteOff() {
 //
 
 void OtAnalogVoice::cancel() {
-	instanceClear();
 	gate = false;
 	endTime = 0;
 	active = false;

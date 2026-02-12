@@ -14,7 +14,7 @@ osc(freq, wf) =
 	0,
 	os.oscsin(freq),
 	os.triangle(freq),
-	(os.triangle(freq) + os.sawtooth(freq)) / 1.5,
+	os.triangle(freq) * 0.75 + os.sawtooth(freq) * 0.25,
 	os.sawtooth(freq),
 	os.square(freq),
 	os.pulsetrain(freq, 0.7) : ba.selectn(7, wf);

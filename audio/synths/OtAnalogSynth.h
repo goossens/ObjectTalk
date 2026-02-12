@@ -57,7 +57,7 @@ private:
 	void noteOff(int note, int velocity);
 	void AllNotesOff();
 
-	bool renderVco(float width, float height);
-	bool renderVcf(float width, float height);
-	bool renderVca(float width, float height);
+	bool renderVco(ImVec2 size);
+	bool renderVcf(ImVec2 size);
+	bool renderVca(ImVec2 size);
 };

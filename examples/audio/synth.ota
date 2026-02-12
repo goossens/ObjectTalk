@@ -14,9 +14,7 @@
 				{
 					"id": 2197641789,
 					"name": "Freq",
-					"tuningCents": 0.0,
-					"tuningOctaves": 0.0,
-					"tuningSemitones": 0.0,
+					"tuning": 0.0,
 					"type": "control"
 				},
 				{
@@ -37,15 +35,13 @@
 				{
 					"id": 3360538592,
 					"name": "Freq",
-					"tuningCents": 0.0,
-					"tuningOctaves": 0.0,
-					"tuningSemitones": 0.0,
+					"tuning": 0.0,
 					"type": "control"
 				}
 			],
 			"outputs": [
 				{
-					"attenuation": 1.2200000286102295,
+					"attenuation": 1.4500000476837158,
 					"id": 410275450,
 					"name": "Output",
 					"type": "mono"
@@ -89,9 +85,7 @@
 				{
 					"id": 1370379221,
 					"name": "Freq",
-					"tuningCents": 0.0,
-					"tuningOctaves": -1.0,
-					"tuningSemitones": -1.0,
+					"tuning": -1200.0,
 					"type": "control"
 				}
 			],
@@ -122,7 +116,7 @@
 			"pink": 1.0,
 			"title": "Noise",
 			"type": "Noise",
-			"white": 0.4000000059604645,
+			"white": 0.15000000596046448,
 			"x": 454.0,
 			"y": 289.0
 		},
@@ -196,7 +190,7 @@
 			"y": 160.0
 		},
 		{
-			"freq": 4792.0,
+			"freq": 4000.0,
 			"id": 1532830116,
 			"inputs": [
 				{
@@ -206,12 +200,12 @@
 				},
 				{
 					"attenuation": 1.0,
-					"id": 2135859622,
-					"name": "Freq",
+					"id": 893266338,
+					"name": "Cutoff",
 					"type": "control"
 				},
 				{
-					"attenuation": 1.0,
+					"attenuation": 0.6399999856948853,
 					"id": 3931169251,
 					"name": "Mod 1",
 					"type": "control"
@@ -385,11 +379,6 @@
 			"from": 354296904,
 			"id": 2469432132,
 			"to": 1736229986
-		},
-		{
-			"from": 2197641789,
-			"id": 3976605795,
-			"to": 2135859622
 		},
 		{
 			"from": 3111468910,

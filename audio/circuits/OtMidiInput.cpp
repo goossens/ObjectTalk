@@ -21,6 +21,7 @@
 #include "OtFontAudio.h"
 #include "OtUi.h"
 
+#include "OtAudioUi.h"
 #include "OtAudioUtilities.h"
 #include "OtCircuitFactory.h"
 #include "OtMidiBuffer.h"
@@ -38,7 +39,7 @@ public:
 	// configure circuit
 	inline void configure() override {
 		midiOutput = addOutputPin("MIDI", OtCircuitPinClass::Type::midi);
-		pitchOutput = addOutputPin("Freq", OtCircuitPinClass::Type::control)->hasTuning();
+		pitchOutput = addOutputPin("Freq", OtCircuitPinClass::Type::control);
 		gateOutput = addOutputPin("Gate", OtCircuitPinClass::Type::control);
 	}
 

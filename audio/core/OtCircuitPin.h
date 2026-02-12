@@ -141,9 +141,7 @@ public:
 	bool attenuationFlag = false;
 	float attenuation = 1.0f;
 	bool tuningFlag = false;
-	float tuningOctaves = 0.0f;
-	float tuningSemitones = 0.0f;
-	float tuningCents = 0.0f;
+	float tuning = 0.0f;
 	OtCircuitClass* circuit;
 
 	std::shared_ptr<OtAudioBuffer> audioBuffer;

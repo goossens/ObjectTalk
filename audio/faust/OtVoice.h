@@ -71,6 +71,7 @@ static double OtVoice_faustpower4_f(double value) {
 
 class OtVoice : public OtFaust {
 protected:
+	float fHslider0;
 	int iVec0[2];
 	int fSampleRate;
 	double fConst0;
@@ -80,6 +81,7 @@ protected:
 	double fConst3;
 	double fRec5[2];
 	float fVslider1;
+	float fHslider1;
 	float fButton0;
 	int iVec1[2];
 	float fVslider2;
@@ -89,13 +91,15 @@ protected:
 	double fConst4;
 	float fVslider5;
 	double fRec6[2];
-	float fVslider6;
-	float fHslider0;
-	float fHslider1;
-	double fRec9[2];
 	float fHslider2;
+	float fVslider6;
 	float fHslider3;
 	float fHslider4;
+	double fRec9[2];
+	float fHslider5;
+	float fHslider6;
+	float fHslider7;
+	float fHslider8;
 	double fRec10[2];
 	double fConst5;
 	double fConst6;
@@ -105,20 +109,22 @@ protected:
 	double fVec4[4096];
 	double fConst7;
 	double fRec11[2];
-	double fRec13[2];
 	double fConst8;
-	float fHslider5;
-	float fHslider6;
-	float fHslider7;
+	double fRec13[2];
+	double fConst9;
+	float fHslider9;
+	float fHslider10;
+	float fHslider11;
+	float fHslider12;
 	double fRec15[2];
 	double fRec17[2];
 	double fVec5[2];
 	double fVec6[4096];
 	double fRec16[2];
 	double fRec18[2];
-	float fHslider8;
+	float fHslider13;
 	int iRec20[2];
-	float fHslider9;
+	float fHslider14;
 	double fRec21[4];
 	float fVslider7;
 	double fRec0[2];
@@ -219,28 +225,34 @@ protected:
 		fConst5 = 4.0 / fConst0;
 		fConst6 = 0.25 * fConst0;
 		fConst7 = 0.5 * fConst0;
-		fConst8 = 0.7 * fConst0;
+		fConst8 = 3.0 / fConst0;
+		fConst9 = 0.7 * fConst0;
 	}
 	
 	inline void instanceResetUserInterface() {
+		fHslider0 = static_cast<float>(1.0);
 		fVslider0 = static_cast<float>(8e+02);
 		fVslider1 = static_cast<float>(0.0);
+		fHslider1 = static_cast<float>(0.0);
 		fButton0 = static_cast<float>(0.0);
 		fVslider2 = static_cast<float>(0.03);
 		fVslider3 = static_cast<float>(0.01);
 		fVslider4 = static_cast<float>(0.05);
 		fVslider5 = static_cast<float>(0.8);
-		fVslider6 = static_cast<float>(0.0);
-		fHslider0 = static_cast<float>(1.0);
-		fHslider1 = static_cast<float>(2.0);
 		fHslider2 = static_cast<float>(0.0);
+		fVslider6 = static_cast<float>(0.0);
 		fHslider3 = static_cast<float>(1.0);
-		fHslider4 = static_cast<float>(4.4e+02);
+		fHslider4 = static_cast<float>(2.0);
 		fHslider5 = static_cast<float>(0.0);
 		fHslider6 = static_cast<float>(1.0);
 		fHslider7 = static_cast<float>(4.4e+02);
 		fHslider8 = static_cast<float>(0.0);
 		fHslider9 = static_cast<float>(0.0);
+		fHslider10 = static_cast<float>(1.0);
+		fHslider11 = static_cast<float>(4.4e+02);
+		fHslider12 = static_cast<float>(0.0);
+		fHslider13 = static_cast<float>(0.0);
+		fHslider14 = static_cast<float>(0.0);
 		fVslider7 = static_cast<float>(0.5);
 		fButton1 = static_cast<float>(0.0);
 		fVslider8 = static_cast<float>(0.03);
@@ -351,168 +363,169 @@ protected:
 		
 	inline void compute(int count, [[maybe_unused]] float** inputs, float** outputs) {
 		float* output0 = outputs[0];
-		double fSlow0 = fConst2 * static_cast<double>(fVslider0);
-		double fSlow1 = static_cast<double>(fVslider1);
-		int iSlow2 = static_cast<double>(fButton0) > 0.0;
-		double fSlow3 = static_cast<double>(fVslider2);
-		double fSlow4 = static_cast<double>(fVslider3);
-		int iSlow5 = static_cast<int>(fConst0 * fSlow4);
-		double fSlow6 = static_cast<double>(fVslider4);
-		double fSlow7 = static_cast<double>(iSlow2);
-		double fSlow8 = static_cast<double>(fVslider5) * fSlow7;
-		double fSlow9 = static_cast<double>(fVslider6);
-		double fSlow10 = static_cast<double>(fHslider0);
-		int iSlow11 = fSlow10 >= 4.0;
-		int iSlow12 = fSlow10 >= 2.0;
-		int iSlow13 = fSlow10 >= 1.0;
-		double fSlow14 = fConst4 * static_cast<double>(fHslider1);
-		int iSlow15 = fSlow10 >= 3.0;
-		int iSlow16 = fSlow10 >= 6.0;
-		int iSlow17 = fSlow10 >= 5.0;
-		double fSlow18 = static_cast<double>(fHslider2);
-		double fSlow19 = static_cast<double>(fHslider3);
-		int iSlow20 = fSlow19 >= 4.0;
-		int iSlow21 = fSlow19 >= 2.0;
-		int iSlow22 = fSlow19 >= 1.0;
-		double fSlow23 = static_cast<double>(fHslider4);
-		double fSlow24 = fConst4 * fSlow23;
-		int iSlow25 = fSlow19 >= 3.0;
-		double fSlow26 = fConst5 * fSlow23;
-		double fSlow27 = std::max<double>(fSlow23, 23.44894968246214);
-		double fSlow28 = std::max<double>(2e+01, std::fabs(fSlow27));
-		double fSlow29 = fConst6 / fSlow28;
-		double fSlow30 = fConst4 * fSlow28;
-		double fSlow31 = std::max<double>(0.0, std::min<double>(2047.0, fConst7 / fSlow27));
-		double fSlow32 = std::floor(fSlow31);
-		double fSlow33 = fSlow32 + (1.0 - fSlow31);
-		int iSlow34 = static_cast<int>(fSlow31);
-		double fSlow35 = fSlow31 - fSlow32;
-		int iSlow36 = iSlow34 + 1;
-		double fSlow37 = std::max<double>(2.220446049250313e-16, std::fabs(fSlow23));
-		double fSlow38 = fConst4 * fSlow37;
-		double fSlow39 = 1.0 - fConst0 / fSlow37;
-		int iSlow40 = fSlow19 >= 6.0;
-		int iSlow41 = fSlow19 >= 5.0;
-		double fSlow42 = std::max<double>(0.0, std::min<double>(2047.0, fConst8 / fSlow27));
-		double fSlow43 = std::floor(fSlow42);
-		double fSlow44 = fSlow43 + (1.0 - fSlow42);
-		int iSlow45 = static_cast<int>(fSlow42);
-		double fSlow46 = fSlow42 - fSlow43;
-		int iSlow47 = iSlow45 + 1;
-		double fSlow48 = static_cast<double>(fHslider5);
-		double fSlow49 = static_cast<double>(fHslider6);
-		int iSlow50 = fSlow49 >= 4.0;
-		int iSlow51 = fSlow49 >= 2.0;
-		int iSlow52 = fSlow49 >= 1.0;
-		double fSlow53 = static_cast<double>(fHslider7);
-		double fSlow54 = fConst4 * fSlow53;
-		int iSlow55 = fSlow49 >= 3.0;
-		double fSlow56 = fConst5 * fSlow53;
-		double fSlow57 = std::max<double>(fSlow53, 23.44894968246214);
-		double fSlow58 = std::max<double>(2e+01, std::fabs(fSlow57));
-		double fSlow59 = fConst6 / fSlow58;
-		double fSlow60 = fConst4 * fSlow58;
-		double fSlow61 = std::max<double>(0.0, std::min<double>(2047.0, fConst7 / fSlow57));
-		double fSlow62 = std::floor(fSlow61);
-		double fSlow63 = fSlow62 + (1.0 - fSlow61);
-		int iSlow64 = static_cast<int>(fSlow61);
-		double fSlow65 = fSlow61 - fSlow62;
-		int iSlow66 = iSlow64 + 1;
-		double fSlow67 = std::max<double>(2.220446049250313e-16, std::fabs(fSlow53));
-		double fSlow68 = fConst4 * fSlow67;
-		double fSlow69 = 1.0 - fConst0 / fSlow67;
-		int iSlow70 = fSlow49 >= 6.0;
-		int iSlow71 = fSlow49 >= 5.0;
-		double fSlow72 = std::max<double>(0.0, std::min<double>(2047.0, fConst8 / fSlow57));
-		double fSlow73 = std::floor(fSlow72);
-		double fSlow74 = fSlow73 + (1.0 - fSlow72);
-		int iSlow75 = static_cast<int>(fSlow72);
-		double fSlow76 = fSlow72 - fSlow73;
-		int iSlow77 = iSlow75 + 1;
-		double fSlow78 = 4.656612875245797e-10 * static_cast<double>(fHslider8);
-		double fSlow79 = 4.0 * static_cast<double>(fHslider9);
-		double fSlow80 = 4.0 * static_cast<double>(fVslider7);
-		int iSlow81 = static_cast<double>(fButton1) > 0.0;
-		double fSlow82 = static_cast<double>(fVslider8);
-		double fSlow83 = static_cast<double>(fVslider9);
-		int iSlow84 = static_cast<int>(fConst0 * fSlow83);
-		double fSlow85 = static_cast<double>(fVslider10);
-		double fSlow86 = static_cast<double>(iSlow81);
-		double fSlow87 = static_cast<double>(fVslider11) * fSlow86;
+		double fSlow0 = static_cast<double>(fHslider0);
+		double fSlow1 = fConst2 * static_cast<double>(fVslider0);
+		double fSlow2 = static_cast<double>(fVslider1) * static_cast<double>(fHslider1);
+		int iSlow3 = static_cast<double>(fButton0) > 0.0;
+		double fSlow4 = static_cast<double>(fVslider2);
+		double fSlow5 = static_cast<double>(fVslider3);
+		int iSlow6 = static_cast<int>(fConst0 * fSlow5);
+		double fSlow7 = static_cast<double>(fVslider4);
+		double fSlow8 = static_cast<double>(iSlow3);
+		double fSlow9 = static_cast<double>(fVslider5) * fSlow8;
+		double fSlow10 = static_cast<double>(fHslider2) * static_cast<double>(fVslider6);
+		double fSlow11 = static_cast<double>(fHslider3);
+		int iSlow12 = fSlow11 >= 4.0;
+		int iSlow13 = fSlow11 >= 2.0;
+		int iSlow14 = fSlow11 >= 1.0;
+		double fSlow15 = fConst4 * static_cast<double>(fHslider4);
+		int iSlow16 = fSlow11 >= 3.0;
+		int iSlow17 = fSlow11 >= 6.0;
+		int iSlow18 = fSlow11 >= 5.0;
+		double fSlow19 = static_cast<double>(fHslider5);
+		double fSlow20 = static_cast<double>(fHslider6);
+		int iSlow21 = fSlow20 >= 4.0;
+		int iSlow22 = fSlow20 >= 2.0;
+		int iSlow23 = fSlow20 >= 1.0;
+		double fSlow24 = static_cast<double>(fHslider7) * std::pow(2.0, 0.0008333333333333334 * static_cast<double>(fHslider8));
+		double fSlow25 = fConst4 * fSlow24;
+		int iSlow26 = fSlow20 >= 3.0;
+		double fSlow27 = fConst5 * fSlow24;
+		double fSlow28 = std::max<double>(fSlow24, 23.44894968246214);
+		double fSlow29 = std::max<double>(2e+01, std::fabs(fSlow28));
+		double fSlow30 = fConst6 / fSlow29;
+		double fSlow31 = fConst4 * fSlow29;
+		double fSlow32 = std::max<double>(0.0, std::min<double>(2047.0, fConst7 / fSlow28));
+		double fSlow33 = std::floor(fSlow32);
+		double fSlow34 = fSlow33 + (1.0 - fSlow32);
+		int iSlow35 = static_cast<int>(fSlow32);
+		double fSlow36 = fSlow32 - fSlow33;
+		int iSlow37 = iSlow35 + 1;
+		double fSlow38 = fConst8 * fSlow24;
+		double fSlow39 = std::max<double>(2.220446049250313e-16, std::fabs(fSlow24));
+		double fSlow40 = fConst4 * fSlow39;
+		double fSlow41 = 1.0 - fConst0 / fSlow39;
+		int iSlow42 = fSlow20 >= 6.0;
+		int iSlow43 = fSlow20 >= 5.0;
+		double fSlow44 = std::max<double>(0.0, std::min<double>(2047.0, fConst9 / fSlow28));
+		double fSlow45 = std::floor(fSlow44);
+		double fSlow46 = fSlow45 + (1.0 - fSlow44);
+		int iSlow47 = static_cast<int>(fSlow44);
+		double fSlow48 = fSlow44 - fSlow45;
+		int iSlow49 = iSlow47 + 1;
+		double fSlow50 = static_cast<double>(fHslider9);
+		double fSlow51 = static_cast<double>(fHslider10);
+		int iSlow52 = fSlow51 >= 4.0;
+		int iSlow53 = fSlow51 >= 2.0;
+		int iSlow54 = fSlow51 >= 1.0;
+		double fSlow55 = static_cast<double>(fHslider11) * std::pow(2.0, 0.0008333333333333334 * static_cast<double>(fHslider12));
+		double fSlow56 = fConst4 * fSlow55;
+		int iSlow57 = fSlow51 >= 3.0;
+		double fSlow58 = fConst5 * fSlow55;
+		double fSlow59 = std::max<double>(fSlow55, 23.44894968246214);
+		double fSlow60 = std::max<double>(2e+01, std::fabs(fSlow59));
+		double fSlow61 = fConst6 / fSlow60;
+		double fSlow62 = fConst4 * fSlow60;
+		double fSlow63 = std::max<double>(0.0, std::min<double>(2047.0, fConst7 / fSlow59));
+		double fSlow64 = std::floor(fSlow63);
+		double fSlow65 = fSlow64 + (1.0 - fSlow63);
+		int iSlow66 = static_cast<int>(fSlow63);
+		double fSlow67 = fSlow63 - fSlow64;
+		int iSlow68 = iSlow66 + 1;
+		double fSlow69 = fConst8 * fSlow55;
+		double fSlow70 = std::max<double>(2.220446049250313e-16, std::fabs(fSlow55));
+		double fSlow71 = fConst4 * fSlow70;
+		double fSlow72 = 1.0 - fConst0 / fSlow70;
+		int iSlow73 = fSlow51 >= 6.0;
+		int iSlow74 = fSlow51 >= 5.0;
+		double fSlow75 = std::max<double>(0.0, std::min<double>(2047.0, fConst9 / fSlow59));
+		double fSlow76 = std::floor(fSlow75);
+		double fSlow77 = fSlow76 + (1.0 - fSlow75);
+		int iSlow78 = static_cast<int>(fSlow75);
+		double fSlow79 = fSlow75 - fSlow76;
+		int iSlow80 = iSlow78 + 1;
+		double fSlow81 = 4.656612875245797e-10 * static_cast<double>(fHslider13);
+		double fSlow82 = 4.0 * static_cast<double>(fHslider14);
+		double fSlow83 = 4.0 * static_cast<double>(fVslider7);
+		int iSlow84 = static_cast<double>(fButton1) > 0.0;
+		double fSlow85 = static_cast<double>(fVslider8);
+		double fSlow86 = static_cast<double>(fVslider9);
+		int iSlow87 = static_cast<int>(fConst0 * fSlow86);
+		double fSlow88 = static_cast<double>(fVslider10);
+		double fSlow89 = static_cast<double>(iSlow84);
+		double fSlow90 = static_cast<double>(fVslider11) * fSlow89;
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
 			iVec0[0] = 1;
-			fRec5[0] = fSlow0 + fConst3 * fRec5[1];
-			iVec1[0] = iSlow2;
-			iRec7[0] = iSlow2 * (iRec7[1] + 1);
-			int iTemp0 = iSlow2 - iVec1[1];
-			int iTemp1 = (iRec7[0] < iSlow5) | (iTemp0 * (iTemp0 > 0));
-			double fTemp2 = 0.1447178002894356 * ((iSlow2) ? ((iTemp1) ? fSlow4 : fSlow6) : fSlow3);
+			fRec5[0] = fSlow1 + fConst3 * fRec5[1];
+			iVec1[0] = iSlow3;
+			iRec7[0] = iSlow3 * (iRec7[1] + 1);
+			int iTemp0 = iSlow3 - iVec1[1];
+			int iTemp1 = (iRec7[0] < iSlow6) | (iTemp0 * (iTemp0 > 0));
+			double fTemp2 = 0.1447178002894356 * ((iSlow3) ? ((iTemp1) ? fSlow5 : fSlow7) : fSlow4);
 			int iTemp3 = std::fabs(fTemp2) < 2.220446049250313e-16;
 			double fTemp4 = ((iTemp3) ? 0.0 : std::exp(-(fConst4 / ((iTemp3) ? 1.0 : fTemp2))));
-			fRec6[0] = (1.0 - fTemp4) * ((iSlow2) ? ((iTemp1) ? fSlow7 : fSlow8) : 0.0) + fTemp4 * fRec6[1];
+			fRec6[0] = (1.0 - fTemp4) * ((iSlow3) ? ((iTemp1) ? fSlow8 : fSlow9) : 0.0) + fTemp4 * fRec6[1];
 			int iTemp5 = 1 - iVec0[1];
-			double fTemp6 = ((iTemp5) ? 0.0 : fSlow14 + fRec9[1]);
+			double fTemp6 = ((iTemp5) ? 0.0 : fSlow15 + fRec9[1]);
 			fRec9[0] = fTemp6 - std::floor(fTemp6);
 			double fTemp7 = 2.0 * fRec9[0] + -1.0;
-			double fTemp8 = 1.0 - std::fabs(fTemp7);
-			double fTemp9 = std::tan(fConst1 * fRec5[0] * std::pow(2.0, fSlow1 * fRec6[0] + fSlow9 * ((iSlow11) ? ((iSlow16) ? 2.0 * static_cast<double>(fRec9[0] <= 0.7) + -1.0 : ((iSlow17) ? 2.0 * static_cast<double>(fRec9[0] <= 0.5) + -1.0 : fTemp7)) : ((iSlow12) ? ((iSlow15) ? -(1.3333333333333333 * (1.0 - (fRec9[0] + fTemp8))) : 2.0 * fTemp8 + -1.0) : ((iSlow13) ? ftbl0OtVoiceSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec9[0]), 65535))] : 0.0)))));
-			double fTemp10 = ((iTemp5) ? 0.0 : fSlow24 + fRec10[1]);
+			double fTemp8 = 2.0 * (1.0 - std::fabs(fTemp7)) + -1.0;
+			double fTemp9 = std::tan(fConst1 * fRec5[0] * std::pow(2.0, fSlow2 * fRec6[0] + fSlow10 * ((iSlow12) ? ((iSlow17) ? 2.0 * static_cast<double>(fRec9[0] <= 0.7) + -1.0 : ((iSlow18) ? 2.0 * static_cast<double>(fRec9[0] <= 0.5) + -1.0 : fTemp7)) : ((iSlow13) ? ((iSlow16) ? 0.75 * fTemp8 + 0.25 * fTemp7 : fTemp8) : ((iSlow14) ? ftbl0OtVoiceSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec9[0]), 65535))] : 0.0)))));
+			double fTemp10 = ((iTemp5) ? 0.0 : fSlow25 + fRec10[1]);
 			fRec10[0] = fTemp10 - std::floor(fTemp10);
 			double fTemp11 = static_cast<double>(iVec0[1]);
-			double fTemp12 = ((iTemp5) ? 0.0 : fSlow30 + fRec12[1]);
+			double fTemp12 = ((iTemp5) ? 0.0 : fSlow31 + fRec12[1]);
 			fRec12[0] = fTemp12 - std::floor(fTemp12);
 			double fTemp13 = OtVoice_faustpower2_f(2.0 * fRec12[0] + -1.0);
 			fVec3[0] = fTemp13;
-			double fTemp14 = fSlow29 * fTemp11 * (fTemp13 - fVec3[1]);
+			double fTemp14 = fSlow30 * fTemp11 * (fTemp13 - fVec3[1]);
 			fVec4[IOTA0 & 4095] = fTemp14;
-			double fTemp15 = fSlow33 * fVec4[(IOTA0 - iSlow34) & 4095] + fSlow35 * fVec4[(IOTA0 - iSlow36) & 4095];
+			double fTemp15 = fSlow34 * fVec4[(IOTA0 - iSlow35) & 4095] + fSlow36 * fVec4[(IOTA0 - iSlow37) & 4095];
 			fRec11[0] = 0.999 * fRec11[1] + fTemp14 - fTemp15;
-			double fTemp16 = fSlow26 * fRec11[0];
-			double fTemp17 = fSlow38 + fRec13[1] + -1.0;
-			int iTemp18 = fTemp17 < 0.0;
-			double fTemp19 = fSlow38 + fRec13[1];
-			fRec13[0] = ((iTemp18) ? fTemp19 : fTemp17);
-			double fRec14 = ((iTemp18) ? fTemp19 : fSlow38 + fRec13[1] + fSlow39 * fTemp17);
-			double fTemp20 = 2.0 * fRec14;
-			double fTemp21 = ((iTemp5) ? 0.0 : fSlow54 + fRec15[1]);
-			fRec15[0] = fTemp21 - std::floor(fTemp21);
-			double fTemp22 = ((iTemp5) ? 0.0 : fSlow60 + fRec17[1]);
-			fRec17[0] = fTemp22 - std::floor(fTemp22);
-			double fTemp23 = OtVoice_faustpower2_f(2.0 * fRec17[0] + -1.0);
-			fVec5[0] = fTemp23;
-			double fTemp24 = fSlow59 * fTemp11 * (fTemp23 - fVec5[1]);
-			fVec6[IOTA0 & 4095] = fTemp24;
-			double fTemp25 = fSlow63 * fVec6[(IOTA0 - iSlow64) & 4095] + fSlow65 * fVec6[(IOTA0 - iSlow66) & 4095];
-			fRec16[0] = 0.999 * fRec16[1] + fTemp24 - fTemp25;
-			double fTemp26 = fSlow56 * fRec16[0];
-			double fTemp27 = fSlow68 + fRec18[1] + -1.0;
-			int iTemp28 = fTemp27 < 0.0;
-			double fTemp29 = fSlow68 + fRec18[1];
-			fRec18[0] = ((iTemp28) ? fTemp29 : fTemp27);
-			double fRec19 = ((iTemp28) ? fTemp29 : fSlow68 + fRec18[1] + fSlow69 * fTemp27);
-			double fTemp30 = 2.0 * fRec19;
+			double fTemp16 = fSlow40 + fRec13[1] + -1.0;
+			int iTemp17 = fTemp16 < 0.0;
+			double fTemp18 = fSlow40 + fRec13[1];
+			fRec13[0] = ((iTemp17) ? fTemp18 : fTemp16);
+			double fRec14 = ((iTemp17) ? fTemp18 : fSlow40 + fRec13[1] + fSlow41 * fTemp16);
+			double fTemp19 = 2.0 * fRec14 + -1.0;
+			double fTemp20 = ((iTemp5) ? 0.0 : fSlow56 + fRec15[1]);
+			fRec15[0] = fTemp20 - std::floor(fTemp20);
+			double fTemp21 = ((iTemp5) ? 0.0 : fSlow62 + fRec17[1]);
+			fRec17[0] = fTemp21 - std::floor(fTemp21);
+			double fTemp22 = OtVoice_faustpower2_f(2.0 * fRec17[0] + -1.0);
+			fVec5[0] = fTemp22;
+			double fTemp23 = fSlow61 * fTemp11 * (fTemp22 - fVec5[1]);
+			fVec6[IOTA0 & 4095] = fTemp23;
+			double fTemp24 = fSlow65 * fVec6[(IOTA0 - iSlow66) & 4095] + fSlow67 * fVec6[(IOTA0 - iSlow68) & 4095];
+			fRec16[0] = 0.999 * fRec16[1] + fTemp23 - fTemp24;
+			double fTemp25 = fSlow71 + fRec18[1] + -1.0;
+			int iTemp26 = fTemp25 < 0.0;
+			double fTemp27 = fSlow71 + fRec18[1];
+			fRec18[0] = ((iTemp26) ? fTemp27 : fTemp25);
+			double fRec19 = ((iTemp26) ? fTemp27 : fSlow71 + fRec18[1] + fSlow72 * fTemp25);
+			double fTemp28 = 2.0 * fRec19 + -1.0;
 			iRec20[0] = 1103515245 * iRec20[1] + 12345;
-			double fTemp31 = static_cast<double>(iRec20[0]);
-			fRec21[0] = 0.5221894 * fRec21[3] + 4.656612875245797e-10 * fTemp31 + 2.494956002 * fRec21[1] - 2.017265875 * fRec21[2];
-			double fTemp32 = fTemp9 + 1.0;
-			double fTemp33 = fTemp9 * ((0.25 * (fSlow18 * ((iSlow20) ? ((iSlow40) ? fTemp14 - (fSlow44 * fVec4[(IOTA0 - iSlow45) & 4095] + fSlow46 * fVec4[(IOTA0 - iSlow47) & 4095]) : ((iSlow41) ? fTemp14 - fTemp15 : fTemp20 + -1.0)) : ((iSlow21) ? ((iSlow25) ? 0.6666666666666666 * (fTemp20 + fTemp16 + -1.0) : fTemp16) : ((iSlow22) ? ftbl0OtVoiceSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec10[0]), 65535))] : 0.0))) + fSlow48 * ((iSlow50) ? ((iSlow70) ? fTemp24 - (fSlow74 * fVec6[(IOTA0 - iSlow75) & 4095] + fSlow76 * fVec6[(IOTA0 - iSlow77) & 4095]) : ((iSlow71) ? fTemp24 - fTemp25 : fTemp30 + -1.0)) : ((iSlow51) ? ((iSlow55) ? 0.6666666666666666 * (fTemp30 + fTemp26 + -1.0) : fTemp26) : ((iSlow52) ? ftbl0OtVoiceSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec15[0]), 65535))] : 0.0))) + fSlow78 * fTemp31 + fSlow79 * (0.049922035 * fRec21[0] + 0.050612699 * fRec21[2] - (0.095993537 * fRec21[1] + 0.004408786 * fRec21[3]))) - fSlow80 * (1.0 - fTemp9 / fTemp32) * (fRec3[1] + fTemp9 * (fRec2[1] + fTemp9 * (fRec1[1] + fTemp9 * fRec0[1] / fTemp32) / fTemp32) / fTemp32)) / (fSlow80 * (OtVoice_faustpower4_f(fTemp9) / OtVoice_faustpower4_f(fTemp32)) + 1.0) - fRec0[1]) / fTemp32;
-			fRec0[0] = fRec0[1] + 2.0 * fTemp33;
-			double fTemp34 = fTemp9 * (fRec0[1] + fTemp33 - fRec1[1]) / fTemp32;
-			fRec1[0] = fRec1[1] + 2.0 * fTemp34;
-			double fTemp35 = fTemp9 * (fRec1[1] + fTemp34 - fRec2[1]) / fTemp32;
-			fRec2[0] = fRec2[1] + 2.0 * fTemp35;
-			double fTemp36 = fTemp9 * (fRec2[1] + fTemp35 - fRec3[1]) / fTemp32;
-			fRec3[0] = fRec3[1] + 2.0 * fTemp36;
-			double fRec4 = fRec3[1] + fTemp36;
-			iVec7[0] = iSlow81;
-			iRec23[0] = iSlow81 * (iRec23[1] + 1);
-			int iTemp37 = iSlow81 - iVec7[1];
-			int iTemp38 = (iRec23[0] < iSlow84) | (iTemp37 * (iTemp37 > 0));
-			double fTemp39 = 0.1447178002894356 * ((iSlow81) ? ((iTemp38) ? fSlow83 : fSlow85) : fSlow82);
-			int iTemp40 = std::fabs(fTemp39) < 2.220446049250313e-16;
-			double fTemp41 = ((iTemp40) ? 0.0 : std::exp(-(fConst4 / ((iTemp40) ? 1.0 : fTemp39))));
-			fRec22[0] = (1.0 - fTemp41) * ((iSlow81) ? ((iTemp38) ? fSlow86 : fSlow87) : 0.0) + fTemp41 * fRec22[1];
-			output0[i0] = static_cast<float>(fRec4 * fRec22[0]);
+			double fTemp29 = static_cast<double>(iRec20[0]);
+			fRec21[0] = 0.5221894 * fRec21[3] + 4.656612875245797e-10 * fTemp29 + 2.494956002 * fRec21[1] - 2.017265875 * fRec21[2];
+			double fTemp30 = fTemp9 + 1.0;
+			double fTemp31 = fTemp9 * ((0.25 * (fSlow19 * ((iSlow21) ? ((iSlow42) ? fTemp14 - (fSlow46 * fVec4[(IOTA0 - iSlow47) & 4095] + fSlow48 * fVec4[(IOTA0 - iSlow49) & 4095]) : ((iSlow43) ? fTemp14 - fTemp15 : fTemp19)) : ((iSlow22) ? ((iSlow26) ? fSlow38 * fRec11[0] + 0.25 * fTemp19 : fSlow27 * fRec11[0]) : ((iSlow23) ? ftbl0OtVoiceSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec10[0]), 65535))] : 0.0))) + fSlow50 * ((iSlow52) ? ((iSlow73) ? fTemp23 - (fSlow77 * fVec6[(IOTA0 - iSlow78) & 4095] + fSlow79 * fVec6[(IOTA0 - iSlow80) & 4095]) : ((iSlow74) ? fTemp23 - fTemp24 : fTemp28)) : ((iSlow53) ? ((iSlow57) ? fSlow69 * fRec16[0] + 0.25 * fTemp28 : fSlow58 * fRec16[0]) : ((iSlow54) ? ftbl0OtVoiceSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec15[0]), 65535))] : 0.0))) + fSlow81 * fTemp29 + fSlow82 * (0.049922035 * fRec21[0] + 0.050612699 * fRec21[2] - (0.095993537 * fRec21[1] + 0.004408786 * fRec21[3]))) - fSlow83 * (1.0 - fTemp9 / fTemp30) * (fRec3[1] + fTemp9 * (fRec2[1] + fTemp9 * (fRec1[1] + fTemp9 * fRec0[1] / fTemp30) / fTemp30) / fTemp30)) / (fSlow83 * (OtVoice_faustpower4_f(fTemp9) / OtVoice_faustpower4_f(fTemp30)) + 1.0) - fRec0[1]) / fTemp30;
+			fRec0[0] = fRec0[1] + 2.0 * fTemp31;
+			double fTemp32 = fTemp9 * (fRec0[1] + fTemp31 - fRec1[1]) / fTemp30;
+			fRec1[0] = fRec1[1] + 2.0 * fTemp32;
+			double fTemp33 = fTemp9 * (fRec1[1] + fTemp32 - fRec2[1]) / fTemp30;
+			fRec2[0] = fRec2[1] + 2.0 * fTemp33;
+			double fTemp34 = fTemp9 * (fRec2[1] + fTemp33 - fRec3[1]) / fTemp30;
+			fRec3[0] = fRec3[1] + 2.0 * fTemp34;
+			double fRec4 = fRec3[1] + fTemp34;
+			iVec7[0] = iSlow84;
+			iRec23[0] = iSlow84 * (iRec23[1] + 1);
+			int iTemp35 = iSlow84 - iVec7[1];
+			int iTemp36 = (iRec23[0] < iSlow87) | (iTemp35 * (iTemp35 > 0));
+			double fTemp37 = 0.1447178002894356 * ((iSlow84) ? ((iTemp36) ? fSlow86 : fSlow88) : fSlow85);
+			int iTemp38 = std::fabs(fTemp37) < 2.220446049250313e-16;
+			double fTemp39 = ((iTemp38) ? 0.0 : std::exp(-(fConst4 / ((iTemp38) ? 1.0 : fTemp37))));
+			fRec22[0] = (1.0 - fTemp39) * ((iSlow84) ? ((iTemp36) ? fSlow89 : fSlow90) : 0.0) + fTemp39 * fRec22[1];
+			output0[i0] = static_cast<float>(fSlow0 * fRec4 * fRec22[0]);
 			iVec0[1] = iVec0[0];
 			fRec5[1] = fRec5[0];
 			iVec1[1] = iVec1[0];
@@ -564,6 +577,12 @@ protected:
 		width2 += spacing.x;
 		width2 += knobWidth;
 		height2 = std::max(height2, knobHeight);
+		width2 += spacing.x;
+		width2 += knobWidth;
+		height2 = std::max(height2, knobHeight);
+		width2 += spacing.x;
+		width2 += knobWidth;
+		height2 = std::max(height2, knobHeight);
 		width1 = std::max(width1, width2);
 		height1 += height2;
 		float width3 = 0.0f;
@@ -601,20 +620,26 @@ protected:
 		width4 += knobWidth;
 		height4 = std::max(height4, knobHeight);
 		width4 += spacing.x;
-		width4 += knobWidth;
-		height4 = std::max(height4, knobHeight);
-		width4 += spacing.x;
-		width4 += knobWidth;
-		height4 = std::max(height4, knobHeight);
-		width4 += spacing.x;
 		width4 += ImGui::CalcTextSize("Gate").x + ImGui::GetStyle().FramePadding.x * 2.0f;
 		height4 = std::max(height4, frame);
 		width4 += spacing.x;
 		width4 += knobWidth;
 		height4 = std::max(height4, knobHeight);
 		width4 += spacing.x;
+		width4 += 100.0f;
+		height4 = std::max(height4, 20.0f);
+		width4 += spacing.x;
 		width4 += knobWidth;
 		height4 = std::max(height4, knobHeight);
+		width4 += spacing.x;
+		width4 += knobWidth;
+		height4 = std::max(height4, knobHeight);
+		width4 += spacing.x;
+		width4 += knobWidth;
+		height4 = std::max(height4, knobHeight);
+		width4 += spacing.x;
+		width4 += 100.0f;
+		height4 = std::max(height4, 20.0f);
 		width1 = std::max(width1, width4);
 		height1 += height4;
 		float width5 = 0.0f;
@@ -633,6 +658,9 @@ protected:
 		width5 += spacing.x;
 		width5 += ImGui::CalcTextSize("Gate").x + ImGui::GetStyle().FramePadding.x * 2.0f;
 		height5 = std::max(height5, frame);
+		width5 += spacing.x;
+		width5 += 100.0f;
+		height5 = std::max(height5, 20.0f);
 		width1 = std::max(width1, width5);
 		height1 += height5;
 		width = width1;
@@ -657,6 +685,10 @@ protected:
 		changed |= editVcoFrequency1();
 		ImGui::SameLine();
 		changed |= editVcoFrequency2();
+		ImGui::SameLine();
+		changed |= editVcoTuning1();
+		ImGui::SameLine();
+		changed |= editVcoTuning2();
 		ImGui::PopID();
 		ImGui::EndGroup();
 		ImGui::BeginGroup();
@@ -676,10 +708,6 @@ protected:
 		ImGui::SameLine();
 		changed |= editVcfRes();
 		ImGui::SameLine();
-		changed |= editVcfEnv();
-		ImGui::SameLine();
-		changed |= editVcfLfo();
-		ImGui::SameLine();
 		changed |= editVcfAttack();
 		ImGui::SameLine();
 		changed |= editVcfDecay();
@@ -690,9 +718,17 @@ protected:
 		ImGui::SameLine();
 		changed |= editVcfGate();
 		ImGui::SameLine();
+		changed |= editVcfEnvMod();
+		ImGui::SameLine();
+		changed |= editVcfEnvPower();
+		ImGui::SameLine();
 		changed |= editVcfWaveForm();
 		ImGui::SameLine();
-		changed |= editVcfFreq();
+		changed |= editVcfLfoFreq();
+		ImGui::SameLine();
+		changed |= editVcfLfoMod();
+		ImGui::SameLine();
+		changed |= editVcfLfoPower();
 		ImGui::PopID();
 		ImGui::EndGroup();
 		ImGui::BeginGroup();
@@ -706,6 +742,8 @@ protected:
 		changed |= editVcaRelease();
 		ImGui::SameLine();
 		changed |= editVcaGate();
+		ImGui::SameLine();
+		changed |= editVcaPower();
 		ImGui::PopID();
 		ImGui::EndGroup();
 		ImGui::PopID();
@@ -734,185 +772,220 @@ protected:
 		float vcoWaveForm2 = 1.0f;
 		float vcoFrequency1 = 440.0f;
 		float vcoFrequency2 = 440.0f;
+		float vcoTuning1 = 0.0f;
+		float vcoTuning2 = 0.0f;
 		float mixerOsc1 = 0.0f;
 		float mixerOsc2 = 0.0f;
 		float mixerWhite = 0.0f;
 		float mixerPink = 0.0f;
 		float vcfCutoff = 800.0f;
 		float vcfRes = 0.5f;
-		float vcfEnv = 0.0f;
-		float vcfLfo = 0.0f;
 		float vcfAttack = 0.01f;
 		float vcfDecay = 0.05f;
 		float vcfSustain = 0.8f;
 		float vcfRelease = 0.03f;
 		float vcfGate = 0.0f;
+		float vcfEnvMod = 0.0f;
+		float vcfEnvPower = 0.0f;
 		float vcfWaveForm = 1.0f;
-		float vcfFreq = 2.0f;
+		float vcfLfoFreq = 2.0f;
+		float vcfLfoMod = 0.0f;
+		float vcfLfoPower = 0.0f;
 		float vcaAttack = 0.01f;
 		float vcaDecay = 0.05f;
 		float vcaSustain = 0.8f;
 		float vcaRelease = 0.03f;
 		float vcaGate = 0.0f;
+		float vcaPower = 1.0f;
 	};
 
 	inline void setParameters([[maybe_unused]] const Parameters& parameters) {
-		fHslider3 = parameters.vcoWaveForm1;
-		fHslider6 = parameters.vcoWaveForm2;
-		fHslider4 = parameters.vcoFrequency1;
-		fHslider7 = parameters.vcoFrequency2;
-		fHslider2 = parameters.mixerOsc1;
-		fHslider5 = parameters.mixerOsc2;
-		fHslider8 = parameters.mixerWhite;
-		fHslider9 = parameters.mixerPink;
+		fHslider6 = parameters.vcoWaveForm1;
+		fHslider10 = parameters.vcoWaveForm2;
+		fHslider7 = parameters.vcoFrequency1;
+		fHslider11 = parameters.vcoFrequency2;
+		fHslider8 = parameters.vcoTuning1;
+		fHslider12 = parameters.vcoTuning2;
+		fHslider5 = parameters.mixerOsc1;
+		fHslider9 = parameters.mixerOsc2;
+		fHslider13 = parameters.mixerWhite;
+		fHslider14 = parameters.mixerPink;
 		fVslider0 = parameters.vcfCutoff;
 		fVslider7 = parameters.vcfRes;
-		fVslider1 = parameters.vcfEnv;
-		fVslider6 = parameters.vcfLfo;
 		fVslider3 = parameters.vcfAttack;
 		fVslider4 = parameters.vcfDecay;
 		fVslider5 = parameters.vcfSustain;
 		fVslider2 = parameters.vcfRelease;
 		fButton0 = parameters.vcfGate;
-		fHslider0 = parameters.vcfWaveForm;
-		fHslider1 = parameters.vcfFreq;
+		fVslider1 = parameters.vcfEnvMod;
+		fHslider1 = parameters.vcfEnvPower;
+		fHslider3 = parameters.vcfWaveForm;
+		fHslider4 = parameters.vcfLfoFreq;
+		fVslider6 = parameters.vcfLfoMod;
+		fHslider2 = parameters.vcfLfoPower;
 		fVslider9 = parameters.vcaAttack;
 		fVslider10 = parameters.vcaDecay;
 		fVslider11 = parameters.vcaSustain;
 		fVslider8 = parameters.vcaRelease;
 		fButton1 = parameters.vcaGate;
+		fHslider0 = parameters.vcaPower;
 	}
 
 	inline Parameters getParameters() {
 		Parameters parameters;
-		parameters.vcoWaveForm1 = fHslider3;
-		parameters.vcoWaveForm2 = fHslider6;
-		parameters.vcoFrequency1 = fHslider4;
-		parameters.vcoFrequency2 = fHslider7;
-		parameters.mixerOsc1 = fHslider2;
-		parameters.mixerOsc2 = fHslider5;
-		parameters.mixerWhite = fHslider8;
-		parameters.mixerPink = fHslider9;
+		parameters.vcoWaveForm1 = fHslider6;
+		parameters.vcoWaveForm2 = fHslider10;
+		parameters.vcoFrequency1 = fHslider7;
+		parameters.vcoFrequency2 = fHslider11;
+		parameters.vcoTuning1 = fHslider8;
+		parameters.vcoTuning2 = fHslider12;
+		parameters.mixerOsc1 = fHslider5;
+		parameters.mixerOsc2 = fHslider9;
+		parameters.mixerWhite = fHslider13;
+		parameters.mixerPink = fHslider14;
 		parameters.vcfCutoff = fVslider0;
 		parameters.vcfRes = fVslider7;
-		parameters.vcfEnv = fVslider1;
-		parameters.vcfLfo = fVslider6;
 		parameters.vcfAttack = fVslider3;
 		parameters.vcfDecay = fVslider4;
 		parameters.vcfSustain = fVslider5;
 		parameters.vcfRelease = fVslider2;
 		parameters.vcfGate = fButton0;
-		parameters.vcfWaveForm = fHslider0;
-		parameters.vcfFreq = fHslider1;
+		parameters.vcfEnvMod = fVslider1;
+		parameters.vcfEnvPower = fHslider1;
+		parameters.vcfWaveForm = fHslider3;
+		parameters.vcfLfoFreq = fHslider4;
+		parameters.vcfLfoMod = fVslider6;
+		parameters.vcfLfoPower = fHslider2;
 		parameters.vcaAttack = fVslider9;
 		parameters.vcaDecay = fVslider10;
 		parameters.vcaSustain = fVslider11;
 		parameters.vcaRelease = fVslider8;
 		parameters.vcaGate = fButton1;
+		parameters.vcaPower = fHslider0;
 		return parameters;
 	}
 
 	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
-		callback("vcoWaveForm1", &fHslider3, 1.0f);
-		callback("vcoWaveForm2", &fHslider6, 1.0f);
-		callback("vcoFrequency1", &fHslider4, 440.0f);
-		callback("vcoFrequency2", &fHslider7, 440.0f);
-		callback("mixerOsc1", &fHslider2, 0.0f);
-		callback("mixerOsc2", &fHslider5, 0.0f);
-		callback("mixerWhite", &fHslider8, 0.0f);
-		callback("mixerPink", &fHslider9, 0.0f);
+		callback("vcoWaveForm1", &fHslider6, 1.0f);
+		callback("vcoWaveForm2", &fHslider10, 1.0f);
+		callback("vcoFrequency1", &fHslider7, 440.0f);
+		callback("vcoFrequency2", &fHslider11, 440.0f);
+		callback("vcoTuning1", &fHslider8, 0.0f);
+		callback("vcoTuning2", &fHslider12, 0.0f);
+		callback("mixerOsc1", &fHslider5, 0.0f);
+		callback("mixerOsc2", &fHslider9, 0.0f);
+		callback("mixerWhite", &fHslider13, 0.0f);
+		callback("mixerPink", &fHslider14, 0.0f);
 		callback("vcfCutoff", &fVslider0, 800.0f);
 		callback("vcfRes", &fVslider7, 0.5f);
-		callback("vcfEnv", &fVslider1, 0.0f);
-		callback("vcfLfo", &fVslider6, 0.0f);
 		callback("vcfAttack", &fVslider3, 0.01f);
 		callback("vcfDecay", &fVslider4, 0.05f);
 		callback("vcfSustain", &fVslider5, 0.8f);
 		callback("vcfRelease", &fVslider2, 0.03f);
 		callback("vcfGate", &fButton0, 0.0f);
-		callback("vcfWaveForm", &fHslider0, 1.0f);
-		callback("vcfFreq", &fHslider1, 2.0f);
+		callback("vcfEnvMod", &fVslider1, 0.0f);
+		callback("vcfEnvPower", &fHslider1, 0.0f);
+		callback("vcfWaveForm", &fHslider3, 1.0f);
+		callback("vcfLfoFreq", &fHslider4, 2.0f);
+		callback("vcfLfoMod", &fVslider6, 0.0f);
+		callback("vcfLfoPower", &fHslider2, 0.0f);
 		callback("vcaAttack", &fVslider9, 0.01f);
 		callback("vcaDecay", &fVslider10, 0.05f);
 		callback("vcaSustain", &fVslider11, 0.8f);
 		callback("vcaRelease", &fVslider8, 0.03f);
 		callback("vcaGate", &fButton1, 0.0f);
+		callback("vcaPower", &fHslider0, 1.0f);
 	}
 
-	inline bool editVcoWaveForm1() { return OtUi::knob("WaveForm1", &fHslider3, 0.0f, 7.0f, "%.0f", false); }
-	inline bool editVcoWaveForm2() { return OtUi::knob("WaveForm2", &fHslider6, 0.0f, 7.0f, "%.0f", false); }
-	inline bool editVcoFrequency1() { return OtUi::knob("Frequency1", &fHslider4, 60.0f, 10000.0f, "%.0f", false); }
-	inline bool editVcoFrequency2() { return OtUi::knob("Frequency2", &fHslider7, 60.0f, 10000.0f, "%.0f", false); }
-	inline bool editMixerOsc1() { return OtUi::knob("Osc1", &fHslider2, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editMixerOsc2() { return OtUi::knob("Osc2", &fHslider5, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editMixerWhite() { return OtUi::knob("White", &fHslider8, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editMixerPink() { return OtUi::knob("Pink", &fHslider9, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editVcoWaveForm1() { return OtUi::knob("WaveForm1", &fHslider6, 0.0f, 7.0f, "%.0f", false); }
+	inline bool editVcoWaveForm2() { return OtUi::knob("WaveForm2", &fHslider10, 0.0f, 7.0f, "%.0f", false); }
+	inline bool editVcoFrequency1() { return OtUi::knob("Frequency1", &fHslider7, 60.0f, 10000.0f, "%.0f", false); }
+	inline bool editVcoFrequency2() { return OtUi::knob("Frequency2", &fHslider11, 60.0f, 10000.0f, "%.0f", false); }
+	inline bool editVcoTuning1() { return OtUi::knob("Tuning1", &fHslider8, -4800.0f, 4800.0f, "%.2f", false); }
+	inline bool editVcoTuning2() { return OtUi::knob("Tuning2", &fHslider12, -4800.0f, 4800.0f, "%.2f", false); }
+	inline bool editMixerOsc1() { return OtUi::knob("Osc1", &fHslider5, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editMixerOsc2() { return OtUi::knob("Osc2", &fHslider9, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editMixerWhite() { return OtUi::knob("White", &fHslider13, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editMixerPink() { return OtUi::knob("Pink", &fHslider14, 0.0f, 1.0f, "%.2f", false); }
 	inline bool editVcfCutoff() { return OtUi::knob("Cutoff", &fVslider0, 80.0f, 8000.0f, "%.0fhz", false); }
 	inline bool editVcfRes() { return OtUi::knob("Res", &fVslider7, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editVcfEnv() { return OtUi::knob("Env", &fVslider1, 0.0f, 2.0f, "%.2f", false); }
-	inline bool editVcfLfo() { return OtUi::knob("Lfo", &fVslider6, 0.0f, 2.0f, "%.2f", false); }
 	inline bool editVcfAttack() { return OtUi::knob("Attack", &fVslider3, 0.0f, 10.0f, "%.3fs", true); }
 	inline bool editVcfDecay() { return OtUi::knob("Decay", &fVslider4, 0.0f, 10.0f, "%.3fs", true); }
 	inline bool editVcfSustain() { return OtUi::knob("Sustain", &fVslider5, 0.0f, 1.0f, "%.2f", false); }
 	inline bool editVcfRelease() { return OtUi::knob("Release", &fVslider2, 0.0f, 10.0f, "%.3fs", true); }
 	inline bool editVcfGate() { ImGui::Button("Gate"); return ImGui::IsItemActive() ? 1.0f : 0.0f; }
-	inline bool editVcfWaveForm() { return OtUi::knob("WaveForm", &fHslider0, 0.0f, 7.0f, "%.0f", false); }
-	inline bool editVcfFreq() { return OtUi::knob("Freq", &fHslider1, 0.1f, 100.0f, "%.1fhz", false); }
+	inline bool editVcfEnvMod() { return OtUi::knob("EnvMod", &fVslider1, 0.0f, 2.0f, "%.2f", false); }
+	inline bool editVcfEnvPower() { ImGui::SetNextItemWidth(100.0f); return ImGui::SliderFloat("EnvPower", &fHslider1, 0.0f, 1.0f, "%.0f"); }
+	inline bool editVcfWaveForm() { return OtUi::knob("WaveForm", &fHslider3, 0.0f, 7.0f, "%.0f", false); }
+	inline bool editVcfLfoFreq() { return OtUi::knob("LfoFreq", &fHslider4, 0.1f, 100.0f, "%.1fhz", false); }
+	inline bool editVcfLfoMod() { return OtUi::knob("LfoMod", &fVslider6, 0.0f, 2.0f, "%.2f", false); }
+	inline bool editVcfLfoPower() { ImGui::SetNextItemWidth(100.0f); return ImGui::SliderFloat("LfoPower", &fHslider2, 0.0f, 1.0f, "%.0f"); }
 	inline bool editVcaAttack() { return OtUi::knob("Attack", &fVslider9, 0.0f, 10.0f, "%.3fs", true); }
 	inline bool editVcaDecay() { return OtUi::knob("Decay", &fVslider10, 0.0f, 10.0f, "%.3fs", true); }
 	inline bool editVcaSustain() { return OtUi::knob("Sustain", &fVslider11, 0.0f, 1.0f, "%.2f", false); }
 	inline bool editVcaRelease() { return OtUi::knob("Release", &fVslider8, 0.0f, 10.0f, "%.3fs", true); }
 	inline bool editVcaGate() { ImGui::Button("Gate"); return ImGui::IsItemActive() ? 1.0f : 0.0f; }
+	inline bool editVcaPower() { ImGui::SetNextItemWidth(100.0f); return ImGui::SliderFloat("Power", &fHslider0, 0.0f, 1.0f, "%.0f"); }
 
-	inline void setVcoWaveForm1(float value) { fHslider3 = value; }
-	inline void setVcoWaveForm2(float value) { fHslider6 = value; }
-	inline void setVcoFrequency1(float value) { fHslider4 = value; }
-	inline void setVcoFrequency2(float value) { fHslider7 = value; }
-	inline void setMixerOsc1(float value) { fHslider2 = value; }
-	inline void setMixerOsc2(float value) { fHslider5 = value; }
-	inline void setMixerWhite(float value) { fHslider8 = value; }
-	inline void setMixerPink(float value) { fHslider9 = value; }
+	inline void setVcoWaveForm1(float value) { fHslider6 = value; }
+	inline void setVcoWaveForm2(float value) { fHslider10 = value; }
+	inline void setVcoFrequency1(float value) { fHslider7 = value; }
+	inline void setVcoFrequency2(float value) { fHslider11 = value; }
+	inline void setVcoTuning1(float value) { fHslider8 = value; }
+	inline void setVcoTuning2(float value) { fHslider12 = value; }
+	inline void setMixerOsc1(float value) { fHslider5 = value; }
+	inline void setMixerOsc2(float value) { fHslider9 = value; }
+	inline void setMixerWhite(float value) { fHslider13 = value; }
+	inline void setMixerPink(float value) { fHslider14 = value; }
 	inline void setVcfCutoff(float value) { fVslider0 = value; }
 	inline void setVcfRes(float value) { fVslider7 = value; }
-	inline void setVcfEnv(float value) { fVslider1 = value; }
-	inline void setVcfLfo(float value) { fVslider6 = value; }
 	inline void setVcfAttack(float value) { fVslider3 = value; }
 	inline void setVcfDecay(float value) { fVslider4 = value; }
 	inline void setVcfSustain(float value) { fVslider5 = value; }
 	inline void setVcfRelease(float value) { fVslider2 = value; }
 	inline void setVcfGate(float value) { fButton0 = value; }
-	inline void setVcfWaveForm(float value) { fHslider0 = value; }
-	inline void setVcfFreq(float value) { fHslider1 = value; }
+	inline void setVcfEnvMod(float value) { fVslider1 = value; }
+	inline void setVcfEnvPower(float value) { fHslider1 = value; }
+	inline void setVcfWaveForm(float value) { fHslider3 = value; }
+	inline void setVcfLfoFreq(float value) { fHslider4 = value; }
+	inline void setVcfLfoMod(float value) { fVslider6 = value; }
+	inline void setVcfLfoPower(float value) { fHslider2 = value; }
 	inline void setVcaAttack(float value) { fVslider9 = value; }
 	inline void setVcaDecay(float value) { fVslider10 = value; }
 	inline void setVcaSustain(float value) { fVslider11 = value; }
 	inline void setVcaRelease(float value) { fVslider8 = value; }
 	inline void setVcaGate(float value) { fButton1 = value; }
+	inline void setVcaPower(float value) { fHslider0 = value; }
 
-	inline float getVcoWaveForm1() { return fHslider3; }
-	inline float getVcoWaveForm2() { return fHslider6; }
-	inline float getVcoFrequency1() { return fHslider4; }
-	inline float getVcoFrequency2() { return fHslider7; }
-	inline float getMixerOsc1() { return fHslider2; }
-	inline float getMixerOsc2() { return fHslider5; }
-	inline float getMixerWhite() { return fHslider8; }
-	inline float getMixerPink() { return fHslider9; }
+	inline float getVcoWaveForm1() { return fHslider6; }
+	inline float getVcoWaveForm2() { return fHslider10; }
+	inline float getVcoFrequency1() { return fHslider7; }
+	inline float getVcoFrequency2() { return fHslider11; }
+	inline float getVcoTuning1() { return fHslider8; }
+	inline float getVcoTuning2() { return fHslider12; }
+	inline float getMixerOsc1() { return fHslider5; }
+	inline float getMixerOsc2() { return fHslider9; }
+	inline float getMixerWhite() { return fHslider13; }
+	inline float getMixerPink() { return fHslider14; }
 	inline float getVcfCutoff() { return fVslider0; }
 	inline float getVcfRes() { return fVslider7; }
-	inline float getVcfEnv() { return fVslider1; }
-	inline float getVcfLfo() { return fVslider6; }
 	inline float getVcfAttack() { return fVslider3; }
 	inline float getVcfDecay() { return fVslider4; }
 	inline float getVcfSustain() { return fVslider5; }
 	inline float getVcfRelease() { return fVslider2; }
 	inline float getVcfGate() { return fButton0; }
-	inline float getVcfWaveForm() { return fHslider0; }
-	inline float getVcfFreq() { return fHslider1; }
+	inline float getVcfEnvMod() { return fVslider1; }
+	inline float getVcfEnvPower() { return fHslider1; }
+	inline float getVcfWaveForm() { return fHslider3; }
+	inline float getVcfLfoFreq() { return fHslider4; }
+	inline float getVcfLfoMod() { return fVslider6; }
+	inline float getVcfLfoPower() { return fHslider2; }
 	inline float getVcaAttack() { return fVslider9; }
 	inline float getVcaDecay() { return fVslider10; }
 	inline float getVcaSustain() { return fVslider11; }
 	inline float getVcaRelease() { return fVslider8; }
 	inline float getVcaGate() { return fButton1; }
+	inline float getVcaPower() { return fHslider0; }
 
 private:
 	bool initialized = false;

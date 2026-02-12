@@ -168,7 +168,7 @@ class UI:
 		checkBoxWidth += "OtUi::toggleButtonWidth()"
 
 		if len(onLabel):
-			checkBoxWidth += f" + ImGui::CalcTextSize(\"{onLabel}\").x + spacing.x);"
+			checkBoxWidth += f" + ImGui::CalcTextSize(\"{onLabel}\").x + spacing.x"
 
 		return checkBoxWidth, "frame"
 

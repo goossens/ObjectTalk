@@ -163,8 +163,8 @@ protected:
 			double fTemp0 = ((1 - iVec1[1]) ? 0.0 : fRec1[1] + fConst0 * std::pow(2.0, static_cast<double>(input0[i0])));
 			fRec1[0] = fTemp0 - std::floor(fTemp0);
 			double fTemp1 = 2.0 * fRec1[0] + -1.0;
-			double fTemp2 = 1.0 - std::fabs(fTemp1);
-			output0[i0] = static_cast<float>(((iSlow1) ? ((iSlow5) ? 2.0 * static_cast<double>(fRec1[0] <= 0.7) + -1.0 : ((iSlow6) ? 2.0 * static_cast<double>(fRec1[0] <= 0.5) + -1.0 : fTemp1)) : ((iSlow2) ? ((iSlow4) ? -(1.3333333333333333 * (1.0 - (fRec1[0] + fTemp2))) : 2.0 * fTemp2 + -1.0) : ((iSlow3) ? ftbl0OtLfoSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec1[0]), 65535))] : 0.0))));
+			double fTemp2 = 2.0 * (1.0 - std::fabs(fTemp1)) + -1.0;
+			output0[i0] = static_cast<float>(((iSlow1) ? ((iSlow5) ? 2.0 * static_cast<double>(fRec1[0] <= 0.7) + -1.0 : ((iSlow6) ? 2.0 * static_cast<double>(fRec1[0] <= 0.5) + -1.0 : fTemp1)) : ((iSlow2) ? ((iSlow4) ? 0.75 * fTemp2 + 0.25 * fTemp1 : fTemp2) : ((iSlow3) ? ftbl0OtLfoSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec1[0]), 65535))] : 0.0))));
 			iVec1[1] = iVec1[0];
 			fRec1[1] = fRec1[0];
 		}

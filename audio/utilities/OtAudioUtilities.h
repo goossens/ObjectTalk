@@ -69,15 +69,13 @@ public:
 		}
 	}
 
-	inline static float tune(float freq, float octaves, float semitones=0.0f, float cents=0.0f) {
-		auto totalCents = (octaves * 1200.0f) + (semitones * 100.0f) + cents;
-		auto ratio = std::pow(2.0f, totalCents / 1200.0f);
+	inline static float tune(float freq, float cents) {
+		auto ratio = std::pow(2.0f, cents / 1200.0f);
 		return freq * ratio;
 	}
 
-	inline static float tuneCV(float cv, float octaves, float semitones=0.0f, float cents=0.0f) {
-		auto totalCents = (octaves * 1200.0f) + (semitones * 100.0f) + cents;
-		auto offset = totalCents / 1200.0f;
+	inline static float tuneCV(float cv, float cents) {
+		auto offset = cents / 1200.0f;
 		return cv + offset;
 	}
 

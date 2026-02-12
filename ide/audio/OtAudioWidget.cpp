@@ -20,6 +20,7 @@
 #include "OtLog.h"
 #include "OtNumbers.h"
 
+#include "OtFontAudio.h"
 #include "OtUi.h"
 
 #include "OtAudioUi.h"
@@ -62,7 +63,7 @@ static constexpr ImU32 pinColors[] = {
 static constexpr float gridSpacing = 64.0f;
 static constexpr float circuitRounding = 4.0f;
 
-static constexpr float fontSize = 13.0f;
+static constexpr float fontSize = 15.0f;
 
 static constexpr float pinRadius = 5.0f;
 static constexpr float pinBox = pinRadius * 2.0f + 2.0f;
@@ -70,8 +71,6 @@ static constexpr float topPadding = 1.0f;
 static constexpr float horizontalPadding = pinRadius + 2.0f;
 
 static constexpr float wireThickness = 1.5f;
-
-static constexpr const char* tuningLabel = u8"\u21c5";
 
 
 //
@@ -504,37 +503,19 @@ void OtAudioWidget::renderPinAttenuator(OtCircuitPin pin, float width) {
 //
 
 void OtAudioWidget::renderPinTuning(OtCircuitPin pin, float width) {
-	float labelWidth = ImGui::CalcTextSize(tuningLabel).x + ImGui::GetStyle().FramePadding.x * 2.0f;
-
 	if (pin->isInput()) {
-		ImGui::SameLine(0.0f, width - labelWidth);
+		ImGui::SameLine(0.0f, width - OtAudioUi::audioButtonWidth());
 	}
 
-	ImGui::PushID(pin.get());
+	auto oldState = pin->circuit->captureState();
+	auto changed = OtAudioUi::tuningPopup(&pin->tuning);
 
-	if (ImGui::SmallButton(tuningLabel)) {
-		ImGui::OpenPopup("tuningPopup");
+	if (changed) {
+		pin->circuit->captureStateTransaction(oldState);
 	}
-
-	if (ImGui::BeginPopup("tuningPopup")) {
-		auto oldState = pin->circuit->captureState();
-		auto changed = false;
-
-		changed |= OtUi::knob("Octaves", &pin->tuningOctaves, -4, +4); ImGui::SameLine();
-		changed |= OtUi::knob("Semitones", &pin->tuningSemitones, -12, +12); ImGui::SameLine();
-		changed |= OtUi::knob("Cents", &pin->tuningCents, -100, +100);
-
-		if (changed) {
-			pin->circuit->captureStateTransaction(oldState);
-		}
-
-		ImGui::EndPopup();
-	}
-
-	ImGui::PopID();
 
 	if (!pin->isInput()) {
-		ImGui::SameLine(0.0f, width - labelWidth);
+		ImGui::SameLine(0.0f, width - OtAudioUi::audioButtonWidth());
 	}
 }
 
@@ -589,7 +570,7 @@ void OtAudioWidget::calculateCircuitSize(OtCircuit circuit) {
 			pw += OtAudioUi::trimSliderWidth() + ImGui::GetStyle().ItemSpacing.x;
 
 		} else if (pin->tuningFlag) {
-			pw += ImGui::CalcTextSize(tuningLabel).x + ImGui::GetStyle().FramePadding.x * 2.0f + ImGui::GetStyle().ItemSpacing.x;
+			pw += OtAudioUi::audioButtonWidth() + ImGui::GetStyle().FramePadding.x * 2.0f + ImGui::GetStyle().ItemSpacing.x;
 
 		}
 

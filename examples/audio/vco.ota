@@ -14,9 +14,7 @@
 				{
 					"id": 2197641789,
 					"name": "Freq",
-					"tuningCents": 0.0,
-					"tuningOctaves": 0.0,
-					"tuningSemitones": 0.0,
+					"tuning": 0.0,
 					"type": "control"
 				},
 				{
@@ -37,15 +35,13 @@
 				{
 					"id": 3360538592,
 					"name": "Freq",
-					"tuningCents": 0.0,
-					"tuningOctaves": 0.0,
-					"tuningSemitones": 0.0,
+					"tuning": 0.0,
 					"type": "control"
 				}
 			],
 			"outputs": [
 				{
-					"attenuation": 0.5,
+					"attenuation": 0.44999998807907104,
 					"id": 410275450,
 					"name": "Output",
 					"type": "mono"

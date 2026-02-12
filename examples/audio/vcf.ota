@@ -54,7 +54,7 @@
 			"title": "VCO",
 			"type": "VCO",
 			"waveForm": 3.0,
-			"x": 443.0,
+			"x": 422.0,
 			"y": 50.0
 		},
 		{
@@ -79,22 +79,13 @@
 			"sustain": 0.5299999713897705,
 			"title": "Envelope",
 			"type": "Envelope",
-			"x": 440.0,
-			"y": 198.0
+			"x": 419.0,
+			"y": 199.0
 		},
 		{
 			"frequency": 2.0,
 			"id": 3244187191,
-			"inputs": [
-				{
-					"id": 1877398871,
-					"name": "Freq",
-					"tuningCents": 0.0,
-					"tuningOctaves": 0.0,
-					"tuningSemitones": 0.0,
-					"type": "control"
-				}
-			],
+			"inputs": [],
 			"outputs": [
 				{
 					"id": 507672911,
@@ -105,8 +96,8 @@
 			"title": "LFO",
 			"type": "LFO",
 			"waveForm": 5.0,
-			"x": 722.0,
-			"y": 548.0
+			"x": 734.0,
+			"y": 553.0
 		},
 		{
 			"id": 3569591617,
@@ -133,7 +124,7 @@
 			],
 			"title": "VCA",
 			"type": "VCA",
-			"x": 754.0,
+			"x": 734.0,
 			"y": 50.0
 		},
 		{
@@ -158,8 +149,8 @@
 			"sustain": 0.800000011920929,
 			"title": "Envelope",
 			"type": "Envelope",
-			"x": 444.0,
-			"y": 503.0
+			"x": 423.0,
+			"y": 504.0
 		},
 		{
 			"freq": 3081.0,

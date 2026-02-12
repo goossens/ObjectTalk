@@ -23,11 +23,18 @@
 
 class OtAudioUi : public OtUi {
 public:
-	// render headers with decorations
-	static bool headerWithToggleButton(const char* label, bool* value);
+	// render header with decorations
+	static bool decoratedHeader(const char* label, float* attenuation, float* tuning, float* power);
 
 	// support buttons with audio-related icons
-	static float getAudioButtonWidth();
+	static float audioButtonWidth();
+
+	inline static bool audioButton(const char* label) {
+		ImGui::PushFont(getAudioFont(), 0.0f);
+		auto result = ImGui::Button(label, ImVec2(audioButtonWidth(), 0.0f));
+		ImGui::PopFont();
+		return result;
+	}
 
 	template <typename T>
 	inline static bool audioRadioButton(const char* label, T* value, T buttonValue, const char* tooltip=nullptr) {
@@ -42,8 +49,10 @@ public:
 		return changed;
 	}
 
-	// toggle button based on float value
+	// toggle buttons based on float value
 	static bool toggleButton(const char* label, float* value);
+	static bool smallToggleButton(const char* label, float* value);
+	static float smallToggleButtonWidth();
 
 	// trim sliders
 	static bool trimSlider(float* value);
@@ -51,9 +60,12 @@ public:
 	static inline float trimSliderWidth() { return ImGui::GetTextLineHeight() * 4.0f; }
 	static inline float trimSliderHeight() { return ImGui::GetFrameHeightWithSpacing(); }
 
+	// tuning button with popup
+	static bool tuningPopup(float* tuning);
+
 	// waveform selector
 	static bool waveFormSelector(float* waveform);
-	static inline float waveFormSelectorWidth() { return OtAudioUi::getAudioButtonWidth() * 7.0f + ImGui::GetStyle().ItemInnerSpacing.x * 6.0f; }
+	static inline float waveFormSelectorWidth() { return OtAudioUi::audioButtonWidth() * 7.0f + ImGui::GetStyle().ItemInnerSpacing.x * 6.0f; }
 	static inline float waveFormSelectorHeight() { return ImGui::GetFrameHeightWithSpacing(); }
 
 	// render an ADSR envelope graph

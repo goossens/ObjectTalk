@@ -88,7 +88,7 @@ class UI:
 	def slider(self, item, vertical):
 		meta = self.metaToDict(item.get("meta", []))
 		style = meta.get("style", "")
-		label = item.get("label", "")
+		label = meta.get("label", item.get("label", ""))
 		varname = item.get("varname", "")
 		address = self.fixAddress(item.get("address", ""))
 		parname = address[0].lower() + address[1:]

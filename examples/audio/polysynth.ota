@@ -12,10 +12,9 @@
 					"type": "midi"
 				},
 				{
-					"id": 2199828507,
+					"id": 3377377511,
 					"name": "Freq",
-					"tuning": 0.0,
-					"type": "control"
+					"type": "frequency"
 				},
 				{
 					"id": 13061472,
@@ -53,11 +52,11 @@
 			"vcaAttack": 0.029999999329447746,
 			"vcaDecay": 0.05000000074505806,
 			"vcaGate": 0.0,
-			"vcaPower": 1.0,
 			"vcaRelease": 0.10499999672174454,
 			"vcaSustain": 0.800000011920929,
+			"vcaVolume": 0.9100000262260437,
 			"vcfAttack": 0.024000000208616257,
-			"vcfCutoff": 2334.0,
+			"vcfCutoff": 3000.0,
 			"vcfDecay": 0.019999999552965164,
 			"vcfEnvMod": 0.8700000047683716,
 			"vcfEnvPower": 1.0,

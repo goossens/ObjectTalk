@@ -659,8 +659,8 @@ protected:
 		width5 += ImGui::CalcTextSize("Gate").x + ImGui::GetStyle().FramePadding.x * 2.0f;
 		height5 = std::max(height5, frame);
 		width5 += spacing.x;
-		width5 += 100.0f;
-		height5 = std::max(height5, 20.0f);
+		width5 += knobWidth;
+		height5 = std::max(height5, knobHeight);
 		width1 = std::max(width1, width5);
 		height1 += height5;
 		width = width1;
@@ -743,7 +743,7 @@ protected:
 		ImGui::SameLine();
 		changed |= editVcaGate();
 		ImGui::SameLine();
-		changed |= editVcaPower();
+		changed |= editVcaVolume();
 		ImGui::PopID();
 		ImGui::EndGroup();
 		ImGui::PopID();
@@ -796,7 +796,7 @@ protected:
 		float vcaSustain = 0.8f;
 		float vcaRelease = 0.03f;
 		float vcaGate = 0.0f;
-		float vcaPower = 1.0f;
+		float vcaVolume = 1.0f;
 	};
 
 	inline void setParameters([[maybe_unused]] const Parameters& parameters) {
@@ -828,7 +828,7 @@ protected:
 		fVslider11 = parameters.vcaSustain;
 		fVslider8 = parameters.vcaRelease;
 		fButton1 = parameters.vcaGate;
-		fHslider0 = parameters.vcaPower;
+		fHslider0 = parameters.vcaVolume;
 	}
 
 	inline Parameters getParameters() {
@@ -861,7 +861,7 @@ protected:
 		parameters.vcaSustain = fVslider11;
 		parameters.vcaRelease = fVslider8;
 		parameters.vcaGate = fButton1;
-		parameters.vcaPower = fHslider0;
+		parameters.vcaVolume = fHslider0;
 		return parameters;
 	}
 
@@ -894,7 +894,7 @@ protected:
 		callback("vcaSustain", &fVslider11, 0.8f);
 		callback("vcaRelease", &fVslider8, 0.03f);
 		callback("vcaGate", &fButton1, 0.0f);
-		callback("vcaPower", &fHslider0, 1.0f);
+		callback("vcaVolume", &fHslider0, 1.0f);
 	}
 
 	inline bool editVcoWaveForm1() { return OtUi::knob("WaveForm1", &fHslider6, 0.0f, 7.0f, "%.0f", false); }
@@ -917,7 +917,7 @@ protected:
 	inline bool editVcfEnvMod() { return OtUi::knob("EnvMod", &fVslider1, 0.0f, 2.0f, "%.2f", false); }
 	inline bool editVcfEnvPower() { ImGui::SetNextItemWidth(100.0f); return ImGui::SliderFloat("EnvPower", &fHslider1, 0.0f, 1.0f, "%.0f"); }
 	inline bool editVcfWaveForm() { return OtUi::knob("WaveForm", &fHslider3, 0.0f, 7.0f, "%.0f", false); }
-	inline bool editVcfLfoFreq() { return OtUi::knob("LfoFreq", &fHslider4, 0.1f, 100.0f, "%.1fhz", false); }
+	inline bool editVcfLfoFreq() { return OtUi::knob("Freq", &fHslider4, 0.1f, 100.0f, "%.1fhz", false); }
 	inline bool editVcfLfoMod() { return OtUi::knob("LfoMod", &fVslider6, 0.0f, 2.0f, "%.2f", false); }
 	inline bool editVcfLfoPower() { ImGui::SetNextItemWidth(100.0f); return ImGui::SliderFloat("LfoPower", &fHslider2, 0.0f, 1.0f, "%.0f"); }
 	inline bool editVcaAttack() { return OtUi::knob("Attack", &fVslider9, 0.0f, 10.0f, "%.3fs", true); }
@@ -925,7 +925,7 @@ protected:
 	inline bool editVcaSustain() { return OtUi::knob("Sustain", &fVslider11, 0.0f, 1.0f, "%.2f", false); }
 	inline bool editVcaRelease() { return OtUi::knob("Release", &fVslider8, 0.0f, 10.0f, "%.3fs", true); }
 	inline bool editVcaGate() { ImGui::Button("Gate"); return ImGui::IsItemActive() ? 1.0f : 0.0f; }
-	inline bool editVcaPower() { ImGui::SetNextItemWidth(100.0f); return ImGui::SliderFloat("Power", &fHslider0, 0.0f, 1.0f, "%.0f"); }
+	inline bool editVcaVolume() { return OtUi::knob("Volume", &fHslider0, 0.0f, 2.0f, "%.2f", false); }
 
 	inline void setVcoWaveForm1(float value) { fHslider6 = value; }
 	inline void setVcoWaveForm2(float value) { fHslider10 = value; }
@@ -955,7 +955,7 @@ protected:
 	inline void setVcaSustain(float value) { fVslider11 = value; }
 	inline void setVcaRelease(float value) { fVslider8 = value; }
 	inline void setVcaGate(float value) { fButton1 = value; }
-	inline void setVcaPower(float value) { fHslider0 = value; }
+	inline void setVcaVolume(float value) { fHslider0 = value; }
 
 	inline float getVcoWaveForm1() { return fHslider6; }
 	inline float getVcoWaveForm2() { return fHslider10; }
@@ -985,7 +985,7 @@ protected:
 	inline float getVcaSustain() { return fVslider11; }
 	inline float getVcaRelease() { return fVslider8; }
 	inline float getVcaGate() { return fButton1; }
-	inline float getVcaPower() { return fHslider0; }
+	inline float getVcaVolume() { return fHslider0; }
 
 private:
 	bool initialized = false;

@@ -254,6 +254,7 @@ bool OtAnalogSynth::renderVca(ImVec2 size) {
 
 	ImGui::BeginChild("VCA", size, ImGuiChildFlags_Borders);
 	OtUi::header("Amplifier");
+	changed |= editVcaVolume(); ImGui::SameLine();
 
 	OtUi::header("Envelope");
 	vcaAdsrState.attack = getVcaAttack();

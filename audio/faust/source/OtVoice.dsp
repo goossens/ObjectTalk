@@ -54,7 +54,7 @@ gateVcf = vcfGroup(button("[27]Gate"));
 envMod = vcfGroup(vslider("[28]EnvMod[style:knob]", 0, 0, 2, 0.01));
 envPower = vcfGroup(hslider("[29]EnvPower", 0, 0, 1, 1));
 lfoWaveForm = vcfGroup(hslider("[30]WaveForm[style:knob]", 1, 0, 7, 1));
-lfoFrequency = vcfGroup(hslider("[31]LfoFreq[style:knob][format: %.1fhz]", 2, 0.1, 100, 0.1));
+lfoFrequency = vcfGroup(hslider("[31]LfoFreq[style:knob][label:Freq][format: %.1fhz]", 2, 0.1, 100, 0.1));
 lfoMod = vcfGroup(vslider("[32]LfoMod[style:knob]", 0, 0, 2, 0.01));
 lfoPower = vcfGroup(hslider("[33]LfoPower", 0, 0, 1, 1));
 envelopeVcf = envPower * en.adsre(attackVcf, decayVcf, sustainVcf, releaseVcf, gateVcf);
@@ -67,8 +67,8 @@ decayVca = vcaGroup(vslider("[42]Decay[format: %.3fs][style:knob][scale:log]", 0
 sustainVca = vcaGroup(vslider("[43]Sustain[format: %.2f][style:knob]", 0.8, 0, 1, 1));
 releaseVca = vcaGroup(vslider("[44]Release[format: %.3fs][style:knob][scale:log]", 0.03, 0, 10, 0.1));
 gateVca = vcaGroup(button("[45]Gate"));
-powerVca = vcaGroup(hslider("[46]Power", 1, 0, 1, 1));
-vca = powerVca * en.adsre(attackVca, decayVca, sustainVca, releaseVca, gateVca);
+volumeVca = vcaGroup(hslider("[46]Volume[style:knob]", 1, 0, 2, 0.01));
+vca = volumeVca * en.adsre(attackVca, decayVca, sustainVca, releaseVca, gateVca);
 
 process =
 	vco(vco1WaveForm, vco1Frequency * ba.cent2ratio(vco1Tuning)),

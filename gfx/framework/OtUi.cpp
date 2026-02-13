@@ -41,7 +41,7 @@ void OtUi::loadFonts() {
 	auto& io = ImGui::GetIO();
 	io.Fonts->Clear();
 
-	ImFontConfig textConfig;
+	ImFontConfig textConfig{};
 	std::strncpy(textConfig.Name, "DejaVu", sizeof(textConfig.Name));
 	textConfig.FontDataOwnedByAtlas = false;
 	textConfig.OversampleH = 1;
@@ -53,7 +53,7 @@ void OtUi::loadFonts() {
 		15.0f,
 		&textConfig);
 
-	ImFontConfig audioConfig;
+	ImFontConfig audioConfig{};
 	std::strncpy(audioConfig.Name, "FontAudio", sizeof(audioConfig.Name));
 	audioConfig.FontDataOwnedByAtlas = false;
 	audioConfig.OversampleH = 1;

@@ -60,4 +60,5 @@ private:
 	bool renderVco(ImVec2 size);
 	bool renderVcf(ImVec2 size);
 	bool renderVca(ImVec2 size);
+	void renderVoiceUsage();
 };

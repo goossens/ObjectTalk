@@ -10,7 +10,11 @@
 //
 
 #include <algorithm>
+#include <cmath>
 #include <numeric>
+
+#include "imgui.h"
+#include "imgui_internal.h"
 
 #include "OtUi.h"
 
@@ -255,6 +259,7 @@ bool OtAnalogSynth::renderVca(ImVec2 size) {
 	ImGui::BeginChild("VCA", size, ImGuiChildFlags_Borders);
 	OtUi::header("Amplifier");
 	changed |= editVcaVolume(); ImGui::SameLine();
+	renderVoiceUsage();
 
 	OtUi::header("Envelope");
 	vcaAdsrState.attack = getVcaAttack();
@@ -272,4 +277,52 @@ bool OtAnalogSynth::renderVca(ImVec2 size) {
 
 	ImGui::EndChild();
 	return changed;
+}
+
+
+//
+//	OtAnalogSynth::renderVoiceUsage
+//
+
+void OtAnalogSynth::renderVoiceUsage() {
+	ImGui::BeginGroup();
+
+	// configuration
+	static constexpr const char* label = "Voices in Use";
+	static constexpr float height = 20.0f;
+	static constexpr float gap = 4.0f;
+	static constexpr ImU32 color = IM_COL32(0, 128, 0, 255);
+
+	// render label
+	auto displayWidth = OtUi::knobWidth(3);
+	auto labelWidth = ImGui::CalcTextSize(label).x;
+	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (displayWidth - labelWidth) * 0.5f);
+	ImGui::GetCurrentContext()->CurrentWindow->DC.CurrLineTextBaseOffset = 0;
+	ImGui::TextUnformatted(label);
+	ImGui::TextUnformatted("");
+
+	// render voice status
+	auto drawList = ImGui::GetWindowDrawList();
+	auto availableVoicesWidth = displayWidth - gap * (numberOfVoices - 1);
+	auto voiceWidth = std::floor(availableVoicesWidth / numberOfVoices);
+	auto padding = (availableVoicesWidth - voiceWidth * numberOfVoices) / 2.0f;
+
+	auto topLeft = ImGui::GetCursorScreenPos() + ImVec2(padding, 0.0f);
+	auto bottomRight = topLeft + ImVec2(voiceWidth, height);
+	auto offset = ImVec2(voiceWidth + padding, 0.0f);
+
+	for (auto& voice : voices) {
+		if (voice.isActive()) {
+			drawList->AddRectFilled(topLeft, bottomRight, color);
+
+		} else {
+			drawList->AddRect(topLeft, bottomRight, color);
+		}
+
+		topLeft += offset;
+		bottomRight += offset;
+	}
+
+	ImGui::InvisibleButton("voicesInUse", ImVec2(displayWidth, ImGui::GetFrameHeightWithSpacing() * 2.0f + height));
+	ImGui::EndGroup();
 }

@@ -289,9 +289,9 @@ void OtAnalogSynth::renderVoiceUsage() {
 
 	// configuration
 	static constexpr const char* label = "Voices in Use";
-	static constexpr float height = 20.0f;
-	static constexpr float gap = 4.0f;
-	static constexpr ImU32 color = IM_COL32(0, 128, 0, 255);
+	static constexpr float voiceHeight = 20.0f;
+	static constexpr float voiceGap = 4.0f;
+	static constexpr ImU32 voiceColor = IM_COL32(0, 128, 0, 255);
 
 	// render label
 	auto displayWidth = OtUi::knobWidth(3);
@@ -303,26 +303,26 @@ void OtAnalogSynth::renderVoiceUsage() {
 
 	// render voice status
 	auto drawList = ImGui::GetWindowDrawList();
-	auto availableVoicesWidth = displayWidth - gap * (numberOfVoices - 1);
+	auto availableVoicesWidth = displayWidth - voiceGap * (numberOfVoices - 1);
 	auto voiceWidth = std::floor(availableVoicesWidth / numberOfVoices);
 	auto padding = (availableVoicesWidth - voiceWidth * numberOfVoices) / 2.0f;
 
 	auto topLeft = ImGui::GetCursorScreenPos() + ImVec2(padding, 0.0f);
-	auto bottomRight = topLeft + ImVec2(voiceWidth, height);
+	auto bottomRight = topLeft + ImVec2(voiceWidth, voiceHeight);
 	auto offset = ImVec2(voiceWidth + padding, 0.0f);
 
 	for (auto& voice : voices) {
 		if (voice.isActive()) {
-			drawList->AddRectFilled(topLeft, bottomRight, color);
+			drawList->AddRectFilled(topLeft, bottomRight, voiceColor);
 
 		} else {
-			drawList->AddRect(topLeft, bottomRight, color);
+			drawList->AddRect(topLeft, bottomRight, voiceColor);
 		}
 
 		topLeft += offset;
 		bottomRight += offset;
 	}
 
-	ImGui::InvisibleButton("voicesInUse", ImVec2(displayWidth, ImGui::GetFrameHeightWithSpacing() * 2.0f + height));
+	ImGui::InvisibleButton("voicesInUse", ImVec2(displayWidth, ImGui::GetFrameHeightWithSpacing() * 2.0f + voiceHeight));
 	ImGui::EndGroup();
 }

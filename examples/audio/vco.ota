@@ -107,8 +107,8 @@
 			"rightDelayTime": 0.0,
 			"title": "Mono to Stereo",
 			"type": "Mono to Stereo",
-			"x": 1074.0,
-			"y": 26.0
+			"x": 1071.0,
+			"y": 12.0
 		},
 		{
 			"id": 278093283,
@@ -122,8 +122,8 @@
 			"outputs": [],
 			"title": "Speaker Out",
 			"type": "Speaker Out",
-			"x": 1374.0,
-			"y": 26.0
+			"x": 1371.0,
+			"y": 12.0
 		},
 		{
 			"id": 736233516,
@@ -137,7 +137,7 @@
 			"outputs": [],
 			"title": "Oscilloscope",
 			"type": "Oscilloscope",
-			"x": 1074.0,
+			"x": 1071.0,
 			"y": 355.0
 		},
 		{
@@ -152,7 +152,7 @@
 			"outputs": [],
 			"title": "Spectrum Analyzer",
 			"type": "Spectrum Analyzer",
-			"x": 1074.0,
+			"x": 1071.0,
 			"y": 581.0
 		},
 		{
@@ -167,8 +167,8 @@
 			"outputs": [],
 			"title": "Tuner",
 			"type": "Tuner",
-			"x": 1074.0,
-			"y": 230.0
+			"x": 1071.0,
+			"y": 213.0
 		}
 	],
 	"metadata": {},

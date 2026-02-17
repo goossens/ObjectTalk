@@ -60,7 +60,8 @@ public:
 
 	inline static int frequencyToClosestMidiNote(float frequency) {
 		auto midiNote = std::log2(frequency / 440.0f) * 12.0f + 69.0f;
-		return static_cast<int>(std::round(midiNote));
+		midiNote = static_cast<int>(std::round(midiNote));
+		return std::clamp(static_cast<int>(std::round(midiNote)), 12, 127);
 	}
 
 	inline static std::string midiNoteToText(int midiNote) {

@@ -49,7 +49,7 @@ public:
 			auto midiNote = OtAudioUtilities::frequencyToClosestMidiNote(frequency);
 			auto noteName = OtAudioUtilities::midiNoteToText(midiNote);
 			auto noteFrequency = OtAudioUtilities::midiNoteToFrequency(midiNote);
-			auto difference = OtAudioUtilities::differenceInCents(noteFrequency, frequency);
+			auto difference = frequency == 0.0f ? 0.0f : OtAudioUtilities::differenceInCents(noteFrequency, frequency);
 
 			// display results
 			ImGui::PushItemWidth(itemWidth - (ImGui::CalcTextSize("X").x * 18.0f + ImGui::GetStyle().ItemInnerSpacing.x));
@@ -71,14 +71,14 @@ public:
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return customH + ImGui::GetStyle().ItemSpacing.y;
+		return customH;
 	}
 
 	// process samples
 	inline void execute() override {
 		if (input->isSourceConnected()) {
 			customW = width;
-			customH = ImGui::GetFrameHeight() * 2.0f;
+			customH = ImGui::GetFrameHeightWithSpacing() * 3.0f;
 
 			// add input signal to data buffer
 			float buffer[OtAudioSettings::bufferSize];
@@ -89,7 +89,7 @@ public:
 
 		} else {
 			customW = width;
-			customH = ImGui::GetFrameHeight();
+			customH = ImGui::GetFrameHeightWithSpacing();
 		}
 
 		needsSizing = true;

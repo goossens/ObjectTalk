@@ -26,25 +26,27 @@
 
 class OtSampleFile {
 public:
-	// load the specified sound file);
+	// load the specified samples file);
 	void load(const std::string& path);
 
-	// clear the sampler sound
-	inline void clear() { sound = nullptr; }
+	// clear the samples
+	inline void clear() { samples = nullptr; }
 
-	// get/set information
-	inline bool isValid() { return sound != nullptr; }
-	inline std::shared_ptr<OtSampleBuffer> getBuffer() { return sound; }
+	// get information
+	inline bool isValid() { return samples != nullptr; }
 
-	inline void setRootFrequency(float rf) { rootFrequency = rf; }
-	inline float getRootFrequency() { return rootFrequency; }
-
-	// see if sounds are identical
-	inline bool operator==(OtSampleFile& rhs) { return sound == rhs.sound; }
+	// see if samples are identical
+	inline bool operator==(OtSampleFile& rhs) { return samples == rhs.samples; }
 	inline bool operator!=(OtSampleFile& rhs) { return !operator==(rhs); }
 
-private:
+	// get sample at specified location
+	void start(float frequency=0.0f);
+	float get();
+
+	private:
 	// properties
-	std::shared_ptr<OtSampleBuffer> sound;
+	std::shared_ptr<OtSampleBuffer> samples;
 	float rootFrequency = 0.0f;
+	float dt;
+	float offset;
 };

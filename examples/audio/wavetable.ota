@@ -78,8 +78,8 @@
 				}
 			],
 			"shape": 0.0,
-			"title": "WaveForm",
-			"type": "WaveForm",
+			"title": "WaveTable",
+			"type": "WaveTable",
 			"waveTable": "assets/brass.wav",
 			"x": 410.0,
 			"y": 277.0

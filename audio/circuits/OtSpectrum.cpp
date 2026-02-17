@@ -61,7 +61,7 @@ public:
 					std::copy(data.begin(), data.end(), fftInputBuffer);
 				}
 
-				// perform  Fast Fourier Transform (FFT)
+				// perform Fast Fourier Transform (FFT)
 				auto result = fft.forwardFrequencyOnly(fftInputBuffer);
 
 				// smooth out magnitude changes

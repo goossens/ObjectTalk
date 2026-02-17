@@ -35,9 +35,9 @@ void OtImageBasedLighting::update(OtIblComponent& component) {
 
 		// render irradiance map
 		static constexpr int irradianceSize = 64;
-        iblIrradianceMap.create(OtCubeMap::Format::rgba16, irradianceSize, false);
+		iblIrradianceMap.create(OtCubeMap::Format::rgba16, irradianceSize, false);
 
-        OtRenderPass irradiancePass;
+		OtRenderPass irradiancePass;
 		irradiancePass.start(iblIrradianceMap);
 		irradiancePass.bindPipeline(irradiancePipeline);
 		irradiancePass.bindFragmentSampler(0, cubemapSampler, cubemap);

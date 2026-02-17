@@ -107,11 +107,12 @@ public:
 	}
 
 	// readonly fields
+
 	static void readonlyText(const char* label, const std::string& value);
 	static void readonlyBool(const char* label, bool value);
 	static void readonlyInt(const char* label, int value);
 	static void readonlySizeT(const char* label, size_t value);
-	static void readonlyFloat(const char* label, float value);
+	static void readonlyFloat(const char* label, float value, const char* format=nullptr);
 
 	// field based on a std::string
 	static inline bool inputString(const char* label, std::string* value, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None) {

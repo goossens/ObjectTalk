@@ -336,8 +336,8 @@ void OtUi::readonlySizeT(const char* label, size_t value) {
 //	OtUi::readonlyFloat
 //
 
-void OtUi::readonlyFloat(const char* label, float value) {
-	std::string text = std::to_string(value);
+void OtUi::readonlyFloat(const char* label, float value, const char* format) {
+	std::string text = format ? fmt::format(format, value) : std::to_string(value);
 	readonlyText(label, text);
 }
 

@@ -23,10 +23,10 @@
 
 
 //
-//	OtWaveForm
+//	OtWaveTableOsc
 //
 
-class OtWaveForm : public OtCircuitClass {
+class OtWaveTableOsc : public OtCircuitClass {
 public:
 	// configure circuit
 	inline void configure() override {
@@ -38,8 +38,8 @@ public:
 	// render custom fields
 	inline bool customRendering(float itemWidth) override {
 		bool changed = false;
-		ImGui::SetNextItemWidth(itemWidth - (ImGui::CalcTextSize("X").x * 5.0f + ImGui::GetStyle().ItemInnerSpacing.x));
-		changed |= waveTableAsset.renderUI("Table");
+		ImGui::SetNextItemWidth(itemWidth - (ImGui::CalcTextSize("X").x * 4.0f + ImGui::GetStyle().ItemInnerSpacing.x));
+		changed |= waveTableAsset.renderUI("File");
 
 		if (!frequencyInput->isSourceConnected()) {
 			changed |= OtUi::knob("Freq", &frequency, 60.0f, 6000.0f, "%.0fhz", true);
@@ -122,7 +122,7 @@ public:
 		}
 	};
 
-	static constexpr const char* circuitName = "WaveForm";
+	static constexpr const char* circuitName = "WaveTable";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::generator;
 
 private:
@@ -138,4 +138,4 @@ private:
 	float phase = 0.0f;
 };
 
-static OtCircuitFactoryRegister<OtWaveForm> registration;
+static OtCircuitFactoryRegister<OtWaveTableOsc> registration;

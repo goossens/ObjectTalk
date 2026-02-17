@@ -262,7 +262,7 @@ public:
 			midiBuffer.emplace_back(message);
 
 			if (message->isNoteOn()) {
-				freq = OtAudioUtilities::midiNoteToPitch(message->getKeyNumber());
+				freq = OtAudioUtilities::midiNoteToFrequency(message->getKeyNumber());
 				velocity = message->getVelocity() / 128.0f;
 				gate = true;
 

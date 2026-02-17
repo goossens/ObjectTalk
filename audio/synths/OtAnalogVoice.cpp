@@ -23,7 +23,7 @@ void OtAnalogVoice::noteOn(int n, int v) {
 	gate = true;
 	note = n;
 	velocity = v;
-	frequency = OtAudioUtilities::midiNoteToPitch(note);
+	frequency = OtAudioUtilities::midiNoteToFrequency(note);
 	active = true;
 }
 

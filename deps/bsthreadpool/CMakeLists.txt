@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Populate(bsthreadpool QUIET GIT_REPOSITORY "https://github.com/bshoshany/thread-pool" GIT_TAG "v5.0.0")
+FetchContent_Populate(bsthreadpool QUIET GIT_REPOSITORY "https://github.com/bshoshany/thread-pool" GIT_TAG "v5.1.0")
 
 add_library(bsthreadpool INTERFACE)
 target_include_directories(bsthreadpool INTERFACE ${bsthreadpool_SOURCE_DIR}/include)

@@ -3,8 +3,8 @@
 		{
 			"id": 327925772,
 			"inputs": [],
-			"midiFile": "",
-			"midiSource": 0,
+			"midiFile": "assets/chopin.mid",
+			"midiSource": 1,
 			"outputs": [
 				{
 					"id": 2019671728,
@@ -28,34 +28,50 @@
 			"y": 73.0
 		},
 		{
-			"frequency": 440.0,
-			"id": 1630219190,
+			"id": 1345981589,
 			"inputs": [
 				{
-					"id": 2152173630,
-					"name": "Freq",
-					"tuning": 0.0,
-					"type": "frequency"
-				},
-				{
-					"id": 3578482606,
-					"name": "Gate",
-					"type": "control"
+					"id": 3862798611,
+					"name": "MIDI",
+					"type": "midi"
 				}
 			],
 			"outputs": [
 				{
-					"attenuation": 1.0,
-					"id": 2084819271,
+					"id": 2813232505,
 					"name": "Output",
 					"type": "mono"
 				}
 			],
 			"sampler": "assets/piano.wav",
-			"title": "Sampler",
-			"type": "Sampler",
-			"x": 454.0,
-			"y": 48.0
+			"title": "Polyphonic Sampler",
+			"type": "Polyphonic Sampler",
+			"x": 419.0,
+			"y": 186.0
+		},
+		{
+			"blend": 0.699999988079071,
+			"dwell": 0.33000001311302185,
+			"id": 439825727,
+			"inputs": [
+				{
+					"id": 1116366465,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"outputs": [
+				{
+					"id": 414077931,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"tension": 0.17000000178813934,
+			"title": "Reverb",
+			"type": "Reverb",
+			"x": 772.0,
+			"y": 332.0
 		},
 		{
 			"id": 3583096254,
@@ -78,8 +94,8 @@
 			"rightDelayTime": 0.0,
 			"title": "Mono to Stereo",
 			"type": "Mono to Stereo",
-			"x": 798.0,
-			"y": 48.0
+			"x": 776.0,
+			"y": 67.0
 		},
 		{
 			"id": 2077397141,
@@ -93,23 +109,23 @@
 			"outputs": [],
 			"title": "Speaker Out",
 			"type": "Speaker Out",
-			"x": 1133.0,
-			"y": 48.0
+			"x": 1111.0,
+			"y": 67.0
 		},
 		{
-			"id": 4242165366,
+			"id": 3919793741,
 			"inputs": [
 				{
-					"id": 4164854973,
-					"name": "Input",
-					"type": "mono"
+					"id": 729401145,
+					"name": "MIDI",
+					"type": "midi"
 				}
 			],
 			"outputs": [],
-			"title": "Tuner",
-			"type": "Tuner",
-			"x": 798.0,
-			"y": 264.0
+			"title": "MIDI Probe",
+			"type": "MIDI Probe",
+			"x": 419.0,
+			"y": 29.0
 		}
 	],
 	"metadata": {},
@@ -120,24 +136,24 @@
 			"to": 3548179736
 		},
 		{
-			"from": 2084819271,
-			"id": 2830055143,
+			"from": 2019671728,
+			"id": 1850890262,
+			"to": 3862798611
+		},
+		{
+			"from": 2813232505,
+			"id": 1955894749,
+			"to": 1116366465
+		},
+		{
+			"from": 2019671728,
+			"id": 2902666385,
+			"to": 729401145
+		},
+		{
+			"from": 414077931,
+			"id": 3180346217,
 			"to": 1591731273
-		},
-		{
-			"from": 3960083284,
-			"id": 2188475176,
-			"to": 2152173630
-		},
-		{
-			"from": 124312137,
-			"id": 998767745,
-			"to": 3578482606
-		},
-		{
-			"from": 2084819271,
-			"id": 469671256,
-			"to": 4164854973
 		}
 	]
 }

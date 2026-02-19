@@ -12,17 +12,17 @@
 //	Include files
 //
 
-#include "OtVoice.h"
+#include "OtSampleFile.h"
 
 
 //
-//	OtAnalogVoice
+//	OtSamplerVoice
 //
 
-class OtAnalogVoice : public OtVoice {
+class OtSamplerVoice {
 public:
 	// voice state
-	void noteOn(int note, int velocity);
+	void noteOn(OtSampleFile& samples, int note, int velocity);
 	void noteOff();
 	void cancel();
 
@@ -31,14 +31,15 @@ public:
 	inline int getVelocity() { return velocity; }
 
 	// get the next sample(s)
-	void get(Parameters& parameters, float* buffer, size_t size);
+	void get(OtSampleFile& samples, float* buffer, size_t size);
 
 private:
-	// properties
-	bool gate = false;
-	float endTime;
 	int note;
 	int velocity;
-	float frequency;
+
 	bool active = false;
+	float endTime;
+	float dt;
+	float offset;
+	float volume;
 };

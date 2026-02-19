@@ -74,12 +74,15 @@ void OtAnalogSynth::processMidiMessage(OtMidiMessage message) {
 //
 
 void OtAnalogSynth::get(float* buffer, size_t size) {
-	auto parameters = getParameters();
+	// clear output
 	std::fill(buffer, buffer + size, 0.0f);
-	float voiceData[OtAudioSettings::bufferSize];
+
+	// add all active voices to output
+	auto parameters = getParameters();
 
 	for (auto& voice : voices) {
 		if (voice.isActive()) {
+			float voiceData[OtAudioSettings::bufferSize];
 			voice.get(parameters, voiceData, OtAudioSettings::bufferSize);
 
 			for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
@@ -95,9 +98,17 @@ void OtAnalogSynth::get(float* buffer, size_t size) {
 //
 
 void OtAnalogSynth::noteOn(int note, int velocity) {
-	// get next available voice
+	// if this note is still active, we reuse it
 	auto openVoice = nextVoice.end();
 
+	for (auto i = nextVoice.begin(); i != nextVoice.end() && openVoice == nextVoice.end(); i++) {
+		if (voices[*i].isActive() && voices[*i].getNote() == note) {
+			openVoice = i;
+			voices[*openVoice].cancel();
+		}
+	}
+
+	// get next available voice (if required)
 	for (auto i = nextVoice.begin(); i != nextVoice.end() && openVoice == nextVoice.end(); i++) {
 		if (!voices[*i].isActive()) {
 			openVoice = i;
@@ -305,11 +316,11 @@ void OtAnalogSynth::renderVoiceUsage() {
 	auto drawList = ImGui::GetWindowDrawList();
 	auto availableVoicesWidth = displayWidth - voiceGap * (numberOfVoices - 1);
 	auto voiceWidth = std::floor(availableVoicesWidth / numberOfVoices);
-	auto padding = (availableVoicesWidth - voiceWidth * numberOfVoices) / 2.0f;
+	auto padding = (availableVoicesWidth - (voiceWidth * numberOfVoices)) / 2.0f;
 
 	auto topLeft = ImGui::GetCursorScreenPos() + ImVec2(padding, 0.0f);
 	auto bottomRight = topLeft + ImVec2(voiceWidth, voiceHeight);
-	auto offset = ImVec2(voiceWidth + padding, 0.0f);
+	auto offset = ImVec2(voiceWidth + voiceGap, 0.0f);
 
 	for (auto& voice : voices) {
 		if (voice.isActive()) {
@@ -323,6 +334,6 @@ void OtAnalogSynth::renderVoiceUsage() {
 		bottomRight += offset;
 	}
 
-	ImGui::InvisibleButton("voicesInUse", ImVec2(displayWidth, ImGui::GetFrameHeightWithSpacing() * 2.0f + voiceHeight));
+	ImGui::InvisibleButton("voicesInUse", ImVec2(displayWidth, voiceHeight + ImGui::GetStyle().ItemSpacing.y));
 	ImGui::EndGroup();
 }

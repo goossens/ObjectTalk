@@ -72,19 +72,6 @@ void OtSampleFile::load(const std::string& path) {
 	} else {
 		rootFrequency = 0.0f;
 	}
-
-	// set initial state
-	offset = static_cast<float>(samples->getSampleCount());
-}
-
-
-//
-//	OtSampleFile::start
-//
-
-void OtSampleFile::start(float frequency) {
-	dt = frequency == 0.0f ? 1.0f : frequency / rootFrequency;
-	offset = 0.0f;
 }
 
 
@@ -92,7 +79,7 @@ void OtSampleFile::start(float frequency) {
 //	OtSampleFile::get
 //
 
-float OtSampleFile::get() {
+float OtSampleFile::get(float offset) {
 	if (offset >= static_cast<float>(samples->getSampleCount())) {
 		return 0.0f;
 
@@ -101,7 +88,6 @@ float OtSampleFile::get() {
 		auto highX = offset + 1;
 		auto ratioX = offset - static_cast<float>(lowX);
 		auto sample = std::lerp(samples->get(0, lowX), samples->get(0, highX), ratioX);
-		offset += dt;
  		return sample;
 	}
 }

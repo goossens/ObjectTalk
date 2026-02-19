@@ -34,19 +34,19 @@ public:
 
 	// get information
 	inline bool isValid() { return samples != nullptr; }
+	inline float getRootFrequency() { return rootFrequency; }
+	inline size_t getSampleCount() { return isValid() ? samples->getSampleCount() : 0; }
+	inline float getDurationInSeconds() { return isValid() ? samples->getDurationInSeconds() : 0.0f; }
 
 	// see if samples are identical
 	inline bool operator==(OtSampleFile& rhs) { return samples == rhs.samples; }
 	inline bool operator!=(OtSampleFile& rhs) { return !operator==(rhs); }
 
 	// get sample at specified location
-	void start(float frequency=0.0f);
-	float get();
+	float get(float offset);
 
-	private:
+private:
 	// properties
 	std::shared_ptr<OtSampleBuffer> samples;
 	float rootFrequency = 0.0f;
-	float dt;
-	float offset;
 };

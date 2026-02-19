@@ -23,10 +23,10 @@
 
 
 //
-//	OtSamplerOsc
+//	OtMonophonicSampler
 //
 
-class OtSamplerOsc : public OtCircuitClass {
+class OtMonophonicSampler : public OtCircuitClass {
 public:
 	// configure circuit
 	inline void configure() override {
@@ -84,7 +84,8 @@ public:
 						auto state = gateInput->getSample(i);
 
 						if (gate == 0.0f && state == 1.0f) {
-							sampler.start(frequency);
+							dt = frequency == 0.0f ? 1.0f : frequency / sampler.getRootFrequency();
+							offset = 0.0f;
 						}
 
 						gate = state;
@@ -95,7 +96,8 @@ public:
 				}
 
 				for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
-					audioOutput->setSample(i, sampler.get());
+					audioOutput->setSample(i, sampler.get(offset));
+					offset += dt;
 				}
 
 			} else {
@@ -105,7 +107,7 @@ public:
 		}
 	};
 
-	static constexpr const char* circuitName = "Sampler";
+	static constexpr const char* circuitName = "Monophonic Sampler";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::generator;
 
 private:
@@ -115,7 +117,11 @@ private:
 	OtCircuitPin audioOutput;
 	OtAsset<OtSampleFileAsset> sampleFileAsset;
 	float frequency = 440.0f;
+
+	// work variables
 	float gate = 0.0f;
+	float dt;
+	float offset;
 };
 
-static OtCircuitFactoryRegister<OtSamplerOsc> registration;
+static OtCircuitFactoryRegister<OtMonophonicSampler> registration;

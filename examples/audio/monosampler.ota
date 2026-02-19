@@ -1,0 +1,172 @@
+{
+	"circuits": [
+		{
+			"id": 327925772,
+			"inputs": [],
+			"midiFile": "",
+			"midiSource": 0,
+			"outputs": [
+				{
+					"id": 2019671728,
+					"name": "MIDI",
+					"type": "midi"
+				},
+				{
+					"id": 3960083284,
+					"name": "Freq",
+					"type": "frequency"
+				},
+				{
+					"id": 124312137,
+					"name": "Gate",
+					"type": "control"
+				}
+			],
+			"title": "MIDI Input",
+			"type": "MIDI Input",
+			"x": 39.0,
+			"y": 73.0
+		},
+		{
+			"frequency": 349.2282409667969,
+			"id": 1630219190,
+			"inputs": [
+				{
+					"id": 2152173630,
+					"name": "Freq",
+					"tuning": 0.0,
+					"type": "frequency"
+				},
+				{
+					"id": 3578482606,
+					"name": "Gate",
+					"type": "control"
+				}
+			],
+			"outputs": [
+				{
+					"attenuation": 1.0,
+					"id": 2084819271,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"sampler": "assets/piano.wav",
+			"title": "Monophonic Sampler",
+			"type": "Monophonic Sampler",
+			"x": 395.0,
+			"y": 47.0
+		},
+		{
+			"blend": 0.5,
+			"dwell": 0.41999998688697815,
+			"id": 223201917,
+			"inputs": [
+				{
+					"id": 737516073,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"outputs": [
+				{
+					"id": 3081270875,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"tension": 0.0,
+			"title": "Reverb",
+			"type": "Reverb",
+			"x": 733.0,
+			"y": 200.0
+		},
+		{
+			"id": 3583096254,
+			"inputs": [
+				{
+					"id": 1591731273,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"leftDelayTime": 0.0,
+			"outputs": [
+				{
+					"id": 72590400,
+					"name": "Output",
+					"type": "stereo"
+				}
+			],
+			"panLevel": 0.0,
+			"rightDelayTime": 0.0,
+			"title": "Mono to Stereo",
+			"type": "Mono to Stereo",
+			"x": 1017.0,
+			"y": 200.0
+		},
+		{
+			"id": 2077397141,
+			"inputs": [
+				{
+					"id": 3548179736,
+					"name": "Input",
+					"type": "stereo"
+				}
+			],
+			"outputs": [],
+			"title": "Speaker Out",
+			"type": "Speaker Out",
+			"x": 1309.0,
+			"y": 200.0
+		},
+		{
+			"id": 4242165366,
+			"inputs": [
+				{
+					"id": 4164854973,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"outputs": [],
+			"title": "Tuner",
+			"type": "Tuner",
+			"x": 733.0,
+			"y": 47.0
+		}
+	],
+	"metadata": {},
+	"wires": [
+		{
+			"from": 72590400,
+			"id": 1496139707,
+			"to": 3548179736
+		},
+		{
+			"from": 3960083284,
+			"id": 2188475176,
+			"to": 2152173630
+		},
+		{
+			"from": 124312137,
+			"id": 998767745,
+			"to": 3578482606
+		},
+		{
+			"from": 2084819271,
+			"id": 469671256,
+			"to": 4164854973
+		},
+		{
+			"from": 2084819271,
+			"id": 1570152408,
+			"to": 737516073
+		},
+		{
+			"from": 3081270875,
+			"id": 1831232466,
+			"to": 1591731273
+		}
+	]
+}

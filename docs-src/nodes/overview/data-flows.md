@@ -3,7 +3,7 @@ process "fixed" flows that act as simple functions taking the provided
 inputs (with optional node parameters), apply a one time algorithm
 and produce outputs.
 
-Some nodes (e.g. Instances on Faces) run the algorithm on each element
+Some nodes run the algorithm on each element
 of the input (e.g. faces in a geometry). Those nodes create a context
 and evaluate each input once per element. If a downstream input node is
 a "varying" node, the context is accessed and the correct value provided. This

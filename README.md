@@ -19,8 +19,8 @@
 
 Welcome to ObjectTalk, a object-oriented Swiss Army Knife providing a
 Scripting Language, 2D/3D Graphics Engine, Node Based Programming,
-an Entity Component System and an Integrated Development Environment
-to learn and have some fun.
+Audio Engine, an Entity Component System and an
+Integrated Development Environment to learn and have some fun.
 
 Late 2020, I retired after a 40+ year career in the software and
 system development business. Starting as a programmer/analyst and later
@@ -39,7 +39,10 @@ things along the way. Once the language was stable, it needed a few
 use cases and I dusted off some 2D/3D graphic projects that I had laying
 around. This then led to including a graphics engine, an Entity Component
 System (ECS), Node Based programming and a custom Integrated Development
-Environment (IDE).
+Environment (IDE). The latest addition is an audio engine that will help
+with my musical interests as it provides Digital Signal Processing (DSP)
+based circuits that can be quickly connected together to create "musical"
+instruments or create sounds.
 
 So today, this project contains a lot of code, compiles into a single
 executable with no runtime dependencies and is functional on MacOS, Linux
@@ -134,6 +137,21 @@ Exposure/Contrast correction and Tone Mapping are also available.
 
 ![Scenes](docs/img/scenes.png)
 
+# Audio Engine
+
+The Audio Engine is basically another version of node-based programming.
+Each node (circuit) provides signal processing abilities and wires are used to
+connect the circuits. From a use perspective, the interface is very similar to the
+nodes mentioned above but the processing is optimized for audio as it needs to
+be real-time. Our ears are very good at detecting small glitches and we perceive
+them as unwanted clicks, scratches or noise.
+
+Currently there are circuits available to create modular synthesizers and effects
+but in the future this will grow to components for guitar amplifiers, percussion
+instruments and audio mixing.
+
+![Audio](docs/img/audio.png)
+
 ## Integrated Development Environment
 
 To round it all out, the ObjectTalk executable comes with a builtin development
@@ -155,6 +173,11 @@ environment that allows editing, debugging and execution of ObjectTalk elements:
 	- Entities are stored in trees making it easy to create entity hierarchies.
 	- The editor has full undo capabilities.
 	- Scenes can be run directly from the IDE to ensures node and script components function properly.
+
+- **Audio editor**
+	- This editor allows the visual creation of audio circuits.
+	- The editor has full undo capabilities.
+	- The editor evaluates circuits in realtime so it can be used for live developments and music creation.
 
 - **Miscellaneous editors**
 	- The IDE is also capable of editing pure text, JSON and Markdown files (complete with syntax highlighting).

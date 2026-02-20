@@ -3,7 +3,7 @@ data type. Each of these types is color coded and the IDE ensures
 links are only created using compatible types. Below are all the
 data types used by pins:
 
-![screenshot](img/pin-types.png#right)
+![screenshot](img/node-pins.png#right)
 
 - **Boolean Pins** - Booleans can only hold two values: true and false.
 - **Integer Pins** - Integers represent negative and positive whole numbers.

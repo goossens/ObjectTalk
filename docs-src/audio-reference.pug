@@ -1,0 +1,15 @@
+include /manual.pug
+
++page("Audio Reference")
+	+manual()
+		include common/header.pug
+
+		+manual-body()
+			+manual-toc()
+				include:markdown audio/reference/toc.md
+
+			+manual-content()
+				+manual-chapter("reference", "Circuit Reference")
+					include:markdown audio/reference/circuits.md
+
+		include common/footer.pug

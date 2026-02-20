@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Audio Overview</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/theme.css" />
+  </head>
+  <body id="page-top">
+    <div
+      class="container-fluid d-flex flex-column flex-grow-1 vh-100 overflow-hidden"
+    >
+      <nav
+        class="navbar navbar-expand px-0 pt-1 pb-0 flex-shrink-0 manual-header"
+      >
+        <a class="navbar-brand" href="index.html"
+          ><img src="img/icon.png" height="40" alt="" /><span class="ml-2"
+            >Documentation</span
+          ></a
+        ><button
+          class="navbar-toggler navbar-toggler-right"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          type="button"
+          data-toogle="collapse"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="General"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >General</a
+              >
+              <div class="dropdown-menu" aria-labelledby="General">
+                <a class="nav-link page-scroll" href="index.html"
+                  >Introduction</a
+                ><a class="nav-link page-scroll" href="architecture.html"
+                  >Architecture</a
+                ><a class="nav-link page-scroll" href="installation.html"
+                  >Installation</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Language"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Language</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Language">
+                <a class="nav-link page-scroll" href="tour.html">Tour</a
+                ><a class="nav-link page-scroll" href="guide.html">Guide</a
+                ><a class="nav-link page-scroll" href="language.html"
+                  >Language</a
+                ><a class="nav-link page-scroll" href="classes.html"
+                  >Core Classes</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Modules"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Modules</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Modules">
+                <a class="nav-link page-scroll" href="http.html">HTTP</a
+                ><a class="nav-link page-scroll" href="manifold.html"
+                  >Manifold</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Nodes"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Nodes</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Nodes">
+                <a class="nav-link page-scroll" href="nodes-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="nodes-reference.html"
+                  >Reference</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Scenes"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Scenes</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Scenes">
+                <a class="nav-link page-scroll" href="scenes-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="scenes-reference.html"
+                  >Reference</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Audio"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Audio</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Audio">
+                <a class="nav-link page-scroll" href="audio-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="audio-reference.html"
+                  >Reference</a
+                >
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link page-scroll" href="ide.html">IDE</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div class="row flex-grow-1 overflow-hidden vh-100">
+        <div class="col-2 mh-100 overflow-auto py-2 manual-toc">
+          <p><strong>Overview</strong></p>
+          <ul>
+            <li><a class="page-scroll" href="#overview">Introduction</a></li>
+            <li>
+              <a class="page-scroll" href="#circuit-anatomy">Circuit Anatomy</a>
+            </li>
+            <li>
+              <a class="page-scroll" href="#circuit-categories"
+                >Circuit Categories</a
+              >
+            </li>
+            <li>
+              <a class="page-scroll" href="#circuit-pins">Circuit Pins</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col mh-100 overflow-auto py-2 manual-content">
+          <div id="overview">
+            <h1 class="pb-2">Audio Overview</h1>
+            <p>
+              The Audio Engine is basically another version of node-based
+              programming. Each node (circuit) provides signal processing
+              abilities and wires are used to connect the circuits. From a use
+              perspective, the interface is very similar to the nodes mentioned
+              above but the processing is optimized for audio as it needs to be
+              real-time. Our ears are very good at detecting small glitches and
+              we perceive them as unwanted clicks, scratches or noise.
+            </p>
+            <p>
+              Currently there are circuits available to create modular
+              synthesizers and effects but in the future this will grow to
+              components for guitar amplifiers, percussion instruments and audio
+              mixing.
+            </p>
+            <p><img src="img/audio.png#center" alt="Audio" /></p>
+            <p>
+              A circuit represents a small function that transforms inputs into
+              outputs, optionally using additional parameters. In ObjectTalk,
+              circuits are visually represented by rounded rectangles displaying
+              a title at the top, inputs displayed on the left and outputs on
+              the rights. Inputs and outputs are referred to as pins that can be
+              connected with wires and can carry only one signal type.
+            </p>
+            <p>
+              Each circuit really feels like an object instance and drawing
+              connections between them is akin to visual programming. Today, in
+              ObjectTalk, the IDE has an audio editor that allows you to setup
+              circuits and connect them into a larger circuit. These circuits
+              are automatically run in realtime. The examples folder contains
+              signal processing chains and circuits that are used to implement
+              audio processing tools ore instruments. ObjectTalk already has
+              over 20 nodes and many will follow depending on my needs.
+            </p>
+            <p>
+              Users can draw connections between nodes (called wires) and the
+              editor ensures that output and input nodes have compatible signal
+              types, that inputs have a maximum of one connection and that the
+              created graph does not include recursion (i.e stays acyclic). As
+              wires are created/moved/deleted or values altered, the editor
+              automatically reroutes the signals given the user a realtime
+              programming experience.
+            </p>
+          </div>
+          <div id="circuit-anatomy">
+            <h1 class="pb-2">Circuit Anatomy</h1>
+            <p><img src="img/circuit-anatomy.png#right" alt="screenshot" /></p>
+            <p>
+              A circuit is depicted as a rounded rectangle with a title bar at
+              the top, optional inputs on the left, optional outputs on the
+              right and optional parameters in the middle of the rectangle.
+            </p>
+            <p><strong>Title Bar</strong></p>
+            <p>
+              At the top of a circuit is a title bar which by default contains
+              the name of the circuit. By double clicking on the title, users
+              can name a circuit anything they want to better express its
+              function in the signal flow. The background of the title bar is
+              color coded to represent the category of the circuit (see Circuit
+              Categories below).
+            </p>
+            <p><strong>Input Pins</strong></p>
+            <p>
+              Optional inputs to a circuit are represented on the left side of
+              that circuit by what's called pins. Each pin represents an input
+              of a specified type that is color coded (see Pin Types below).
+              Input pins can only receive a signal from one output pin. and the
+              pin data flows have to match (which is enforced by the IDE).
+            </p>
+            <p><strong>Output Pins</strong></p>
+            <p>
+              Optional output from a circuit are represented on the right side
+              of the circuit by pins. Each pin represents an output with a
+              specified signal type that is color coded (see pin types below).
+              Output pins can be connected to multiple input pins as long as the
+              signal types match (also enforced by th IDE).
+            </p>
+            <p><strong>Circuit Parameters</strong></p>
+            <p>
+              Some circuits also might have additional parameters or
+              visualizations to help the circuit perform its function. The
+              circuit parameters are rendered in the middle of the circuit.
+            </p>
+          </div>
+          <div id="circuit-categories">
+            <h1 class="pb-2">Circuit Categories</h1>
+            <p>
+              Circuits are grouped in categories that make it easier to find
+              them and recognize them in a graph. Each category has a unique
+              color as shown on the right below.
+            </p>
+            <p>
+              <img src="img/circuit-categories.png#right" alt="screenshot" />
+            </p>
+            <ul>
+              <li>
+                <strong>Input Nodes</strong> - These circuits enable users to
+                input values or select assets (e.g. sound files). If a circuit
+                of circuits is used in another object (e.g. a 3D scene), input
+                fields enable users to interact with the circuit's functionality
+                without having the understand the full logic. This in essence
+                makes a circuit a macro or sub-function somewhere else.
+              </li>
+              <li>
+                <strong>Output Nodes</strong> - These circuits enable the user
+                to save signals or route them to computer peripherals.
+              </li>
+              <li>
+                <strong>Generator Nodes</strong> - These circuits generate
+                signals based on provided parameters.
+              </li>
+              <li>
+                <strong>Processor Nodes</strong> - These circuits process one or
+                more signals and generate a new signal (e.g. equalizer, filter,
+                mixer).
+              </li>
+              <li>
+                <strong>Effect Nodes</strong> - These circuits apply an effect
+                to a signal (e.g. echo, distortion).
+              </li>
+              <li>
+                <strong>Converter Nodes</strong> - These circuits converter the
+                signal flow from one type to another (e.g. mono to stereo).
+              </li>
+              <li>
+                <strong>Probe Nodes</strong> - These circuits provide debugging
+                support by visualizing various signal types.
+              </li>
+            </ul>
+          </div>
+          <div id="circuit-pins">
+            <h1 class="pb-2">Circuit Pins</h1>
+            <p>
+              The input and output pins of a circuit can only carry one specific
+              signal type. Each of these types is color coded and the IDE
+              ensures wires are only created between compatible types. Below are
+              all the signal types used by pins:
+            </p>
+            <p><img src="img/circuit-pins.png#right" alt="screenshot" /></p>
+            <ul>
+              <li><strong>Mono Pins</strong> - carry a mono audio signal.</li>
+              <li>
+                <strong>Stereo Pins</strong> - carry a stereo audio signal.
+              </li>
+              <li>
+                <strong>Control Pins</strong> - carry a control signal with a
+                value between 0.o0 and 1.0 (analogous to control voltages in
+                modular synths).
+              </li>
+              <li>
+                <strong>Frequency Pins</strong> - carry a frequency
+                specification a a stream of number in Hertz.
+              </li>
+              <li>
+                <strong>MIDI Pins</strong> - carry a stream of MIDI messages.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="row flex-shrink-0 py-1 manual-footer" id="copyright">
+        <p class="mx-auto py-0 my-0 small">
+          Copyright (c) 1993-2025 Johan A. Goossens. All rights reserved.
+        </p>
+      </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/theme.js"></script>
+  </body>
+</html>

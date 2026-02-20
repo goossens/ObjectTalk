@@ -1,0 +1,24 @@
+include /manual.pug
+
++page("Audio Overview")
+	+manual()
+		include common/header.pug
+
+		+manual-body()
+			+manual-toc()
+				include:markdown audio/overview/toc.md
+
+			+manual-content()
+				+manual-chapter("overview",  "Audio Overview")
+					include:markdown audio/overview/overview.md
+
+				+manual-chapter("circuit-anatomy",  "Circuit Anatomy")
+					include:markdown audio/overview/circuit-anatomy.md
+
+				+manual-chapter("circuit-categories",  "Circuit Categories")
+					include:markdown audio/overview/circuit-categories.md
+
+				+manual-chapter("circuit-pins",  "Circuit Pins")
+					include:markdown audio/overview/circuit-pins.md
+
+		include common/footer.pug

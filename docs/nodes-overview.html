@@ -135,6 +135,25 @@
                 >
               </div>
             </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Audio"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Audio</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Audio">
+                <a class="nav-link page-scroll" href="audio-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="audio-reference.html"
+                  >Reference</a
+                >
+              </div>
+            </li>
             <li class="nav-item">
               <a class="nav-link page-scroll" href="ide.html">IDE</a>
             </li>
@@ -152,10 +171,8 @@
             <li>
               <a class="page-scroll" href="#node-categories">Node Categories</a>
             </li>
-            <li><a class="page-scroll" href="#pin-types">Pin Type</a></li>
-            <li>
-              <a class="page-scroll" href="#data-flows">Dat Flows Type</a>
-            </li>
+            <li><a class="page-scroll" href="#node-pins">Node Pins</a></li>
+            <li><a class="page-scroll" href="#data-flows">Data Flows</a></li>
           </ul>
         </div>
         <div class="col mh-100 overflow-auto py-2 manual-content">
@@ -330,15 +347,15 @@
               </li>
             </ul>
           </div>
-          <div id="pin-types">
-            <h1 class="pb-2">Pin Types</h1>
+          <div id="node-pins">
+            <h1 class="pb-2">Node Pins</h1>
             <p>
               The input and output pins of a node can only carry one specific
               data type. Each of these types is color coded and the IDE ensures
               links are only created using compatible types. Below are all the
               data types used by pins:
             </p>
-            <p><img src="img/pin-types.png#right" alt="screenshot" /></p>
+            <p><img src="img/node-pins.png#right" alt="screenshot" /></p>
             <ul>
               <li>
                 <strong>Boolean Pins</strong> - Booleans can only hold two
@@ -414,13 +431,12 @@
               a one time algorithm and produce outputs.
             </p>
             <p>
-              Some nodes (e.g. Instances on Faces) run the algorithm on each
-              element of the input (e.g. faces in a geometry). Those nodes
-              create a context and evaluate each input once per element. If a
-              downstream input node is a &quot;varying&quot; node, the context
-              is accessed and the correct value provided. This allows processing
-              of composite data (e.g. geometries) by evaluating each element
-              (e.g. vertex or face).
+              Some nodes run the algorithm on each element of the input (e.g.
+              faces in a geometry). Those nodes create a context and evaluate
+              each input once per element. If a downstream input node is a
+              &quot;varying&quot; node, the context is accessed and the correct
+              value provided. This allows processing of composite data (e.g.
+              geometries) by evaluating each element (e.g. vertex or face).
             </p>
             <p>
               Some nodes are chameleons (e.g. math nodes) and they can operate

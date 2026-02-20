@@ -2,5 +2,5 @@
 * [Introduction](#overview)
 * [Node Anatomy](#node-anatomy)
 * [Node Categories](#node-categories)
-* [Pin Type](#pin-types)
-* [Dat Flows Type](#data-flows)
+* [Node Pins](#node-pins)
+* [Data Flows](#data-flows)

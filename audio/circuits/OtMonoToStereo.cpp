@@ -34,8 +34,8 @@ public:
 		output = addOutputPin("Output", OtCircuitPinClass::Type::stereo);
 
 		panControl = addControl("Pan", &panLevel)->setRange(-1.0f, 1.0f)->setLabelFormat("%.2f");
-		leftDelayControl = addControl("Dly L", &leftDelayTimeInMs)->setRange(0.0f, 100.0f)->setLabelFormat("%.1fms");
-		rightDelayControl = addControl("Dly R", &rightDelayTimeInMs)->setRange(0.0f, 100.0f)->setLabelFormat("%.1fms");
+		leftDelayControl = addControl("Delay L", &leftDelayTimeInMs)->setRange(0.0f, 100.0f)->setLabelFormat("%.1fms");
+		rightDelayControl = addControl("Delay R", &rightDelayTimeInMs)->setRange(0.0f, 100.0f)->setLabelFormat("%.1fms");
 	}
 
 	// render custom fields

@@ -1025,19 +1025,31 @@ bool OtUi::bezier(const char* label, float P[4]) {
 static constexpr float pi = static_cast<float>(std::numbers::pi);
 
 bool OtUi::knob(const char* label, float* value, float minValue, float maxValue, const char* format, bool logarithmic) {
-	return ImGuiKnobs::Knob(
+	auto size = ImGui::GetTextLineHeight() - 2.0f;
+	ImGui::PushFont(nullptr, size);
+
+	auto result = ImGuiKnobs::Knob(
 		label, value, minValue, maxValue, 0.0f,
 		format, ImGuiKnobVariant_WiperDot,
-		0.0f, logarithmic ? ImGuiKnobFlags_Logarithmic : 0, 10,
+		size * 5.0f, logarithmic ? ImGuiKnobFlags_Logarithmic : 0, 10,
 		pi * 0.6f, pi * 2.4f);
+
+	ImGui::PopFont();
+	return result;
 }
 
 bool OtUi::knob(const char* label, int* value, int minValue, int maxValue) {
-	return ImGuiKnobs::KnobInt(
+	auto size = ImGui::GetTextLineHeight() - 2.0f;
+	ImGui::PushFont(nullptr, size);
+
+	auto result = ImGuiKnobs::KnobInt(
 		label, value, minValue, maxValue, 0.0f,
 		"%i", ImGuiKnobVariant_WiperDot,
-		0.0f, 0, 10,
+		size * 5.0f, 0, 10,
 		pi * 0.6f, pi * 2.4f);
+
+	ImGui::PopFont();
+	return result;
 }
 
 
@@ -1046,7 +1058,15 @@ bool OtUi::knob(const char* label, int* value, int minValue, int maxValue) {
 //
 
 float OtUi::knobWidth(size_t columns) {
-	return (columns == 0) ? 0.0f : ImGui::GetTextLineHeight() * 4.0f * columns + ImGui::GetStyle().ItemSpacing.x * (columns - 1);
+	ImGui::PushFont(nullptr, ImGui::GetTextLineHeight() - 2.0f);
+	float width = 0.0f;
+
+	if (columns != 0) {
+		width = ImGui::GetTextLineHeight() * 5.0f * columns + ImGui::GetStyle().ItemSpacing.x * (columns - 1);
+	}
+
+	ImGui::PopFont();
+	return width;
 }
 
 
@@ -1055,15 +1075,17 @@ float OtUi::knobWidth(size_t columns) {
 //
 
 float OtUi::knobHeight(size_t rows) {
-	if (rows == 0) {
-		return 0.0f;
+	ImGui::PushFont(nullptr, ImGui::GetTextLineHeight() - 2.0f);
+	float height = 0.0f;
 
-	} else {
-		auto height = ImGui::GetFrameHeightWithSpacing();
-		height += ImGui::GetTextLineHeight() * 4.0f;
-		height += ImGui::GetFrameHeight();
-		return height * rows + ImGui::GetStyle().ItemSpacing.y * rows;
+	if (rows != 0) {
+		height = ImGui::GetFrameHeightWithSpacing() * 2.0f;
+		height += ImGui::GetTextLineHeight() * 5.0f;
+		height *= rows;
 	}
+
+	ImGui::PopFont();
+	return height;
 }
 
 

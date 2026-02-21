@@ -11,8 +11,8 @@ declare license "MIT";
 import("stdfaust.lib");
 
 filterGroup(x) = hgroup("[0]Ladder", x);
-cutoff = filterGroup(vslider("[2]Freq[style:knob][format: %.0fhz]", 800, 80, 8000, 0.1)) : si.smoo;
-resonance = filterGroup(vslider("[3]Res[style:knob]", 0.5, 0, 1, 0.01));
+cutoff = filterGroup(vslider("[2]Cutoff[style:knob][format: %.0fhz]", 800, 80, 8000, 0.1)) : si.smoo;
+resonance = filterGroup(vslider("[3]Resonance[style:knob]", 0.5, 0, 1, 0.01));
 
 process(signal, mod1, mod2, mod3) = signal : ve.lowpassLadder4(resonance * 4, freq) with {
 	freq = cutoff * (2 ^ (mod1 + mod2 + mod3));

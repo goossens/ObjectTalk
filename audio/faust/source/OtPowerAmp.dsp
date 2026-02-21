@@ -10,7 +10,7 @@ import("stdfaust.lib");
 
 // distortion parameters
 pdrive = hslider("Drive[style:knob]", 4.0, -10.0, 10.0, 0.001) : si.smooth(0.995);
-psat = hslider("Saturation[label:Sat][style:knob]", 1.0, 0.0, 1.0, 0.001) : si.smooth(0.995);
+psat = hslider("Saturation[style:knob]", 1.0, 0.0, 1.0, 0.001) : si.smooth(0.995);
 pcurve = hslider("Curve[style:knob]", 1.0, 0.1, 4.0, 0.001) : si.smooth(0.995);
 
 // approximation of the `tanh` function for computational improvement
@@ -51,9 +51,9 @@ resonlp(fc, Q, gain) = tf2s(b2,b1,b0,a1,a0,wc) with {
 };
 
 feedbackCircuit = presence:*(gainNFL)  with {
-	p1gain = hslider("[3]Presence[label:Pres][style:knob]", 0, -15, 15, 0.1);
+	p1gain = hslider("[3]Presence[style:knob]", 0, -15, 15, 0.1);
 	presence =wa.peaking2(2000, p1gain, 1, 0) : wa.peaking2(4000, p1gain, 1, 0);
-	gainNFL = hslider("[4]Feedback[label:Fback][style:knob]", -0.4, -0.8, 1, 0.01) :  si.smoo;
+	gainNFL = hslider("[4]Feedback[label:Feedback][style:knob]", -0.4, -0.8, 1, 0.01) :  si.smoo;
 };
 
 process = hgroup("PowerAmp", (+ : waveshaper : fi.dcblocker) ~ feedbackCircuit : *(4.0));

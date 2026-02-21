@@ -17,6 +17,11 @@
 //	Include files
 //
 
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+#include <math.h>
+
 #include "OtFaust.h"
 
 

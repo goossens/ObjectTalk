@@ -17,6 +17,11 @@
 //	Include files
 //
 
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+#include <math.h>
+
 #include "OtFaust.h"
 
 
@@ -179,9 +184,9 @@ protected:
 		bool changed = false;
 		ImGui::BeginGroup();
 		ImGui::PushID("Ladder");
-		changed |= editFreq();
+		changed |= editCutoff();
 		ImGui::SameLine();
-		changed |= editRes();
+		changed |= editResonance();
 		ImGui::PopID();
 		ImGui::EndGroup();
 		return changed;
@@ -204,35 +209,35 @@ protected:
 	}
 
 	struct Parameters {
-		float freq = 800.0f;
-		float res = 0.5f;
+		float cutoff = 800.0f;
+		float resonance = 0.5f;
 	};
 
 	inline void setParameters([[maybe_unused]] const Parameters& parameters) {
-		fVslider0 = parameters.freq;
-		fVslider1 = parameters.res;
+		fVslider0 = parameters.cutoff;
+		fVslider1 = parameters.resonance;
 	}
 
 	inline Parameters getParameters() {
 		Parameters parameters;
-		parameters.freq = fVslider0;
-		parameters.res = fVslider1;
+		parameters.cutoff = fVslider0;
+		parameters.resonance = fVslider1;
 		return parameters;
 	}
 
 	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
-		callback("freq", &fVslider0, 800.0f);
-		callback("res", &fVslider1, 0.5f);
+		callback("cutoff", &fVslider0, 800.0f);
+		callback("resonance", &fVslider1, 0.5f);
 	}
 
-	inline bool editFreq() { return OtUi::knob("Freq", &fVslider0, 80.0f, 8000.0f, "%.0fhz", false); }
-	inline bool editRes() { return OtUi::knob("Res", &fVslider1, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editCutoff() { return OtUi::knob("Cutoff", &fVslider0, 80.0f, 8000.0f, "%.0fhz", false); }
+	inline bool editResonance() { return OtUi::knob("Resonance", &fVslider1, 0.0f, 1.0f, "%.2f", false); }
 
-	inline void setFreq(float value) { fVslider0 = value; }
-	inline void setRes(float value) { fVslider1 = value; }
+	inline void setCutoff(float value) { fVslider0 = value; }
+	inline void setResonance(float value) { fVslider1 = value; }
 
-	inline float getFreq() { return fVslider0; }
-	inline float getRes() { return fVslider1; }
+	inline float getCutoff() { return fVslider0; }
+	inline float getResonance() { return fVslider1; }
 
 private:
 	bool initialized = false;

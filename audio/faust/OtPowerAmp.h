@@ -17,6 +17,11 @@
 //	Include files
 //
 
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+#include <math.h>
+
 #include "OtFaust.h"
 
 
@@ -355,9 +360,9 @@ protected:
 
 	inline bool editCurve() { return OtUi::knob("Curve", &fHslider4, 0.1f, 4.0f, "%.2f", false); }
 	inline bool editDrive() { return OtUi::knob("Drive", &fHslider3, -10.0f, 10.0f, "%.2f", false); }
-	inline bool editSaturation() { return OtUi::knob("Sat", &fHslider0, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editPresence() { return OtUi::knob("Pres", &fHslider1, -15.0f, 15.0f, "%.1f", false); }
-	inline bool editFeedback() { return OtUi::knob("Fback", &fHslider2, -0.8f, 1.0f, "%.2f", false); }
+	inline bool editSaturation() { return OtUi::knob("Saturation", &fHslider0, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editPresence() { return OtUi::knob("Presence", &fHslider1, -15.0f, 15.0f, "%.1f", false); }
+	inline bool editFeedback() { return OtUi::knob("Feedback", &fHslider2, -0.8f, 1.0f, "%.2f", false); }
 
 	inline void setCurve(float value) { fHslider4 = value; }
 	inline void setDrive(float value) { fHslider3 = value; }

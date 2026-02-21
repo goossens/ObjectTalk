@@ -1,0 +1,58 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2026 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+TB_12AX7_68k = fconstant(int TUBE_TABLE_12AX7_68k, "OtTube.h");
+TB_12AX7_250k = fconstant(int TUBE_TABLE_12AX7_250k, "OtTube.h");
+
+ftube = ffunction(float OtTubeGetOutput(int, float), "OtTube.h", "");
+ranode = ffunction(float OtTubeGetRaNode(int, float), "OtTube.h", "");
+
+//                                 o V+
+//                                 |
+//                                 |
+//                                 |
+//                                +-+
+//                                | |
+//                             Rp | |
+//                                | |    Co
+//                                +-+
+//                                 |     ||
+//                                 +-----++---o Vo
+//                              Vp |     ||
+//                                 |
+//     Ci                        --+--
+//                    Ri        /--+--
+//     ||  Vi      +-----+  Vg /         TUBE
+// o---++--+-------|     |-----+- - - -
+//     ||  |       +-----+     \
+//         |                    \/----
+//         |                    /-----
+//         |                   /
+//        +-+               Vk |
+//        | |                  +------+
+//        | |                  |      |
+//        | |                  |      |
+//        +-+                 +-+     |
+//         |                  | |    -+-
+//         |               Rk | |    -+- Ck
+//         |                  | |     |
+//       -----                +-+     |
+//        ---                  |      |
+//         o                   |      |
+//                             |      |
+//                           -----  -----
+//                            ---    ---
+//                             o      o
+
+tubestage(tb, vplus, divider, fck, Rk, Vk0) = antiAlias : tube : hpf with {
+	lpfk = fi.lowpass(1, fck);
+	antiAlias = fi.lowpass(3, ma.SR / 2.1);
+	Rp = 100.0e3;
+	VkC = Vk0 * (Rp / Rk);
+	tubeVp = -(Vk0) : ftube(tb) : +(VkC - vplus);
+	tube(x) = x : (+ : (tubeVp)) ~ (x*Rk/(Rp + ranode(tb)) : lpfk) : /(divider);
+	hpf = fi.highpass(1, 31.0);
+};

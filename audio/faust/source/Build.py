@@ -300,10 +300,20 @@ def processDspFile(sourceFileName, targetFileName):
 	os.remove(jsonName)
 
 	# strip everything before class or static function definitions
+	# preserve include statements
 	found = False
+	tube = False
+	includes = ""
 	line = 0
 
 	while not found:
+		if text[line].startswith("#include"):
+			if "OtTube.h" in text[line]:
+				tube = True
+
+			else:
+				includes += text[line]
+
 		if text[line].startswith("class") or text[line].startswith("static"):
 			found = True
 
@@ -312,11 +322,16 @@ def processDspFile(sourceFileName, targetFileName):
 
 	text = "".join(text[line:-4])
 
+	if tube:
+		includes += "\n#include \"OtTube.h\""
+
 	# process UI information from JSON metadata
 	ui = UI(metadata["ui"][0], className)
 
 	# patch generated code so it works for us (and looks a little better :-)
-	headerText = header.replace("CLASS", className)
+	headerText = header \
+		.replace("INCLUDES", includes) \
+		.replace("CLASS", className)
 
 	text = text.replace("FAUSTFLOAT", "float")
 	text = text.replace("RESTRICT ", "")

@@ -300,16 +300,17 @@ def processDspFile(sourceFileName, targetFileName):
 	os.remove(jsonName)
 
 	# strip everything before class or static function definitions
-	# preserve include statements
 	found = False
-	tube = False
+	ot = ["#include \"OtFaust.h\""]
 	includes = ""
 	line = 0
 
 	while not found:
+		# preserve include statements
 		if text[line].startswith("#include"):
-			if "OtTube.h" in text[line]:
-				tube = True
+			# special handling for Object Talk include files
+			if "Ot" in text[line]:
+				ot.append(text[line][:-1])
 
 			else:
 				includes += text[line]
@@ -321,9 +322,7 @@ def processDspFile(sourceFileName, targetFileName):
 			line += 1
 
 	text = "".join(text[line:-4])
-
-	if tube:
-		includes += "\n#include \"OtTube.h\""
+	includes += "\n" + "\n".join(ot)
 
 	# process UI information from JSON metadata
 	ui = UI(metadata["ui"][0], className)

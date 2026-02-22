@@ -22,8 +22,8 @@
 #include <cstdint>
 #include <math.h>
 
-#include "OtTube.h"
 #include "OtFaust.h"
+#include "OtTube.h"
 
 
 //
@@ -271,10 +271,10 @@ protected:
 			fRec13[0] = fRec14[0] - (1.8405051250752198 * fRec13[1] + 0.8612942439318627 * fRec13[2]);
 			double fTemp1 = 0.9254498422517706 * (fRec13[0] + fRec13[2]);
 			double fTemp2 = 1.8508996845035413 * fRec13[1];
-			double fTemp3 = (fTemp2 + fTemp1) / (OtTubeGetRaNode(TUBE_TABLE_12AX7_68k, fRec12[1]) + 1e+05);
+			double fTemp3 = (fTemp2 + fTemp1) / (OtTubeGetR(TUBE_TABLE_12AX7_68k, fRec12[1]) + 1e+05);
 			fVec1[0] = fTemp3;
 			fRec15[0] = fConst9 * (2.7e+03 * (fTemp3 + fVec1[1]) - fConst10 * fRec15[1]);
-			fRec12[0] = OtTubeGetOutput(TUBE_TABLE_12AX7_68k, fTemp1 + fRec15[0] + fTemp2 + -1.581656) + -191.42014814814814;
+			fRec12[0] = OtTubeGetF(TUBE_TABLE_12AX7_68k, fTemp1 + fRec15[0] + fTemp2 + -1.581656) + -191.42014814814814;
 			fRec11[0] = fConst3 * (fConst4 * (fRec12[0] - fRec12[1]) - fConst11 * fRec11[1]);
 			double fTemp4 = fRec11[0] * fRec5[0];
 			fVec2[0] = fTemp4;
@@ -283,10 +283,10 @@ protected:
 			fRec8[0] = fRec9[0] - (1.8405051250752198 * fRec8[1] + 0.8612942439318627 * fRec8[2]);
 			double fTemp5 = 0.9254498422517706 * (fRec8[0] + fRec8[2]);
 			double fTemp6 = 1.8508996845035413 * fRec8[1];
-			double fTemp7 = (fTemp6 + fTemp5) / (OtTubeGetRaNode(TUBE_TABLE_12AX7_250k, fRec7[1]) + 1e+05);
+			double fTemp7 = (fTemp6 + fTemp5) / (OtTubeGetR(TUBE_TABLE_12AX7_250k, fRec7[1]) + 1e+05);
 			fVec3[0] = fTemp7;
 			fRec16[0] = fConst13 * (1.5e+03 * (fTemp7 + fVec3[1]) - fConst14 * fRec16[1]);
-			fRec7[0] = OtTubeGetOutput(TUBE_TABLE_12AX7_250k, fTemp5 + fRec16[0] + fTemp6 + -1.204285) + -169.71433333333334;
+			fRec7[0] = OtTubeGetF(TUBE_TABLE_12AX7_250k, fTemp5 + fRec16[0] + fTemp6 + -1.204285) + -169.71433333333334;
 			fRec6[0] = fConst3 * (fConst4 * (fRec7[0] - fRec7[1]) - fConst11 * fRec6[1]);
 			double fTemp8 = fRec5[0] * fRec6[0];
 			fVec4[0] = fTemp8;
@@ -295,10 +295,10 @@ protected:
 			fRec2[0] = fRec3[0] - (1.8405051250752198 * fRec2[1] + 0.8612942439318627 * fRec2[2]);
 			double fTemp9 = 0.9254498422517706 * (fRec2[0] + fRec2[2]);
 			double fTemp10 = 1.8508996845035413 * fRec2[1];
-			double fTemp11 = (fTemp10 + fTemp9) / (OtTubeGetRaNode(TUBE_TABLE_12AX7_250k, fRec1[1]) + 1e+05);
+			double fTemp11 = (fTemp10 + fTemp9) / (OtTubeGetR(TUBE_TABLE_12AX7_250k, fRec1[1]) + 1e+05);
 			fVec5[0] = fTemp11;
 			fRec17[0] = fConst16 * (8.2e+02 * (fTemp11 + fVec5[1]) - fConst17 * fRec17[1]);
-			fRec1[0] = OtTubeGetOutput(TUBE_TABLE_12AX7_250k, fTemp9 + fRec17[0] + fTemp10 + -0.840703) + -147.47524390243905;
+			fRec1[0] = OtTubeGetF(TUBE_TABLE_12AX7_250k, fTemp9 + fRec17[0] + fTemp10 + -0.840703) + -147.47524390243905;
 			fRec0[0] = fConst3 * (fConst4 * (fRec1[0] - fRec1[1]) - fConst11 * fRec0[1]);
 			fRec18[0] = fSlow1 + 0.999 * fRec18[1];
 			output0[i0] = static_cast<float>(fRec0[0] * fRec18[0]);

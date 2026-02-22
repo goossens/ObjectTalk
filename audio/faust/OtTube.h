@@ -36,7 +36,11 @@ struct OtTubeTable {
 
 enum {
 	TUBE_TABLE_12AX7_68k,
-	TUBE_TABLE_12AX7_250k
+	TUBE_TABLE_12AX7_250k,
+	TUBE_TABLE_KT88_68k,
+	TUBE_TABLE_KT88_250k,
+	TUBE_TABLE_7199P_68k,
+	TUBE_TABLE_7199P_250k
 };
 
 
@@ -47,7 +51,7 @@ enum {
 
 OtTubeTable& OtTubeGetTable(int table, int index);
 
-static inline float OtTubeGetOutput(int table, float input) {
+static inline float OtTubeGetF(int table, float input) {
 	auto& tab = OtTubeGetTable(table, 0);
 	auto f = (input - tab.low) * tab.istep;
 	int i = static_cast<int>(f);
@@ -64,7 +68,7 @@ static inline float OtTubeGetOutput(int table, float input) {
 	return tab.data[i] * (1 - f) + tab.data[i + 1] * f;
 }
 
-static inline float OtTubeGetRaNode(int table, float input) {
+static inline float OtTubeGetR(int table, float input) {
 	auto& tab = OtTubeGetTable(table, 1);
 	auto f = (input - tab.low) * tab.istep;
 	int i = static_cast<int>(f);

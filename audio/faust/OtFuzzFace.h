@@ -23,17 +23,18 @@
 #include <math.h>
 
 #include "OtFaust.h"
+#include "OtTube.h"
 
 
 //
 //  OtFuzzFace
 //
 
-static double OtFuzzFace_faustpower2_f(double value) {
-	return value * value;
-}
 static double OtFuzzFace_faustpower3_f(double value) {
 	return value * value * value;
+}
+static double OtFuzzFace_faustpower2_f(double value) {
+	return value * value;
 }
 
 class OtFuzzFace : public OtFaust {
@@ -43,13 +44,11 @@ protected:
 	double fConst1;
 	double fConst2;
 	double fConst3;
-	float fHslider0;
-	double fRec1[2];
 	double fConst4;
 	double fConst5;
-	float fVslider0;
-	double fRec2[2];
 	double fConst6;
+	float fVslider0;
+	double fRec13[2];
 	double fConst7;
 	double fConst8;
 	double fConst9;
@@ -72,11 +71,14 @@ protected:
 	double fConst26;
 	double fConst27;
 	double fConst28;
+	double fRec12[6];
 	double fConst29;
 	double fConst30;
 	double fConst31;
 	double fConst32;
 	double fConst33;
+	float fHslider0;
+	double fRec14[2];
 	double fConst34;
 	double fConst35;
 	double fConst36;
@@ -111,26 +113,20 @@ protected:
 	double fConst65;
 	double fConst66;
 	double fConst67;
+	double fVec0[2];
+	double fRec11[2];
+	double fRec10[3];
+	double fRec9[2];
 	double fConst68;
-	double fConst69;
-	double fRec0[4];
-	double fConst70;
-	double fConst71;
-	double fConst72;
-	double fConst73;
-	double fConst74;
-	double fConst75;
-	double fConst76;
-	double fConst77;
-	double fConst78;
-	double fConst79;
-	double fConst80;
-	double fConst81;
-	double fConst82;
-	double fConst83;
-	double fConst84;
-	double fConst85;
-	double fConst86;
+	double fRec8[2];
+	double fRec7[2];
+	double fRec6[3];
+	double fRec5[2];
+	double fRec4[2];
+	double fRec3[2];
+	double fRec2[3];
+	double fRec1[2];
+	double fRec0[2];
 	
  public:
 	OtFuzzFace() {
@@ -138,25 +134,43 @@ protected:
 	}
 				
 	inline void metadata(Meta* m) { 
-		m->declare("category", "Fuzz");
+		m->declare("category", "Distortion");
 		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtFuzzFace -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
-		m->declare("description", "Micke Fuller Fuzz Face simulation");
+		m->declare("description", "Jimmy Hendrix Fuzz Face simulation");
 		m->declare("filename", "OtFuzzFace.dsp");
 		m->declare("filters.lib/fir:author", "Julius O. Smith III");
 		m->declare("filters.lib/fir:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/fir:license", "MIT-style STK-4.3 license");
+		m->declare("filters.lib/highpass:author", "Julius O. Smith III");
+		m->declare("filters.lib/highpass:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/iir:author", "Julius O. Smith III");
 		m->declare("filters.lib/iir:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/iir:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/lowpass0_highpass1", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/lowpass0_highpass1:author", "Julius O. Smith III");
+		m->declare("filters.lib/lowpass:author", "Julius O. Smith III");
+		m->declare("filters.lib/lowpass:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/lowpass:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/name", "Faust Filters Library");
+		m->declare("filters.lib/tf1:author", "Julius O. Smith III");
+		m->declare("filters.lib/tf1:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/tf1:license", "MIT-style STK-4.3 license");
+		m->declare("filters.lib/tf1s:author", "Julius O. Smith III");
+		m->declare("filters.lib/tf1s:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/tf1s:license", "MIT-style STK-4.3 license");
+		m->declare("filters.lib/tf2:author", "Julius O. Smith III");
+		m->declare("filters.lib/tf2:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/tf2:license", "MIT-style STK-4.3 license");
+		m->declare("filters.lib/tf2s:author", "Julius O. Smith III");
+		m->declare("filters.lib/tf2s:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/tf2s:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/version", "1.7.1");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
 		m->declare("maths.lib/license", "LGPL with exception");
 		m->declare("maths.lib/name", "Faust Math Library");
 		m->declare("maths.lib/version", "2.9.0");
-		m->declare("name", "Fuzz Face Fuller");
+		m->declare("name", "Fuzz Face");
 		m->declare("platform.lib/name", "Generic Platform Library");
 		m->declare("platform.lib/version", "1.3.0");
 		m->declare("signals.lib/name", "Faust Signal Routing Library");
@@ -176,108 +190,129 @@ protected:
 	inline void instanceConstants([[maybe_unused]] int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
-		fConst1 = 7.55358741622564e-17 * fConst0;
-		fConst2 = 1.68148957452649e-16 * fConst0;
-		fConst3 = fConst0 * (fConst0 * (fConst1 + 1.61641996632585e-12) + -1.6091784998802e-10 + fConst0 * (-1.63110208134281e-12 - fConst2) + 1.69410806769336e-10);
-		fConst4 = 3.35312097339121e-19 * fConst0;
-		fConst5 = fConst0 * (fConst4 + 3.24149709132582e-15) + -1.46288954534563e-14;
-		fConst6 = 4.27176866080457e-16 * fConst0;
-		fConst7 = fConst0 * (fConst6 + 6.43214948741896e-16) + 3.45797348759893e-55;
-		fConst8 = 4.27512178177797e-16 * fConst0;
-		fConst9 = fConst0 * (-6.43443174346988e-16 - fConst8) + -3.26234246975457e-55;
-		fConst10 = 1.50628899360393e-19 * fConst0;
-		fConst11 = fConst0 * (fConst0 * (-3.21835699976039e-15 - fConst10) + -1.53335572595511e-54);
-		fConst12 = OtFuzzFace_faustpower2_f(fConst0);
-		fConst13 = 4.24521866169651e-16 * fConst0;
-		fConst14 = 7.60754167271764e-56 - fConst13;
-		fConst15 = 4.24672495069012e-16 * fConst0;
-		fConst16 = fConst15 + -7.17715343346006e-56;
-		fConst17 = 2.14216383033367e-13 * fConst0;
-		fConst18 = fConst0 * (-7.44216743501989e-12 - fConst17) + 3.21607474370948e-11;
-		fConst19 = 2.1438453199082e-13 * fConst0;
-		fConst20 = fConst0 * (fConst19 + 7.44787041826973e-12) + -3.21721587173494e-11;
-		fConst21 = 2.12884980228095e-13 * fConst0;
-		fConst22 = fConst21 + 7.07536443616085e-12;
-		fConst23 = 2.12960516102257e-13 * fConst0;
-		fConst24 = -7.07787491781686e-12 - fConst23;
-		fConst25 = fConst0 * (fConst0 * (1.61641996632585e-12 - fConst1) + 1.6091784998802e-10 + fConst0 * (fConst2 + -1.63110208134281e-12) + -1.69410806769336e-10);
-		fConst26 = fConst0 * (3.24149709132582e-15 - fConst4) + 1.46288954534563e-14;
-		fConst27 = fConst0 * (6.43214948741896e-16 - fConst6) + -3.45797348759893e-55;
-		fConst28 = fConst0 * (fConst8 + -6.43443174346988e-16) + 3.26234246975457e-55;
-		fConst29 = fConst0 * (fConst0 * (fConst10 + -3.21835699976039e-15) + 1.53335572595511e-54);
-		fConst30 = fConst13 + 7.60754167271764e-56;
-		fConst31 = -7.17715343346006e-56 - fConst15;
-		fConst32 = fConst0 * (fConst17 + -7.44216743501989e-12) + -3.21607474370948e-11;
-		fConst33 = fConst0 * (7.44787041826973e-12 - fConst19) + 3.21721587173494e-11;
-		fConst34 = 7.07536443616085e-12 - fConst21;
-		fConst35 = fConst23 + -7.07787491781686e-12;
-		fConst36 = 2.51786247207522e-17 * fConst0;
-		fConst37 = 5.60496524842164e-17 * fConst0;
-		fConst38 = fConst0 * (fConst0 * (fConst36 + -1.61641996632585e-12) + 1.6091784998802e-10 + fConst0 * (1.63110208134281e-12 - fConst37) + -1.69410806769336e-10);
-		fConst39 = 1.1177069911304e-19 * fConst0;
-		fConst40 = fConst0 * (fConst39 + -3.24149709132582e-15) + 1.46288954534563e-14;
-		fConst41 = 1.42392288693486e-16 * fConst0;
-		fConst42 = fConst0 * (fConst41 + -6.43214948741896e-16) + -3.45797348759893e-55;
-		fConst43 = 1.42504059392599e-16 * fConst0;
-		fConst44 = fConst0 * (6.43443174346988e-16 - fConst43) + 3.26234246975457e-55;
-		fConst45 = 5.02096331201311e-20 * fConst0;
-		fConst46 = fConst0 * (fConst0 * (3.21835699976039e-15 - fConst45) + 1.53335572595511e-54);
-		fConst47 = 1.41507288723217e-16 * fConst0;
-		fConst48 = -7.60754167271764e-56 - fConst47;
-		fConst49 = 1.41557498356337e-16 * fConst0;
-		fConst50 = fConst49 + 7.17715343346006e-56;
-		fConst51 = 7.14054610111223e-14 * fConst0;
-		fConst52 = fConst0 * (7.44216743501989e-12 - fConst51) + -3.21607474370948e-11;
-		fConst53 = 7.14615106636066e-14 * fConst0;
-		fConst54 = fConst0 * (fConst53 + -7.44787041826973e-12) + 3.21721587173494e-11;
-		fConst55 = 7.09616600760317e-14 * fConst0;
-		fConst56 = fConst55 + -7.07536443616085e-12;
-		fConst57 = 7.09868387007524e-14 * fConst0;
-		fConst58 = 7.07787491781686e-12 - fConst57;
-		fConst59 = fConst0 * (fConst0 * (fConst37 + 1.63110208134281e-12) + 1.69410806769336e-10 + fConst0 * (-1.61641996632585e-12 - fConst36) + -1.6091784998802e-10);
-		fConst60 = fConst0 * (-3.24149709132582e-15 - fConst39) + -1.46288954534563e-14;
-		fConst61 = fConst0 * (-6.43214948741896e-16 - fConst41) + 3.45797348759893e-55;
-		fConst62 = fConst0 * (fConst43 + 6.43443174346988e-16) + -3.26234246975457e-55;
-		fConst63 = fConst0 * (fConst0 * (fConst45 + 3.21835699976039e-15) + -1.53335572595511e-54);
-		fConst64 = fConst47 + -7.60754167271764e-56;
-		fConst65 = 7.17715343346006e-56 - fConst49;
-		fConst66 = fConst0 * (fConst51 + 7.44216743501989e-12) + 3.21607474370948e-11;
-		fConst67 = fConst0 * (-7.44787041826973e-12 - fConst53) + -3.21721587173494e-11;
-		fConst68 = -7.07536443616085e-12 - fConst55;
-		fConst69 = fConst57 + 7.07787491781686e-12;
-		fConst70 = 2.0681037922594e-13 * fConst0;
-		fConst71 = 1.65448303380752e-13 * fConst0;
-		fConst72 = fConst12 * (fConst70 + 4.74739615579661e-12 + (-3.79791692463729e-12 - fConst71));
-		fConst73 = 1.12549866245409e-13 * fConst0;
-		fConst74 = 1.40687332806762e-13 * fConst0;
-		fConst75 = fConst12 * (fConst73 + 2.58361695553557e-12 + (-3.22952119441946e-12 - fConst74));
-		fConst76 = OtFuzzFace_faustpower3_f(fConst0);
-		fConst77 = 4.96344910142255e-13 * fConst0;
-		fConst78 = 6.20431137677819e-13 * fConst0;
-		fConst79 = fConst12 * (fConst77 + 3.79791692463729e-12 + (-4.74739615579661e-12 - fConst78));
-		fConst80 = 4.22061998420285e-13 * fConst0;
-		fConst81 = 3.37649598736228e-13 * fConst0;
-		fConst82 = fConst12 * (fConst80 + 3.22952119441946e-12 + (-2.58361695553557e-12 - fConst81));
-		fConst83 = fConst12 * (3.79791692463729e-12 - fConst77 + fConst78 + -4.74739615579661e-12);
-		fConst84 = fConst12 * (fConst81 + -2.58361695553557e-12 + (3.22952119441946e-12 - fConst80));
-		fConst85 = fConst12 * (fConst71 + -3.79791692463729e-12 + (4.74739615579661e-12 - fConst70));
-		fConst86 = fConst12 * (2.58361695553557e-12 - fConst73 + fConst74 + -3.22952119441946e-12);
+		fConst1 = std::tan(97.38937226128358 / fConst0);
+		fConst2 = 1.0 / fConst1;
+		fConst3 = 1.0 / (fConst2 + 1.0);
+		fConst4 = 0.025 / fConst1;
+		fConst5 = 1.19695732274265e-21 * fConst0;
+		fConst6 = fConst0 * (fConst0 * (-1.99042653510896e-15 - fConst5) + 1.83615604104971e-13) + 1.59369187419145e-10;
+		fConst7 = 1.86646037645036e-28 * fConst0;
+		fConst8 = fConst0 * (fConst0 * (fConst0 * (-3.04929833179984e-20 - fConst7) + -2.91602352831988e-14) + 2.29636966370042e-11) + 3.22347316362488e-09;
+		fConst9 = fConst0 * (fConst0 * (fConst0 * (fConst7 + 3.16899403862238e-20) + 3.11506369039915e-14) + -2.30719916990074e-11) + -3.22479494130986e-09;
+		fConst10 = 7.97971548495099e-22 * fConst0;
+		fConst11 = fConst0 * (fConst0 * (fConst10 + -3.98085307021793e-15) + -3.67231208209942e-13) + 1.06246124946097e-10;
+		fConst12 = 3.73292075290073e-28 * fConst0;
+		fConst13 = fConst0 * (fConst0 * (fConst0 * (fConst12 + 2.03286555453323e-20) + -5.83204705663976e-14) + -4.59273932740084e-11) + 2.14898210908325e-09;
+		fConst14 = fConst0 * (fConst0 * (fConst0 * (-2.11266269241492e-20 - fConst12) + 6.2301273807983e-14) + 4.61439833980148e-11) + -2.14986329420657e-09;
+		fConst15 = fConst0 * (fConst0 * (fConst10 + 3.98085307021793e-15) + -3.67231208209942e-13) + -1.06246124946097e-10;
+		fConst16 = fConst0 * (fConst0 * (fConst0 * (2.03286555453323e-20 - fConst12) + 5.83204705663976e-14) + -4.59273932740084e-11) + -2.14898210908325e-09;
+		fConst17 = fConst0 * (fConst0 * (fConst0 * (fConst12 + -2.11266269241492e-20) + -6.2301273807983e-14) + 4.61439833980148e-11) + 2.14986329420657e-09;
+		fConst18 = fConst0 * (fConst0 * (1.99042653510896e-15 - fConst5) + 1.83615604104971e-13) + -1.59369187419145e-10;
+		fConst19 = fConst0 * (fConst0 * (fConst0 * (fConst7 + -3.04929833179984e-20) + 2.91602352831988e-14) + 2.29636966370042e-11) + -3.22347316362488e-09;
+		fConst20 = fConst0 * (fConst0 * (fConst0 * (3.16899403862238e-20 - fConst7) + -3.11506369039915e-14) + -2.30719916990074e-11) + 3.22479494130986e-09;
+		fConst21 = 3.98985774247549e-22 * fConst0;
+		fConst22 = fConst0 * (fConst0 * (fConst21 + -1.99042653510896e-15) + 1.83615604104971e-13) + -5.31230624730483e-11;
+		fConst23 = 3.73292075290073e-29 * fConst0;
+		fConst24 = fConst0 * (fConst0 * (fConst0 * (1.01643277726662e-20 - fConst23) + -2.91602352831988e-14) + 2.29636966370042e-11) + -1.07449105454163e-09;
+		fConst25 = fConst0 * (fConst0 * (fConst0 * (fConst23 + -1.05633134620746e-20) + 3.11506369039915e-14) + -2.30719916990074e-11) + 1.07493164710329e-09;
+		fConst26 = fConst0 * (fConst0 * (fConst21 + 1.99042653510896e-15) + 1.83615604104971e-13) + 5.31230624730483e-11;
+		fConst27 = fConst0 * (fConst0 * (fConst0 * (fConst23 + 1.01643277726662e-20) + 2.91602352831988e-14) + 2.29636966370042e-11) + 1.07449105454163e-09;
+		fConst28 = fConst0 * (fConst0 * (fConst0 * (-1.05633134620746e-20 - fConst23) + -3.11506369039915e-14) + -2.30719916990074e-11) + -1.07493164710329e-09;
+		fConst29 = OtFuzzFace_faustpower3_f(fConst0);
+		fConst30 = 4.76991513499346e-20 * fConst0;
+		fConst31 = fConst30 + -5.00346713698171e-13;
+		fConst32 = -5.38351707988916e-15 - fConst30;
+		fConst33 = fConst30 + 5.38351707988916e-15;
+		fConst34 = 5.00346713698171e-13 - fConst30;
+		fConst35 = OtFuzzFace_faustpower2_f(fConst0);
+		fConst36 = 5.05730339185222e-13 * fConst0;
+		fConst37 = fConst36 + 1.16162215422261e-12;
+		fConst38 = -1.16162215422261e-12 - fConst36;
+		fConst39 = 1.43097454049804e-19 * fConst0;
+		fConst40 = 5.00346713698171e-13 - fConst39;
+		fConst41 = fConst39 + 5.38351707988916e-15;
+		fConst42 = -5.38351707988916e-15 - fConst39;
+		fConst43 = fConst39 + -5.00346713698171e-13;
+		fConst44 = 1.16162215422261e-12 - fConst36;
+		fConst45 = fConst36 + -1.16162215422261e-12;
+		fConst46 = 9.53983026998693e-20 * fConst0;
+		fConst47 = fConst46 + 1.00069342739634e-12;
+		fConst48 = 1.07670341597783e-14 - fConst46;
+		fConst49 = fConst46 + -1.07670341597783e-14;
+		fConst50 = -1.00069342739634e-12 - fConst46;
+		fConst51 = 1.01146067837044e-12 * fConst0;
+		fConst52 = -2.32324430844522e-12 - fConst51;
+		fConst53 = fConst51 + 2.32324430844522e-12;
+		fConst54 = fConst46 + -1.00069342739634e-12;
+		fConst55 = -1.07670341597783e-14 - fConst46;
+		fConst56 = fConst46 + 1.07670341597783e-14;
+		fConst57 = 1.00069342739634e-12 - fConst46;
+		fConst58 = fConst51 + -2.32324430844522e-12;
+		fConst59 = 2.32324430844522e-12 - fConst51;
+		fConst60 = -5.00346713698171e-13 - fConst39;
+		fConst61 = fConst39 + -5.38351707988916e-15;
+		fConst62 = 5.38351707988916e-15 - fConst39;
+		fConst63 = fConst39 + 5.00346713698171e-13;
+		fConst64 = fConst30 + 5.00346713698171e-13;
+		fConst65 = 5.38351707988916e-15 - fConst30;
+		fConst66 = fConst30 + -5.38351707988916e-15;
+		fConst67 = -5.00346713698171e-13 - fConst30;
+		fConst68 = 1.0 - fConst2;
 	}
 	
 	inline void instanceResetUserInterface() {
-		fHslider0 = static_cast<float>(0.5);
 		fVslider0 = static_cast<float>(0.5);
+		fHslider0 = static_cast<float>(0.5);
 	}
 	
 	inline void instanceClear() {
 		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
-			fRec1[l0] = 0.0;
+			fRec13[l0] = 0.0;
 		}
-		for (int l1 = 0; l1 < 2; l1 = l1 + 1) {
-			fRec2[l1] = 0.0;
+		for (int l1 = 0; l1 < 6; l1 = l1 + 1) {
+			fRec12[l1] = 0.0;
 		}
-		for (int l2 = 0; l2 < 4; l2 = l2 + 1) {
-			fRec0[l2] = 0.0;
+		for (int l2 = 0; l2 < 2; l2 = l2 + 1) {
+			fRec14[l2] = 0.0;
+		}
+		for (int l3 = 0; l3 < 2; l3 = l3 + 1) {
+			fVec0[l3] = 0.0;
+		}
+		for (int l4 = 0; l4 < 2; l4 = l4 + 1) {
+			fRec11[l4] = 0.0;
+		}
+		for (int l5 = 0; l5 < 3; l5 = l5 + 1) {
+			fRec10[l5] = 0.0;
+		}
+		for (int l6 = 0; l6 < 2; l6 = l6 + 1) {
+			fRec9[l6] = 0.0;
+		}
+		for (int l7 = 0; l7 < 2; l7 = l7 + 1) {
+			fRec8[l7] = 0.0;
+		}
+		for (int l8 = 0; l8 < 2; l8 = l8 + 1) {
+			fRec7[l8] = 0.0;
+		}
+		for (int l9 = 0; l9 < 3; l9 = l9 + 1) {
+			fRec6[l9] = 0.0;
+		}
+		for (int l10 = 0; l10 < 2; l10 = l10 + 1) {
+			fRec5[l10] = 0.0;
+		}
+		for (int l11 = 0; l11 < 2; l11 = l11 + 1) {
+			fRec4[l11] = 0.0;
+		}
+		for (int l12 = 0; l12 < 2; l12 = l12 + 1) {
+			fRec3[l12] = 0.0;
+		}
+		for (int l13 = 0; l13 < 3; l13 = l13 + 1) {
+			fRec2[l13] = 0.0;
+		}
+		for (int l14 = 0; l14 < 2; l14 = l14 + 1) {
+			fRec1[l14] = 0.0;
+		}
+		for (int l15 = 0; l15 < 2; l15 = l15 + 1) {
+			fRec0[l15] = 0.0;
 		}
 	}
 	
@@ -299,23 +334,57 @@ protected:
 	inline void compute(int count, [[maybe_unused]] float** inputs, float** outputs) {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
-		double fSlow0 = 0.007000000000000006 * (1.0 - static_cast<double>(fHslider0));
-		double fSlow1 = 0.007000000000000006 * (1.0 - static_cast<double>(fVslider0));
+		double fSlow0 = 0.007000000000000006 * (1.0 - static_cast<double>(fVslider0));
+		double fSlow1 = 0.007000000000000006 * (1.0 - static_cast<double>(fHslider0));
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
-			fRec1[0] = fSlow0 + 0.993 * fRec1[1];
-			fRec2[0] = fSlow1 + 0.993 * fRec2[1];
-			double fTemp0 = fConst59 + fRec1[0] * (fConst0 * (fConst60 + fRec2[0] * (fConst61 + fConst62 * fRec2[0])) + 6.96979875434139e-54 + fConst63 + fConst12 * fRec2[0] * (fConst64 + fConst65 * fRec2[0])) + fRec2[0] * (fConst0 * (fConst66 + fConst67 * fRec2[0]) + fConst12 * (fConst68 + fConst69 * fRec2[0])) + 7.31444772672817e-10;
-			fRec0[0] = static_cast<double>(input0[i0]) - (fRec0[1] * (fConst3 + fRec1[0] * (fConst0 * (fConst5 + fRec2[0] * (fConst7 + fConst9 * fRec2[0])) + 2.09093962630242e-53 + fConst11 + fConst12 * fRec2[0] * (fConst14 + fConst16 * fRec2[0])) + fRec2[0] * (fConst0 * (fConst18 + fConst20 * fRec2[0]) + fConst12 * (fConst22 + fConst24 * fRec2[0])) + 2.19433431801845e-09) + fRec0[2] * (fConst25 + fRec1[0] * (fConst0 * (fConst26 + fRec2[0] * (fConst27 + fConst28 * fRec2[0])) + 2.09093962630242e-53 + fConst29 + fConst12 * fRec2[0] * (fConst30 + fConst31 * fRec2[0])) + fRec2[0] * (fConst0 * (fConst32 + fConst33 * fRec2[0]) + fConst12 * (fConst34 + fConst35 * fRec2[0])) + 2.19433431801845e-09) + fRec0[3] * (fConst38 + fRec1[0] * (fConst0 * (fConst40 + fRec2[0] * (fConst42 + fConst44 * fRec2[0])) + 6.96979875434139e-54 + fConst46 + fConst12 * fRec2[0] * (fConst48 + fConst50 * fRec2[0])) + fRec2[0] * (fConst0 * (fConst52 + fConst54 * fRec2[0]) + fConst12 * (fConst56 + fConst58 * fRec2[0])) + 7.31444772672817e-10)) / fTemp0;
-			double fTemp1 = 2.8231994953894e-16 * fRec2[0];
-			double fTemp2 = 4.1501032582223993e-16 * fRec2[0];
-			double fTemp3 = 8.4695984861682025e-16 * fRec2[0];
-			double fTemp4 = 1.2450309774667304e-15 * fRec2[0];
-			output0[i0] = static_cast<float>((fRec0[0] * (fConst72 + fRec1[0] * (fConst75 + fConst76 * fRec2[0] * (fTemp1 + -1.11420586447254e-13 + 1.39275733059067e-13)) + fConst76 * fRec2[0] * (1.63788262077463e-13 - fTemp2 + -2.04735327596828e-13)) + fRec0[1] * (fConst79 + fRec1[0] * (fConst82 + fConst76 * fRec2[0] * (3.34261759341761e-13 - fTemp3 + -4.17827199177201e-13)) + fConst76 * fRec2[0] * (fTemp4 + -4.91364786232388e-13 + 6.14205982790485e-13)) + fRec0[2] * (fConst83 + fRec1[0] * (fConst84 + fConst76 * fRec2[0] * (fTemp3 + -3.34261759341761e-13 + 4.17827199177201e-13)) + fConst76 * fRec2[0] * (4.91364786232388e-13 - fTemp4 + -6.14205982790485e-13)) + fRec0[3] * (fConst85 + fRec1[0] * (fConst86 + fConst76 * fRec2[0] * (1.11420586447254e-13 - fTemp1 + -1.39275733059067e-13)) + fConst76 * fRec2[0] * (fTemp2 + -1.63788262077463e-13 + 2.04735327596828e-13))) / fTemp0);
-			fRec1[1] = fRec1[0];
-			fRec2[1] = fRec2[0];
-			for (int j0 = 3; j0 > 0; j0 = j0 - 1) {
-				fRec0[j0] = fRec0[j0 - 1];
+			fRec13[0] = fSlow0 + 0.993 * fRec13[1];
+			double fTemp0 = fConst0 * (fConst26 + fRec13[0] * (fConst27 + fConst28 * fRec13[0])) + 2.44402781742033e-09;
+			fRec12[0] = static_cast<double>(input0[i0]) - (fRec12[1] * (fConst0 * (fConst6 + fRec13[0] * (fConst8 + fConst9 * fRec13[0])) + 1.22201390871017e-08) + fRec12[2] * (fConst0 * (fConst11 + fRec13[0] * (fConst13 + fConst14 * fRec13[0])) + 2.44402781742033e-08) + fRec12[3] * (fConst0 * (fConst15 + fRec13[0] * (fConst16 + fConst17 * fRec13[0])) + 2.44402781742033e-08) + fRec12[4] * (fConst0 * (fConst18 + fRec13[0] * (fConst19 + fConst20 * fRec13[0])) + 1.22201390871017e-08) + fRec12[5] * (fConst0 * (fConst22 + fRec13[0] * (fConst24 + fConst25 * fRec13[0])) + 2.44402781742033e-09)) / fTemp0;
+			fRec14[0] = fSlow1 + 0.993 * fRec14[1];
+			double fTemp1 = fConst35 * (fConst37 + fConst38 * fRec14[0]);
+			double fTemp2 = fConst35 * (fConst44 + fConst45 * fRec14[0]);
+			double fTemp3 = (fRec12[0] * (fConst29 * fRec13[0] * (fConst31 + fRec13[0] * (fConst32 + fConst33 * fRec14[0]) + fConst34 * fRec14[0]) + fTemp1) + fRec12[1] * (fConst29 * fRec13[0] * (fConst40 + fRec13[0] * (fConst41 + fConst42 * fRec14[0]) + fConst43 * fRec14[0]) + fTemp2) + fRec12[2] * (fConst29 * fRec13[0] * (fConst47 + fRec13[0] * (fConst48 + fConst49 * fRec14[0]) + fConst50 * fRec14[0]) + fConst35 * (fConst52 + fConst53 * fRec14[0])) + fRec12[3] * (fConst29 * fRec13[0] * (fConst54 + fRec13[0] * (fConst55 + fConst56 * fRec14[0]) + fConst57 * fRec14[0]) + fConst35 * (fConst58 + fConst59 * fRec14[0])) + fRec12[4] * (fTemp1 + fConst29 * fRec13[0] * (fConst60 + fRec13[0] * (fConst61 + fConst62 * fRec14[0]) + fConst63 * fRec14[0])) + fRec12[5] * (fTemp2 + fConst29 * fRec13[0] * (fConst64 + fRec13[0] * (fConst65 + fConst66 * fRec14[0]) + fConst67 * fRec14[0]))) / fTemp0;
+			fVec0[0] = fTemp3;
+			fRec11[0] = 0.9302847925323914 * (fTemp3 + fVec0[1]) - 0.8605695850647829 * fRec11[1];
+			fRec10[0] = fRec11[0] - (1.8405051250752198 * fRec10[1] + 0.8612942439318627 * fRec10[2]);
+			double fTemp4 = 1.8508996845035413 * fRec10[1] + 0.9254498422517706 * (fRec10[0] + fRec10[2]);
+			double fTemp5 = OtTubeGetF(TUBE_TABLE_7199P_68k, fTemp4 + 2.7e+03 * (fTemp4 / (OtTubeGetR(TUBE_TABLE_7199P_68k, fRec9[1]) + 1e+05)) + -3.571981);
+			fRec9[0] = fTemp5 + 0.001322955925925926 * (OtTubeGetR(TUBE_TABLE_7199P_68k, fTemp5) + 1e+05) + -2.5e+02;
+			fRec8[0] = fConst3 * (fConst4 * (fRec9[0] - fRec9[1]) - fConst68 * fRec8[1]);
+			fRec7[0] = 0.9302847925323914 * (fRec8[0] + fRec8[1]) - 0.8605695850647829 * fRec7[1];
+			fRec6[0] = fRec7[0] - (1.8405051250752198 * fRec6[1] + 0.8612942439318627 * fRec6[2]);
+			double fTemp6 = 1.8508996845035413 * fRec6[1] + 0.9254498422517706 * (fRec6[0] + fRec6[2]);
+			double fTemp7 = OtTubeGetF(TUBE_TABLE_7199P_68k, fTemp6 + 2.7e+03 * (fTemp6 / (OtTubeGetR(TUBE_TABLE_7199P_68k, fRec5[1]) + 1e+05)) + -3.571981);
+			fRec5[0] = fTemp7 + 0.001322955925925926 * (OtTubeGetR(TUBE_TABLE_7199P_68k, fTemp7) + 1e+05) + -2.5e+02;
+			fRec4[0] = fConst3 * (fConst4 * (fRec5[0] - fRec5[1]) - fConst68 * fRec4[1]);
+			fRec3[0] = 0.9302847925323914 * (fRec4[0] + fRec4[1]) - 0.8605695850647829 * fRec3[1];
+			fRec2[0] = fRec3[0] - (1.8405051250752198 * fRec2[1] + 0.8612942439318627 * fRec2[2]);
+			double fTemp8 = 1.8508996845035413 * fRec2[1] + 0.9254498422517706 * (fRec2[0] + fRec2[2]);
+			double fTemp9 = OtTubeGetF(TUBE_TABLE_7199P_68k, fTemp8 + 2.7e+03 * (fTemp8 / (OtTubeGetR(TUBE_TABLE_7199P_68k, fRec1[1]) + 1e+05)) + -3.571981);
+			fRec1[0] = fTemp9 + 0.001322955925925926 * (OtTubeGetR(TUBE_TABLE_7199P_68k, fTemp9) + 1e+05) + -2.5e+02;
+			fRec0[0] = fConst3 * (fConst4 * (fRec1[0] - fRec1[1]) - fConst68 * fRec0[1]);
+			output0[i0] = static_cast<float>(fRec0[0]);
+			fRec13[1] = fRec13[0];
+			for (int j0 = 5; j0 > 0; j0 = j0 - 1) {
+				fRec12[j0] = fRec12[j0 - 1];
 			}
+			fRec14[1] = fRec14[0];
+			fVec0[1] = fVec0[0];
+			fRec11[1] = fRec11[0];
+			fRec10[2] = fRec10[1];
+			fRec10[1] = fRec10[0];
+			fRec9[1] = fRec9[0];
+			fRec8[1] = fRec8[0];
+			fRec7[1] = fRec7[0];
+			fRec6[2] = fRec6[1];
+			fRec6[1] = fRec6[0];
+			fRec5[1] = fRec5[0];
+			fRec4[1] = fRec4[0];
+			fRec3[1] = fRec3[0];
+			fRec2[2] = fRec2[1];
+			fRec2[1] = fRec2[0];
+			fRec1[1] = fRec1[0];
+			fRec0[1] = fRec0[0];
 		}
 	}
 
@@ -345,7 +414,7 @@ protected:
 		ImGui::PushID("FuzzFace");
 		changed |= editDrive();
 		ImGui::SameLine();
-		changed |= editFuzz();
+		changed |= editfuzz();
 		ImGui::PopID();
 		ImGui::EndGroup();
 		return changed;
@@ -390,13 +459,13 @@ protected:
 	}
 
 	inline bool editDrive() { return OtUi::knob("Drive", &fHslider0, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editFuzz() { return OtUi::knob("Fuzz", &fVslider0, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editfuzz() { return OtUi::knob("fuzz", &fVslider0, 0.0f, 1.0f, "%.2f", false); }
 
 	inline void setDrive(float value) { fHslider0 = value; }
-	inline void setFuzz(float value) { fVslider0 = value; }
+	inline void setfuzz(float value) { fVslider0 = value; }
 
 	inline float getDrive() { return fHslider0; }
-	inline float getFuzz() { return fVslider0; }
+	inline float getfuzz() { return fVslider0; }
 
 private:
 	bool initialized = false;

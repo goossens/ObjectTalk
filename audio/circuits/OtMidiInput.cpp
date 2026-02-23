@@ -14,6 +14,7 @@
 #include <memory>
 #include <mutex>
 
+#include "imgui.h"
 #include "ImGuiPiano.h"
 #include "nlohmann/json.hpp"
 

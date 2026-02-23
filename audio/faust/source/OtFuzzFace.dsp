@@ -16,9 +16,9 @@ process = hgroup("FuzzFace", pre : fi.iir((b0/a0,b1/a0,b2/a0,b3/a0,b4/a0,b5/a0),
 	pre = _;
 
 	clip =
-		tranystage(TB_7199P_68k, 250.0, 40.0, 86.0, 2700.0, 3.571981) :
-		tranystage(TB_7199P_68k, 250.0, 40.0, 86.0, 2700.0, 3.571981) :
-		tranystage(TB_7199P_68k, 250.0, 40.0, 86.0, 2700.0, 3.571981);
+		tranystage(TB_7199P_68k, 250.0, 86.0, 2700.0, 3.571981) :
+		tranystage(TB_7199P_68k, 250.0, 86.0, 2700.0, 3.571981) :
+		tranystage(TB_7199P_68k, 250.0, 86.0, 2700.0, 3.571981);
 
 	drive = 1 - hslider("[1]Drive[style:knob]", 0.5, 0, 1, 0.01) : si.smooth(0.993);
 	fuzz = 1 - vslider("[2]fuzz[style:knob]", 0.5, 0, 1, 0.01) : si.smooth(0.993);

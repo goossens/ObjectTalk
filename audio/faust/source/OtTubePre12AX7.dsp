@@ -8,15 +8,15 @@ import("stdfaust.lib");
 import("OtTube.lib");
 
 stage1(gain) =
-	tubestage(TB_12AX7_68k, 250.0, 40.0, 86.0, 2700.0, 1.581656) :
+	tubestage(TB_12AX7_68k, 250.0, 86.0, 2700.0, 1.581656) :
 	*(gain) :
 	fi.lowpass(1, 6531.0) :
-	tubestage(TB_12AX7_250k, 250.0, 40.0, 132.0, 1500.0, 1.204285) :
+	tubestage(TB_12AX7_250k, 250.0, 132.0, 1500.0, 1.204285) :
 	*(gain);
 
 stage2(volume) =
 	fi.lowpass(1, 6531.0) :
-	tubestage(TB_12AX7_250k, 250.0, 40.0, 194.0, 820.0, 0.840703) :
+	tubestage(TB_12AX7_250k, 250.0, 194.0, 820.0, 0.840703) :
 	*(volume);
 
 process = hgroup("preamp", stage1(gain) : stage2(volume) with {

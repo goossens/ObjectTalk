@@ -127,7 +127,7 @@ public:
 		}
 	}
 
-	// interate through all loaded assets
+	// iterate through all loaded assets
 	static void each(std::function<void(OtAssetBase*)> callback) {
 		for (const auto& [path, asset] : instance().assets) {
 			callback(asset);

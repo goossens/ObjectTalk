@@ -252,7 +252,7 @@ protected:
 
 	inline bool editDrive() { return OtUi::knob("Drive", &fHslider1, 0.0f, 1.0f, "%.2f", false); }
 	inline bool editTone() { return OtUi::knob("Tone", &fHslider0, 100.0f, 1000.0f, "%.0f", false); }
-	inline bool editLevel() { return OtUi::knob("Level", &fHslider2, -20.0f, 4.0f, "%.1f", false); }
+	inline bool editLevel() { return OtUi::knob("Level", &fHslider2, -20.0f, 4.0f, "%.1fdB", false); }
 
 	inline void setDrive(float value) { fHslider1 = value; }
 	inline void setTone(float value) { fHslider0 = value; }

@@ -51,22 +51,22 @@ rtube = ffunction(float OtTubeGetR(int, float), "OtTube.h", "");
 //                            ---    ---
 //                             o      o
 
-tubestage(tb, vplus, divider, fck, Rk, Vk0) = antiAlias : tube : hpf with {
-	lpfk = fi.lowpass(1, fck);
+tubestage(tubetable, vplus, fck, Rk, Vk0) = antiAlias : tube : hpf with {
 	antiAlias = fi.lowpass(3, ma.SR / 2.1);
 	Rp = 100.0e3;
 	VkC = Vk0 * (Rp / Rk);
-	tubeVp = -(Vk0) : ftube(tb) : +(VkC - vplus);
-	tube(x) = x : (+ : (tubeVp)) ~ (x*Rk/(Rp + rtube(tb)) : lpfk) : /(divider);
+	tubeVp = -(Vk0) : ftube(tubetable) : +(VkC - vplus);
+	lpfk = fi.lowpass(1, fck);
+	tube(x) = x : (+ : (tubeVp)) ~ (x * Rk / (Rp + rtube(tubetable)) : lpfk) : /(40.0);
 	hpf = fi.highpass(1, 31.0);
 };
 
-tranystage(tb, vplus, divider, fck, Rk, Vk0) = antiAlias : trany : hpf with {
+tranystage(tubetable, vplus, fck, Rk, Vk0) = antiAlias : trany : hpf with {
 	antiAlias = fi.lowpass(3, ma.SR / 2.1);
 	Rp = 100.0e3;
-	VkC = Vk0 * (Rp + rtube(tb)) / Rk;
-	Vp = -(Vk0) : ftube(tb);
+	VkC = Vk0 * (Rp + rtube(tubetable)) / Rk;
+	Vp = -(Vk0) : ftube(tubetable);
 	tranyVp = Vp <: +(VkC - vplus);
-	trany(x) = x : (+ : (tranyVp)) ~ (x * Rk / (Rp + rtube(tb))) : /(divider);
+	trany(x) = x : (+ : (tranyVp)) ~ (x * Rk / (Rp + rtube(tubetable))) : /(40.0);
 	hpf = fi.highpass(1, 31.0);
 };

@@ -4903,7 +4903,6 @@ table1d_imp<2001> tubetable2_7199P[2] = {
 //	Tube table lookups
 //
 
-
 #define TABLE(table, index) {		\
 	table[index].low,				\
 	table[index].high,				\

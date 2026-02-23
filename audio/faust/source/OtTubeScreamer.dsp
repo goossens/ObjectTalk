@@ -24,5 +24,5 @@ process = hgroup("TubeScreamer", ts9 : lowpass : *(gain) with {
 	ts9 = _ <: _ - ts9nonlin(X2 - _) :> _;
 	fc = hslider("[1]Tone[style:knob]", 400, 100, 1000, 1.03);
 	lowpass = fi.lowpass(1, fc);
-	gain = hslider("[2]Level[style:knob]", -16, -20, 4, 0.1) : ba.db2linear : 1 - si.smooth(0.999);
+	gain = hslider("[2]Level[style:knob][format: %.1fdB]", -16, -20, 4, 0.1) : ba.db2linear : 1 - si.smooth(0.999);
 });

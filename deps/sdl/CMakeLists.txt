@@ -13,6 +13,7 @@ add_subdirectory(${sdl_SOURCE_DIR} ${sdl_BINARY_DIR} EXCLUDE_FROM_ALL)
 if(CMAKE_GENERATOR STREQUAL "Xcode")
 	set_target_properties(SDL3-static PROPERTIES XCODE_ATTRIBUTE_GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS "NO")
 	set_target_properties(SDL3-static PROPERTIES XCODE_ATTRIBUTE_GCC_WARN_64_TO_32_BIT_CONVERSION "NO")
+	set_target_properties(SDL3-static PROPERTIES DISABLE_PRECOMPILE_HEADERS ON)
 endif()
 
 set_target_properties(SDL3-static PROPERTIES FOLDER deps/sdl)

@@ -22,11 +22,11 @@
 //
 
 struct OtTubeTable {
-	float low;
-	float high;
-	float istep;
+	double low;
+	double high;
+	double istep;
 	int32_t size;
-	float* data;
+	double* data;
 };
 
 
@@ -51,36 +51,36 @@ enum {
 
 OtTubeTable& OtTubeGetTable(int table, int index);
 
-static inline float OtTubeGetF(int table, float input) {
+static inline double OtTubeGetF(int table, double input) {
 	auto& tab = OtTubeGetTable(table, 0);
 	auto f = (input - tab.low) * tab.istep;
 	int i = static_cast<int>(f);
 
 	if (i < 0) {
-		return tab.data[0];
+		return static_cast<double>(tab.data[0]);
 	}
 
 	if (i >= tab.size - 1) {
-		return tab.data[tab.size - 1];
+		return static_cast<double>(tab.data[tab.size - 1]);
 	}
 
 	f -= i;
-	return tab.data[i] * (1 - f) + tab.data[i + 1] * f;
+	return static_cast<double>(tab.data[i] * (1 - f) + tab.data[i + 1] * f);
 }
 
-static inline float OtTubeGetR(int table, float input) {
+static inline double OtTubeGetR(int table, double input) {
 	auto& tab = OtTubeGetTable(table, 1);
 	auto f = (input - tab.low) * tab.istep;
 	int i = static_cast<int>(f);
 
 	if (i < 0) {
-		return tab.data[0];
+		return static_cast<double>(tab.data[0]);
 	}
 
-	if (i >= tab.size-1) {
-		return tab.data[tab.size-1];
+	if (i >= tab.size - 1) {
+		return static_cast<double>(tab.data[tab.size-1]);
 	}
 
 	f -= i;
-	return tab.data[i] * (1 - f) + tab.data[i + 1] * f;
+	return static_cast<double>(tab.data[i] * (1 - f) + tab.data[i + 1] * f);
 }

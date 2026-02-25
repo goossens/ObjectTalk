@@ -11,11 +11,11 @@
 
 #include <algorithm>
 #include <cmath>
+#include <numbers>
 
 #include "imgui.h"
 
 #include "OtAssert.h"
-#include "OtNumbers.h"
 
 #include "OtAssetManager.h"
 #include "OtPath.h"
@@ -97,7 +97,7 @@ void OtAssetManager::renderManagerUI() {
 
 		static float time = 0.0f;
 		time += ImGui::GetIO().DeltaTime;
-		float offset = static_cast<float>(std::numbers::pi2 / spinnerCircles);
+		float offset = static_cast<float>(std::numbers::pi * 2.0 / spinnerCircles);
 
 		for (int i = 0; i < spinnerCircles; i++) {
 			float x = spinnerRadius * std::sin(offset * i);

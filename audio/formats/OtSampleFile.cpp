@@ -10,9 +10,9 @@
 //
 
 #include <algorithm>
+#include <numbers>
 
 #include "OtLog.h"
-#include "OtNumbers.h"
 
 #include "OtAudioSettings.h"
 
@@ -85,9 +85,8 @@ float OtSampleFile::get(float offset) {
 
 	} else {
 		auto lowX = static_cast<size_t>(offset);
-		auto highX = offset + 1;
+		auto highX = lowX + 1;
 		auto ratioX = offset - static_cast<float>(lowX);
-		auto sample = std::lerp(samples->get(0, lowX), samples->get(0, highX), ratioX);
- 		return sample;
+		return std::lerp(samples->get(0, lowX), samples->get(0, highX), ratioX);
 	}
 }

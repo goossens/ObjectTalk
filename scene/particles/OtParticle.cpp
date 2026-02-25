@@ -11,10 +11,10 @@
 
 #include <algorithm>
 #include <cmath>
+#include <numbers>
 
 #include "ImGuiCurve.h"
 
-#include "OtNumbers.h"
 #include "OtRandom.h"
 
 #include "OtParticle.h"
@@ -26,7 +26,7 @@
 
 static glm::vec3 getRandomPointOnSphere() {
 	float phi = static_cast<float>(OtRandom(std::numbers::pi));
-	float theta = static_cast<float>(OtRandom(std::numbers::pi2));
+	float theta = static_cast<float>(OtRandom(std::numbers::pi * 2.0));
 
 	auto x = std::sin(theta) * std::sin(phi);
 	auto y = std::cos(phi);
@@ -42,7 +42,7 @@ static glm::vec3 getRandomPointOnHemisphere() {
 }
 
 static glm::vec3 getRandomPointinCircle() {
-	float angle = static_cast<float>(OtRandom(std::numbers::pi2));
+	float angle = static_cast<float>(OtRandom(std::numbers::pi * 2.0));
 	float radius = OtRandom(1.0f);
 	return glm::vec3(std::cos(angle) * radius, 0.0f, std::sin(angle) * radius);
 }

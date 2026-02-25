@@ -64,9 +64,9 @@ private:
 
 	T yin[N2];
 
-	inline T quadraticPeakPosition(size_t pos) {
+	inline float quadraticPeakPosition(size_t pos) {
 		if (pos == 0 || pos == N2 - 1) {
-			return pos;
+			return static_cast<float>(pos);
 
 		} else {
 			auto x0 = (pos < 1) ? pos : pos - 1;
@@ -76,15 +76,21 @@ private:
 			auto s1 = yin[pos];
 			auto s2 = yin[x2];
 
-			if (x0 == pos) { return (s1 <= s2) ? pos : x2; }
-			else if (x2 == pos) { return (s1 <= s0) ? pos : x0; }
-			else { return pos + static_cast<T>(0.5) * (s0 - s2) / (s0 - static_cast<T>(2) * s1 + s2); }
+			if (x0 == pos) {
+				return static_cast<float>((s1 <= s2) ? pos : x2);
+
+			} else if (x2 == pos) {
+				return static_cast<float>((s1 <= s0) ? pos : x0);
+
+			} else {
+				return static_cast<float>(pos) + 0.5f * (s0 - s2) / (s0 - 2.0f * s1 + s2);
+			}
 		}
 	}
 
 	inline size_t minElement() {
 		T minimum = std::numeric_limits<T>::max();
-		size_t pos;
+		size_t pos = 0;
 
 		for (size_t i = 0; i < N2; i++) {
 			if (yin[i] < minimum) {

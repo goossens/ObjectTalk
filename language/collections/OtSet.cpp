@@ -207,18 +207,9 @@ void OtSetClass::insert(OtObject object) {
 //
 
 void OtSetClass::erase(OtObject object) {
-	bool found = false;
-
-	// use remove_if when we move the C++20
-	for (auto it = set.begin(); !found && it != set.end();) {
-		if (((OtObject) *it)->equal(object)) {
-			it = set.erase(it);
-			found = true;
-
-		} else {
-			it++;
-		}
-	}
+	std::erase_if(set, [object](OtObject candidate) {
+		return candidate->equal(object);
+	});
 }
 
 
@@ -301,13 +292,9 @@ OtObject OtSetClass::unionWith(OtObject object) {
 //
 
 OtObject OtSetClass::subtractFrom(OtObject object) {
-	OtSet op = object;
-
-	if (!op) {
-		OtLogError("Set subtract expects another [Set] instance, not a [{}]", object.getTypeName());
-	}
-
+	object.expect<OtSetClass>("Set");
 	OtSet result = OtSet::create();
+	OtSet op = object;
 
 	for (auto& item : set) {
 		if (!op->contains(item)) {

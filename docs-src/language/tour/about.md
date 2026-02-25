@@ -29,7 +29,7 @@ The objectives for the development of ObjectTalk are:
 	* Dynamically typed.
 	* Lexically scoped.
 	* Closure/capture aware.
-* Learn C++17 as that is the language the ObjectTalk engine is written in.
+* Learn C++20 as that is the language the ObjectTalk engine is written in.
 * Keep the code multi-platform to support reuse and maximum outreach.
 * Don't over-optimize to keep the code readable (so others can learn).
 * End up with something that can be used for simple tasks.

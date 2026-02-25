@@ -92,31 +92,31 @@ static bool button(const char* label, const char* tooltip) {
 void OtDebuggerUI::renderControlBar(OtSubProcess& subprocess) {
 	static constexpr float margin = 4.0f;
 
-	if (button(u8"\u25a0", "Stop")) {
+	if (button(reinterpret_cast<const char*>(u8"\u25a0"), "Stop")) {
 		subprocess.kill(SIGINT);
 	}
 
 	ImGui::SameLine(0.0f, margin);
 
-	if (button(u8"\u25b6", "Continue")) {
+	if (button(reinterpret_cast<const char*>(u8"\u25b6"), "Continue")) {
 		subprocess.send("continue\n");
 	}
 
 	ImGui::SameLine(0.0f, margin);
 
-	if (button(u8"\u271a", "Step Over")) {
+	if (button(reinterpret_cast<const char*>(u8"\u271a"), "Step Over")) {
 		subprocess.send("step\n");
 	}
 
 	ImGui::SameLine(0.0f, margin);
 
-	if (button(u8"\u25bc", "Step Into")) {
+	if (button(reinterpret_cast<const char*>(u8"\u25bc"), "Step Into")) {
 		subprocess.send("in\n");
 	}
 
 	ImGui::SameLine(0.0f, margin);
 
-	if (button(u8"\u25b2", "Step Out")) {
+	if (button(reinterpret_cast<const char*>(u8"\u25b2"), "Step Out")) {
 		subprocess.send("out\n");
 	}
 
@@ -165,7 +165,7 @@ void OtDebuggerUI::renderSourceCode() {
 //
 
 void OtDebuggerUI::renderDecorations(TextEditor::Decorator& decorator) {
-	std::string decoration = (static_cast<size_t>(decorator.line) == stackFrame->line - 1) ? u8" \u25b7" : "  ";
+	std::string decoration = (static_cast<size_t>(decorator.line) == stackFrame->line - 1) ? reinterpret_cast<const char*>(u8" \u25b7") : "  ";
 	ImGui::TextUnformatted(decoration.c_str());
 }
 

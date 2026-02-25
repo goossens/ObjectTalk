@@ -12,9 +12,9 @@
 #include <algorithm>
 #include <cstdint>
 #include <cmath>
+#include <numbers>
 
 #include "OtLog.h"
-#include "OtNumbers.h"
 
 #include "OtSimplexFont.h"
 #include "OtOscilloscope.h"

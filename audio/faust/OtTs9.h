@@ -14,4 +14,4 @@
 //	Ibanez TS-9 non-linear response function
 //
 
-float OtTs9(float input);
+double OtTs9(double input);

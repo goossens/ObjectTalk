@@ -14,9 +14,9 @@
 
 #include <algorithm>
 #include <cmath>
+#include <numbers>
 
 #include "OtLog.h"
-#include "OtNumbers.h"
 #include "OtPrimitive.h"
 #include "OtRandom.h"
 

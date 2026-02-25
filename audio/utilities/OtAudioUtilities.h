@@ -12,10 +12,10 @@
 //	Include files
 //
 
+#include <algorithm>
 #include <cmath>
+#include <numbers>
 #include <string>
-
-#include "OtNumbers.h"
 
 
 //
@@ -59,8 +59,8 @@ public:
 	}
 
 	inline static int frequencyToClosestMidiNote(float frequency) {
-		auto midiNote = std::log2(frequency / 440.0f) * 12.0f + 69.0f;
-		midiNote = static_cast<int>(std::round(midiNote));
+		auto note = std::log2(frequency / 440.0f) * 12.0f + 69.0f;
+		auto midiNote = static_cast<int>(std::round(note));
 		return std::clamp(static_cast<int>(std::round(midiNote)), 12, 127);
 	}
 

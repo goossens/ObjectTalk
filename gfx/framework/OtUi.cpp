@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
+#include <numbers>
 #include <string>
 
 #include "fmt/format.h"
@@ -25,7 +26,6 @@
 #include "ImGuiFileDialog.h"
 #include "nlohmann/json.hpp"
 
-#include "OtNumbers.h"
 #include "OtPath.h"
 
 #include "OtDejaVu.h"
@@ -337,7 +337,7 @@ void OtUi::readonlySizeT(const char* label, size_t value) {
 //
 
 void OtUi::readonlyFloat(const char* label, float value, const char* format) {
-	std::string text = format ? fmt::format(format, value) : std::to_string(value);
+	std::string text = format ? fmt::format(fmt::runtime(format), value) : std::to_string(value);
 	readonlyText(label, text);
 }
 

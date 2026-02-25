@@ -10,11 +10,10 @@
 //
 
 #include <iostream>
-
-#include "OtLog.h"
-#include "OtNumbers.h"
+#include <numbers>
 
 #include "OtGlobal.h"
+#include "OtLog.h"
 
 #include "OtBoolean.h"
 #include "OtInteger.h"

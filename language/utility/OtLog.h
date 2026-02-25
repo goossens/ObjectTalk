@@ -42,7 +42,7 @@ public:
 
 	template<typename... ARGS>
 	static inline void log(const char* filename, int lineno, Type type, const char* format, ARGS... args) {
-		auto message = fmt::format(format, args...);
+		auto message = fmt::format(fmt::runtime(format), args...);
 		instance().logMessage(filename, lineno, type, message);
 	}
 

@@ -21,10 +21,9 @@
 
 #include <algorithm>
 #include <cmath>
+#include <numbers>
 
 #include "glm/glm.hpp"
-
-#include "OtNumbers.h"
 
 #include "OtProjector.h"
 

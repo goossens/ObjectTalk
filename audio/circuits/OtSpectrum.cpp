@@ -12,11 +12,10 @@
 #include <algorithm>
 #include <cmath>
 #include <mutex>
+#include <numbers>
 
 #include "imgui.h"
 #include "implot.h"
-
-#include "OtNumbers.h"
 
 #include "OtAudioSettings.h"
 #include "OtCircuitFactory.h"

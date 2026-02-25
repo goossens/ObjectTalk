@@ -69,7 +69,4 @@ private:
 	bool forever = false;
 	bool running = false;
 	bool paused = false;
-
-	// list of current animations
-	static inline std::vector<OtAnimation> animations;
 };

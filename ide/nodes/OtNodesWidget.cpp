@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <numbers>
 #include <vector>
 
 #include "imgui.h"
@@ -18,7 +19,6 @@
 
 #include "OtException.h"
 #include "OtLog.h"
-#include "OtNumbers.h"
 
 #include "OtUi.h"
 

@@ -13,9 +13,9 @@
 #include <cmath>
 #include <cstring>
 #include <limits>
+#include <numbers>
 
 #include "OtAssert.h"
-#include "OtNumbers.h"
 
 #include "OtHeightMap.h"
 #include "OtImage.h"

@@ -13,13 +13,12 @@
 //
 
 #include <iostream>
+#include <numbers>
 
 #include "glm/glm.hpp"
 #include "glm/gtx/string_cast.hpp"
 #include "glm/gtx/quaternion.hpp"
 #include "nlohmann/json_fwd.hpp"
-
-#include "OtNumbers.h"
 
 
 //

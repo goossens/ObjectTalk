@@ -460,7 +460,7 @@ std::string OtText::toJSON(const std::string& text) {
 				if (*c & 0x80) {
 					char32_t codepoint;
 					OtCodePoint::read(c, end, &codepoint);
-					o << "\\u" << std::hex << std::setw(4) << std::setfill('0') << codepoint;
+					o << "\\u" << std::hex << std::setw(4) << std::setfill('0') << static_cast<int>(codepoint);
 
 				} else {
 					o << *c;

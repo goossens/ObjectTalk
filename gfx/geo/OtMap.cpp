@@ -15,13 +15,13 @@
 #include <list>
 #include <limits>
 #include <memory>
+#include <numbers>
 #include <stack>
 
 #include "delaunator.h"
 #include "glm/gtc/matrix_transform.hpp"
 
 #include "OtNoise.h"
-#include "OtNumbers.h"
 
 #include "OtImageCanvas.h"
 #include "OtMap.h"

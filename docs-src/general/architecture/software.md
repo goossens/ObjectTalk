@@ -14,8 +14,8 @@ integration tasks also use the latest versions of these operating systems. For t
 that use other Linux distributions, it is likely that ObjectTalk will compile out-of-the-box,
 but this is not verified.
 
-The entire ObjectTalk ecosystem is written in C++17 which is the most recent version that
-is best supported on all platforms. Once C++20 finds better support, we will switch to it.
+The entire ObjectTalk ecosystem is written in C++20 which is the most recent version that
+is best supported on all platforms.
 
 To simplify the ObjectTalk code baseline, the C++ standard library is used to the maximum
 extend possible. Basic I/O function, filesystem access, containers and memory management

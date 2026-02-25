@@ -14,6 +14,7 @@
 
 #include <array>
 
+#include "OtFontAudio.h"
 #include "OtUi.h"
 
 
@@ -29,17 +30,35 @@ public:
 	// support buttons with audio-related icons
 	static float audioButtonWidth();
 
-	inline static bool audioButton(const char* label) {
+	inline static bool audioButton(OtFontAudio::Type label, const char* tooltip=nullptr) {
 		ImGui::PushFont(getAudioFont(), 0.0f);
-		auto result = ImGui::Button(label, ImVec2(audioButtonWidth(), 0.0f));
+		auto result = ImGui::Button(reinterpret_cast<const char*>(label), ImVec2(audioButtonWidth(), 0.0f));
 		ImGui::PopFont();
+
+		if (tooltip && ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) {
+			ImGui::SetTooltip("%s", tooltip);
+		}
+
 		return result;
 	}
 
 	template <typename T>
-	inline static bool audioRadioButton(const char* label, T* value, T buttonValue, const char* tooltip=nullptr) {
+	inline static bool audioRadioButton(OtFontAudio::Type label, T* value, T buttonValue, const char* tooltip=nullptr) {
 		ImGui::PushFont(getAudioFont(), 0.0f);
-		auto changed = radioButton(label, value, buttonValue);
+		auto changed = radioButton(reinterpret_cast<const char*>(label), value, buttonValue);
+		ImGui::PopFont();
+
+		if (tooltip && ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) {
+			ImGui::SetTooltip("%s", tooltip);
+		}
+
+		return changed;
+	}
+
+	template <typename T>
+	inline static bool audioLatchButton(OtFontAudio::Type label, T* value, const char* tooltip=nullptr) {
+		ImGui::PushFont(getAudioFont(), 0.0f);
+		auto changed = latchButton(reinterpret_cast<const char*>(label), value);
 		ImGui::PopFont();
 
 		if (tooltip && ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal)) {

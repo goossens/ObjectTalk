@@ -11,7 +11,7 @@ To build ObjectTalk, do the following from the command line:
 * **git clone https://github.com/goossens/ObjectTalk.git**
 * If your favorite directory is on a mounted drive, you might have to do a **git config --global --replace-all safe.directory "*"**
 * **cd ObjectTalk**
-* **cmake -B ${HOME}/build/ObjectTalk/vs -G "Visual Studio 18 2026" -A x64** (or **ARM64** depending on processor)
+* **cmake --build ${HOME}/build/ObjectTalk/vs -G "Visual Studio 18 2026" -A x64** (or **ARM64** depending on processor)
 * Build ObjectTalk by hand:
 	* **cmake --build ${HOME}/build/ObjectTalk/vs**
 	* Run the tests: **ctest --test-dir ${HOME}/build/ObjectTalk/vs --build-config Debug --output-on-failure**

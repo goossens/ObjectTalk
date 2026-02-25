@@ -11,8 +11,7 @@
 
 #include <cmath>
 #include <cstring>
-
-#include "OtNumbers.h"
+#include <numbers>
 
 #include "OtWaveTable.h"
 

@@ -20,6 +20,7 @@
 #include "OtUi.h"
 
 #include "OtAudioSettings.h"
+#include "OtAudioUi.h"
 #include "OtCircuitFactory.h"
 #include "OtSampleBuffer.h"
 #include "OtSampleFileAsset.h"
@@ -48,9 +49,7 @@ public:
 			ImGui::BeginDisabled();
 		}
 
-		ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
-
-		if (OtUi::latchButton(OtFontAudio::play, &playing)) {
+		if (OtAudioUi::audioLatchButton(OtFontAudio::play, &playing)) {
 			if (playing) {
 				sampleSize = asset->getSampleFile().getSampleCount();
 				sampleLocation = 0;
@@ -60,7 +59,7 @@ public:
 
 		ImGui::SameLine();
 
-		if (OtUi::latchButton(OtFontAudio::repeat, &looping)) {
+		if (OtAudioUi::audioLatchButton(OtFontAudio::repeat, &looping)) {
 			if (looping && !playing && !pausing) {
 				playing = true;
 				sampleSize = asset->getSampleFile().getSampleCount();
@@ -71,14 +70,13 @@ public:
 		if (playing || pausing) {
 			ImGui::SameLine();
 
-			if (OtUi::latchButton(OtFontAudio::pause, &pausing)) {
+			if (OtAudioUi::audioLatchButton(OtFontAudio::pause, &pausing)) {
 				playing = !pausing;
 			}
 		}
 
 		if (!(audioOutput->isDestinationConnected() && asset.isReady())) { ImGui::EndDisabled(); }
 
-		ImGui::PopFont();
 		ImGui::PopItemWidth();
 		return changed;
 	}
@@ -110,7 +108,7 @@ public:
 
 			for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
 				if (playing) {
-					output[i] = sampler.get(sampleLocation++);
+					output[i] = sampler.get(static_cast<float>(sampleLocation++));
 
 					if (sampleLocation == sampleSize) {
 						if (looping) {

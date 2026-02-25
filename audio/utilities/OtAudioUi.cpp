@@ -15,8 +15,6 @@
 #include "fmt/format.h"
 #include "implot.h"
 
-#include "OtFontAudio.h"
-
 #include "OtAudioUi.h"
 
 
@@ -83,7 +81,7 @@ float OtAudioUi::audioButtonWidth() {
 		ImGui::GetFontSize(),
 		100.0f,
 		100.0f,
-		OtFontAudio::adr).x + ImGui::GetStyle().ItemInnerSpacing.x * 2.0f;
+		reinterpret_cast<const char*>(OtFontAudio::adr)).x + ImGui::GetStyle().ItemInnerSpacing.x * 2.0f;
 }
 
 

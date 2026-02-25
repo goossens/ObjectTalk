@@ -113,14 +113,13 @@ public:
 					midifile = asset->getMidiFile();
 				}
 
-				ImGui::PushFont(OtUi::getAudioFont(), 0.0f);
 				if (!asset.isReady()) { ImGui::BeginDisabled(); }
 
 				bool playing = midifile.isPlaying();
 				bool looping = midifile.isLooping();
 				bool pausing = midifile.isPausing();
 
-				if (OtUi::latchButton(OtFontAudio::play, &playing)) {
+				if (OtAudioUi::audioLatchButton(OtFontAudio::play, &playing)) {
 					if (playing) {
 						midifile.start();
 
@@ -131,7 +130,7 @@ public:
 
 				ImGui::SameLine();
 
-				if (OtUi::latchButton(OtFontAudio::repeat, &looping)) {
+				if (OtAudioUi::audioLatchButton(OtFontAudio::repeat, &looping)) {
 					midifile.setLooping(looping);
 
 					if (looping && !playing && !pausing) {
@@ -142,7 +141,7 @@ public:
 				if (playing || pausing) {
 					ImGui::SameLine();
 
-					if (OtUi::latchButton(OtFontAudio::pause, &pausing)) {
+					if (OtAudioUi::audioLatchButton(OtFontAudio::pause, &pausing)) {
 						if (pausing) {
 							midifile.pause();
 
@@ -153,7 +152,6 @@ public:
 				}
 
 				if (!asset.isReady()) { ImGui::EndDisabled(); }
-				ImGui::PopFont();
 			}
 
 			case MidiSource::device:

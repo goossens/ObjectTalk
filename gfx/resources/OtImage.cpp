@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include <numbers>
 #include <fstream>
 
 #include "stb_image.h"
@@ -18,7 +19,6 @@
 #include "OtAssert.h"
 #include "OtException.h"
 #include "OtLog.h"
-#include "OtNumbers.h"
 #include "OtText.h"
 
 #include "OtImage.h"

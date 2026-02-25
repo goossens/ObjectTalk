@@ -15,9 +15,42 @@
 #include "OtFunction.h"
 #include "OtModule.h"
 #include "OtReal.h"
+#include "OtSingleton.h"
 #include "OtVM.h"
 
 #include "OtAnimationModule.h"
+
+
+//
+//	OtAnimations
+//
+
+class OtAnimations : public OtSingleton<OtAnimations> {
+public:
+	inline void add(OtAnimation animation) {
+		animations.push_back(animation);
+	}
+
+	inline void update() {
+		// remove animations that are complete
+		animations.erase(std::remove_if(animations.begin(), animations.end(), [](OtAnimation animation) {
+			return !animation->isRunning();
+		}), animations.end());
+
+		// update all animations
+		float timestep = ImGui::GetIO().DeltaTime;
+
+		for (auto& animation : animations) {
+			if (!animation->isPaused()) {
+				animation->step(timestep);
+			}
+		}
+	}
+
+private:
+	// list of current animations
+	std::vector<OtAnimation> animations;
+};
 
 
 //
@@ -133,7 +166,7 @@ OtObject OtAnimationClass::start() {
 	paused = false;
 
 	auto animation = OtAnimation(this);
-	animations.push_back(animation);
+	OtAnimations::instance().add(animation);
 	return animation;
 }
 
@@ -174,19 +207,7 @@ void OtAnimationClass::step(double seconds) {
 //
 
 void OtAnimationClass::update() {
-	// determine timestep
-	float timestep = ImGui::GetIO().DeltaTime;
-
-	animations.erase(std::remove_if(animations.begin(), animations.end(), [](OtAnimation animation) {
-		return !animation->isRunning();
-	}), animations.end());
-
-	// update all animations
-	for (auto& animation : animations) {
-		if (!animation->isPaused()) {
-			animation->step(timestep);
-		}
-	}
+	OtAnimations::instance().update();
 }
 
 

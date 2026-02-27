@@ -16,29 +16,29 @@
 
 #include "OtAssetBase.h"
 
-#include "OtSampleFile.h"
+#include "OtNeuralAudioModel.h"
 
 
 //
-//	OtSampleFileAsset
+//	OtNeuralAudioModelAsset
 //
 
-class OtSampleFileAsset : public OtAssetBase {
+class OtNeuralAudioModelAsset : public OtAssetBase {
 public:
-	// access the MIDI file
-	inline OtSampleFile& getSampleFile() { return sampleFile; }
+	// access the model
+	inline OtNeuralAudioModel& getModel() { return model; }
 
 	// asset properties
 	static constexpr bool hasEditor = false;
 	static constexpr bool canHandleVirtual = false;
-	static constexpr const char* supportedFileTypes = ".wav";
+	static constexpr const char* supportedFileTypes = ".nam";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
 
 protected:
-	// load the MIDI file
+	// load the model
 	OtAssetBase::State load() override {
 		try {
-			sampleFile.load(path);
+			model.load(path);
 			return State::ready;
 
 		} catch (const OtException& exception) {
@@ -48,6 +48,6 @@ protected:
 	}
 
 private:
-	// the actual MIDI file
-	OtSampleFile sampleFile;
+	// the actual neural audio model
+	OtNeuralAudioModel model;
 };

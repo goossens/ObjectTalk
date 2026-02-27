@@ -91,7 +91,7 @@ the power of these classes.
 
 **Audio Engine**
 
-The audio engine provides a visual tool to build audio circuits visually. This is modelled after
+The audio engine provides a visual tool to build audio circuits visually. This is modeled after
 the Node Engine described below. The difference the audio and node engine is that the audio engine
 operates in realtime and always runs and evaluates every circuit all the time. The node engine
 only reevaluates nodes if there are changes. Audio circuits created this way can be used to

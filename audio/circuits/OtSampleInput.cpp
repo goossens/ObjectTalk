@@ -34,7 +34,7 @@ class OtSampleInputCircuit : public OtCircuitClass {
 public:
 	// configure circuit
 	inline void configure() override {
-		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono);
+		audioOutput = addOutputPin("Output", OtCircuitPinClass::Type::mono)->hasAttenuation();
 	}
 
 	// render custom fields

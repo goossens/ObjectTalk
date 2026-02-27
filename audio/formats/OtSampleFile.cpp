@@ -15,7 +15,6 @@
 #include "OtLog.h"
 
 #include "OtAudioSettings.h"
-
 #include "OtAudioUtilities.h"
 #include "OtPitchYin.h"
 #include "OtSampleFile.h"

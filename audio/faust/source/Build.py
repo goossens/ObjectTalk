@@ -118,7 +118,7 @@ class UI:
 			return "knobWidth", "knobHeight"
 
 		elif vertical:
-			self.editors.append(f"\tinline bool edit{address}() {{ return ImGui::VSliderFloat(\"{label}\", ImVec2({sliderWidth}, {sliderLength}), &{varname}, {minValue}, {maxValue}, \"{format}\"); }}")
+			self.editors.append(f"\tinline bool edit{address}() {{ auto changed = ImGui::VSliderFloat(\"##{label}\", ImVec2({sliderWidth}, {sliderLength}), &{varname}, {minValue}, {maxValue}, \"\"); if (ImGui::IsItemActive() || ImGui::IsItemHovered()) ImGui::SetTooltip(\"{format}\", {varname}); return changed; }}")
 			self.ui.append(f"\t\tchanged |= edit{address}();")
 			return sliderWidth, sliderLength
 

@@ -14,11 +14,11 @@
 			"samples": "assets/guitar.wav",
 			"title": "Sample Input",
 			"type": "Sample Input",
-			"x": 102.0,
-			"y": 270.0
+			"x": 17.0,
+			"y": 693.0
 		},
 		{
-			"gain": 9.699999809265137,
+			"gain": 1.2000000476837158,
 			"id": 580143800,
 			"inputs": [
 				{
@@ -36,9 +36,34 @@
 			],
 			"title": "Tube Preamp 12AX7",
 			"type": "Tube Preamp 12AX7",
-			"volume": -9.5,
-			"x": 505.0,
-			"y": 159.0
+			"volume": -1.2000000476837158,
+			"x": 276.0,
+			"y": 558.0
+		},
+		{
+			"bass": 0.5,
+			"id": 528812759,
+			"inputs": [
+				{
+					"id": 1214116014,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"middle": 0.5,
+			"outputs": [
+				{
+					"id": 2294597394,
+					"name": "Output",
+					"type": "mono"
+				}
+			],
+			"title": "Tone Stack",
+			"tonestackType": 4,
+			"treble": 0.5,
+			"type": "Tone Stack",
+			"x": 276.0,
+			"y": 312.0
 		},
 		{
 			"blend": 0.5,
@@ -119,21 +144,6 @@
 			"y": 272.0
 		},
 		{
-			"id": 538612425,
-			"inputs": [
-				{
-					"id": 70337966,
-					"name": "Input",
-					"type": "mono"
-				}
-			],
-			"outputs": [],
-			"title": "Oscilloscope",
-			"type": "Oscilloscope",
-			"x": 505.0,
-			"y": 408.0
-		},
-		{
 			"id": 2178226542,
 			"inputs": [
 				{
@@ -158,11 +168,6 @@
 		},
 		{
 			"from": 3354914829,
-			"id": 3202032548,
-			"to": 70337966
-		},
-		{
-			"from": 3354914829,
 			"id": 1145616698,
 			"to": 2470315449
 		},
@@ -182,9 +187,14 @@
 			"to": 255410808
 		},
 		{
-			"from": 805554867,
-			"id": 2664797051,
+			"from": 2294597394,
+			"id": 977512453,
 			"to": 3940031262
+		},
+		{
+			"from": 805554867,
+			"id": 524206083,
+			"to": 1214116014
 		}
 	]
 }

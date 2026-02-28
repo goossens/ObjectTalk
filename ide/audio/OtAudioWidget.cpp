@@ -49,6 +49,7 @@ static constexpr ImU32 circuitColors[] = {
 	IM_COL32(0, 70, 170, 255),		// generator
 	IM_COL32(120, 115, 55, 255),	// processor
 	IM_COL32(15, 125, 115, 255),	// effect
+	IM_COL32(30, 130, 0, 255),		// equalizer
 	IM_COL32(80, 130, 170, 255),	// converter
 	IM_COL32(50, 50, 90, 255)		// probe
 	};

@@ -4,8 +4,8 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-declare name "ADSR";
-declare category "Envelope";
+declare name "Parametric EQ";
+declare category "Equalizer";
 declare license "MIT";
 
 import("stdfaust.lib");

@@ -46,8 +46,8 @@
 			"peak3Freq": 3000.0,
 			"peak3Level": 17.700000762939453,
 			"peak3Q": 3.0,
-			"title": "Equalizer",
-			"type": "Equalizer",
+			"title": "Parametric EQ",
+			"type": "Parametric EQ",
 			"x": 279.0,
 			"y": 46.0
 		},

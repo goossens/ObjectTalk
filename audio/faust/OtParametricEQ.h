@@ -26,14 +26,14 @@
 
 
 //
-//  OtEq
+//  OtParametricEQ
 //
 
-static double OtEq_faustpower2_f(double value) {
+static double OtParametricEQ_faustpower2_f(double value) {
 	return value * value;
 }
 
-class OtEq : public OtFaust {
+class OtParametricEQ : public OtFaust {
 protected:
 	int fSampleRate;
 	double fConst0;
@@ -70,7 +70,7 @@ protected:
 	double fRec12[3];
 	
  public:
-	OtEq() {
+	OtParametricEQ() {
 		init(OtAudioSettings::sampleRate);
 	}
 				
@@ -79,9 +79,9 @@ protected:
 		m->declare("analyzers.lib/version", "1.3.0");
 		m->declare("basics.lib/name", "Faust Basic Element Library");
 		m->declare("basics.lib/version", "1.22.0");
-		m->declare("category", "Envelope");
-		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtEq -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
-		m->declare("filename", "OtEq.dsp");
+		m->declare("category", "Equalizer");
+		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtParametricEQ -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
+		m->declare("filename", "OtParametricEQ.dsp");
 		m->declare("filters.lib/filterbank:author", "Julius O. Smith III");
 		m->declare("filters.lib/filterbank:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/filterbank:license", "MIT-style STK-4.3 license");
@@ -133,7 +133,7 @@ protected:
 		m->declare("maths.lib/license", "LGPL with exception");
 		m->declare("maths.lib/name", "Faust Math Library");
 		m->declare("maths.lib/version", "2.9.0");
-		m->declare("name", "ADSR");
+		m->declare("name", "Parametric EQ");
 		m->declare("platform.lib/name", "Generic Platform Library");
 		m->declare("platform.lib/version", "1.3.0");
 		m->declare("signals.lib/name", "Faust Signal Routing Library");
@@ -250,7 +250,7 @@ protected:
 		double fSlow5 = std::tan(fConst1 * static_cast<double>(fHslider1));
 		double fSlow6 = 1.0 / fSlow5;
 		double fSlow7 = 1.0 / ((fSlow6 + 1.0000000000000004) / fSlow5 + 1.0);
-		double fSlow8 = 1.0 / OtEq_faustpower2_f(fSlow5);
+		double fSlow8 = 1.0 / OtParametricEQ_faustpower2_f(fSlow5);
 		double fSlow9 = 1.0 / (fSlow6 + 1.0);
 		double fSlow10 = 1.0 - fSlow6;
 		double fSlow11 = (fSlow6 + -1.0000000000000004) / fSlow5 + 1.0;
@@ -275,7 +275,7 @@ protected:
 		double fSlow30 = fConst1 * (std::pow(1e+01, 0.05 * std::fabs(fSlow27)) / fSlow29);
 		double fSlow31 = fConst1 / fSlow29;
 		double fSlow32 = (fSlow1 + -1.0000000000000004) / fSlow0 + 1.0;
-		double fSlow33 = OtEq_faustpower2_f(fSlow0);
+		double fSlow33 = OtParametricEQ_faustpower2_f(fSlow0);
 		double fSlow34 = 2.0 * (1.0 - 1.0 / fSlow33);
 		double fSlow35 = std::pow(1e+01, 0.05 * static_cast<double>(fHslider12)) / fSlow33;
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
@@ -292,7 +292,7 @@ protected:
 			double fTemp4 = fSlow18 * fTemp3;
 			double fTemp5 = fSlow19 * fTemp3;
 			double fTemp6 = ((iSlow16) ? fTemp5 : fTemp4);
-			double fTemp7 = 2.0 * fRec4[1] * (1.0 - 1.0 / OtEq_faustpower2_f(fTemp1));
+			double fTemp7 = 2.0 * fRec4[1] * (1.0 - 1.0 / OtParametricEQ_faustpower2_f(fTemp1));
 			double fTemp8 = (fTemp2 + fTemp6) / fTemp1 + 1.0;
 			fRec4[0] = fSlow7 * (fSlow8 * (fRec5[2] + (fRec5[0] - 2.0 * fRec5[1])) + fSlow13 * (fRec7[2] + fRec7[0] + 2.0 * fRec7[1])) - (fRec4[2] * ((fTemp2 - fTemp6) / fTemp1 + 1.0) + fTemp7) / fTemp8;
 			double fTemp9 = ((iSlow16) ? fTemp4 : fTemp5);
@@ -303,7 +303,7 @@ protected:
 			double fTemp13 = fSlow24 * fTemp12;
 			double fTemp14 = fSlow25 * fTemp12;
 			double fTemp15 = ((iSlow22) ? fTemp14 : fTemp13);
-			double fTemp16 = 2.0 * fRec3[1] * (1.0 - 1.0 / OtEq_faustpower2_f(fTemp10));
+			double fTemp16 = 2.0 * fRec3[1] * (1.0 - 1.0 / OtParametricEQ_faustpower2_f(fTemp10));
 			double fTemp17 = (fTemp11 + fTemp15) / fTemp10 + 1.0;
 			fRec3[0] = (fTemp7 + fRec4[0] * ((fTemp2 + fTemp9) / fTemp1 + 1.0) + fRec4[2] * ((fTemp2 - fTemp9) / fTemp1 + 1.0)) / fTemp8 - (fRec3[2] * ((fTemp11 - fTemp15) / fTemp10 + 1.0) + fTemp16) / fTemp17;
 			double fTemp18 = ((iSlow22) ? fTemp13 : fTemp14);
@@ -314,7 +314,7 @@ protected:
 			double fTemp22 = fSlow30 * fTemp21;
 			double fTemp23 = fSlow31 * fTemp21;
 			double fTemp24 = ((iSlow28) ? fTemp23 : fTemp22);
-			double fTemp25 = 2.0 * fRec2[1] * (1.0 - 1.0 / OtEq_faustpower2_f(fTemp19));
+			double fTemp25 = 2.0 * fRec2[1] * (1.0 - 1.0 / OtParametricEQ_faustpower2_f(fTemp19));
 			double fTemp26 = (fTemp20 + fTemp24) / fTemp19 + 1.0;
 			fRec2[0] = (fTemp16 + fRec3[0] * ((fTemp11 + fTemp18) / fTemp10 + 1.0) + fRec3[2] * ((fTemp11 - fTemp18) / fTemp10 + 1.0)) / fTemp17 - (fRec2[2] * ((fTemp20 - fTemp24) / fTemp19 + 1.0) + fTemp25) / fTemp26;
 			double fTemp27 = ((iSlow28) ? fTemp22 : fTemp23);

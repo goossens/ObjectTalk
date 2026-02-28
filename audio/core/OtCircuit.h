@@ -41,6 +41,7 @@ public:
 		generator,
 		processor,
 		effect,
+		equalizer,
 		converter,
 		probe
 	};
@@ -51,6 +52,7 @@ public:
 		"Generator",
 		"Processor",
 		"Effect",
+		"Equalizer",
 		"Converter",
 		"Probe"
 	};

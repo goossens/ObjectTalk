@@ -4,8 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Declare(json GIT_REPOSITORY "https://github.com/nlohmann/json" GIT_TAG "v3.12.0")
-FetchContent_MakeAvailable(json)
+FetchContent_Populate(json GIT_REPOSITORY "https://github.com/nlohmann/json" GIT_TAG "v3.12.0")
 
 add_library(json INTERFACE)
 target_include_directories(json INTERFACE ${json_SOURCE_DIR}/single_include)

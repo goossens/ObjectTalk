@@ -299,7 +299,7 @@ def processDspFile(sourceFileName, targetFileName):
 
 	os.remove(jsonName)
 
-	# strip everything before class or static function definitions
+	# strip everything before class or (const) static definitions
 	found = False
 	ot = ["#include \"OtFaust.h\""]
 	includes = ""
@@ -315,12 +315,13 @@ def processDspFile(sourceFileName, targetFileName):
 			else:
 				includes += text[line]
 
-		if text[line].startswith("class") or text[line].startswith("static"):
+		if text[line].startswith("class") or text[line].startswith("static") or text[line].startswith("const static"):
 			found = True
 
 		else:
 			line += 1
 
+	text = [(line.rstrip() + "\n") for line in text]
 	text = "".join(text[line:-4])
 	includes += "\n" + "\n".join(ot)
 
@@ -334,9 +335,12 @@ def processDspFile(sourceFileName, targetFileName):
 
 	text = text.replace("FAUSTFLOAT", "float")
 	text = text.replace("RESTRICT ", "")
-	text = text.replace("\t\n private:\n\t", "protected:")
-	text = text.replace("\t\n  private:\n", "protected:")
-	text = text.replace("\t\n  public:\n", "\npublic:")
+	text = text.replace("\n private:\n\n", "protected:\n")
+	text = text.replace("\n  private:\n\n", "protected:\n")
+	text = text.replace("\n public:\n\n", "\npublic:\n")
+	text = text.replace("\n  public:\n\n", "\npublic:\n")
+	text = text.replace(" public:", "public:")
+	text = text.replace("  public:\n", "public:")
 	text = text.replace("void metadata", "inline void metadata")
 	text = text.replace("virtual int", "inline int")
 	text = text.replace("virtual void", "inline void")

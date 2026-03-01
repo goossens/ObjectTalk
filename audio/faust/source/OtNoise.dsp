@@ -10,7 +10,7 @@ declare license "MIT";
 
 import("stdfaust.lib");
 
-white = hslider("[0]White[style:knob]", 0.0, 0.0, 1.0, 0.01);
-pink = hslider("[1]Pink[style:knob]", 0.0, 0.0, 1.0, 0.01) * 4.0;
-
-process = hgroup("Noise", no.noise * white + no.pink_noise * pink);
+process = hgroup("Noise", no.noise * white + no.pink_noise * pink) with {
+	white = hslider("[0]White[style:knob]", 0.0, 0.0, 1.0, 0.01);
+	pink = hslider("[1]Pink[style:knob]", 0.0, 0.0, 1.0, 0.01) * 4.0;
+};

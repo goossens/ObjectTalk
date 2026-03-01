@@ -9,19 +9,13 @@ declare category "Distortion";
 declare description "Jimmy Hendrix Fuzz Face simulation";
 
 import("stdfaust.lib");
-import("OtTube.lib");
 
-process = hgroup("FuzzFace", pre : fi.iir((b0/a0,b1/a0,b2/a0,b3/a0,b4/a0,b5/a0),(a1/a0,a2/a0,a3/a0,a4/a0,a5/a0)) : clip with {
+process = hgroup("FuzzFace", pre : fi.iir((b0/a0,b1/a0,b2/a0,b3/a0,b4/a0,b5/a0),(a1/a0,a2/a0,a3/a0,a4/a0,a5/a0)) : _ * 0.2 with {
 	fs = float(ma.SR);
 	pre = _;
 
-	clip =
-		tranystage(TB_7199P_68k, 250.0, 86.0, 2700.0, 3.571981) :
-		tranystage(TB_7199P_68k, 250.0, 86.0, 2700.0, 3.571981) :
-		tranystage(TB_7199P_68k, 250.0, 86.0, 2700.0, 3.571981);
-
 	drive = 1 - hslider("[1]Drive[style:knob]", 0.5, 0, 1, 0.01) : si.smooth(0.993);
-	fuzz = 1 - vslider("[2]fuzz[style:knob]", 0.5, 0, 1, 0.01) : si.smooth(0.993);
+	fuzz = 1 - vslider("[2]Fuzz[style:knob]", 0.5, 0, 1, 0.01) : si.smooth(0.993);
 
 	b0 = fuzz * (fuzz * (drive * pow(fs, 3)*(4.76991513499346e-20 * fs + 5.38351707988916e-15) + pow(fs, 3)*(-4.76991513499346e-20 * fs - 5.38351707988916e-15)) + drive * pow(fs, 3)*(-4.76991513499346e-20 * fs + 5.00346713698171e-13) + pow(fs, 3)*(4.76991513499346e-20 * fs - 5.00346713698171e-13)) + drive * pow(fs, 2)*(-5.05730339185222e-13 * fs - 1.16162215422261e-12) + pow(fs, 2)*(5.05730339185222e-13 * fs + 1.16162215422261e-12);
 	b1 = fuzz * (fuzz * (drive * pow(fs, 3)*(-1.43097454049804e-19 * fs - 5.38351707988916e-15) + pow(fs, 3)*(1.43097454049804e-19 * fs + 5.38351707988916e-15)) + drive * pow(fs, 3)*(1.43097454049804e-19 * fs - 5.00346713698171e-13) + pow(fs, 3)*(-1.43097454049804e-19 * fs + 5.00346713698171e-13)) + drive * pow(fs, 2)*(5.05730339185222e-13 * fs - 1.16162215422261e-12) + pow(fs, 2)*(-5.05730339185222e-13 * fs + 1.16162215422261e-12);

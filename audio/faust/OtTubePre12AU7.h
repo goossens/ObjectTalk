@@ -27,10 +27,10 @@
 
 
 //
-//  OtTubePre12AX7
+//  OtTubePre12AU7
 //
 
-class OtTubePre12AX7 : public OtFaust {
+class OtTubePre12AU7 : public OtFaust {
 protected:
 	int fSampleRate;
 	double fConst0;
@@ -43,23 +43,24 @@ protected:
 	double fConst7;
 	float fVslider0;
 	double fRec5[2];
+	double fConst8;
 	double fVec0[2];
 	double fRec14[2];
 	double fRec13[3];
-	double fConst8;
 	double fConst9;
 	double fConst10;
+	double fConst11;
 	double fRec15[2];
 	double fRec12[3];
-	double fConst11;
+	double fConst12;
 	double fRec11[2];
 	double fVec1[2];
 	double fRec10[2];
 	double fRec9[2];
 	double fRec8[3];
-	double fConst12;
 	double fConst13;
 	double fConst14;
+	double fConst15;
 	double fRec16[2];
 	double fRec7[3];
 	double fRec6[2];
@@ -67,9 +68,9 @@ protected:
 	double fRec4[2];
 	double fRec3[2];
 	double fRec2[3];
-	double fConst15;
 	double fConst16;
 	double fConst17;
+	double fConst18;
 	double fRec17[2];
 	double fRec1[3];
 	double fRec0[2];
@@ -77,15 +78,15 @@ protected:
 	double fRec18[2];
 
 public:
-	OtTubePre12AX7() {
+	OtTubePre12AU7() {
 		init(OtAudioSettings::sampleRate);
 	}
 
 	inline void metadata(Meta* m) {
 		m->declare("basics.lib/name", "Faust Basic Element Library");
 		m->declare("basics.lib/version", "1.22.0");
-		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtTubePre12AX7 -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
-		m->declare("filename", "OtTubePre12AX7.dsp");
+		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtTubePre12AU7 -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
+		m->declare("filename", "OtTubePre12AU7.dsp");
 		m->declare("filters.lib/fir:author", "Julius O. Smith III");
 		m->declare("filters.lib/fir:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/fir:license", "MIT-style STK-4.3 license");
@@ -118,7 +119,7 @@ public:
 		m->declare("maths.lib/license", "LGPL with exception");
 		m->declare("maths.lib/name", "Faust Math Library");
 		m->declare("maths.lib/version", "2.9.0");
-		m->declare("name", "OtTubePre12AX7");
+		m->declare("name", "OtTubePre12AU7");
 		m->declare("platform.lib/name", "Generic Platform Library");
 		m->declare("platform.lib/version", "1.3.0");
 		m->declare("signals.lib/name", "Faust Signal Routing Library");
@@ -141,20 +142,21 @@ public:
 		fConst1 = std::tan(97.38937226128358 / fConst0);
 		fConst2 = 1.0 / fConst1;
 		fConst3 = 1.0 / (fConst2 + 1.0);
-		fConst4 = 0.025 / fConst1;
+		fConst4 = 0.5 / fConst1;
 		fConst5 = 1.0 / std::tan(20517.741620594938 / fConst0);
 		fConst6 = 1.0 / (fConst5 + 1.0);
 		fConst7 = 1.0 - fConst5;
-		fConst8 = 1.0 / std::tan(270.1769682087222 / fConst0);
-		fConst9 = 1.0 / (fConst8 + 1.0);
-		fConst10 = 1.0 - fConst8;
-		fConst11 = 1.0 - fConst2;
-		fConst12 = 1.0 / std::tan(414.6902302738527 / fConst0);
-		fConst13 = 1.0 / (fConst12 + 1.0);
-		fConst14 = 1.0 - fConst12;
-		fConst15 = 1.0 / std::tan(609.4689747964198 / fConst0);
-		fConst16 = 1.0 / (fConst15 + 1.0);
-		fConst17 = 1.0 - fConst15;
+		fConst8 = 0.025 / fConst1;
+		fConst9 = 1.0 / std::tan(270.1769682087222 / fConst0);
+		fConst10 = 1.0 / (fConst9 + 1.0);
+		fConst11 = 1.0 - fConst9;
+		fConst12 = 1.0 - fConst2;
+		fConst13 = 1.0 / std::tan(414.6902302738527 / fConst0);
+		fConst14 = 1.0 / (fConst13 + 1.0);
+		fConst15 = 1.0 - fConst13;
+		fConst16 = 1.0 / std::tan(609.4689747964198 / fConst0);
+		fConst17 = 1.0 / (fConst16 + 1.0);
+		fConst18 = 1.0 - fConst16;
 	}
 
 	inline void instanceResetUserInterface() {
@@ -257,25 +259,25 @@ public:
 			fVec0[0] = fTemp0;
 			fRec14[0] = 0.9302847925323914 * (fTemp0 + fVec0[1]) - 0.8605695850647829 * fRec14[1];
 			fRec13[0] = fRec14[0] - (1.8405051250752198 * fRec13[1] + 0.8612942439318627 * fRec13[2]);
-			fRec15[0] = fConst9 * (0.027 * (fRec12[1] + fRec12[2]) - fConst10 * fRec15[1]);
-			fRec12[0] = OtTubeGetF(TUBE_TABLE_12AX7_68k, 0.9254498422517706 * (fRec13[0] + fRec13[2]) + fRec15[0] + 1.8508996845035413 * fRec13[1] + -1.581656) + -191.42014814814814;
-			fRec11[0] = fConst3 * (fConst4 * (fRec12[0] - fRec12[1]) - fConst11 * fRec11[1]);
+			fRec15[0] = fConst10 * (0.027 * (fRec12[1] + fRec12[2]) - fConst11 * fRec15[1]);
+			fRec12[0] = OtTubeGetF(TUBE_TABLE_12AU7_68k, 0.9254498422517706 * (fRec13[0] + fRec13[2]) + fRec15[0] + 1.8508996845035413 * fRec13[1] + -1.581656) + -191.42014814814814;
+			fRec11[0] = fConst3 * (fConst8 * (fRec12[0] - fRec12[1]) - fConst12 * fRec11[1]);
 			double fTemp1 = fRec11[0] * fRec5[0];
 			fVec1[0] = fTemp1;
 			fRec10[0] = -(fConst6 * (fConst7 * fRec10[1] - (fTemp1 + fVec1[1])));
 			fRec9[0] = 0.9302847925323914 * (fRec10[0] + fRec10[1]) - 0.8605695850647829 * fRec9[1];
 			fRec8[0] = fRec9[0] - (1.8405051250752198 * fRec8[1] + 0.8612942439318627 * fRec8[2]);
-			fRec16[0] = fConst13 * (0.015 * (fRec7[1] + fRec7[2]) - fConst14 * fRec16[1]);
-			fRec7[0] = OtTubeGetF(TUBE_TABLE_12AX7_250k, 0.9254498422517706 * (fRec8[0] + fRec8[2]) + fRec16[0] + 1.8508996845035413 * fRec8[1] + -1.204285) + -169.71433333333334;
-			fRec6[0] = fConst3 * (fConst4 * (fRec7[0] - fRec7[1]) - fConst11 * fRec6[1]);
+			fRec16[0] = fConst14 * (0.015 * (fRec7[1] + fRec7[2]) - fConst15 * fRec16[1]);
+			fRec7[0] = OtTubeGetF(TUBE_TABLE_12AU7_250k, 0.9254498422517706 * (fRec8[0] + fRec8[2]) + fRec16[0] + 1.8508996845035413 * fRec8[1] + -1.204285) + -169.71433333333334;
+			fRec6[0] = fConst3 * (fConst8 * (fRec7[0] - fRec7[1]) - fConst12 * fRec6[1]);
 			double fTemp2 = fRec5[0] * fRec6[0];
 			fVec2[0] = fTemp2;
 			fRec4[0] = -(fConst6 * (fConst7 * fRec4[1] - (fTemp2 + fVec2[1])));
 			fRec3[0] = 0.9302847925323914 * (fRec4[0] + fRec4[1]) - 0.8605695850647829 * fRec3[1];
 			fRec2[0] = fRec3[0] - (1.8405051250752198 * fRec2[1] + 0.8612942439318627 * fRec2[2]);
-			fRec17[0] = fConst16 * (0.0082 * (fRec1[1] + fRec1[2]) - fConst17 * fRec17[1]);
-			fRec1[0] = OtTubeGetF(TUBE_TABLE_12AX7_250k, 0.9254498422517706 * (fRec2[0] + fRec2[2]) + fRec17[0] + 1.8508996845035413 * fRec2[1] + -0.840703) + -147.47524390243905;
-			fRec0[0] = fConst3 * (fConst4 * (fRec1[0] - fRec1[1]) - fConst11 * fRec0[1]);
+			fRec17[0] = fConst17 * (0.0082 * (fRec1[1] + fRec1[2]) - fConst18 * fRec17[1]);
+			fRec1[0] = OtTubeGetF(TUBE_TABLE_12AU7_250k, 0.9254498422517706 * (fRec2[0] + fRec2[2]) + fRec17[0] + 1.8508996845035413 * fRec2[1] + -0.840703) + -147.47524390243905;
+			fRec0[0] = fConst3 * (fConst4 * (fRec1[0] - fRec1[1]) - fConst12 * fRec0[1]);
 			fRec18[0] = fSlow1 + 0.999 * fRec18[1];
 			output0[i0] = static_cast<float>(fRec0[0] * fRec18[0]);
 			fRec5[1] = fRec5[0];

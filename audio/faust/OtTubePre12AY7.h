@@ -27,10 +27,10 @@
 
 
 //
-//  OtTubePre12AX7
+//  OtTubePre12AY7
 //
 
-class OtTubePre12AX7 : public OtFaust {
+class OtTubePre12AY7 : public OtFaust {
 protected:
 	int fSampleRate;
 	double fConst0;
@@ -77,15 +77,15 @@ protected:
 	double fRec18[2];
 
 public:
-	OtTubePre12AX7() {
+	OtTubePre12AY7() {
 		init(OtAudioSettings::sampleRate);
 	}
 
 	inline void metadata(Meta* m) {
 		m->declare("basics.lib/name", "Faust Basic Element Library");
 		m->declare("basics.lib/version", "1.22.0");
-		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtTubePre12AX7 -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
-		m->declare("filename", "OtTubePre12AX7.dsp");
+		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtTubePre12AY7 -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
+		m->declare("filename", "OtTubePre12AY7.dsp");
 		m->declare("filters.lib/fir:author", "Julius O. Smith III");
 		m->declare("filters.lib/fir:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/fir:license", "MIT-style STK-4.3 license");
@@ -118,7 +118,7 @@ public:
 		m->declare("maths.lib/license", "LGPL with exception");
 		m->declare("maths.lib/name", "Faust Math Library");
 		m->declare("maths.lib/version", "2.9.0");
-		m->declare("name", "OtTubePre12AX7");
+		m->declare("name", "OtTubePre12AY7");
 		m->declare("platform.lib/name", "Generic Platform Library");
 		m->declare("platform.lib/version", "1.3.0");
 		m->declare("signals.lib/name", "Faust Signal Routing Library");
@@ -258,7 +258,7 @@ public:
 			fRec14[0] = 0.9302847925323914 * (fTemp0 + fVec0[1]) - 0.8605695850647829 * fRec14[1];
 			fRec13[0] = fRec14[0] - (1.8405051250752198 * fRec13[1] + 0.8612942439318627 * fRec13[2]);
 			fRec15[0] = fConst9 * (0.027 * (fRec12[1] + fRec12[2]) - fConst10 * fRec15[1]);
-			fRec12[0] = OtTubeGetF(TUBE_TABLE_12AX7_68k, 0.9254498422517706 * (fRec13[0] + fRec13[2]) + fRec15[0] + 1.8508996845035413 * fRec13[1] + -1.581656) + -191.42014814814814;
+			fRec12[0] = OtTubeGetF(TUBE_TABLE_12AY7_68k, 0.9254498422517706 * (fRec13[0] + fRec13[2]) + fRec15[0] + 1.8508996845035413 * fRec13[1] + -1.581656) + -191.42014814814814;
 			fRec11[0] = fConst3 * (fConst4 * (fRec12[0] - fRec12[1]) - fConst11 * fRec11[1]);
 			double fTemp1 = fRec11[0] * fRec5[0];
 			fVec1[0] = fTemp1;
@@ -266,7 +266,7 @@ public:
 			fRec9[0] = 0.9302847925323914 * (fRec10[0] + fRec10[1]) - 0.8605695850647829 * fRec9[1];
 			fRec8[0] = fRec9[0] - (1.8405051250752198 * fRec8[1] + 0.8612942439318627 * fRec8[2]);
 			fRec16[0] = fConst13 * (0.015 * (fRec7[1] + fRec7[2]) - fConst14 * fRec16[1]);
-			fRec7[0] = OtTubeGetF(TUBE_TABLE_12AX7_250k, 0.9254498422517706 * (fRec8[0] + fRec8[2]) + fRec16[0] + 1.8508996845035413 * fRec8[1] + -1.204285) + -169.71433333333334;
+			fRec7[0] = OtTubeGetF(TUBE_TABLE_12AY7_250k, 0.9254498422517706 * (fRec8[0] + fRec8[2]) + fRec16[0] + 1.8508996845035413 * fRec8[1] + -1.204285) + -169.71433333333334;
 			fRec6[0] = fConst3 * (fConst4 * (fRec7[0] - fRec7[1]) - fConst11 * fRec6[1]);
 			double fTemp2 = fRec5[0] * fRec6[0];
 			fVec2[0] = fTemp2;
@@ -274,7 +274,7 @@ public:
 			fRec3[0] = 0.9302847925323914 * (fRec4[0] + fRec4[1]) - 0.8605695850647829 * fRec3[1];
 			fRec2[0] = fRec3[0] - (1.8405051250752198 * fRec2[1] + 0.8612942439318627 * fRec2[2]);
 			fRec17[0] = fConst16 * (0.0082 * (fRec1[1] + fRec1[2]) - fConst17 * fRec17[1]);
-			fRec1[0] = OtTubeGetF(TUBE_TABLE_12AX7_250k, 0.9254498422517706 * (fRec2[0] + fRec2[2]) + fRec17[0] + 1.8508996845035413 * fRec2[1] + -0.840703) + -147.47524390243905;
+			fRec1[0] = OtTubeGetF(TUBE_TABLE_12AY7_250k, 0.9254498422517706 * (fRec2[0] + fRec2[2]) + fRec17[0] + 1.8508996845035413 * fRec2[1] + -0.840703) + -147.47524390243905;
 			fRec0[0] = fConst3 * (fConst4 * (fRec1[0] - fRec1[1]) - fConst11 * fRec0[1]);
 			fRec18[0] = fSlow1 + 0.999 * fRec18[1];
 			output0[i0] = static_cast<float>(fRec0[0] * fRec18[0]);

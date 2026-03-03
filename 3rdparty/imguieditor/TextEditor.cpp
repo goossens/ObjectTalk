@@ -851,10 +851,26 @@ void TextEditor::handleKeyboardInputs() {
 		auto super = ImGui::IsKeyDown(ImGuiMod_Super);
 		auto isCtrlShift = !ctrl && shift && !alt && super;
 		auto isOptionalAltShift = !ctrl;
+		auto isRealCtrl = super;
 	#else
 		auto isShiftAlt = !ctrl && shift && alt;
 		auto isOptionalCtrlShift = !alt;
+		auto isRealCtrl = ctrl;
 	#endif
+
+		// ignore specific keys when autocomplete is active, they will be handled later
+		if (autoCompleter.isActive()) {
+			for (auto key : {ImGuiKey_Tab, ImGuiKey_Enter, ImGuiKey_KeypadEnter}) {
+				if (ImGui::IsKeyPressed(key)) {
+					return;
+				}
+			}
+		}
+
+		// ignore escape key when find/replace window is visible, it will be handled later
+		if (findReplaceVisible && ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+			return;
+		}
 
 		// cursor movements and selections
 		if (isOptionalShift && ImGui::IsKeyPressed(ImGuiKey_UpArrow)) { moveUp(1, shift); }
@@ -912,6 +928,9 @@ void TextEditor::handleKeyboardInputs() {
 		else if (isShiftShortcut && ImGui::IsKeyPressed(ImGuiKey_F)) { findAll(); }
 		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_G)) { findNext(); }
 
+		// autocomplete support
+		else if (isRealCtrl && ImGui::IsKeyPressed(ImGuiKey_Space)) { autoCompleter.handleShortcut(); }
+
 		// change insert mode
 		else if (isNoModifiers && ImGui::IsKeyPressed(ImGuiKey_Insert)) { overwrite = !overwrite; }
 
@@ -936,7 +955,7 @@ void TextEditor::handleKeyboardInputs() {
 		}
 
 		// handle escape key
-		else if (!findReplaceVisible && ImGui::IsKeyPressed(ImGuiKey_Escape) && cursors.hasMultiple()) {
+		else if (ImGui::IsKeyPressed(ImGuiKey_Escape) && cursors.hasMultiple()) {
 			cursors.clearAdditional();
 		}
 

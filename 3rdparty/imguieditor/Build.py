@@ -46,6 +46,7 @@ if __name__ == "__main__":
 	append("Transactions.cpp", 12)
 	append("Colorizer.cpp", 12)
 	append("Bracketeer.cpp", 12)
+	append("AutoCompleter.cpp", 12)
 	append("Tables.h", 26)
 	append("CodePoint.cpp", 17)
 	append("Language.cpp", 26)

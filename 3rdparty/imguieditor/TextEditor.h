@@ -244,6 +244,7 @@ public:
 	inline bool HasTextContextMenuCallback() const { return textContextMenuCallback != nullptr; }
 
 	// useful functions to work on selections
+	// NOTE: functions provided to FilterSelections or FilterLines should accept and return UTF-8 encoded strings
 	inline void IndentLines() { if (!readOnly) indentLines(); }
 	inline void DeindentLines() { if (!readOnly) deindentLines(); }
 	inline void MoveUpLines() { if (!readOnly) moveUpLines(); }
@@ -258,9 +259,6 @@ public:
 	inline void FilterLines(std::function<std::string(std::string_view)> filter) { if (!readOnly) filterLines(filter); }
 	inline void TabsToSpaces() { if (!readOnly) tabsToSpaces(); }
 	inline void SpacesToTabs() { if (!readOnly) spacesToTabs(); }
-
-	// NOTE: functions provided to FilterSelections or FilterLines
-	//       should accept and return UTF-8 encoded strings
 
 	// color palette support
 	enum class Color : char {
@@ -315,14 +313,15 @@ public:
 		Color color = Color::text;
 	};
 
-	// iterator used in language specific tokenizers
+	// iterator used in language-specific tokenizers and autocomplete callbacks
+	// this iterator points to unicode codepoints
 	class Iterator {
 	public:
 		// constructors
 		Iterator() = default;
 		Iterator(Glyph* g) : glyph(g) {}
 
-		using iterator_category = std::forward_iterator_tag;
+		using iterator_category = std::bidirectional_iterator_tag;
 		using difference_type = std::ptrdiff_t;
 		using value_type = ImWchar;
 		using pointer = ImWchar*;
@@ -332,13 +331,15 @@ public:
 		inline pointer operator->() const { return &(glyph->codepoint); }
 		inline Iterator& operator++() { glyph++; return *this; }
 		inline Iterator operator++(int) { Iterator tmp = *this; glyph++; return tmp; }
+		inline Iterator& operator--() { glyph--; return *this; }
+		inline Iterator operator--(int) { Iterator tmp = *this; glyph--; return tmp; }
 		inline size_t operator-(const Iterator& a) { return glyph - a.glyph; }
-		inline friend bool operator== (const Iterator& a, const Iterator& b) { return a.glyph == b.glyph; };
-		inline friend bool operator!= (const Iterator& a, const Iterator& b) { return !(a.glyph == b.glyph); };
-		inline friend bool operator< (const Iterator& a, const Iterator& b) { return a.glyph < b.glyph; };
-		inline friend bool operator<= (const Iterator& a, const Iterator& b) { return a.glyph <= b.glyph; };
-		inline friend bool operator> (const Iterator& a, const Iterator& b) { return a.glyph > b.glyph; };
-		inline friend bool operator>= (const Iterator& a, const Iterator& b) { return a.glyph >= b.glyph; };
+		inline friend bool operator==(const Iterator& a, const Iterator& b) { return a.glyph == b.glyph; };
+		inline friend bool operator!=(const Iterator& a, const Iterator& b) { return !(a.glyph == b.glyph); };
+		inline friend bool operator<(const Iterator& a, const Iterator& b) { return a.glyph < b.glyph; };
+		inline friend bool operator<=(const Iterator& a, const Iterator& b) { return a.glyph <= b.glyph; };
+		inline friend bool operator>(const Iterator& a, const Iterator& b) { return a.glyph > b.glyph; };
+		inline friend bool operator>=(const Iterator& a, const Iterator& b) { return a.glyph >= b.glyph; };
 
 	private:
 		// properties
@@ -371,11 +372,11 @@ public:
 		bool hasSingleQuotedStrings = false;
 		bool hasDoubleQuotedStrings = false;
 
-		// other character sequences that starts and ends strings (can be blank if language doesn't have this feature)
+		// other character sequences that start and end strings (can be blank if language doesn't have this feature)
 		std::string otherStringStart;
 		std::string otherStringEnd;
 
-		// alternate character sequences that starts and ends strings (can be blank if language doesn't have this feature)
+		// alternate character sequences that start and end strings (can be blank if language doesn't have this feature)
 		std::string otherStringAltStart;
 		std::string otherStringAltEnd;
 
@@ -392,15 +393,14 @@ public:
 		std::function<bool(ImWchar)> isPunctuation;
 
 		// functions to tokenize identifiers and numbers (can be nullptr if language doesn't have this feature)
-		// start and end refer to the characters being tokonized
-		// functions should return the an iterator to the character after the token
-		//		returning start means no token was found
+		// start and end refer to the characters being tokenized
+		// functions should return an iterator to the character after the detected token
+		// returning start means no token was found
 		std::function<Iterator(Iterator start, Iterator end)> getIdentifier;
 		std::function<Iterator(Iterator start, Iterator end)> getNumber;
 
-		// function to implement custom tokonizer
-		// if a token is found function should return the an iterator to the character after the token
-		// and set the color
+		// function to implement custom tokenizer
+		// if a token is found, function should return an iterator to the character after the token and set the color
 		std::function<Iterator(Iterator start, Iterator end, Color& color)> customTokenizer;
 
 		// predefined language definitions
@@ -421,6 +421,51 @@ public:
 	inline const Language* GetLanguage() const { return language; };
 	inline bool HasLanguage() const { return language != nullptr; }
 	inline std::string GetLanguageName() const { return language == nullptr ? "None" : language->name; }
+
+	// autocomplete state (acts as API between editor and outer application)
+	// all strings are UTF-8 encoded
+	class AutoCompleteState {
+	public:
+		// current context
+		std::string searchTerm;
+		bool inIdentifier;
+		bool inComment;
+		bool inString;
+
+		// auto complete candidates
+		std::vector<std::string> candidates;
+		std::string preferredCandidate;
+
+		// currently selected language (could be nullptr if no language is selected)
+		Language* language;
+
+		// opaque void* provided by app when autocomplete was setup
+		void* userData;
+	};
+
+	// autoconfig configuration (defaults are like Visual Studio Code)
+	class AutoCompleteConfig {
+	public:
+		// specifies whether typing by the user triggers autocomplete
+		bool triggersOnTyping = true;
+
+		// specifies whether the ctrl-space shortcut activates autocomplete (shortcut is the same on all platforms even MacOS)
+		bool triggersOnShortcut = true;
+
+		// specifies whether typing (or shortcut) in comments or strings triggers autocomplete
+		bool triggerInComments = false;
+		bool triggerInStrings = false;
+
+		// will be called every frame while autocomplete is configured and active
+		// purpose of callback is to assess context, render popup (if required) and set next action (e.g. insert text, replace text or end trigger)
+		std::function<void(AutoCompleteState&)> callback;
+
+		// opaque void* that must be managed externally but passed to callback
+		void* userData = nullptr;
+	};
+
+	// configure and activate autocomplete (passing nullptr deactivates it)
+	inline void SetAutoComplete(const AutoCompleteConfig* config) { autoCompleter.setConfig(config); }
 
 	// support functions for unicode codepoints
 	class CodePoint {
@@ -892,6 +937,7 @@ protected:
 		inline bool isAround(Coordinate location) const { return start < location && end >= location; }
 	};
 
+	// class responsible for matching brackets
 	class Bracketeer : public std::vector<BracketPair> {
 	public:
 		// reset the bracketeer
@@ -914,6 +960,29 @@ protected:
 				glyph.color == Color::matchingBracketError;
 		}
 	} bracketeer;
+
+	// class responsible for auto completing text
+	class AutoCompleter {
+	public:
+		// set the auto completer's configuration (it is turned off with config == nullptr)
+		void setConfig(const AutoCompleteConfig* config);
+
+		// check status
+		inline bool isConfigured() const { return configured; }
+		inline bool isActive() const { return active; }
+
+		// handle auto complete shortcut
+		void handleShortcut();
+
+	private:
+		// properties
+		bool configured = false;
+		bool active = false;
+		bool activate = false;
+
+		AutoCompleteConfig config;
+		AutoCompleteState state;
+	} autoCompleter;
 
 	// access the editor's text
 	void setText(const std::string_view& text);

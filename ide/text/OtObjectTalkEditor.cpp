@@ -20,6 +20,27 @@
 OtObjectTalkEditor::OtObjectTalkEditor() {
 	editor.SetLanguage(OtObjectTalkLanguage::getDefinition());
 	diff.SetLanguage(OtObjectTalkLanguage::getDefinition());
+
+	TextEditor::AutoCompleteConfig config;
+
+	config.callback = [&](TextEditor::AutoCompleteState& state) {
+		state.candidates.clear();
+		state.candidates.emplace_back(state.searchTerm);
+		state.candidates.emplace_back("asdasd");
+		state.candidates.emplace_back("dfgdfg");
+		state.candidates.emplace_back("yuiuyr");
+		state.candidates.emplace_back("qweetr");
+		state.candidates.emplace_back("kdfghh");
+		state.candidates.emplace_back("temnbn");
+		state.candidates.emplace_back("uetyyy");
+		state.candidates.emplace_back("uetyyy");
+		state.candidates.emplace_back("uetyyy");
+		state.candidates.emplace_back("uetyyy");
+		state.candidates.emplace_back("uetyyy");
+		state.candidates.emplace_back("uetyyy");
+	};
+
+	editor.SetAutoCompleteConfig(&config);
 }
 
 

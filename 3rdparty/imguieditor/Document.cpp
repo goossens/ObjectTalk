@@ -474,12 +474,7 @@ TextEditor::Coordinate TextEditor::Document::findWordStart(Coordinate from, bool
 
 	} else {
 		auto index = getIndex(from);
-
-		if (index == lineSize) {
-			index--;
-		}
-
-		auto firstCharacter = line[index].codepoint;
+		auto firstCharacter = line[index - 1].codepoint;
 
 		if (!wordOnly && CodePoint::isWhiteSpace(firstCharacter)) {
 			while (index > 0 && CodePoint::isWhiteSpace(line[index - 1].codepoint)) {

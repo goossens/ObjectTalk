@@ -168,7 +168,7 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	handleKeyboardInputs();
 	handleMouseInteractions();
 
-	// ensure cursors are up to date (sorted and merged if required)
+	// ensure cursors are up to date (sort and merge if required)
 	if (cursors.anyHasUpdate()) {
 		cursors.update();
 	}
@@ -228,6 +228,9 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 
 	// render find/replace popup
 	renderFindReplace(pos, visibleSize.x - verticalScrollBarSize);
+
+	// render autocomplete popup
+	renderAutoComplete();
 
 	ImGui::EndChild();
 	ImGui::PopStyleColor();
@@ -823,6 +826,146 @@ void TextEditor::renderFindReplace(ImVec2 pos, float width) {
 
 
 //
+//	TextEditor::renderAutoComplete
+//
+
+void TextEditor::renderAutoComplete() {
+	// see if we need to activate autocomplete mode
+	if (activateAutoComplete) {
+		// reset activation flag
+		activateAutoComplete = false;
+
+		// capture current main cursor location
+		autoCompleteLocation = cursors.getMain().getSelectionEnd();
+		autoCompleteStart = document.findWordStart(autoCompleteLocation, true);
+
+		// update the autocomplete state
+		updateAutoCompleteState();
+
+		// handle cases where autocomplete request is ignored
+		if(autoCompleteState.inComment && !autoCompleteConfig.triggerInComments) {
+			return;
+		}
+
+		if(autoCompleteState.inString && !autoCompleteConfig.triggerInStrings) {
+			return;
+		}
+
+		// get initial list of candidates from the app
+		refreshAutoCompleteCandidates();
+
+		// show autocomplete popup window
+		ImGui::OpenPopup("AutoCompleteContextMenu");
+		autoCompleteActive = true;
+	}
+
+	// only continue if autocomplete is active
+	if (!autoCompleteActive) {
+		return;
+	}
+
+	// see if cursor moved since last time
+	auto newLocation = cursors.getMain().getSelectionEnd();
+
+	if (newLocation != autoCompleteLocation) {
+		// see if we need to deactivate auto complete because cursor is on new line
+		if (newLocation.line != autoCompleteLocation.line) {
+			deactivateAutoComplete = true;
+
+		} else {
+			// see if cursor moved away from current word
+			auto newStart = document.findWordStart(newLocation, true);
+
+			if (newStart == autoCompleteStart) {
+				autoCompleteLocation = newLocation;
+
+				// we deactivate autocomplete is the current location is the start
+				if (autoCompleteLocation == autoCompleteStart) {
+					deactivateAutoComplete = true;
+
+				} else {
+					updateAutoCompleteState();
+					refreshAutoCompleteCandidates();
+				}
+
+			} else {
+				deactivateAutoComplete = true;
+			}
+		}
+	}
+
+	// close autocomplete when user hits escape key
+	if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+		deactivateAutoComplete = true;
+	}
+
+	// open popup window
+	auto cursorScreenPos = ImGui::GetCursorScreenPos();
+
+	ImGui::SetNextWindowPos(ImVec2(
+		cursorScreenPos.x + textOffset + autoCompleteLocation.column * glyphSize.x,
+		cursorScreenPos.y + (autoCompleteLocation.line + 1) * glyphSize.y));
+
+	ImGui::SetNextWindowSize(ImVec2(250.0f, 0.0f));
+
+	ImGuiWindowFlags flags =
+		ImGuiWindowFlags_NoFocusOnAppearing |
+		ImGuiWindowFlags_NoNav;
+
+	if (ImGui::BeginPopup("AutoCompleteContextMenu", flags)) {
+		// deactivate popup (if requested)
+		if (deactivateAutoComplete) {
+			ImGui::CloseCurrentPopup();
+			deactivateAutoComplete = false;
+			autoCompleteActive = false;
+
+		} else {
+			// since we're using ImGuiWindowFlags_NoFocusOnAppearing above, this ensure popup comes to front
+			if (ImGui::IsWindowAppearing()) {
+				ImGui::BringWindowToDisplayFront(ImGui::GetCurrentWindow());
+			}
+
+			// do we have any candidates
+			if (autoCompleteState.candidates.size()) {
+				auto items = std::min(autoCompleteState.candidates.size(), static_cast<size_t>(10));
+
+				// apply arrow keys to selected candidate
+				if (ImGui::IsKeyPressed(ImGuiKey_UpArrow) && autoCompleteSelection > 0) {
+					autoCompleteSelection--;
+
+				} else if (ImGui::IsKeyPressed(ImGuiKey_DownArrow) && autoCompleteSelection < items - 1) {
+					autoCompleteSelection++;
+
+				// use candidate if user hit tab of return
+				} else if (ImGui::IsKeyPressed(ImGuiKey_Tab) || ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter)) {
+					useAutoComplete();
+				}
+
+				// render top candidates
+				for (size_t i = 0; i < items; i++) {
+					if (ImGui::Selectable(autoCompleteState.candidates[i].c_str(), i == autoCompleteSelection)) {
+						// user clicked on candidate, use it
+						autoCompleteSelection = i;
+						autoCompleteActive = false;
+						useAutoComplete();
+					}
+				}
+
+			} else {
+				ImGui::TextUnformatted("No suggestions");
+			}
+		}
+
+		ImGui::EndPopup();
+
+	} else {
+		deactivateAutoComplete = false;
+		autoCompleteActive = false;
+	}
+}
+
+
+//
 //	TextEditor::handleKeyboardInputs
 //
 
@@ -859,8 +1002,8 @@ void TextEditor::handleKeyboardInputs() {
 	#endif
 
 		// ignore specific keys when autocomplete is active, they will be handled later
-		if (autoCompleter.isActive()) {
-			for (auto key : {ImGuiKey_Tab, ImGuiKey_Enter, ImGuiKey_KeypadEnter}) {
+		if (autoCompleteActive) {
+			for (auto key : {ImGuiKey_Escape, ImGuiKey_Tab, ImGuiKey_Enter, ImGuiKey_KeypadEnter, ImGuiKey_UpArrow, ImGuiKey_DownArrow}) {
 				if (ImGui::IsKeyPressed(key)) {
 					return;
 				}
@@ -929,7 +1072,7 @@ void TextEditor::handleKeyboardInputs() {
 		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_G)) { findNext(); }
 
 		// autocomplete support
-		else if (isRealCtrl && ImGui::IsKeyPressed(ImGuiKey_Space)) { autoCompleter.handleShortcut(); }
+		else if (isRealCtrl && ImGui::IsKeyPressed(ImGuiKey_Space)) { startAutoCompleteShortcut(); }
 
 		// change insert mode
 		else if (isNoModifiers && ImGui::IsKeyPressed(ImGuiKey_Insert)) { overwrite = !overwrite; }
@@ -1385,7 +1528,7 @@ void TextEditor::paste() {
 		auto transaction = startTransaction();
 		insertTextIntoAllCursors(transaction, clipboard);
 		endTransaction(transaction);
-	}
+		}
 }
 
 
@@ -1705,6 +1848,109 @@ void TextEditor::replaceAll() {
 
 
 //
+//	TextEditor::setAutoCompleteConfig
+//
+
+void TextEditor::setAutoCompleteConfig(const AutoCompleteConfig* config) {
+	if (config) {
+		autoCompleteConfig = *config;
+		autoCompleteConfigured = true;
+
+	} else {
+		autoCompleteConfigured = false;
+	}
+
+	autoCompleteActive = false;
+}
+
+
+//
+//	TextEditor::startAutoCompleteShortcut
+//
+
+void TextEditor::startAutoCompleteShortcut() {
+	if (!autoCompleteActive && autoCompleteConfigured && autoCompleteConfig.triggersOnShortcut) {
+		activateAutoComplete = true;
+		makeCursorVisible();
+	}
+}
+
+
+//
+//	TextEditor::cancelAutoComplete
+//
+
+void TextEditor::cancelAutoComplete() {
+	if (autoCompleteActive) {
+		deactivateAutoComplete = true;
+	}
+}
+
+//
+//	TextEditor::useAutoComplete
+//
+
+void TextEditor::useAutoComplete() {
+	// determine end of autocomplete
+	auto end = document.findWordEnd(autoCompleteStart, true);
+
+	// remove word and replace it with chosen candidate
+	auto transaction = startTransaction();
+	deleteText(transaction, autoCompleteStart, end);
+	// cursors.adjustForDelete(cursors.getCurrentAsIterator(), autoCompleteStart, end);
+	// insertTextIntoAllCursors(transaction, autoCompleteState.candidates[autoCompleteSelection]);
+	endTransaction(transaction);
+
+	// end the autocomplete cycle
+	autoCompleteActive = false;
+}
+
+
+//
+//	TextEditor::updateAutoCompleteState
+//
+
+void TextEditor::updateAutoCompleteState() {
+	autoCompleteState.searchTerm = document.getSectionText(autoCompleteStart, autoCompleteLocation);
+
+	if (autoCompleteLocation.column == 0) {
+		auto state = document[autoCompleteLocation.line].state;
+		autoCompleteState.inComment = state == State::inComment;
+
+		autoCompleteState.inString =
+			state == State::inDoubleQuotedString ||
+			state == State::inSingleQuotedString||
+			state == State::inOtherString ||
+			state == State::inOtherStringAlt;
+
+	} else {
+		auto color = document[autoCompleteLocation.line][autoCompleteLocation.column - 1].color;
+		autoCompleteState.inComment = color == Color::comment;
+		autoCompleteState.inString = color == Color::string;
+	}
+
+	autoCompleteState.language = language;
+	autoCompleteState.userData = autoCompleteConfig.userData;
+}
+
+
+//
+//	TextEditor::refreshAutoCompleteCandidates
+//
+
+void TextEditor::refreshAutoCompleteCandidates() {
+	if (autoCompleteConfig.callback) {
+		autoCompleteConfig.callback(autoCompleteState);
+
+	} else {
+		autoCompleteState.candidates.clear();
+	}
+
+	autoCompleteSelection = 0;
+}
+
+
+//
 //	TextEditor::addMarker
 //
 
@@ -1841,7 +2087,7 @@ void TextEditor::moveTo(Coordinate coordinate, bool select) {
 //
 
 void TextEditor::handleCharacter(ImWchar character) {
-	auto transaction = startTransaction();
+	auto transaction = startTransaction(false);
 
 	auto opener = character;
 	auto isPaired = !overwrite && completePairedGlyphs && CodePoint::isPairOpener(opener);
@@ -1931,7 +2177,7 @@ void TextEditor::handleCharacter(ImWchar character) {
 //
 
 void TextEditor::handleBackspace(bool wordMode) {
-	auto transaction = startTransaction();
+	auto transaction = startTransaction(false);
 
 	// remove selections or characters to the left of the cursor
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
@@ -1951,7 +2197,7 @@ void TextEditor::handleBackspace(bool wordMode) {
 //
 
 void TextEditor::handleDelete(bool wordMode) {
-	auto transaction = startTransaction();
+	auto transaction = startTransaction(false);
 
 	// remove selections or characters to the right of the cursor
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
@@ -2099,7 +2345,7 @@ void TextEditor::deindentLines() {
 void TextEditor::moveUpLines() {
 	// don't move up if first line is in one of the cursors
 	if (cursors[0].getSelectionStart().line != 0) {
-		auto transaction = startTransaction();
+ 		auto transaction = startTransaction();
 
 		for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
 			auto start = cursor->getSelectionStart();
@@ -2460,7 +2706,11 @@ void TextEditor::spacesToTabs() {
 //	TextEditor::startTransaction
 //
 
-std::shared_ptr<TextEditor::Transaction> TextEditor::startTransaction() {
+std::shared_ptr<TextEditor::Transaction> TextEditor::startTransaction(bool cancelsAutoComplete) {
+	if (cancelsAutoComplete) {
+		cancelAutoComplete();
+	}
+
 	std::shared_ptr<Transaction> transaction = Transactions::create();
 	transaction->setBeforeState(cursors);
 	return transaction;

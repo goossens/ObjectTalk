@@ -428,22 +428,20 @@ public:
 	public:
 		// current context
 		std::string searchTerm;
-		bool inIdentifier;
 		bool inComment;
 		bool inString;
 
-		// auto complete candidates
-		std::vector<std::string> candidates;
-		std::string preferredCandidate;
-
 		// currently selected language (could be nullptr if no language is selected)
-		Language* language;
+		const Language* language;
 
 		// opaque void* provided by app when autocomplete was setup
 		void* userData;
+
+		// auto complete candidates te be filled by app callback
+		std::vector<std::string> candidates;
 	};
 
-	// autoconfig configuration (defaults are like Visual Studio Code)
+	// autocomplete configuration (defaults are like Visual Studio Code)
 	class AutoCompleteConfig {
 	public:
 		// specifies whether typing by the user triggers autocomplete
@@ -456,8 +454,10 @@ public:
 		bool triggerInComments = false;
 		bool triggerInStrings = false;
 
-		// will be called every frame while autocomplete is configured and active
-		// purpose of callback is to assess context, render popup (if required) and set next action (e.g. insert text, replace text or end trigger)
+		// will be called while autocomplete is configured, is active and needs an update to the candidates list
+		// callback must populate candidates in state object
+		// callback is called during the rendering process
+		// if it takes too long, application should do search in separate thread and use function below to report results
 		std::function<void(AutoCompleteState&)> callback;
 
 		// opaque void* that must be managed externally but passed to callback
@@ -465,7 +465,11 @@ public:
 	};
 
 	// configure and activate autocomplete (passing nullptr deactivates it)
-	inline void SetAutoComplete(const AutoCompleteConfig* config) { autoCompleter.setConfig(config); }
+	inline void SetAutoCompleteConfig(const AutoCompleteConfig* config) { setAutoCompleteConfig(config); }
+
+	// option to specify autocomplete candidates later (in case a callback takes to long and lookup is handled in a separate thread)
+	// this call is not threadsafe and must be called from the rendering thread (you must synchronize with your lookup thread yourself)
+	inline void SetAutoCompleteCandidates(const std::vector<std::string>& candidates) { autoCompleteState.candidates = candidates; }
 
 	// support functions for unicode codepoints
 	class CodePoint {
@@ -961,29 +965,6 @@ protected:
 		}
 	} bracketeer;
 
-	// class responsible for auto completing text
-	class AutoCompleter {
-	public:
-		// set the auto completer's configuration (it is turned off with config == nullptr)
-		void setConfig(const AutoCompleteConfig* config);
-
-		// check status
-		inline bool isConfigured() const { return configured; }
-		inline bool isActive() const { return active; }
-
-		// handle auto complete shortcut
-		void handleShortcut();
-
-	private:
-		// properties
-		bool configured = false;
-		bool active = false;
-		bool activate = false;
-
-		AutoCompleteConfig config;
-		AutoCompleteState state;
-	} autoCompleter;
-
 	// access the editor's text
 	void setText(const std::string_view& text);
 
@@ -1000,6 +981,7 @@ protected:
 	void renderScrollbarMiniMap();
 	void renderPanScrollIndicator();
 	void renderFindReplace(ImVec2 pos, float width);
+	void renderAutoComplete();
 
 	// keyboard and mouse interactions
 	void handleKeyboardInputs();
@@ -1047,6 +1029,14 @@ protected:
 	void replace();
 	void replaceAll();
 
+	// autocomplete support
+	void setAutoCompleteConfig(const AutoCompleteConfig* config);
+	void startAutoCompleteShortcut();
+	void cancelAutoComplete();
+	void useAutoComplete();
+	void updateAutoCompleteState();
+	void refreshAutoCompleteCandidates();
+
 	// marker support
 	void addMarker(int line, ImU32 lineNumberColor, ImU32 textColor, const std::string_view& lineNumberTooltip, const std::string_view& textTooltip);
 	void clearMarkers();
@@ -1092,7 +1082,7 @@ protected:
 
 	// transaction functions
 	// note that strings must be UTF-8 encoded
-	std::shared_ptr<Transaction> startTransaction();
+	std::shared_ptr<Transaction> startTransaction(bool cancelsAutoComplete=true);
 	bool endTransaction(std::shared_ptr<Transaction> transaction);
 
 	void insertTextIntoAllCursors(std::shared_ptr<Transaction> transaction, const std::string_view& text);
@@ -1151,7 +1141,7 @@ protected:
 	static constexpr int textMargin = 2;
 	static constexpr int cursorWidth = 1;
 
-	// find and replace support
+	// find and replace context
 	std::string findButtonLabel = "Find";
 	std::string findAllButtonLabel = "Find All";
 	std::string replaceButtonLabel = "Replace";
@@ -1163,6 +1153,19 @@ protected:
 	std::string replaceText;
 	bool caseSensitiveFind = false;
 	bool wholeWordFind = false;
+
+	// autocomplete context
+	bool autoCompleteConfigured = false;
+	bool autoCompleteActive = false;
+	bool activateAutoComplete = false;
+	bool deactivateAutoComplete = false;
+	Coordinate autoCompleteLocation;
+	Coordinate autoCompleteStart;
+
+	AutoCompleteConfig autoCompleteConfig;
+	AutoCompleteState autoCompleteState;
+	size_t autoCompleteSelection;
+
 
 	// interaction context
 	float lastClickTime = -1.0f;

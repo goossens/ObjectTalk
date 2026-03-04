@@ -38,7 +38,7 @@ void TextEditor::Transactions::add(std::shared_ptr<Transaction> transaction) {
 //
 
 void TextEditor::Transactions::undo(Document& document, Cursors& cursors) {
-	auto& transaction = at(--undoIndex);
+	auto transaction = at(--undoIndex);
 
 	for (auto action = transaction->rbegin(); action < transaction->rend(); action++) {
 		if (action->type == Action::Type::insertText) {
@@ -58,9 +58,9 @@ void TextEditor::Transactions::undo(Document& document, Cursors& cursors) {
 //
 
 void TextEditor::Transactions::redo(Document& document, Cursors& cursors) {
-	auto& transaction = at(undoIndex++);
+	auto transaction = at(undoIndex++);
 
-	for (auto action = transaction->rbegin(); action < transaction->rend(); action++) {
+	for (auto action = transaction->begin(); action < transaction->end(); action++) {
 		if (action->type == Action::Type::insertText) {
 			document.insertText(action->start, action->text);
 

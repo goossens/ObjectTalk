@@ -13,6 +13,60 @@
 
 
 //
+//	renderSuggestion
+//
+
+static bool renderSuggestion(const std::string_view& suggestion, const std::string_view& searchTerm, bool selected) {
+	// custom widget to render an autocomplete suggestion in the style of Visual Studio Code
+	auto glyphPos = ImGui::GetCursorScreenPos();
+	auto size = ImVec2(250.0f, ImGui::GetFrameHeightWithSpacing());
+	auto clicked = ImGui::InvisibleButton("suggestion", size);
+
+	auto drawList = ImGui::GetWindowDrawList();
+	auto font = ImGui::GetFont();
+	auto fontSize = ImGui::GetFontSize();
+	auto glyphWidth = ImGui::CalcTextSize("#").x;
+
+	// highlight selected item
+	if (selected) {
+		drawList->AddRectFilled(glyphPos, glyphPos + size, ImGui::GetColorU32(ImGuiCol_Header));
+	}
+
+	// process all UTF-8 glyphs in suggestion
+	glyphPos += ImGui::GetStyle().FramePadding;
+	auto suggestionEnd = suggestion.end();
+	auto searchTermEnd = searchTerm.end();
+	auto i = TextEditor::CodePoint::skipBOM(suggestion.begin(), suggestionEnd);
+	auto j = TextEditor::CodePoint::skipBOM(searchTerm.begin(), searchTermEnd);
+
+	while (i < suggestionEnd) {
+		// get next glyph from suggestion
+		ImWchar codepoint;
+		i = TextEditor::CodePoint::read(i, suggestionEnd, &codepoint);
+
+		// highlight glyph in suggestion that match search term
+		auto color = ImGui::GetColorU32(ImGuiCol_Text);
+
+		if (j < searchTermEnd) {
+			ImWchar searchCodePoint;
+			auto next = TextEditor::CodePoint::read(j, searchTermEnd, &searchCodePoint);
+
+			if (searchCodePoint == codepoint) {
+				color = ImGui::GetColorU32(ImGuiCol_TextLink);
+				j = next;
+			}
+		}
+
+		// render the glyph
+		font->RenderChar(drawList, fontSize, glyphPos, color, codepoint);
+		glyphPos.x += glyphWidth;
+	}
+
+	return clicked;
+}
+
+
+//
 //	TextEditor::renderAutoComplete
 //
 
@@ -93,8 +147,6 @@ void TextEditor::renderAutoComplete() {
 		cursorScreenPos.x + textOffset + autoCompleteLocation.column * glyphSize.x,
 		cursorScreenPos.y + (autoCompleteLocation.line + 1) * glyphSize.y));
 
-	ImGui::SetNextWindowSize(ImVec2(250.0f, 0.0f));
-
 	ImGuiWindowFlags flags =
 		ImGuiWindowFlags_NoFocusOnAppearing |
 		ImGuiWindowFlags_NoNav;
@@ -128,7 +180,7 @@ void TextEditor::renderAutoComplete() {
 					// ensure unique ID
 					ImGui::PushID(static_cast<int>(i));
 
-					if (ImGui::Selectable(autoCompleteState.suggestions[i].c_str(), i == autoCompleteSelection)) {
+					if (renderSuggestion(autoCompleteState.suggestions[i].c_str(), autoCompleteState.searchTerm, i == autoCompleteSelection)) {
 						// user clicked on a suggestion, use it
 						autoCompleteSelection = i;
 						applyAutoComplete();

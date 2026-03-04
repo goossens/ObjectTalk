@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <functional>
 #include <iterator>
 #include <memory>
@@ -313,7 +314,7 @@ public:
 		Color color = Color::text;
 	};
 
-	// iterator used in language-specific tokenizers and autocomplete callbacks
+	// iterator used in language-specific tokenizers
 	// this iterator points to unicode codepoints
 	class Iterator {
 	public:
@@ -454,6 +455,9 @@ public:
 		// specifies whether typing (or shortcut) in comments or strings triggers autocomplete
 		bool triggerInComments = false;
 		bool triggerInStrings = false;
+
+		// delay in milliseconds between autocomplete trigger and suggestions popup
+		std::chrono::milliseconds triggerDelay{200};
 
 		// will be called while autocomplete is configured, is active and needs an update to the suggestions list
 		// callback must populate suggestions in state object
@@ -1164,6 +1168,7 @@ protected:
 	bool deactivateAutoComplete = false;
 	Coordinate autoCompleteLocation;
 	Coordinate autoCompleteStart;
+	std::chrono::system_clock::time_point autoCompleteActivationTime;
 
 	AutoCompleteConfig autoCompleteConfig;
 	AutoCompleteState autoCompleteState;

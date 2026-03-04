@@ -73,31 +73,34 @@ static bool renderSuggestion(const std::string_view& suggestion, const std::stri
 void TextEditor::renderAutoComplete() {
 	// see if we need to activate autocomplete mode
 	if (activateAutoComplete) {
-		// reset activation flag
-		activateAutoComplete = false;
+		// apply popup delay
+		if (std::chrono::system_clock::now() > autoCompleteActivationTime) {
+			// reset activation flag
+			activateAutoComplete = false;
 
-		// capture locations
-		autoCompleteLocation = cursors.getMain().getSelectionEnd();
-		autoCompleteStart = document.findWordStart(autoCompleteLocation, true);
+			// capture locations
+			autoCompleteLocation = cursors.getMain().getSelectionEnd();
+			autoCompleteStart = document.findWordStart(autoCompleteLocation, true);
 
-		// update the autocomplete state
-		updateAutoCompleteState();
+			// update the autocomplete state
+			updateAutoCompleteState();
 
-		// handle cases where autocomplete request is ignored
-		if(autoCompleteState.inComment && !autoCompleteConfig.triggerInComments) {
-			return;
+			// handle cases where autocomplete request is ignored
+			if(autoCompleteState.inComment && !autoCompleteConfig.triggerInComments) {
+				return;
+			}
+
+			if(autoCompleteState.inString && !autoCompleteConfig.triggerInStrings) {
+				return;
+			}
+
+			// get initial list of suggestions from the app
+			refreshAutoCompleteSuggestions();
+
+			// show autocomplete popup window
+			ImGui::OpenPopup("AutoCompleteContextMenu");
+			autoCompleteActive = true;
 		}
-
-		if(autoCompleteState.inString && !autoCompleteConfig.triggerInStrings) {
-			return;
-		}
-
-		// get initial list of suggestions from the app
-		refreshAutoCompleteSuggestions();
-
-		// show autocomplete popup window
-		ImGui::OpenPopup("AutoCompleteContextMenu");
-		autoCompleteActive = true;
 	}
 
 	// only continue if autocomplete is active
@@ -228,6 +231,7 @@ void TextEditor::startAutoCompleteOnTyping() {
 	if (!autoCompleteActive && autoCompleteConfigured && autoCompleteConfig.triggersOnTyping) {
 		// request start of autocomplete mode (can't be done here as the Dear ImGui context might not be right)
 		activateAutoComplete = true;
+		autoCompleteActivationTime = std::chrono::system_clock::now() + autoCompleteConfig.triggerDelay;
 
 		// additional cursors create a mess so clear them
 		cursors.clearAdditional();
@@ -243,6 +247,7 @@ void TextEditor::startAutoCompleteOnShortcut() {
 	if (!autoCompleteActive && autoCompleteConfigured && autoCompleteConfig.triggersOnShortcut) {
 		// request start of autocomplete mode (can't be done here as the Dear ImGui context might not be right)
 		activateAutoComplete = true;
+		autoCompleteActivationTime = std::chrono::system_clock::now() + autoCompleteConfig.triggerDelay;
 
 		// additional cursors create a mess so clear them
 		cursors.clearAdditional();

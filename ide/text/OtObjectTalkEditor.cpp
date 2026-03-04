@@ -24,20 +24,19 @@ OtObjectTalkEditor::OtObjectTalkEditor() {
 	TextEditor::AutoCompleteConfig config;
 
 	config.callback = [&](TextEditor::AutoCompleteState& state) {
-		state.candidates.clear();
-		state.candidates.emplace_back(state.searchTerm);
-		state.candidates.emplace_back("asdasd");
-		state.candidates.emplace_back("dfgdfg");
-		state.candidates.emplace_back("yuiuyr");
-		state.candidates.emplace_back("qweetr");
-		state.candidates.emplace_back("kdfghh");
-		state.candidates.emplace_back("temnbn");
-		state.candidates.emplace_back("uetyyy");
-		state.candidates.emplace_back("uetyyy");
-		state.candidates.emplace_back("uetyyy");
-		state.candidates.emplace_back("uetyyy");
-		state.candidates.emplace_back("uetyyy");
-		state.candidates.emplace_back("uetyyy");
+		state.suggestions.clear();
+		state.suggestions.emplace_back("asdasd");
+		state.suggestions.emplace_back("dfgdfg");
+		state.suggestions.emplace_back("yuiuyr");
+		state.suggestions.emplace_back("uetyyy");
+		state.suggestions.emplace_back("uetyyy");
+		state.suggestions.emplace_back("uetyyy");
+		state.suggestions.emplace_back("uetyyy");
+		state.suggestions.emplace_back("qweetr");
+		state.suggestions.emplace_back("kdfghh");
+		state.suggestions.emplace_back("temnbn");
+		state.suggestions.emplace_back("uetyyy");
+		state.suggestions.emplace_back("uetyyy");
 	};
 
 	editor.SetAutoCompleteConfig(&config);

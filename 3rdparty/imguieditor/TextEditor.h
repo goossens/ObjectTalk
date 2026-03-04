@@ -437,8 +437,9 @@ public:
 		// opaque void* provided by app when autocomplete was setup
 		void* userData;
 
-		// auto complete candidates te be filled by app callback
-		std::vector<std::string> candidates;
+		// auto complete suggestions te be provided by app callback
+		// only the first 10 are rendered in the order provided (so app is responsible for sorting)
+		std::vector<std::string> suggestions;
 	};
 
 	// autocomplete configuration (defaults are like Visual Studio Code)
@@ -454,8 +455,8 @@ public:
 		bool triggerInComments = false;
 		bool triggerInStrings = false;
 
-		// will be called while autocomplete is configured, is active and needs an update to the candidates list
-		// callback must populate candidates in state object
+		// will be called while autocomplete is configured, is active and needs an update to the suggestions list
+		// callback must populate suggestions in state object
 		// callback is called during the rendering process
 		// if it takes too long, application should do search in separate thread and use function below to report results
 		std::function<void(AutoCompleteState&)> callback;
@@ -467,9 +468,9 @@ public:
 	// configure and activate autocomplete (passing nullptr deactivates it)
 	inline void SetAutoCompleteConfig(const AutoCompleteConfig* config) { setAutoCompleteConfig(config); }
 
-	// option to specify autocomplete candidates later (in case a callback takes to long and lookup is handled in a separate thread)
+	// option to specify autocomplete suggestions later (in case a callback takes to long and lookup is handled in a separate thread)
 	// this call is not threadsafe and must be called from the rendering thread (you must synchronize with your lookup thread yourself)
-	inline void SetAutoCompleteCandidates(const std::vector<std::string>& candidates) { autoCompleteState.candidates = candidates; }
+	inline void SetAutoCompleteSuggestions(const std::vector<std::string>& suggestions) { autoCompleteState.suggestions = suggestions; }
 
 	// support functions for unicode codepoints
 	class CodePoint {
@@ -687,6 +688,7 @@ protected:
 		inline size_t getMainIndex() const { return main; }
 		inline Cursor& getCurrent() { return at(current); }
 		inline size_t getCurrentIndex() const { return current; }
+		inline iterator getMainAsIterator() { return begin() + main; }
 		inline iterator getCurrentAsIterator() { return begin() + current; }
 
 		// update cursors
@@ -1031,11 +1033,12 @@ protected:
 
 	// autocomplete support
 	void setAutoCompleteConfig(const AutoCompleteConfig* config);
-	void startAutoCompleteShortcut();
+	void startAutoCompleteOnTyping();
+	void startAutoCompleteOnShortcut();
 	void cancelAutoComplete();
-	void useAutoComplete();
+	void applyAutoComplete();
 	void updateAutoCompleteState();
-	void refreshAutoCompleteCandidates();
+	void refreshAutoCompleteSuggestions();
 
 	// marker support
 	void addMarker(int line, ImU32 lineNumberColor, ImU32 textColor, const std::string_view& lineNumberTooltip, const std::string_view& textTooltip);

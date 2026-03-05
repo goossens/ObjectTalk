@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include "imgui_internal.h"
+
 #include "TextEditor.h"
 
 
@@ -79,7 +81,6 @@ void TextEditor::renderAutoComplete() {
 			activateAutoComplete = false;
 
 			// capture locations
-			autoCompleteLocation = cursors.getMain().getSelectionEnd();
 			autoCompleteStart = document.findWordStart(autoCompleteLocation, true);
 
 			// update the autocomplete state
@@ -155,6 +156,10 @@ void TextEditor::renderAutoComplete() {
 		ImGuiWindowFlags_NoNav;
 
 	if (ImGui::BeginPopup("AutoCompleteContextMenu", flags)) {
+		if (ImGui::IsWindowAppearing()) {
+	    	ImGui::BringWindowToDisplayFront(ImGui::GetCurrentWindow());
+		}
+
 		// deactivate popup (if requested)
 		if (deactivateAutoComplete) {
 			ImGui::CloseCurrentPopup();
@@ -228,9 +233,10 @@ void TextEditor::setAutoCompleteConfig(const AutoCompleteConfig* config) {
 //
 
 void TextEditor::startAutoCompleteOnTyping() {
-	if (!autoCompleteActive && autoCompleteConfigured && autoCompleteConfig.triggersOnTyping) {
+	if (!autoCompleteActive && autoCompleteConfigured && autoCompleteConfig.triggersOnTyping && !activateAutoComplete) {
 		// request start of autocomplete mode (can't be done here as the Dear ImGui context might not be right)
 		activateAutoComplete = true;
+		autoCompleteLocation = cursors.getMain().getSelectionEnd();
 		autoCompleteActivationTime = std::chrono::system_clock::now() + autoCompleteConfig.triggerDelay;
 
 		// additional cursors create a mess so clear them
@@ -244,9 +250,10 @@ void TextEditor::startAutoCompleteOnTyping() {
 //
 
 void TextEditor::startAutoCompleteOnShortcut() {
-	if (!autoCompleteActive && autoCompleteConfigured && autoCompleteConfig.triggersOnShortcut) {
+	if (!autoCompleteActive && autoCompleteConfigured && autoCompleteConfig.triggersOnShortcut && !activateAutoComplete) {
 		// request start of autocomplete mode (can't be done here as the Dear ImGui context might not be right)
 		activateAutoComplete = true;
+		autoCompleteLocation = cursors.getMain().getSelectionEnd();
 		autoCompleteActivationTime = std::chrono::system_clock::now() + autoCompleteConfig.triggerDelay;
 
 		// additional cursors create a mess so clear them

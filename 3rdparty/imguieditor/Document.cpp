@@ -660,6 +660,41 @@ void TextEditor::Document::iterateUserData(std::function<void(int line, void* da
 
 
 //
+//	TextEditor::Document::iterateIdentifiers
+//
+
+static inline bool isIdentifier(TextEditor::Color color) {
+	return
+		color == TextEditor::Color::identifier ||
+		color == TextEditor::Color::knownIdentifier;
+}
+
+void TextEditor::Document::iterateIdentifiers(std::function<void(const std::string&)> callback) {
+	for (size_t i = 0; i < size(); i++) {
+		auto p = at(i).begin();
+		auto end = at(i).end();
+		char utf8[4];
+
+		while (p < end) {
+			if (isIdentifier(p->color)) {
+				std::string identifier;
+
+				while (p < end && isIdentifier(p->color)) {
+					identifier.append(std::string_view(utf8, CodePoint::write(utf8, p->codepoint)));
+					p++;
+				}
+
+				callback(identifier);
+
+			} else {
+				p++;
+			}
+		}
+	}
+}
+
+
+//
 //	TextEditor::Document::isWholeWord
 //
 

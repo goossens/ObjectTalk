@@ -18,28 +18,54 @@
 //
 
 OtObjectTalkEditor::OtObjectTalkEditor() {
-	editor.SetLanguage(OtObjectTalkLanguage::getDefinition());
-	diff.SetLanguage(OtObjectTalkLanguage::getDefinition());
+	// configure language
+	auto language = OtObjectTalkLanguage::getDefinition();
+	editor.SetLanguage(language);
+	diff.SetLanguage(language);
 
+	// activate autocomplete
 	TextEditor::AutoCompleteConfig config;
 
-	config.callback = [&](TextEditor::AutoCompleteState& state) {
-		state.suggestions.clear();
-		state.suggestions.emplace_back("asdasd");
-		state.suggestions.emplace_back("dfgdfg");
-		state.suggestions.emplace_back("yuiuyr");
-		state.suggestions.emplace_back("uetyyy");
-		state.suggestions.emplace_back("uetyyy");
-		state.suggestions.emplace_back("uetyyy");
-		state.suggestions.emplace_back("uetyyy");
-		state.suggestions.emplace_back("qweetr");
-		state.suggestions.emplace_back("kdfghh");
-		state.suggestions.emplace_back("temnbn");
-		state.suggestions.emplace_back("uetyyy");
-		state.suggestions.emplace_back("uetyyy");
+	config.callback = [this](TextEditor::AutoCompleteState& state) {
+		trie.findSuggestions(state.suggestions, state.searchTerm);
 	};
 
 	editor.SetAutoCompleteConfig(&config);
+}
+
+
+//
+//	OtObjectTalkEditor::clear
+//
+
+void OtObjectTalkEditor::clear() {
+	// reset editor and autocomplete
+	OtTextEditor::clear();
+	trie.clear();
+}
+
+
+//
+//	OtObjectTalkEditor::load
+//
+
+void OtObjectTalkEditor::load() {
+	// load the document
+	OtTextEditor::load();
+
+	// rebuild autocomplete word list
+	trie.clear();
+
+	// add language words
+	auto language = editor.GetLanguage();
+	for (auto& word : language->keywords) { trie.insert(word); }
+	for (auto& word : language->declarations) { trie.insert(word); }
+	for (auto& word : language->identifiers) { trie.insert(word); }
+
+	// add all words in document
+	editor.IterateIdentifiers([this](const std::string& identifier) {
+		trie.insert(identifier);
+	});
 }
 
 

@@ -423,11 +423,13 @@ public:
 	inline bool HasLanguage() const { return language != nullptr; }
 	inline std::string GetLanguageName() const { return language == nullptr ? "None" : language->name; }
 
+	// iterate through identifiers detected by the colorizer (based on current language)
+	inline void IterateIdentifiers(std::function<void(const std::string& identifier)> callback) { document.iterateIdentifiers(callback); }
+
 	// autocomplete state (acts as API between editor and outer application)
-	// all strings are UTF-8 encoded
 	class AutoCompleteState {
 	public:
-		// current context
+		// current context (strings are UTF-8 encoded)
 		std::string searchTerm;
 		bool inComment;
 		bool inString;
@@ -435,7 +437,7 @@ public:
 		// currently selected language (could be nullptr if no language is selected)
 		const Language* language;
 
-		// opaque void* provided by app when autocomplete was setup
+		// optional opaque void* provided by app when autocomplete was setup
 		void* userData;
 
 		// auto complete suggestions te be provided by app callback
@@ -461,8 +463,9 @@ public:
 
 		// will be called while autocomplete is configured, is active and needs an update to the suggestions list
 		// callback must populate suggestions in state object
-		// callback is called during the rendering process
-		// if it takes too long, application should do search in separate thread and use function below to report results
+		// callback is called during the rendering loop (so don't take too long)
+		// if it takes too long, application should do search in separate thread
+		// see SetAutoCompleteSuggestions below
 		std::function<void(AutoCompleteState&)> callback;
 
 		// opaque void* that must be managed externally but passed to callback
@@ -475,6 +478,56 @@ public:
 	// option to specify autocomplete suggestions later (in case a callback takes to long and lookup is handled in a separate thread)
 	// this call is not threadsafe and must be called from the rendering thread (you must synchronize with your lookup thread yourself)
 	inline void SetAutoCompleteSuggestions(const std::vector<std::string>& suggestions) { autoCompleteState.suggestions = suggestions; }
+
+	// utility class to support autocomplete
+	// this is not used by default but can be used in autocomplete callbacks (see example app)
+	class Trie {
+	public:
+		// constructor
+		Trie() { clear(); }
+
+		// clear word tree
+		inline void clear() { root = std::make_unique<Node>(); }
+
+		// insert word (UTF-8 encoded) into tree
+		void insert(const std::string_view& word);
+
+		// populate list of suggestions based on provided search term (which is UTF-8 encoded)
+		// maxSkippedLetters is a the largest number of letters that can be skipped to find the next match
+		// this allows for missing letters (out of order letters are not taken into account)
+		void findSuggestions(std::vector<std::string>& suggestions, const std::string_view& searchTerm, size_t maxSkippedLetters=2);
+
+	private:
+		// definition of single node in the word graph
+		struct Node {
+			std::unordered_map<ImWchar, std::unique_ptr<Node>> children;
+			std::string word;
+		};
+
+		// the root node
+		std::unique_ptr<Node> root;
+
+		// maximum number of letters that can be skipped skip in matching algorithm
+		size_t maxSkip;
+
+		// search term as codepoint vector
+		std::vector<ImWchar> searchCodepoints;
+
+		// possible autocomplete candidates
+		struct Candidate {
+			Candidate(const Node* n, size_t c) : node(n), cost(c) {}
+			bool operator<(const Candidate& rhs) const { return cost < rhs.cost; }
+			bool operator==(const Candidate& rhs) const { return node == rhs.node; }
+			const Node* node;
+			size_t cost;
+		};
+
+		std::vector<Candidate> candidates;
+
+		// utility functions
+		void evaluateNode(const Node* node, size_t index, size_t cost, size_t skip);
+		void addCandidates(const Node* node, size_t cost);
+	};
 
 	// support functions for unicode codepoints
 	class CodePoint {
@@ -819,6 +872,9 @@ protected:
 		void setUserData(int line, void* data);
 		void* getUserData(int line) const;
 		void iterateUserData(std::function<void(int line, void* data)> callback) const;
+
+		// iterate through document to find identifiers
+		void iterateIdentifiers(std::function<void(const std::string& identifier)> callback);
 
 		// utility functions
 		bool isWholeWord(Coordinate start, Coordinate end) const;

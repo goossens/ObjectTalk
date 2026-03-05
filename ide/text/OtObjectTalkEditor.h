@@ -32,4 +32,12 @@ public:
 	// update error markers
 	void highlightError(size_t line, const std::string& error);
 	void clearError();
+
+private:
+	// file access functions
+	void clear() override;
+	void load() override;
+
+	// autocomplete support
+	TextEditor::Trie trie;
 };

@@ -40,9 +40,13 @@ void TextEditor::setText(const std::string_view &text) {
 	document.setText(text);
 	transactions.reset();
 	bracketeer.reset();
+	colorizer.updateEntireDocument(document, language);
 	cursors.clearAll();
 	clearMarkers();
 	makeCursorVisible();
+
+	showMatchingBracketsChanged = false;
+	languageChanged = false;
 }
 
 
@@ -736,7 +740,7 @@ void TextEditor::handleKeyboardInputs() {
 		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_G)) { findNext(); }
 
 		// autocomplete support
-		else if (isRealCtrl && ImGui::IsKeyPressed(ImGuiKey_Space)) { startAutoCompleteOnShortcut(); }
+		else if (!readOnly && isRealCtrl && ImGui::IsKeyPressed(ImGuiKey_Space)) { startAutoCompleteOnShortcut(); }
 
 		// change insert mode
 		else if (isNoModifiers && ImGui::IsKeyPressed(ImGuiKey_Insert)) { overwrite = !overwrite; }

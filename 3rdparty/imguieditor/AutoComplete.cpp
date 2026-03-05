@@ -250,7 +250,7 @@ void TextEditor::startAutoCompleteOnTyping() {
 //
 
 void TextEditor::startAutoCompleteOnShortcut() {
-	if (!autoCompleteActive && autoCompleteConfigured && autoCompleteConfig.triggersOnShortcut && !activateAutoComplete) {
+	if (!autoCompleteActive && !activateAutoComplete && autoCompleteConfigured && autoCompleteConfig.triggersOnShortcut) {
 		// request start of autocomplete mode (can't be done here as the Dear ImGui context might not be right)
 		activateAutoComplete = true;
 		autoCompleteLocation = cursors.getMain().getSelectionEnd();

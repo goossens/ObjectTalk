@@ -662,11 +662,9 @@ void TextEditor::handleKeyboardInputs() {
 		auto super = ImGui::IsKeyDown(ImGuiMod_Super);
 		auto isCtrlShift = !ctrl && shift && !alt && super;
 		auto isOptionalAltShift = !ctrl;
-		auto isRealCtrl = super;
 	#else
 		auto isShiftAlt = !ctrl && shift && alt;
 		auto isOptionalCtrlShift = !alt;
-		auto isRealCtrl = ctrl;
 	#endif
 
 		// ignore specific keys when autocomplete is active, they will be handled later
@@ -740,7 +738,7 @@ void TextEditor::handleKeyboardInputs() {
 		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_G)) { findNext(); }
 
 		// autocomplete support
-		else if (!readOnly && isRealCtrl && ImGui::IsKeyPressed(ImGuiKey_Space)) { startAutoCompleteOnShortcut(); }
+		else if (!readOnly && ImGui::IsKeyChordPressed(autoCompleteConfig.triggerShortcut)) { startAutoCompleteOnShortcut(); }
 
 		// change insert mode
 		else if (isNoModifiers && ImGui::IsKeyPressed(ImGuiKey_Insert)) { overwrite = !overwrite; }

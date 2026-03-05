@@ -451,12 +451,19 @@ public:
 		// specifies whether typing by the user triggers autocomplete
 		bool triggersOnTyping = true;
 
-		// specifies whether the ctrl-space shortcut activates autocomplete (shortcut is the same on all platforms even MacOS)
+		// specifies whether shortcut triggers autocomplete (shortcut is the same on all platforms even MacOS)
 		bool triggersOnShortcut = true;
 
 		// specifies whether typing (or shortcut) in comments or strings triggers autocomplete
 		bool triggerInComments = false;
 		bool triggerInStrings = false;
+
+		// manual trigger key sequence
+#if __APPLE__
+		ImGuiKeyChord triggerShortcut = ImGuiMod_Super | ImGuiKey_Space;
+#else
+		ImGuiKeyChord triggerShortcut = ImGuiMod_Ctrl || ImGuiKey_Space;
+#endif
 
 		// delay in milliseconds between autocomplete trigger and suggestions popup
 		std::chrono::milliseconds triggerDelay{200};

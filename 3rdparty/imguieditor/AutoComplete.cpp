@@ -288,11 +288,10 @@ void TextEditor::cancelAutoComplete() {
 
 void TextEditor::applyAutoComplete() {
 	// remove word and replace it with chosen suggestion
-	auto transaction = startTransaction();
-	deleteText(transaction, autoCompleteStart, document.findWordEnd(autoCompleteStart, true));
-	auto newEnd = insertText(transaction, autoCompleteStart, autoCompleteState.suggestions[autoCompleteSelection]);
-	cursors.getMain().update(newEnd, newEnd);
-	endTransaction(transaction);
+	replaceSectionText(
+		autoCompleteStart,
+		document.findWordEnd(autoCompleteStart, true),
+		autoCompleteState.suggestions[autoCompleteSelection]);
 }
 
 

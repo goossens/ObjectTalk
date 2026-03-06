@@ -95,6 +95,14 @@ public:
 			document.normalizeCoordinate(Coordinate(endLine, endColumn)));
 	}
 
+	inline void ReplaceSectionText(int startLine, int startColumn, int endLine, int endColumn, const std::string_view& text) {
+		return replaceSectionText(
+			document.normalizeCoordinate(Coordinate(startLine, startColumn)),
+			document.normalizeCoordinate(Coordinate(endLine, endColumn)),
+			text
+		);
+	}
+
 	inline void ClearText() { SetText(""); }
 
 	inline bool IsEmpty() const { return document.isEmpty(); }
@@ -472,7 +480,7 @@ public:
 #if __APPLE__
 		ImGuiKeyChord triggerShortcut = ImGuiMod_Super | ImGuiKey_Space;
 #else
-		ImGuiKeyChord triggerShortcut = ImGuiMod_Ctrl || ImGuiKey_Space;
+		ImGuiKeyChord triggerShortcut = ImGuiMod_Ctrl | ImGuiKey_Space;
 #endif
 
 		// see if single suggestions are automatically inserted
@@ -481,10 +489,11 @@ public:
 		// delay in milliseconds between autocomplete trigger and suggestions popup
 		std::chrono::milliseconds triggerDelay{200};
 
-		// will be called while autocomplete is configured, is active and needs an update to the suggestions list
+		// called when autocomplete is configured, active and editor needs an updated suggestions list
 		// callback must populate suggestions in state object
 		// callback is called during the rendering loop (so don't take too long)
-		// if it takes too long, application should do search in separate thread
+
+		// if it takes too long, application should do search in separate thread and use API to report results
 		// see SetAutoCompleteSuggestions below
 		std::function<void(AutoCompleteState&)> callback;
 
@@ -1102,6 +1111,7 @@ protected:
 
 	void replaceTextInCurrentCursor(const std::string_view& text);
 	void replaceTextInAllCursors(const std::string_view& text);
+	void replaceSectionText(const Coordinate& start, const Coordinate& end, const std::string_view& text);
 
 	void openFindReplace();
 	void closeFindReplace();

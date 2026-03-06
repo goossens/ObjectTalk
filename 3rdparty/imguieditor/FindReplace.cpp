@@ -335,6 +335,20 @@ void TextEditor::replaceTextInAllCursors(const std::string_view& text) {
 
 
 //
+//	TextEditor::replaceSectionText
+//
+
+void TextEditor::replaceSectionText(const Coordinate& start, const Coordinate& end, const std::string_view& text) {
+	auto transaction = startTransaction();
+	deleteText(transaction, start, end);
+	auto newEnd = insertText(transaction, start, text);
+	cursors.clearAdditional();
+	cursors.getMain().update(newEnd, newEnd);
+	endTransaction(transaction);
+}
+
+
+//
 //	TextEditor::openFindReplace
 //
 

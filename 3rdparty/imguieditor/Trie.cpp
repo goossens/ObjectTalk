@@ -75,8 +75,8 @@ void TextEditor::Trie::findSuggestions(std::vector<std::string>& suggestions, co
 			// populate suggestions
 			auto size = std::min(static_cast<size_t>(10), candidates.size());
 
-			for (size_t i = 0; i < size; i++) {
-				suggestions.emplace_back(candidates[i].node->word);
+			for (size_t j = 0; j < size; j++) {
+				suggestions.emplace_back(candidates[j].node->word);
 			}
 		}
 	}

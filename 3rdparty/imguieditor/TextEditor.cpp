@@ -973,9 +973,11 @@ void TextEditor::handleMouseInteractions() {
 					if (extendCursor) {
 						auto& cursor = cursors.getCurrent();
 						cursor.update(cursor.getInteractiveEnd() < cursor.getInteractiveStart() ? start : end);
+						cancelAutoComplete();
 
 					} else if (addCursor) {
 						cursors.addCursor(start, end);
+						cancelAutoComplete();
 
 					} else {
 						cursors.setCursor(start, end);
@@ -987,9 +989,11 @@ void TextEditor::handleMouseInteractions() {
 					// handle mouse clicks in text
 					if (extendCursor) {
 						cursors.updateCurrentCursor(cursorCoordinate);
+						cancelAutoComplete();
 
 					} else if (addCursor) {
 						cursors.addCursor(cursorCoordinate);
+						cancelAutoComplete();
 
 					} else {
 						cursors.setCursor(cursorCoordinate);

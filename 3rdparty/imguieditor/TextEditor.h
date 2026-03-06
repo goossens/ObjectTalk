@@ -460,14 +460,15 @@ public:
 		// specifies whether typing by the user triggers autocomplete
 		bool triggersOnTyping = true;
 
-		// specifies whether shortcut triggers autocomplete
+		// specifies whether the specified shortcut triggers autocomplete
 		bool triggersOnShortcut = true;
 
 		// specifies whether typing (or shortcut) in comments or strings triggers autocomplete
 		bool triggerInComments = false;
 		bool triggerInStrings = false;
 
-		// manual trigger key sequence
+		// manual trigger key sequence (default is Ctrl+space on all platforms, even MacOS)
+		// remember Dear ImGui reverses Ctrl and Command on MacOS
 #if __APPLE__
 		ImGuiKeyChord triggerShortcut = ImGuiMod_Super | ImGuiKey_Space;
 #else
@@ -1245,7 +1246,6 @@ protected:
 	Coordinate autoCompleteLocation;
 	Coordinate autoCompleteStart;
 	std::chrono::system_clock::time_point autoCompleteActivationTime;
-
 	AutoCompleteConfig autoCompleteConfig;
 	AutoCompleteState autoCompleteState;
 	size_t autoCompleteSelection = 0;

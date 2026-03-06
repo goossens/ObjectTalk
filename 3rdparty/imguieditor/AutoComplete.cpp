@@ -258,13 +258,16 @@ void TextEditor::startAutoCompleteOnShortcut() {
 //
 
 void TextEditor::startAutoComplete() {
-	// request start of autocomplete mode (can't be done here as the Dear ImGui context might not be right)
-	activateAutoComplete = true;
-	autoCompleteLocation = cursors.getMain().getSelectionEnd();
-	autoCompleteActivationTime = std::chrono::system_clock::now() + autoCompleteConfig.triggerDelay;
+	// don't activate if we have multiple cursors active
+	if (!cursors.hasMultiple()) {
+		// request start of autocomplete mode (can't be done here as the Dear ImGui context might not be right)
+		activateAutoComplete = true;
+		autoCompleteLocation = cursors.getMain().getSelectionEnd();
+		autoCompleteActivationTime = std::chrono::system_clock::now() + autoCompleteConfig.triggerDelay;
 
-	// ensure cursor is visible so suggestions can be seen
-	makeCursorVisible();
+		// ensure cursor is visible so suggestions can be seen
+		makeCursorVisible();
+	}
 }
 
 
@@ -337,9 +340,6 @@ void TextEditor::updateAutoCompleteState() {
 //
 
 void TextEditor::refreshAutoCompleteSuggestions() {
-	// remember previous selection
-	std::string selected = autoCompleteState.suggestions.size() ? autoCompleteState.suggestions[autoCompleteSelection] : "";
-
 	// populate suggestion list through callback (or clear it if there is none)
 	if (autoCompleteConfig.callback) {
 		autoCompleteConfig.callback(autoCompleteState);
@@ -348,17 +348,5 @@ void TextEditor::refreshAutoCompleteSuggestions() {
 		autoCompleteState.suggestions.clear();
 	}
 
-	// restore selection (if possible)
-	if (selected.size()) {
-		auto size = std::max(static_cast<size_t>(10), autoCompleteState.suggestions.size());
-		autoCompleteSelection = 0;
-		bool done = false;
-
-		for (size_t i = 0; !done && i < size; i++) {
-			if (autoCompleteState.suggestions[i] == selected) {
-				autoCompleteSelection = i;
-				done = true;
-			}
-		}
-	}
+	autoCompleteSelection = 0;
 }

@@ -181,6 +181,9 @@ void TextEditor::renderAutoComplete() {
 				// use selected suggestion if user hit tab of return
 				} else if (ImGui::IsKeyPressed(ImGuiKey_Tab) || ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter)) {
 					applyAutoComplete();
+
+				} else if (autoCompleteConfig.autoInsertSingleSuggestions && autoCompleteState.suggestions.size() == 1) {
+					applyAutoComplete();
 				}
 
 				// render top suggestions
@@ -234,13 +237,7 @@ void TextEditor::setAutoCompleteConfig(const AutoCompleteConfig* config) {
 
 void TextEditor::startAutoCompleteOnTyping() {
 	if (!autoCompleteActive && autoCompleteConfigured && autoCompleteConfig.triggersOnTyping && !activateAutoComplete) {
-		// request start of autocomplete mode (can't be done here as the Dear ImGui context might not be right)
-		activateAutoComplete = true;
-		autoCompleteLocation = cursors.getMain().getSelectionEnd();
-		autoCompleteActivationTime = std::chrono::system_clock::now() + autoCompleteConfig.triggerDelay;
-
-		// additional cursors create a mess so clear them
-		cursors.clearAdditional();
+		startAutoComplete();
 	}
 }
 
@@ -251,17 +248,23 @@ void TextEditor::startAutoCompleteOnTyping() {
 
 void TextEditor::startAutoCompleteOnShortcut() {
 	if (!autoCompleteActive && !activateAutoComplete && autoCompleteConfigured && autoCompleteConfig.triggersOnShortcut) {
-		// request start of autocomplete mode (can't be done here as the Dear ImGui context might not be right)
-		activateAutoComplete = true;
-		autoCompleteLocation = cursors.getMain().getSelectionEnd();
-		autoCompleteActivationTime = std::chrono::system_clock::now() + autoCompleteConfig.triggerDelay;
-
-		// additional cursors create a mess so clear them
-		cursors.clearAdditional();
-
-		// ensure cursor is visible so suggestions can be seen
-		makeCursorVisible();
+		startAutoComplete();
 	}
+}
+
+
+//
+//	TextEditor::startAutoComplete
+//
+
+void TextEditor::startAutoComplete() {
+	// request start of autocomplete mode (can't be done here as the Dear ImGui context might not be right)
+	activateAutoComplete = true;
+	autoCompleteLocation = cursors.getMain().getSelectionEnd();
+	autoCompleteActivationTime = std::chrono::system_clock::now() + autoCompleteConfig.triggerDelay;
+
+	// ensure cursor is visible so suggestions can be seen
+	makeCursorVisible();
 }
 
 
@@ -298,6 +301,9 @@ void TextEditor::updateAutoCompleteState() {
 	autoCompleteState.searchTerm = document.getSectionText(autoCompleteStart, autoCompleteLocation);
 
 	if (autoCompleteLocation.column == 0) {
+		autoCompleteState.inIdentifier = false;
+		autoCompleteState.inNumber = false;
+
 		auto state = document[autoCompleteLocation.line].state;
 		autoCompleteState.inComment = state == State::inComment;
 
@@ -309,9 +315,17 @@ void TextEditor::updateAutoCompleteState() {
 
 	} else {
 		auto color = document[autoCompleteLocation.line][autoCompleteLocation.column - 1].color;
+		autoCompleteState.inIdentifier = color == Color::identifier || color == Color::knownIdentifier;
+		autoCompleteState.inNumber = color == Color::number;
 		autoCompleteState.inComment = color == Color::comment;
 		autoCompleteState.inString = color == Color::string;
 	}
+
+	autoCompleteState.line = autoCompleteLocation.line;
+	autoCompleteState.searchTermStartColumn = autoCompleteStart.column;
+	autoCompleteState.searchTermStartIndex = document.getIndex(autoCompleteStart);
+	autoCompleteState.searchTermEndColumn = autoCompleteLocation.column;
+	autoCompleteState.searchTermEndIndex= document.getIndex(autoCompleteLocation);
 
 	autoCompleteState.language = language;
 	autoCompleteState.userData = autoCompleteConfig.userData;
@@ -323,6 +337,10 @@ void TextEditor::updateAutoCompleteState() {
 //
 
 void TextEditor::refreshAutoCompleteSuggestions() {
+	// remember previous selection
+	std::string selected = autoCompleteState.suggestions.size() ? autoCompleteState.suggestions[autoCompleteSelection] : "";
+
+	// populate suggestion list through callback (or clear it if there is none)
 	if (autoCompleteConfig.callback) {
 		autoCompleteConfig.callback(autoCompleteState);
 
@@ -330,5 +348,17 @@ void TextEditor::refreshAutoCompleteSuggestions() {
 		autoCompleteState.suggestions.clear();
 	}
 
-	autoCompleteSelection = 0;
+	// restore selection (if possible)
+	if (selected.size()) {
+		auto size = std::max(static_cast<size_t>(10), autoCompleteState.suggestions.size());
+		autoCompleteSelection = 0;
+		bool done = false;
+
+		for (size_t i = 0; !done && i < size; i++) {
+			if (autoCompleteState.suggestions[i] == selected) {
+				autoCompleteSelection = i;
+				done = true;
+			}
+		}
+	}
 }

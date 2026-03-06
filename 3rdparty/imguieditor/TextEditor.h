@@ -429,8 +429,17 @@ public:
 	// autocomplete state (acts as API between editor and outer application)
 	class AutoCompleteState {
 	public:
-		// current context (strings are UTF-8 encoded)
+		// current context (strings = UTF-8, columns = Nth visible column and indices = Nth codepoint)
+		// to understand the difference between a column and an index, think like a tab :-), see Coordinate class
 		std::string searchTerm;
+		size_t line;
+		size_t searchTermStartColumn;
+		size_t searchTermStartIndex;
+		size_t searchTermEndColumn;
+		size_t searchTermEndIndex;
+
+		bool inIdentifier;
+		bool inNumber;
 		bool inComment;
 		bool inString;
 
@@ -451,7 +460,7 @@ public:
 		// specifies whether typing by the user triggers autocomplete
 		bool triggersOnTyping = true;
 
-		// specifies whether shortcut triggers autocomplete (shortcut is the same on all platforms even MacOS)
+		// specifies whether shortcut triggers autocomplete
 		bool triggersOnShortcut = true;
 
 		// specifies whether typing (or shortcut) in comments or strings triggers autocomplete
@@ -464,6 +473,9 @@ public:
 #else
 		ImGuiKeyChord triggerShortcut = ImGuiMod_Ctrl || ImGuiKey_Space;
 #endif
+
+		// see if single suggestions are automatically inserted
+		bool autoInsertSingleSuggestions = false;
 
 		// delay in milliseconds between autocomplete trigger and suggestions popup
 		std::chrono::milliseconds triggerDelay{200};
@@ -1102,6 +1114,7 @@ protected:
 	void setAutoCompleteConfig(const AutoCompleteConfig* config);
 	void startAutoCompleteOnTyping();
 	void startAutoCompleteOnShortcut();
+	void startAutoComplete();
 	void cancelAutoComplete();
 	void applyAutoComplete();
 	void updateAutoCompleteState();
@@ -1235,8 +1248,7 @@ protected:
 
 	AutoCompleteConfig autoCompleteConfig;
 	AutoCompleteState autoCompleteState;
-	size_t autoCompleteSelection;
-
+	size_t autoCompleteSelection = 0;
 
 	// interaction context
 	float lastClickTime = -1.0f;

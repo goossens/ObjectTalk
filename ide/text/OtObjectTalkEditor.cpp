@@ -31,6 +31,11 @@ OtObjectTalkEditor::OtObjectTalkEditor() {
 	};
 
 	editor.SetAutoCompleteConfig(&config);
+
+	// activate change tracking
+	editor.SetChangeCallback([this]() {
+		buildSuggestionList();
+	}, 3000);
 }
 
 
@@ -41,7 +46,7 @@ OtObjectTalkEditor::OtObjectTalkEditor() {
 void OtObjectTalkEditor::clear() {
 	// reset editor and autocomplete
 	OtTextEditor::clear();
-	trie.clear();
+	buildSuggestionList();
 }
 
 
@@ -52,8 +57,16 @@ void OtObjectTalkEditor::clear() {
 void OtObjectTalkEditor::load() {
 	// load the document
 	OtTextEditor::load();
+	buildSuggestionList();
+}
 
-	// rebuild autocomplete word list
+
+//
+//	OtObjectTalkEditor::buildSuggestionList
+//
+
+void OtObjectTalkEditor::buildSuggestionList() {
+	// rebuild autocomplete suggestion list
 	trie.clear();
 
 	// add language words

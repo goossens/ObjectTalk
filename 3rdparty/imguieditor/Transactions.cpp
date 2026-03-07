@@ -19,6 +19,7 @@
 void TextEditor::Transactions::reset() {
 	clear();
 	undoIndex = 0;
+	version = 0;
 }
 
 
@@ -30,6 +31,7 @@ void TextEditor::Transactions::add(std::shared_ptr<Transaction> transaction) {
 	resize(undoIndex);
 	push_back(transaction);
 	undoIndex++;
+	version++;
 }
 
 
@@ -50,6 +52,7 @@ void TextEditor::Transactions::undo(Document& document, Cursors& cursors) {
 	}
 
 	cursors = transaction->getBeforeState();
+	version++;
 }
 
 
@@ -70,4 +73,5 @@ void TextEditor::Transactions::redo(Document& document, Cursors& cursors) {
 	}
 
 	cursors = transaction->getAfterState();
+	version++;
 }

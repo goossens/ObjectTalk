@@ -205,10 +205,18 @@ public:
 	inline void ClearMarkers() { clearMarkers(); }
 	inline bool HasMarkers() const { return markers.size() != 0; }
 
+	// change callback (called when changes are made (including undo/redo))
+	// passed nullptr deactivates the callback
+	// the delay parameter specifies a time in miliseconds that the editor will wait for before calling
+	// which helps in case you don't need to track every keystroke
+	inline void SetChangeCallback(std::function<void()> callback, int delay=0) {
+		changeCallback = callback;
+		changeCallbackDelay = std::chrono::milliseconds{delay};
+	}
+
 	// line-based callbacks (line numbers are zero-based)
-	// insertor callbacks are called when lines are added/inserted
-	// deletor callbacks are called when lines are deleted
-	// these callbacks work with user data (see below)
+	// insertor callback is called when for each line inserted and the result is used as line specific user data
+	// deletor callback is called for each line deleted (line specific user data is passed to callback)
 	// setting either callback to nullptr will deactivate that callback
 	inline void SetInsertor(std::function<void*(int line)> callback) { document.setInsertor(callback); }
 	inline void SetDeletor(std::function<void(int line, void* data)> callback) { document.setDeletor(callback); }
@@ -218,7 +226,7 @@ public:
 	// user data is an opaque void* that must be managed externally
 	// user data is also passed to the decorator callback (see below)
 	// user data is attached to a line and additions/insertions/deletions don't effect this
-	// if a line with user data is removed, it won't come back on a redo (yet)
+	// if a line with user data is removed, it won't come back on a redo
 	// the deletor callback (if specified) is called when a line is deleted (see above)
 	inline void SetUserData(int line, void* data) { document.setUserData(line, data); }
 	inline void* GetUserData(int line) const { return document.getUserData(line); }
@@ -330,7 +338,7 @@ public:
 		Iterator() = default;
 		Iterator(Glyph* g) : glyph(g) {}
 
-		using iterator_category = std::bidirectional_iterator_tag;
+		using iterator_category = std::forward_iterator_tag;
 		using difference_type = std::ptrdiff_t;
 		using value_type = ImWchar;
 		using pointer = ImWchar*;
@@ -340,8 +348,6 @@ public:
 		inline pointer operator->() const { return &(glyph->codepoint); }
 		inline Iterator& operator++() { glyph++; return *this; }
 		inline Iterator operator++(int) { Iterator tmp = *this; glyph++; return tmp; }
-		inline Iterator& operator--() { glyph--; return *this; }
-		inline Iterator operator--(int) { Iterator tmp = *this; glyph--; return tmp; }
 		inline size_t operator-(const Iterator& a) { return glyph - a.glyph; }
 		inline friend bool operator==(const Iterator& a, const Iterator& b) { return a.glyph == b.glyph; };
 		inline friend bool operator!=(const Iterator& a, const Iterator& b) { return !(a.glyph == b.glyph); };
@@ -993,9 +999,11 @@ protected:
 		inline size_t getUndoIndex() const { return undoIndex; }
 		inline bool canUndo() const { return undoIndex > 0; }
 		inline bool canRedo() const { return undoIndex < size(); }
+		inline size_t getVersion() const { return version; }
 
 	private:
 		size_t undoIndex = 0;
+		size_t version = 0;
 	} transactions;
 
 	// text colorizer (handles language tokenizing)
@@ -1269,6 +1277,10 @@ protected:
 	bool scrolling = false;
 	ImVec2 scrollStart;
 	bool showPanScrollIndicator = true;
+	std::function<void()> changeCallback;
+	std::chrono::milliseconds changeCallbackDelay;
+	std::chrono::system_clock::time_point changeReportTime;
+	bool changeDetected = false;
 
 	// color palette support
 	void updatePalette();

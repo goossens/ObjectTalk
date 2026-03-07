@@ -55,6 +55,9 @@ void TextEditor::setText(const std::string_view &text) {
 //
 
 void TextEditor::render(const char* title, const ImVec2& size, bool border) {
+	// get current transaction version
+	auto transActionVersion = transactions.getVersion();
+
 	// update color palette (if required)
 	if (paletteAlpha != ImGui::GetStyle().Alpha) {
 		updatePalette();
@@ -235,6 +238,20 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 
 	// render autocomplete popup
 	renderAutoComplete();
+
+	// handle change tracking if there is a change callback in place
+	if (changeCallback) {
+		if (changeDetected) {
+			if (std::chrono::system_clock::now() > changeReportTime) {
+				changeCallback();
+				changeDetected = false;
+			}
+
+		} else if (transactions.getVersion() != transActionVersion) {
+			changeDetected = true;
+			changeReportTime = std::chrono::system_clock::now() + changeCallbackDelay;
+		}
+	}
 
 	ImGui::EndChild();
 	ImGui::PopStyleColor();

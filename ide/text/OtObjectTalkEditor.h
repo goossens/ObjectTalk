@@ -38,6 +38,8 @@ private:
 	void clear() override;
 	void load() override;
 
+	void buildSuggestionList();
+
 	// autocomplete support
 	TextEditor::Trie trie;
 };

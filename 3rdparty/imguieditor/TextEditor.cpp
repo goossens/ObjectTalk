@@ -237,7 +237,13 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	renderFindReplace(pos, visibleSize.x - verticalScrollBarSize);
 
 	// render autocomplete popup
-	renderAutoComplete();
+	if (autocomplete.render(document, cursors, language, textOffset, glyphSize)) {
+		// user picked a suggestion so insert it
+		auto start = autocomplete.getStart();
+		auto end = document.findWordEnd(start, true);
+		auto replacement = autocomplete.getReplacement();
+		replaceSectionText(start, end, replacement);
+	}
 
 	// handle change tracking if there is a change callback in place
 	if (changeCallback) {
@@ -685,7 +691,7 @@ void TextEditor::handleKeyboardInputs() {
 	#endif
 
 		// ignore specific keys when autocomplete is active, they will be handled later
-		if (autoCompleteActive) {
+		if (autocomplete.isActive()) {
 			for (auto key : {ImGuiKey_Escape, ImGuiKey_Tab, ImGuiKey_Enter, ImGuiKey_KeypadEnter, ImGuiKey_UpArrow, ImGuiKey_DownArrow}) {
 				if (ImGui::IsKeyPressed(key)) {
 					return;
@@ -755,7 +761,11 @@ void TextEditor::handleKeyboardInputs() {
 		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_G)) { findNext(); }
 
 		// autocomplete support
-		else if (!readOnly && ImGui::IsKeyChordPressed(autoCompleteConfig.triggerShortcut)) { startAutoCompleteOnShortcut(); }
+		else if (!readOnly && ImGui::IsKeyChordPressed(autocomplete.getTriggerShortcut())) {
+			if (autocomplete.startShortcut(cursors)) {
+				makeCursorVisible();
+			}
+		}
 
 		// change insert mode
 		else if (isNoModifiers && ImGui::IsKeyPressed(ImGuiKey_Insert)) { overwrite = !overwrite; }
@@ -990,11 +1000,11 @@ void TextEditor::handleMouseInteractions() {
 					if (extendCursor) {
 						auto& cursor = cursors.getCurrent();
 						cursor.update(cursor.getInteractiveEnd() < cursor.getInteractiveStart() ? start : end);
-						cancelAutoComplete();
+						autocomplete.cancel();
 
 					} else if (addCursor) {
 						cursors.addCursor(start, end);
-						cancelAutoComplete();
+						autocomplete.cancel();
 
 					} else {
 						cursors.setCursor(start, end);
@@ -1006,11 +1016,11 @@ void TextEditor::handleMouseInteractions() {
 					// handle mouse clicks in text
 					if (extendCursor) {
 						cursors.updateCurrentCursor(cursorCoordinate);
-						cancelAutoComplete();
+						autocomplete.cancel();
 
 					} else if (addCursor) {
 						cursors.addCursor(cursorCoordinate);
-						cancelAutoComplete();
+						autocomplete.cancel();
 
 					} else {
 						cursors.setCursor(cursorCoordinate);
@@ -1522,7 +1532,9 @@ void TextEditor::handleCharacter(ImWchar character) {
 	endTransaction(transaction);
 
 	if (CodePoint::isWord(character)) {
-		startAutoCompleteOnTyping();
+		if (autocomplete.startTyping(cursors)) {
+			makeCursorVisible();
+		}
 	}
 }
 
@@ -2063,7 +2075,7 @@ void TextEditor::spacesToTabs() {
 
 std::shared_ptr<TextEditor::Transaction> TextEditor::startTransaction(bool cancelsAutoComplete) {
 	if (cancelsAutoComplete) {
-		cancelAutoComplete();
+		autocomplete.cancel();
 	}
 
 	std::shared_ptr<Transaction> transaction = Transactions::create();

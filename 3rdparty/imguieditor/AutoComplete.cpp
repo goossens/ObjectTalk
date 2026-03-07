@@ -14,6 +14,64 @@
 #include "TextEditor.h"
 
 
+
+//
+//	TextEditor::setAutoCompleteConfig
+//
+
+
+void TextEditor::Autocomplete::setConfig(const AutoCompleteConfig* config) {
+	if (config) {
+		configuration = *config;
+		configured = true;
+
+	} else {
+		configured = false;
+	}
+
+	active = false;
+}
+
+
+//
+//	TextEditor::Autocomplete::startTyping
+//
+
+bool TextEditor::Autocomplete::startTyping(Cursors& cursors) {
+	if (!active && !requestActivation && configured && configuration.triggersOnTyping) {
+		return start(cursors);
+
+	} else {
+		return false;
+	}
+}
+
+
+//
+//	TextEditor::Autocomplete::startShortcut
+//
+
+bool TextEditor::Autocomplete::startShortcut(Cursors& cursors) {
+	if (!active && !requestActivation && configured && configuration.triggersOnShortcut) {
+		return (start(cursors));
+
+	} else {
+		return false;
+	}
+}
+
+
+//
+//	TextEditor::Autocomplete::cancel
+//
+
+void TextEditor::Autocomplete::cancel() {
+	if (active) {
+		requestDeactivation = true;
+	}
+}
+
+
 //
 //	renderSuggestion
 //
@@ -69,87 +127,88 @@ static bool renderSuggestion(const std::string_view& suggestion, const std::stri
 
 
 //
-//	TextEditor::renderAutoComplete
+//	TextEditor::Autocomplete::render
 //
 
-void TextEditor::renderAutoComplete() {
+bool TextEditor::Autocomplete::render(Document& document, Cursors& cursors, const Language* language, float textOffset, ImVec2 glyphSize) {
 	// see if we need to activate autocomplete mode
-	if (activateAutoComplete) {
+	if (requestActivation) {
 		// apply popup delay
-		if (std::chrono::system_clock::now() > autoCompleteActivationTime) {
+		if (std::chrono::system_clock::now() > activationTime) {
 			// reset activation flag
-			activateAutoComplete = false;
+			requestActivation = false;
 
 			// capture locations
-			autoCompleteStart = document.findWordStart(autoCompleteLocation, true);
+			startLocation = document.findWordStart(currentLocation, true);
 
 			// update the autocomplete state
-			updateAutoCompleteState();
+			updateState(document, language);
 
 			// handle cases where autocomplete request is ignored
-			if(autoCompleteState.inComment && !autoCompleteConfig.triggerInComments) {
-				return;
+			if(state.inComment && !configuration.triggerInComments) {
+				return false;
 			}
 
-			if(autoCompleteState.inString && !autoCompleteConfig.triggerInStrings) {
-				return;
+			if(state.inString && !configuration.triggerInStrings) {
+				return false;
 			}
 
 			// get initial list of suggestions from the app
-			refreshAutoCompleteSuggestions();
+			refreshSuggestions();
 
 			// show autocomplete popup window
 			ImGui::OpenPopup("AutoCompleteContextMenu");
-			autoCompleteActive = true;
+			active = true;
 		}
 	}
 
 	// only continue if autocomplete is active
-	if (!autoCompleteActive) {
-		return;
+	if (!active) {
+		return false;
 	}
 
 	// see if cursor moved since last time
 	auto newLocation = cursors.getMain().getSelectionEnd();
 
-	if (newLocation != autoCompleteLocation) {
-		// see if we need to deactivate auto complete because cursor is on new line
-		if (newLocation.line != autoCompleteLocation.line) {
-			deactivateAutoComplete = true;
+	if (newLocation != currentLocation) {
+		// see if we need to deactivate autocomplete because cursor is on new line
+		if (newLocation.line != currentLocation.line) {
+			requestDeactivation = true;
 
 		} else {
 			// see if cursor moved away from current word
 			auto newStart = document.findWordStart(newLocation, true);
 
-			if (newStart == autoCompleteStart) {
-				autoCompleteLocation = newLocation;
+			if (newStart == startLocation) {
+				currentLocation = newLocation;
 
-				// we deactivate autocomplete is the current location is the start
-				if (autoCompleteLocation == autoCompleteStart) {
-					deactivateAutoComplete = true;
+				// we deactivate autocomplete if the current location is the start
+				if (currentLocation == startLocation) {
+					requestDeactivation = true;
 
 				} else {
-					updateAutoCompleteState();
-					refreshAutoCompleteSuggestions();
+					updateState(document, language);
+					refreshSuggestions();
 				}
 
 			} else {
-				deactivateAutoComplete = true;
+				requestDeactivation = true;
 			}
 		}
 	}
 
 	// close autocomplete when user hits escape key
 	if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
-		deactivateAutoComplete = true;
+		requestDeactivation = true;
 	}
 
 	// open popup window
+	bool result = false;
 	auto cursorScreenPos = ImGui::GetCursorScreenPos();
 
 	ImGui::SetNextWindowPos(ImVec2(
-		cursorScreenPos.x + textOffset + autoCompleteLocation.column * glyphSize.x,
-		cursorScreenPos.y + (autoCompleteLocation.line + 1) * glyphSize.y));
+		cursorScreenPos.x + textOffset + currentLocation.column * glyphSize.x,
+		cursorScreenPos.y + (currentLocation.line + 1) * glyphSize.y));
 
 	ImGuiWindowFlags flags =
 		ImGuiWindowFlags_NoFocusOnAppearing |
@@ -161,29 +220,31 @@ void TextEditor::renderAutoComplete() {
 		}
 
 		// deactivate popup (if requested)
-		if (deactivateAutoComplete) {
+		if (requestDeactivation) {
 			ImGui::CloseCurrentPopup();
-			deactivateAutoComplete = false;
-			autoCompleteActive = false;
+			requestDeactivation = false;
+			active = false;
 
 		} else {
 			// do we have any suggestions
-			if (autoCompleteState.suggestions.size()) {
-				auto items = std::min(autoCompleteState.suggestions.size(), static_cast<size_t>(10));
+			if (state.suggestions.size()) {
+				auto items = std::min(state.suggestions.size(), static_cast<size_t>(10));
 
 				// apply arrow keys to selected suggestion
-				if (ImGui::IsKeyPressed(ImGuiKey_UpArrow) && autoCompleteSelection > 0) {
-					autoCompleteSelection--;
+				if (ImGui::IsKeyPressed(ImGuiKey_UpArrow) && currentSelection > 0) {
+					currentSelection--;
 
-				} else if (ImGui::IsKeyPressed(ImGuiKey_DownArrow) && autoCompleteSelection < items - 1) {
-					autoCompleteSelection++;
+				} else if (ImGui::IsKeyPressed(ImGuiKey_DownArrow) && currentSelection < items - 1) {
+					currentSelection++;
 
 				// use selected suggestion if user hit tab of return
 				} else if (ImGui::IsKeyPressed(ImGuiKey_Tab) || ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter)) {
-					applyAutoComplete();
+					requestDeactivation = true;
+					result = true;
 
-				} else if (autoCompleteConfig.autoInsertSingleSuggestions && autoCompleteState.suggestions.size() == 1) {
-					applyAutoComplete();
+				} else if (configuration.autoInsertSingleSuggestions && state.suggestions.size() == 1) {
+					requestDeactivation = true;
+					result = true;
 				}
 
 				// render top suggestions
@@ -191,10 +252,11 @@ void TextEditor::renderAutoComplete() {
 					// ensure unique ID
 					ImGui::PushID(static_cast<int>(i));
 
-					if (renderSuggestion(autoCompleteState.suggestions[i].c_str(), autoCompleteState.searchTerm, i == autoCompleteSelection)) {
+					if (renderSuggestion(state.suggestions[i].c_str(), state.searchTerm, i == currentSelection)) {
 						// user clicked on a suggestion, use it
-						autoCompleteSelection = i;
-						applyAutoComplete();
+						currentSelection = i;
+						requestDeactivation = true;
+						result = true;
 					}
 
 					ImGui::PopID();
@@ -208,144 +270,94 @@ void TextEditor::renderAutoComplete() {
 		ImGui::EndPopup();
 
 	} else {
-		deactivateAutoComplete = false;
-		autoCompleteActive = false;
+		requestDeactivation = false;
+		active = false;
 	}
+
+	return result;
 }
 
 
 //
-//	TextEditor::setAutoCompleteConfig
+//	TextEditor::Autocomplete::setSuggestions
 //
 
-void TextEditor::setAutoCompleteConfig(const AutoCompleteConfig* config) {
-	if (config) {
-		autoCompleteConfig = *config;
-		autoCompleteConfigured = true;
-
-	} else {
-		autoCompleteConfigured = false;
-	}
-
-	autoCompleteActive = false;
+void TextEditor::Autocomplete::setSuggestions(const std::vector<std::string>& suggestions) {
+	state.suggestions = suggestions;
+	currentSelection = 0;
 }
 
 
 //
-//	TextEditor::startAutoCompleteOnTyping
+//	TextEditor::Autocomplete::start
 //
 
-void TextEditor::startAutoCompleteOnTyping() {
-	if (!autoCompleteActive && autoCompleteConfigured && autoCompleteConfig.triggersOnTyping && !activateAutoComplete) {
-		startAutoComplete();
-	}
-}
-
-
-//
-//	TextEditor::startAutoCompleteOnShortcut
-//
-
-void TextEditor::startAutoCompleteOnShortcut() {
-	if (!autoCompleteActive && !activateAutoComplete && autoCompleteConfigured && autoCompleteConfig.triggersOnShortcut) {
-		startAutoComplete();
-	}
-}
-
-
-//
-//	TextEditor::startAutoComplete
-//
-
-void TextEditor::startAutoComplete() {
+bool TextEditor::Autocomplete::start(Cursors& cursors) {
 	// don't activate if we have multiple cursors active
 	if (!cursors.hasMultiple()) {
 		// request start of autocomplete mode (can't be done here as the Dear ImGui context might not be right)
-		activateAutoComplete = true;
-		autoCompleteLocation = cursors.getMain().getSelectionEnd();
-		autoCompleteActivationTime = std::chrono::system_clock::now() + autoCompleteConfig.triggerDelay;
-
-		// ensure cursor is visible so suggestions can be seen
-		makeCursorVisible();
-	}
-}
-
-
-//
-//	TextEditor::cancelAutoComplete
-//
-
-void TextEditor::cancelAutoComplete() {
-	if (autoCompleteActive) {
-		deactivateAutoComplete = true;
-	}
-}
-
-
-//
-//	TextEditor::applyAutoComplete
-//
-
-void TextEditor::applyAutoComplete() {
-	// remove word and replace it with chosen suggestion
-	replaceSectionText(
-		autoCompleteStart,
-		document.findWordEnd(autoCompleteStart, true),
-		autoCompleteState.suggestions[autoCompleteSelection]);
-}
-
-
-//
-//	TextEditor::updateAutoCompleteState
-//
-
-void TextEditor::updateAutoCompleteState() {
-	autoCompleteState.searchTerm = document.getSectionText(autoCompleteStart, autoCompleteLocation);
-
-	if (autoCompleteLocation.column == 0) {
-		autoCompleteState.inIdentifier = false;
-		autoCompleteState.inNumber = false;
-
-		auto state = document[autoCompleteLocation.line].state;
-		autoCompleteState.inComment = state == State::inComment;
-
-		autoCompleteState.inString =
-			state == State::inDoubleQuotedString ||
-			state == State::inSingleQuotedString||
-			state == State::inOtherString ||
-			state == State::inOtherStringAlt;
+		requestActivation = true;
+		currentLocation = cursors.getMain().getSelectionEnd();
+		activationTime = std::chrono::system_clock::now() + configuration.triggerDelay;
+		return true;
 
 	} else {
-		auto color = document[autoCompleteLocation.line][autoCompleteLocation.column - 1].color;
-		autoCompleteState.inIdentifier = color == Color::identifier || color == Color::knownIdentifier;
-		autoCompleteState.inNumber = color == Color::number;
-		autoCompleteState.inComment = color == Color::comment;
-		autoCompleteState.inString = color == Color::string;
+		return false;
 	}
-
-	autoCompleteState.line = autoCompleteLocation.line;
-	autoCompleteState.searchTermStartColumn = autoCompleteStart.column;
-	autoCompleteState.searchTermStartIndex = document.getIndex(autoCompleteStart);
-	autoCompleteState.searchTermEndColumn = autoCompleteLocation.column;
-	autoCompleteState.searchTermEndIndex= document.getIndex(autoCompleteLocation);
-
-	autoCompleteState.language = language;
-	autoCompleteState.userData = autoCompleteConfig.userData;
 }
 
 
 //
-//	TextEditor::refreshAutoCompleteSuggestions
+//	TextEditor::Autocomplete::updateState
 //
 
-void TextEditor::refreshAutoCompleteSuggestions() {
+void TextEditor::Autocomplete::updateState(Document& document, const Language* language) {
+	state.searchTerm = document.getSectionText(startLocation, currentLocation);
+
+	if (currentLocation.column == 0) {
+		state.inIdentifier = false;
+		state.inNumber = false;
+
+		auto lineState = document[currentLocation.line].state;
+		state.inComment = lineState == State::inComment;
+
+		state.inString =
+			lineState == State::inDoubleQuotedString ||
+			lineState == State::inSingleQuotedString||
+			lineState == State::inOtherString ||
+			lineState == State::inOtherStringAlt;
+
+	} else {
+		auto color = document[currentLocation.line][currentLocation.column - 1].color;
+		state.inIdentifier = color == Color::identifier || color == Color::knownIdentifier;
+		state.inNumber = color == Color::number;
+		state.inComment = color == Color::comment;
+		state.inString = color == Color::string;
+	}
+
+	state.line = currentLocation.line;
+	state.searchTermStartColumn = startLocation.column;
+	state.searchTermStartIndex = document.getIndex(startLocation);
+	state.searchTermEndColumn = currentLocation.column;
+	state.searchTermEndIndex= document.getIndex(currentLocation);
+
+	state.language = language;
+	state.userData = configuration.userData;
+}
+
+
+//
+//	TextEditor::Autocomplete::refreshSuggestions
+//
+
+void TextEditor::Autocomplete::refreshSuggestions() {
 	// populate suggestion list through callback (or clear it if there is none)
-	if (autoCompleteConfig.callback) {
-		autoCompleteConfig.callback(autoCompleteState);
+	if (configuration.callback) {
+		configuration.callback(state);
 
 	} else {
-		autoCompleteState.suggestions.clear();
+		state.suggestions.clear();
 	}
 
-	autoCompleteSelection = 0;
+	currentSelection = 0;
 }

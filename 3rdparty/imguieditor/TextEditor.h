@@ -444,7 +444,7 @@ public:
 	class AutoCompleteState {
 	public:
 		// current context (strings = UTF-8, columns = Nth visible column and indices = Nth codepoint)
-		// to understand the difference between a column and an index, think like a tab :-), see Coordinate class
+		// to understand the difference between column and index, think like a tab :-)
 		std::string searchTerm;
 		size_t line;
 		size_t searchTermStartColumn;
@@ -465,6 +465,10 @@ public:
 
 		// auto complete suggestions te be provided by app callback
 		// only the first 10 are rendered in the order provided (so app is responsible for sorting)
+
+		// the editor does not automatically include language specific keywords or identifiers in the suggestion list
+		// this is left to the application so it can be context specific in case a language server is used
+		// a pointer to the current language definition is provided so callbacks have easy access
 		std::vector<std::string> suggestions;
 	};
 
@@ -495,12 +499,13 @@ public:
 		// delay in milliseconds between autocomplete trigger and suggestions popup
 		std::chrono::milliseconds triggerDelay{200};
 
-		// called when autocomplete is configured, active and editor needs an updated suggestions list
-		// callback must populate suggestions in state object
+		// called when autocomplete is configured, active and the editor needs an updated suggestions list
+		// callback must populate and order suggestions in state object
+		// suggestion list is not cleared by editor between callbacks
 		// callback is called during the rendering loop (so don't take too long)
 
-		// if it takes too long, application should do search in separate thread and use API to report results
-		// see SetAutoCompleteSuggestions below
+		// if it does takes too long, application should do search in separate thread and
+		// use API to report results (see SetAutoCompleteSuggestions)
 		std::function<void(AutoCompleteState&)> callback;
 
 		// opaque void* that must be managed externally but passed to callback
@@ -508,11 +513,11 @@ public:
 	};
 
 	// configure and activate autocomplete (passing nullptr deactivates it)
-	inline void SetAutoCompleteConfig(const AutoCompleteConfig* config) { setAutoCompleteConfig(config); }
+	inline void SetAutoCompleteConfig(const AutoCompleteConfig* config) { autocomplete.setConfig(config); }
 
 	// option to specify autocomplete suggestions later (in case a callback takes to long and lookup is handled in a separate thread)
 	// this call is not threadsafe and must be called from the rendering thread (you must synchronize with your lookup thread yourself)
-	inline void SetAutoCompleteSuggestions(const std::vector<std::string>& suggestions) { autoCompleteState.suggestions = suggestions; }
+	inline void SetAutoCompleteSuggestions(const std::vector<std::string>& suggestions) { autocomplete.setSuggestions(suggestions); }
 
 	// utility class to support autocomplete
 	// this is not used by default but can be used in autocomplete callbacks (see example app)
@@ -1064,6 +1069,51 @@ protected:
 		}
 	} bracketeer;
 
+	// autocomplete class
+	class Autocomplete {
+	public:
+		// set the autocomplete configuration
+		void setConfig(const AutoCompleteConfig* c);
+
+		// request autocomplete mode based on triggers (and if allowed by current state)
+		// return value indicates whether autocomplete was initiated
+		bool startTyping(Cursors& cursors);
+		bool startShortcut(Cursors& cursors);
+
+		// cancel autocomplete mode (if required)
+		void cancel();
+
+		// update autocomplete state and render (if required)
+		bool render(Document& document, Cursors& cursors, const Language* language, float textOffset, ImVec2 glyphSize);
+
+		// specify a new set of suggestions
+		void setSuggestions(const std::vector<std::string>& suggestions);
+
+		// get information
+		inline bool isActive() const { return active; }
+		inline ImGuiKeyChord getTriggerShortcut() const { return configuration.triggerShortcut; }
+		inline Coordinate getStart() const { return startLocation; }
+		inline std::string getReplacement() { return currentSelection < state.suggestions.size() ? state.suggestions[currentSelection] : ""; }
+
+	private:
+		// properties
+		bool configured = false;
+		bool active = false;
+		bool requestActivation = false;
+		bool requestDeactivation = false;
+		Coordinate currentLocation;
+		Coordinate startLocation;
+		std::chrono::system_clock::time_point activationTime;
+		AutoCompleteConfig configuration;
+		AutoCompleteState state;
+		size_t currentSelection = 0;
+
+		// support functions
+		bool start(Cursors& cursors);
+		void updateState(Document& document, const Language* language);
+		void refreshSuggestions();
+	} autocomplete;
+
 	// access the editor's text
 	void setText(const std::string_view& text);
 
@@ -1080,7 +1130,6 @@ protected:
 	void renderScrollbarMiniMap();
 	void renderPanScrollIndicator();
 	void renderFindReplace(ImVec2 pos, float width);
-	void renderAutoComplete();
 
 	// keyboard and mouse interactions
 	void handleKeyboardInputs();
@@ -1128,16 +1177,6 @@ protected:
 	void findAll();
 	void replace();
 	void replaceAll();
-
-	// autocomplete support
-	void setAutoCompleteConfig(const AutoCompleteConfig* config);
-	void startAutoCompleteOnTyping();
-	void startAutoCompleteOnShortcut();
-	void startAutoComplete();
-	void cancelAutoComplete();
-	void applyAutoComplete();
-	void updateAutoCompleteState();
-	void refreshAutoCompleteSuggestions();
 
 	// marker support
 	void addMarker(int line, ImU32 lineNumberColor, ImU32 textColor, const std::string_view& lineNumberTooltip, const std::string_view& textTooltip);
@@ -1255,18 +1294,6 @@ protected:
 	std::string replaceText;
 	bool caseSensitiveFind = false;
 	bool wholeWordFind = false;
-
-	// autocomplete context
-	bool autoCompleteConfigured = false;
-	bool autoCompleteActive = false;
-	bool activateAutoComplete = false;
-	bool deactivateAutoComplete = false;
-	Coordinate autoCompleteLocation;
-	Coordinate autoCompleteStart;
-	std::chrono::system_clock::time_point autoCompleteActivationTime;
-	AutoCompleteConfig autoCompleteConfig;
-	AutoCompleteState autoCompleteState;
-	size_t autoCompleteSelection = 0;
 
 	// interaction context
 	float lastClickTime = -1.0f;

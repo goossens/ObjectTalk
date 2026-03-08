@@ -78,10 +78,10 @@ void TextEditor::Autocomplete::cancel() {
 //	renderSuggestion
 //
 
-static bool renderSuggestion(const std::string_view& suggestion, const std::string_view& searchTerm, bool selected) {
+static bool renderSuggestion(const std::string_view& suggestion, const std::string_view& searchTerm, float width, bool selected) {
 	// custom widget to render an autocomplete suggestion in the style of Visual Studio Code
 	auto glyphPos = ImGui::GetCursorScreenPos();
-	auto size = ImVec2(250.0f, ImGui::GetFrameHeightWithSpacing());
+	auto size = ImVec2(width, ImGui::GetFrameHeightWithSpacing());
 	auto clicked = ImGui::InvisibleButton("suggestion", size);
 
 	auto drawList = ImGui::GetWindowDrawList();
@@ -113,7 +113,7 @@ static bool renderSuggestion(const std::string_view& suggestion, const std::stri
 			ImWchar searchCodePoint;
 			auto next = TextEditor::CodePoint::read(j, searchTermEnd, &searchCodePoint);
 
-			if (searchCodePoint == codepoint) {
+			if (TextEditor::CodePoint::toLower(searchCodePoint) == TextEditor::CodePoint::toLower(codepoint)) {
 				color = ImGui::GetColorU32(ImGuiCol_TextLink);
 				j = next;
 			}
@@ -212,13 +212,19 @@ bool TextEditor::Autocomplete::render(Document& document, Cursors& cursors, cons
 		cursorScreenPos.x + textOffset + currentLocation.column * glyphSize.x,
 		cursorScreenPos.y + (currentLocation.line + 1) * glyphSize.y));
 
+	auto suggestions = state.suggestions.size();
+	auto visibleSuggestions = (suggestions == 0) ? 1 : std::min(static_cast<size_t>(10), suggestions);
+	auto& style = ImGui::GetStyle();
+	auto height = ImGui::GetFrameHeightWithSpacing() * visibleSuggestions + style.WindowPadding.y * 2.0f;
+	ImGui::SetNextWindowSize(ImVec2(suggestionWidth, height));
+
 	ImGuiWindowFlags flags =
 		ImGuiWindowFlags_NoFocusOnAppearing |
 		ImGuiWindowFlags_NoNav;
 
 	if (ImGui::BeginPopup("AutoCompleteContextMenu", flags)) {
 		if (ImGui::IsWindowAppearing()) {
-	    	ImGui::BringWindowToDisplayFront(ImGui::GetCurrentWindow());
+			ImGui::BringWindowToDisplayFront(ImGui::GetCurrentWindow());
 		}
 
 		// deactivate popup (if requested)
@@ -229,15 +235,25 @@ bool TextEditor::Autocomplete::render(Document& document, Cursors& cursors, cons
 
 		} else {
 			// do we have any suggestions
-			if (state.suggestions.size()) {
-				auto items = std::min(state.suggestions.size(), static_cast<size_t>(10));
+			if (suggestions) {
+				auto items = state.suggestions.size();
 
 				// apply arrow keys to selected suggestion
-				if (ImGui::IsKeyPressed(ImGuiKey_UpArrow) && currentSelection > 0) {
-					currentSelection--;
+				if (ImGui::IsKeyPressed(ImGuiKey_UpArrow)) {
+					if (currentSelection == 0) {
+						currentSelection = items - 1;
+}
+					 else {
+						currentSelection--;
+					}
 
-				} else if (ImGui::IsKeyPressed(ImGuiKey_DownArrow) && currentSelection < items - 1) {
-					currentSelection++;
+				} else if (ImGui::IsKeyPressed(ImGuiKey_DownArrow)) {
+					if (currentSelection == items - 1) {
+						currentSelection = 0;
+
+					} else {
+						currentSelection++;
+					}
 
 				// use selected suggestion if user hit tab of return
 				} else if (ImGui::IsKeyPressed(ImGuiKey_Tab) || ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter)) {
@@ -249,12 +265,19 @@ bool TextEditor::Autocomplete::render(Document& document, Cursors& cursors, cons
 					result = true;
 				}
 
-				// render top suggestions
+				// render suggestions
 				for (size_t i = 0; i < items; i++) {
 					// ensure unique ID
 					ImGui::PushID(static_cast<int>(i));
 
-					if (renderSuggestion(state.suggestions[i].c_str(), state.searchTerm, i == currentSelection)) {
+					// scroll list to selected item (if required)
+					auto selected = i == currentSelection;
+
+					if (selected) {
+						ImGui::SetScrollHereY(1.0f);
+					}
+
+					if (renderSuggestion(state.suggestions[i].c_str(), state.searchTerm, ImGui::GetContentRegionAvail().x, selected)) {
 						// user clicked on a suggestion, use it
 						currentSelection = i;
 						requestDeactivation = true;

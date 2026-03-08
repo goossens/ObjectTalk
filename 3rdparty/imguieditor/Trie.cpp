@@ -24,7 +24,6 @@ void TextEditor::Trie::insert(const std::string_view& word) {
 	while (i < end) {
 		ImWchar codepoint;
 		i = TextEditor::CodePoint::read(i, end, &codepoint);
-		codepoint = TextEditor::CodePoint::toLower(codepoint);
 
 		if (node->children.find(codepoint) == node->children.end()) {
 			node->children[codepoint] = std::make_unique<Node>();
@@ -41,7 +40,7 @@ void TextEditor::Trie::insert(const std::string_view& word) {
 //	TextEditor::Trie::findSuggestions
 //
 
-void TextEditor::Trie::findSuggestions(std::vector<std::string>& suggestions, const std::string_view& searchTerm, size_t maxSkippedLetters) {
+void TextEditor::Trie::findSuggestions(std::vector<std::string>& suggestions, const std::string_view& searchTerm, size_t limit, size_t maxSkippedLetters) {
 	// clear result vector
 	maxSkip = maxSkippedLetters;
 	suggestions.clear();
@@ -56,7 +55,7 @@ void TextEditor::Trie::findSuggestions(std::vector<std::string>& suggestions, co
 		while (i < end) {
 			ImWchar codepoint;
 			i = TextEditor::CodePoint::read(i, end, &codepoint);
-			searchCodepoints.emplace_back(TextEditor::CodePoint::toLower(codepoint));
+			searchCodepoints.emplace_back(codepoint);
 		}
 
 		// recursively evaluate nodes
@@ -68,12 +67,12 @@ void TextEditor::Trie::findSuggestions(std::vector<std::string>& suggestions, co
 			// sort candidates by cost
 			std::sort(candidates.begin(), candidates.end());
 
-			// remove duplicates which are caused by mutiple paths through word based on skips
+			// remove duplicates which are caused by mutiple paths based on skips
 			auto last = std::unique(candidates.begin(), candidates.end());
 			candidates.erase(last, candidates.end());
 
-			// populate suggestions
-			auto size = std::min(static_cast<size_t>(10), candidates.size());
+			// populate suggestions (applying limit)
+			auto size = std::min(static_cast<size_t>(limit), candidates.size());
 
 			for (size_t j = 0; j < size; j++) {
 				suggestions.emplace_back(candidates[j].node->word);
@@ -88,21 +87,38 @@ void TextEditor::Trie::findSuggestions(std::vector<std::string>& suggestions, co
 //
 
 void TextEditor::Trie::evaluateNode(const Node* node, size_t index, size_t cost, size_t skip) {
-	// get next codeword
-	ImWchar codepoint = searchCodepoints[index];
+	// see if that is one of our children (check both lower and uppercase matches)
+	ImWchar codepointLower = TextEditor::CodePoint::toLower(searchCodepoints[index]);
+	Node* childLower = nullptr;
 
-	// see if that is one of our children
-	auto child = (node->children.find(codepoint) != node->children.end()) ? node->children.at(codepoint).get() : nullptr;
+	if (node->children.find(codepointLower) != node->children.end()) {
+		// codepoint found, is this the last one in our searchTerm?
+		childLower = node->children.at(codepointLower).get();
 
-	if (child) {
-		// codeword found, is this the last codepoint in our searchTerm?
 		if (index == searchCodepoints.size() - 1) {
 			// yes, add candidate words to results
-			addCandidates(child, cost);
+			addCandidates(childLower, cost);
 
 		} else {
 			// no, try to find the rest
-			evaluateNode(child, index + 1, cost, maxSkip);
+			evaluateNode(childLower, index + 1, cost, maxSkip);
+		}
+	}
+
+	ImWchar codepointUpper = TextEditor::CodePoint::toUpper(searchCodepoints[index]);
+	Node* childUpper = nullptr;
+
+	if (node->children.find(codepointUpper) != node->children.end()) {
+		// codepoint found, is this the last one in our searchTerm?
+		childUpper = node->children.at(codepointUpper).get();
+
+		if (index == searchCodepoints.size() - 1) {
+			// yes, add candidate words to results
+			addCandidates(childUpper, cost);
+
+		} else {
+			// no, try to find the rest
+			evaluateNode(childUpper, index + 1, cost, maxSkip);
 		}
 	}
 
@@ -111,7 +127,7 @@ void TextEditor::Trie::evaluateNode(const Node* node, size_t index, size_t cost,
 		for (auto const& [key, value] : node->children) {
 			auto next = value.get();
 
-			if (next != child) {
+			if (next != childLower && next != childUpper) {
 				evaluateNode(next, index, cost + 1, skip - 1);
 			}
 		}

@@ -802,11 +802,10 @@ void TextEditor::handleKeyboardInputs() {
 		}
 
 		// handle regular text
-		if (io.InputQueueCharacters.Size) {
-			bool ignoreInputs = io.KeyCtrl && !io.KeyAlt;
-
-			if (!ignoreInputs && !readOnly) {
-				for (int i = 0; i < io.InputQueueCharacters.size(); i++) {
+		if (!io.InputQueueCharacters.empty()) {
+	        // ignore Ctrl inputs, but need to allow Alt+Ctrl as some keyboards (e.g. German) use AltGR (which _is_ Alt+Ctrl) to input certain characters
+			if (!(io.KeyCtrl && !io.KeyAlt) && !readOnly) {
+				for (auto i = 0; i < io.InputQueueCharacters.size(); i++) {
 					auto character = io.InputQueueCharacters[i];
 
 					if (character == '\n' || character >= 32) {

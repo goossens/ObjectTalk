@@ -802,12 +802,16 @@ void TextEditor::handleKeyboardInputs() {
 		}
 
 		// handle regular text
-		if (!readOnly && !io.InputQueueCharacters.empty()) {
-			for (int i = 0; i < io.InputQueueCharacters.size(); i++) {
-				auto character = io.InputQueueCharacters[i];
+		if (io.InputQueueCharacters.Size) {
+			bool ignoreInputs = io.KeyCtrl && !io.KeyAlt;
 
-				if (character == '\n' || character >= 32) {
-					handleCharacter(character);
+			if (!ignoreInputs && !readOnly) {
+				for (int i = 0; i < io.InputQueueCharacters.size(); i++) {
+					auto character = io.InputQueueCharacters[i];
+
+					if (character == '\n' || character >= 32) {
+						handleCharacter(character);
+					}
 				}
 			}
 

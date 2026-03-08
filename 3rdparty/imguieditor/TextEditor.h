@@ -20,6 +20,7 @@
 #include <memory>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
@@ -476,10 +477,10 @@ public:
 	class AutoCompleteConfig {
 	public:
 		// specifies whether typing by the user triggers autocomplete
-		bool triggersOnTyping = true;
+		bool triggerOnTyping = true;
 
 		// specifies whether the specified shortcut triggers autocomplete
-		bool triggersOnShortcut = true;
+		bool triggerOnShortcut = true;
 
 		// specifies whether typing (or shortcut) in comments or strings triggers autocomplete
 		bool triggerInComments = false;
@@ -504,7 +505,7 @@ public:
 		// suggestion list is not cleared by editor between callbacks
 		// callback is called during the rendering loop (so don't take too long)
 
-		// if it does takes too long, application should do search in separate thread and
+		// if it takes too long, applications should do search in separate thread and
 		// use API to report results (see SetAutoCompleteSuggestions)
 		std::function<void(AutoCompleteState&)> callback;
 
@@ -866,7 +867,11 @@ protected:
 		std::string getText() const;
 		std::string getLineText(int line) const;
 		std::string getSectionText(Coordinate start, Coordinate end) const;
-		ImWchar getCodePoint(Coordinate location);
+		ImWchar getCodePoint(Coordinate location) const;
+
+		// get line or color state
+		inline State getLineState(int line) const { return at(line).state; }
+		Color getColor(Coordinate location) const;
 
 		// see if document is empty
 		inline bool isEmpty() const { return size() == 1 && at(0).size() == 0; }
@@ -1109,7 +1114,7 @@ protected:
 		size_t currentSelection = 0;
 
 		// support functions
-		bool start(Cursors& cursors);
+		void start(Cursors& cursors);
 		void updateState(Document& document, const Language* language);
 		void refreshSuggestions();
 	} autocomplete;

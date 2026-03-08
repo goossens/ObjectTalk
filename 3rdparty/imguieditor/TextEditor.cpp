@@ -762,8 +762,14 @@ void TextEditor::handleKeyboardInputs() {
 
 		// autocomplete support
 		else if (!readOnly && ImGui::IsKeyChordPressed(autocomplete.getTriggerShortcut())) {
-			if (autocomplete.startShortcut(cursors)) {
-				makeCursorVisible();
+			// don't activate if we have multiple cursors active
+			if (cursors.hasMultiple()) {
+				// TODO: inform user
+
+			} else {
+				if (autocomplete.startShortcut(cursors)) {
+					makeCursorVisible();
+				}
 			}
 		}
 

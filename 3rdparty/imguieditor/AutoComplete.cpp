@@ -38,8 +38,9 @@ void TextEditor::Autocomplete::setConfig(const AutoCompleteConfig* config) {
 //
 
 bool TextEditor::Autocomplete::startTyping(Cursors& cursors) {
-	if (!active && !requestActivation && configured && configuration.triggersOnTyping) {
-		return start(cursors);
+	if (!active && !requestActivation && configured && configuration.triggerOnTyping) {
+		start(cursors);
+		return true;
 
 	} else {
 		return false;
@@ -52,8 +53,9 @@ bool TextEditor::Autocomplete::startTyping(Cursors& cursors) {
 //
 
 bool TextEditor::Autocomplete::startShortcut(Cursors& cursors) {
-	if (!active && !requestActivation && configured && configuration.triggersOnShortcut) {
-		return (start(cursors));
+	if (!active && !requestActivation && configured && configuration.triggerOnShortcut) {
+		start(cursors);
+		return true;
 
 	} else {
 		return false;
@@ -292,18 +294,11 @@ void TextEditor::Autocomplete::setSuggestions(const std::vector<std::string>& su
 //	TextEditor::Autocomplete::start
 //
 
-bool TextEditor::Autocomplete::start(Cursors& cursors) {
-	// don't activate if we have multiple cursors active
-	if (!cursors.hasMultiple()) {
-		// request start of autocomplete mode (can't be done here as the Dear ImGui context might not be right)
-		requestActivation = true;
-		currentLocation = cursors.getMain().getSelectionEnd();
-		activationTime = std::chrono::system_clock::now() + configuration.triggerDelay;
-		return true;
-
-	} else {
-		return false;
-	}
+void TextEditor::Autocomplete::start(Cursors& cursors) {
+	// request start of autocomplete mode (can't be done here as the Dear ImGui context might not be right)
+	requestActivation = true;
+	currentLocation = cursors.getMain().getSelectionEnd();
+	activationTime = std::chrono::system_clock::now() + configuration.triggerDelay;
 }
 
 
@@ -328,7 +323,7 @@ void TextEditor::Autocomplete::updateState(Document& document, const Language* l
 			lineState == State::inOtherStringAlt;
 
 	} else {
-		auto color = document[currentLocation.line][currentLocation.column - 1].color;
+		auto color = document.getColor(Coordinate(currentLocation.line, currentLocation.column - 1));
 		state.inIdentifier = color == Color::identifier || color == Color::knownIdentifier;
 		state.inNumber = color == Color::number;
 		state.inComment = color == Color::comment;

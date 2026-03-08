@@ -264,7 +264,7 @@ std::string TextEditor::Document::getSectionText(Coordinate start, Coordinate en
 //	TextEditor::Document::getCodePoint
 //
 
-ImWchar TextEditor::Document::getCodePoint(Coordinate location) {
+ImWchar TextEditor::Document::getCodePoint(Coordinate location) const {
 	auto index = getIndex(location);
 
 	if (index < at(location.line).size()) {
@@ -272,6 +272,21 @@ ImWchar TextEditor::Document::getCodePoint(Coordinate location) {
 
 	} else {
 		return IM_UNICODE_CODEPOINT_INVALID;
+	}
+}
+
+//
+//	TextEditor::Document::getColor
+//
+
+TextEditor::Color TextEditor::Document::getColor(Coordinate location)  const {
+	auto index = getIndex(location);
+
+	if (index < at(location.line).size()) {
+		return at(location.line)[index].color;
+
+	} else {
+		return Color::text;
 	}
 }
 

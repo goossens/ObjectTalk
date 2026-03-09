@@ -495,6 +495,7 @@ public:
 #endif
 
 		// see if single suggestions are automatically inserted
+		// this only works when triggered manually
 		bool autoInsertSingleSuggestions = false;
 
 		// delay in milliseconds between autocomplete trigger and suggestions popup
@@ -1116,6 +1117,7 @@ protected:
 		std::chrono::system_clock::time_point activationTime;
 		AutoCompleteConfig configuration;
 		AutoCompleteState state;
+		bool triggeredManually = false;
 		size_t currentSelection = 0;
 		static constexpr float suggestionWidth = 250.0f;
 

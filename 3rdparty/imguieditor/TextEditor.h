@@ -500,6 +500,9 @@ public:
 		// delay in milliseconds between autocomplete trigger and suggestions popup
 		std::chrono::milliseconds triggerDelay{200};
 
+		// text label used when no suggestions are available (this allows for internationalization)
+		std::string noSuggestionsLabel = "No suggestions";
+
 		// called when autocomplete is configured, active and the editor needs an updated suggestions list
 		// callback must populate and order suggestions in state object
 		// suggestion list is not cleared by editor between callbacks

@@ -131,8 +131,14 @@ void TextEditor::renderFindReplace(ImVec2 pos, float width) {
 			}
 		}
 
-		if (ImGui::IsItemDeactivated() && (ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter))){
-			focusOnEditor = true;
+		if (ImGui::IsItemDeactivated()) {
+			if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+				closeFindReplace();
+
+			} else if (ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter)) {
+				focusOnEditor = true;
+				focusOnFind = false;
+			}
 		}
 
 		bool disableFindButtons = !findText.size();
@@ -384,8 +390,8 @@ void TextEditor::openFindReplace() {
 
 void TextEditor::closeFindReplace() {
 	findReplaceVisible = false;
-	focusOnFind = false;
 	focusOnEditor = true;
+	focusOnFind = false;
 }
 
 
@@ -397,6 +403,7 @@ void TextEditor::find() {
 	if (findText.size()) {
 		selectNextOccurrenceOf(findText, caseSensitiveFind, wholeWordFind);
 		focusOnEditor = true;
+		focusOnFind = false;
 	}
 }
 
@@ -409,6 +416,7 @@ void TextEditor::findNext() {
 	if (findText.size()) {
 		selectNextOccurrenceOf(findText, caseSensitiveFind, wholeWordFind);
 		focusOnEditor = true;
+		focusOnFind = false;
 	}
 }
 
@@ -421,6 +429,7 @@ void TextEditor::findAll() {
 	if (findText.size()) {
 		selectAllOccurrencesOf(findText, caseSensitiveFind, wholeWordFind);
 		focusOnEditor = true;
+		focusOnFind = false;
 	}
 }
 
@@ -438,6 +447,7 @@ void TextEditor::replace() {
 		replaceTextInCurrentCursor(replaceText);
 		selectNextOccurrenceOf(findText, caseSensitiveFind, wholeWordFind);
 		focusOnEditor = true;
+		focusOnFind = false;
 	}
 }
 
@@ -451,5 +461,6 @@ void TextEditor::replaceAll() {
 		selectAllOccurrencesOf(findText, caseSensitiveFind, wholeWordFind);
 		replaceTextInAllCursors(replaceText);
 		focusOnEditor = true;
+		focusOnFind = false;
 	}
 }

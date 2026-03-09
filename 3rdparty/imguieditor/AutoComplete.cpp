@@ -199,11 +199,6 @@ bool TextEditor::Autocomplete::render(Document& document, Cursors& cursors, cons
 		}
 	}
 
-	// close autocomplete when user hits escape key
-	if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
-		requestDeactivation = true;
-	}
-
 	// open popup window
 	bool result = false;
 	auto cursorScreenPos = ImGui::GetCursorScreenPos();
@@ -310,6 +305,21 @@ bool TextEditor::Autocomplete::render(Document& document, Cursors& cursors, cons
 void TextEditor::Autocomplete::setSuggestions(const std::vector<std::string>& suggestions) {
 	state.suggestions = suggestions;
 	currentSelection = 0;
+}
+
+
+//
+//	TextEditor::Autocomplete::isSpecialKeyPressed
+//
+
+bool TextEditor::Autocomplete::isSpecialKeyPressed() const {
+	for (auto key : {ImGuiKey_Tab, ImGuiKey_Enter, ImGuiKey_KeypadEnter, ImGuiKey_UpArrow, ImGuiKey_DownArrow}) {
+		if (ImGui::IsKeyPressed(key)) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 

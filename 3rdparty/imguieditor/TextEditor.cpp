@@ -691,16 +691,7 @@ void TextEditor::handleKeyboardInputs() {
 	#endif
 
 		// ignore specific keys when autocomplete is active, they will be handled later
-		if (autocomplete.isActive()) {
-			for (auto key : {ImGuiKey_Escape, ImGuiKey_Tab, ImGuiKey_Enter, ImGuiKey_KeypadEnter, ImGuiKey_UpArrow, ImGuiKey_DownArrow}) {
-				if (ImGui::IsKeyPressed(key)) {
-					return;
-				}
-			}
-		}
-
-		// ignore escape key when find/replace window is visible, it will be handled later
-		if (findReplaceVisible && ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+		if (autocomplete.isActive() && autocomplete.isSpecialKeyPressed()) {
 			return;
 		}
 
@@ -756,7 +747,15 @@ void TextEditor::handleKeyboardInputs() {
 		else if (!readOnly && language && isShortcut && ImGui::IsKeyPressed(ImGuiKey_Slash)) { toggleComments(); }
 
 		// find/replace support
-		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_F)) { openFindReplace(); }
+		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_F)) {
+			if (autocomplete.isActive()) {
+				autocomplete.cancel();
+				findCancelledAutocomplete = true;
+			}
+
+			openFindReplace();
+		}
+
 		else if (isShiftShortcut && ImGui::IsKeyPressed(ImGuiKey_F)) { findAll(); }
 		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_G)) { findNext(); }
 
@@ -797,13 +796,21 @@ void TextEditor::handleKeyboardInputs() {
 		}
 
 		// handle escape key
-		else if (ImGui::IsKeyPressed(ImGuiKey_Escape) && cursors.hasMultiple()) {
-			cursors.clearAdditional();
+		else if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+			if (autocomplete.isActive()) {
+				autocomplete.cancel();
+
+			} else if (findReplaceVisible) {
+				closeFindReplace();
+
+			} else if (cursors.hasMultiple()) {
+				cursors.clearAdditional();
+			}
 		}
 
 		// handle regular text
 		if (!io.InputQueueCharacters.empty()) {
-	        // ignore Ctrl inputs, but need to allow Alt+Ctrl as some keyboards (e.g. German) use AltGR (which _is_ Alt+Ctrl) to input certain characters
+	        // ignore Ctrl inputs, but need to allow Alt+Ctrl as some keyboards (e.g. German) use AltGR (which is Alt+Ctrl) to input certain characters
 			if (!(io.KeyCtrl && !io.KeyAlt) && !readOnly) {
 				for (auto i = 0; i < io.InputQueueCharacters.size(); i++) {
 					auto character = io.InputQueueCharacters[i];

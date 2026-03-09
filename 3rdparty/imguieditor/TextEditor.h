@@ -1097,6 +1097,7 @@ protected:
 
 		// get information
 		inline bool isActive() const { return active; }
+		bool isSpecialKeyPressed() const;
 		inline ImGuiKeyChord getTriggerShortcut() const { return configuration.triggerShortcut; }
 		inline Coordinate getStart() const { return startLocation; }
 		inline std::string getReplacement() { return currentSelection < state.suggestions.size() ? state.suggestions[currentSelection] : ""; }
@@ -1297,6 +1298,7 @@ protected:
 	bool findReplaceVisible = false;
 	bool focusOnEditor = true;
 	bool focusOnFind = false;
+	bool findCancelledAutocomplete = false;
 	std::string findText;
 	std::string replaceText;
 	bool caseSensitiveFind = false;

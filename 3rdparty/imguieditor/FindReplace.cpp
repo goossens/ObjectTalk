@@ -116,6 +116,10 @@ void TextEditor::renderFindReplace(ImVec2 pos, float width) {
 		if (focusOnFind) {
 			ImGui::SetKeyboardFocusHere();
 			focusOnFind = false;
+
+		} else if (findCancelledAutocomplete) {
+			ImGui::SetKeyboardFocusHere();
+			findCancelledAutocomplete = false;
 		}
 
 		if (inputString("###find", &findText, ImGuiInputTextFlags_AutoSelectAll)) {
@@ -168,10 +172,6 @@ void TextEditor::renderFindReplace(ImVec2 pos, float width) {
 		ImGui::SameLine();
 
 		if (ImGui::Button("x", ImVec2(optionWidth, 0.0f))) {
-			closeFindReplace();
-		}
-
-		if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
 			closeFindReplace();
 		}
 

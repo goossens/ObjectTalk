@@ -130,11 +130,7 @@ public:
 	inline void SelectAll() { selectAll(); }
 	inline void SelectLine(int line) { if (line >= 0 && line < document.lineCount()) selectLine(line); }
 	inline void SelectLines(int start, int end) { if (start >= 0 && end < document.lineCount() && start <= end) selectLines(start, end); }
-
-	inline void SelectRegion(int startLine, int startColumn, int endLine, int endColumn) {
-		selectRegion(startLine, startColumn, endLine, endColumn);
-	}
-
+	inline void SelectRegion(int startLine, int startColumn, int endLine, int endColumn) { selectRegion(startLine, startColumn, endLine, endColumn); }
 	inline void SelectToBrackets(bool includeBrackets=true) { selectToBrackets(includeBrackets); }
 	inline void GrowSelectionsToCurlyBrackets() { growSelectionsToCurlyBrackets(); }
 	inline void ShrinkSelectionsToCurlyBrackets() { shrinkSelectionsToCurlyBrackets(); }
@@ -439,7 +435,7 @@ public:
 	inline std::string GetLanguageName() const { return language == nullptr ? "None" : language->name; }
 
 	// iterate through identifiers detected by the colorizer (based on current language)
-	inline void IterateIdentifiers(std::function<void(const std::string& identifier)> callback) { document.iterateIdentifiers(callback); }
+	inline void IterateIdentifiers(std::function<void(const std::string& identifier)> callback) const { document.iterateIdentifiers(callback); }
 
 	// autocomplete state (acts as API between editor and outer application)
 	class AutoCompleteState {
@@ -924,7 +920,7 @@ protected:
 		void iterateUserData(std::function<void(int line, void* data)> callback) const;
 
 		// iterate through document to find identifiers
-		void iterateIdentifiers(std::function<void(const std::string& identifier)> callback);
+		void iterateIdentifiers(std::function<void(const std::string& identifier)> callback) const;
 
 		// utility functions
 		bool isWholeWord(Coordinate start, Coordinate end) const;

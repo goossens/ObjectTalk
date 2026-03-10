@@ -684,7 +684,7 @@ static inline bool isIdentifier(TextEditor::Color color) {
 		color == TextEditor::Color::knownIdentifier;
 }
 
-void TextEditor::Document::iterateIdentifiers(std::function<void(const std::string&)> callback) {
+void TextEditor::Document::iterateIdentifiers(std::function<void(const std::string&)> callback) const {
 	for (size_t i = 0; i < size(); i++) {
 		auto p = at(i).begin();
 		auto end = at(i).end();

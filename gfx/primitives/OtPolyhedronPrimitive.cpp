@@ -174,6 +174,6 @@ nlohmann::json OtPolyhedronPrimitive::serialize([[maybe_unused]] std::string* ba
 //	OtPolyhedronPrimitive::deserialize
 //
 
-void OtPolyhedronPrimitive::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
+void OtPolyhedronPrimitive::deserialize(nlohmann::json& data, [[maybe_unused]] std::string* basedir) {
 	detail = data.value("detail", 1);
 }

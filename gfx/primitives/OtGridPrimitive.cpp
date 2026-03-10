@@ -78,7 +78,7 @@ nlohmann::json OtGridPrimitive::serialize([[maybe_unused]] std::string* basedir)
 //	OtGridPrimitive::deserialize
 //
 
-void OtGridPrimitive::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
+void OtGridPrimitive::deserialize(nlohmann::json& data, [[maybe_unused]] std::string* basedir) {
 	widthSegments = data.value("widthSegments", 1);
 	depthSegments = data.value("depthSegments", 1);
 }

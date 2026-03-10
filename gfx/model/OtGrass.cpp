@@ -90,7 +90,7 @@ nlohmann::json OtGrass::serialize([[maybe_unused]] std::string* basedir) {
 //	OtGrass::deserialize
 //
 
-void OtGrass::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
+void OtGrass::deserialize(nlohmann::json& data, [[maybe_unused]] std::string* basedir) {
 	patchWidth = data.value("patchWidth", 1.0f);
 	patchDepth = data.value("patchDepth", 1.0f);
 	blades = data.value("blades", 10);

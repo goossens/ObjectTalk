@@ -41,7 +41,7 @@ nlohmann::json OtNodesPinClass::serialize([[maybe_unused]] std::string* basedir)
 //	OtNodesPinClass::deserialize
 //
 
-void OtNodesPinClass::deserialize(nlohmann::json data, bool restoreIDs, [[maybe_unused]] std::string* basedir) {
+void OtNodesPinClass::deserialize(nlohmann::json& data, bool restoreIDs, [[maybe_unused]] std::string* basedir) {
 	// restore ID (if required)
 	if (restoreIDs) {
 		id = data["id"];

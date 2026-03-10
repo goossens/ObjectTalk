@@ -68,7 +68,7 @@ nlohmann::json OtModelComponent::serialize(std::string* basedir) {
 //	OtModelComponent::deserialize
 //
 
-void OtModelComponent::deserialize(nlohmann::json data, std::string* basedir) {
+void OtModelComponent::deserialize(nlohmann::json& data, std::string* basedir) {
 	asset = OtAssetDeserialize(&data, "model", basedir);
 	castShadow = data.value("castShadow", true);
 }

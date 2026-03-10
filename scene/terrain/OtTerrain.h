@@ -42,7 +42,7 @@ public:
 
 	// (de)serialize properties
 	nlohmann::json serialize(std::string* basedir);
-	void deserialize(nlohmann::json data, std::string* basedir);
+	void deserialize(nlohmann::json& data, std::string* basedir);
 
 	// update state based on provided camera
 	void update(OtCamera& camera);

@@ -102,7 +102,7 @@ nlohmann::json OtTerrain::serialize(std::string* basedir) {
 //	OtTerrain::deserialize
 //
 
-void OtTerrain::deserialize(nlohmann::json data, std::string* basedir) {
+void OtTerrain::deserialize(nlohmann::json& data, std::string* basedir) {
 	tileSize = data.value("tileSize", 32);
 	lod = data.value("lod", 4);
 	hScale = data.value("hScale", 1.0f);

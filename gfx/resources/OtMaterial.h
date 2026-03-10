@@ -32,7 +32,7 @@ public:
 
 	// (de)serialize material
 	nlohmann::json serialize(std::string* basedir);
-	void deserialize(nlohmann::json data, std::string* basedir);
+	void deserialize(nlohmann::json& data, std::string* basedir);
 
 	// set the properties
 	inline void setAlbedo(const glm::vec4& a) { albedo = a; }

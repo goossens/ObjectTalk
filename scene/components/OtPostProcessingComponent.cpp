@@ -75,7 +75,7 @@ nlohmann::json OtPostProcessingComponent::serialize([[maybe_unused]] std::string
 //	OtPostProcessingComponent::deserialize
 //
 
-void OtPostProcessingComponent::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
+void OtPostProcessingComponent::deserialize(nlohmann::json& data, [[maybe_unused]] std::string* basedir) {
 	fxaa = data.value("fxaa", false);
 	fog = data.value("fog", false);
 	fogDensity = data.value("fogDensity", 0.1f);

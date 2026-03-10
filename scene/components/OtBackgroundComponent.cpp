@@ -42,6 +42,6 @@ nlohmann::json OtBackgroundComponent::serialize([[maybe_unused]] std::string* ba
 //	OtBackgroundComponent::deserialize
 //
 
-void OtBackgroundComponent::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
+void OtBackgroundComponent::deserialize(nlohmann::json& data, [[maybe_unused]] std::string* basedir) {
 	color = data.value("color", glm::vec3(0.0f));
 }

@@ -49,7 +49,7 @@ nlohmann::json OtPointLightComponent::serialize([[maybe_unused]] std::string* ba
 //	OtPointLightComponent::deserialize
 //
 
-void OtPointLightComponent::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
+void OtPointLightComponent::deserialize(nlohmann::json& data, [[maybe_unused]] std::string* basedir) {
 	offset = data.value("offset", glm::vec3(0.0f));
 	radius = data.value("radius", 1.0f);
 	color = data.value("color", glm::vec3(1.0f));

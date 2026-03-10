@@ -136,7 +136,7 @@ nlohmann::json OtNodesComponent::serialize(std::string* basedir) {
 //	OtNodesComponent::deserialize
 //
 
-void OtNodesComponent::deserialize(nlohmann::json data, std::string* basedir) {
+void OtNodesComponent::deserialize(nlohmann::json& data, std::string* basedir) {
 	asset = OtAssetDeserialize(&data, "path", basedir);
 	savedBasedir = basedir ? *basedir : "";
 

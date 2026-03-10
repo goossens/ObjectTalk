@@ -53,7 +53,7 @@ nlohmann::json OtDirectionalLightComponent::serialize([[maybe_unused]] std::stri
 //	OtDirectionalLightComponent::deserialize
 //
 
-void OtDirectionalLightComponent::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
+void OtDirectionalLightComponent::deserialize(nlohmann::json& data, [[maybe_unused]] std::string* basedir) {
 	elevation = data.value("elevation", 10.0f);
 	azimuth = data.value("azimuth", 180.0f);
 	color = data.value("color", glm::vec3(1.0f));

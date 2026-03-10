@@ -603,7 +603,7 @@ std::string OtAudio::archiveCircuits(const std::vector<uint32_t>& circuitIDs) {
 //	OtAudio::restoreCircuit
 //
 
-OtCircuit OtAudio::restoreCircuit(nlohmann::json data, bool restoreIDs, std::string* basedir) {
+OtCircuit OtAudio::restoreCircuit(nlohmann::json& data, bool restoreIDs, std::string* basedir) {
 	// create a new circuit
 	auto circuit = OtCircuitFactory::createCircuit(data["type"]);
 	circuit->deserialize(data, restoreIDs, basedir);

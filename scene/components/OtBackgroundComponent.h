@@ -27,7 +27,7 @@ public:
 
 	// (de)serialize component
 	nlohmann::json serialize(std::string* basedir);
-	void deserialize(nlohmann::json data, std::string* basedir);
+	void deserialize(nlohmann::json& data, std::string* basedir);
 
 	// component name
 	static constexpr char const* name = "Background";

@@ -57,7 +57,7 @@ nlohmann::json OtNodeClass::serialize(std::string* basedir) {
 //	OtNodeClass::deserialize
 //
 
-void OtNodeClass::deserialize(nlohmann::json data, bool restoreIDs, std::string* basedir) {
+void OtNodeClass::deserialize(nlohmann::json& data, bool restoreIDs, std::string* basedir) {
 	// restore ID (if required)
 	if (restoreIDs) {
 		id = data["id"];

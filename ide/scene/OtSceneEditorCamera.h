@@ -27,7 +27,7 @@ public:
 
 	// (de)serialize data
 	nlohmann::json serialize(std::string* basedir);
-	void deserialize(nlohmann::json data, std::string* basedir);
+	void deserialize(nlohmann::json& data, std::string* basedir);
 
 	// process possible camera inputs
 	void handleKeyboardAndMouse();

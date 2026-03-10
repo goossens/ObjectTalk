@@ -51,6 +51,6 @@ nlohmann::json OtParticlesComponent::serialize(std::string* basedir) {
 //	OtParticlesComponent::deserialize
 //
 
-void OtParticlesComponent::deserialize(nlohmann::json data, std::string* basedir) {
+void OtParticlesComponent::deserialize(nlohmann::json& data, std::string* basedir) {
 	settings.deserialize(data["settings"], basedir);
 }

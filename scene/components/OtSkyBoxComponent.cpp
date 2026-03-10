@@ -48,7 +48,7 @@ nlohmann::json OtSkyBoxComponent::serialize(std::string* basedir) {
 //	OtSkyBoxComponent::deserialize
 //
 
-void OtSkyBoxComponent::deserialize(nlohmann::json data, std::string* basedir) {
+void OtSkyBoxComponent::deserialize(nlohmann::json& data, std::string* basedir) {
 	cubemap = OtAssetDeserialize(&data, "cubemap", basedir);
 	brightness = data.value("brightness", 1.0f);
 	gamma = data.value("gamma", 2.2f);

@@ -57,7 +57,7 @@ nlohmann::json OtCircuitClass::serialize(std::string* basedir) {
 //	OtCircuitClass::deserialize
 //
 
-void OtCircuitClass::deserialize(nlohmann::json data, bool restoreIDs, std::string* basedir) {
+void OtCircuitClass::deserialize(nlohmann::json& data, bool restoreIDs, std::string* basedir) {
 	// restore ID (if required)
 	if (restoreIDs) {
 		id = data["id"];

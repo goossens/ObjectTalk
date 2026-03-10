@@ -148,7 +148,7 @@ public:
 
 	// (de)serialize
 	nlohmann::json serialize(std::string* basedir=nullptr);
-	void deserialize(nlohmann::json data, bool restoreIDs=true, std::string* basedir=nullptr);
+	void deserialize(nlohmann::json& data, bool restoreIDs=true, std::string* basedir=nullptr);
 
 	// get the pin type as a string
 	inline std::string getTypeName() { return OtNodesPinTypeNames[type]; }

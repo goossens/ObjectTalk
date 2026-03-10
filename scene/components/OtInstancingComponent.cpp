@@ -40,7 +40,7 @@ nlohmann::json OtInstancingComponent::serialize(std::string* basedir) {
 //	OtInstancingComponent::deserialize
 //
 
-void OtInstancingComponent::deserialize(nlohmann::json data, std::string* basedir) {
+void OtInstancingComponent::deserialize(nlohmann::json& data, std::string* basedir) {
 	asset = OtAssetDeserialize(&data, "path", basedir);
 }
 

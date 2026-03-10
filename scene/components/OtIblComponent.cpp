@@ -42,6 +42,6 @@ nlohmann::json OtIblComponent::serialize(std::string* basedir) {
 //	OtIblComponent::deserialize
 //
 
-void OtIblComponent::deserialize(nlohmann::json data, std::string* basedir) {
+void OtIblComponent::deserialize(nlohmann::json& data, std::string* basedir) {
 	cubemap = OtAssetDeserialize(&data, "cubemap", basedir);
 }

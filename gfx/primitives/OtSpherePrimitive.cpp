@@ -102,7 +102,7 @@ nlohmann::json OtSpherePrimitive::serialize([[maybe_unused]] std::string* basedi
 //	OtSpherePrimitive::deserialize
 //
 
-void OtSpherePrimitive::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
+void OtSpherePrimitive::deserialize(nlohmann::json& data, [[maybe_unused]] std::string* basedir) {
 	phiSegments = data.value("phiSegments", 32);
 	phiStart = data.value("phiStart", 0.0f);
 	phiLength = data.value("phiLength", 360.0f);

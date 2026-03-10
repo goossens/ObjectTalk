@@ -138,6 +138,6 @@ nlohmann::json OtScriptComponent::serialize(std::string* basedir) {
 //	OtScriptComponent::deserialize
 //
 
-void OtScriptComponent::deserialize(nlohmann::json data, std::string* basedir) {
+void OtScriptComponent::deserialize(nlohmann::json& data, std::string* basedir) {
 	script = OtAssetDeserialize(&data, "path", basedir);
 }

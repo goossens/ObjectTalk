@@ -121,7 +121,7 @@ nlohmann::json OtMaterial::serialize(std::string* basedir) {
 //	OtMaterial::deserialize
 //
 
-void OtMaterial::deserialize(nlohmann::json data, std::string* basedir) {
+void OtMaterial::deserialize(nlohmann::json& data, std::string* basedir) {
 	albedo = data.value("albedo", glm::vec4(1.0f));
 	metallic = data.value("metallic", 0.5f);
 	roughness = data.value("roughness", 0.5f);

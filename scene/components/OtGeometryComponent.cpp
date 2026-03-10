@@ -48,7 +48,7 @@ nlohmann::json OtGeometryComponent::serialize(std::string* basedir) {
 //	OtGeometryComponent::deserialize
 //
 
-void OtGeometryComponent::deserialize(nlohmann::json data, std::string* basedir) {
+void OtGeometryComponent::deserialize(nlohmann::json& data, std::string* basedir) {
 	asset = OtAssetDeserialize(&data, "path", basedir);
 	transparent = data.value("transparent", false);
 	cullBack = data.value("cullBack", true);

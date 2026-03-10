@@ -46,7 +46,7 @@ nlohmann::json OtMessageComponent::serialize([[maybe_unused]] std::string* based
 //	OtMessageComponent::deserialize
 //
 
-void OtMessageComponent::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
+void OtMessageComponent::deserialize(nlohmann::json& data, [[maybe_unused]] std::string* basedir) {
 	message = data.value("message", "");
 	visibleTime = data.value("visibleTime", 0.0f);
 	fadeTime = data.value("fadeTime", 0.0f);

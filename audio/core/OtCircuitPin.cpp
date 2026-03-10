@@ -124,7 +124,7 @@ nlohmann::json OtCircuitPinClass::serialize([[maybe_unused]] std::string* basedi
 //	OtCircuitPinClass::deserialize
 //
 
-void OtCircuitPinClass::deserialize(nlohmann::json data, bool restoreIDs, [[maybe_unused]] std::string* basedir) {
+void OtCircuitPinClass::deserialize(nlohmann::json& data, bool restoreIDs, [[maybe_unused]] std::string* basedir) {
 	if (restoreIDs) {
 		id = data["id"];
 	}

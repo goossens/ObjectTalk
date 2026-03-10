@@ -41,7 +41,7 @@ public:
 
 	// (de)serialize primitive
 	virtual nlohmann::json serialize(std::string* basedir) = 0;
-	virtual void deserialize(nlohmann::json data, std::string* basedir) = 0;
+	virtual void deserialize(nlohmann::json& data, std::string* basedir) = 0;
 
 	// get type name of primitive
 	virtual const char* getTypeName() { return name; }

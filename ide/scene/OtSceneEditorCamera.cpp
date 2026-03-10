@@ -114,7 +114,7 @@ nlohmann::json OtSceneEditorCamera::serialize([[maybe_unused]] std::string* base
 //	OtSceneEditorCamera::deserialize
 //
 
-void OtSceneEditorCamera::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
+void OtSceneEditorCamera::deserialize(nlohmann::json& data, [[maybe_unused]] std::string* basedir) {
 	position = data.value("position", glm::vec3(0.0f, 2.0f, 5.0f));
 	pitch = data.value("pitch", -20.0f);
 	yaw = data.value("yaw", 0.0f);

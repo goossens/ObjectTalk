@@ -47,6 +47,6 @@ nlohmann::json OtGrassComponent::serialize(std::string* basedir) {
 //	OtGrassComponent::deserialize
 //
 
-void OtGrassComponent::deserialize(nlohmann::json data, std::string* basedir) {
+void OtGrassComponent::deserialize(nlohmann::json& data, std::string* basedir) {
 	grass->deserialize(data["grass"], basedir);
 }

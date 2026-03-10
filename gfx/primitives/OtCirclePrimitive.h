@@ -37,7 +37,7 @@ public:
 
 	// (de)serialize primitive
 	nlohmann::json serialize(std::string* basedir) override;
-	void deserialize(nlohmann::json data, std::string* basedir) override;
+	void deserialize(nlohmann::json& data, std::string* basedir) override;
 
 	// get type name of primitive
 	const char* getTypeName() override { return name; }

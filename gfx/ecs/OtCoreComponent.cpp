@@ -65,7 +65,7 @@ nlohmann::json OtCoreComponent::serialize([[maybe_unused]] std::string* basedir)
 //	OtCoreComponent::deserialize
 //
 
-void OtCoreComponent::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
+void OtCoreComponent::deserialize(nlohmann::json& data, [[maybe_unused]] std::string* basedir) {
 	uuid = data["uuid"];
 	tag = data["tag"];
 }

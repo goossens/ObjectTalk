@@ -50,6 +50,6 @@ nlohmann::json OtTerrainComponent::serialize(std::string* basedir) {
 //	OtTerrainComponent::deserialize
 //
 
-void OtTerrainComponent::deserialize(nlohmann::json data, std::string* basedir) {
+void OtTerrainComponent::deserialize(nlohmann::json& data, std::string* basedir) {
 	terrain->deserialize(data, basedir);
 }

@@ -80,7 +80,7 @@ nlohmann::json OtCirclePrimitive::serialize([[maybe_unused]] std::string* basedi
 //	OtCirclePrimitive::deserialize
 //
 
-void OtCirclePrimitive::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
+void OtCirclePrimitive::deserialize(nlohmann::json& data, [[maybe_unused]] std::string* basedir) {
 	segments = data.value("segments", 32);
 	thetaStart = data.value("thetaStart", 0.0f);
 	thetaLength = data.value("thetaLength", 360.0f);

@@ -61,7 +61,7 @@ nlohmann::json OtSkyComponent::serialize([[maybe_unused]] std::string* basedir) 
 //	OtSkyComponent::deserialize
 //
 
-void OtSkyComponent::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
+void OtSkyComponent::deserialize(nlohmann::json& data, [[maybe_unused]] std::string* basedir) {
 	elevation = data.value("elevation", 10.0f);
 	azimuth = data.value("azimuth", 180.0f);
 	castShadow = data.value("castShadow", true);

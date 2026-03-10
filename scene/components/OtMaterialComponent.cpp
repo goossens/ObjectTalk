@@ -52,6 +52,6 @@ nlohmann::json OtMaterialComponent::serialize(std::string* basedir) {
 //	OtMaterialComponent::deserialize
 //
 
-void OtMaterialComponent::deserialize(nlohmann::json data, std::string* basedir) {
+void OtMaterialComponent::deserialize(nlohmann::json& data, std::string* basedir) {
 	material->deserialize(data["material"], basedir);
 }

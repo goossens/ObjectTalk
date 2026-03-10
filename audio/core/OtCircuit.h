@@ -94,7 +94,7 @@ public:
 
 	// (de)serialize
 	nlohmann::json serialize(std::string* basedir=nullptr);
-	void deserialize(nlohmann::json data, bool restoreIDs=true, std::string* basedir=nullptr);
+	void deserialize(nlohmann::json& data, bool restoreIDs=true, std::string* basedir=nullptr);
 	void deserializeFromString(const std::string& json, bool restoreIDs=true, std::string* basedir=nullptr);
 
 	virtual inline void customSerialize([[maybe_unused]] nlohmann::json* data, [[maybe_unused]] std::string* basedir) {}

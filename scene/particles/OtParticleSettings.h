@@ -32,7 +32,7 @@ struct OtParticleSettings {
 
 	// (de)serialize material
 	nlohmann::json serialize(std::string* basedir);
-	void deserialize(nlohmann::json data, std::string* basedir);
+	void deserialize(nlohmann::json& data, std::string* basedir);
 
 	// enums
 	enum class Shape{

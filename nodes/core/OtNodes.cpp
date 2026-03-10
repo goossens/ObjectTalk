@@ -518,7 +518,7 @@ std::string OtNodes::archiveNodes(const std::vector<uint32_t>& selection) {
 //	OtNodes::restoreNode
 //
 
-OtNode OtNodes::restoreNode(nlohmann::json data, bool restoreIDs, std::string* basedir) {
+OtNode OtNodes::restoreNode(nlohmann::json& data, bool restoreIDs, std::string* basedir) {
 	// create a new node
 	auto node = OtNodesFactory::createNode(data["type"]);
 	node->deserialize(data, restoreIDs, basedir);

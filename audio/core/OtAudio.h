@@ -167,5 +167,5 @@ private:
 	void sortCircuitsTopologically();
 
 	// restore a circuit from its JSON data
-	OtCircuit restoreCircuit(nlohmann::json data, bool restoreIDs=true, std::string* basedir=nullptr);
+	OtCircuit restoreCircuit(nlohmann::json& data, bool restoreIDs=true, std::string* basedir=nullptr);
 };

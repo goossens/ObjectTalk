@@ -154,5 +154,5 @@ private:
 	void classifyLinks();
 
 	// restore a node from its JSON data
-	OtNode restoreNode(nlohmann::json data, bool restoreIDs=true, std::string* basedir=nullptr);
+	OtNode restoreNode(nlohmann::json& data, bool restoreIDs=true, std::string* basedir=nullptr);
 };

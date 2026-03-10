@@ -71,7 +71,7 @@ nlohmann::json OtWaterComponent::serialize(std::string* basedir) {
 //	OtWaterComponent::deserialize
 //
 
-void OtWaterComponent::deserialize(nlohmann::json data, std::string* basedir) {
+void OtWaterComponent::deserialize(nlohmann::json& data, std::string* basedir) {
 	level = data.value("level", 0.0f);
 	distance = data.value("distance", 100.0f);
 	useRefractance = data.value("useRefractance", false);

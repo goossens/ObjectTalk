@@ -85,7 +85,7 @@ nlohmann::json OtTerrainHeights::serialize([[maybe_unused]] std::string* basedir
 //	OtTerrainHeights::deserialize
 //
 
-void OtTerrainHeights::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
+void OtTerrainHeights::deserialize(nlohmann::json& data, [[maybe_unused]] std::string* basedir) {
 	heightmapSize = data.value("size", 256);
 	normalStrength = data.value("normalStrength", 10.0f);
 	frequency = data.value("frequency", 10);

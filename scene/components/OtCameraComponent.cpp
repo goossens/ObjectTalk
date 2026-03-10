@@ -51,7 +51,7 @@ nlohmann::json OtCameraComponent::serialize([[maybe_unused]] std::string* basedi
 //	OtCameraComponent::deserialize
 //
 
-void OtCameraComponent::deserialize(nlohmann::json data, [[maybe_unused]] std::string* basedir) {
+void OtCameraComponent::deserialize(nlohmann::json& data, [[maybe_unused]] std::string* basedir) {
 	mainCamera = data.value("mainCamera", false);
 	fov = data.value("fov", 60.0f);
 	nearPlane = data.value("near", 0.1f);

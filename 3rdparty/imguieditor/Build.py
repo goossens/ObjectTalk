@@ -51,7 +51,6 @@ if __name__ == "__main__":
 	append("Trie.cpp", 12)
 	append("Tables.h", 26)
 	append("CodePoint.cpp", 17)
-	append("Language.cpp", 26)
 
 	append("languages/C.h", 9)
 	append("languages/Cpp.h", 5)

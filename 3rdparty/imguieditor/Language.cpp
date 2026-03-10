@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include <cctype>
-
 #include "TextEditor.h"
 
 #include "languages/C.h"

@@ -14,9 +14,8 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtUi.h"
-
 #include "OtAudioSettings.h"
+#include "OtAudioUi.h"
 #include "OtCircuitControl.h"
 #include "OtCircuitFactory.h"
 #include "OtDelay.h"
@@ -47,11 +46,11 @@ public:
 	}
 
 	inline float getCustomRenderingWidth() override {
-		return OtUi::knobWidth(3);
+		return OtAudioUi::knobWidth(3);
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return OtUi::knobHeight();
+		return OtAudioUi::knobHeight();
 	}
 
 	// (de)serialize circuit

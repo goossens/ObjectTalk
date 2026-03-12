@@ -185,13 +185,6 @@ public:
 
 	static bool selectorPowerOfTwo(const char* label, int* value, int startValue, int endValue);
 
-	// knobs
-	static bool knob(const char* label, float* value, float minValue, float maxValue, const char* format="%.0f", bool logarithmic=false);
-	static bool knob(const char* label, int* value, int minValue, int maxValue);
-
-	static float knobWidth(size_t columns=1);
-	static float knobHeight(size_t rows=1);
-
 	// bezier curve editor
 	static bool bezier(const char* label, float P[4]);
 

@@ -125,8 +125,8 @@ public:
 	}
 
 	inline void calculateSizes() {
-		auto knobWidth = OtUi::knobWidth();
-		auto knobHeight = OtUi::knobHeight();
+		auto knobWidth = OtAudioUi::knobWidth();
+		auto knobHeight = OtAudioUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
 		float width1 = 0.0f;
 		float height1 = 0.0f;
@@ -194,8 +194,8 @@ public:
 		callback("pink", &fHslider1, 0.0f);
 	}
 
-	inline bool editWhite() { return OtUi::knob("White", &fHslider0, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editPink() { return OtUi::knob("Pink", &fHslider1, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editWhite() { return OtAudioUi::knob("White", &fHslider0, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editPink() { return OtAudioUi::knob("Pink", &fHslider1, 0.0f, 1.0f, "%.2f", false); }
 
 	inline void setWhite(float value) { fHslider0 = value; }
 	inline void setPink(float value) { fHslider1 = value; }

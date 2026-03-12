@@ -312,8 +312,8 @@ public:
 	}
 
 	inline void calculateSizes() {
-		auto knobWidth = OtUi::knobWidth();
-		auto knobHeight = OtUi::knobHeight();
+		auto knobWidth = OtAudioUi::knobWidth();
+		auto knobHeight = OtAudioUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
 		float width1 = 0.0f;
 		float height1 = 0.0f;
@@ -381,8 +381,8 @@ public:
 		callback("volume", &fVslider1, 0.0f);
 	}
 
-	inline bool editGain() { return OtUi::knob("Gain", &fVslider0, -20.0f, 20.0f, "%.1fdB", false); }
-	inline bool editVolume() { return OtUi::knob("Volume", &fVslider1, -20.0f, 20.0f, "%.1fdB", false); }
+	inline bool editGain() { return OtAudioUi::knob("Gain", &fVslider0, -20.0f, 20.0f, "%.1fdB", false); }
+	inline bool editVolume() { return OtAudioUi::knob("Volume", &fVslider1, -20.0f, 20.0f, "%.1fdB", false); }
 
 	inline void setGain(float value) { fVslider0 = value; }
 	inline void setVolume(float value) { fVslider1 = value; }

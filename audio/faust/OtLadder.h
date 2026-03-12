@@ -161,8 +161,8 @@ public:
 	}
 
 	inline void calculateSizes() {
-		auto knobWidth = OtUi::knobWidth();
-		auto knobHeight = OtUi::knobHeight();
+		auto knobWidth = OtAudioUi::knobWidth();
+		auto knobHeight = OtAudioUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
 		float width1 = 0.0f;
 		float height1 = 0.0f;
@@ -230,8 +230,8 @@ public:
 		callback("resonance", &fVslider1, 0.5f);
 	}
 
-	inline bool editCutoff() { return OtUi::knob("Cutoff", &fVslider0, 80.0f, 8000.0f, "%.0fhz", false); }
-	inline bool editResonance() { return OtUi::knob("Resonance", &fVslider1, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editCutoff() { return OtAudioUi::knob("Cutoff", &fVslider0, 80.0f, 8000.0f, "%.0fhz", false); }
+	inline bool editResonance() { return OtAudioUi::knob("Resonance", &fVslider1, 0.0f, 1.0f, "%.2f", false); }
 
 	inline void setCutoff(float value) { fVslider0 = value; }
 	inline void setResonance(float value) { fVslider1 = value; }

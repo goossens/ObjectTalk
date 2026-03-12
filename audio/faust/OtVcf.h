@@ -169,8 +169,8 @@ public:
 	}
 
 	inline void calculateSizes() {
-		auto knobWidth = OtUi::knobWidth();
-		auto knobHeight = OtUi::knobHeight();
+		auto knobWidth = OtAudioUi::knobWidth();
+		auto knobHeight = OtAudioUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
 		float width1 = 0.0f;
 		float height1 = 0.0f;
@@ -238,8 +238,8 @@ public:
 		callback("res", &fVslider0, 0.5f);
 	}
 
-	inline bool editFreq() { return OtUi::knob("Freq", &fVslider1, 80.0f, 8000.0f, "%.0fhz", false); }
-	inline bool editRes() { return OtUi::knob("Res", &fVslider0, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editFreq() { return OtAudioUi::knob("Freq", &fVslider1, 80.0f, 8000.0f, "%.0fhz", false); }
+	inline bool editRes() { return OtAudioUi::knob("Res", &fVslider0, 0.0f, 1.0f, "%.2f", false); }
 
 	inline void setFreq(float value) { fVslider1 = value; }
 	inline void setRes(float value) { fVslider0 = value; }

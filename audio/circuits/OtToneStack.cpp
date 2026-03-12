@@ -65,19 +65,19 @@ public:
 		ImGui::SetNextItemWidth(itemWidth - (ImGui::CalcTextSize("X").x * 4.0f + ImGui::GetStyle().ItemInnerSpacing.x));
 		auto changed = OtUi::selectorEnum("Type", &tonestackType, tonestackTypes, tonestackTypeCount);
 
-		changed |= OtUi::knob("Bass", &bass, 0.0f, 1.0f, "%.2f"); ImGui::SameLine();
-		changed |= OtUi::knob("Middle", &middle, 0.0f, 1.0f, "%.2f"); ImGui::SameLine();
-		changed |= OtUi::knob("Treble", &treble, 0.0f, 1.0f, "%.2f");
+		changed |= OtAudioUi::knob("Bass", &bass, 0.0f, 1.0f, "%.2f"); ImGui::SameLine();
+		changed |= OtAudioUi::knob("Middle", &middle, 0.0f, 1.0f, "%.2f"); ImGui::SameLine();
+		changed |= OtAudioUi::knob("Treble", &treble, 0.0f, 1.0f, "%.2f");
 		return changed;
 	}
 
 
 	inline float getCustomRenderingWidth() override {
-		return OtUi::knobWidth(3);
+		return OtAudioUi::knobWidth(3);
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return ImGui::GetFrameHeightWithSpacing() + OtUi::knobHeight();
+		return ImGui::GetFrameHeightWithSpacing() + OtAudioUi::knobHeight();
 	}
 
 	// (de)serialize circuit

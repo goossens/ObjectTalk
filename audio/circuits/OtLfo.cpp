@@ -41,7 +41,7 @@ public:
 			dsp.setWaveForm(waveform);
 		}
 
-		changed |= OtUi::knob("Freq", &frequency, 0.1f, 100.0f, "%.1fhz", true);
+		changed |= OtAudioUi::knob("Freq", &frequency, 0.1f, 100.0f, "%.1fhz", true);
 		return changed;
 	}
 
@@ -50,7 +50,7 @@ public:
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return OtAudioUi::waveFormSelectorHeight() + OtUi::knobHeight();
+		return OtAudioUi::waveFormSelectorHeight() + OtAudioUi::knobHeight();
 	}
 
 	// (de)serialize circuit

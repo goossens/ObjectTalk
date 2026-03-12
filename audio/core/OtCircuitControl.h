@@ -14,9 +14,8 @@
 
 #include <string>
 
-#include "OtUi.h"
-
 #include "OtAudioUtilities.h"
+#include "OtAudioUi.h"
 #include "OtCircuitPin.h"
 
 
@@ -61,7 +60,7 @@ public:
 			ImGui::BeginDisabled();
 		}
 
-		auto result = OtUi::knob(name.c_str(), value, minValue, maxValue, format.c_str(), isLogarithmic);
+		auto result = OtAudioUi::knob(name.c_str(), value, minValue, maxValue, format.c_str(), isLogarithmic);
 
 		if (pin && pin->isSourceConnected()) {
 			ImGui::EndDisabled();

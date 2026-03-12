@@ -11,8 +11,10 @@
 
 #include <algorithm>
 #include <cmath>
+#include <numbers>
 
 #include "fmt/format.h"
+#include "imgui-knobs.h"
 #include "implot.h"
 
 #include "OtAudioUi.h"
@@ -165,6 +167,77 @@ float OtAudioUi::smallToggleButtonWidth() {
 
 
 //
+//	OtAudioUi::knob
+//
+
+static constexpr float pi = static_cast<float>(std::numbers::pi);
+
+bool OtAudioUi::knob(const char* label, float* value, float minValue, float maxValue, const char* format, bool logarithmic) {
+	auto size = ImGui::GetTextLineHeight() - 2.0f;
+	ImGui::PushFont(nullptr, size);
+
+	auto result = ImGuiKnobs::Knob(
+		label, value, minValue, maxValue, 0.0f,
+		format, ImGuiKnobVariant_WiperDot,
+		size * 5.0f, logarithmic ? ImGuiKnobFlags_Logarithmic : 0, 10,
+		pi * 0.6f, pi * 2.4f);
+
+	ImGui::PopFont();
+	return result;
+}
+
+bool OtAudioUi::knob(const char* label, int* value, int minValue, int maxValue) {
+	auto size = ImGui::GetTextLineHeight() - 2.0f;
+	ImGui::PushFont(nullptr, size);
+
+	auto result = ImGuiKnobs::KnobInt(
+		label, value, minValue, maxValue, 0.0f,
+		"%i", ImGuiKnobVariant_WiperDot,
+		size * 5.0f, 0, 10,
+		pi * 0.6f, pi * 2.4f);
+
+	ImGui::PopFont();
+	return result;
+}
+
+
+//
+//	OtAudioUi::knobWidth
+//
+
+float OtAudioUi::knobWidth(size_t columns) {
+	ImGui::PushFont(nullptr, ImGui::GetTextLineHeight() - 2.0f);
+	float width = 0.0f;
+
+	if (columns != 0) {
+		width = ImGui::GetTextLineHeight() * 5.0f * columns + ImGui::GetStyle().ItemSpacing.x * (columns - 1);
+	}
+
+	ImGui::PopFont();
+	return width;
+}
+
+
+//
+//	OtAudioUi::knobHeight
+//
+
+float OtAudioUi::knobHeight(size_t rows) {
+	ImGui::PushFont(nullptr, ImGui::GetTextLineHeight() - 2.0f);
+	float height = 0.0f;
+
+	if (rows != 0) {
+		height = ImGui::GetFrameHeightWithSpacing() * 2.0f;
+		height += ImGui::GetTextLineHeight() * 5.0f;
+		height *= rows;
+	}
+
+	ImGui::PopFont();
+	return height;
+}
+
+
+//
 //	OtAudioUi::trimSlider
 //
 
@@ -192,7 +265,7 @@ bool OtAudioUi::tuningPopup(float* tuning) {
 	if (ImGui::BeginPopup("tuningPopup")) {
 		auto cents = static_cast<int>(*tuning);
 
-		if (OtUi::knob("Cents", &cents, -4800, 4800)) {
+		if (OtAudioUi::knob("Cents", &cents, -4800, 4800)) {
 			*tuning = static_cast<float>(cents);
 			changed |= true;
 		}

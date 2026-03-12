@@ -150,8 +150,8 @@ public:
 	}
 
 	inline void calculateSizes() {
-		auto knobWidth = OtUi::knobWidth();
-		auto knobHeight = OtUi::knobHeight();
+		auto knobWidth = OtAudioUi::knobWidth();
+		auto knobHeight = OtAudioUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
 		float width1 = 0.0f;
 		float height1 = 0.0f;
@@ -237,10 +237,10 @@ public:
 		callback("release", &fVslider0, 0.03f);
 	}
 
-	inline bool editAttack() { return OtUi::knob("Attack", &fVslider1, 0.0f, 10.0f, "%.3fs", true); }
-	inline bool editDecay() { return OtUi::knob("Decay", &fVslider2, 0.0f, 10.0f, "%.3fs", true); }
-	inline bool editSustain() { return OtUi::knob("Sustain", &fVslider3, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editRelease() { return OtUi::knob("Release", &fVslider0, 0.0f, 10.0f, "%.3fs", true); }
+	inline bool editAttack() { return OtAudioUi::knob("Attack", &fVslider1, 0.0f, 10.0f, "%.3fs", true); }
+	inline bool editDecay() { return OtAudioUi::knob("Decay", &fVslider2, 0.0f, 10.0f, "%.3fs", true); }
+	inline bool editSustain() { return OtAudioUi::knob("Sustain", &fVslider3, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editRelease() { return OtAudioUi::knob("Release", &fVslider0, 0.0f, 10.0f, "%.3fs", true); }
 
 	inline void setAttack(float value) { fVslider1 = value; }
 	inline void setDecay(float value) { fVslider2 = value; }

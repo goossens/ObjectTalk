@@ -52,18 +52,18 @@ public:
 		ImGui::SetNextItemWidth(itemWidth - (ImGui::CalcTextSize("X").x * 4.0f + ImGui::GetStyle().ItemInnerSpacing.x));
 		auto changed = OtUi::selectorEnum("Tube", &tube, tubeTypes, tubeTypeCount);
 
-		changed |= OtUi::knob("Gain", &gain, -20.0f, 20.0f, "%.1fdB"); ImGui::SameLine();
-		changed |= OtUi::knob("Volume", &volume, -20.0f, 20.0f, "%.1fdB");
+		changed |= OtAudioUi::knob("Gain", &gain, -20.0f, 20.0f, "%.1fdB"); ImGui::SameLine();
+		changed |= OtAudioUi::knob("Volume", &volume, -20.0f, 20.0f, "%.1fdB");
 		return changed;
 	}
 
 
 	inline float getCustomRenderingWidth() override {
-		return OtUi::knobWidth(2);
+		return OtAudioUi::knobWidth(2);
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return ImGui::GetFrameHeightWithSpacing() + OtUi::knobHeight();
+		return ImGui::GetFrameHeightWithSpacing() + OtAudioUi::knobHeight();
 	}
 
 	// (de)serialize circuit

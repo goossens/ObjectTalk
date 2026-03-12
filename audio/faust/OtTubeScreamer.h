@@ -172,8 +172,8 @@ public:
 	}
 
 	inline void calculateSizes() {
-		auto knobWidth = OtUi::knobWidth();
-		auto knobHeight = OtUi::knobHeight();
+		auto knobWidth = OtAudioUi::knobWidth();
+		auto knobHeight = OtAudioUi::knobHeight();
 		float width1 = 0.0f;
 		float height1 = 0.0f;
 		width1 = std::max(width1, knobWidth);
@@ -245,9 +245,9 @@ public:
 		callback("level", &fHslider2, -16.0f);
 	}
 
-	inline bool editDrive() { return OtUi::knob("Drive", &fHslider1, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editTone() { return OtUi::knob("Tone", &fHslider0, 100.0f, 1000.0f, "%.0f", false); }
-	inline bool editLevel() { return OtUi::knob("Level", &fHslider2, -20.0f, 4.0f, "%.1fdB", false); }
+	inline bool editDrive() { return OtAudioUi::knob("Drive", &fHslider1, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editTone() { return OtAudioUi::knob("Tone", &fHslider0, 100.0f, 1000.0f, "%.0f", false); }
+	inline bool editLevel() { return OtAudioUi::knob("Level", &fHslider2, -20.0f, 4.0f, "%.1fdB", false); }
 
 	inline void setDrive(float value) { fHslider1 = value; }
 	inline void setTone(float value) { fHslider0 = value; }

@@ -42,7 +42,7 @@ public:
 		changed |= waveTableAsset.renderUI("File");
 
 		if (!frequencyInput->isSourceConnected()) {
-			changed |= OtUi::knob("Freq", &frequency, 60.0f, 6000.0f, "%.0fhz", true);
+			changed |= OtAudioUi::knob("Freq", &frequency, 60.0f, 6000.0f, "%.0fhz", true);
 		}
 
 		if (!shapeInput->isSourceConnected()) {
@@ -50,7 +50,7 @@ public:
 				ImGui::SameLine();
 			}
 
-			changed |= OtUi::knob("Shape", &shape, 0.0f, 1.0f, "%.001f");
+			changed |= OtAudioUi::knob("Shape", &shape, 0.0f, 1.0f, "%.001f");
 		}
 
 		return changed;
@@ -62,7 +62,7 @@ public:
 
 	inline float getCustomRenderingHeight() override {
 		bool needKnobs = !frequencyInput->isSourceConnected() || !shapeInput->isSourceConnected();
-		return ImGui::GetFrameHeightWithSpacing() + (needKnobs ? OtUi::knobHeight() : 0.0f);
+		return ImGui::GetFrameHeightWithSpacing() + (needKnobs ? OtAudioUi::knobHeight() : 0.0f);
 	}
 
 	// (de)serialize circuit

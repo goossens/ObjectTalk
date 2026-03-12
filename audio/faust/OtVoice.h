@@ -563,8 +563,8 @@ public:
 	}
 
 	inline void calculateSizes() {
-		auto knobWidth = OtUi::knobWidth();
-		auto knobHeight = OtUi::knobHeight();
+		auto knobWidth = OtAudioUi::knobWidth();
+		auto knobHeight = OtAudioUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
 		auto frame = ImGui::GetFrameHeightWithSpacing();
 		float width1 = 0.0f;
@@ -902,35 +902,35 @@ public:
 		callback("vcaVolume", &fHslider0, 1.0f);
 	}
 
-	inline bool editVcoWaveForm1() { return OtUi::knob("WaveForm1", &fHslider6, 0.0f, 7.0f, "%.0f", false); }
-	inline bool editVcoWaveForm2() { return OtUi::knob("WaveForm2", &fHslider10, 0.0f, 7.0f, "%.0f", false); }
-	inline bool editVcoFrequency1() { return OtUi::knob("Frequency1", &fHslider7, 60.0f, 10000.0f, "%.0f", false); }
-	inline bool editVcoFrequency2() { return OtUi::knob("Frequency2", &fHslider11, 60.0f, 10000.0f, "%.0f", false); }
-	inline bool editVcoTuning1() { return OtUi::knob("Tuning1", &fHslider8, -4800.0f, 4800.0f, "%.2f", false); }
-	inline bool editVcoTuning2() { return OtUi::knob("Tuning2", &fHslider12, -4800.0f, 4800.0f, "%.2f", false); }
-	inline bool editMixerOsc1() { return OtUi::knob("Osc1", &fHslider5, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editMixerOsc2() { return OtUi::knob("Osc2", &fHslider9, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editMixerWhite() { return OtUi::knob("White", &fHslider13, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editMixerPink() { return OtUi::knob("Pink", &fHslider14, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editVcfCutoff() { return OtUi::knob("Cutoff", &fVslider0, 80.0f, 8000.0f, "%.0fhz", false); }
-	inline bool editVcfRes() { return OtUi::knob("Res", &fVslider7, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editVcfAttack() { return OtUi::knob("Attack", &fVslider3, 0.0f, 10.0f, "%.3fs", true); }
-	inline bool editVcfDecay() { return OtUi::knob("Decay", &fVslider4, 0.0f, 10.0f, "%.3fs", true); }
-	inline bool editVcfSustain() { return OtUi::knob("Sustain", &fVslider5, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editVcfRelease() { return OtUi::knob("Release", &fVslider2, 0.0f, 10.0f, "%.3fs", true); }
+	inline bool editVcoWaveForm1() { return OtAudioUi::knob("WaveForm1", &fHslider6, 0.0f, 7.0f, "%.0f", false); }
+	inline bool editVcoWaveForm2() { return OtAudioUi::knob("WaveForm2", &fHslider10, 0.0f, 7.0f, "%.0f", false); }
+	inline bool editVcoFrequency1() { return OtAudioUi::knob("Frequency1", &fHslider7, 60.0f, 10000.0f, "%.0f", false); }
+	inline bool editVcoFrequency2() { return OtAudioUi::knob("Frequency2", &fHslider11, 60.0f, 10000.0f, "%.0f", false); }
+	inline bool editVcoTuning1() { return OtAudioUi::knob("Tuning1", &fHslider8, -4800.0f, 4800.0f, "%.2f", false); }
+	inline bool editVcoTuning2() { return OtAudioUi::knob("Tuning2", &fHslider12, -4800.0f, 4800.0f, "%.2f", false); }
+	inline bool editMixerOsc1() { return OtAudioUi::knob("Osc1", &fHslider5, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editMixerOsc2() { return OtAudioUi::knob("Osc2", &fHslider9, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editMixerWhite() { return OtAudioUi::knob("White", &fHslider13, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editMixerPink() { return OtAudioUi::knob("Pink", &fHslider14, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editVcfCutoff() { return OtAudioUi::knob("Cutoff", &fVslider0, 80.0f, 8000.0f, "%.0fhz", false); }
+	inline bool editVcfRes() { return OtAudioUi::knob("Res", &fVslider7, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editVcfAttack() { return OtAudioUi::knob("Attack", &fVslider3, 0.0f, 10.0f, "%.3fs", true); }
+	inline bool editVcfDecay() { return OtAudioUi::knob("Decay", &fVslider4, 0.0f, 10.0f, "%.3fs", true); }
+	inline bool editVcfSustain() { return OtAudioUi::knob("Sustain", &fVslider5, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editVcfRelease() { return OtAudioUi::knob("Release", &fVslider2, 0.0f, 10.0f, "%.3fs", true); }
 	inline bool editVcfGate() { ImGui::Button("Gate"); return ImGui::IsItemActive() ? 1.0f : 0.0f; }
-	inline bool editVcfEnvMod() { return OtUi::knob("EnvMod", &fVslider1, 0.0f, 2.0f, "%.2f", false); }
+	inline bool editVcfEnvMod() { return OtAudioUi::knob("EnvMod", &fVslider1, 0.0f, 2.0f, "%.2f", false); }
 	inline bool editVcfEnvPower() { ImGui::SetNextItemWidth(100.0f); return ImGui::SliderFloat("EnvPower", &fHslider1, 0.0f, 1.0f, "%.0f"); }
-	inline bool editVcfWaveForm() { return OtUi::knob("WaveForm", &fHslider3, 0.0f, 7.0f, "%.0f", false); }
-	inline bool editVcfLfoFreq() { return OtUi::knob("Freq", &fHslider4, 0.1f, 100.0f, "%.1fhz", false); }
-	inline bool editVcfLfoMod() { return OtUi::knob("LfoMod", &fVslider6, 0.0f, 2.0f, "%.2f", false); }
+	inline bool editVcfWaveForm() { return OtAudioUi::knob("WaveForm", &fHslider3, 0.0f, 7.0f, "%.0f", false); }
+	inline bool editVcfLfoFreq() { return OtAudioUi::knob("Freq", &fHslider4, 0.1f, 100.0f, "%.1fhz", false); }
+	inline bool editVcfLfoMod() { return OtAudioUi::knob("LfoMod", &fVslider6, 0.0f, 2.0f, "%.2f", false); }
 	inline bool editVcfLfoPower() { ImGui::SetNextItemWidth(100.0f); return ImGui::SliderFloat("LfoPower", &fHslider2, 0.0f, 1.0f, "%.0f"); }
-	inline bool editVcaAttack() { return OtUi::knob("Attack", &fVslider9, 0.0f, 10.0f, "%.3fs", true); }
-	inline bool editVcaDecay() { return OtUi::knob("Decay", &fVslider10, 0.0f, 10.0f, "%.3fs", true); }
-	inline bool editVcaSustain() { return OtUi::knob("Sustain", &fVslider11, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editVcaRelease() { return OtUi::knob("Release", &fVslider8, 0.0f, 10.0f, "%.3fs", true); }
+	inline bool editVcaAttack() { return OtAudioUi::knob("Attack", &fVslider9, 0.0f, 10.0f, "%.3fs", true); }
+	inline bool editVcaDecay() { return OtAudioUi::knob("Decay", &fVslider10, 0.0f, 10.0f, "%.3fs", true); }
+	inline bool editVcaSustain() { return OtAudioUi::knob("Sustain", &fVslider11, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editVcaRelease() { return OtAudioUi::knob("Release", &fVslider8, 0.0f, 10.0f, "%.3fs", true); }
 	inline bool editVcaGate() { ImGui::Button("Gate"); return ImGui::IsItemActive() ? 1.0f : 0.0f; }
-	inline bool editVcaVolume() { return OtUi::knob("Volume", &fHslider0, 0.0f, 2.0f, "%.2f", false); }
+	inline bool editVcaVolume() { return OtAudioUi::knob("Volume", &fHslider0, 0.0f, 2.0f, "%.2f", false); }
 
 	inline void setVcoWaveForm1(float value) { fHslider6 = value; }
 	inline void setVcoWaveForm2(float value) { fHslider10 = value; }

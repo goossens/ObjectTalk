@@ -262,8 +262,8 @@ public:
 	}
 
 	inline void calculateSizes() {
-		auto knobWidth = OtUi::knobWidth();
-		auto knobHeight = OtUi::knobHeight();
+		auto knobWidth = OtAudioUi::knobWidth();
+		auto knobHeight = OtAudioUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
 		float width1 = 0.0f;
 		float height1 = 0.0f;
@@ -358,11 +358,11 @@ public:
 		callback("feedback", &fHslider2, -0.4f);
 	}
 
-	inline bool editCurve() { return OtUi::knob("Curve", &fHslider4, 0.1f, 4.0f, "%.2f", false); }
-	inline bool editDrive() { return OtUi::knob("Drive", &fHslider3, -10.0f, 10.0f, "%.2f", false); }
-	inline bool editSaturation() { return OtUi::knob("Saturation", &fHslider0, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editPresence() { return OtUi::knob("Presence", &fHslider1, -15.0f, 15.0f, "%.1f", false); }
-	inline bool editFeedback() { return OtUi::knob("Feedback", &fHslider2, -0.8f, 1.0f, "%.2f", false); }
+	inline bool editCurve() { return OtAudioUi::knob("Curve", &fHslider4, 0.1f, 4.0f, "%.2f", false); }
+	inline bool editDrive() { return OtAudioUi::knob("Drive", &fHslider3, -10.0f, 10.0f, "%.2f", false); }
+	inline bool editSaturation() { return OtAudioUi::knob("Saturation", &fHslider0, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editPresence() { return OtAudioUi::knob("Presence", &fHslider1, -15.0f, 15.0f, "%.1f", false); }
+	inline bool editFeedback() { return OtAudioUi::knob("Feedback", &fHslider2, -0.8f, 1.0f, "%.2f", false); }
 
 	inline void setCurve(float value) { fHslider4 = value; }
 	inline void setDrive(float value) { fHslider3 = value; }

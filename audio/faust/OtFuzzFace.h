@@ -272,8 +272,8 @@ public:
 	}
 
 	inline void calculateSizes() {
-		auto knobWidth = OtUi::knobWidth();
-		auto knobHeight = OtUi::knobHeight();
+		auto knobWidth = OtAudioUi::knobWidth();
+		auto knobHeight = OtAudioUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
 		float width1 = 0.0f;
 		float height1 = 0.0f;
@@ -341,8 +341,8 @@ public:
 		callback("fuzz", &fVslider0, 0.5f);
 	}
 
-	inline bool editDrive() { return OtUi::knob("Drive", &fHslider0, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editFuzz() { return OtUi::knob("Fuzz", &fVslider0, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editDrive() { return OtAudioUi::knob("Drive", &fHslider0, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editFuzz() { return OtAudioUi::knob("Fuzz", &fVslider0, 0.0f, 1.0f, "%.2f", false); }
 
 	inline void setDrive(float value) { fHslider0 = value; }
 	inline void setFuzz(float value) { fVslider0 = value; }

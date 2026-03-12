@@ -37,8 +37,8 @@ OtAnalogSynth::OtAnalogSynth() {
 
 bool OtAnalogSynth::renderUI([[maybe_unused]] float itemWidth) {
 	auto size = ImVec2(
-		OtUi::knobWidth(4) + ImGui::GetStyle().WindowPadding.x * 2.0f,
-		OtUi::knobHeight(3) + ImGui::GetFrameHeightWithSpacing() * 4.0f + envelopeHeight + ImGui::GetStyle().WindowPadding.y * 2.0f
+		OtAudioUi::knobWidth(4) + ImGui::GetStyle().WindowPadding.x * 2.0f,
+		OtAudioUi::knobHeight(3) + ImGui::GetFrameHeightWithSpacing() * 4.0f + envelopeHeight + ImGui::GetStyle().WindowPadding.y * 2.0f
 	);
 
 	bool changed = false;
@@ -230,7 +230,7 @@ bool OtAnalogSynth::renderVcf(ImVec2 size) {
 	vcfAdsrState.sustain = getVcfSustain();
 	vcfAdsrState.release = getVcfRelease();
 
-	OtAudioUi::adsrEnvelope("##ADSR", vcfAdsrState, ImVec2(OtUi::knobWidth(4), envelopeHeight));
+	OtAudioUi::adsrEnvelope("##ADSR", vcfAdsrState, ImVec2(OtAudioUi::knobWidth(4), envelopeHeight));
 
 	changed |= editVcfAttack(); ImGui::SameLine();
 	changed |= editVcfDecay(); ImGui::SameLine();
@@ -278,7 +278,7 @@ bool OtAnalogSynth::renderVca(ImVec2 size) {
 	vcaAdsrState.sustain = getVcaSustain();
 	vcaAdsrState.release = getVcaRelease();
 
-	OtAudioUi::adsrEnvelope("##ADSR", vcaAdsrState, ImVec2(OtUi::knobWidth(4), envelopeHeight));
+	OtAudioUi::adsrEnvelope("##ADSR", vcaAdsrState, ImVec2(OtAudioUi::knobWidth(4), envelopeHeight));
 
 	changed |= editVcaAttack(); ImGui::SameLine();
 	changed |= editVcaDecay(); ImGui::SameLine();
@@ -305,7 +305,7 @@ void OtAnalogSynth::renderVoiceUsage() {
 	static constexpr ImU32 voiceColor = IM_COL32(0, 128, 0, 255);
 
 	// render label
-	auto displayWidth = OtUi::knobWidth(3);
+	auto displayWidth = OtAudioUi::knobWidth(3);
 	auto labelWidth = ImGui::CalcTextSize(label).x;
 	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (displayWidth - labelWidth) * 0.5f);
 	ImGui::GetCurrentContext()->CurrentWindow->DC.CurrLineTextBaseOffset = 0;

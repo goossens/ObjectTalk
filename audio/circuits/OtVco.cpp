@@ -42,7 +42,7 @@ public:
 		}
 
 		if (!frequencyInput->isSourceConnected()) {
-			changed |= OtUi::knob("Freq", &frequency, 60.0f, 6000.0f, "%.0fhz", true);
+			changed |= OtAudioUi::knob("Freq", &frequency, 60.0f, 6000.0f, "%.0fhz", true);
 		}
 
 		return changed;
@@ -53,7 +53,7 @@ public:
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return OtAudioUi::waveFormSelectorHeight() + (frequencyInput->isSourceConnected() ? 0.0f : OtUi::knobHeight());
+		return OtAudioUi::waveFormSelectorHeight() + (frequencyInput->isSourceConnected() ? 0.0f : OtAudioUi::knobHeight());
 	}
 
 	// (de)serialize circuit

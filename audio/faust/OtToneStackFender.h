@@ -166,8 +166,8 @@ public:
 	}
 
 	inline void calculateSizes() {
-		auto knobWidth = OtUi::knobWidth();
-		auto knobHeight = OtUi::knobHeight();
+		auto knobWidth = OtAudioUi::knobWidth();
+		auto knobHeight = OtAudioUi::knobHeight();
 		float width1 = 0.0f;
 		float height1 = 0.0f;
 		width1 = std::max(width1, knobWidth);
@@ -239,9 +239,9 @@ public:
 		callback("treble", &fVslider2, 0.5f);
 	}
 
-	inline bool editBass() { return OtUi::knob("Bass", &fVslider1, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editMiddle() { return OtUi::knob("Middle", &fVslider0, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editTreble() { return OtUi::knob("Treble", &fVslider2, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editBass() { return OtAudioUi::knob("Bass", &fVslider1, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editMiddle() { return OtAudioUi::knob("Middle", &fVslider0, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editTreble() { return OtAudioUi::knob("Treble", &fVslider2, 0.0f, 1.0f, "%.2f", false); }
 
 	inline void setBass(float value) { fVslider1 = value; }
 	inline void setMiddle(float value) { fVslider0 = value; }

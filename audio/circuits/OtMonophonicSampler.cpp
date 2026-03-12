@@ -15,9 +15,9 @@
 #include "nlohmann/json.hpp"
 
 #include "OtAsset.h"
-#include "OtUi.h"
 
 #include "OtAudioSettings.h"
+#include "OtAudioUi.h"
 #include "OtCircuitFactory.h"
 #include "OtSampleFileAsset.h"
 
@@ -42,7 +42,7 @@ public:
 		changed |= sampleFileAsset.renderUI("File");
 
 		if (!frequencyInput->isSourceConnected()) {
-			changed |= OtUi::knob("File", &frequency, 60.0f, 6000.0f, "%.0fhz", true);
+			changed |= OtAudioUi::knob("File", &frequency, 60.0f, 6000.0f, "%.0fhz", true);
 		}
 
 		return changed;
@@ -53,7 +53,7 @@ public:
 	}
 
 	inline float getCustomRenderingHeight() override {
-		return ImGui::GetFrameHeightWithSpacing() + (frequencyInput->isSourceConnected() ? 0.0f : OtUi::knobHeight());
+		return ImGui::GetFrameHeightWithSpacing() + (frequencyInput->isSourceConnected() ? 0.0f : OtAudioUi::knobHeight());
 	}
 
 	// (de)serialize circuit

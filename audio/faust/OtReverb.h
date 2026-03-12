@@ -672,8 +672,8 @@ public:
 	}
 
 	inline void calculateSizes() {
-		auto knobWidth = OtUi::knobWidth();
-		auto knobHeight = OtUi::knobHeight();
+		auto knobWidth = OtAudioUi::knobWidth();
+		auto knobHeight = OtAudioUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
 		float width1 = 0.0f;
 		float height1 = 0.0f;
@@ -750,9 +750,9 @@ public:
 		callback("blend", &fVslider2, 0.5f);
 	}
 
-	inline bool editDwell() { return OtUi::knob("Dwell", &fVslider0, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editTension() { return OtUi::knob("Tension", &fVslider1, 0.0f, 1.0f, "%.2f", false); }
-	inline bool editBlend() { return OtUi::knob("Blend", &fVslider2, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editDwell() { return OtAudioUi::knob("Dwell", &fVslider0, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editTension() { return OtAudioUi::knob("Tension", &fVslider1, 0.0f, 1.0f, "%.2f", false); }
+	inline bool editBlend() { return OtAudioUi::knob("Blend", &fVslider2, 0.0f, 1.0f, "%.2f", false); }
 
 	inline void setDwell(float value) { fVslider0 = value; }
 	inline void setTension(float value) { fVslider1 = value; }

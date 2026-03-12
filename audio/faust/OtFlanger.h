@@ -153,8 +153,8 @@ public:
 	}
 
 	inline void calculateSizes() {
-		auto knobWidth = OtUi::knobWidth();
-		auto knobHeight = OtUi::knobHeight();
+		auto knobWidth = OtAudioUi::knobWidth();
+		auto knobHeight = OtAudioUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
 		float width1 = 0.0f;
 		float height1 = 0.0f;
@@ -231,9 +231,9 @@ public:
 		callback("feedback", &fVslider0, 60.0f);
 	}
 
-	inline bool editDelay() { return OtUi::knob("Delay", &fVslider1, 0.0f, 10.0f, "%.1fms", false); }
-	inline bool editDepth() { return OtUi::knob("Depth", &fVslider2, 0.0f, 100.0f, "%.0f%%", false); }
-	inline bool editFeedback() { return OtUi::knob("Feedback", &fVslider0, 0.0f, 100.0f, "%.0f%%", false); }
+	inline bool editDelay() { return OtAudioUi::knob("Delay", &fVslider1, 0.0f, 10.0f, "%.1fms", false); }
+	inline bool editDepth() { return OtAudioUi::knob("Depth", &fVslider2, 0.0f, 100.0f, "%.0f%%", false); }
+	inline bool editFeedback() { return OtAudioUi::knob("Feedback", &fVslider0, 0.0f, 100.0f, "%.0f%%", false); }
 
 	inline void setDelay(float value) { fVslider1 = value; }
 	inline void setDepth(float value) { fVslider2 = value; }

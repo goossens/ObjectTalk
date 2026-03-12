@@ -16,13 +16,11 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
-#include <numbers>
 #include <string>
 
 #include "fmt/format.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui_internal.h"
-#include "imgui-knobs.h"
 #include "ImGuiFileDialog.h"
 #include "nlohmann/json.hpp"
 
@@ -1015,77 +1013,6 @@ bool OtUi::bezier(const char* label, float P[4]) {
 	ImGui::SetCursorScreenPos(ImVec2(bb.Min.x, bb.Max.y + grabRadius));
 	ImGui::PopID();
 	return changed;
-}
-
-
-//
-//	OtUi::knob
-//
-
-static constexpr float pi = static_cast<float>(std::numbers::pi);
-
-bool OtUi::knob(const char* label, float* value, float minValue, float maxValue, const char* format, bool logarithmic) {
-	auto size = ImGui::GetTextLineHeight() - 2.0f;
-	ImGui::PushFont(nullptr, size);
-
-	auto result = ImGuiKnobs::Knob(
-		label, value, minValue, maxValue, 0.0f,
-		format, ImGuiKnobVariant_WiperDot,
-		size * 5.0f, logarithmic ? ImGuiKnobFlags_Logarithmic : 0, 10,
-		pi * 0.6f, pi * 2.4f);
-
-	ImGui::PopFont();
-	return result;
-}
-
-bool OtUi::knob(const char* label, int* value, int minValue, int maxValue) {
-	auto size = ImGui::GetTextLineHeight() - 2.0f;
-	ImGui::PushFont(nullptr, size);
-
-	auto result = ImGuiKnobs::KnobInt(
-		label, value, minValue, maxValue, 0.0f,
-		"%i", ImGuiKnobVariant_WiperDot,
-		size * 5.0f, 0, 10,
-		pi * 0.6f, pi * 2.4f);
-
-	ImGui::PopFont();
-	return result;
-}
-
-
-//
-//	OtUi::knobWidth
-//
-
-float OtUi::knobWidth(size_t columns) {
-	ImGui::PushFont(nullptr, ImGui::GetTextLineHeight() - 2.0f);
-	float width = 0.0f;
-
-	if (columns != 0) {
-		width = ImGui::GetTextLineHeight() * 5.0f * columns + ImGui::GetStyle().ItemSpacing.x * (columns - 1);
-	}
-
-	ImGui::PopFont();
-	return width;
-}
-
-
-//
-//	OtUi::knobHeight
-//
-
-float OtUi::knobHeight(size_t rows) {
-	ImGui::PushFont(nullptr, ImGui::GetTextLineHeight() - 2.0f);
-	float height = 0.0f;
-
-	if (rows != 0) {
-		height = ImGui::GetFrameHeightWithSpacing() * 2.0f;
-		height += ImGui::GetTextLineHeight() * 5.0f;
-		height *= rows;
-	}
-
-	ImGui::PopFont();
-	return height;
 }
 
 

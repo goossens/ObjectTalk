@@ -352,8 +352,8 @@ public:
 	}
 
 	inline void calculateSizes() {
-		auto knobWidth = OtUi::knobWidth();
-		auto knobHeight = OtUi::knobHeight();
+		auto knobWidth = OtAudioUi::knobWidth();
+		auto knobHeight = OtAudioUi::knobHeight();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
 		float width1 = 0.0f;
 		float height1 = 0.0f;
@@ -544,19 +544,19 @@ public:
 		callback("highFreq", &fHslider0, 8000.0f);
 	}
 
-	inline bool editLowLevel() { return OtUi::knob("Level", &fHslider2, -40.0f, 40.0f, "%.1fdB", false); }
-	inline bool editLowFreq() { return OtUi::knob("Freq", &fHslider1, 1.0f, 1000.0f, "%.0fhz", false); }
-	inline bool editPeak1Level() { return OtUi::knob("Level", &fHslider4, -40.0f, 40.0f, "%.1fdB", false); }
-	inline bool editPeak1Freq() { return OtUi::knob("Freq", &fHslider3, 20.0f, 10000.0f, "%.0fhz", false); }
-	inline bool editPeak1Q() { return OtUi::knob("Q", &fHslider5, 0.5f, 10.0f, "%.1f", false); }
-	inline bool editPeak2Level() { return OtUi::knob("Level", &fHslider7, -40.0f, 40.0f, "%.1fdB", false); }
-	inline bool editPeak2Freq() { return OtUi::knob("Freq", &fHslider6, 20.0f, 10000.0f, "%.0fhz", false); }
-	inline bool editPeak2Q() { return OtUi::knob("Q", &fHslider8, 0.5f, 10.0f, "%.1f", false); }
-	inline bool editPeak3Level() { return OtUi::knob("Level", &fHslider10, -40.0f, 40.0f, "%.1fdB", false); }
-	inline bool editPeak3Freq() { return OtUi::knob("Freq", &fHslider9, 20.0f, 10000.0f, "%.0fhz", false); }
-	inline bool editPeak3Q() { return OtUi::knob("Q", &fHslider11, 0.5f, 10.0f, "%.1f", false); }
-	inline bool editHighLevel() { return OtUi::knob("Level", &fHslider12, -40.0f, 40.0f, "%.1fdB", false); }
-	inline bool editHighFreq() { return OtUi::knob("Freq", &fHslider0, 20.0f, 10000.0f, "%.0fhz", false); }
+	inline bool editLowLevel() { return OtAudioUi::knob("Level", &fHslider2, -40.0f, 40.0f, "%.1fdB", false); }
+	inline bool editLowFreq() { return OtAudioUi::knob("Freq", &fHslider1, 1.0f, 1000.0f, "%.0fhz", false); }
+	inline bool editPeak1Level() { return OtAudioUi::knob("Level", &fHslider4, -40.0f, 40.0f, "%.1fdB", false); }
+	inline bool editPeak1Freq() { return OtAudioUi::knob("Freq", &fHslider3, 20.0f, 10000.0f, "%.0fhz", false); }
+	inline bool editPeak1Q() { return OtAudioUi::knob("Q", &fHslider5, 0.5f, 10.0f, "%.1f", false); }
+	inline bool editPeak2Level() { return OtAudioUi::knob("Level", &fHslider7, -40.0f, 40.0f, "%.1fdB", false); }
+	inline bool editPeak2Freq() { return OtAudioUi::knob("Freq", &fHslider6, 20.0f, 10000.0f, "%.0fhz", false); }
+	inline bool editPeak2Q() { return OtAudioUi::knob("Q", &fHslider8, 0.5f, 10.0f, "%.1f", false); }
+	inline bool editPeak3Level() { return OtAudioUi::knob("Level", &fHslider10, -40.0f, 40.0f, "%.1fdB", false); }
+	inline bool editPeak3Freq() { return OtAudioUi::knob("Freq", &fHslider9, 20.0f, 10000.0f, "%.0fhz", false); }
+	inline bool editPeak3Q() { return OtAudioUi::knob("Q", &fHslider11, 0.5f, 10.0f, "%.1f", false); }
+	inline bool editHighLevel() { return OtAudioUi::knob("Level", &fHslider12, -40.0f, 40.0f, "%.1fdB", false); }
+	inline bool editHighFreq() { return OtAudioUi::knob("Freq", &fHslider0, 20.0f, 10000.0f, "%.0fhz", false); }
 
 	inline void setLowLevel(float value) { fHslider2 = value; }
 	inline void setLowFreq(float value) { fHslider1 = value; }

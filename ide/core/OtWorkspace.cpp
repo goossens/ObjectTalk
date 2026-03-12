@@ -546,17 +546,17 @@ void OtWorkspace::renderSplashScreen() {
 			ImGuiWindowFlags_NoInputs);
 
 	ImGui::Image(logo->getTextureID(), logo->getSize());
-	OtUi::centeredText("Welcome to the ObjectTalk");
-	OtUi::centeredText("Integrated Development Environment (IDE)");
-	OtUi::centeredText("");
+	OtUi::centerTextInWindow("Welcome to the ObjectTalk");
+	OtUi::centerTextInWindow("Integrated Development Environment (IDE)");
+	OtUi::centerTextInWindow("");
 
 #if __APPLE__
-	OtUi::centeredText("Use Cmd-N to create a new file");
-	OtUi::centeredText("Use Cmd-O to open an existing file");
+	OtUi::centerTextInWindow("Use Cmd-N to create a new file");
+	OtUi::centerTextInWindow("Use Cmd-O to open an existing file");
 
 #else
-	OtUi::centeredText("Use Ctrl-N to create a new file");
-	OtUi::centeredText("Use Ctrl-O to open an existing file");
+	OtUi::centerTextInWindow("Use Ctrl-N to create a new file");
+	OtUi::centerTextInWindow("Use Ctrl-O to open an existing file");
 #endif
 
 	ImGui::End();

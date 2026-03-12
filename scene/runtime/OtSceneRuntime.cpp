@@ -118,7 +118,7 @@ void OtSceneRuntime::messages() {
 					ImGuiWindowFlags_NoNav);
 
 			OtText::splitIterator(component.message, '\n', [](const std::string& line) {
-				OtUi::centeredText(line.c_str());
+				OtUi::centerTextInWindow(line.c_str());
 			});
 
 			ImGui::End();

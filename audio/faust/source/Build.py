@@ -113,12 +113,12 @@ class UI:
 		sliderWidth = "20.0f"
 
 		if style == "knob":
-			self.editors.append(f"\tinline bool edit{address}() {{ return OtUi::knob(\"{label}\", &{varname}, {minValue}, {maxValue}, \"{format}\", {log}); }}")
+			self.editors.append(f"\tinline bool edit{address}() {{ return OtAudioUi::knob(\"{label}\", &{varname}, {minValue}, {maxValue}, \"{format}\", {log}); }}")
 			self.ui.append(f"\t\tchanged |= edit{address}();")
 			return "knobWidth", "knobHeight"
 
 		elif vertical:
-			self.editors.append(f"\tinline bool edit{address}() {{ auto changed = ImGui::VSliderFloat(\"##{label}\", ImVec2({sliderWidth}, {sliderLength}), &{varname}, {minValue}, {maxValue}, \"\"); if (ImGui::IsItemActive() || ImGui::IsItemHovered()) ImGui::SetTooltip(\"{format}\", {varname}); return changed; }}")
+			self.editors.append(f"\tinline bool edit{address}() {{ return OtAudioUi::verticalSlider(\"{label}\", ImVec2({sliderWidth}, {sliderLength}), &{varname}, {minValue}, {maxValue}, \"{format}\"); }}")
 			self.ui.append(f"\t\tchanged |= edit{address}();")
 			return sliderWidth, sliderLength
 
@@ -149,16 +149,14 @@ class UI:
 		offLabel, onLabel = labels.split("|")
 
 		if len(offLabel):
-			self.ui.append(f"\t\tImGui::AlignTextToFramePadding();")
-			self.ui.append(f"\t\tImGui::TextUnformatted(\"{offLabel}\");")
+			self.ui.append(f"\t\tOtUi::text(\"{offLabel}\");")
 			self.ui.append(f"\t\tImGui::SameLine();")
 
 		self.ui.append(f"\t\tchanged |= OtAudioUi::toggleButton(\"##{label}\", &{varname});")
 
 		if len(onLabel):
 			self.ui.append(f"\t\tImGui::SameLine();")
-			self.ui.append(f"\t\tImGui::AlignTextToFramePadding();")
-			self.ui.append(f"\t\tImGui::TextUnformatted(\"{onLabel}\");")
+			self.ui.append(f"\t\tOtUi::text(\"{onLabel}\");")
 
 		checkBoxWidth = ""
 
@@ -197,8 +195,8 @@ class UI:
 	def getSize(self):
 		text = "\n".join(self.size)
 		intro = ""
-		if "knobWidth" in text: intro += "\t\tauto knobWidth = OtUi::knobWidth();\n"
-		if "knobHeight" in text: intro += "\t\tauto knobHeight = OtUi::knobHeight();\n"
+		if "knobWidth" in text: intro += "\t\tauto knobWidth = OtAudioUi::knobWidth();\n"
+		if "knobHeight" in text: intro += "\t\tauto knobHeight = OtAudioUi::knobHeight();\n"
 		if "spacing" in text: intro += "\t\tauto spacing = ImGui::GetStyle().ItemSpacing;\n"
 		if "frame" in text: intro += "\t\tauto frame = ImGui::GetFrameHeightWithSpacing();\n"
 		return intro + text
@@ -371,27 +369,28 @@ def processDspFile(sourceFileName, targetFileName):
 		output.write(code)
 
 #
-#	Main
+#	__main__
 #
 
-# switch directory to script location
-scriptPath = os.path.abspath(__file__)
-os.chdir(os.path.dirname(scriptPath))
+if __name__ == "__main__":
+	# switch directory to script location
+	scriptPath = os.path.abspath(__file__)
+	os.chdir(os.path.dirname(scriptPath))
 
-# read standard header and footer
-with open("OtFaustHeader.h", "r") as file:
-	header = file.read()
+	# read standard header and footer
+	with open("OtFaustHeader.h", "r") as file:
+		header = file.read()
 
-with open("OtFaustFooter.h", "r") as file:
-	footer = file.read()
+	with open("OtFaustFooter.h", "r") as file:
+		footer = file.read()
 
-# process all DSP files (that are new or changed) and generate code
-for sourceFileName in glob.iglob("*.dsp"):
-	targetFileName = os.path.join("..", (pathlib.Path(sourceFileName).stem) + ".h")
-	exists = os.path.exists(targetFileName)
-	sourceNewer = exists and os.path.getmtime(sourceFileName) > os.path.getmtime(targetFileName)
-	scriptNewer = exists and os.path.getmtime(scriptPath) > os.path.getmtime(targetFileName)
+	# process all DSP files (that are new or changed) and generate code
+	for sourceFileName in glob.iglob("*.dsp"):
+		targetFileName = os.path.join("..", (pathlib.Path(sourceFileName).stem) + ".h")
+		exists = os.path.exists(targetFileName)
+		sourceNewer = exists and os.path.getmtime(sourceFileName) > os.path.getmtime(targetFileName)
+		scriptNewer = exists and os.path.getmtime(scriptPath) > os.path.getmtime(targetFileName)
 
-	if not exists or sourceNewer or scriptNewer:
-		print(f"Compiling [{sourceFileName}]...")
-		processDspFile(sourceFileName, targetFileName)
+		if not exists or sourceNewer or scriptNewer:
+			print(f"Compiling [{sourceFileName}]...")
+			processDspFile(sourceFileName, targetFileName)

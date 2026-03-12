@@ -30,7 +30,7 @@ public:
 	// support buttons with audio-related icons
 	static float audioButtonWidth();
 
-	inline static bool audioButton(OtFontAudio::Type label, const char* tooltip=nullptr) {
+	static inline bool audioButton(OtFontAudio::Type label, const char* tooltip=nullptr) {
 		ImGui::PushFont(getAudioFont(), 0.0f);
 		auto result = ImGui::Button(reinterpret_cast<const char*>(label), ImVec2(audioButtonWidth(), 0.0f));
 		ImGui::PopFont();
@@ -43,7 +43,7 @@ public:
 	}
 
 	template <typename T>
-	inline static bool audioRadioButton(OtFontAudio::Type label, T* value, T buttonValue, const char* tooltip=nullptr) {
+	static inline bool audioRadioButton(OtFontAudio::Type label, T* value, T buttonValue, const char* tooltip=nullptr) {
 		ImGui::PushFont(getAudioFont(), 0.0f);
 		auto changed = radioButton(reinterpret_cast<const char*>(label), value, buttonValue);
 		ImGui::PopFont();
@@ -79,6 +79,9 @@ public:
 
 	static float knobWidth(size_t columns=1);
 	static float knobHeight(size_t rows=1);
+
+	// vertical slider
+	static bool verticalSlider(const char* label, ImVec2 size, float* value, float minValue, float maxValue, const char* format="%f");
 
 	// trim sliders
 	static bool trimSlider(float* value);

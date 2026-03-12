@@ -238,6 +238,42 @@ float OtAudioUi::knobHeight(size_t rows) {
 
 
 //
+//	OtAudioUi::verticalSlider
+//
+
+bool OtAudioUi::verticalSlider(const char* labelPlusID, ImVec2 size, float* value, float minValue, float maxValue, const char* format) {
+	if (size.x == 0.0f) {
+		size.x = 20.0f;
+	}
+
+	if (size.y == 0.0f) {
+		size.y = 100.0f;
+	}
+
+	ImGui::BeginGroup();
+	std::string label;
+	std::string id;
+	splitLabel(labelPlusID, label, id);
+
+	if (label.size()) {
+		ImGui::PushFont(nullptr, ImGui::GetTextLineHeight() - 4.0f);
+		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (size.x - ImGui::CalcTextSize(label.c_str()).x) * 0.5f);
+		OtUi::text(label);
+		ImGui::PopFont();
+	};
+
+	bool changed = ImGui::VSliderFloat(("##" + id).c_str(), size, value, minValue, maxValue, "");
+
+	if (*format && (ImGui::IsItemActive() || ImGui::IsItemHovered())) {
+		ImGui::SetTooltip(format, *value);
+	}
+
+	ImGui::EndGroup();
+	return changed;
+}
+
+
+//
 //	OtAudioUi::trimSlider
 //
 

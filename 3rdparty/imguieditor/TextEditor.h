@@ -333,8 +333,8 @@ public:
 
 	inline void SetPalette(const Palette& newPalette) { paletteBase = newPalette; paletteAlpha = -1.0f; }
 	inline const Palette& GetPalette() const { return paletteBase; }
-	inline static void SetDefaultPalette(const Palette& aValue) { defaultPalette = aValue; }
-	inline static Palette& GetDefaultPalette() { return defaultPalette; }
+	static inline void SetDefaultPalette(const Palette& aValue) { defaultPalette = aValue; }
+	static inline Palette& GetDefaultPalette() { return defaultPalette; }
 
 	static const Palette& GetDarkPalette();
 	static const Palette& GetLightPalette();

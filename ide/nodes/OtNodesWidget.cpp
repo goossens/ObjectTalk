@@ -380,8 +380,7 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode node) {
 	ImGui::SetCursorScreenPos(topLeft + ImVec2(horizontalPadding, topPadding));
 	ImGui::BeginGroup();
 	OtUi::hSpacer(((node->w - horizontalPadding * 2.0f) - ImGui::CalcTextSize(node->title.c_str()).x) / 2.0f);
-	ImGui::AlignTextToFramePadding();
-	ImGui::TextUnformatted(renamingNode == node->id ? "" : node->title.c_str());
+	OtUi::text(renamingNode == node->id ? "" : node->title.c_str());
 
 	// render all output pins
 	node->eachOutput([&](OtNodesPin pin) {
@@ -492,8 +491,7 @@ void OtNodesWidget::renderPin(ImDrawList* drawlist, OtNodesPin pin, float x, flo
 		}
 
 		// render label
-		ImGui::AlignTextToFramePadding();
-		ImGui::TextUnformatted(pin->name);
+		OtUi::text(pin->name);
 
 		// show UI for unconnected input pins that have that capability
 		if (pin->isInput() && !pin->isSourceConnected() && pin->inputConfig) {

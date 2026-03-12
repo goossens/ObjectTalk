@@ -84,8 +84,7 @@ public:
 			ImPlot::PopStyleColor();
 
 		} else {
-			ImGui::AlignTextToFramePadding();
-			ImGui::TextUnformatted("No input signal");
+			OtUi::text("No input signal");
 		}
 
 		return false;

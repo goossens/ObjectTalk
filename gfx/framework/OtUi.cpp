@@ -133,10 +133,20 @@ void OtUi::hSpacer(float width) {
 
 
 //
-//	OtUi::centeredText
+//	OtUi::text
 //
 
-void OtUi::centeredText(const char* text) {
+void OtUi::text(const char* txt) {
+	ImGui::AlignTextToFramePadding();
+	ImGui::TextUnformatted(txt);
+}
+
+
+//
+//	OtUi::centerTextInWindow
+//
+
+void OtUi::centerTextInWindow(const char* text) {
 	ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(text).x) * 0.5f);
 	ImGui::TextUnformatted(text);
 }

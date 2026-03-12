@@ -370,8 +370,7 @@ void OtAudioWidget::renderCircuit(ImDrawList* drawlist, OtCircuit circuit) {
 	ImGui::SetCursorScreenPos(topLeft + ImVec2(horizontalPadding, topPadding));
 	ImGui::BeginGroup();
 	OtUi::hSpacer(((circuit->w - horizontalPadding * 2.0f) - ImGui::CalcTextSize(circuit->title.c_str()).x) / 2.0f);
-	ImGui::AlignTextToFramePadding();
-	ImGui::TextUnformatted(renamingCircuit == circuit->id ? "" : circuit->title.c_str());
+	OtUi::text(renamingCircuit == circuit->id ? "" : circuit->title.c_str());
 
 	// render all output pins
 	circuit->eachOutput([&](OtCircuitPin pin) {
@@ -459,11 +458,10 @@ void OtAudioWidget::renderPin(ImDrawList* drawlist, OtCircuitPin pin, float x, f
 	ImGui::SetCursorScreenPos(savedPos);
 
 	// render label and optional attenuator/tuning comtrols
-	ImGui::AlignTextToFramePadding();
 	auto spacerWidth = w - ImGui::CalcTextSize(pin->name).x - horizontalPadding * 2.0f;
 
 	if (pin->isInput()) {
-		ImGui::TextUnformatted(pin->name);
+		OtUi::text(pin->name);
 		if (pin->attenuationFlag) { renderPinAttenuator(pin, spacerWidth); }
 		if (pin->tuningFlag) { renderPinTuning(pin, spacerWidth); }
 
@@ -471,7 +469,7 @@ void OtAudioWidget::renderPin(ImDrawList* drawlist, OtCircuitPin pin, float x, f
 		if (pin->attenuationFlag) { renderPinAttenuator(pin, spacerWidth); }
 		if (pin->tuningFlag) { renderPinTuning(pin, spacerWidth); }
 		if (!pin->attenuationFlag && !pin->tuningFlag) { OtUi::hSpacer(spacerWidth); }
-		ImGui::TextUnformatted(pin->name);
+		OtUi::text(pin->name);
 	}
 }
 

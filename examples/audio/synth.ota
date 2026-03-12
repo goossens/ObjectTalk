@@ -189,19 +189,13 @@
 			"y": 161.0
 		},
 		{
-			"freq": 4000.0,
+			"cutoff": 800.0,
 			"id": 1532830116,
 			"inputs": [
 				{
 					"id": 550176335,
 					"name": "Input",
 					"type": "mono"
-				},
-				{
-					"attenuation": 1.0,
-					"id": 893266338,
-					"name": "Cutoff",
-					"type": "control"
 				},
 				{
 					"attenuation": 0.9599999785423279,
@@ -214,6 +208,12 @@
 					"id": 2213899796,
 					"name": "Mod 2",
 					"type": "control"
+				},
+				{
+					"attenuation": 1.0,
+					"id": 1737802157,
+					"name": "Mod 3",
+					"type": "control"
 				}
 			],
 			"outputs": [
@@ -223,7 +223,7 @@
 					"type": "mono"
 				}
 			],
-			"res": 0.5,
+			"resonance": 0.5,
 			"title": "Ladder",
 			"type": "Ladder",
 			"x": 1093.0,
@@ -255,7 +255,7 @@
 		},
 		{
 			"depth": 50.0,
-			"feedbck": 0.0,
+			"feedback": 0.0,
 			"id": 3452463202,
 			"inputs": [
 				{

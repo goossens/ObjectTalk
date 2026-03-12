@@ -1390,16 +1390,16 @@ public:
 		callback("band9", &fVslider1, -10.0f);
 	}
 
-	inline bool editBand10() { auto changed = ImGui::VSliderFloat("##Band10", ImVec2(20.0f, 100.0f), &fVslider0, -70.0f, 10.0f, ""); if (ImGui::IsItemActive() || ImGui::IsItemHovered()) ImGui::SetTooltip("%.1fdB", fVslider0); return changed; }
-	inline bool editBand1() { auto changed = ImGui::VSliderFloat("##Band1", ImVec2(20.0f, 100.0f), &fVslider8, -70.0f, 10.0f, ""); if (ImGui::IsItemActive() || ImGui::IsItemHovered()) ImGui::SetTooltip("%.1fdB", fVslider8); return changed; }
-	inline bool editBand2() { auto changed = ImGui::VSliderFloat("##Band2", ImVec2(20.0f, 100.0f), &fVslider9, -70.0f, 10.0f, ""); if (ImGui::IsItemActive() || ImGui::IsItemHovered()) ImGui::SetTooltip("%.1fdB", fVslider9); return changed; }
-	inline bool editBand3() { auto changed = ImGui::VSliderFloat("##Band3", ImVec2(20.0f, 100.0f), &fVslider7, -70.0f, 10.0f, ""); if (ImGui::IsItemActive() || ImGui::IsItemHovered()) ImGui::SetTooltip("%.1fdB", fVslider7); return changed; }
-	inline bool editBand4() { auto changed = ImGui::VSliderFloat("##Band4", ImVec2(20.0f, 100.0f), &fVslider6, -70.0f, 10.0f, ""); if (ImGui::IsItemActive() || ImGui::IsItemHovered()) ImGui::SetTooltip("%.1fdB", fVslider6); return changed; }
-	inline bool editBand5() { auto changed = ImGui::VSliderFloat("##Band5", ImVec2(20.0f, 100.0f), &fVslider5, -70.0f, 10.0f, ""); if (ImGui::IsItemActive() || ImGui::IsItemHovered()) ImGui::SetTooltip("%.1fdB", fVslider5); return changed; }
-	inline bool editBand6() { auto changed = ImGui::VSliderFloat("##Band6", ImVec2(20.0f, 100.0f), &fVslider4, -70.0f, 10.0f, ""); if (ImGui::IsItemActive() || ImGui::IsItemHovered()) ImGui::SetTooltip("%.1fdB", fVslider4); return changed; }
-	inline bool editBand7() { auto changed = ImGui::VSliderFloat("##Band7", ImVec2(20.0f, 100.0f), &fVslider3, -70.0f, 10.0f, ""); if (ImGui::IsItemActive() || ImGui::IsItemHovered()) ImGui::SetTooltip("%.1fdB", fVslider3); return changed; }
-	inline bool editBand8() { auto changed = ImGui::VSliderFloat("##Band8", ImVec2(20.0f, 100.0f), &fVslider2, -70.0f, 10.0f, ""); if (ImGui::IsItemActive() || ImGui::IsItemHovered()) ImGui::SetTooltip("%.1fdB", fVslider2); return changed; }
-	inline bool editBand9() { auto changed = ImGui::VSliderFloat("##Band9", ImVec2(20.0f, 100.0f), &fVslider1, -70.0f, 10.0f, ""); if (ImGui::IsItemActive() || ImGui::IsItemHovered()) ImGui::SetTooltip("%.1fdB", fVslider1); return changed; }
+	inline bool editBand10() { return OtAudioUi::verticalSlider("Band10", ImVec2(20.0f, 100.0f), &fVslider0, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand1() { return OtAudioUi::verticalSlider("Band1", ImVec2(20.0f, 100.0f), &fVslider8, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand2() { return OtAudioUi::verticalSlider("Band2", ImVec2(20.0f, 100.0f), &fVslider9, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand3() { return OtAudioUi::verticalSlider("Band3", ImVec2(20.0f, 100.0f), &fVslider7, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand4() { return OtAudioUi::verticalSlider("Band4", ImVec2(20.0f, 100.0f), &fVslider6, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand5() { return OtAudioUi::verticalSlider("Band5", ImVec2(20.0f, 100.0f), &fVslider5, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand6() { return OtAudioUi::verticalSlider("Band6", ImVec2(20.0f, 100.0f), &fVslider4, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand7() { return OtAudioUi::verticalSlider("Band7", ImVec2(20.0f, 100.0f), &fVslider3, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand8() { return OtAudioUi::verticalSlider("Band8", ImVec2(20.0f, 100.0f), &fVslider2, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand9() { return OtAudioUi::verticalSlider("Band9", ImVec2(20.0f, 100.0f), &fVslider1, -70.0f, 10.0f, "%.1fdB"); }
 
 	inline void setBand10(float value) { fVslider0 = value; }
 	inline void setBand1(float value) { fVslider8 = value; }

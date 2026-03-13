@@ -13,6 +13,7 @@
 
 #include "OtText.h"
 
+#include "OtAudioUi.h"
 #include "OtUi.h"
 
 #include "OtObjectTalkLanguage.h"
@@ -104,20 +105,20 @@ void OtDebuggerUI::renderControlBar(OtSubProcess& subprocess) {
 
 	ImGui::SameLine(0.0f, margin);
 
-	if (button(reinterpret_cast<const char*>(u8"\u271a"), "Step Over")) {
+	if (OtAudioUi::audioButton(OtFontAudio::stepOver, "Step Over")) {
 		subprocess.send("step\n");
 	}
 
 	ImGui::SameLine(0.0f, margin);
 
-	if (button(reinterpret_cast<const char*>(u8"\u25bc"), "Step Into")) {
-		subprocess.send("in\n");
+	if (OtAudioUi::audioButton(OtFontAudio::stepInto, "Step Into")) {
+		subprocess.send("step\n");
 	}
 
 	ImGui::SameLine(0.0f, margin);
 
-	if (button(reinterpret_cast<const char*>(u8"\u25b2"), "Step Out")) {
-		subprocess.send("out\n");
+	if (OtAudioUi::audioButton(OtFontAudio::stepOut, "Step Out")) {
+		subprocess.send("step\n");
 	}
 
 	ImGui::SameLine();

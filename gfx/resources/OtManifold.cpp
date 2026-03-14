@@ -268,8 +268,7 @@ OtManifold OtManifold::compose(std::vector<OtManifold>& manifolds) {
 		}
 	}
 
-
-	return OtManifold(manifold::Manifold::Compose(mans));
+	return OtManifold(manifold::Manifold::BatchBoolean(mans, manifold::OpType::Add));
 }
 
 

@@ -23,59 +23,63 @@
 #include <math.h>
 
 #include "OtFaust.h"
+#include "OtTube.h"
 
 
 //
-//  OtPowerAmp
+//  OtPushPullEL34
 //
 
-static double OtPowerAmp_faustpower2_f(double value) {
+static double OtPushPullEL34_faustpower2_f(double value) {
 	return value * value;
 }
 
-class OtPowerAmp : public OtFaust {
+class OtPushPullEL34 : public OtFaust {
 protected:
 	float fHslider0;
-	double fRec3[2];
 	int fSampleRate;
 	double fConst0;
 	double fConst1;
 	double fConst2;
-	float fHslider1;
 	double fConst3;
-	float fHslider2;
 	double fConst4;
-	double fRec4[2];
 	double fConst5;
 	double fConst6;
+	float fHslider1;
 	double fConst7;
-	double fRec6[3];
+	float fHslider2;
 	double fConst8;
-	double fRec5[3];
+	double fRec3[2];
 	double fConst9;
 	double fConst10;
-	double fRec7[2];
-	float fHslider3;
-	double fRec8[2];
-	float fHslider4;
-	double fRec9[2];
+	double fConst11;
+	double fRec5[3];
+	double fConst12;
+	double fRec4[3];
+	double fConst13;
+	double fConst14;
+	double fConst15;
+	double fConst16;
+	double fConst17;
+	double fConst18;
+	double fRec2[5];
+	double fConst19;
+	double fConst20;
+	double fConst21;
+	double fConst22;
+	double fConst23;
 	double fVec0[2];
-	double fRec2[2];
 	double fRec1[2];
 	double fRec0[2];
 
 public:
-	OtPowerAmp() {
+	OtPushPullEL34() {
 		init(OtAudioSettings::sampleRate);
 	}
 
 	inline void metadata(Meta* m) {
-		m->declare("analyzers.lib/name", "Faust Analyzer Library");
-		m->declare("analyzers.lib/version", "1.3.0");
-		m->declare("basics.lib/name", "Faust Basic Element Library");
-		m->declare("basics.lib/version", "1.22.0");
-		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtPowerAmp -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
-		m->declare("filename", "OtPowerAmp.dsp");
+		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtPushPullEL34 -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
+		m->declare("filename", "OtPushPullEL34.dsp");
 		m->declare("filters.lib/dcblocker:author", "Julius O. Smith III");
 		m->declare("filters.lib/dcblocker:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/dcblocker:license", "MIT-style STK-4.3 license");
@@ -90,9 +94,6 @@ public:
 		m->declare("filters.lib/pole:author", "Julius O. Smith III");
 		m->declare("filters.lib/pole:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/pole:license", "MIT-style STK-4.3 license");
-		m->declare("filters.lib/tf1:author", "Julius O. Smith III");
-		m->declare("filters.lib/tf1:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
-		m->declare("filters.lib/tf1:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/tf2:author", "Julius O. Smith III");
 		m->declare("filters.lib/tf2:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/tf2:license", "MIT-style STK-4.3 license");
@@ -105,7 +106,7 @@ public:
 		m->declare("maths.lib/license", "LGPL with exception");
 		m->declare("maths.lib/name", "Faust Math Library");
 		m->declare("maths.lib/version", "2.9.0");
-		m->declare("name", "OtPowerAmp");
+		m->declare("name", "OtPushPullEL34");
 		m->declare("platform.lib/name", "Generic Platform Library");
 		m->declare("platform.lib/version", "1.3.0");
 		m->declare("signals.lib/name", "Faust Signal Routing Library");
@@ -130,59 +131,58 @@ public:
 	inline void instanceConstants([[maybe_unused]] int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<double>(1.92e+05, std::max<double>(1.0, static_cast<double>(fSampleRate)));
-		fConst1 = 3.141592653589793 * std::max<double>(0.01, std::min<double>(8e+03 / fConst0, 0.99));
-		fConst2 = 0.5 * std::sin(fConst1);
-		fConst3 = 44.1 / fConst0;
-		fConst4 = 1.0 - fConst3;
-		fConst5 = 3.141592653589793 * std::max<double>(0.01, std::min<double>(4e+03 / fConst0, 0.99));
+		fConst1 = 1.82693733893894e-19 * fConst0;
+		fConst2 = 1.0 / (fConst0 * (fConst0 * (fConst0 * (fConst1 + 2.71243523616587e-16) + 8.16290535602033e-14) + 4.64147298174261e-12) + 4.00158102875003e-12);
+		fConst3 = 3.87560926163844e-19 * fConst0;
+		fConst4 = fConst0 * (fConst0 * (fConst3 + 4.30800903120125e-16) + 3.17509705609174e-17) + 5.3495467261267e-19;
+		fConst5 = 3.141592653589793 * std::max<double>(0.01, std::min<double>(8e+03 / fConst0, 0.99));
 		fConst6 = 0.5 * std::sin(fConst5);
-		fConst7 = 2.0 * std::cos(fConst5);
-		fConst8 = 2.0 * std::cos(fConst1);
-		fConst9 = std::exp(-(25.0 / fConst0));
-		fConst10 = 1.0 - fConst9;
+		fConst7 = 44.1 / fConst0;
+		fConst8 = 1.0 - fConst7;
+		fConst9 = 3.141592653589793 * std::max<double>(0.01, std::min<double>(4e+03 / fConst0, 0.99));
+		fConst10 = 0.5 * std::sin(fConst9);
+		fConst11 = 2.0 * std::cos(fConst9);
+		fConst12 = 2.0 * std::cos(fConst5);
+		fConst13 = OtPushPullEL34_faustpower2_f(fConst0);
+		fConst14 = 7.30774935575574e-19 * fConst0;
+		fConst15 = fConst0 * (fConst13 * (-5.42487047233173e-16 - fConst14) + 9.28294596348523e-12) + 1.60063241150001e-11;
+		fConst16 = fConst13 * (1.09616240336336e-18 * fConst13 + -1.63258107120407e-13) + 2.40094861725002e-11;
+		fConst17 = fConst0 * (fConst13 * (5.42487047233173e-16 - fConst14) + -9.28294596348523e-12) + 1.60063241150001e-11;
+		fConst18 = fConst0 * (fConst0 * (fConst0 * (fConst1 + -2.71243523616587e-16) + 8.16290535602033e-14) + -4.64147298174261e-12) + 4.00158102875003e-12;
+		fConst19 = 1.55024370465538e-18 * fConst0;
+		fConst20 = fConst13 * (-8.61601806240251e-16 - fConst19) + 1.06990934522534e-18;
+		fConst21 = fConst13 * (2.32536555698307e-18 * fConst13 + -6.35019411218347e-17);
+		fConst22 = fConst0 * (fConst13 * (8.61601806240251e-16 - fConst19) + -1.06990934522534e-18);
+		fConst23 = fConst0 * (fConst0 * (fConst0 * (fConst3 + -4.30800903120125e-16) + 3.17509705609174e-17) + -5.3495467261267e-19);
 	}
 
 	inline void instanceResetUserInterface() {
 		fHslider0 = static_cast<float>(1.0);
 		fHslider1 = static_cast<float>(0.0);
-		fHslider2 = static_cast<float>(-0.4);
-		fHslider3 = static_cast<float>(4.0);
-		fHslider4 = static_cast<float>(1.0);
+		fHslider2 = static_cast<float>(0.0);
 	}
 
 	inline void instanceClear() {
 		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
 			fRec3[l0] = 0.0;
 		}
-		for (int l1 = 0; l1 < 2; l1 = l1 + 1) {
-			fRec4[l1] = 0.0;
+		for (int l1 = 0; l1 < 3; l1 = l1 + 1) {
+			fRec5[l1] = 0.0;
 		}
 		for (int l2 = 0; l2 < 3; l2 = l2 + 1) {
-			fRec6[l2] = 0.0;
+			fRec4[l2] = 0.0;
 		}
-		for (int l3 = 0; l3 < 3; l3 = l3 + 1) {
-			fRec5[l3] = 0.0;
+		for (int l3 = 0; l3 < 5; l3 = l3 + 1) {
+			fRec2[l3] = 0.0;
 		}
 		for (int l4 = 0; l4 < 2; l4 = l4 + 1) {
-			fRec7[l4] = 0.0;
+			fVec0[l4] = 0.0;
 		}
 		for (int l5 = 0; l5 < 2; l5 = l5 + 1) {
-			fRec8[l5] = 0.0;
+			fRec1[l5] = 0.0;
 		}
 		for (int l6 = 0; l6 < 2; l6 = l6 + 1) {
-			fRec9[l6] = 0.0;
-		}
-		for (int l7 = 0; l7 < 2; l7 = l7 + 1) {
-			fVec0[l7] = 0.0;
-		}
-		for (int l8 = 0; l8 < 2; l8 = l8 + 1) {
-			fRec2[l8] = 0.0;
-		}
-		for (int l9 = 0; l9 < 2; l9 = l9 + 1) {
-			fRec1[l9] = 0.0;
-		}
-		for (int l10 = 0; l10 < 2; l10 = l10 + 1) {
-			fRec0[l10] = 0.0;
+			fRec0[l6] = 0.0;
 		}
 	}
 
@@ -204,58 +204,42 @@ public:
 	inline void compute(int count, [[maybe_unused]] float** inputs, float** outputs) {
 		float* input0 = inputs[0];
 		float* output0 = outputs[0];
-		double fSlow0 = 0.0050000000000000044 * static_cast<double>(fHslider0);
+		double fSlow0 = static_cast<double>(fHslider0);
 		double fSlow1 = std::pow(1e+01, 0.025 * static_cast<double>(fHslider1));
-		double fSlow2 = fConst2 / fSlow1;
+		double fSlow2 = fConst6 / fSlow1;
 		double fSlow3 = 1.0 / (fSlow2 + 1.0);
-		double fSlow4 = fConst3 * static_cast<double>(fHslider2);
-		double fSlow5 = fConst2 * fSlow1;
+		double fSlow4 = fConst7 * static_cast<double>(fHslider2);
+		double fSlow5 = fConst6 * fSlow1;
 		double fSlow6 = fSlow5 + 1.0;
-		double fSlow7 = fConst6 / fSlow1;
+		double fSlow7 = fConst10 / fSlow1;
 		double fSlow8 = 1.0 / (fSlow7 + 1.0);
-		double fSlow9 = fConst6 * fSlow1;
+		double fSlow9 = fConst10 * fSlow1;
 		double fSlow10 = fSlow9 + 1.0;
 		double fSlow11 = 1.0 - fSlow7;
 		double fSlow12 = 1.0 - fSlow9;
 		double fSlow13 = 1.0 - fSlow2;
 		double fSlow14 = 1.0 - fSlow5;
-		double fSlow15 = 0.0050000000000000044 * static_cast<double>(fHslider3);
-		double fSlow16 = 0.0050000000000000044 * static_cast<double>(fHslider4);
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
-			fRec3[0] = fSlow0 + 0.995 * fRec3[1];
-			fRec4[0] = fSlow4 + fConst4 * fRec4[1];
-			double fTemp0 = fConst7 * fRec6[1];
-			fRec6[0] = fRec0[1] - fSlow8 * (fSlow11 * fRec6[2] - fTemp0);
-			double fTemp1 = fConst8 * fRec5[1];
-			fRec5[0] = fSlow8 * (fSlow10 * fRec6[0] - fTemp0 + fSlow12 * fRec6[2]) - fSlow3 * (fSlow13 * fRec5[2] - fTemp1);
-			double fTemp2 = static_cast<double>(input0[i0]) + fSlow3 * fRec4[0] * (fSlow6 * fRec5[0] - fTemp1 + fSlow14 * fRec5[2]);
-			double fTemp3 = std::fabs(fTemp2);
-			fRec7[0] = std::max<double>(fTemp3, fConst9 * fRec7[1] + fConst10 * fTemp3);
-			fRec8[0] = fSlow15 + 0.995 * fRec8[1];
-			double fTemp4 = std::min<double>(3.0, std::max<double>(-3.0, fRec7[0] + fRec8[0] * fTemp2));
-			fRec9[0] = fSlow16 + 0.995 * fRec9[1];
-			double fTemp5 = OtPowerAmp_faustpower2_f(fRec9[0]);
-			double fTemp6 = fTemp5 * OtPowerAmp_faustpower2_f(fTemp4);
-			double fTemp7 = fTemp6 + 27.0;
-			double fTemp8 = 9.0 * fTemp5 + 27.0;
-			double fTemp9 = (9.0 * fTemp6 + 27.0) * (fTemp5 + 27.0);
-			double fTemp10 = (1.0 - fRec3[0]) * fTemp2 + 0.24 * (fRec3[0] * fTemp4 * fTemp7 * fTemp8 / fTemp9);
-			fVec0[0] = fTemp10;
-			fRec2[0] = fVec0[1] - 0.24 * (fTemp4 * fTemp7 * fTemp8 * (fRec2[1] - fTemp10) / fTemp9);
-			fRec1[0] = fRec2[0] + 0.995 * fRec1[1] - fRec2[1];
+			fRec3[0] = fSlow4 + fConst8 * fRec3[1];
+			double fTemp0 = fConst11 * fRec5[1];
+			fRec5[0] = fRec0[1] - fSlow8 * (fSlow11 * fRec5[2] - fTemp0);
+			double fTemp1 = fConst12 * fRec4[1];
+			fRec4[0] = fSlow8 * (fSlow10 * fRec5[0] - fTemp0 + fSlow12 * fRec5[2]) - fSlow3 * (fSlow13 * fRec4[2] - fTemp1);
+			fRec2[0] = static_cast<double>(input0[i0]) + fSlow3 * fRec3[0] * (fSlow6 * fRec4[0] - fTemp1 + fSlow14 * fRec4[2]) - fConst2 * (fConst15 * fRec2[1] + fConst16 * fRec2[2] + fConst17 * fRec2[3] + fConst18 * fRec2[4]);
+			double fTemp2 = OtTubePowerAmp(TUBE_TABLE_PUSH_PULL_EL34_NEG, TUBE_TABLE_PUSH_PULL_EL34_POS, fConst2 * (fConst0 * (fConst4 * fRec2[0] + fConst20 * fRec2[1]) + fConst21 * fRec2[2] + fConst22 * fRec2[3] + fConst23 * fRec2[4]));
+			fVec0[0] = fTemp2;
+			fRec1[0] = 0.995 * fRec1[1] + fTemp2 - fVec0[1];
 			fRec0[0] = fRec1[0];
-			output0[i0] = static_cast<float>(4.0 * fRec0[0]);
+			output0[i0] = static_cast<float>(fSlow0 * fRec0[0]);
 			fRec3[1] = fRec3[0];
-			fRec4[1] = fRec4[0];
-			fRec6[2] = fRec6[1];
-			fRec6[1] = fRec6[0];
 			fRec5[2] = fRec5[1];
 			fRec5[1] = fRec5[0];
-			fRec7[1] = fRec7[0];
-			fRec8[1] = fRec8[0];
-			fRec9[1] = fRec9[0];
+			fRec4[2] = fRec4[1];
+			fRec4[1] = fRec4[0];
+			for (int j0 = 4; j0 > 0; j0 = j0 - 1) {
+				fRec2[j0] = fRec2[j0 - 1];
+			}
 			fVec0[1] = fVec0[0];
-			fRec2[1] = fRec2[0];
 			fRec1[1] = fRec1[0];
 			fRec0[1] = fRec0[0];
 		}
@@ -267,12 +251,6 @@ public:
 		auto spacing = ImGui::GetStyle().ItemSpacing;
 		float width1 = 0.0f;
 		float height1 = 0.0f;
-		width1 += knobWidth;
-		height1 = std::max(height1, knobHeight);
-		width1 += spacing.x;
-		width1 += knobWidth;
-		height1 = std::max(height1, knobHeight);
-		width1 += spacing.x;
 		width1 += knobWidth;
 		height1 = std::max(height1, knobHeight);
 		width1 += spacing.x;
@@ -294,15 +272,11 @@ public:
 		bool changed = false;
 		ImGui::BeginGroup();
 		ImGui::PushID("PowerAmp");
-		changed |= editCurve();
-		ImGui::SameLine();
-		changed |= editDrive();
-		ImGui::SameLine();
-		changed |= editSaturation();
-		ImGui::SameLine();
 		changed |= editPresence();
 		ImGui::SameLine();
 		changed |= editFeedback();
+		ImGui::SameLine();
+		changed |= editVolume();
 		ImGui::PopID();
 		ImGui::EndGroup();
 		return changed;
@@ -325,56 +299,42 @@ public:
 	}
 
 	struct Parameters {
-		float curve = 1.0f;
-		float drive = 4.0f;
-		float saturation = 1.0f;
 		float presence = 0.0f;
-		float feedback = -0.4f;
+		float feedback = 0.0f;
+		float volume = 1.0f;
 	};
 
 	inline void setParameters([[maybe_unused]] const Parameters& parameters) {
-		fHslider4 = parameters.curve;
-		fHslider3 = parameters.drive;
-		fHslider0 = parameters.saturation;
 		fHslider1 = parameters.presence;
 		fHslider2 = parameters.feedback;
+		fHslider0 = parameters.volume;
 	}
 
 	inline Parameters getParameters() {
 		Parameters parameters;
-		parameters.curve = fHslider4;
-		parameters.drive = fHslider3;
-		parameters.saturation = fHslider0;
 		parameters.presence = fHslider1;
 		parameters.feedback = fHslider2;
+		parameters.volume = fHslider0;
 		return parameters;
 	}
 
 	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
-		callback("curve", &fHslider4, 1.0f);
-		callback("drive", &fHslider3, 4.0f);
-		callback("saturation", &fHslider0, 1.0f);
 		callback("presence", &fHslider1, 0.0f);
-		callback("feedback", &fHslider2, -0.4f);
+		callback("feedback", &fHslider2, 0.0f);
+		callback("volume", &fHslider0, 1.0f);
 	}
 
-	inline bool editCurve() { return OtAudioUi::knob("Curve", &fHslider4, 0.1f, 4.0f, "%.2f", false); }
-	inline bool editDrive() { return OtAudioUi::knob("Drive", &fHslider3, -10.0f, 10.0f, "%.2f", false); }
-	inline bool editSaturation() { return OtAudioUi::knob("Saturation", &fHslider0, 0.0f, 1.0f, "%.2f", false); }
 	inline bool editPresence() { return OtAudioUi::knob("Presence", &fHslider1, -15.0f, 15.0f, "%.1f", false); }
-	inline bool editFeedback() { return OtAudioUi::knob("Feedback", &fHslider2, -0.8f, 1.0f, "%.2f", false); }
+	inline bool editFeedback() { return OtAudioUi::knob("Feedback", &fHslider2, -0.4f, 1.0f, "%.2f", false); }
+	inline bool editVolume() { return OtAudioUi::knob("Volume", &fHslider0, 0.0f, 2.0f, "%.1f", false); }
 
-	inline void setCurve(float value) { fHslider4 = value; }
-	inline void setDrive(float value) { fHslider3 = value; }
-	inline void setSaturation(float value) { fHslider0 = value; }
 	inline void setPresence(float value) { fHslider1 = value; }
 	inline void setFeedback(float value) { fHslider2 = value; }
+	inline void setVolume(float value) { fHslider0 = value; }
 
-	inline float getCurve() { return fHslider4; }
-	inline float getDrive() { return fHslider3; }
-	inline float getSaturation() { return fHslider0; }
 	inline float getPresence() { return fHslider1; }
 	inline float getFeedback() { return fHslider2; }
+	inline float getVolume() { return fHslider0; }
 
 private:
 	bool initialized = false;

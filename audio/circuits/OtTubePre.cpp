@@ -70,7 +70,7 @@ public:
 	inline void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
 		(*data)["tube"] = tube;
 		(*data)["gain"] = gain;
-		(*data)["middle"] = volume;
+		(*data)["volume"] = volume;
 	}
 
 	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {

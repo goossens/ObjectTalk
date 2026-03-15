@@ -14,6 +14,7 @@
 //	Include files
 //
 
+#include <cmath>
 #include <cstdint>
 
 
@@ -31,7 +32,7 @@ struct OtTubeTable {
 
 
 //
-//	Tube definitions
+//	Preamp tube definitions
 //
 
 enum {
@@ -51,24 +52,63 @@ enum {
 
 
 //
+//	PowerAmp tube definitions
+//
+
+enum {
+	TUBE_TABLE_SINGLE_ENDED_EL84_NEG,
+	TUBE_TABLE_SINGLE_ENDED_EL84_POS,
+	TUBE_TABLE_SINGLE_ENDED_6V6,
+	TUBE_TABLE_PUSH_PULL_EL34_NEG,
+	TUBE_TABLE_PUSH_PULL_EL34_POS,
+	TUBE_TABLE_PUSH_PULL_EL84_NEG,
+	TUBE_TABLE_PUSH_PULL_EL84_POS,
+	TUBE_TABLE_PUSH_PULL_6L6_NEG,
+	TUBE_TABLE_PUSH_PULL_6L6_POS
+};
+
+
+//
 //	Tube table access functions
 //
 
-OtTubeTable& OtTubeGetTable(int table);
+OtTubeTable& OtTubeGetPreampTable(int table);
 
-static inline double OtTubeGetF(int table, double input) {
-	auto& tab = OtTubeGetTable(table);
+static inline double OtTubePreamp(int table, double input) {
+	auto& tab = OtTubeGetPreampTable(table);
 	auto f = (input - tab.low) * tab.istep;
 	int i = static_cast<int>(f);
 
 	if (i < 0) {
-		return static_cast<double>(tab.data[0]);
+		return tab.data[0];
 	}
 
 	if (i >= tab.size - 1) {
-		return static_cast<double>(tab.data[tab.size - 1]);
+		return tab.data[tab.size - 1];
 	}
 
 	f -= i;
-	return static_cast<double>(tab.data[i] * (1 - f) + tab.data[i + 1] * f);
+	return tab.data[i] * (1 - f) + tab.data[i + 1] * f;
+}
+
+OtTubeTable& OtTubeGetPowerAmpTable(int table);
+
+static inline double OtTubePowerAmp(int negTable, int posTable, double input) {
+	auto& tab = OtTubeGetPowerAmpTable(input < 0.0 ? negTable : posTable);
+	auto f = std::fabs(input) * tab.istep;
+	int i = static_cast<int>(f);
+
+	if (i < 0) {
+		f = tab.data[0];
+
+	} else if (i >= tab.size - 1) {
+		f = tab.data[tab.size - 1];
+
+	} else {
+		f -= i;
+		f = tab.data[i] * (1 - f) + tab.data[i + 1] * f;
+
+	}
+
+	return std::copysign(f, input);
 }

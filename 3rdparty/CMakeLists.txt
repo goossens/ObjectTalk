@@ -48,6 +48,11 @@ if(OT_INCLUDE_UI)
 	target_include_directories(pffft PUBLIC pffft)
 	set_target_properties(pffft PROPERTIES FOLDER 3rdParty)
 
+	file(GLOB CONVOLVER_SOURCES CONFIGURE_DEPENDS convolver/*.cpp convolver/*.h)
+	add_library(convolver STATIC ${CONVOLVER_SOURCES})
+	target_include_directories(convolver PUBLIC convolver)
+	set_target_properties(convolver PROPERTIES FOLDER 3rdParty)
+
 	file(GLOB MD4C_SOURCES CONFIGURE_DEPENDS md4c/*.c md4c/*.h)
 	add_library(md4c STATIC ${MD4C_SOURCES})
 	target_include_directories(md4c PUBLIC md4c)

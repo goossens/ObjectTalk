@@ -51,6 +51,7 @@ public:
 	static void loadFonts();
 	inline static ImFont* getTextFont() { return textFont; }
 	inline static ImFont* getAudioFont() { return audioFont; }
+	inline static ImFont* getAwesomeFont() { return awesomeFont; }
 
 	// adjust cursor position based on alignment
 	static void align(ImVec2 size, Alignment horizontal, Alignment vertical);
@@ -201,6 +202,7 @@ protected:
 	// fonts
 	inline static ImFont* textFont = nullptr;
 	inline static ImFont* audioFont = nullptr;
+	inline static ImFont* awesomeFont = nullptr;
 };
 
 

@@ -38,6 +38,7 @@
 #include "OtAssetManager.h"
 #include "OtFramework.h"
 #include "OtFrameworkAtExit.h"
+#include "OtNotification.h"
 #include "OtGpu.h"
 #include "OtMessageBus.h"
 
@@ -125,6 +126,7 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 		// put results on screen
 		{
 			OtMeasureStopWatch stopwatch;
+			OtNotification::render();
 			endFrameIMGUI();
 			gpu.endFrame();
 			gpuTime = stopwatch.elapsed();

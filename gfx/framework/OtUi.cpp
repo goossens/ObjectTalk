@@ -26,9 +26,9 @@
 
 #include "OtPath.h"
 
-#include "OtDejaVu.h"
 #include "OtFontAudio.h"
 #include "OtFontAwesome.h"
+#include "OtFontDejaVu.h"
 #include "OtUi.h"
 
 
@@ -47,8 +47,8 @@ void OtUi::loadFonts() {
 	textConfig.OversampleV = 1;
 
 	textFont = io.Fonts->AddFontFromMemoryTTF(
-		static_cast<void*>(OtDejaVu::data()),
-		static_cast<int>(OtDejaVu::size()),
+		static_cast<void*>(OtFontDejaVu::data()),
+		static_cast<int>(OtFontDejaVu::size()),
 		15.0f,
 		&textConfig);
 

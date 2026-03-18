@@ -13,7 +13,7 @@
 
 
 //
-//	font awesome as embedded data
+//	Font Awesome as embedded data
 //
 
 uint8_t OtFontAwesome::fontData[420332] = {

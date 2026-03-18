@@ -13,7 +13,7 @@
 
 
 //
-//	fontaudio as embedded data
+//	FontAudio as embedded data
 //
 
 uint8_t OtFontAudio::fontData[27808] = {

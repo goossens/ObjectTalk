@@ -17,10 +17,10 @@
 
 
 //
-//	OtDejaVu
+//	OtFontDejaVu
 //
 
-class OtDejaVu {
+class OtFontDejaVu {
 public:
 	// access font
 	inline static uint8_t* data() { return fontData; }
@@ -30,3 +30,4 @@ private:
 	static uint8_t fontData[340712];
 	static constexpr size_t fontSize = 340712;
 };
+

@@ -79,7 +79,7 @@ private:
 		};
 
 		// properties
-		static constexpr std::chrono::milliseconds fadeInDuration{800};
+		static constexpr std::chrono::milliseconds fadeInDuration{400};
 		static constexpr std::chrono::milliseconds fadeOutDuration{400};
 		static constexpr std::chrono::milliseconds ghostDuration{500};
 		static constexpr float margin = 10.0f;
@@ -92,7 +92,7 @@ private:
 		std::string title;
 		std::string message;
 		ImVec4 titleColor;
-		float alpha = 0.0f;
+		float alpha;
 		float height;
 		float ghostHeight;
 

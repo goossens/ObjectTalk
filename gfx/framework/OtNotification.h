@@ -39,21 +39,21 @@ public:
 		info
 	};
 
-	// register function to be called at exit
+	// add a new notification
 	static inline void add(Type type, const std::string& message, int dismissTime=3000) {
 		instance().notifications.push_back({type, message, dismissTime});
 	}
 
 	// render all active notifications
 	static inline void render() {
-		// update the state of all notifications
+		// update state of all notifications
 		auto& notificationList = instance().notifications;
 
 		for (auto& notification : notificationList) {
 			notification.update();
 		}
 
-		// remove expired notifications from the list
+		// remove expired notifications
 		notificationList.erase(std::remove_if(notificationList.begin(), notificationList.end(), [](Notification& candidate) {
 			return candidate.phase == Notification::Phase::expired;
 		}), notificationList.end());
@@ -69,39 +69,6 @@ public:
 private:
 	// a single notification
 	struct Notification {
-		// notification rendering phase
-		enum class Phase {
-			fadeIn,
-			wait,
-			fadeOut,
-			ghost,
-			expired
-		};
-
-		// properties
-		static constexpr std::chrono::milliseconds fadeInDuration{400};
-		static constexpr std::chrono::milliseconds fadeOutDuration{400};
-		static constexpr std::chrono::milliseconds ghostDuration{500};
-		static constexpr float margin = 10.0f;
-
-		inline static size_t id = 1;
-		OtFontAwesome::Type icon;
-		std::string name;
-		Type type;
-		Phase phase;
-		std::string title;
-		std::string message;
-		ImVec4 titleColor;
-		float alpha;
-		float height;
-		float ghostHeight;
-
-		std::chrono::system_clock::time_point fadeInStart;
-		std::chrono::system_clock::time_point waitStart;
-		std::chrono::system_clock::time_point fadeOutStart;
-		std::chrono::system_clock::time_point ghostStart;
-		std::chrono::system_clock::time_point expiredStart;
-
 		// constructor
 		Notification(Type type, const std::string& message, int dismissTime) : type(type), message(message) {
 			name = fmt::format("Notification{}", id++);
@@ -139,7 +106,7 @@ private:
 			expiredStart = ghostStart + ghostDuration;
 		}
 
-		// update the state of the notification
+		// update the notification state
 		inline void update() {
 			// get current time
 			auto now = std::chrono::system_clock::now();
@@ -220,7 +187,14 @@ private:
 				ImGui::Text("%s", title.c_str());
 				ImGui::PopStyleColor();
 
-				ImGui::PushTextWrapPos(mainWindowSize.x / 5.0f);
+				auto buttonWidth = ImGui::CalcTextSize("x").x + ImGui::GetStyle().FramePadding.x * 2.0f;
+				ImGui::SameLine(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - buttonWidth);
+
+				if (ImGui::Button("x")) {
+					expiredStart = std::chrono::system_clock::now();
+				}
+
+				ImGui::PushTextWrapPos(mainWindowSize.x / 4.0f);
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text("%s", message.c_str());
 				ImGui::PopTextWrapPos();
@@ -234,6 +208,38 @@ private:
 
 			return offset;
 		}
+
+		// properties
+		static constexpr std::chrono::milliseconds fadeInDuration{400};
+		static constexpr std::chrono::milliseconds fadeOutDuration{400};
+		static constexpr std::chrono::milliseconds ghostDuration{300};
+		static constexpr float margin = 10.0f;
+
+		enum class Phase {
+			fadeIn,
+			wait,
+			fadeOut,
+			ghost,
+			expired
+		};
+
+		inline static size_t id = 1;
+		OtFontAwesome::Type icon;
+		std::string name;
+		Type type;
+		Phase phase;
+		std::string title;
+		std::string message;
+		ImVec4 titleColor;
+		float alpha;
+		float height;
+		float ghostHeight;
+
+		std::chrono::system_clock::time_point fadeInStart;
+		std::chrono::system_clock::time_point waitStart;
+		std::chrono::system_clock::time_point fadeOutStart;
+		std::chrono::system_clock::time_point ghostStart;
+		std::chrono::system_clock::time_point expiredStart;
 	};
 
 	// all active notifications

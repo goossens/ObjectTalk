@@ -16,7 +16,7 @@ set(SDLMIXER_FLAC_DRFLAC OFF CACHE BOOL "" FORCE)
 set(SDLMIXER_VORBIS_STB OFF CACHE BOOL "" FORCE)
 set(SDLMIXER_VORBIS_VORBISFILE OFF CACHE BOOL "" FORCE)
 
-FetchContent_Populate(sdlmixer QUIET GIT_REPOSITORY "https://github.com/libsdl-org/SDL_mixer" GIT_TAG "19a1a38")
+FetchContent_Populate(sdlmixer QUIET GIT_REPOSITORY "https://github.com/libsdl-org/SDL_mixer" GIT_TAG "release-3.2.0")
 add_subdirectory(${sdlmixer_SOURCE_DIR} ${sdlmixer_BINARY_DIR} EXCLUDE_FROM_ALL)
 
 if(CMAKE_GENERATOR STREQUAL "Xcode")

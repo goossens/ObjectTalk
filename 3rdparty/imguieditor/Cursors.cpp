@@ -17,10 +17,17 @@
 //
 
 TextEditor::Coordinate TextEditor::Cursor::adjustCoordinateForInsert(Coordinate coordinate, Coordinate insertStart, Coordinate insertEnd) {
-	coordinate.line += insertEnd.line - insertStart.line;
+	if (insertStart.line == insertEnd.line) {
+		if (coordinate.line == insertEnd.line) {
+			coordinate.column += insertEnd.column - insertStart.column;
+		}
 
-	if (end.line == coordinate.line) {
-		coordinate.column += insertEnd.column - insertStart.column;
+	} else {
+		if (coordinate.line == insertStart.line) {
+			coordinate.column += insertEnd.column - insertStart.column;
+		}
+
+		coordinate.line += insertEnd.line - insertStart.line;
 	}
 
 	return coordinate;
@@ -42,10 +49,17 @@ void TextEditor::Cursor::adjustForInsert(Coordinate insertStart, Coordinate inse
 //
 
 TextEditor::Coordinate TextEditor::Cursor::adjustCoordinateForDelete(Coordinate coordinate, Coordinate deleteStart, Coordinate deleteEnd) {
-	coordinate.line -= deleteEnd.line - deleteStart.line;
+	if (deleteStart.line == deleteEnd.line) {
+		if (coordinate.line == deleteEnd.line) {
+			coordinate.column -= deleteEnd.column - deleteStart.column;
+		}
 
-	if (deleteEnd.line == coordinate.line) {
-		coordinate.column -= deleteEnd.column - deleteStart.column;
+	} else {
+		coordinate.line -= deleteEnd.line - deleteStart.line;
+
+		if (coordinate.line == deleteEnd.line) {
+			coordinate.column -= deleteEnd.column;
+		}
 	}
 
 	return coordinate;

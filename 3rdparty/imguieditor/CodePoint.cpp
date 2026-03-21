@@ -208,19 +208,24 @@ bool TextEditor::CodePoint::isWhiteSpace(ImWchar codepoint) {
 
 bool TextEditor::CodePoint::isWord(ImWchar codepoint) {
 	if (codepoint < 0x7f) {
-		return (static_cast<unsigned>((codepoint | 32) - 'a') < 26) || (static_cast<unsigned>(codepoint - '0') < 10);
+		return
+			(static_cast<unsigned>((codepoint | 32) - 'a') < 26) ||
+			(static_cast<unsigned>(codepoint - '0') < 10) ||
+			codepoint == '_';
 
 #if defined(IMGUI_USE_WCHAR32)
 	} else if (codepoint >= 0x10000) {
 		return
 			rangeContains(letters32, static_cast<ImWchar32>(codepoint)) ||
-			rangeContains(numbers32, static_cast<ImWchar32>(codepoint));
+			rangeContains(numbers32, static_cast<ImWchar32>(codepoint)) ||
+			codepoint == '_';
 #endif
 
 	} else {
 		return
 			rangeContains(letters16, static_cast<ImWchar16>(codepoint)) ||
-			rangeContains(numbers16, static_cast<ImWchar16>(codepoint));
+			rangeContains(numbers16, static_cast<ImWchar16>(codepoint)) ||
+			codepoint == '_';
 	}
 }
 

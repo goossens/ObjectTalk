@@ -17,19 +17,11 @@
 //
 
 TextEditor::Coordinate TextEditor::Cursor::adjustCoordinateForInsert(Coordinate coordinate, Coordinate insertStart, Coordinate insertEnd) {
-	if (insertStart.line == insertEnd.line) {
-		if (coordinate.line == insertEnd.line) {
-			coordinate.column += insertEnd.column - insertStart.column;
-		}
-
-	} else {
-		if (coordinate.line == insertStart.line) {
-			coordinate.column += insertEnd.column - insertStart.column;
-		}
-
-		coordinate.line += insertEnd.line - insertStart.line;
+	if (coordinate.line == insertStart.line) {
+		coordinate.column += insertEnd.column - insertStart.column;
 	}
 
+	coordinate.line += insertEnd.line - insertStart.line;
 	return coordinate;
 }
 

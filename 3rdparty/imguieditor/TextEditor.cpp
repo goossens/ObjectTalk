@@ -170,6 +170,7 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 	ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::ColorConvertU32ToFloat4(palette.get(Color::background)));
 	ImGui::BeginChild(title, size, border, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNavInputs);
+	lastRenderOrigin = ImGui::GetCursorScreenPos();
 
 	// handle keyboard and mouse inputs
 	handleKeyboardInputs();
@@ -1309,6 +1310,26 @@ void TextEditor::getCursor(int& startLine, int& startColumn, int& endLine, int& 
 std::string TextEditor::getCursorText(size_t cursor) const {
 	cursor = std::min(cursor, cursors.size() - 1);
 	return document.getSectionText(cursors[cursor].getSelectionStart(), cursors[cursor].getSelectionEnd());
+}
+
+
+//
+//	TextEditor::GetWordAtScreenPos
+//
+
+std::string TextEditor::GetWordAtScreenPos(const ImVec2& screenPos) const {
+	// convert screen position to local coordinates using the origin saved during last Render()
+	auto local = screenPos - lastRenderOrigin;
+
+	// convert to text coordinates
+	Coordinate glyphCoordinate;
+	Coordinate cursorCoordinate;
+	document.normalizeCoordinate(local.y / glyphSize.y, (local.x - textOffset) / glyphSize.x, glyphCoordinate, cursorCoordinate);
+
+	// Find word boundaries and extract text
+	auto start = document.findWordStart(glyphCoordinate);
+	auto end = document.findWordEnd(glyphCoordinate);
+	return document.getSectionText(start, end);
 }
 
 

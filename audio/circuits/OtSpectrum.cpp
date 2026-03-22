@@ -31,7 +31,7 @@ class OtSpectrum : public OtCircuitClass {
 public:
 	// configure circuit
 	inline void configure() override {
-		input = addInputPin("Input", OtCircuitPinClass::Type::mono);
+		input = addInputPin("Input", OtCircuitPinClass::Type::mono)->hasAttenuation();
 	}
 
 	// render custom fields
@@ -69,15 +69,17 @@ public:
 				}
 
 				// display frequency spectrum
+				ImGui::PushFont(nullptr, ImGui::GetTextLineHeight() - 4.0f);
 				float freqBinSize = OtAudioSettings::sampleRate / N;
 				ImPlot::SetupAxisScale(ImAxis_X1, ImPlotScale_Log10);
 				ImPlot::SetupAxisLimits(ImAxis_X1, freqBinSize, OtAudioSettings::sampleRate / 2.0, ImGuiCond_Always);
 				ImPlot::SetupAxisTicks(ImAxis_X1, ticks, tickCount, tickLabels);
 				ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoTickLabels);
-				ImPlot::SetupAxisLimits(ImAxis_Y1, 0.0, 0.9, ImGuiCond_Always);
+				ImPlot::SetupAxisLimits(ImAxis_Y1, 0.0, 0.7, ImGuiCond_Always);
 				ImPlot::PlotShaded("", magnitudes, static_cast<int>(N / 2), 0.0, freqBinSize, freqBinSize);
 				ImPlot::PlotLine("", magnitudes, static_cast<int>(N / 2), freqBinSize, freqBinSize);
 				ImPlot::EndPlot();
+				ImGui::PopFont();
 			}
 
 			ImPlot::PopStyleVar();

@@ -280,7 +280,7 @@ bool OtAudioUi::verticalSlider(const char* labelPlusID, ImVec2 size, float* valu
 bool OtAudioUi::trimSlider(float* value) {
 	ImGui::PushID(value);
 	ImGui::SetNextItemWidth(ImGui::GetTextLineHeight() * 4.0f);
-	auto result = ImGui::SliderFloat("", value, 0.0f, 2.0f, "%.2f");
+	auto result = ImGui::SliderFloat("", value, 0.0f, 4.0f, "%.2f");
 	ImGui::PopID();
 	return result;
 }

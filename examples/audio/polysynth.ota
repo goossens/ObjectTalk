@@ -36,8 +36,8 @@
 					"type": "midi"
 				}
 			],
-			"mixerOsc1": 0.800000011920929,
-			"mixerOsc2": 0.800000011920929,
+			"mixerOsc1": 0.8399999737739563,
+			"mixerOsc2": 0.8399999737739563,
 			"mixerPink": 0.0,
 			"mixerWhite": 0.0,
 			"outputs": [
@@ -54,9 +54,9 @@
 			"vcaGate": 0.0,
 			"vcaRelease": 0.10499999672174454,
 			"vcaSustain": 0.800000011920929,
-			"vcaVolume": 1.090000033378601,
+			"vcaVolume": 2.0,
 			"vcfAttack": 0.024000000208616257,
-			"vcfCutoff": 5000.0,
+			"vcfCutoff": 4968.0,
 			"vcfDecay": 0.019999999552965164,
 			"vcfEnvMod": 0.9599999785423279,
 			"vcfEnvPower": 1.0,
@@ -179,6 +179,22 @@
 			"type": "Speaker Out",
 			"x": 1072.0,
 			"y": 148.0
+		},
+		{
+			"id": 1720864917,
+			"inputs": [
+				{
+					"attenuation": 4.0,
+					"id": 4073704998,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"outputs": [],
+			"title": "Spectrum Analyzer",
+			"type": "Spectrum Analyzer",
+			"x": 1056.0,
+			"y": 430.0
 		}
 	],
 	"metadata": {},
@@ -212,6 +228,11 @@
 			"from": 3568801586,
 			"id": 883162338,
 			"to": 2872103593
+		},
+		{
+			"from": 2503869085,
+			"id": 1262761735,
+			"to": 4073704998
 		}
 	]
 }

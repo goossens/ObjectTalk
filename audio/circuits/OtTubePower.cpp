@@ -142,7 +142,7 @@ public:
 	}
 
 	static constexpr const char* circuitName = "Tube Power Amp";
-	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::processor;
+	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::amp;
 
 private:
 	// properties

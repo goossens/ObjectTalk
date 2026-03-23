@@ -86,7 +86,7 @@ public:
 	}
 
 	static constexpr const char* circuitName = "Neural Modeler";
-	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::processor;
+	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::amp;
 
 private:
 	// properties

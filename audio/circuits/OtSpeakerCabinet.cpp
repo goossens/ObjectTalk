@@ -106,7 +106,7 @@ public:
 	}
 
 	static constexpr const char* circuitName = "Speaker Cabinet";
-	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::processor;
+	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::amp;
 
 private:
 	// properties

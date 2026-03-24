@@ -130,9 +130,8 @@ C caseRangeToUpper(const T& table, C codepoint) {
 
 	} else if (caseRange->toUpper == 0xffff) {
 		return codepoint & ~0x1;
-	}
 
-	else {
+	} else {
 		return static_cast<C>(codepoint + caseRange->toUpper);
 	}
 }
@@ -151,9 +150,8 @@ C caseRangeToLower(const T& table, C codepoint) {
 
 	} else if (caseRange->toLower == 0xffff) {
 		return codepoint | 0x1;
-	}
 
-	else {
+	} else {
 		return static_cast<C>(codepoint + caseRange->toLower);
 	}
 }

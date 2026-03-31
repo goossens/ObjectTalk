@@ -1411,7 +1411,12 @@ void TextEditor::moveDown(int lines, bool select) {
 
 void TextEditor::moveLeft(bool select, bool wordMode) {
 	for (auto& cursor : cursors) {
-		cursor.update(document.getLeft(cursor.getInteractiveEnd(), wordMode), select);
+		if (cursor.hasSelection() && !select && !wordMode) {
+			cursor.resetToStart();
+
+		} else {
+			cursor.update(document.getLeft(cursor.getInteractiveEnd(), wordMode), select);
+		}
 	}
 
 	makeCursorVisible();
@@ -1424,7 +1429,12 @@ void TextEditor::moveLeft(bool select, bool wordMode) {
 
 void TextEditor::moveRight(bool select, bool wordMode) {
 	for (auto& cursor : cursors) {
-		cursor.update(document.getRight(cursor.getInteractiveEnd(), wordMode), select);
+		if (cursor.hasSelection() && !select && !wordMode) {
+			cursor.resetToEnd();
+
+		} else {
+			cursor.update(document.getRight(cursor.getInteractiveEnd(), wordMode), select);
+		}
 	}
 
 	makeCursorVisible();

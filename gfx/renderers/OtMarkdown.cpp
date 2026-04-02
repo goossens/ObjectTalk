@@ -531,7 +531,7 @@ int OtMarkdown::text(MD_TEXTTYPE type, const char* text, const char* end) {
 		case MD_TEXT_CODE: renderText(text, end); break;
 		case MD_TEXT_NULLCHAR: break;
 		case MD_TEXT_BR: ImGui::NewLine(); break;
-		case MD_TEXT_SOFTBR: ImGui::NewLine();; break;
+		case MD_TEXT_SOFTBR: ImGui::NewLine(); break;
 		case MD_TEXT_ENTITY: renderEntity(text, end); break;
 		case MD_TEXT_HTML: renderHtml(text, end); break;
 		case MD_TEXT_LATEXMATH: renderText(text, end); break;

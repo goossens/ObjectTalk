@@ -843,7 +843,7 @@ void TextEditor::Document::normalizeCoordinate(float line, float column, Coordin
 		cursorCoordinate = glyphCoordinate;
 
 	} else if (line >= static_cast<float>(lineCount())) {
-		glyphCoordinate = Coordinate(lineCount() - 1, at(lineCount() - 1).maxColumn);;
+		glyphCoordinate = Coordinate(lineCount() - 1, at(lineCount() - 1).maxColumn);
 		cursorCoordinate = glyphCoordinate;
 
 	} else {

@@ -4,6 +4,16 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
+#
+#	NOTE:
+#
+#	This makefile only works for the main developer of this package
+#	as it uses a very specify location for the build directory.
+#
+#	Builds should be performed using Cmake and the instructions are
+#	in the documentation.
+#
+
 .PHONY: debug
 debug: ninja
 	cmake --build $(HOME)/build/ObjectTalk --config Debug
@@ -20,10 +30,10 @@ ninja:
 xcode:
 	cmake -B $(HOME)/build/ObjectTalk/xcode -G Xcode
 
-.PHONY: vs
-vs:
-	cmake -B $(HOME)/build/ObjectTalk/vs -G "Visual Studio 18 2026" -A ARM64
-	cmake --build $(HOME)/build/ObjectTalk
+# .PHONY: vs
+# vs:
+#	cmake -B ${HOME}/build/ObjectTalk/vs -G "Visual Studio 18 2026" -A ARM64
+#	cmake --build ${HOME}/build/ObjectTalk
 
 .PHONY: test
 test: debug

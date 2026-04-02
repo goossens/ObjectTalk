@@ -383,17 +383,15 @@
               <li><strong>cd ObjectTalk</strong></li>
               <li>
                 <strong
-                  >cmake --build ${HOME}/build/ObjectTalk/vs -G &quot;Visual
-                  Studio 18 2026&quot; -A x64</strong
+                  >cmake -B ${HOME}/build/ObjectTalk/vs -G &quot;Visual Studio
+                  18 2026&quot; -A x64</strong
                 >
                 (or <strong>ARM64</strong> depending on processor)
               </li>
               <li>
                 Build ObjectTalk by hand:
                 <ul>
-                  <li>
-                    <strong>cmake --build ${HOME}/build/ObjectTalk/vs</strong>
-                  </li>
+                  <li><strong>cmake -B ${HOME}/build/ObjectTalk/vs</strong></li>
                   <li>
                     Run the tests:
                     <strong

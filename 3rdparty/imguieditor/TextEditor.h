@@ -149,8 +149,20 @@ public:
 	inline void GetCurrentCursor(int& line, int& column) const { return getCursor(line, column, cursors.getCurrentIndex()); }
 
 	// alternative API for cursor and selection position using lightweight out struct (line and column are zero-based)
-	struct CursorPosition { int line = 0; int column = 0; };
-	struct CursorSelection { CursorPosition start; CursorPosition end; };
+	struct CursorPosition {
+		CursorPosition() = default;
+		CursorPosition(int l, int c) : line(l), column(c) {}
+		int line = 0;
+		int column = 0;
+	};
+
+	struct CursorSelection {
+		CursorSelection() = default;
+		CursorSelection(CursorPosition s, CursorPosition e) : start(s), end(e) {}
+		CursorPosition start;
+		CursorPosition end;
+	};
+
 	inline CursorPosition GetMainCursorPosition() const { CursorPosition p; getCursor(p.line, p.column, cursors.getMainIndex()); return p; }
 	inline CursorPosition GetCurrentCursorPosition() const { CursorPosition p; getCursor(p.line, p.column, cursors.getCurrentIndex()); return p; }
 	inline CursorPosition GetCursorPosition(size_t cursor) const { CursorPosition p; getCursor(p.line, p.column, cursor); return p; }

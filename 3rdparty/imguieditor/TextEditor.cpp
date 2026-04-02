@@ -1773,7 +1773,7 @@ void TextEditor::moveUpLines() {
 
 			// delete existing lines
 			auto deleteStart = document.getStartOfLine(start);
-			auto deleteEnd = (end.column == 0) ? end : document.getNextLine(end);;
+			auto deleteEnd = (end.column == 0) ? end : document.getNextLine(end);
 			auto text = document.getSectionText(deleteStart, deleteEnd);
 			deleteText(transaction, deleteStart, deleteEnd);
 			cursors.adjustForDelete(cursor, deleteStart, deleteEnd);
@@ -1807,7 +1807,7 @@ void TextEditor::moveDownLines() {
 
 			// delete existing lines
 			auto deleteStart = document.getStartOfLine(start);
-			auto deleteEnd = (end.column == 0) ? end : document.getNextLine(end);;
+			auto deleteEnd = (end.column == 0) ? end : document.getNextLine(end);
 			auto text = document.getSectionText(deleteStart, deleteEnd);
 			deleteText(transaction, deleteStart, deleteEnd);
 			cursors.adjustForDelete(cursor, deleteStart, deleteEnd);

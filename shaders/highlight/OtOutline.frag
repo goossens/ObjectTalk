@@ -23,7 +23,7 @@ void main() {
 
 	value += texture(inTexture, vUv + vec2(-texelSize.x, -texelSize.y)).r;
 	value += texture(inTexture, vUv + vec2(0.0, -texelSize.y)).r;
-	value += texture(inTexture, vUv + vec2(texelSize.x, -texelSize.y)).r;;
+	value += texture(inTexture, vUv + vec2(texelSize.x, -texelSize.y)).r;
 	value += texture(inTexture, vUv + vec2(-texelSize.x, 0.0)).r;
 	value += texture(inTexture, vUv + vec2(texelSize.x, 0.0)).r;
 	value += texture(inTexture, vUv + vec2(-texelSize.x, texelSize.y)).r;

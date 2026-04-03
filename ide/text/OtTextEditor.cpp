@@ -169,8 +169,14 @@ void OtTextEditor::renderEditor() {
 	ImGui::PopFont();
 
 	auto viewport = ImGui::GetMainViewport();
-	ImVec2 center = viewport->GetCenter();
-	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+	if (popupDiff) {
+		ImGui::OpenPopup("Changes since Opening File##diff");
+		ImGui::SetNextWindowPos(viewport->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+		diff.SetText(originalText, editor.GetText());
+		popupDiff = false;
+	}
 
 	if (ImGui::BeginPopupModal("Changes since Opening File##diff", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 		diff.Render("diff", viewport->Size * 0.8f, true);
@@ -200,6 +206,5 @@ void OtTextEditor::renderEditor() {
 //
 
 void OtTextEditor::showDiff() {
-	diff.SetText(originalText, editor.GetText());
-	ImGui::OpenPopup("Changes since Opening File##diff");
+	popupDiff = true;
 }

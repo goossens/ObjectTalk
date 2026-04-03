@@ -57,4 +57,5 @@ protected:
 
 	// properties
 	size_t version = 0;
+	bool popupDiff = false;
 };

@@ -155,7 +155,7 @@ private:
 		// render a notification
 		inline float render(float offset) {
 			if (phase == Notification::Phase::ghost) {
-				offset += ghostHeight + margin;
+				offset += ghostHeight + ImGui::GetStyle().ItemSpacing.y;
 
 			} else {
 				ImGui::PushStyleVar(ImGuiStyleVar_Alpha, alpha);
@@ -163,8 +163,13 @@ private:
 
 				auto mainWindowSize = ImGui::GetMainViewport()->Size;
 				auto mainWindowPos = ImGui::GetMainViewport()->Pos;
-				auto pos = ImVec2(mainWindowPos.x + mainWindowSize.x - margin, mainWindowPos.y + mainWindowSize.y - margin - offset);
-				ImGui::SetNextWindowPos(pos, ImGuiCond_Always, ImVec2(1.0f, 1.0f));
+
+				ImGui::SetNextWindowPos(
+					ImVec2(
+						mainWindowPos.x + mainWindowSize.x - ImGui::GetStyle().ItemSpacing.x,
+						mainWindowPos.y + mainWindowSize.y - ImGui::GetStyle().ItemSpacing.y - offset),
+					ImGuiCond_Always,
+					ImVec2(1.0f, 1.0f));
 
 				ImGuiWindowFlags flags =
 					ImGuiWindowFlags_AlwaysAutoResize |
@@ -200,7 +205,7 @@ private:
 				ImGui::PopTextWrapPos();
 
 				height = ImGui::GetWindowHeight();
-				offset += height + margin;
+				offset += height + ImGui::GetStyle().ItemSpacing.y;
 
 				ImGui::End();
 				ImGui::PopStyleVar();
@@ -213,7 +218,6 @@ private:
 		static constexpr std::chrono::milliseconds fadeInDuration{400};
 		static constexpr std::chrono::milliseconds fadeOutDuration{400};
 		static constexpr std::chrono::milliseconds ghostDuration{300};
-		static constexpr float margin = 10.0f;
 
 		enum class Phase {
 			fadeIn,

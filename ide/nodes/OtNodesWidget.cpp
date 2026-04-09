@@ -114,9 +114,9 @@ void OtNodesWidget::render(OtNodes* n) {
 	}
 
 	ImGuiChildFlags flags =
-		ImGuiWindowFlags_NoMove |
 		ImGuiWindowFlags_HorizontalScrollbar |
-		ImGuiWindowFlags_NoNavInputs;
+		ImGuiWindowFlags_NoNavInputs |
+		ImGuiWindowFlags_NoMove;
 
 	ImGui::SetNextWindowContentSize(ImVec2(width, height));
 	ImGui::BeginChild("nodes", ImVec2(), ImGuiChildFlags_None, flags);

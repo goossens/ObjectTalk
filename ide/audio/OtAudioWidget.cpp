@@ -104,9 +104,9 @@ void OtAudioWidget::render(OtAudio* s) {
 	}
 
 	ImGuiChildFlags flags =
-		ImGuiWindowFlags_NoMove |
 		ImGuiWindowFlags_HorizontalScrollbar |
-		ImGuiWindowFlags_NoNavInputs;
+		ImGuiWindowFlags_NoNavInputs |
+		ImGuiWindowFlags_NoMove;
 
 	ImGui::PushFont(nullptr, fontSize);
 	ImGui::SetNextWindowContentSize(ImVec2(width, height));

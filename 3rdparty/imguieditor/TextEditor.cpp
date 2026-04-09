@@ -2203,6 +2203,7 @@ void TextEditor::deleteTextFromAllCursors(std::shared_ptr<Transaction> transacti
 			auto start = cursor->getSelectionStart();
 			auto end = cursor->getSelectionEnd();
 			deleteText(transaction, start, end);
+			cursor->update(start, false);
 			cursors.adjustForDelete(cursor, start, end);
 		}
 	}

@@ -656,7 +656,7 @@ void OtModel::renderAnimationChannels(size_t animationID) {
 	auto width = right - left;
 
 	auto region = ImGui::GetContentRegionAvail();
-	auto visibleSize = ImGui::CalcItemSize(ImVec2(), region.x, region.y); // messing with Dear ImGui internals
+	auto visibleSize = ImGui::CalcItemSize(ImVec2(), region.x, region.y);
 	auto firstVisibleChannel = std::max(static_cast<int>(std::floor(ImGui::GetScrollY() / lineHeight)), 0);
 	auto lastVisibleChannel = std::min(static_cast<int>(std::floor((ImGui::GetScrollY() + visibleSize.y) / lineHeight)), static_cast<int>(channels.size() - 1));
 

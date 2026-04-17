@@ -40,23 +40,6 @@ public:
 	// render the text editor in a Dear ImGui context
 	void Render(const char* title, const ImVec2& size=ImVec2(), bool border=false);
 
-	// block/hide certain API calls
-	inline void SetReadOnlyEnabled(bool /* value */) {}
-	inline void SetShowLineNumbersEnabled(bool /* value */) {}
-	inline void SetShowMatchingBrackets(bool /* value */) {}
-
-	inline void AddMarker(int /* line */, ImU32 /* lineNumberColor */, ImU32 /* textColor */, const std::string_view& /* lineNumberTooltip */, const std::string_view& /* textTooltip */) {}
-	inline void ClearMarkers() {}
-
-	inline void SetLineDecorator(float /* width */, std::function<void(Decorator& decorator)> /* callback */) {}
-	inline void ClearLineDecorator() {}
-
-	inline void SetLineNumberContextMenuCallback(std::function<void(int line)> /* callback */) {}
-	inline void ClearLineNumberContextMenuCallback() {}
-
-	inline void SetTextContextMenuCallback(std::function<void(int line, int column)> /* callback */) {}
-	inline void ClearTextContextMenuCallback() {}
-
 private:
 	// rendering mode
 	bool sideBySideMode = false;

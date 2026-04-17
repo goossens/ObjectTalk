@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <cstddef>
 
 #include "OtCabinetIR.h"
 

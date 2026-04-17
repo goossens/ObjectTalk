@@ -53,7 +53,7 @@ std::string OtOSClass::getenv(const std::string& name) {
 	}
 
 	if (result == UV_ENOENT) {
-		return nullptr;
+		return "";
 	}
 
 	std::string v = value;

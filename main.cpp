@@ -77,12 +77,21 @@ int main(int argc, char* argv[]) {
 
 	// parse all command line parameters
 	argparse::ArgumentParser program(argv[0], "0.4");
-	bool childProcessFlag = false;
 	std::string logFile;
+
+
+#if defined(OT_INCLUDE_UI)
+	bool childProcessFlag = false;
+	bool forceVulkanBackend = false;
+
+	program.add_argument("--vulkan")
+		.help("force Vulkan as the graphics backend")
+		.store_into(forceVulkanBackend);
 
 	program.add_argument("-c", "--child")
 		.help("run as an IDE child process")
 		.store_into(childProcessFlag);
+#endif
 
 	program.add_argument("-l", "--log")
 		.help("specify a file to send log to")
@@ -110,7 +119,10 @@ int main(int argc, char* argv[]) {
 	}
 
 	// set configuration
+#if defined(OT_INCLUDE_UI)
 	OtConfig::setSubprocessMode(childProcessFlag);
+	OtConfig::setForcedVulkanBackend(forceVulkanBackend);
+#endif
 
 	// log to file (if required)
 	if (logFile.size()) {

@@ -33,7 +33,7 @@ xcode:
 # .PHONY: vs
 # vs:
 #	cmake -B ${HOME}/build/ObjectTalk/vs -G "Visual Studio 18 2026" -A ARM64
-#	cmake --build ${HOME}/build/ObjectTalk
+#	cmake --build ${HOME}/build/ObjectTalk/vs
 
 .PHONY: test
 test: debug

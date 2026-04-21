@@ -9,6 +9,9 @@
 //	Include files
 //
 
+#include "SDL3_shadercross/SDL_shadercross.h"
+
+#include "OtConfig.h"
 #include "OtLog.h"
 
 #include "OtGpu.h"
@@ -23,21 +26,28 @@ void OtGpu::init(SDL_Window* win, int w, int h) {
 	window = win;
 	width = w;
 	height = h;
+	const char* deviceName = nullptr;
 
-#if OT_DEBUG
 	// list GPU drivers
 	for (int i = 0; i < SDL_GetNumGPUDrivers(); i++) {
-		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Available GPU Driver %d. %s", i + 1, SDL_GetGPUDriver(i));
-	}
+		auto driver = SDL_GetGPUDriver(i);
+
+		// force the use of the Vulkan backend if requested and available
+		if (OtConfig::isForcedVulkanBackend() && std::string("vulkan") == driver) {
+			deviceName = "vulkan";
+		}
+
+#if OT_DEBUG
+		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Available GPU Driver %d: %s", i + 1, driver);
 #endif
+	}
 
 	// create GPU device
 	SDL_PropertiesID props = SDL_CreateProperties();
-	SDL_SetStringProperty(props, SDL_PROP_GPU_DEVICE_CREATE_NAME_STRING, nullptr);
+	SDL_SetStringProperty(props, SDL_PROP_GPU_DEVICE_CREATE_NAME_STRING, deviceName);
 	SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_SHADERS_MSL_BOOLEAN, true);
 	SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_SHADERS_SPIRV_BOOLEAN, true);
 	SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_SHADERS_DXBC_BOOLEAN, true);
-	SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_SHADERS_DXIL_BOOLEAN, true);
 
 #if OT_DEBUG
 	SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_DEBUGMODE_BOOLEAN, true);
@@ -55,6 +65,11 @@ void OtGpu::init(SDL_Window* win, int w, int h) {
 	// claim window for GPU device
 	if (!SDL_ClaimWindowForGPUDevice(device, window)) {
 		OtLogFatal("Error in SDL_ClaimWindowForGPUDevice: {}", SDL_GetError());
+	}
+
+	// initialize shader cross library
+	if (!SDL_ShaderCross_Init()) {
+		OtLogFatal("Error in SDL_ShaderCross_Init");
 	}
 
 	// acquire a command buffer
@@ -115,6 +130,9 @@ void OtGpu::release() {
 	SDL_ReleaseGPUTexture(device, blackDummyTexture);
 	SDL_ReleaseGPUTexture(device, whiteDummyTexture);
 	SDL_ReleaseGPUTexture(device, dummyCubeMap);
+
+	// release shader cross resources
+	SDL_ShaderCross_Quit();
 
 	// release GPU device
 	SDL_ReleaseWindowFromGPUDevice(device, window);

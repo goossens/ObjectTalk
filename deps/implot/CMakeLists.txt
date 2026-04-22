@@ -14,6 +14,7 @@ set(implot_SOURCES
 
 add_library(implot STATIC ${implot_SOURCES})
 target_include_directories(implot PUBLIC ${implot_SOURCE_DIR})
+target_compile_options(implot PRIVATE $<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wno-deprecated-enum-enum-conversion>)
 target_link_libraries(implot imgui)
 
 set_target_properties(implot PROPERTIES FOLDER deps)

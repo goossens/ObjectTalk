@@ -249,6 +249,9 @@ void TextEditor::Cursors::update() {
 		}
 
 		// find main and current cursor
+		main = 0;
+		current = 0;
+
 		for (size_t c = 0; c < size(); c++) {
 			if (at(c).isMain()) {
 				main = c;

@@ -102,7 +102,7 @@ variable **null** as a convenience.
 
 **Booleans**
 
-[Booleans](classes.html#boolean) in ObjectTalk can only hold two
+[Booleans](language-classes.html#boolean) in ObjectTalk can only hold two
 logical values: true and false. The default global scope defines the
 variables **true** and **false** as a convenience. A large number of
 language operators or member functions return Booleans as a result.
@@ -113,7 +113,7 @@ language operators or member functions return Booleans as a result.
 
 **Integers**
 
-[Integers](classes.html#integer) are signed whole numbers with no
+[Integers](language-classes.html#integer) are signed whole numbers with no
 fractional component, such as 42, +1 and -23. On most systems, this number
 is implemented as a 64-bit number meaning that the extremes are
 -9,223,372,036,854,775,808 and 9,223,372,036,854,775,807 (inclusive).
@@ -134,7 +134,7 @@ All the following integer literals have a decimal value of 17:
 
 **Reals**
 
-[Reals](classes.html#real) are signed floating point numbers with a
+[Reals](language-classes.html#real) are signed floating point numbers with a
 fractional component, such as 3.14159, 0.1, and -273.15. Reals are
 implemented using 8 bytes and have a range of 1.7E +/- 308 (15 digits).
 
@@ -148,7 +148,7 @@ The default global language context pre-defines the variable **pi**
 
 **Strings**
 
-[Strings](classes.html#string) are a series of characters, such as
+[Strings](language-classes.html#string) are a series of characters, such as
 "hello, world" or "albatross".
 ObjectTalk strings are instances of the String class. Strings are
 made up of unicode characters encoded in UTF-8. Given that UTF-8 uses
@@ -173,7 +173,7 @@ Multiline strings can also be created:
 
 **Functions**
 
-[Functions](classes.html#function)  are self-contained chunks of code
+[Functions](language-classes.html#function)  are self-contained chunks of code
 that perform a specific task. You give a function a name that identifies
 what it does, and this name is used to “call” the function to perform its
 task when needed. See the [Functions section](#functions) below for

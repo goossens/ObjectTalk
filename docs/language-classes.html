@@ -70,11 +70,13 @@
                 >Language</a
               >
               <div class="dropdown-menu" aria-labelledby="Language">
-                <a class="nav-link page-scroll" href="tour.html">Tour</a
-                ><a class="nav-link page-scroll" href="guide.html">Guide</a
-                ><a class="nav-link page-scroll" href="language.html"
-                  >Language</a
-                ><a class="nav-link page-scroll" href="classes.html"
+                <a class="nav-link page-scroll" href="language-tour.html"
+                  >Tour</a
+                ><a class="nav-link page-scroll" href="language-guide.html"
+                  >Guide</a
+                ><a class="nav-link page-scroll" href="language-reference.html"
+                  >Reference</a
+                ><a class="nav-link page-scroll" href="language-classes.html"
                   >Core Classes</a
                 >
               </div>
@@ -255,8 +257,8 @@ assert(a == b);
               that can be accessed with the dot (member) operator. Members are
               not preserved beyond the running of a script and should therefore
               not be used as a dictionary. For that, please of the
-              <a href="Dict.md">Dict</a> class. Members are powerful as any data
-              can be attached to an object.
+              <a class="page-scroll" href="#dict">Dict</a> class. Members are
+              powerful as any data can be attached to an object.
             </p>
             <p>
               When members are retrieved, the ObjectTalk engine for looks at the
@@ -387,11 +389,13 @@ assert(b.dosomething() == &quot;I did it&quot;);
                   <td>__member__(name)</td>
                   <td>
                     Return a
-                    <a href="MemberReference.md">MemberReference</a> object to
-                    acces an object's named member. This member function is
-                    called when you use the <strong>member</strong> (.)
-                    operator. You typically don't call this member function
-                    directly.
+                    <a class="page-scroll" href="#memberreference"
+                      >MemberReference</a
+                    >
+                    object to access an object's named member. This member
+                    function is called when you use the
+                    <strong>member</strong> (.) operator. You typically don't
+                    call this member function directly.
                   </td>
                 </tr>
                 <tr>
@@ -427,15 +431,17 @@ assert(b.dosomething() == &quot;I did it&quot;);
             <h1 class="pb-2">Primitive Class</h1>
             <p>
               The Primitive class is an abstract class without any functionality
-              derived from <a href="Object.md">Object</a>. The purpose of it in
-              ObjectTalk is simply to group all primitive classes and to provide
-              a common base class for them.
+              derived from <a class="page-scroll" href="#object">Object</a>. The
+              purpose of it in ObjectTalk is simply to group all primitive
+              classes and to provide a common base class for them.
             </p>
             <p>
-              <a href="Boolean.md">Booleans</a>,
-              <a href="Integer.md">Integers</a>, <a href="Real.md">Reals</a>,
-              <a href="String.md">Strings</a> and
-              <a href="Function.md">Functions</a> are derived from this class.
+              <a class="page-scroll" href="#boolean">Booleans</a>,
+              <a class="page-scroll" href="#integer">Integers</a>,
+              <a class="page-scroll" href="#real">Reals</a>,
+              <a class="page-scroll" href="#string">Strings</a> and
+              <a class="page-scroll" href="#function">Functions</a> are derived
+              from this class.
             </p>
           </div>
           <div id="boolean">
@@ -1115,9 +1121,11 @@ assert(b.dosomething() == &quot;I did it&quot;);
                   <td>__index__(integer)</td>
                   <td>
                     Return a
-                    <a href="StringReference.md">StringReference</a> object to
-                    address individual characters in a string. This member
-                    function is called when you use the
+                    <a class="page-scroll" href="#stringreference"
+                      >StringReference</a
+                    >
+                    object to address individual characters in a string. This
+                    member function is called when you use the
                     <strong>index</strong> ([]) operator. You typically don't
                     call this member function directly.
                   </td>
@@ -1126,9 +1134,11 @@ assert(b.dosomething() == &quot;I did it&quot;);
                   <td>__iter__()</td>
                   <td>
                     Return a
-                    <a href="StringIterator.md">StringIterator</a> object to
-                    iterate through individual characters in a string. This
-                    member function is called when you use the
+                    <a class="page-scroll" href="#stringiterator"
+                      >StringIterator</a
+                    >
+                    object to iterate through individual characters in a string.
+                    This member function is called when you use the
                     <strong>for in</strong> statement. You typically don't call
                     this member function directly.
                   </td>
@@ -1348,14 +1358,16 @@ class Test : Object {
             <h1 class="pb-2">Collection Class</h1>
             <p>
               The Collection class is an abstract class without any
-              functionality derived from <a href="Object.md">Object</a>. The
-              purpose of it in ObjectTalk is simply to group all collection
-              classes and to provide a common base class for them.
+              functionality derived from
+              <a class="page-scroll" href="#object">Object</a>. The purpose of
+              it in ObjectTalk is simply to group all collection classes and to
+              provide a common base class for them.
             </p>
             <p>
-              <a href="Array.md">Arrays</a>
-              <a href="Dict.md">Dictionaries</a> and
-              <a href="Set.md">Sets</a> are derived from this class.
+              <a class="page-scroll" href="#array">Arrays</a>,
+              <a class="page-scroll" href="#dict">Dictionaries</a> and
+              <a class="page-scroll" href="#set">Sets</a> are derived from this
+              class.
             </p>
           </div>
           <div id="array">
@@ -1697,10 +1709,12 @@ assert(set.subtract(set2) == Set(2, 5));
                 <tr>
                   <td>__iter__()</td>
                   <td>
-                    Return a <a href="SetIterator.md">SetIterator</a> object to
-                    iterate through objects in a set. This member function is
-                    called when you use the <strong>for in</strong> statement.
-                    You typically don't call this member function directly.
+                    Return a
+                    <a class="page-scroll" href="#setiterator">SetIterator</a>
+                    object to iterate through objects in a set. This member
+                    function is called when you use the
+                    <strong>for in</strong> statement. You typically don't call
+                    this member function directly.
                   </td>
                 </tr>
                 <tr>
@@ -1797,8 +1811,9 @@ assert(set.subtract(set2) == Set(2, 5));
             <h1 class="pb-2">Stream Class</h1>
             <p>
               The System class is an abstract class without any functionality
-              derived from <a href="Object.md">Object</a>. The purpose of it in
-              ObjectTalk is simply to group all operating system classes.
+              derived from <a class="page-scroll" href="#object">Object</a>. The
+              purpose of it in ObjectTalk is simply to group all operating
+              system classes.
             </p>
           </div>
           <div id="cout">
@@ -1857,8 +1872,9 @@ assert(set.subtract(set2) == Set(2, 5));
             <h1 class="pb-2">System Class</h1>
             <p>
               The System class is an abstract class without any functionality
-              derived from <a href="Object.md">Object</a>. The purpose of it in
-              ObjectTalk is simply to group all operating system classes.
+              derived from <a class="page-scroll" href="#object">Object</a>. The
+              purpose of it in ObjectTalk is simply to group all operating
+              system classes.
             </p>
           </div>
           <div id="path">
@@ -2436,9 +2452,9 @@ assert(set.subtract(set2) == Set(2, 5));
             <h1 class="pb-2">Internal Class</h1>
             <p>
               The Internal class is an abstract class without any functionality
-              derived from <a href="Object.md">Object</a>. The purpose of it in
-              ObjectTalk is simply to group all internal classes and to provide
-              a common base class for them.
+              derived from <a class="page-scroll" href="#object">Object</a>. The
+              purpose of it in ObjectTalk is simply to group all internal
+              classes and to provide a common base class for them.
             </p>
             <p>
               Internal classes can't be instantiated directly and are simply

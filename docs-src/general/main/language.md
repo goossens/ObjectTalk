@@ -4,5 +4,5 @@ As a long time IT professional, I've seen a lot of software development
 with all its greatness and flaws. ObjectTalk represents what I think
 is a well-balanced scripting language that is easy to learn and can make
 even a novice look good quickly. If you are interested in how I got
-to where we are today, please see the [history](tour.html#history)
+to where we are today, please see the [history](language-tour.html#history)
 page for the story behind ObjectTalk.

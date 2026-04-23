@@ -19,7 +19,7 @@ In the example above, both **a** and **b** have the same (non) value.
 All ObjectTalk objects have a special mechanism to store members
 that can be accessed with the dot (member) operator. Members are not
 preserved beyond the running of a script and should therefore not be
-used as a dictionary. For that, please of the [Dict](Dict.md) class.
+used as a dictionary. For that, please of the [Dict](#dict) class.
 Members are powerful as any data can be attached to an object.
 
 When members are retrieved, the ObjectTalk engine for looks at the
@@ -89,7 +89,7 @@ really obscure code. Here is an example:
 | get(name) | Get the value of a named member. |
 | unset(name) | Remove named member. |
 | unsetAll() | Remove all named members. |
-| \_\_member__(name) | Return a [MemberReference](MemberReference.md) object to acces an object's named member. This member function is called when you use the **member** (.) operator. You typically don't call this member function directly. |
+| \_\_member__(name) | Return a [MemberReference](#memberreference) object to access an object's named member. This member function is called when you use the **member** (.) operator. You typically don't call this member function directly. |
 | \_\_eq__(object) | See if objects are equal. This virtual member function is called when you use the **equal** (==) operator and should be overwritten when required. You typically don't call this member function directly. |
 | \_\_ne__(object) | See if objects are not equal. This virtual member function is called when you use the **not equal** (!=) operator and should be overwritten when required. You typically don't call this member function directly. |
 | getClass() | return the object's class. |

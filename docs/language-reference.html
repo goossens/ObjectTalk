@@ -70,11 +70,13 @@
                 >Language</a
               >
               <div class="dropdown-menu" aria-labelledby="Language">
-                <a class="nav-link page-scroll" href="tour.html">Tour</a
-                ><a class="nav-link page-scroll" href="guide.html">Guide</a
-                ><a class="nav-link page-scroll" href="language.html"
-                  >Language</a
-                ><a class="nav-link page-scroll" href="classes.html"
+                <a class="nav-link page-scroll" href="language-tour.html"
+                  >Tour</a
+                ><a class="nav-link page-scroll" href="language-guide.html"
+                  >Guide</a
+                ><a class="nav-link page-scroll" href="language-reference.html"
+                  >Reference</a
+                ><a class="nav-link page-scroll" href="language-classes.html"
                   >Core Classes</a
                 >
               </div>
@@ -192,7 +194,7 @@
             <li><a class="page-scroll" href="#real">real</a></li>
             <li><a class="page-scroll" href="#string">string</a></li>
             <li><a class="page-scroll" href="#function">function</a></li>
-            <li><a class="page-scroll" href="#name">name</a></li>
+            <li><a class="page-scroll" href="#identifier">identifier</a></li>
           </ul>
         </div>
         <div class="col mh-100 overflow-auto py-2 manual-content">
@@ -224,15 +226,15 @@
             <p><img src="img/statement.png" alt="Railroad Diagram" /></p>
             <pre><code>statement ::= expression &quot;;&quot;
 | block
-| &quot;var&quot; name (&quot;=&quot; expression)? &quot;;&quot;
-| &quot;class&quot; name &quot;:&quot; expression block
-| &quot;function&quot; name &quot;(&quot; ((name (&quot;,&quot; name)*)?) &quot;)&quot; block
+| &quot;var&quot; identifier (&quot;=&quot; expression)? &quot;;&quot;
+| &quot;class&quot; identifier &quot;:&quot; expression block
+| &quot;function&quot; identifier &quot;(&quot; ((identifier (&quot;,&quot; identifier)*)?) &quot;)&quot; block
 | &quot;if&quot; expression block (&quot;elif&quot; expression block)* (&quot;else&quot; block)?
 | &quot;while&quot; expression block
 | &quot;do&quot; block &quot;while&quot; expression &quot;;&quot;
-| &quot;for&quot; name &quot;in&quot; expression block
+| &quot;for&quot; identifier &quot;in&quot; expression block
 | &quot;throw&quot; expression &quot;;&quot;
-| &quot;try&quot; block &quot;catch&quot; name block
+| &quot;try&quot; block &quot;catch&quot; identifier block
 | &quot;return&quot; expression &quot;;&quot;
 </code></pre>
           </div>
@@ -338,7 +340,7 @@
           <div id="postfix">
             <h1 class="pb-2">postfix</h1>
             <p><img src="img/postfix.png" alt="Railroad Diagram" /></p>
-            <pre><code>postfix ::= primary (&quot;[&quot; expression &quot;]&quot; | &quot;(&quot; expression (&quot;,&quot; expression)* &quot;)&quot; | &quot;.&quot; name | &quot;++&quot; | &quot;--&quot;)*
+            <pre><code>postfix ::= primary (&quot;[&quot; expression &quot;]&quot; | &quot;(&quot; expression (&quot;,&quot; expression)* &quot;)&quot; | &quot;.&quot; identifier | &quot;++&quot; | &quot;--&quot;)*
 </code></pre>
           </div>
           <div id="primary">
@@ -351,8 +353,8 @@
 | real
 | string
 | function
-| name
-| &quot;super&quot; &quot;.&quot; name
+| identifier
+| &quot;super&quot; &quot;.&quot; identifier
 </code></pre>
           </div>
           <div id="integer">
@@ -376,13 +378,13 @@
           <div id="function">
             <h1 class="pb-2">function</h1>
             <p><img src="img/function.png" alt="Railroad Diagram" /></p>
-            <pre><code>function ::= &quot;function&quot; &quot;(&quot; ((name (&quot;,&quot; name)*)?) &quot;)&quot; block
+            <pre><code>function ::= &quot;function&quot; &quot;(&quot; ((identifier (&quot;,&quot; identifier)*)?) &quot;)&quot; block
 </code></pre>
           </div>
-          <div id="name">
-            <h1 class="pb-2">name</h1>
-            <p><img src="img/name.png" alt="Railroad Diagram" /></p>
-            <pre><code>name ::= [a-zA-Z_][a-zA-Z0-9_]*
+          <div id="identifier">
+            <h1 class="pb-2">identifier</h1>
+            <p><img src="img/identifier.png" alt="Railroad Diagram" /></p>
+            <pre><code>identifier ::= [a-zA-Z_][a-zA-Z0-9_]*
 </code></pre>
           </div>
         </div>

@@ -1,5 +1,5 @@
 The Internal class is an abstract class without any functionality derived
-from [Object](Object.md). The purpose of it in ObjectTalk is simply to
+from [Object](#object). The purpose of it in ObjectTalk is simply to
 group all internal classes and to provide a common base class for them.
 
 Internal classes can't be instantiated directly and are simply there to help

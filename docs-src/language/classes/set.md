@@ -18,7 +18,7 @@ a set or to perform set operations (e.g. union, difference).
 | Function | Description |
 | ------ | ----------- |
 | \_\_init__(...) | Construct a Set. This member function is called when you use the **execution** [()] operator on the Set class. Every value passed to this member function becomes a member of the new set. You typically don't call this member function directly. |
-| \_\_iter__() | Return a [SetIterator](SetIterator.md) object to iterate through objects in a set. This member function is called when you use the **for in** statement. You typically don't call this member function directly. |
+| \_\_iter__() | Return a [SetIterator](#setiterator) object to iterate through objects in a set. This member function is called when you use the **for in** statement. You typically don't call this member function directly. |
 | \_\_add__(object) | Add object to the set and return a new set. This member function is called when you use the **addition** (+) operator. If the object is another set, it will be added as a single member creating a set hierarchy. If you want to perform mathematical function on two sets use the intersection, difference, union and subtract functions. |
 | \_\_sub__(object) | Remove object from the set and return a new set. This member function is called when you use the **subtraction** (-) operator. |
 | \_\_contains__(object) | Determine if object is a member of the set. This member function is called when you use the **(not) in** operator. You typically don't call this member function directly. |

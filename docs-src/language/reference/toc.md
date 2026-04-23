@@ -22,4 +22,4 @@
 * [real](#real)
 * [string](#string)
 * [function](#function)
-* [name](#name)
+* [identifier](#identifier)

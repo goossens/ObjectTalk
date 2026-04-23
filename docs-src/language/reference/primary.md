@@ -7,5 +7,5 @@
 	| real
 	| string
 	| function
-	| name
-	| "super" "." name
+	| identifier
+	| "super" "." identifier

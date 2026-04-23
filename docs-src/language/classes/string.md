@@ -12,8 +12,8 @@ characters (like "€") or use JSON style encoding like
 | \_\_ge__(string) | Compares string to the object's value alphabetically and returns a boolean indicating whether the object's value is greater or equal than the integer or not. This member function is called when you use the **greater or equal than** (>=) operator. |
 | \_\_le__(string) | Compares string to the object's value alphabetically and returns a boolean indicating whether the object's value is less or equal than the integer or not. This member function is called when you use the **less or equal than** (<=) operator. |
 | casecmp(string) | Compares string to the object's value alphabetically but case independently and returns an integer indicating whether the object's value is less, equal or greater than the string. |
-| \_\_index__(integer) | Return a [StringReference](StringReference.md) object to address individual characters in a string. This member function is called when you use the **index** ([]) operator. You typically don't call this member function directly. |
-| \_\_iter__() | Return a [StringIterator](StringIterator.md) object to iterate through individual characters in a string. This member function is called when you use the **for in** statement. You typically don't call this member function directly. |
+| \_\_index__(integer) | Return a [StringReference](#stringreference) object to address individual characters in a string. This member function is called when you use the **index** ([]) operator. You typically don't call this member function directly. |
+| \_\_iter__() | Return a [StringIterator](#stringiterator) object to iterate through individual characters in a string. This member function is called when you use the **for in** statement. You typically don't call this member function directly. |
 | \_\_add__(string) | Concatenates string to the object's value and returns result. This member function is called when you use the **addition** (+) operator. |
 | \_\_contains__(string) | Determine if string is contained in objects value. This member function is called when you use the **(not) in** operators. |
 | len() | Return number of characters in object's value. |

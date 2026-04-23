@@ -29,6 +29,7 @@
 #include "OtFontAudio.h"
 #include "OtFontAwesome.h"
 #include "OtFontDejaVu.h"
+#include "OtFontDejaVuBold.h"
 #include "OtUi.h"
 
 
@@ -51,6 +52,18 @@ void OtUi::loadFonts() {
 		static_cast<int>(OtFontDejaVu::size()),
 		15.0f,
 		&textConfig);
+
+	ImFontConfig boldConfig{};
+	std::strncpy(boldConfig.Name, "DejaVuBold", sizeof(textConfig.Name));
+	boldConfig.FontDataOwnedByAtlas = false;
+	boldConfig.OversampleH = 1;
+	boldConfig.OversampleV = 1;
+
+	textFont = io.Fonts->AddFontFromMemoryTTF(
+		static_cast<void*>(OtFontDejaVuBold::data()),
+		static_cast<int>(OtFontDejaVuBold::size()),
+		15.0f,
+		&boldConfig);
 
 	ImFontConfig audioConfig{};
 	std::strncpy(audioConfig.Name, "FontAudio", sizeof(audioConfig.Name));

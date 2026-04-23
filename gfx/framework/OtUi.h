@@ -50,6 +50,7 @@ public:
 	// load and access the fonts
 	static void loadFonts();
 	inline static ImFont* getTextFont() { return textFont; }
+	inline static ImFont* getBoldFont() { return boldFont; }
 	inline static ImFont* getAudioFont() { return audioFont; }
 	inline static ImFont* getAwesomeFont() { return awesomeFont; }
 
@@ -201,6 +202,7 @@ protected:
 
 	// fonts
 	inline static ImFont* textFont = nullptr;
+	inline static ImFont* boldFont = nullptr;
 	inline static ImFont* audioFont = nullptr;
 	inline static ImFont* awesomeFont = nullptr;
 };

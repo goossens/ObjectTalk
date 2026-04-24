@@ -59,7 +59,7 @@ void OtUi::loadFonts() {
 	boldConfig.OversampleH = 1;
 	boldConfig.OversampleV = 1;
 
-	textFont = io.Fonts->AddFontFromMemoryTTF(
+	boldFont = io.Fonts->AddFontFromMemoryTTF(
 		static_cast<void*>(OtFontDejaVuBold::data()),
 		static_cast<int>(OtFontDejaVuBold::size()),
 		15.0f,

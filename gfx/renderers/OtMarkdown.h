@@ -25,9 +25,8 @@
 
 class OtMarkdown {
 public:
-	// constructor/destructor
+	// constructor
 	OtMarkdown();
-	~OtMarkdown();
 
 	// render the specified markdown as an ImGui widget
 	void render(const std::string& markdown);
@@ -70,6 +69,7 @@ private:
 	void uSpan(bool enter);
 
 	// current state
+	float fontSize;
 	bool isUnderlined = false;
 	bool isStrikeThrough = false;
 	bool isEm = false;
@@ -78,26 +78,45 @@ private:
 	bool isTableBody = false;
 	bool isImage = false;
 	int hLevel = 0;
+	int quoteDepth = 0;
 
-	bool tableBorder = true;
-	bool tableHeaderHighlight = true;
-	size_t tableNextColumn = 0;
-	ImVec2 tableLastPos;
-	std::vector<float> tableColPos;
-	std::vector<float> tableRowPos;
+	bool tableOpen = false;
+	int tableID = 1;
+	int vtxStart = 0;
+	float cellWidth = 0.0f;
+	MD_ALIGN cellAlign = MD_ALIGN_DEFAULT;
 
-	struct imageInfo {
+	// GitHub-style admonitions
+	enum class AdmonitionKind {
+		None,
+		Note,
+		Tip,
+		Important,
+		Warning,
+		Caution
+	};
+
+	struct FontInfo {
+		ImFont* font;
+		float size;
+	};
+
+	struct ImageInfo {
 		ImTextureID	id;
 		ImVec2	size;
 	};
 
-	struct listInfo {
+	struct ListInfo {
 		char delimiter;
 		bool isOL;
 		unsigned currentOL;
 	};
 
-	std::vector<listInfo> listStack;
+	AdmonitionKind admonitionKind = AdmonitionKind::None;
+	bool admonitionScanPending = false;
+
+	std::vector<ImVec2> quoteStart;
+	std::vector<ListInfo> listStack;
 
 	std::string href;
 
@@ -105,13 +124,25 @@ private:
 	void renderText(const char* text, const char* end);
 	void renderHtml(const char* text, const char* end);
 	void renderEntity(const char* text, const char* end);
+	void renderTaskMarker(bool checked);
 	void line(ImColor color, bool under);
 
-	ImFont* getFont();
+	ImVec4 admonitionColor(AdmonitionKind kind);
+ 	const char* admonitionLabel(AdmonitionKind kind);
+	AdmonitionKind matchAdmonitionMarker(const char* start, const char* end, const char*& markerEnd);
+
+	FontInfo getFont();
 	void setFont(bool enter);
 	ImVec4 getColor();
 	void setColor(bool enter);
 	void setHref(bool enter, const MD_ATTRIBUTE& src);
-	bool getImage(imageInfo& nfo);
+	bool getImage(ImageInfo& nfo);
 	void openUrl();
+	void gap(float size=1.0f);
+
+	static constexpr float afterHeaderGap = 0.3f;
+	static constexpr float afterParagraphGap = 0.5f;
+	static constexpr float afterListGap = 0.4f;
+	static constexpr float afterQuoteGap = 0.5f;
+	static constexpr float afterCodeGap = 0.5f;
 };

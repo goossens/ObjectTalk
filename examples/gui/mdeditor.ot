@@ -8,12 +8,19 @@
 
 var gui = import("gui");
 
-var markdown = "# Table
+var markdown = "
+# Header
+## Sub Header
+### Sub Sub Header
+#### Sub Sub Sub Header
+#### Sub Sub Sub Sub Header
+
+# Table
 
 Name &nbsp; &nbsp; &nbsp; &nbsp; | Multiline &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>Header | [Link&nbsp;](#link1)
 ------ | ------------------- | --
 Value-One | Long <br>explanation <br>with \\<br\\>\\'s|1
-~~Value-Two~~ | text auto wrapped\\: long explanation here |25 37 43 56 78 90
+~~Value-Two~~ | text auto wrapped: long explanation here and longer explanation here and longest explanation here |25 37 43 56 78 90
 **etc** | [~~Some **link**~~](https://github.com/goossens/ObjectTalk)|3
 
 1. First ordered list item
@@ -33,6 +40,31 @@ Value-One | Long <br>explanation <br>with \\<br\\>\\'s|1
 	+ [Just a link](https://github.com/goossens/ObjectTalk).
 		* Item with [link1](#link1)
 		* Item with bold [**link2**](#link1)
+
+Some regular Text
+
+**Some Bold Text**
+
+```
+	Some code
+	Some code
+```
+
+> [!NOTE]
+> Useful information that users should know, even when skimming content.
+
+> [!TIP]
+> Helpful advice for doing things better or more easily.
+
+> [!IMPORTANT]
+> Key information users need to know to achieve their goal.
+
+> [!WARNING]
+> Urgent info that needs immediate user attention to avoid problems.
+
+> [!CAUTION]
+> Advises about risks or negative outcomes of certain actions.
+
 ";
 
 class MyApp : gui.App {

@@ -681,15 +681,10 @@ void TextEditor::handleKeyboardInputs() {
 		auto isOptionalShift = !ctrl && !alt;
 		auto isOptionalAlt = !ctrl && !shift;
 
-#if __APPLE__
 		// Dear ImGui switches the Cmd(Super) and Ctrl keys on MacOS
 		auto super = ImGui::IsKeyDown(ImGuiMod_Super);
-		auto isCtrlShift = !ctrl && shift && !alt && super;
-		auto isOptionalAltShift = !ctrl;
-	#else
-		auto isShiftAlt = !ctrl && shift && alt;
-		auto isOptionalCtrlShift = !alt;
-	#endif
+		auto isMetaShift = ImGui::GetIO().ConfigMacOSXBehaviors ? !ctrl && shift && !alt && super : !ctrl && shift && alt;
+    	auto isOptionalMetaShift = ImGui::GetIO().ConfigMacOSXBehaviors ? !ctrl : !alt;
 
 		// ignore specific keys when autocomplete is active, they will be handled later
 		if (autocomplete.isActive() && autocomplete.isSpecialKeyPressed()) {
@@ -706,17 +701,10 @@ void TextEditor::handleKeyboardInputs() {
 		if (isOptionalShift && ImGui::IsKeyPressed(ImGuiKey_UpArrow)) { moveUp(1, shift); }
 		else if (isOptionalShift && ImGui::IsKeyPressed(ImGuiKey_DownArrow)) { moveDown(1, shift); }
 
-#if __APPLE__
-		else if (isCtrlShift && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { shrinkSelectionsToCurlyBrackets(); }
-		else if (isCtrlShift && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { growSelectionsToCurlyBrackets(); }
-		else if (isOptionalAltShift && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { moveLeft(shift, alt); }
-		else if (isOptionalAltShift && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { moveRight(shift, alt); }
-#else
-		else if (isShiftAlt && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { shrinkSelectionsToCurlyBrackets(); }
-		else if (isShiftAlt && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { growSelectionsToCurlyBrackets(); }
-		else if (isOptionalCtrlShift && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { moveLeft(shift, ctrl); }
-		else if (isOptionalCtrlShift && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { moveRight(shift, ctrl); }
-#endif
+		else if (isMetaShift && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { shrinkSelectionsToCurlyBrackets(); }
+		else if (isMetaShift && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { growSelectionsToCurlyBrackets(); }
+		else if (isOptionalMetaShift && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { moveLeft(shift, alt); }
+		else if (isOptionalMetaShift && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { moveRight(shift, alt); }
 
 		else if (isOptionalShift && ImGui::IsKeyPressed(ImGuiKey_PageUp)) { moveUp(visibleLines - 2, shift); }
 		else if (isOptionalShift && ImGui::IsKeyPressed(ImGuiKey_PageDown)) { moveDown(visibleLines - 2, shift); }
@@ -1009,11 +997,9 @@ void TextEditor::handleMouseInteractions() {
 				// left mouse button single click
 				auto extendCursor = ImGui::IsKeyDown(ImGuiMod_Shift);
 
-#if __APPLE__
-				auto addCursor = ImGui::IsKeyDown(ImGuiMod_Alt);
-#else
-				auto addCursor = ImGui::IsKeyDown(ImGuiMod_Ctrl);
-#endif
+				auto addCursor = ImGui::GetIO().ConfigMacOSXBehaviors
+					? ImGui::IsKeyDown(ImGuiMod_Alt) :
+					ImGui::IsKeyDown(ImGuiMod_Ctrl);
 
 				if (overLineNumbers) {
 					// handle line number clicks

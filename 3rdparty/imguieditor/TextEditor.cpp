@@ -683,6 +683,7 @@ void TextEditor::handleKeyboardInputs() {
 
 		// Dear ImGui switches the Cmd(Super) and Ctrl keys on MacOS
 		auto super = ImGui::IsKeyDown(ImGuiMod_Super);
+	    auto meta = ImGui::GetIO().ConfigMacOSXBehaviors ? alt : ctrl;
 		auto isMetaShift = ImGui::GetIO().ConfigMacOSXBehaviors ? !ctrl && shift && !alt && super : !ctrl && shift && alt;
     	auto isOptionalMetaShift = ImGui::GetIO().ConfigMacOSXBehaviors ? !ctrl : !alt;
 
@@ -703,8 +704,8 @@ void TextEditor::handleKeyboardInputs() {
 
 		else if (isMetaShift && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { shrinkSelectionsToCurlyBrackets(); }
 		else if (isMetaShift && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { growSelectionsToCurlyBrackets(); }
-		else if (isOptionalMetaShift && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { moveLeft(shift, alt); }
-		else if (isOptionalMetaShift && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { moveRight(shift, alt); }
+		else if (isOptionalMetaShift && ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) { moveLeft(shift, meta); }
+		else if (isOptionalMetaShift && ImGui::IsKeyPressed(ImGuiKey_RightArrow)) { moveRight(shift, meta); }
 
 		else if (isOptionalShift && ImGui::IsKeyPressed(ImGuiKey_PageUp)) { moveUp(visibleLines - 2, shift); }
 		else if (isOptionalShift && ImGui::IsKeyPressed(ImGuiKey_PageDown)) { moveDown(visibleLines - 2, shift); }

@@ -50,7 +50,6 @@ public:
 
 		if (input->isSourceConnected()) {
 			ImPlot::PushStyleColor(ImPlotCol_AxisText, ImVec4(0.6f, 0.6f, 0.6f, 1.0f));
-			ImPlot::PushStyleVar(ImPlotStyleVar_FillAlpha, 0.25f);
 
 			if (ImPlot::BeginPlot("##Spectrum", ImVec2(itemWidth, height), ImPlotFlags_CanvasOnly | ImPlotFlags_NoInputs)) {
 				{
@@ -76,13 +75,14 @@ public:
 				ImPlot::SetupAxisTicks(ImAxis_X1, ticks, tickCount, tickLabels);
 				ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoTickLabels);
 				ImPlot::SetupAxisLimits(ImAxis_Y1, 0.0, 0.7, ImGuiCond_Always);
-				ImPlot::PlotShaded("", magnitudes, static_cast<int>(N / 2), 0.0, freqBinSize, freqBinSize);
+				ImPlotSpec spec;
+				spec.FillAlpha = 0.5f;
+				ImPlot::PlotShaded("", magnitudes, static_cast<int>(N / 2), 0.0, freqBinSize, freqBinSize, spec);
 				ImPlot::PlotLine("", magnitudes, static_cast<int>(N / 2), freqBinSize, freqBinSize);
 				ImPlot::EndPlot();
 				ImGui::PopFont();
 			}
 
-			ImPlot::PopStyleVar();
 			ImPlot::PopStyleColor();
 
 		} else {

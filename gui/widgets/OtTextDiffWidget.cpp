@@ -46,37 +46,37 @@ void OtTextDiffWidgetClass::init(size_t count, OtObject* parameters) {
 
 void OtTextDiffWidgetClass::setLanguage(const std::string& text) {
 	if (text == "C") {
-		diff.SetLanguage(TextDiff::Language::C());
+		diff.SetLanguage(TextEditor::Language::C());
 
 	} else if (text == "C++") {
-		diff.SetLanguage(TextDiff::Language::Cpp());
+		diff.SetLanguage(TextEditor::Language::Cpp());
 
 	} else if (text == "C#") {
-		diff.SetLanguage(TextDiff::Language::Cs());
+		diff.SetLanguage(TextEditor::Language::Cs());
 
 	} else if (text == "AngelScript") {
-		diff.SetLanguage(TextDiff::Language::AngelScript());
+		diff.SetLanguage(TextEditor::Language::AngelScript());
 
 	} else if (text == "Lua") {
-		diff.SetLanguage(TextDiff::Language::Lua());
+		diff.SetLanguage(TextEditor::Language::Lua());
 
 	} else if (text == "Python") {
-		diff.SetLanguage(TextDiff::Language::Python());
+		diff.SetLanguage(TextEditor::Language::Python());
 
 	} else if (text == "GLSL") {
-		diff.SetLanguage(TextDiff::Language::Glsl());
+		diff.SetLanguage(TextEditor::Language::Glsl());
 
 	} else if (text == "HLSL") {
-		diff.SetLanguage(TextDiff::Language::Hlsl());
+		diff.SetLanguage(TextEditor::Language::Hlsl());
 
 	} else if (text == "JSON") {
-		diff.SetLanguage(TextDiff::Language::Json());
+		diff.SetLanguage(TextEditor::Language::Json());
 
 	} else if (text == "Markdown") {
-		diff.SetLanguage(TextDiff::Language::Markdown());
+		diff.SetLanguage(TextEditor::Language::Markdown());
 
 	} else if (text == "SQL") {
-		diff.SetLanguage(TextDiff::Language::Sql());
+		diff.SetLanguage(TextEditor::Language::Sql());
 
 	} else {
 		OtLogError("Unknown language [{}], should be C, C++, C#, AngelScript, Lua, Python, GLSL, HLSL, JSON, Markdown or SQL", text);

@@ -18,6 +18,7 @@ process(fmt)
 process(json)
 process(libuv)
 process(httplib)
+process(lsp)
 
 if(OT_INCLUDE_UI)
 	process(bsthreadpool)

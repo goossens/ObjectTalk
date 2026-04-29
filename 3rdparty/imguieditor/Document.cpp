@@ -16,11 +16,10 @@
 //	TextEditor::Document::setText
 //
 
-void TextEditor::Document::setText(const std::string_view& text) {
+void TextEditor::Document::setText(Config& config, const std::string_view& text) {
 	// reset document
 	clearDocument();
 	appendLine();
-	updated = true;
 
 	// process UTF-8 and generate lines of glyphs
 	auto end = text.end();
@@ -33,8 +32,8 @@ void TextEditor::Document::setText(const std::string_view& text) {
 		if (character == '\n') {
 			appendLine();
 
-		} else if (insertSpacesOnTabs && character == '\t') {
-			auto spaces = ((back().size() / tabSize) + 1) * tabSize - back().size();
+		} else if (config.insertSpacesOnTabs && character == '\t') {
+			auto spaces = ((back().size() / config.tabSize) + 1) * config.tabSize - back().size();
 
 			for (size_t s = 0; s < spaces; s++) {
 				back().emplace_back(Glyph(' ', Color::text));
@@ -45,8 +44,9 @@ void TextEditor::Document::setText(const std::string_view& text) {
 		}
 	}
 
-	// update maximum column counts
-	updateMaximumColumn(0, lineCount() - 1);
+	// calculate line indents
+	updateIndents(config, 0, size() - 1);
+	updated = true;
 }
 
 
@@ -54,10 +54,9 @@ void TextEditor::Document::setText(const std::string_view& text) {
 //	TextEditor::Document::setText
 //
 
-void TextEditor::Document::setText(const std::vector<std::string_view>& text) {
+void TextEditor::Document::setText(Config& config, const std::vector<std::string_view>& text) {
 	// reset document
 	clearDocument();
-	updated = true;
 
 	if (text.size()) {
 		// process input UTF-8 and generate lines of glyphs
@@ -70,8 +69,8 @@ void TextEditor::Document::setText(const std::vector<std::string_view>& text) {
 				ImWchar character;
 				i = CodePoint::read(i, end, &character);
 
-				if (insertSpacesOnTabs && character == '\t') {
-					auto spaces = ((back().size() / tabSize) + 1) * tabSize - back().size();
+				if (config.insertSpacesOnTabs && character == '\t') {
+					auto spaces = ((back().size() / config.tabSize) + 1) * config.tabSize - back().size();
 
 					for (size_t s = 0; s < spaces; s++) {
 						back().emplace_back(Glyph(' ', Color::text));
@@ -87,8 +86,9 @@ void TextEditor::Document::setText(const std::vector<std::string_view>& text) {
 		appendLine();
 	}
 
-	// update maximum column counts
-	updateMaximumColumn(0, lineCount() - 1);
+	// calculate line indents
+	updateIndents(config, 0, size() - 1);
+	updated = true;
 }
 
 
@@ -96,9 +96,9 @@ void TextEditor::Document::setText(const std::vector<std::string_view>& text) {
 //	TextEditor::Document::insertText
 //
 
-TextEditor::Coordinate TextEditor::Document::insertText(Coordinate start, const std::string_view& text) {
+TextEditor::DocPos TextEditor::Document::insertText(Config& config, DocPos start, const std::string_view& text) {
 	auto line = begin() + start.line;
-	auto index = getIndex(start);
+	auto index = start.index;
 	auto lineNo = start.line;
 
 	// process input as UTF-8
@@ -124,8 +124,8 @@ TextEditor::Coordinate TextEditor::Document::insertText(Coordinate start, const 
 			line = nextLine;
 			index = 0;
 
-		} else if (insertSpacesOnTabs && character == '\t') {
-			auto spaces = ((index / tabSize) + 1) * tabSize - index;
+		} else if (config.insertSpacesOnTabs && character == '\t') {
+			auto spaces = ((index / config.tabSize) + 1) * config.tabSize - index;
 
 			for (size_t s = 0; s < spaces; s++) {
 				line->insert(line->begin() + (index++), Glyph(' ', Color::text));
@@ -138,16 +138,16 @@ TextEditor::Coordinate TextEditor::Document::insertText(Coordinate start, const 
 	}
 
 	// determine end of insert
-	auto end = Coordinate(lineNo, getColumn(static_cast<int>(line - begin()), index));
+	auto end = DocPos(lineNo, index);
 
-	// mark affected lines for colorization
+	// mark affected lines as changed
 	for (auto j = start.line; j <= end.line; j++) {
-		at(j).colorize = true;
+		at(j).needsColorizing = true;
+		at(j).needsTypeSetting = true;
 	}
 
-	// update maximum column counts
-	updateMaximumColumn(start.line, end.line);
-
+	// calculate line indents
+	updateIndents(config, start.line, end.line);
 	updated = true;
 	return end;
 }
@@ -157,11 +157,11 @@ TextEditor::Coordinate TextEditor::Document::insertText(Coordinate start, const 
 //	TextEditor::Document::deleteText
 //
 
-void TextEditor::Document::deleteText(Coordinate start, Coordinate end) {
+void TextEditor::Document::deleteText(Config& config, DocPos start, DocPos end) {
 	auto& startLine = at(start.line);
+	auto startIndex = start.index;
 	auto& endLine = at(end.line);
-	auto startIndex = getIndex(start);
-	auto endIndex = getIndex(end);
+	auto endIndex = end.index;
 
 	// see if start and end are on the same line
 	if (start.line == end.line) {
@@ -186,11 +186,12 @@ void TextEditor::Document::deleteText(Coordinate start, Coordinate end) {
 	startLine.marker = 0;
 
 	// mark line and document as changed
-	at(start.line).colorize = true;
-	updated = true;
+	at(start.line).needsColorizing = true;
+	at(start.line).needsTypeSetting = true;
 
-	// update maximum column counts
-	updateMaximumColumn(start.line, start.line);
+	// calculate line indents
+	updateIndents(config, start.line, start.line);
+	updated = true;
 }
 
 
@@ -221,8 +222,8 @@ std::string TextEditor::Document::getText() const {
 //	TextEditor::Document::getLineText
 //
 
-std::string TextEditor::Document::getLineText(int line) const {
-	return getSectionText(Coordinate(line, 0), Coordinate(line, at(line).maxColumn));
+std::string TextEditor::Document::getLineText(size_t line) const {
+	return getSectionText(DocPos(line, 0), DocPos(line, at(line).size()));
 }
 
 
@@ -230,15 +231,14 @@ std::string TextEditor::Document::getLineText(int line) const {
 //	TextEditor::Document::getSectionText
 //
 
-std::string TextEditor::Document::getSectionText(Coordinate start, Coordinate end) const {
+std::string TextEditor::Document::getSectionText(DocPos start, DocPos end) const {
 	std::string section;
 
 	auto lineNo = start.line;
-	auto index = getIndex(start);
-	auto endIndex = getIndex(end);
+	auto index = start.index;
 	char utf8[4];
 
-	while (lineNo < end.line || index < endIndex) {
+	while (lineNo < end.line || index < end.index) {
 		auto& line = at(lineNo);
 
 		if (index < line.size()) {
@@ -260,11 +260,9 @@ std::string TextEditor::Document::getSectionText(Coordinate start, Coordinate en
 //	TextEditor::Document::getCodePoint
 //
 
-ImWchar TextEditor::Document::getCodePoint(Coordinate location) const {
-	auto index = getIndex(location);
-
-	if (index < at(location.line).size()) {
-		return at(location.line)[index].codepoint;
+ImWchar TextEditor::Document::getCodePoint(DocPos location) const {
+	if (location.index < at(location.line).size()) {
+		return at(location.line)[location.index].codepoint;
 
 	} else {
 		return IM_UNICODE_CODEPOINT_INVALID;
@@ -275,11 +273,9 @@ ImWchar TextEditor::Document::getCodePoint(Coordinate location) const {
 //	TextEditor::Document::getColor
 //
 
-TextEditor::Color TextEditor::Document::getColor(Coordinate location)  const {
-	auto index = getIndex(location);
-
-	if (index < at(location.line).size()) {
-		return at(location.line)[index].color;
+TextEditor::Color TextEditor::Document::getColor(DocPos location)  const {
+	if (location.index < at(location.line).size()) {
+		return at(location.line)[location.index].color;
 
 	} else {
 		return Color::text;
@@ -288,99 +284,10 @@ TextEditor::Color TextEditor::Document::getColor(Coordinate location)  const {
 
 
 //
-//	TextEditor::Document::updateMaximumColumn
-//
-
-void TextEditor::Document::updateMaximumColumn(int first, int last) {
-	// process specified lines
-	for (auto line = begin() + first; line <= begin() + last; line++) {
-		// determine the maximum column number for this line
-		int column = 0;
-
-		for (auto glyph = line->begin(); glyph < line->end(); glyph++) {
-			column = (glyph->codepoint == '\t') ? ((column / tabSize) + 1) * tabSize : column + 1;
-		}
-
-		line->maxColumn = column;
-	}
-
-	// determine maximum column number in document
-	maxColumn = 0;
-
-	for (auto line = begin(); line < end(); line++) {
-		maxColumn = std::max(maxColumn, line->maxColumn);
-	}
-}
-
-
-//
-//	TextEditor::Document::getIndex
-//
-
-size_t TextEditor::Document::getIndex(const Line& line, int column) const {
-	// convert a column reference to a glyph index for a specified line (taking tabs into account)
-	auto end = line.end();
-	size_t index = 0;
-	auto leftCol = 0;
-	auto rightCol = 0;
-
-	for (auto glyph = line.begin(); rightCol < column && glyph < end; glyph++) {
-		leftCol = rightCol;
-		rightCol = (glyph->codepoint == '\t') ? ((rightCol / tabSize) + 1) * tabSize : rightCol + 1;
-		index++;
-	}
-
-	if (rightCol - leftCol <= 1) {
-		return index;
-
-	} else {
-		auto leftDiff = column - leftCol;
-		auto rightDiff = rightCol - column;
-		return leftDiff <= rightDiff ? index - 1 : index;
-	}
-}
-
-
-//
-//	TextEditor::Document::getColumn
-//
-
-int TextEditor::Document::getColumn(const Line& line, size_t index) const {
-	// convert a glyph index to a column reference for the specified line (taking tabs into account)
-	auto end = line.begin() + index;
-	int column = 0;
-
-	for (auto glyph = line.begin(); glyph < end; glyph++) {
-		column = (glyph->codepoint == '\t') ? ((column / tabSize) + 1) * tabSize : column + 1;
-	}
-
-	return column;
-}
-
-
-//
-//	TextEditor::Document::getUp
-//
-
-TextEditor::Coordinate TextEditor::Document::getUp(Coordinate from, int lines) const {
-	return normalizeCoordinate(Coordinate(from.line - lines, from.column));
-}
-
-
-//
-//	TextEditor::Document::getDown
-//
-
-TextEditor::Coordinate TextEditor::Document::getDown(Coordinate from, int lines) const {
-	return normalizeCoordinate(Coordinate(from.line + lines, from.column));
-}
-
-
-//
 //	TextEditor::Document::getLeft
 //
 
-TextEditor::Coordinate TextEditor::Document::getLeft(Coordinate from, bool wordMode) const {
+TextEditor::DocPos TextEditor::Document::getLeft(DocPos from, bool wordMode) const {
 	if (wordMode) {
 		// first move left by one glyph
 		from = getLeft(from);
@@ -392,14 +299,12 @@ TextEditor::Coordinate TextEditor::Document::getLeft(Coordinate from, bool wordM
 		return findWordStart(from);
 
 	} else {
-		// calculate coordinate of previous glyph (could be on previous line)
-		auto index = getIndex(from);
-
-		if (index == 0) {
-			return (from.line > 0) ? Coordinate(from.line - 1, at(from.line - 1).maxColumn) : from;
+		// calculate position of previous glyph (could be on previous line)
+		if (from.index == 0) {
+			return getLeftBeforeHiddenLines(from);
 
 		} else {
-			return Coordinate(from.line, getColumn(from.line, index - 1));
+			return DocPos(from.line, from.index - 1);
 		}
 	}
 }
@@ -409,7 +314,7 @@ TextEditor::Coordinate TextEditor::Document::getLeft(Coordinate from, bool wordM
 //	TextEditor::Document::getRight
 //
 
-TextEditor::Coordinate TextEditor::Document::getRight(Coordinate from, bool wordMode) const {
+TextEditor::DocPos TextEditor::Document::getRight(DocPos from, bool wordMode) const {
 	if (wordMode) {
 		// first move right by one glyph
 		from = getRight(from);
@@ -418,18 +323,15 @@ TextEditor::Coordinate TextEditor::Document::getRight(Coordinate from, bool word
 		from = findNextNonWhiteSpace(from, false);
 
 		// find the end of the current word
-		auto index = getIndex(from);
-		return findWordEnd(Coordinate(from.line, getColumn(from.line, index)));
+		return findWordEnd(from);
 
 	} else {
-		// calculate coordinate of next glyph (could be on next line)
-		auto index = getIndex(from);
-
-		if (index == at(from.line).size()) {
-			return (from.line < lineCount() - 1) ? Coordinate(from.line + 1, 0) : from;
+		// calculate pos of next glyph (could be on next line)
+		if (from.index == at(from.line).size()) {
+			return getRightAfterHiddenLines(from);
 
 		} else {
-			return Coordinate(from.line, getColumn(from.line, index + 1));
+			return DocPos(from.line, from.index + 1);
 		}
 	}
 }
@@ -439,8 +341,8 @@ TextEditor::Coordinate TextEditor::Document::getRight(Coordinate from, bool word
 //	TextEditor::Document::getTop
 //
 
-TextEditor::Coordinate TextEditor::Document::getTop() const {
-	return Coordinate(0, 0);
+TextEditor::DocPos TextEditor::Document::getTop() const {
+	return DocPos(0, 0);
 }
 
 
@@ -448,9 +350,9 @@ TextEditor::Coordinate TextEditor::Document::getTop() const {
 //	TextEditor::Document::getBottom
 //
 
-TextEditor::Coordinate TextEditor::Document::getBottom() const {
-	auto lastLine = lineCount() - 1;
-	return Coordinate(lastLine, at(lastLine).maxColumn);
+TextEditor::DocPos TextEditor::Document::getBottom() const {
+	auto lastLine = size() - 1;
+	return DocPos(lastLine, at(lastLine).size());
 }
 
 
@@ -458,8 +360,8 @@ TextEditor::Coordinate TextEditor::Document::getBottom() const {
 //	TextEditor::Document::getStartOfLine
 //
 
-TextEditor::Coordinate TextEditor::Document::getStartOfLine(Coordinate from) const {
-	return Coordinate(from.line, 0);
+TextEditor::DocPos TextEditor::Document::getStartOfLine(DocPos from) const {
+	return DocPos(from.line, 0);
 }
 
 
@@ -467,8 +369,8 @@ TextEditor::Coordinate TextEditor::Document::getStartOfLine(Coordinate from) con
 //	TextEditor::Document::getEndOfLine
 //
 
-TextEditor::Coordinate TextEditor::Document::getEndOfLine(Coordinate from) const {
-	return Coordinate(from.line, at(from.line).maxColumn);
+TextEditor::DocPos TextEditor::Document::getEndOfLine(DocPos from) const {
+	return DocPos(from.line, at(from.line).size());
 }
 
 
@@ -476,15 +378,15 @@ TextEditor::Coordinate TextEditor::Document::getEndOfLine(Coordinate from) const
 //	TextEditor::Document::findWordStart
 //
 
-TextEditor::Coordinate TextEditor::Document::findWordStart(Coordinate from, bool wordOnly) const {
+TextEditor::DocPos TextEditor::Document::findWordStart(DocPos from, bool wordOnly) const {
 	auto& line = at(from.line);
 	auto lineSize = line.size();
 
-	if (from.column == 0 || lineSize == 0) {
+	if (from.index == 0 || lineSize == 0) {
 		return from;
 
 	} else {
-		auto index = getIndex(from);
+		auto index = from.index;
 		auto firstCharacter = line[index - 1].codepoint;
 
 		if (!wordOnly && CodePoint::isWhiteSpace(firstCharacter)) {
@@ -503,7 +405,7 @@ TextEditor::Coordinate TextEditor::Document::findWordStart(Coordinate from, bool
 			}
 		}
 
-		return Coordinate(from.line, getColumn(line, index));
+		return DocPos(from.line, index);
 	}
 }
 
@@ -512,9 +414,9 @@ TextEditor::Coordinate TextEditor::Document::findWordStart(Coordinate from, bool
 //	TextEditor::Document::findWordEnd
 //
 
-TextEditor::Coordinate TextEditor::Document::findWordEnd(Coordinate from, bool wordOnly) const {
+TextEditor::DocPos TextEditor::Document::findWordEnd(DocPos from, bool wordOnly) const {
 	auto& line = at(from.line);
-	auto index = getIndex(from);
+	auto index = from.index;
 	auto size = line.size();
 
 	if (index >= size) {
@@ -540,7 +442,7 @@ TextEditor::Coordinate TextEditor::Document::findWordEnd(Coordinate from, bool w
 		}
 	}
 
-	return Coordinate(from.line, getColumn(line, index));
+	return DocPos(from.line, index);
 }
 
 
@@ -548,7 +450,7 @@ TextEditor::Coordinate TextEditor::Document::findWordEnd(Coordinate from, bool w
 //	TextEditor::Document::findText
 //
 
-bool TextEditor::Document::findText(Coordinate from, const std::string_view& text, bool caseSensitive, bool wholeWord, Coordinate& start, Coordinate& end) const {
+bool TextEditor::Document::findText(DocPos from, const std::string_view& text, bool caseSensitive, bool wholeWord, DocPos& start, DocPos& end) const {
 	// convert input string to vector of codepoints
 	std::vector<ImWchar> search;
 	auto endOfText = text.end();
@@ -562,7 +464,7 @@ bool TextEditor::Document::findText(Coordinate from, const std::string_view& tex
 
 	// search document
 	auto startLine = from.line;
-	auto startIndex = getIndex(from);
+	auto startIndex = from.index;
 	auto searchLine = startLine;
 	auto searchIndex = startIndex;
 
@@ -576,7 +478,7 @@ bool TextEditor::Document::findText(Coordinate from, const std::string_view& tex
 		while (!done && j < search.size()) {
 			if (search[j] == '\n') {
 				if (index == lineSize) {
-					if (line == lineCount() - 1) {
+					if (line == size() - 1) {
 						done = true;
 
 					} else {
@@ -613,8 +515,8 @@ bool TextEditor::Document::findText(Coordinate from, const std::string_view& tex
 		}
 
 		if (j == search.size()) {
-			start = Coordinate(searchLine, getColumn(searchLine, searchIndex));
-			end = Coordinate(line, getColumn(line, index));
+			start = DocPos(searchLine, searchIndex);
+			end = DocPos(line, index);
 
 			if (!wholeWord || isWholeWord(start, end)) {
 				return true;
@@ -622,7 +524,7 @@ bool TextEditor::Document::findText(Coordinate from, const std::string_view& tex
 		}
 
 		if (searchIndex == at(searchLine).size()) {
-			searchLine = (searchLine == lineCount() - 1) ? 0 : searchLine + 1;
+			searchLine = (searchLine == size() - 1) ? 0 : searchLine + 1;
 			searchIndex = 0;
 
 		} else {
@@ -639,8 +541,8 @@ bool TextEditor::Document::findText(Coordinate from, const std::string_view& tex
 //	TextEditor::Document::setUserData
 //
 
-void TextEditor::Document::setUserData(int line, void* data) {
-	if (line >= 0 && line < lineCount()) {
+void TextEditor::Document::setUserData(size_t line, void* data) {
+	if (line >= 0 && line < size()) {
 		at(static_cast<size_t>(line)).userData = data;
 	}
 }
@@ -650,8 +552,8 @@ void TextEditor::Document::setUserData(int line, void* data) {
 //	TextEditor::Document::getUserData
 //
 
-void* TextEditor::Document::getUserData(int line) const {
-	if (line >= 0 && line < lineCount()) {
+void* TextEditor::Document::getUserData(size_t line) const {
+	if (line >= 0 && line < size()) {
 		return at(static_cast<size_t>(line)).userData;
 
 	} else {
@@ -663,15 +565,15 @@ void* TextEditor::Document::getUserData(int line) const {
 //	TextEditor::Document::iterateUserData
 //
 
-void TextEditor::Document::iterateUserData(std::function<void(int line, void* data)> callback) const {
+void TextEditor::Document::iterateUserData(std::function<void(size_t line, void* data)> callback) const {
 	for (size_t i = 0; i < size(); i++) {
-		callback(static_cast<int>(i), at(i).userData);
+		callback(i, at(i).userData);
 	}
 }
 
 
 //
-//	TextEditor::Document::iterateIdentifiers
+//	isIdentifier
 //
 
 static inline bool isIdentifier(TextEditor::Color color) {
@@ -679,6 +581,11 @@ static inline bool isIdentifier(TextEditor::Color color) {
 		color == TextEditor::Color::identifier ||
 		color == TextEditor::Color::knownIdentifier;
 }
+
+
+//
+//	TextEditor::Document::iterateIdentifiers
+//
 
 void TextEditor::Document::iterateIdentifiers(std::function<void(const std::string&)> callback) const {
 	for (size_t i = 0; i < size(); i++) {
@@ -709,13 +616,13 @@ void TextEditor::Document::iterateIdentifiers(std::function<void(const std::stri
 //	TextEditor::Document::isWholeWord
 //
 
-bool TextEditor::Document::isWholeWord(Coordinate start, Coordinate end) const {
-	if (start.line != end.line || end.column - start.column < 1) {
+bool TextEditor::Document::isWholeWord(DocPos start, DocPos end) const {
+	if (start.line != end.line || end.index - start.index < 1) {
 		return false;
 
 	} else {
-		auto wordStart = findWordStart(Coordinate(start.line, start.column + 1));
-		auto wordEnd = findWordEnd(Coordinate(end.line, end.column - 1));
+		auto wordStart = findWordStart(DocPos(start.line, start.index + 1));
+		auto wordEnd = findWordEnd(DocPos(end.line, end.index - 1));
 		return start == wordStart && end == wordEnd;
 	}
 }
@@ -725,30 +632,29 @@ bool TextEditor::Document::isWholeWord(Coordinate start, Coordinate end) const {
 //	TextEditor::Document::findPreviousNonWhiteSpace
 //
 
-TextEditor::Coordinate TextEditor::Document::findPreviousNonWhiteSpace(Coordinate from, bool includeEndOfLine) const {
+TextEditor::DocPos TextEditor::Document::findPreviousNonWhiteSpace(DocPos from, bool includeEndOfLine) const {
 	bool done = false;
 
 	while (!done) {
 		auto& line = at(from.line);
-		auto index = getIndex(from);
+		auto index = from.index;
 
 		while (!done && index > 0) {
 			index--;
 
 			if (!CodePoint::isWhiteSpace(line[index].codepoint)) {
-				from.column = getColumn(line, index);
+				from.index = index;
 				done = true;
 			}
 		}
 
 		if (!done) {
 			if (from.line == 0 || !includeEndOfLine) {
-				from.column = 0;
+				from.index = 0;
 				done = true;
 
 			} else {
-				from.line--;
-				from.column = at(from.line).maxColumn;
+				from = getLeftBeforeHiddenLines(from);
 			}
 		}
 	}
@@ -761,31 +667,30 @@ TextEditor::Coordinate TextEditor::Document::findPreviousNonWhiteSpace(Coordinat
 //	TextEditor::Document::findNextNonWhiteSpace
 //
 
-TextEditor::Coordinate TextEditor::Document::findNextNonWhiteSpace(Coordinate from, bool includeEndOfLine) const {
+TextEditor::DocPos TextEditor::Document::findNextNonWhiteSpace(DocPos from, bool includeEndOfLine) const {
 	bool done = false;
 
 	while (!done) {
 		auto& line = at(from.line);
-		auto index = getIndex(from);
+		auto index = from.index;
 
 		while (!done && index < line.size()) {
 			if (CodePoint::isWhiteSpace(line[index].codepoint)) {
 				index++;
 
 			} else {
-				from.column = getColumn(line, index);
+				from.index = index;
 				done = true;
 			}
 		}
 
 		if (!done) {
-			if (from.line == lineCount() || !includeEndOfLine) {
-				from.column = line.maxColumn;
+			if (from.line == size() || !includeEndOfLine) {
+				from.index = line.size();
 				done = true;
 
 			} else {
-				from.line++;
-				from.column = 0;
+				from = getRightAfterHiddenLines(from);
 			}
 		}
 	}
@@ -795,85 +700,58 @@ TextEditor::Coordinate TextEditor::Document::findNextNonWhiteSpace(Coordinate fr
 
 
 //
-//	TextEditor::Document::normalizeCoordinate
+//	TextEditor::Document::normalizePos
 //
 
-TextEditor::Coordinate TextEditor::Document::normalizeCoordinate(Coordinate coordinate) const {
-	if (coordinate.line < 0) {
-		return Coordinate(0, 0);
+TextEditor::DocPos TextEditor::Document::normalizePos(DocPos pos) const {
+	if (pos.line >= size()) {
+		return getBottom();
 
-	} else if (coordinate.line >= lineCount()) {
-		return Coordinate(lineCount() - 1, at(size() - 1).maxColumn);
-
-	} else if (coordinate.column < 0) {
-		return Coordinate(coordinate.line, 0);
-
-	} else if (coordinate.column > at(coordinate.line).maxColumn) {
-		return Coordinate(coordinate.line, at(coordinate.line).maxColumn);
+	} else if (pos.index > at(pos.line).size()) {
+		return getEndOfLine(pos);
 
 	} else {
-		// determine column numbers left and right of provided coordinate
-		auto& line = at(coordinate.line);
-		auto end = line.end();
-		auto leftCol = 0;
-		auto rightCol = 0;
-
-		for (auto glyph = line.begin(); rightCol < coordinate.column && glyph < end; glyph++) {
-			leftCol = rightCol;
-			rightCol = (glyph->codepoint == '\t') ? ((rightCol / tabSize) + 1) * tabSize : rightCol + 1;
-		}
-
-		auto leftDiff = coordinate.column - leftCol;
-		auto rightDiff = rightCol - coordinate.column;
-		return Coordinate(coordinate.line, leftDiff <= rightDiff ? leftCol : rightCol);
+		return pos;
 	}
 }
 
 
 //
-//	TextEditor::Document::normalizeCoordinate
+//	TextEditor::Document::getLeftBeforeHiddenLines
 //
 
-void TextEditor::Document::normalizeCoordinate(float line, float column, Coordinate& glyphCoordinate, Coordinate& cursorCoordinate) const {
-	// normalize coordinates by clamping them to the document and line range
-	// the returned glyphCoordinate addresses the glyph pointed to by the line and column parameters
-	// the returned cursorCoordinate returns the closest cursor position (which can be at the start or the end of the glyph)
-	if (line < 0.0f) {
-		glyphCoordinate = Coordinate(0, 0);
-		cursorCoordinate = glyphCoordinate;
-
-	} else if (line >= static_cast<float>(lineCount())) {
-		glyphCoordinate = Coordinate(lineCount() - 1, at(lineCount() - 1).maxColumn);
-		cursorCoordinate = glyphCoordinate;
+TextEditor::DocPos TextEditor::Document::getLeftBeforeHiddenLines(DocPos pos) const {
+	if (pos.line == 0) {
+		return pos;
 
 	} else {
-		auto lineNo = static_cast<int>(line);
+		auto line = pos.line - 1;
 
-		if (column < 0.0f) {
-			glyphCoordinate = Coordinate(lineNo, 0);
-			cursorCoordinate = glyphCoordinate;
-
-		} else if (column >= static_cast<float>(at(lineNo).maxColumn)) {
-			glyphCoordinate = Coordinate(lineNo, at(lineNo).maxColumn);
-			cursorCoordinate = glyphCoordinate;
-
-		} else {
-			// determine column numbers left and right of provided coordinate
-			auto leftCol = 0;
-			auto rightCol = 0;
-			auto end = at(lineNo).end();
-
-			for (auto glyph = at(lineNo).begin(); rightCol < column && glyph < end; glyph++) {
-				leftCol = rightCol;
-				rightCol = (glyph->codepoint == '\t') ? ((rightCol / tabSize) + 1) * tabSize : rightCol + 1;
-			}
-
-			auto leftDiff = column - static_cast<float>(leftCol);
-			auto rightDiff = static_cast<float>(rightCol) - column;
-
-			glyphCoordinate = Coordinate(lineNo, leftCol);
-			cursorCoordinate = Coordinate(lineNo, leftDiff <= rightDiff ? leftCol : rightCol);
+		while (line > 0 && at(line).foldingState == FoldingState::hidden) {
+			line--;
 		}
+
+		return DocPos(line, at(line).size());
+	}
+}
+
+
+//
+//	TextEditor::Document::getRightAfterHiddenLines
+//
+
+TextEditor::DocPos TextEditor::Document::getRightAfterHiddenLines(DocPos pos) const {
+	if (pos.line == size() - 1) {
+		return pos;
+
+	} else {
+		auto line = pos.line + 1;
+
+		while (line < size() - 1 && at(line).foldingState == FoldingState::hidden) {
+			line++;
+		}
+
+		return DocPos(line, 0);
 	}
 }
 
@@ -886,7 +764,7 @@ void TextEditor::Document::appendLine() {
 	auto& line = emplace_back();
 
 	if (insertor) {
-		line.userData = insertor(static_cast<int>(size() - 1));
+		line.userData = insertor(size() - 1);
 	}
 }
 
@@ -895,11 +773,11 @@ void TextEditor::Document::appendLine() {
 //	TextEditor::Document::insertLine
 //
 
-void TextEditor::Document::insertLine(int offsset) {
-	auto line = insert(begin() + offsset, Line());
+void TextEditor::Document::insertLine(size_t offset) {
+	auto line = insert(begin() + offset, Line());
 
 	if (insertor) {
-		line->userData = insertor(offsset);
+		line->userData = insertor(offset);
 	}
 }
 
@@ -908,7 +786,7 @@ void TextEditor::Document::insertLine(int offsset) {
 //	TextEditor::Document::deleteLines
 //
 
-void TextEditor::Document::deleteLines(int start, int end) {
+void TextEditor::Document::deleteLines(size_t start, size_t end) {
 	if (deletor) {
 		for (auto i = start; i <= end; i++) {
 			deletor(i, at(i).userData);
@@ -925,10 +803,35 @@ void TextEditor::Document::deleteLines(int start, int end) {
 
 void TextEditor::Document::clearDocument() {
 	if (deletor) {
-		for (auto i = 0; i <= lineCount(); i++) {
+		for (size_t i = 0; i <= size(); i++) {
 			deletor(i, at(i).userData);
 		}
 	}
 
 	clear();
+}
+
+
+//
+//	TextEditor::Document::updateIndents
+//
+
+void TextEditor::Document::updateIndents(Config& config, size_t start, size_t end) {
+	for (size_t i = start; i <= end; i++) {
+		auto& line = at(i);
+		line.indent = 0;
+		bool done = false;
+
+		for (size_t i = 0; i < line.size() && !done; i++) {
+			if (line[i].codepoint == ' ') {
+				line.indent++;
+
+			} else if (line[i].codepoint == '\t') {
+				line.indent += config.tabSize - (line.indent % config.tabSize);
+
+			} else {
+				done = true;
+			}
+		}
+	}
 }

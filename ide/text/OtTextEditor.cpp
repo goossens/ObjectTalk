@@ -90,9 +90,6 @@ void OtTextEditor::renderMenus() {
 		if (ImGui::MenuItem("Spaces To Tabs")) { editor.SpacesToTabs(); }
 		if (ImGui::MenuItem("Strip Trailing Whitespaces")) { editor.StripTrailingWhitespaces(); }
 
-		ImGui::Separator();
-		if (ImGui::MenuItem("Show Diff", " " OT_UI_SHORTCUT "I")) { showDiff(); }
-
 		ImGui::EndMenu();
 	}
 
@@ -122,15 +119,9 @@ void OtTextEditor::renderMenus() {
 		if (ImGui::MenuItem("Zoom Out", " " OT_UI_SHORTCUT "-")) { zoomOut(); }
 		ImGui::Separator();
 
-		bool flag;
-		flag = editor.IsShowWhitespacesEnabled(); if (ImGui::MenuItem("Show Whitespaces", nullptr, &flag)) { editor.SetShowWhitespacesEnabled(flag); };
-		flag = editor.IsShowLineNumbersEnabled(); if (ImGui::MenuItem("Show Line Numbers", nullptr, &flag)) { editor.SetShowLineNumbersEnabled(flag); };
-		flag = editor.IsShowingMatchingBrackets(); if (ImGui::MenuItem("Show Matching Brackets", nullptr, &flag)) { editor.SetShowMatchingBrackets(flag); };
-		flag = editor.IsCompletingPairedGlyphs(); if (ImGui::MenuItem("Complete Matching Glyphs", nullptr, &flag)) { editor.SetCompletePairedGlyphs(flag); };
-		flag = editor.IsShowPanScrollIndicatorEnabled(); if (ImGui::MenuItem("Show Pan/Scroll Indicator", nullptr, &flag)) { editor.SetShowPanScrollIndicatorEnabled(flag); };
-		flag = editor.IsMiddleMousePanMode(); if (ImGui::MenuItem("Middle Mouse Pan Mode", nullptr, &flag)) { if (flag) editor.SetMiddleMousePanMode(); else editor.SetMiddleMouseScrollMode(); };
-
+		if (ImGui::MenuItem("Show Diff", " " OT_UI_SHORTCUT "I")) { showDiff(); }
 		ImGui::Separator();
+
 		if (ImGui::MenuItem("Clear Errors", nullptr, nullptr, editor.HasMarkers())) { editor.ClearMarkers(); }
 		ImGui::EndMenu();
 	}
@@ -140,6 +131,43 @@ void OtTextEditor::renderMenus() {
 		if (ImGui::MenuItem("Find Next", " " OT_UI_SHORTCUT "G", nullptr, editor.HasFindString())) { editor.FindNext(); }
 		if (ImGui::MenuItem("Find All", "^" OT_UI_SHORTCUT "G", nullptr, editor.HasFindString())) { editor.FindAll(); }
 		ImGui::Separator();
+		ImGui::EndMenu();
+	}
+
+	if (ImGui::BeginMenu("Options")) {
+		if (ImGui::BeginMenu("Tab Size")) {
+			if (ImGui::MenuItem("1")) { editor.SetTabSize(1); }
+			if (ImGui::MenuItem("2")) { editor.SetTabSize(2); }
+			if (ImGui::MenuItem("4")) { editor.SetTabSize(4); }
+			if (ImGui::MenuItem("8")) { editor.SetTabSize(8); }
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Line Spacing")) {
+			if (ImGui::MenuItem("1.0")) { editor.SetLineSpacing(1.0f); }
+			if (ImGui::MenuItem("1.25")) { editor.SetLineSpacing(1.25f); }
+			if (ImGui::MenuItem("1.5")) { editor.SetLineSpacing(1.5f); }
+			if (ImGui::MenuItem("1.75")) { editor.SetLineSpacing(1.75f); }
+			if (ImGui::MenuItem("2.0")) { editor.SetLineSpacing(2.0f); }
+			ImGui::EndMenu();
+		}
+
+		ImGui::Separator();
+
+		bool flag;
+		flag = editor.IsOverwriteEnabled(); if (ImGui::MenuItem("Overwrite", nullptr, &flag)) { editor.SetOverwriteEnabled(flag); };
+		flag = editor.IsWordWrapEnabled(); if (ImGui::MenuItem("Word Wrap", nullptr, &flag)) { editor.SetWordWrapEnabled(flag); };
+		flag = editor.IsLineFolding(); if (ImGui::MenuItem("Line Folding", nullptr, &flag)) { editor.SetLineFolding(flag); };
+		flag = editor.IsShowWhitespacesEnabled(); if (ImGui::MenuItem("Show Whitespaces", nullptr, &flag)) { editor.SetShowWhitespacesEnabled(flag); };
+		flag = editor.IsShowSpacesEnabled(); if (ImGui::MenuItem("Show Spaces", nullptr, &flag)) { editor.SetShowSpacesEnabled(flag); };
+		flag = editor.IsShowTabsEnabled(); if (ImGui::MenuItem("Show Tabs", nullptr, &flag)) { editor.SetShowTabsEnabled(flag); };
+		flag = editor.IsShowLineNumbersEnabled(); if (ImGui::MenuItem("Show Line Numbers", nullptr, &flag)) { editor.SetShowLineNumbersEnabled(flag); };
+		flag = editor.IsShowingMatchingBrackets(); if (ImGui::MenuItem("Show Matching Brackets", nullptr, &flag)) { editor.SetShowMatchingBrackets(flag); };
+		flag = editor.IsCompletingPairedGlyphs(); if (ImGui::MenuItem("Complete Matching Glyphs", nullptr, &flag)) { editor.SetCompletePairedGlyphs(flag); };
+		flag = editor.IsShowMiniMapEnabled(); if (ImGui::MenuItem("Show Mini Map", nullptr, &flag)) { editor.SetShowMiniMapEnabled(flag); };
+		flag = editor.IsShowScrollbarMiniMapEnabled(); if (ImGui::MenuItem("Show Scrollbar Mini Map", nullptr, &flag)) { editor.SetShowScrollbarMiniMapEnabled(flag); };
+		flag = editor.IsShowPanScrollIndicatorEnabled(); if (ImGui::MenuItem("Show Pan/Scroll Indicator", nullptr, &flag)) { editor.SetShowPanScrollIndicatorEnabled(flag); };
+		flag = editor.IsMiddleMousePanMode(); if (ImGui::MenuItem("Middle Mouse Pan Mode", nullptr, &flag)) { if (flag) editor.SetMiddleMousePanMode(); else editor.SetMiddleMouseScrollMode(); };
 		ImGui::EndMenu();
 	}
 }
@@ -182,15 +210,23 @@ void OtTextEditor::renderEditor() {
 		diff.Render("diff", viewport->Size * 0.8f, true);
 
 		ImGui::Separator();
+		static constexpr float buttonWidth = 80.0f;
+		auto buttonOffset = ImGui::GetContentRegionAvail().x - buttonWidth;
 		bool sideBySide = diff.GetSideBySideMode();
+		bool wordWrap = diff.IsWordWrapEnabled();
 
-		if (ImGui::Checkbox("Show side-by-side", &sideBySide)) {
+		if (ImGui::Checkbox("Side-by-Side", &sideBySide)) {
 			diff.SetSideBySideMode(sideBySide);
 		}
 
 		ImGui::SameLine();
-		static constexpr float buttonWidth = 80.0f;
-		OtUi::hSpacer(ImGui::GetContentRegionAvail().x - buttonWidth);
+
+		if (ImGui::Checkbox("Word Wrap", &wordWrap)) {
+			diff.SetWordWrapEnabled(wordWrap);
+		}
+
+		ImGui::SameLine();
+		ImGui::Indent(buttonOffset);
 
 		if (ImGui::Button("OK", ImVec2(buttonWidth, 0.0f)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
 			ImGui::CloseCurrentPopup();

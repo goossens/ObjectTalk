@@ -33,7 +33,7 @@ const TextEditor::Language* TextEditor::Language::Cpp() {
 		};
 
 		static const char* const declarations[] = {
-			"auto", "bool", "char", "char16_t", "char32_t", "class", "concept", "const", "constexpr", "decltype",
+			"auto", "bool", "char", "char8_t", "char16_t", "char32_t", "class", "concept", "const", "constexpr", "decltype",
 			"double", "explicit", "export", "extern", "enum", "extern", "float", "friend", "inline", "int", "long",
 			"module", "mutable", "namespace", "private", "protected", "public", "register", "restrict", "short",
 			"signed", "static", "struct", "template", "typedef", "typeid", "typename", "union", "using", "unsigned",

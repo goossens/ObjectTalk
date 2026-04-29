@@ -24,18 +24,7 @@ OtObjectTalkEditor::OtObjectTalkEditor() {
 	diff.SetLanguage(language);
 
 	// activate autocomplete
-	TextEditor::AutoCompleteConfig config;
-
-	config.callback = [this](TextEditor::AutoCompleteState& state) {
-		trie.findSuggestions(state.suggestions, state.searchTerm);
-	};
-
-	editor.SetAutoCompleteConfig(&config);
-
-	// activate change tracking
-	editor.SetChangeCallback([this]() {
-		buildSuggestionList();
-	}, 3000);
+	trieAutoComplete.Connect(&editor);
 }
 
 
@@ -46,7 +35,6 @@ OtObjectTalkEditor::OtObjectTalkEditor() {
 void OtObjectTalkEditor::clear() {
 	// reset editor and autocomplete
 	OtTextEditor::clear();
-	buildSuggestionList();
 }
 
 
@@ -57,28 +45,6 @@ void OtObjectTalkEditor::clear() {
 void OtObjectTalkEditor::load() {
 	// load the document
 	OtTextEditor::load();
-	buildSuggestionList();
-}
-
-
-//
-//	OtObjectTalkEditor::buildSuggestionList
-//
-
-void OtObjectTalkEditor::buildSuggestionList() {
-	// rebuild autocomplete suggestion list
-	trie.clear();
-
-	// add language words
-	auto language = editor.GetLanguage();
-	for (auto& word : language->keywords) { trie.insert(word); }
-	for (auto& word : language->declarations) { trie.insert(word); }
-	for (auto& word : language->identifiers) { trie.insert(word); }
-
-	// add all words in document
-	editor.IterateIdentifiers([this](const std::string& identifier) {
-		trie.insert(identifier);
-	});
 }
 
 
@@ -88,10 +54,9 @@ void OtObjectTalkEditor::buildSuggestionList() {
 
 void OtObjectTalkEditor::highlightError(size_t line, const std::string& error) {
 	// line number is zero-base in text editor
-	int editorLine = static_cast<int>(line - 1);
-	editor.AddMarker(editorLine, 0, IM_COL32(128, 0, 32, 128), "", error);
-	editor.SetCursor(editorLine, 0);
-	editor.ScrollToLine(editorLine, TextEditor::Scroll::alignMiddle);
+	editor.AddMarker(line - 1, 0, IM_COL32(128, 0, 32, 128), "", error);
+	editor.SetCursor(TextEditor::DocPos(line - 1, 0));
+	editor.ScrollToLine(line - 1, TextEditor::Scroll::alignMiddle);
 }
 
 

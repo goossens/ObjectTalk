@@ -13,77 +13,122 @@
 
 
 //
-//	TextEditor::Bracketeer::reset
-//
-
-void TextEditor::Bracketeer::reset() {
-	clear();
-}
-
-
-//
 //	TextEditor::Bracketeer::update
 //
 
-void TextEditor::Bracketeer::update(Document& document) {
-	Color bracketColors[] = {
-		Color::matchingBracketLevel1,
-		Color::matchingBracketLevel2,
-		Color::matchingBracketLevel3
-	};
+void TextEditor::Bracketeer::update(Config& config, Document& document) {
+	// see if the configuration changed
+	bool configChanged =
+		showMatchingBrackets != config.showMatchingBrackets ||
+		language != config.language;
 
-	reset();
-	std::vector<size_t> levels;
-	int level = 0;
+	showMatchingBrackets = config.showMatchingBrackets;
+	language = config.language;
 
-	// process all the glyphs
-	for (int line = 0; line < document.lineCount(); line++) {
-		for (size_t index = 0; index < document[line].size(); index++) {
-			auto& glyph = document[line][index];
+	if (configChanged && !showMatchingBrackets) {
+		// if configuration changed to not showing matching brackets, just clear the bracket pair list
+		clear();
 
-			// handle a "bracket opener" that is not in a comment, string or preprocessor statement
-			if (isBracketCandidate(glyph) && CodePoint::isBracketOpener(glyph.codepoint)) {
-				// start a new level
-				levels.emplace_back(size());
-				emplace_back(glyph.codepoint, Coordinate(line, document.getColumn(line, index)), static_cast<ImWchar>(0), Coordinate::invalid(), level);
-				glyph.color = bracketColors[level % 3];
-				level++;
+	} else if (configChanged || document.isUpdated()) {
+		// if configuration or document changed, recalculate bracket pair list
+		static const Color bracketColors[] = {
+			Color::matchingBracketLevel1,
+			Color::matchingBracketLevel2,
+			Color::matchingBracketLevel3
+		};
 
-			// handle a "bracket closer" that is not in a comment, string or preprocessor statement
-			} else if (isBracketCandidate(glyph) && CodePoint::isBracketCloser(glyph.codepoint)) {
-				if (levels.size()) {
-					auto& lastBracket = at(levels.back());
-					levels.pop_back();
-					level--;
+		// copy old list so we can see if things have changed
+		auto previous = *this;
 
-					if (lastBracket.startChar == CodePoint::toPairOpener(glyph.codepoint)) {
-						// handle matching bracket
-						glyph.color = bracketColors[level % 3];
-						lastBracket.endChar = glyph.codepoint;
-						lastBracket.end = Coordinate(line, document.getColumn(line, index));
+		// clear old list
+		clear();
+		std::vector<size_t> levels;
+		size_t level = 0;
 
+		// process all the glyphs
+		for (size_t line = 0; line < document.size(); line++) {
+			for (size_t index = 0; index < document[line].size(); index++) {
+				auto& glyph = document[line][index];
+
+				// handle a "bracket opener" that is not in a comment, string or preprocessor statement
+				if (isBracketCandidate(glyph) && CodePoint::isBracketOpener(glyph.codepoint)) {
+					// start a new level
+					levels.emplace_back(size());
+					emplace_back(glyph.codepoint, DocPos(line, index), static_cast<ImWchar>(0), DocPos(0, 0), level, true);
+					glyph.color = bracketColors[level % 3];
+					level++;
+
+				// handle a "bracket closer" that is not in a comment, string or preprocessor statement
+				} else if (isBracketCandidate(glyph) && CodePoint::isBracketCloser(glyph.codepoint)) {
+					if (levels.size()) {
+						auto& lastBracket = at(levels.back());
+						levels.pop_back();
+						level--;
+
+						if (lastBracket.startChar == CodePoint::toPairOpener(glyph.codepoint)) {
+							// handle matching bracket
+							glyph.color = bracketColors[level % 3];
+							lastBracket.endChar = glyph.codepoint;
+							lastBracket.end = DocPos(line, index);
+
+						} else {
+							// no matching bracket, mark brackets as errors
+							glyph.color = Color::matchingBracketError;
+							document[lastBracket.start.line][lastBracket.start.index].color = Color::matchingBracketError;
+							pop_back();
+						}
+
+					// this is a closer without an opener
 					} else {
-						// no matching bracket, mark brackets as errors
 						glyph.color = Color::matchingBracketError;
-						document[lastBracket.start.line][document.getIndex(lastBracket.start)].color = Color::matchingBracketError;
-						pop_back();
 					}
-
-				// this is a closer without an opener
-				} else {
-					glyph.color = Color::matchingBracketError;
 				}
 			}
 		}
-	}
 
-	// handle levels left open and mark them as errors
-	if (levels.size()) {
-		for (auto i = levels.rbegin(); i < levels.rend(); i++) {
-			auto& start = at(*i).start;
-			document[start.line][document.getIndex(start)].color = Color::matchingBracketError;
-			erase(begin() + *i);
+		// handle levels left open and mark them as errors
+		if (levels.size()) {
+			for (auto i = levels.rbegin(); i < levels.rend(); i++) {
+				auto& start = at(*i).start;
+				document[start.line][start.index].color = Color::matchingBracketError;
+				erase(begin() + *i);
+			}
 		}
+
+		// process invisible blocks for languages that are indentation based
+		if (language && language->indentationForBlocks) {
+			for (size_t i = 0; i < document.size(); i++) {
+				if (document[i].size()) {
+					auto currentIndent = document[i].indent;
+					auto endLine = i;
+					auto done = false;
+
+					for (size_t j = i + 1; j < document.size() && !done; j++) {
+						if (document[j].size()) {
+							auto nextIndent = document[j].indent;
+
+							if (nextIndent > currentIndent) {
+								endLine = j;
+
+							} else {
+								done = true;
+							}
+						}
+					}
+
+					if (endLine > i) {
+						emplace_back(DocPos(i, 0), DocPos(endLine, document[endLine].size()));
+					}
+				}
+			}
+
+			// sort visible and invisible blocks by block start
+			std::sort(begin(), end(), [](BracketPair& a, BracketPair& b) {
+				return a.start < b.start;
+			});
+		}
+
+		updated = previous != *this;
 	}
 }
 
@@ -92,7 +137,7 @@ void TextEditor::Bracketeer::update(Document& document) {
 //	TextEditor::Bracketeer::getEnclosingBrackets
 //
 
-TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingBrackets(Coordinate location) {
+TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingBrackets(DocPos location) {
 	iterator brackets = end();
 	bool done = false;
 
@@ -113,10 +158,10 @@ TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingBrackets(Co
 
 
 //
-//	TextEditor::Bracketeer::getEnclosingCurlyBrackets
+//	TextEditor::Bracketeer::getEnclosingBrackets
 //
 
-TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingCurlyBrackets(Coordinate first, Coordinate last) {
+TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingBrackets(DocPos first, DocPos last) {
 	iterator brackets = end();
 	bool done = false;
 
@@ -126,7 +171,7 @@ TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingCurlyBracke
 			done = true;
 		}
 
-		else if (i->isAround(first) && i->isAround(last) && i->startChar == CodePoint::openCurlyBracket) {
+		else if (i->isAround(first) && i->isAround(last)) {
 			// this could be what we're looking for
 			brackets = i;
 		}
@@ -137,12 +182,12 @@ TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingCurlyBracke
 
 
 //
-//	TextEditor::Bracketeer::getInnerCurlyBrackets
+//	TextEditor::Bracketeer::getInnerBrackets
 //
 
-TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getInnerCurlyBrackets(Coordinate first, Coordinate last) {
+TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getInnerBrackets(DocPos first, DocPos last) {
 	iterator brackets = end();
-	auto outer = getEnclosingCurlyBrackets(first, last);
+	auto outer = getEnclosingBrackets(first, last);
 
 	if (outer != end()) {
 		bool done = false;
@@ -151,12 +196,7 @@ TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getInnerCurlyBrackets(C
 			if (i->level <= outer->level) {
 				done = true;
 
-			} else if (
-				i->level == outer->level + 1 &&
-				i->startChar == CodePoint::openCurlyBracket &&
-				i->start > first &&
-				i->end < last) {
-
+			} else if (i->level == outer->level + 1 && i->start > first && i->end < last) {
 				brackets = i;
 				done = true;
 			}

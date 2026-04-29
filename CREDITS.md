@@ -13,6 +13,8 @@ been a lot harder to implement the project.
 * [llhttp](https://llhttp.org) - HTTP protocol parser released under the [MIT license](https://opensource.org/licenses/MIT).
 * [multipart-parser](https://github.com/francoiscolas/multipart-parser) - HTTP multipart body parser released under the [MIT license](https://opensource.org/licenses/MIT).
 * [isocline](https://github.com/daanx/isocline) - cross-platform library that can be used as an alternative to the GNU readline library released under the [MIT license](https://opensource.org/licenses/MIT).
+* [LSP Framework](https://github.com/leon-bckl/lsp-framework) - a framework to implement
+[Language Server Protocol (LSP)](https://microsoft.github.io/language-server-protocol/overviews/lsp/overview/) servers and clients by [ Leon Buckel](https://github.com/leon-bckl) released under the [MIT license](https://opensource.org/licenses/MIT).
 
 In case User Interface (UI) modules are included, we also use:
 

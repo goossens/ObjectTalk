@@ -13,16 +13,40 @@
 
 
 //
+//	TextEditor::Cursor::grow
+//
+
+void TextEditor::Cursor::grow(DocPos position) {
+	if (position < getSelectionStart()) {
+		if (end > start) {
+			std::swap(end, start);
+		}
+
+		end = position;
+		updated = true;
+
+	} else if (position > getSelectionEnd()) {
+		if (end < start) {
+			std::swap(end, start);
+		}
+
+		end = position;
+		updated = true;
+	}
+}
+
+
+//
 //	TextEditor::Cursor::adjustCoordinateForInsert
 //
 
-TextEditor::Coordinate TextEditor::Cursor::adjustCoordinateForInsert(Coordinate coordinate, Coordinate insertStart, Coordinate insertEnd) {
-	if (coordinate.line == insertStart.line) {
-		coordinate.column += insertEnd.column - insertStart.column;
+TextEditor::DocPos TextEditor::Cursor::adjustCoordinateForInsert(DocPos position, DocPos insertStart, DocPos insertEnd) {
+	if (position.line == insertStart.line) {
+		position.index += insertEnd.index - insertStart.index;
 	}
 
-	coordinate.line += insertEnd.line - insertStart.line;
-	return coordinate;
+	position.line += insertEnd.line - insertStart.line;
+	return position;
 }
 
 
@@ -30,7 +54,7 @@ TextEditor::Coordinate TextEditor::Cursor::adjustCoordinateForInsert(Coordinate 
 //	TextEditor::Cursor::adjustForInsert
 //
 
-void TextEditor::Cursor::adjustForInsert(Coordinate insertStart, Coordinate insertEnd) {
+void TextEditor::Cursor::adjustForInsert(DocPos insertStart, DocPos insertEnd) {
 	start = adjustCoordinateForInsert(start, insertStart, insertEnd);
 	end = adjustCoordinateForInsert(end, insertStart, insertEnd);
 }
@@ -40,21 +64,21 @@ void TextEditor::Cursor::adjustForInsert(Coordinate insertStart, Coordinate inse
 //	TextEditor::Cursor::adjustCoordinateForDelete
 //
 
-TextEditor::Coordinate TextEditor::Cursor::adjustCoordinateForDelete(Coordinate coordinate, Coordinate deleteStart, Coordinate deleteEnd) {
+TextEditor::DocPos TextEditor::Cursor::adjustCoordinateForDelete(DocPos position, DocPos deleteStart, DocPos deleteEnd) {
 	if (deleteStart.line == deleteEnd.line) {
-		if (coordinate.line == deleteEnd.line) {
-			coordinate.column -= deleteEnd.column - deleteStart.column;
+		if (position.line == deleteEnd.line) {
+			position.index -= deleteEnd.index - deleteStart.index;
 		}
 
 	} else {
-		coordinate.line -= deleteEnd.line - deleteStart.line;
+		position.line -= deleteEnd.line - deleteStart.line;
 
-		if (coordinate.line == deleteEnd.line) {
-			coordinate.column -= deleteEnd.column;
+		if (position.line == deleteEnd.line) {
+			position.index -= deleteEnd.index;
 		}
 	}
 
-	return coordinate;
+	return position;
 }
 
 
@@ -62,9 +86,40 @@ TextEditor::Coordinate TextEditor::Cursor::adjustCoordinateForDelete(Coordinate 
 //	TextEditor::Cursor::adjustForDelete
 //
 
-void TextEditor::Cursor::adjustForDelete(Coordinate deleteStart, Coordinate deleteEnd) {
+void TextEditor::Cursor::adjustForDelete(DocPos deleteStart, DocPos deleteEnd) {
 	start = adjustCoordinateForDelete(start, deleteStart, deleteEnd);
 	end = adjustCoordinateForDelete(end, deleteStart, deleteEnd);
+}
+
+
+//
+//	TextEditor::Cursor::ensureNotHidden
+//
+
+void TextEditor::Cursor::ensureNotHidden(const Document& document) {
+	if (document[start.line].foldingState == FoldingState::hidden) {
+		auto line = start.line - 1;
+
+		while (document[line].foldingState == FoldingState::hidden) {
+			line--;
+		}
+
+		start.line = line;
+		start.index = document[line].size();
+		updated = true;
+	}
+
+	if (document[end.line].foldingState == FoldingState::hidden) {
+		auto line = end.line - 1;
+
+		while (document[line].foldingState == FoldingState::hidden) {
+			line--;
+		}
+
+		end.line = line;
+		end.index = document[line].size();
+		updated = true;
+	}
 }
 
 
@@ -83,7 +138,7 @@ void TextEditor::Cursors::reset() {
 //	TextEditor::Cursors::setCursor
 //
 
-void TextEditor::Cursors::setCursor(Coordinate cursorStart, Coordinate cursorEnd) {
+void TextEditor::Cursors::setCursor(DocPos cursorStart, DocPos cursorEnd) {
 	reset();
 	emplace_back(cursorStart, cursorEnd);
 	front().setMain(true);
@@ -95,7 +150,7 @@ void TextEditor::Cursors::setCursor(Coordinate cursorStart, Coordinate cursorEnd
 //	TextEditor::Cursors::addCursor
 //
 
-void TextEditor::Cursors::addCursor(Coordinate start, Coordinate end) {
+void TextEditor::Cursors::addCursor(DocPos start, DocPos end) {
 	at(current).setCurrent(false);
 	emplace_back(start, end);
 	back().setCurrent(true);
@@ -154,7 +209,7 @@ bool TextEditor::Cursors::anyHasUpdate() const {
 
 void TextEditor::Cursors::clearAll() {
 	reset();
-	emplace_back(Coordinate(0, 0));
+	emplace_back(DocPos(0, 0));
 	front().setMain(true);
 	front().setCurrent(true);
 }
@@ -199,65 +254,72 @@ void TextEditor::Cursors::clearUpdated() {
 //	TextEditor::Cursors::update
 //
 
-void TextEditor::Cursors::update() {
-	// reset update flags
-	clearUpdated();
+void TextEditor::Cursors::update(const Document& document) {
+	// ensure cursors are not on hidden lines
+	for (auto& cursor : *this) {
+		cursor.ensureNotHidden(document);
+	}
 
-	//  only sort and potential merge when we have multiple cursors
-	if (hasMultiple()) {
-		// sort cursors
-		std::sort(begin(), end(), [](Cursor& a, Cursor& b) {
-			return a.getSelectionStart() < b.getSelectionStart();
-		});
+	if (anyHasUpdate()) {
+		// reset update flags
+		clearUpdated();
 
-		// merge cursors
-		for (auto cursor = rbegin(); cursor < rend() - 1;) {
-			auto previous = cursor + 1;
+		//  only sort and potential merge when we have multiple cursors
+		if (hasMultiple()) {
+			// sort cursors
+			std::sort(begin(), end(), [](Cursor& a, Cursor& b) {
+				return a.getSelectionStart() < b.getSelectionStart();
+			});
 
-			if (previous->getSelectionEnd() >= cursor->getSelectionEnd()) {
-				if (cursor->isMain()) {
-					previous->setMain(true);
-				}
+			// merge cursors
+			for (auto cursor = rbegin(); cursor < rend() - 1;) {
+				auto previous = cursor + 1;
 
-				if (cursor->isCurrent()) {
-					previous->setCurrent(true);
-				}
+				if (previous->getSelectionEnd() >= cursor->getSelectionEnd()) {
+					if (cursor->isMain()) {
+						previous->setMain(true);
+					}
 
-				erase((++cursor).base());
+					if (cursor->isCurrent()) {
+						previous->setCurrent(true);
+					}
 
-			} else if (previous->getSelectionEnd() > cursor->getSelectionStart()) {
-				if (cursor->getInteractiveEnd() < cursor->getInteractiveStart()) {
-					previous->update(cursor->getSelectionEnd(), previous->getSelectionStart());
+					erase((++cursor).base());
+
+				} else if (previous->getSelectionEnd() > cursor->getSelectionStart()) {
+					if (cursor->getInteractiveEnd() < cursor->getInteractiveStart()) {
+						previous->update(cursor->getSelectionEnd(), previous->getSelectionStart());
+
+					} else {
+						previous->update(previous->getSelectionStart(), cursor->getSelectionEnd());
+					}
+
+					if (cursor->isMain()) {
+						previous->setMain(true);
+					}
+
+					if (cursor->isCurrent()) {
+						previous->setCurrent(true);
+					}
+
+					erase((++cursor).base());
 
 				} else {
-					previous->update(previous->getSelectionStart(), cursor->getSelectionEnd());
+					cursor++;
 				}
-
-				if (cursor->isMain()) {
-					previous->setMain(true);
-				}
-
-				if (cursor->isCurrent()) {
-					previous->setCurrent(true);
-				}
-
-				erase((++cursor).base());
-
-			} else {
-				cursor++;
 			}
-		}
 
-		// find main and current cursor
-		main = 0;
-		current = 0;
+			// find main and current cursor
+			main = 0;
+			current = 0;
 
-		for (size_t c = 0; c < size(); c++) {
-			if (at(c).isMain()) {
-				main = c;
+			for (size_t c = 0; c < size(); c++) {
+				if (at(c).isMain()) {
+					main = c;
 
-			} else if (at(c).isCurrent()) {
-				current = c;
+				} else if (at(c).isCurrent()) {
+					current = c;
+				}
 			}
 		}
 	}
@@ -268,7 +330,7 @@ void TextEditor::Cursors::update() {
 //	TextEditor::Cursors::adjustForInsert
 //
 
-void TextEditor::Cursors::adjustForInsert(iterator start, Coordinate insertStart, Coordinate insertEnd) {
+void TextEditor::Cursors::adjustForInsert(iterator start, DocPos insertStart, DocPos insertEnd) {
 	for (auto cursor = start + 1; cursor < end(); cursor++) {
 		cursor->adjustForInsert(insertStart, insertEnd);
 	}
@@ -279,7 +341,7 @@ void TextEditor::Cursors::adjustForInsert(iterator start, Coordinate insertStart
 //	TextEditor::Cursors::adjustForDelete
 //
 
-void TextEditor::Cursors::adjustForDelete(iterator start, Coordinate deleteStart, Coordinate deleteEnd) {
+void TextEditor::Cursors::adjustForDelete(iterator start, DocPos deleteStart, DocPos deleteEnd) {
 	for (auto cursor = start + 1; cursor < end(); cursor++) {
 		cursor->adjustForDelete(deleteStart, deleteEnd);
 	}

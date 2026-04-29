@@ -14,13 +14,11 @@
 #include "TextEditor.h"
 
 
-
 //
 //	TextEditor::setAutoCompleteConfig
 //
 
-
-void TextEditor::Autocomplete::setConfig(const AutoCompleteConfig* config) {
+void TextEditor::AutoComplete::setConfig(const AutoCompleteConfig* config) {
 	if (config) {
 		configuration = *config;
 		configured = true;
@@ -34,10 +32,10 @@ void TextEditor::Autocomplete::setConfig(const AutoCompleteConfig* config) {
 
 
 //
-//	TextEditor::Autocomplete::startTyping
+//	TextEditor::AutoComplete::startTyping
 //
 
-bool TextEditor::Autocomplete::startTyping(Cursors& cursors) {
+bool TextEditor::AutoComplete::startTyping(Cursors& cursors) {
 	if (!active && !requestActivation && configured && configuration.triggerOnTyping) {
 		triggeredManually = false;
 		start(cursors);
@@ -50,10 +48,10 @@ bool TextEditor::Autocomplete::startTyping(Cursors& cursors) {
 
 
 //
-//	TextEditor::Autocomplete::startShortcut
+//	TextEditor::AutoComplete::startShortcut
 //
 
-bool TextEditor::Autocomplete::startShortcut(Cursors& cursors) {
+bool TextEditor::AutoComplete::startShortcut(Cursors& cursors) {
 	if (!active && !requestActivation && configured && configuration.triggerOnShortcut) {
 		triggeredManually = true;
 		start(cursors);
@@ -66,10 +64,10 @@ bool TextEditor::Autocomplete::startShortcut(Cursors& cursors) {
 
 
 //
-//	TextEditor::Autocomplete::cancel
+//	TextEditor::AutoComplete::cancel
 //
 
-void TextEditor::Autocomplete::cancel() {
+void TextEditor::AutoComplete::cancel() {
 	if (active) {
 		requestDeactivation = true;
 	}
@@ -131,10 +129,10 @@ static bool renderSuggestion(const std::string_view& suggestion, const std::stri
 
 
 //
-//	TextEditor::Autocomplete::render
+//	TextEditor::AutoComplete::render
 //
 
-bool TextEditor::Autocomplete::render(Document& document, Cursors& cursors, const Language* language, float textOffset, ImVec2 glyphSize) {
+bool TextEditor::AutoComplete::render(Document& document, Cursors& cursors, TypeSetter& typesetter, const Language* language, float textOffset, ImVec2 glyphSize) {
 	// see if we need to activate autocomplete mode
 	if (requestActivation) {
 		// apply popup delay
@@ -203,11 +201,11 @@ bool TextEditor::Autocomplete::render(Document& document, Cursors& cursors, cons
 
 	// open popup window
 	bool result = false;
-	auto cursorScreenPos = ImGui::GetCursorScreenPos();
+	auto pos = typesetter.docPos2VisPos(document, currentLocation);
 
 	ImGui::SetNextWindowPos(ImVec2(
-		cursorScreenPos.x + textOffset + currentLocation.column * glyphSize.x,
-		cursorScreenPos.y + (currentLocation.line + 1) * glyphSize.y));
+		ImGui::GetCursorScreenPos().x + textOffset + pos.column * glyphSize.x,
+		ImGui::GetCursorScreenPos().y + (pos.row + 1) * glyphSize.y));
 
 	auto suggestions = state.suggestions.size();
 	auto visibleSuggestions = (suggestions == 0) ? 1 : std::min(static_cast<size_t>(10), suggestions);
@@ -301,20 +299,20 @@ bool TextEditor::Autocomplete::render(Document& document, Cursors& cursors, cons
 
 
 //
-//	TextEditor::Autocomplete::setSuggestions
+//	TextEditor::AutoComplete::setSuggestions
 //
 
-void TextEditor::Autocomplete::setSuggestions(const std::vector<std::string>& suggestions) {
+void TextEditor::AutoComplete::setSuggestions(const std::vector<std::string>& suggestions) {
 	state.suggestions = suggestions;
 	currentSelection = 0;
 }
 
 
 //
-//	TextEditor::Autocomplete::isSpecialKeyPressed
+//	TextEditor::AutoComplete::isSpecialKeyPressed
 //
 
-bool TextEditor::Autocomplete::isSpecialKeyPressed() const {
+bool TextEditor::AutoComplete::isSpecialKeyPressed() const {
 	for (auto key : {ImGuiKey_Tab, ImGuiKey_Enter, ImGuiKey_KeypadEnter, ImGuiKey_UpArrow, ImGuiKey_DownArrow}) {
 		if (ImGui::IsKeyPressed(key)) {
 			return true;
@@ -326,10 +324,10 @@ bool TextEditor::Autocomplete::isSpecialKeyPressed() const {
 
 
 //
-//	TextEditor::Autocomplete::start
+//	TextEditor::AutoComplete::start
 //
 
-void TextEditor::Autocomplete::start(Cursors& cursors) {
+void TextEditor::AutoComplete::start(Cursors& cursors) {
 	// request start of autocomplete mode (can't be done here as the Dear ImGui context might not be right)
 	requestActivation = true;
 	currentLocation = cursors.getMain().getSelectionEnd();
@@ -338,38 +336,35 @@ void TextEditor::Autocomplete::start(Cursors& cursors) {
 
 
 //
-//	TextEditor::Autocomplete::updateState
+//	TextEditor::AutoComplete::updateState
 //
 
-void TextEditor::Autocomplete::updateState(Document& document, const Language* language) {
+void TextEditor::AutoComplete::updateState(Document& document, const Language* language) {
 	state.searchTerm = document.getSectionText(startLocation, currentLocation);
 
-	if (currentLocation.column == 0) {
+	if (currentLocation.index == 0) {
 		state.inIdentifier = false;
 		state.inNumber = false;
 
 		auto lineState = document[currentLocation.line].state;
-		state.inComment = lineState == State::inComment;
+		state.inComment = lineState == LineState::inComment;
 
 		state.inString =
-			lineState == State::inDoubleQuotedString ||
-			lineState == State::inSingleQuotedString||
-			lineState == State::inOtherString ||
-			lineState == State::inOtherStringAlt;
+			lineState == LineState::inDoubleQuotedString ||
+			lineState == LineState::inSingleQuotedString||
+			lineState == LineState::inOtherString ||
+			lineState == LineState::inOtherStringAlt;
 
 	} else {
-		auto color = document.getColor(Coordinate(currentLocation.line, currentLocation.column - 1));
+		auto color = document.getColor(document.getLeft(currentLocation));
 		state.inIdentifier = color == Color::identifier || color == Color::knownIdentifier;
 		state.inNumber = color == Color::number;
 		state.inComment = color == Color::comment;
 		state.inString = color == Color::string;
 	}
 
-	state.line = currentLocation.line;
-	state.searchTermStartColumn = startLocation.column;
-	state.searchTermStartIndex = document.getIndex(startLocation);
-	state.searchTermEndColumn = currentLocation.column;
-	state.searchTermEndIndex= document.getIndex(currentLocation);
+	state.searchTermStart = startLocation;
+	state.searchTermEnd = currentLocation;
 
 	state.language = language;
 	state.userData = configuration.userData;
@@ -377,10 +372,10 @@ void TextEditor::Autocomplete::updateState(Document& document, const Language* l
 
 
 //
-//	TextEditor::Autocomplete::refreshSuggestions
+//	TextEditor::AutoComplete::refreshSuggestions
 //
 
-void TextEditor::Autocomplete::refreshSuggestions() {
+void TextEditor::AutoComplete::refreshSuggestions() {
 	// populate suggestion list through callback (or clear it if there is none)
 	if (configuration.callback) {
 		configuration.callback(state);

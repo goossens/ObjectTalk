@@ -13,7 +13,7 @@
 //	Include files
 //
 
-#include "Tables.h"
+#include "CodePointTables.h"
 #include "TextEditor.h"
 
 
@@ -51,7 +51,7 @@ std::string_view::const_iterator TextEditor::CodePoint::skipBOM(std::string_view
 //
 
 std::string_view::const_iterator TextEditor::CodePoint::read(std::string_view::const_iterator i, std::string_view::const_iterator end, ImWchar *codepoint) {
-	// parse a UTF-8 sequence into a unicode codepoint
+	// parse a UTF-8 sequence into a unicode codepoint and return updated iterator
 	if (i < end && (uch(*i) & 0x80) == 0) {
 		*codepoint = uch(*i);
 		i++;
@@ -86,7 +86,7 @@ std::string_view::const_iterator TextEditor::CodePoint::read(std::string_view::c
 //
 
 size_t TextEditor::CodePoint::write(char* start, ImWchar codepoint) {
-	// generate UTF-8 sequence from a unicode codepoint
+	// generate UTF-8 sequence from a unicode codepoint and return bytes written
 	auto i = start;
 
 	if (codepoint < 0x80) {
@@ -123,6 +123,33 @@ size_t TextEditor::CodePoint::write(char* start, ImWchar codepoint) {
 	}
 
 	return i - start;
+}
+
+
+//
+//	rangeContains
+//
+
+template <typename T, typename C>
+bool rangeContains(const T& table, C codepoint) {
+	auto low = std::begin(table);
+	auto high = std::end(table);
+
+	while (low <= high) {
+		auto mid = low + (high - low) / 2;
+
+		if (codepoint >= mid->low && codepoint <= mid->high) {
+			return (mid->stride == 1) || ((codepoint - mid->low) % mid->stride == 0);
+
+		} else if (codepoint < mid->low) {
+			high = mid - 1;
+
+		} else {
+			low = mid + 1;
+		}
+	}
+
+	return false;
 }
 
 
@@ -283,6 +310,143 @@ bool TextEditor::CodePoint::isUpper(ImWchar codepoint) {
 
 	} else {
 		return rangeContains(upper16, static_cast<ImWchar16>(codepoint));
+	}
+}
+
+
+//
+//	eastAsianRangeFind
+//
+
+template <typename T, typename C>
+bool eastAsianRangeFind(const T& table, C codepoint) {
+	auto low = std::begin(table);
+	auto high = std::end(table);
+
+	while (low <= high) {
+		auto mid = low + (high - low) / 2;
+
+		if (codepoint >= mid->low && codepoint <= mid->high) {
+			return true;
+
+		} else if (codepoint < mid->low) {
+			high = mid - 1;
+
+		} else {
+			low = mid + 1;
+		}
+	}
+
+	return false;
+}
+
+
+//
+//	isEastAsian
+//
+
+bool TextEditor::CodePoint::isEastAsian(ImWchar codepoint) {
+	// handle simple case
+	if (codepoint < 0x1100) {
+		return false;
+	}
+
+	bool result;
+
+#if defined(IMGUI_USE_WCHAR32)
+	if (codepoint >= 0x10000) {
+		result = eastAsianRangeFind(eastAsian32, static_cast<char32_t>(codepoint));
+
+	} else
+#endif
+
+	{
+		result = eastAsianRangeFind(eastAsian16, static_cast<char16_t>(codepoint));
+	}
+
+	if (!result) {
+		if ((codepoint >= 0x3400 && codepoint <= 0x4DBF) ||
+			(codepoint >= 0x4E00 && codepoint <= 0x9FFF) ||
+			(codepoint >= 0xF900 && codepoint <= 0xFAFF)
+
+#if defined(IMGUI_USE_WCHAR32)
+			||
+			(codepoint >= 0x20000 && codepoint <= 0x2FFFD) ||
+			(codepoint >= 0x30000 && codepoint <= 0x3FFFD)
+#endif
+		) {
+
+			result = true;
+		}
+	}
+
+	return result;
+}
+
+
+//
+//	caseRangeFind
+//
+
+template <typename T, typename C>
+const CaseRange<C>* caseRangeFind(const T& table, C codepoint) {
+	auto low = std::begin(table);
+	auto high = std::end(table);
+
+	while (low <= high) {
+		auto mid = low + (high - low) / 2;
+
+		if (codepoint >= mid->low && codepoint <= mid->high) {
+			return mid;
+
+		} else if (codepoint < mid->low) {
+			high = mid - 1;
+
+		} else {
+			low = mid + 1;
+		}
+	}
+
+	return nullptr;
+}
+
+
+//
+//	caseRangeToUpper
+//
+
+template <typename T, typename C>
+C caseRangeToUpper(const T& table, C codepoint) {
+	auto caseRange = caseRangeFind(table, codepoint);
+
+	if (!caseRange || caseRange->toUpper == 0) {
+		return codepoint;
+
+	} else if (caseRange->toUpper == 0xffff) {
+		return codepoint & ~0x1;
+
+	} else {
+		return static_cast<C>(static_cast<int32_t>(codepoint) + caseRange->toUpper);
+	}
+}
+
+
+//
+//	caseRangeToLower
+//
+
+template <typename T, typename C>
+C caseRangeToLower(const T& table, C codepoint) {
+	auto caseRange = caseRangeFind(table, codepoint);
+
+	if (!caseRange || caseRange->toLower == 0) {
+		return codepoint;
+
+	} else if (caseRange->toLower == 0xffff) {
+		return codepoint | 0x1;
+
+	} else {
+		return static_cast<C>(static_cast<int32_t>(codepoint) + caseRange->toLower);
 	}
 }
 

@@ -1,4 +1,4 @@
-//	TextEditor - A syntax highlighting text editor for Dear ImGui.
+//	TextEditor - A syntax highlighting text editor for ImGui
 //	Copyright (c) 2024-2026 Johan A. Goossens. All rights reserved.
 //
 //	This work is licensed under the terms of the MIT license.
@@ -9,14 +9,92 @@
 //	Include files
 //
 
-#include "TextEditor.h"
+#include "TrieAutoComplete.h"
 
 
 //
-//	TextEditor::Trie::insert
+//	TrieAutoComplete::Connect
 //
 
-void TextEditor::Trie::insert(const std::string_view& word) {
+void TrieAutoComplete::Connect(TextEditor* newEditor) {
+	// disconnect first (if required)
+	if (editor) {
+		Disconnect();
+	}
+
+	// remember current editor
+	editor = newEditor;
+
+	// rebuild word list
+	buildTrie();
+
+	// setup autocomplete by submitting a new configuration
+	TextEditor::AutoCompleteConfig config;
+
+	config.callback = [this](TextEditor::AutoCompleteState& state) {
+		trie.findSuggestions(state.suggestions, state.searchTerm);
+	};
+
+	editor->SetAutoCompleteConfig(&config);
+
+	// enable tracking of language changes
+	editor->SetLanguageChangeCallback([this]() {
+		buildTrie();
+	});
+
+	// enable change tracking
+	// we don't track every keystroke, callbacks can be delayed up to 3000 milliseconds
+	// if you want live tracking, change the 2000 to 0 (performance hit will be minimal for small documents)
+	editor->SetChangeCallback([this]() {
+		buildTrie();
+	}, 2000);
+}
+
+
+//
+//	TrieAutoComplete::Disconnect
+//
+
+void TrieAutoComplete::Disconnect() {
+	// disconnect from text editor (if required)
+	if (editor) {
+		editor->SetAutoCompleteConfig(nullptr);
+		editor->SetLanguageChangeCallback(nullptr);
+		editor->SetChangeCallback(nullptr);
+		editor = nullptr;
+	}
+}
+
+
+//
+//	TrieAutoComplete::buildTrie
+//
+
+void TrieAutoComplete::buildTrie() {
+	// empty list first
+	trie.clear();
+
+	// add language words (if required)
+	auto language = editor->GetLanguage();
+
+	if (language) {
+		for (auto& word : language->keywords) { trie.insert(word); }
+		for (auto& word : language->declarations) { trie.insert(word); }
+		for (auto& word : language->identifiers) { trie.insert(word); }
+	}
+
+	// add all identifiers in current document
+	editor->IterateIdentifiers([this](const std::string& identifier) {
+		trie.insert(identifier);
+	});
+}
+
+
+//
+//	TrieAutoComplete::Trie::insert
+//
+
+void TrieAutoComplete::Trie::insert(const std::string_view& word) {
 	auto node = root.get();
 	auto end = word.end();
 	auto i = TextEditor::CodePoint::skipBOM(word.begin(), end);
@@ -37,10 +115,10 @@ void TextEditor::Trie::insert(const std::string_view& word) {
 
 
 //
-//	TextEditor::Trie::findSuggestions
+//	TrieAutoComplete::Trie::findSuggestions
 //
 
-void TextEditor::Trie::findSuggestions(std::vector<std::string>& suggestions, const std::string_view& searchTerm, size_t limit, size_t maxSkippedLetters) {
+void TrieAutoComplete::Trie::findSuggestions(std::vector<std::string>& suggestions, const std::string_view& searchTerm, size_t limit, size_t maxSkippedLetters) {
 	// clear result vector
 	maxSkip = maxSkippedLetters;
 	suggestions.clear();
@@ -83,10 +161,10 @@ void TextEditor::Trie::findSuggestions(std::vector<std::string>& suggestions, co
 
 
 //
-//	TextEditor::Trie::evaluateNode
+//	TrieAutoComplete::Trie::evaluateNode
 //
 
-void TextEditor::Trie::evaluateNode(const Node* node, size_t index, size_t cost, size_t skip) {
+void TrieAutoComplete::Trie::evaluateNode(const Node* node, size_t index, size_t cost, size_t skip) {
 	// see if that is one of our children (check both lower and uppercase matches)
 	ImWchar codepointLower = TextEditor::CodePoint::toLower(searchCodepoints[index]);
 	Node* childLower = nullptr;
@@ -136,10 +214,10 @@ void TextEditor::Trie::evaluateNode(const Node* node, size_t index, size_t cost,
 
 
 //
-//	TextEditor::Trie::addCandidates
+//	TrieAutoComplete::Trie::addCandidates
 //
 
-void TextEditor::Trie::addCandidates(const Node* node, size_t cost) {
+void TrieAutoComplete::Trie::addCandidates(const Node* node, size_t cost) {
 	if (node->word.size()) {
 		candidates.emplace_back(node, cost);
 	}

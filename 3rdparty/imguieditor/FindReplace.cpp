@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include "imgui_internal.h"
+
 #include "TextEditor.h"
 
 
@@ -68,7 +70,7 @@ static bool inputString(const char* label, std::string* value, ImGuiInputTextFla
 //	TextEditor::renderFindReplace
 //
 
-void TextEditor::renderFindReplace(ImVec2 pos, float width) {
+void TextEditor::renderFindReplace() {
 	// render find/replace window (if required)
 	if (findReplaceVisible) {
 		// save current screen position
@@ -83,7 +85,7 @@ void TextEditor::renderFindReplace(ImVec2 pos, float width) {
 		auto button2Width = ImGui::CalcTextSize(findAllButtonLabel.c_str()).x + style.ItemSpacing.x * 2.0f;
 		auto optionWidth = ImGui::CalcTextSize("Aa").x + style.ItemSpacing.x * 2.0f;
 
-		if (!readOnly) {
+		if (!config.readOnly) {
 			button1Width = std::max(button1Width, ImGui::CalcTextSize(replaceButtonLabel.c_str()).x + style.ItemSpacing.x * 2.0f);
 			button2Width = std::max(button2Width, ImGui::CalcTextSize(replaceAllButtonLabel.c_str()).x + style.ItemSpacing.x * 2.0f);
 		}
@@ -92,7 +94,7 @@ void TextEditor::renderFindReplace(ImVec2 pos, float width) {
 			style.ChildBorderSize * 2.0f +
 			style.WindowPadding.y * 2.0f +
 			ImGui::GetFrameHeight() +
-			(readOnly ? 0.0f : (style.ItemSpacing.y + ImGui::GetFrameHeight()));
+			(config.readOnly ? 0.0f : (style.ItemSpacing.y + ImGui::GetFrameHeight()));
 
 		auto windowWidth =
 			style.ChildBorderSize * 2.0f +
@@ -103,9 +105,14 @@ void TextEditor::renderFindReplace(ImVec2 pos, float width) {
 			optionWidth * 3.0f + style.ItemSpacing.x * 2.0f;
 
 		// create window
-		ImGui::SetNextWindowPos(ImVec2(
-			pos.x + width - windowWidth - style.ItemSpacing.x,
-			pos.y + style.ItemSpacing.y * 2.0f));
+		auto availableSpace =
+			ImGui::GetWindowWidth() -
+			(config.showMiniMap ? miniMapWidth : 0.0f) -
+			(ImGui::GetCurrentWindow()->ScrollbarY ? ImGui::GetStyle().ScrollbarSize : 0.0f);
+
+		ImGui::SetNextWindowPos(
+			ImGui::GetWindowPos() +
+			ImVec2(availableSpace - windowWidth - style.ItemSpacing.x, style.ItemSpacing.y * 2.0f));
 
 		ImGui::SetNextWindowSize(ImVec2(windowWidth, windowHeight));
 		ImGui::SetNextWindowBgAlpha(0.75f);
@@ -181,7 +188,7 @@ void TextEditor::renderFindReplace(ImVec2 pos, float width) {
 			closeFindReplace();
 		}
 
-		if (!readOnly) {
+		if (!config.readOnly) {
 			ImGui::SetNextItemWidth(fieldWidth);
 			inputString("###replace", &replaceText);
 			ImGui::SameLine();
@@ -207,6 +214,15 @@ void TextEditor::renderFindReplace(ImVec2 pos, float width) {
 			}
 		}
 
+
+		if (ImGui::IsWindowFocused() &&
+			!disableFindButtons &&
+			ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_G)) {
+
+			ImGui::SetWindowFocus(nullptr);
+			find();
+		}
+
 		ImGui::EndChild();
 		ImGui::PopStyleVar();
 		ImGui::SetCursorScreenPos(currentScreenPosition);
@@ -219,9 +235,9 @@ void TextEditor::renderFindReplace(ImVec2 pos, float width) {
 //
 
 void TextEditor::selectFirstOccurrenceOf(const std::string_view& text, bool caseSensitive, bool wholeWord) {
-	Coordinate start, end;
+	DocPos start, end;
 
-	if (document.findText(Coordinate(0, 0), text, caseSensitive, wholeWord, start, end)) {
+	if (document.findText(DocPos(0, 0), text, caseSensitive, wholeWord, start, end)) {
 		cursors.setCursor(start, end);
 		makeCursorVisible();
 
@@ -236,7 +252,7 @@ void TextEditor::selectFirstOccurrenceOf(const std::string_view& text, bool case
 //
 
 void TextEditor::selectNextOccurrenceOf(const std::string_view& text, bool caseSensitive, bool wholeWord) {
-	Coordinate start, end;
+	DocPos start, end;
 
 	if (document.findText(cursors.getCurrent().getSelectionEnd(), text, caseSensitive, wholeWord, start, end)) {
 		cursors.setCursor(start, end);
@@ -253,14 +269,14 @@ void TextEditor::selectNextOccurrenceOf(const std::string_view& text, bool caseS
 //
 
 void TextEditor::selectAllOccurrencesOf(const std::string_view& text, bool caseSensitive, bool wholeWord) {
-	Coordinate start, end;
+	DocPos start, end;
 
-	if (document.findText(Coordinate(0, 0), text, caseSensitive, wholeWord, start, end)) {
+	if (document.findText(DocPos(0, 0), text, caseSensitive, wholeWord, start, end)) {
 		cursors.setCursor(start, end);
 		bool done = false;
 
 		while (!done) {
-			Coordinate nextStart, nextEnd;
+			DocPos nextStart, nextEnd;
 			document.findText(cursors.getCurrent().getSelectionEnd(), text, caseSensitive, wholeWord, nextStart, nextEnd);
 
 			if (nextStart == start && nextEnd == end) {
@@ -287,7 +303,7 @@ void TextEditor::addNextOccurrence() {
 
 	auto cursor = cursors.getCurrent();
 	auto text = document.getSectionText(cursor.getSelectionStart(), cursor.getSelectionEnd());
-	Coordinate start, end;
+	DocPos start, end;
 
 	if (document.findText(cursor.getSelectionEnd(), text, true, false, start, end)) {
 		cursors.addCursor(start, end);
@@ -321,7 +337,7 @@ void TextEditor::replaceTextInCurrentCursor(const std::string_view& text) {
 	cursors.adjustForDelete(cursor, start, end);
 
 	// now insert new text
-	Coordinate newEnd = insertText(transaction, start, text);
+	DocPos newEnd = insertText(transaction, start, text);
 	cursor->update(newEnd, false);
 	cursors.adjustForInsert(cursor, start, newEnd);
 
@@ -344,7 +360,7 @@ void TextEditor::replaceTextInAllCursors(const std::string_view& text) {
 //	TextEditor::replaceSectionText
 //
 
-void TextEditor::replaceSectionText(const Coordinate& start, const Coordinate& end, const std::string_view& text) {
+void TextEditor::replaceSectionText(const DocPos& start, const DocPos& end, const std::string_view& text) {
 	auto transaction = startTransaction();
 	deleteText(transaction, start, end);
 	auto newEnd = insertText(transaction, start, text);

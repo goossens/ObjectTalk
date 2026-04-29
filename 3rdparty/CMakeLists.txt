@@ -21,7 +21,7 @@ if(OT_INCLUDE_UI)
 	file(GLOB IMGUI_EDITOR_SOURCES CONFIGURE_DEPENDS ${IMGUI_EDITOR_HOME}/*.cpp ${IMGUI_EDITOR_HOME}/*.h)
 	add_library(imguieditor STATIC ${IMGUI_EDITOR_SOURCES})
 	target_include_directories(imguieditor PUBLIC ${IMGUI_EDITOR_HOME})
-	target_link_libraries(imguieditor imgui)
+	target_link_libraries(imguieditor imgui lsp)
 	set_target_properties(imguieditor PROPERTIES FOLDER 3rdParty)
 
 	target_compile_options(imguieditor PRIVATE
@@ -52,15 +52,6 @@ if(OT_INCLUDE_UI)
 	add_library(convolver STATIC ${CONVOLVER_SOURCES})
 	target_include_directories(convolver PUBLIC convolver)
 	set_target_properties(convolver PROPERTIES FOLDER 3rdParty)
-
-	# file(GLOB MD4C_SOURCES CONFIGURE_DEPENDS md4c/*.c md4c/*.h)
-	# add_library(md4c STATIC ${MD4C_SOURCES})
-	# target_include_directories(md4c PUBLIC md4c)
-	# set_target_properties(md4c PROPERTIES FOLDER 3rdParty)
-
-	# if(CMAKE_GENERATOR STREQUAL "Xcode")
-	# 	set_target_properties(md4c PROPERTIES XCODE_ATTRIBUTE_GCC_WARN_64_TO_32_BIT_CONVERSION "NO")
-	# endif()
 
 	file(GLOB DELAUNATOR_SOURCES CONFIGURE_DEPENDS delaunator/*.h delaunator/*.cpp)
 	add_library(delaunator STATIC ${DELAUNATOR_SOURCES})

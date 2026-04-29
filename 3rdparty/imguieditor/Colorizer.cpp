@@ -13,10 +13,36 @@
 
 
 //
-//	TextEditor::Colorizer::update
+//	TextEditor::Colorizer::matches
 //
 
-TextEditor::State TextEditor::Colorizer::update(Line& line, const Language* language) {
+bool TextEditor::Colorizer::matches(Line::iterator start, Line::iterator end, const std::string_view& text) {
+	// see if text at iterators matches provided UTF-8 string
+	auto i = text.begin();
+
+	while (i < text.end()) {
+		if (start == end) {
+			return false;
+		}
+
+		ImWchar codepoint;
+		i = CodePoint::read(i, text.end(), &codepoint);
+
+		if ((start++)->codepoint != codepoint) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+
+//
+//	TextEditor::Colorizer::updateLine
+//
+
+TextEditor::LineState TextEditor::Colorizer::updateLine(const Config& config, Line& line) {
+	auto language = config.language;
 	auto state = line.state;
 
 	// process all glyphs on this line
@@ -24,7 +50,7 @@ TextEditor::State TextEditor::Colorizer::update(Line& line, const Language* lang
 	auto glyph = line.begin();
 
 	while (glyph < line.end()) {
-		if (state == State::inText) {
+		if (state == LineState::inText) {
 			// special handling for preprocessor lines
 			if (!nonWhiteSpace && language->preprocess && glyph->codepoint != language->preprocess && !CodePoint::isWhiteSpace(glyph->codepoint)) {
 				nonWhiteSpace = true;
@@ -48,32 +74,32 @@ TextEditor::State TextEditor::Colorizer::update(Line& line, const Language* lang
 
 			// are we starting a multiline comment
 			} else if (language->commentStart.size() && matches(glyph, line.end(), language->commentStart)) {
-				state = State::inComment;
+				state = LineState::inComment;
 				auto size = language->commentEnd.size();
 				setColor(glyph, glyph + size, Color::comment);
 				glyph += size;
 
 			// are we starting a special string
 			} else if (language->otherStringStart.size() && matches(glyph, line.end(), language->otherStringStart)) {
-				state = State::inOtherString;
+				state = LineState::inOtherString;
 				auto size = language->otherStringStart.size();
 				setColor(glyph, glyph + size, Color::string);
 				glyph += size;
 
 			} else if (language->otherStringAltStart.size() && matches(glyph, line.end(), language->otherStringAltStart)) {
-				state = State::inOtherStringAlt;
+				state = LineState::inOtherStringAlt;
 				auto size = language->otherStringAltStart.size();
 				setColor(glyph, glyph + size, Color::string);
 				glyph += size;
 
 			// are we starting a single quoted string
 			} else if (language->hasSingleQuotedStrings && glyph->codepoint == CodePoint::singleQuote) {
-				state = State::inSingleQuotedString;
+				state = LineState::inSingleQuotedString;
 				(glyph++)->color = Color::string;
 
 			// are we starting a double quoted string
 			} else if (language->hasDoubleQuotedStrings && glyph->codepoint == CodePoint::doubleQuote) {
-				state = State::inDoubleQuotedString;
+				state = LineState::inDoubleQuotedString;
 				(glyph++)->color = Color::string;
 
 			// is this a preprocessor line
@@ -150,19 +176,19 @@ TextEditor::State TextEditor::Colorizer::update(Line& line, const Language* lang
 				}
 			}
 
-		} else if (state == State::inComment) {
+		} else if (state == LineState::inComment) {
 			// stay in comment state until we see the end sequence
 			if (matches(glyph, line.end(), language->commentEnd)) {
 				auto size = language->commentEnd.size();
 				setColor(glyph, glyph + size, Color::comment);
 				glyph += size;
-				state = State::inText;
+				state = LineState::inText;
 
 			} else {
 				(glyph++)->color = Color::comment;
 			}
 
-		} else if (state == State::inOtherString) {
+		} else if (state == LineState::inOtherString) {
 			// stay in otherString state until we see the end sequence
 			// skip escaped characters
 			if (glyph->codepoint == language->stringEscape) {
@@ -176,13 +202,13 @@ TextEditor::State TextEditor::Colorizer::update(Line& line, const Language* lang
 				auto size = language->otherStringEnd.size();
 				setColor(glyph, glyph + size, Color::string);
 				glyph += size;
-				state = State::inText;
+				state = LineState::inText;
 
 			} else {
 				(glyph++)->color = Color::comment;
 			}
 
-		} else if (state == State::inOtherStringAlt) {
+		} else if (state == LineState::inOtherStringAlt) {
 			// stay in otherStringAlt state until we see the end sequence
 			// skip escaped characters
 			if (glyph->codepoint == language->stringEscape) {
@@ -196,13 +222,13 @@ TextEditor::State TextEditor::Colorizer::update(Line& line, const Language* lang
 				auto size = language->otherStringAltEnd.size();
 				setColor(glyph, glyph + size, Color::string);
 				glyph += size;
-				state = State::inText;
+				state = LineState::inText;
 
 			} else {
 				(glyph++)->color = Color::comment;
 			}
 
-		} else if (state == State::inSingleQuotedString) {
+		} else if (state == LineState::inSingleQuotedString) {
 			// stay in single quote state until we see an end
 			// skip escaped characters
 			if (glyph->codepoint == language->stringEscape) {
@@ -214,13 +240,13 @@ TextEditor::State TextEditor::Colorizer::update(Line& line, const Language* lang
 
 			} else if (glyph->codepoint == CodePoint::singleQuote) {
 				(glyph++)->color = Color::string;
-				state = State::inText;
+				state = LineState::inText;
 
 			} else {
 				(glyph++)->color = Color::string;
 			}
 
-		} else if (state == State::inDoubleQuotedString) {
+		} else if (state == LineState::inDoubleQuotedString) {
 			// stay in double quote state until we see an end
 			// skip escaped characters
 			if (glyph->codepoint == language->stringEscape) {
@@ -232,7 +258,7 @@ TextEditor::State TextEditor::Colorizer::update(Line& line, const Language* lang
 
 			} else if (glyph->codepoint == CodePoint::doubleQuote) {
 				(glyph++)->color = Color::string;
-				state = State::inText;
+				state = LineState::inText;
 
 			} else {
 				(glyph++)->color = Color::string;
@@ -240,78 +266,69 @@ TextEditor::State TextEditor::Colorizer::update(Line& line, const Language* lang
 		}
 	}
 
-	line.colorize = false;
 	return state;
 }
 
 
 //
-//	TextEditor::Colorizer::updateEntireDocument
+//	TextEditor::Colorizer::update
 //
 
-void TextEditor::Colorizer::updateEntireDocument(Document& document, const Language* language) {
-	if (language) {
+bool TextEditor::Colorizer::update(const Config& config, Document& document) {
+	// update all lines on configuration change
+	bool configChanged = language != config.language;
+
+	if (configChanged) {
+		language = config.language;
+
+		if (language) {
+			for (auto line = document.begin(); line < document.end(); line++) {
+				auto state = updateLine(config, *line);
+				line->needsColorizing = false;
+				auto next = line + 1;
+
+				if (next < document.end()) {
+					next->state = state;
+				}
+			}
+
+		} else {
+			for (auto line = document.begin(); line < document.end(); line++) {
+				for (auto glyph = line->begin(); glyph < line->end(); glyph++) {
+					glyph->color = Color::text;
+				}
+
+				line->state = LineState::inText;
+				line->needsColorizing = false;
+			}
+		}
+
+	// update changed lines when document is updated
+	} else if (document.isUpdated()) {
 		for (auto line = document.begin(); line < document.end(); line++) {
-			auto state = update(*line, language);
-			auto next = line + 1;
+			if (line->needsColorizing) {
+				if (language) {
+					auto state = updateLine(config, *line);
+					line->needsColorizing = false;
+					auto next = line + 1;
 
-			if (next < document.end()) {
-				next->state = state;
-			}
-		}
+					if (next < document.end() && next->state != state) {
+						next->state = state;
+						next->needsColorizing = true;
+					}
 
-	} else {
-		for (auto line = document.begin(); line < document.end(); line++) {
-			for (auto glyph = line->begin(); glyph < line->end(); glyph++) {
-				glyph->color = Color::text;
-			}
+				} else {
+					for (auto glyph = line->begin(); glyph < line->end(); glyph++) {
+						glyph->color = Color::text;
+					}
 
-			line->state = State::inText;
-			line->colorize = false;
-		}
-	}
-}
-
-
-//
-//	TextEditor::Colorizer::updateChangedLines
-//
-
-void TextEditor::Colorizer::updateChangedLines(Document& document, const Language* language) {
-	for (auto line = document.begin(); line < document.end(); line++) {
-		if (line->colorize) {
-			auto state = update(*line, language);
-			auto next = line + 1;
-
-			if (next < document.end() && next->state != state) {
-				next->state = state;
-				next->colorize = true;
+					line->state = LineState::inText;
+					line->needsColorizing = false;
+				}
 			}
 		}
 	}
-}
 
-
-//
-//	TextEditor::Colorizer::matches
-//
-
-bool TextEditor::Colorizer::matches(Line::iterator start, Line::iterator end, const std::string_view& text) {
-	// see if text at iterators matches provided UTF-8 string
-	auto i = text.begin();
-
-	while (i < text.end()) {
-		if (start == end) {
-			return false;
-		}
-
-		ImWchar codepoint;
-		i = CodePoint::read(i, text.end(), &codepoint);
-
-		if ((start++)->codepoint != codepoint) {
-			return false;
-		}
-	}
-
-	return true;
+	// return status
+	return configChanged;
 }

@@ -542,7 +542,7 @@ bool TextEditor::Document::findText(DocPos from, const std::string_view& text, b
 //
 
 void TextEditor::Document::setUserData(size_t line, void* data) {
-	if (line >= 0 && line < size()) {
+	if (line < size()) {
 		at(static_cast<size_t>(line)).userData = data;
 	}
 }
@@ -553,7 +553,7 @@ void TextEditor::Document::setUserData(size_t line, void* data) {
 //
 
 void* TextEditor::Document::getUserData(size_t line) const {
-	if (line >= 0 && line < size()) {
+	if (line < size()) {
 		return at(static_cast<size_t>(line)).userData;
 
 	} else {

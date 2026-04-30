@@ -1760,7 +1760,7 @@ void TextEditor::makeCursorVisible() {
 //
 
 void TextEditor::addMarker(size_t line, ImU32 lineNumberColor, ImU32 textColor, const std::string_view& lineNumberTooltip, const std::string_view& textTooltip) {
-	if (line >= 0 && line < document.size()) {
+	if (line < document.size()) {
 		markers.emplace_back(lineNumberColor, textColor, lineNumberTooltip, textTooltip);
 		document[line].marker = markers.size();
 	}

@@ -33,7 +33,7 @@ public:
 
 	// access editor options
 	inline void setTabSize(int value) { editor.SetTabSize(value); }
-	inline int getTabSize() { return editor.GetTabSize(); }
+	inline size_t getTabSize() { return editor.GetTabSize(); }
 	inline void setLineSpacing(float value) { editor.SetLineSpacing(value); }
 	inline float getLineSpacing() { return editor.GetLineSpacing(); }
 	inline void setReadOnlyEnabled(bool value) { editor.SetReadOnlyEnabled(value); }
@@ -60,7 +60,7 @@ public:
 	inline void setText(const std::string& text) { editor.SetText(text); }
 	inline std::string getText() { return editor.GetText(); }
 	inline bool isEmpty() { return editor.IsEmpty(); }
-	inline int lineCount() { return editor.GetLineCount(); }
+	inline size_t lineCount() { return editor.GetLineCount(); }
 
 	//	clipboard functions
 	inline void cut() { editor.Cut(); }

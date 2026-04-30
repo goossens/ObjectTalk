@@ -33,7 +33,7 @@ public:
 
 	// access editor options
 	inline void setTabSize(int value) { diff.SetTabSize(value); }
-	inline int getTabSize() { return diff.GetTabSize(); }
+	inline size_t getTabSize() { return diff.GetTabSize(); }
 	inline void setLineSpacing(float value) { diff.SetLineSpacing(value); }
 	inline float getLineSpacing() { return diff.GetLineSpacing(); }
 	inline void setShowWhitespacesEnabled(bool value) { diff.SetShowWhitespacesEnabled(value); }

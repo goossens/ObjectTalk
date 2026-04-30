@@ -122,8 +122,8 @@ public:
 	inline bool IsShowingMatchingBrackets() const { return config.showMatchingBrackets; }
 	inline void SetCompletePairedGlyphs(bool value) { config.completePairedGlyphs = value; }
 	inline bool IsCompletingPairedGlyphs() const { return config.completePairedGlyphs; }
-	inline void SetLineFolding(bool value) { config.lineFolding = value; }
-	inline bool IsLineFolding() const { return config.lineFolding; }
+	inline void SetLineFoldingEnabled(bool value) { config.lineFolding = value; }
+	inline bool IsLineFoldingEnabled() const { return config.lineFolding; }
 	inline void SetOverwriteEnabled(bool value) { config.overwrite = value; }
 	inline bool IsOverwriteEnabled() const { return config.overwrite; }
 	inline void SetMiddleMousePanMode() { config.panMode = true; }

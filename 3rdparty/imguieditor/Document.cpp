@@ -822,11 +822,11 @@ void TextEditor::Document::updateIndents(Config& config, size_t start, size_t en
 		line.indent = 0;
 		bool done = false;
 
-		for (size_t i = 0; i < line.size() && !done; i++) {
-			if (line[i].codepoint == ' ') {
+		for (size_t j = 0; j < line.size() && !done; j++) {
+			if (line[j].codepoint == ' ') {
 				line.indent++;
 
-			} else if (line[i].codepoint == '\t') {
+			} else if (line[j].codepoint == '\t') {
 				line.indent += config.tabSize - (line.indent % config.tabSize);
 
 			} else {

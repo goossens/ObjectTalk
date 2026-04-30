@@ -55,7 +55,7 @@ target_link_libraries(ot language network argparse)
 
 if(OT_INCLUDE_UI)
 	target_compile_definitions(ot PRIVATE OT_INCLUDE_UI)
-	target_link_libraries(ot audio shaders gfx gui nodes scene physics ide)
+	target_link_libraries(ot NeuralAudio audio shaders gfx gui nodes scene physics ide)
 
 	if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang")
 		if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 15)

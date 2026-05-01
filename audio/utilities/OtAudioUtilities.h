@@ -30,19 +30,20 @@ public:
 	}
 
 	inline static float linearToDbv(float v) {
-		return (v <= 0) ? -100.0f : 20.0f * std::log10(v);
+		return 20.0f * std::log10(v);
 	}
 
 	inline static float dbvToLinear(float x) {
 		return std::pow(10.0f, x / 20.0f);
 	}
 
-	inline static float linearToDbu(float v) {
-		return (v <= 0) ? -100.0f : 20.0f * std::log10(v / 0.775f);
+	inline static float linearToDbfs(float v) {
+		v = std::abs(v);
+		return (v <= 0.001f) ? -60.0f : 20.0f * std::log10(v);
 	}
 
-	inline static float dbuToLinear(float x) {
-		return std::pow(10.0f, x / 20.0f) * 0.775f;
+	inline static float dbfsToLinear(float x) {
+		return std::pow(10.0f, x / 20.0f);
 	}
 
 	inline static float frequencyToCv(float frequency) {

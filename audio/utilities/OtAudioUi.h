@@ -92,6 +92,10 @@ public:
 	// tuning button with popup
 	static bool tuningPopup(float* tuning);
 
+	// dBFS LED display
+	static void dbfs(float value, bool vertical=true);
+	static ImVec2 dbfsSize(bool vertical=true);
+
 	// waveform selector
 	static bool waveFormSelector(float* waveform);
 	static inline float waveFormSelectorWidth() { return OtAudioUi::audioButtonWidth() * 7.0f + ImGui::GetStyle().ItemInnerSpacing.x * 6.0f; }

@@ -315,6 +315,72 @@ bool OtAudioUi::tuningPopup(float* tuning) {
 
 
 //
+//	OtAudioUi::dbfs
+//
+
+static constexpr float dbfsWidth = 20.0f;
+static constexpr float dbfsHeight = 8.0f;
+static constexpr float dbfsGap = 2.0f;
+
+struct ledInfo {
+	float level;
+	ImU32 color;
+};
+
+static ledInfo ledInfo[] = {
+	{ 0.0f, IM_COL32(255, 0, 0, 255) },
+	{ -3.0f, IM_COL32(255, 0, 0, 255) },
+	{ -6.0f, IM_COL32(255, 255, 0, 255) },
+	{ -9.0f, IM_COL32(255, 255, 0, 255) },
+	{ -12.0f, IM_COL32(255, 255, 0, 255) },
+	{ -15.0f, IM_COL32(255, 255, 0, 255) },
+	{ -18.0f, IM_COL32(255, 255, 0, 255) },
+	{ -21.0f, IM_COL32(0, 255, 0, 255) },
+	{ -24.0f, IM_COL32(0, 255, 0, 255) },
+	{ -27.0f, IM_COL32(0, 255, 0, 255) },
+	{ -30.0f, IM_COL32(0, 255, 0, 255) },
+	{ -33.0f, IM_COL32(0, 255, 0, 255) },
+	{ -36.0f, IM_COL32(0, 255, 0, 255) },
+	{ -39.0f, IM_COL32(0, 255, 0, 255) },
+	{ -42.0f, IM_COL32(0, 255, 0, 255) },
+	{ -45.0f, IM_COL32(0, 255, 0, 255) },
+	{ -48.0f, IM_COL32(0, 255, 0, 255) },
+	{ -51.0f, IM_COL32(0, 255, 0, 255) },
+	{ -54.0f, IM_COL32(0, 255, 0, 255) },
+	{ -57.0f, IM_COL32(0, 255, 0, 255) }
+};
+
+static constexpr size_t ledCount = sizeof(ledInfo) / sizeof (*ledInfo);
+static constexpr ImU32 ledOff = IM_COL32(96, 96, 96, 128);
+
+void OtAudioUi::dbfs(float value, bool vertical) {
+	auto pos = ImGui::GetCursorScreenPos();
+	auto drawList = ImGui::GetWindowDrawList();
+	auto ledSize = vertical ? ImVec2(dbfsWidth, dbfsHeight) : ImVec2(dbfsHeight, dbfsWidth);
+	auto increment = vertical ? ImVec2(0.0f, dbfsHeight + dbfsGap) : ImVec2(dbfsHeight + dbfsGap, 0.0f);
+
+	for (size_t i = 0; i < ledCount; i++) {
+		auto& led = vertical ? ledInfo[i] : ledInfo[ledCount - i - 1];
+		drawList->AddRectFilled(pos, pos + ledSize, value > led.level ? led.color : ledOff);
+		pos += increment;
+	}
+
+	ImGui::Dummy(dbfsSize(vertical));
+}
+
+
+//
+//	OtAudioUi::dbfsSize
+//
+
+ImVec2 OtAudioUi::dbfsSize(bool vertical) {
+	return vertical
+		? ImVec2(dbfsWidth, dbfsHeight * ledCount + dbfsGap * (ledCount - 1))
+		: ImVec2(dbfsHeight * ledCount + dbfsGap * (ledCount - 1), dbfsWidth);
+}
+
+
+//
 //	OtAudioUi::waveFormSelector
 //
 

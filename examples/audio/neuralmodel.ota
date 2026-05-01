@@ -137,6 +137,7 @@
 			"id": 2178226542,
 			"inputs": [
 				{
+					"attenuation": 2.549999952316284,
 					"id": 255410808,
 					"name": "Input",
 					"type": "mono"

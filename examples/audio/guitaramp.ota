@@ -37,12 +37,12 @@
 			"title": "Tube Preamp",
 			"tube": 2,
 			"type": "Tube Preamp",
-			"volume": 0.0,
+			"volume": -4.099999904632568,
 			"x": 276.0,
 			"y": 564.0
 		},
 		{
-			"bass": 0.5,
+			"bass": 0.5899999737739563,
 			"id": 528812759,
 			"inputs": [
 				{
@@ -51,7 +51,7 @@
 					"type": "mono"
 				}
 			],
-			"middle": 0.5,
+			"middle": 0.41999998688697815,
 			"outputs": [
 				{
 					"id": 2294597394,
@@ -61,7 +61,7 @@
 			],
 			"title": "Tone Stack",
 			"tonestackType": 4,
-			"treble": 0.5,
+			"treble": 0.38999998569488525,
 			"type": "Tone Stack",
 			"x": 276.0,
 			"y": 312.0
@@ -87,7 +87,7 @@
 			"title": "Tube Power Amp",
 			"tube": 2,
 			"type": "Tube Power Amp",
-			"volume": 0.8999999761581421,
+			"volume": 1.0,
 			"x": 279.0,
 			"y": 25.0
 		},
@@ -195,6 +195,7 @@
 			"id": 2178226542,
 			"inputs": [
 				{
+					"attenuation": 1.0,
 					"id": 255410808,
 					"name": "Input",
 					"type": "mono"
@@ -205,6 +206,56 @@
 			"type": "Spectrum Analyzer",
 			"x": 1164.0,
 			"y": 562.0
+		},
+		{
+			"id": 1680348310,
+			"inputs": [
+				{
+					"id": 384577521,
+					"name": "Input 1",
+					"type": "mono"
+				},
+				{
+					"id": 882500307,
+					"name": "Input 2",
+					"type": "mono"
+				},
+				{
+					"id": 3425090895,
+					"name": "Input 3",
+					"type": "mono"
+				},
+				{
+					"id": 2472787057,
+					"name": "Input 4",
+					"type": "mono"
+				},
+				{
+					"id": 307860122,
+					"name": "Input 5",
+					"type": "mono"
+				},
+				{
+					"id": 3852203048,
+					"name": "Input 6",
+					"type": "mono"
+				},
+				{
+					"id": 2509579886,
+					"name": "Input 7",
+					"type": "mono"
+				},
+				{
+					"id": 238024030,
+					"name": "Input 8",
+					"type": "mono"
+				}
+			],
+			"outputs": [],
+			"title": "Meter Bridge",
+			"type": "Meter Bridge",
+			"x": 849.0,
+			"y": 282.0
 		}
 	],
 	"metadata": {},
@@ -253,6 +304,31 @@
 			"from": 1154099198,
 			"id": 3280607770,
 			"to": 3940031262
+		},
+		{
+			"from": 801167103,
+			"id": 634265201,
+			"to": 2472787057
+		},
+		{
+			"from": 983386080,
+			"id": 2071034570,
+			"to": 882500307
+		},
+		{
+			"from": 3354914829,
+			"id": 3128036137,
+			"to": 384577521
+		},
+		{
+			"from": 2294597394,
+			"id": 1006637426,
+			"to": 3425090895
+		},
+		{
+			"from": 1154099198,
+			"id": 337221113,
+			"to": 307860122
 		}
 	]
 }

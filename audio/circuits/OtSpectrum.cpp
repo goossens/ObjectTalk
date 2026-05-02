@@ -67,6 +67,13 @@ public:
 					magnitudes[i] = std::lerp(magnitudes[i], result[i], 0.1f);
 				}
 
+				// convert to dBFS
+				float dbfs[N / 2];
+
+				for (size_t i = 0; i < N / 2; i++) {
+					dbfs[i] = OtAudioUtilities::linearToDbfs(magnitudes[i]);
+				}
+
 				// display frequency spectrum
 				ImGui::PushFont(nullptr, ImGui::GetTextLineHeight() - 4.0f);
 				float freqBinSize = OtAudioSettings::sampleRate / N;
@@ -74,11 +81,11 @@ public:
 				ImPlot::SetupAxisLimits(ImAxis_X1, freqBinSize, OtAudioSettings::sampleRate / 2.0, ImGuiCond_Always);
 				ImPlot::SetupAxisTicks(ImAxis_X1, ticks, tickCount, tickLabels);
 				ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoTickLabels);
-				ImPlot::SetupAxisLimits(ImAxis_Y1, 0.0, 0.7, ImGuiCond_Always);
+				ImPlot::SetupAxisLimits(ImAxis_Y1, -60.0, 0.0, ImGuiCond_Always);
 				ImPlotSpec spec;
 				spec.FillAlpha = 0.5f;
-				ImPlot::PlotShaded("", magnitudes, static_cast<int>(N / 2), 0.0, freqBinSize, freqBinSize, spec);
-				ImPlot::PlotLine("", magnitudes, static_cast<int>(N / 2), freqBinSize, freqBinSize);
+				ImPlot::PlotShaded("", dbfs, static_cast<int>(N / 2), -60.0, freqBinSize, freqBinSize, spec);
+				ImPlot::PlotLine("", dbfs, static_cast<int>(N / 2), freqBinSize, freqBinSize);
 				ImPlot::EndPlot();
 				ImGui::PopFont();
 			}

@@ -185,8 +185,8 @@
 			],
 			"title": "VCA",
 			"type": "VCA",
-			"x": 904.0,
-			"y": 161.0
+			"x": 896.0,
+			"y": 163.0
 		},
 		{
 			"cutoff": 800.0,
@@ -226,8 +226,8 @@
 			"resonance": 0.5,
 			"title": "Ladder",
 			"type": "Ladder",
-			"x": 1093.0,
-			"y": 271.0
+			"x": 1069.0,
+			"y": 274.0
 		},
 		{
 			"blend": 0.5,
@@ -250,8 +250,8 @@
 			"tension": 0.0,
 			"title": "Reverb",
 			"type": "Reverb",
-			"x": 1318.0,
-			"y": 498.0
+			"x": 1294.0,
+			"y": 501.0
 		},
 		{
 			"depth": 50.0,
@@ -274,8 +274,8 @@
 			"speed": 1.0,
 			"title": "Phaser",
 			"type": "Phaser",
-			"x": 1318.0,
-			"y": 294.0
+			"x": 1294.0,
+			"y": 297.0
 		},
 		{
 			"id": 1460307938,
@@ -298,8 +298,8 @@
 			"rightDelayTime": 0.0,
 			"title": "Mono to Stereo",
 			"type": "Mono to Stereo",
-			"x": 1318.0,
-			"y": 90.0
+			"x": 1294.0,
+			"y": 93.0
 		},
 		{
 			"id": 278093283,
@@ -313,8 +313,8 @@
 			"outputs": [],
 			"title": "Speaker Out",
 			"type": "Speaker Out",
-			"x": 1413.0,
-			"y": 9.0
+			"x": 1389.0,
+			"y": 12.0
 		}
 	],
 	"metadata": {},

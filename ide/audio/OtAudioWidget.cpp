@@ -458,18 +458,20 @@ void OtAudioWidget::renderPin(ImDrawList* drawlist, OtCircuitPin pin, float x, f
 
 	ImGui::SetCursorScreenPos(savedPos);
 
-	// render label and optional attenuator/tuning comtrols
+	// render label and optional attenuator/tuning controls
 	auto spacerWidth = w - ImGui::CalcTextSize(pin->name).x - horizontalPadding * 2.0f;
 
 	if (pin->isInput()) {
 		OtUi::text(pin->name);
 		if (pin->attenuationFlag) { renderPinAttenuator(pin, spacerWidth); }
 		if (pin->tuningFlag) { renderPinTuning(pin, spacerWidth); }
+		if (pin->meter) { renderPinMeter(pin, spacerWidth); }
 
 	} else {
 		if (pin->attenuationFlag) { renderPinAttenuator(pin, spacerWidth); }
 		if (pin->tuningFlag) { renderPinTuning(pin, spacerWidth); }
-		if (!pin->attenuationFlag && !pin->tuningFlag) { OtUi::hSpacer(spacerWidth); }
+		if (pin->meter) { renderPinMeter(pin, spacerWidth); }
+		if (!pin->attenuationFlag && !pin->tuningFlag && !pin->meter) { OtUi::hSpacer(spacerWidth); }
 		OtUi::text(pin->name);
 	}
 }
@@ -517,6 +519,23 @@ void OtAudioWidget::renderPinTuning(OtCircuitPin pin, float width) {
 
 	if (!pin->isInput()) {
 		ImGui::SameLine(0.0f, width - OtAudioUi::audioButtonWidth());
+	}
+}
+
+
+//
+//	OtAudioWidget::renderPinMeter
+//
+
+void OtAudioWidget::renderPinMeter(OtCircuitPin pin, [[maybe_unused]] float width) {
+	if (pin->isInput()) {
+		ImGui::SameLine(0.0f, width - OtAudioUi::dbfsSizeH());
+	}
+
+	OtAudioUi::dbfsRenderH(*pin->meter);
+
+	if (!pin->isInput()) {
+		ImGui::SameLine(0.0f, width - OtAudioUi::dbfsSizeH());
 	}
 }
 
@@ -573,6 +592,8 @@ void OtAudioWidget::calculateCircuitSize(OtCircuit circuit) {
 		} else if (pin->tuningFlag) {
 			pw += OtAudioUi::audioButtonWidth() + ImGui::GetStyle().FramePadding.x * 2.0f + ImGui::GetStyle().ItemSpacing.x;
 
+		} else if (pin->meter) {
+			pw += OtAudioUi::dbfsSizeH() + ImGui::GetStyle().ItemSpacing.x;
 		}
 
 		w = std::max(w, pw);

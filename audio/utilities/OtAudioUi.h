@@ -13,10 +13,13 @@
 //
 
 #include <array>
+#include <mutex>
+#include <vector>
 
 #include "OtFontAudio.h"
 #include "OtUi.h"
 
+#include "OtAudioSettings.h"
 
 //
 //	OtAudioUi
@@ -93,8 +96,23 @@ public:
 	static bool tuningPopup(float* tuning);
 
 	// dBFS LED display
-	static void dbfs(float value, bool vertical=true);
-	static ImVec2 dbfsSize(bool vertical=true);
+	struct dbfsState {
+		float decibels = -60.0f;
+
+		static constexpr float maxHistoryInSeconds = 1.5f;
+		static constexpr size_t maxHistory = static_cast<size_t>(maxHistoryInSeconds * OtAudioSettings::sampleRate / OtAudioSettings::bufferSize);
+
+		std::vector<float> history;
+		size_t historyIndex = 0;
+		std::mutex mutex;
+	};
+
+	static void dbfsReset(dbfsState& state);
+	static void dbfsUpdate(dbfsState& state, float* samples, size_t size);
+	static void dbfsRenderH(dbfsState& state);
+	static void dbfsRenderV(dbfsState& state);
+	static float dbfsSizeH();
+	static float dbfsSizeV();
 
 	// waveform selector
 	static bool waveFormSelector(float* waveform);

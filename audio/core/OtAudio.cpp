@@ -61,7 +61,36 @@ void OtAudio::provideSignal(OtAudioBuffer& buffer) {
 	for (auto& circuit : circuits) {
 		try {
 			circuit->error.clear();
+
+			circuit->eachInput([](OtCircuitPin pin) {
+				if (pin->meter) {
+					if (pin->isSourceConnected()) {
+						OtAudioUi::dbfsUpdate(
+							*pin->meter,
+							pin->sourcePin->audioBuffer->getChannelData(0),
+							OtAudioSettings::bufferSize);
+
+						} else {
+							OtAudioUi::dbfsReset(*pin->meter);
+						}
+					}
+			});
+
 			circuit->execute();
+
+			circuit->eachOutput([](OtCircuitPin pin) {
+				if (pin->meter) {
+					if (pin->isDestinationConnected()) {
+						OtAudioUi::dbfsUpdate(
+							*pin->meter,
+							pin->audioBuffer->getChannelData(0),
+							OtAudioSettings::bufferSize);
+
+						} else {
+							OtAudioUi::dbfsReset(*pin->meter);
+						}
+					}
+			});
 
 			// if the circuit is an output circuit, get the stream and mix it
 			if (circuit->category == OtCircuitClass::Category::output) {

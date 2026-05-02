@@ -51,6 +51,7 @@ private:
 	void renderPin(ImDrawList* drawlist, OtCircuitPin pin, float x, float w);
 	void renderPinAttenuator(OtCircuitPin pin, float width);
 	void renderPinTuning(OtCircuitPin pin, float width);
+	void renderPinMeter(OtCircuitPin pin, float width);
 
 	// utility functions
 	void calculateCircuitSize(OtCircuit circuit);

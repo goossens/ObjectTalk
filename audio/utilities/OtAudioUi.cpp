@@ -18,6 +18,7 @@
 #include "implot.h"
 
 #include "OtAudioUi.h"
+#include "OtAudioUtilities.h"
 
 
 //
@@ -315,12 +316,48 @@ bool OtAudioUi::tuningPopup(float* tuning) {
 
 
 //
-//	OtAudioUi::dbfs
+//	OtAudioUi::dbfsReset
 //
 
-static constexpr float dbfsWidth = 20.0f;
-static constexpr float dbfsHeight = 8.0f;
-static constexpr float dbfsGap = 2.0f;
+void OtAudioUi::dbfsReset(dbfsState& state) {
+	if (state.historyIndex) {
+		state.decibels = -60.0f;
+		state.history.clear();
+		state.historyIndex = 0;
+	}
+}
+
+
+//
+//	OtAudioUi::dbfsUpdate
+//
+
+void OtAudioUi::dbfsUpdate(dbfsState& state, float* samples, size_t size) {
+	auto sumOfSquares = 0.0f;
+
+	for (size_t i = 0; i < size; i++) {
+		sumOfSquares += *samples * *samples;
+		samples++;
+	}
+
+	auto rms = std::sqrt(sumOfSquares / OtAudioSettings::bufferSize);
+	state.decibels = OtAudioUtilities::linearToDbfs(rms);
+
+	std::lock_guard<std::mutex> guard(state.mutex);
+
+	if (state.history.size() < dbfsState::maxHistory) {
+		state.history.emplace_back(state.decibels);
+
+	} else {
+		state.history[state.historyIndex] = state.decibels;
+		state.historyIndex = (state.historyIndex + 1) % dbfsState::maxHistory;
+	}
+}
+
+
+//
+//	OtAudioUi::dbfsRender
+//
 
 struct ledInfo {
 	float level;
@@ -328,55 +365,137 @@ struct ledInfo {
 };
 
 static ledInfo ledInfo[] = {
-	{ 0.0f, IM_COL32(255, 0, 0, 255) },
-	{ -3.0f, IM_COL32(255, 0, 0, 255) },
-	{ -6.0f, IM_COL32(255, 255, 0, 255) },
-	{ -9.0f, IM_COL32(255, 255, 0, 255) },
-	{ -12.0f, IM_COL32(255, 255, 0, 255) },
-	{ -15.0f, IM_COL32(255, 255, 0, 255) },
-	{ -18.0f, IM_COL32(255, 255, 0, 255) },
-	{ -21.0f, IM_COL32(0, 255, 0, 255) },
-	{ -24.0f, IM_COL32(0, 255, 0, 255) },
-	{ -27.0f, IM_COL32(0, 255, 0, 255) },
-	{ -30.0f, IM_COL32(0, 255, 0, 255) },
-	{ -33.0f, IM_COL32(0, 255, 0, 255) },
-	{ -36.0f, IM_COL32(0, 255, 0, 255) },
-	{ -39.0f, IM_COL32(0, 255, 0, 255) },
-	{ -42.0f, IM_COL32(0, 255, 0, 255) },
-	{ -45.0f, IM_COL32(0, 255, 0, 255) },
-	{ -48.0f, IM_COL32(0, 255, 0, 255) },
-	{ -51.0f, IM_COL32(0, 255, 0, 255) },
-	{ -54.0f, IM_COL32(0, 255, 0, 255) },
-	{ -57.0f, IM_COL32(0, 255, 0, 255) }
+	{ 0.0f, IM_COL32(255, 0, 0, 196) },
+	{ -3.0f, IM_COL32(255, 0, 0, 196) },
+	{ -6.0f, IM_COL32(255, 255, 0, 196) },
+	{ -9.0f, IM_COL32(255, 255, 0, 196) },
+	{ -12.0f, IM_COL32(255, 255, 0, 196) },
+	{ -15.0f, IM_COL32(255, 255, 0, 196) },
+	{ -18.0f, IM_COL32(255, 255, 0, 196) },
+	{ -21.0f, IM_COL32(0, 255, 0, 196) },
+	{ -24.0f, IM_COL32(0, 255, 0, 196) },
+	{ -27.0f, IM_COL32(0, 255, 0, 196) },
+	{ -30.0f, IM_COL32(0, 255, 0, 196) },
+	{ -33.0f, IM_COL32(0, 255, 0, 196) },
+	{ -36.0f, IM_COL32(0, 255, 0, 196) },
+	{ -39.0f, IM_COL32(0, 255, 0, 196) },
+	{ -42.0f, IM_COL32(0, 255, 0, 196) },
+	{ -45.0f, IM_COL32(0, 255, 0, 196) },
+	{ -48.0f, IM_COL32(0, 255, 0, 196) },
+	{ -51.0f, IM_COL32(0, 255, 0, 196) },
+	{ -54.0f, IM_COL32(0, 255, 0, 196) },
+	{ -57.0f, IM_COL32(0, 255, 0, 196) }
 };
 
 static constexpr size_t ledCount = sizeof(ledInfo) / sizeof (*ledInfo);
-static constexpr ImU32 ledOff = IM_COL32(96, 96, 96, 128);
+static constexpr ImU32 ledOff = IM_COL32(64, 64, 64, 196);
 
-void OtAudioUi::dbfs(float value, bool vertical) {
+static constexpr float dbfsSize = 8.0f;
+static constexpr float dbfsGap = 2.0f;
+
+void OtAudioUi::dbfsRenderH(dbfsState& state) {
+	auto ledHeight = ImGui::GetFrameHeight();
 	auto pos = ImGui::GetCursorScreenPos();
 	auto drawList = ImGui::GetWindowDrawList();
-	auto ledSize = vertical ? ImVec2(dbfsWidth, dbfsHeight) : ImVec2(dbfsHeight, dbfsWidth);
-	auto increment = vertical ? ImVec2(0.0f, dbfsHeight + dbfsGap) : ImVec2(dbfsHeight + dbfsGap, 0.0f);
+	auto ledSize = ImVec2(dbfsSize, ledHeight);
+	auto increment = ImVec2(dbfsSize + dbfsGap, 0.0f);
 
 	for (size_t i = 0; i < ledCount; i++) {
-		auto& led = vertical ? ledInfo[i] : ledInfo[ledCount - i - 1];
-		drawList->AddRectFilled(pos, pos + ledSize, value > led.level ? led.color : ledOff);
+		auto& led = ledInfo[ledCount - i - 1];
+		drawList->AddRectFilled(pos, pos + ledSize, state.decibels > led.level ? led.color : ledOff);
 		pos += increment;
 	}
 
-	ImGui::Dummy(dbfsSize(vertical));
+	ImGui::Dummy(ImVec2(dbfsSizeH(), ledHeight));
+
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort)) {
+		float average = 0.0f;
+		float minimum = 0.0f;
+		float maximum = std::numeric_limits<float>::lowest();
+
+		{
+			std::lock_guard<std::mutex> guard(state.mutex);
+
+			for (auto sample : state.history) {
+				average += sample;
+				minimum = std::min(minimum, sample);
+				maximum = std::max(maximum, sample);
+			}
+
+			average /= static_cast<float>(state.history.size());
+		}
+
+		ImGui::SetTooltip(
+			"Cur: %06.2f dBFS\nAvg: %06.2f dBFS\nMin: %06.2f dBFS\nMax: %06.2f dBFS",
+			state.decibels,
+			average,
+			minimum,
+			maximum);
+	}
 }
 
 
 //
-//	OtAudioUi::dbfsSize
+//	OtAudioUi::dbfsRenderV
 //
 
-ImVec2 OtAudioUi::dbfsSize(bool vertical) {
-	return vertical
-		? ImVec2(dbfsWidth, dbfsHeight * ledCount + dbfsGap * (ledCount - 1))
-		: ImVec2(dbfsHeight * ledCount + dbfsGap * (ledCount - 1), dbfsWidth);
+void OtAudioUi::dbfsRenderV(dbfsState& state) {
+	auto ledWidth = ImGui::GetFrameHeight();
+	auto pos = ImGui::GetCursorScreenPos();
+	auto drawList = ImGui::GetWindowDrawList();
+	auto ledSize = ImVec2(ledWidth, dbfsSize);
+	auto increment = ImVec2(0.0f, dbfsSize + dbfsGap);
+
+	for (size_t i = 0; i < ledCount; i++) {
+		auto& led = ledInfo[i];
+		drawList->AddRectFilled(pos, pos + ledSize, state.decibels > led.level ? led.color : ledOff);
+		pos += increment;
+	}
+
+	ImGui::Dummy(ImVec2(ledWidth, dbfsSizeH()));
+
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort)) {
+		float average = 0.0f;
+		float minimum = 0.0f;
+		float maximum = std::numeric_limits<float>::lowest();
+
+		{
+			std::lock_guard<std::mutex> guard(state.mutex);
+
+			for (auto sample : state.history) {
+				average += sample;
+				minimum = std::min(minimum, sample);
+				maximum = std::max(maximum, sample);
+			}
+
+			average /= static_cast<float>(state.history.size());
+		}
+
+		ImGui::SetTooltip(
+			"Cur: %06.2f dBFS\nAvg: %06.2f dBFS\nMin: %06.2f dBFS\nMax: %06.2f dBFS",
+			state.decibels,
+			average,
+			minimum,
+			maximum);
+	}
+}
+
+
+//
+//	OtAudioUi::dbfsSizeH
+//
+
+float OtAudioUi::dbfsSizeH() {
+	return dbfsSize * ledCount + dbfsGap * (ledCount - 1);
+}
+
+
+//
+//	OtAudioUi::dbfsSizeV
+//
+
+float OtAudioUi::dbfsSizeV() {
+	return dbfsSize * ledCount + dbfsGap * (ledCount - 1);
 }
 
 

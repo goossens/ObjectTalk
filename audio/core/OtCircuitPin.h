@@ -21,9 +21,9 @@
 
 #include "OtAssert.h"
 
-#include "OtCircuitUtils.h"
-#include "OtCircuitUtils.h"
 #include "OtAudioBuffer.h"
+#include "OtAudioUi.h"
+#include "OtCircuitUtils.h"
 #include "OtMidiBuffer.h"
 
 
@@ -90,12 +90,20 @@ public:
 
 	// set options
 	inline OtCircuitPin hasAttenuation(bool flag=true) {
+		OtAssert(type == Type::mono || type == Type::stereo || type == Type::control);
 		attenuationFlag = flag;
 		return shared_from_this();
 	}
 
 	inline OtCircuitPin hasTuning(bool flag=true) {
+		OtAssert(type == Type::control || type == Type::frequency);
 		tuningFlag = flag;
+		return shared_from_this();
+	}
+
+	inline OtCircuitPin hasMeter() {
+		OtAssert(type == Type::mono);
+		meter = std::make_shared<OtAudioUi::dbfsState>();
 		return shared_from_this();
 	}
 
@@ -142,6 +150,7 @@ public:
 	float attenuation = 1.0f;
 	bool tuningFlag = false;
 	float tuning = 0.0f;
+	std::shared_ptr<OtAudioUi::dbfsState> meter;
 	OtCircuitClass* circuit;
 
 	std::shared_ptr<OtAudioBuffer> audioBuffer;

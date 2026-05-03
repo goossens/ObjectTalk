@@ -12,7 +12,6 @@
 #include <algorithm>
 #include <cmath>
 #include <mutex>
-#include <numbers>
 
 #include "imgui.h"
 #include "implot.h"
@@ -20,6 +19,7 @@
 #include "OtAudioSettings.h"
 #include "OtCircuitFactory.h"
 #include "OtFft.h"
+#include "OtHammingWindow.h"
 #include "OtCircularBuffer.h"
 
 
@@ -58,6 +58,9 @@ public:
 					std::lock_guard<std::mutex> guard(mutex);
 					std::copy(data.begin(), data.end(), fftInputBuffer);
 				}
+
+				// apply hamming window
+				hammingWindow.apply(fftInputBuffer);
 
 				// perform Fast Fourier Transform (FFT)
 				auto result = fft.forwardFrequencyOnly(fftInputBuffer);
@@ -141,6 +144,7 @@ private:
 	float customW;
 	float customH;
 
+	OtHammingWindow hammingWindow{N};
 	OtFft fft{N};
 
 	std::mutex mutex;

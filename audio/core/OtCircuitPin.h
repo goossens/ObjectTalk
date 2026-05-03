@@ -96,7 +96,7 @@ public:
 	}
 
 	inline OtCircuitPin hasTuning(bool flag=true) {
-		OtAssert(type == Type::control || type == Type::frequency);
+		OtAssert(type == Type::frequency);
 		tuningFlag = flag;
 		return shared_from_this();
 	}

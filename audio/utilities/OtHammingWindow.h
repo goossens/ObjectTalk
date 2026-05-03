@@ -15,8 +15,9 @@
 //
 
 #include <cmath>
-#include <numbers>
 #include <vector>
+
+#include "OtAudioSettings.h"
 
 
 //
@@ -32,7 +33,7 @@ public:
 		hamming.resize(size);
 
 		for (size_t i = 0; i < size; i++) {
-			hamming[i] = 0.53836f - 0.46164f * std::cos(std::numbers::pi * 2.0f * static_cast<float>(i) / (static_cast<float>(size)));
+			hamming[i] = 0.53836f - 0.46164f * std::cos(OtAudioSettings::pi * 2.0f * static_cast<float>(i) / (static_cast<float>(size)));
 		}
 	}
 

@@ -29,34 +29,15 @@ OtObjectTalkEditor::OtObjectTalkEditor() {
 
 
 //
-//	OtObjectTalkEditor::clear
-//
-
-void OtObjectTalkEditor::clear() {
-	// reset editor and autocomplete
-	OtTextEditor::clear();
-}
-
-
-//
-//	OtObjectTalkEditor::load
-//
-
-void OtObjectTalkEditor::load() {
-	// load the document
-	OtTextEditor::load();
-}
-
-
-//
 //	OtObjectTalkEditor::highlightError
 //
 
 void OtObjectTalkEditor::highlightError(size_t line, const std::string& error) {
-	// line number is zero-base in text editor
+	// line number is zero-based in text editor
 	editor.AddMarker(line - 1, 0, IM_COL32(128, 0, 32, 128), "", error);
 	editor.SetCursor(TextEditor::DocPos(line - 1, 0));
 	editor.ScrollToLine(line - 1, TextEditor::Scroll::alignMiddle);
+	editor.SetFocus();
 }
 
 

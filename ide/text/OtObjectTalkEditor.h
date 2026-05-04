@@ -36,10 +36,6 @@ public:
 	void clearError();
 
 private:
-	// file access functions
-	void clear() override;
-	void load() override;
-
 	// autocomplete support
 	TrieAutoComplete trieAutoComplete;
 };

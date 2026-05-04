@@ -14,8 +14,8 @@
 			"samples": "assets/guitar.wav",
 			"title": "Sample Input",
 			"type": "Sample Input",
-			"x": 17.0,
-			"y": 693.0
+			"x": 13.0,
+			"y": 709.0
 		},
 		{
 			"gain": 7.800000190734863,
@@ -38,8 +38,8 @@
 			"tube": 2,
 			"type": "Tube Preamp",
 			"volume": -4.099999904632568,
-			"x": 276.0,
-			"y": 564.0
+			"x": 274.0,
+			"y": 486.0
 		},
 		{
 			"bass": 0.5899999737739563,
@@ -63,8 +63,8 @@
 			"tonestackType": 4,
 			"treble": 0.38999998569488525,
 			"type": "Tone Stack",
-			"x": 276.0,
-			"y": 312.0
+			"x": 274.0,
+			"y": 246.0
 		},
 		{
 			"feedback": 0.10000000149011612,
@@ -88,8 +88,8 @@
 			"tube": 2,
 			"type": "Tube Power Amp",
 			"volume": 1.0,
-			"x": 279.0,
-			"y": 25.0
+			"x": 274.0,
+			"y": 4.0
 		},
 		{
 			"cabinet": 6,
@@ -110,8 +110,8 @@
 			],
 			"title": "Speaker Cabinet",
 			"type": "Speaker Cabinet",
-			"x": 575.0,
-			"y": 25.0
+			"x": 570.0,
+			"y": 4.0
 		},
 		{
 			"blend": 0.5,
@@ -134,8 +134,8 @@
 			"tension": 0.0,
 			"title": "Reverb",
 			"type": "Reverb",
-			"x": 853.0,
-			"y": 25.0
+			"x": 848.5,
+			"y": 4.0
 		},
 		{
 			"id": 860310853,
@@ -158,8 +158,8 @@
 			"rightDelayTime": 0.0,
 			"title": "Mono to Stereo",
 			"type": "Mono to Stereo",
-			"x": 1164.0,
-			"y": 25.0
+			"x": 1197.0,
+			"y": 4.0
 		},
 		{
 			"id": 2195947597,
@@ -173,8 +173,8 @@
 			"outputs": [],
 			"title": "Speaker Out",
 			"type": "Speaker Out",
-			"x": 1463.0,
-			"y": 25.0
+			"x": 1461.0,
+			"y": 4.0
 		},
 		{
 			"id": 2421114309,
@@ -188,8 +188,8 @@
 			"outputs": [],
 			"title": "Oscilloscope",
 			"type": "Oscilloscope",
-			"x": 1164.0,
-			"y": 272.0
+			"x": 1197.0,
+			"y": 251.0
 		},
 		{
 			"id": 2178226542,
@@ -204,8 +204,8 @@
 			"outputs": [],
 			"title": "Spectrum Analyzer",
 			"type": "Spectrum Analyzer",
-			"x": 1164.0,
-			"y": 562.0
+			"x": 1197.0,
+			"y": 541.0
 		},
 		{
 			"id": 1680348310,
@@ -254,8 +254,8 @@
 			"outputs": [],
 			"title": "Meter Bridge",
 			"type": "Meter Bridge",
-			"x": 808.0,
-			"y": 274.0
+			"x": 823.0,
+			"y": 530.0
 		}
 	],
 	"metadata": {},

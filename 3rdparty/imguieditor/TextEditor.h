@@ -1251,7 +1251,7 @@ protected:
 	class LineFold : public std::vector<Fold> {
 	public:
 		// update state (if required)
-		bool update(const Config& config, Document& document, const Bracketeer& bracketeer);
+		bool update(Config& config, Document& document, const Bracketeer& bracketeer);
 
 		// (un)fold line
 		void foldAroundLine(Document& document, size_t line);
@@ -1448,10 +1448,11 @@ protected:
 	void render(const char* title, const ImVec2& size, bool border);
 	void renderActiveBracketBackground();
 	void renderSelections();
-	void renderMarkers();
+	void renderTextMarkers();
 	void renderMatchingBracketLines();
 	void renderText();
 	void renderCursors();
+	void renderLineNumberMarkers();
 	void renderLineNumbers();
 	void renderDecorations();
 	void renderFoldIndicators();
@@ -1537,10 +1538,10 @@ protected:
 	void moveDown(size_t rows, bool select);
 	void moveLeft(bool select, bool wordMode);
 	void moveRight(bool select, bool wordMode);
-	void moveToTop(bool select);
-	void moveToBottom(bool select);
-	void moveToStartOfLine(bool select);
-	void moveToEndOfLine(bool select);
+	inline void moveToTop(bool select) { moveTo(document.getTop(), select); }
+	inline void moveToBottom(bool select) { moveTo(document.getBottom(), select); }
+	inline void moveToStartOfLine(bool select) { moveTo(document.getStartOfLine(cursors.getCurrent().getInteractiveEnd()), select); }
+	inline void moveToEndOfLine(bool select) { moveTo(document.getEndOfLine(cursors.getCurrent().getInteractiveEnd()), select); }
 	void moveTo(DocPos coordinate, bool select);
 
 	// add/delete characters

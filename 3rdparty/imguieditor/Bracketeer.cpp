@@ -26,10 +26,26 @@ void TextEditor::Bracketeer::update(Config& config, Document& document) {
 	language = config.language;
 
 	if (configChanged && !showMatchingBrackets) {
-		// if configuration changed to not showing matching brackets, just clear the bracket pair list
+		// if configuration changed to not showing matching brackets and/or not line folding
+		// clear the bracket pair list
 		clear();
 
-	} else if (configChanged || document.isUpdated()) {
+		// and reset glyph colors
+		for (size_t line = 0; line < document.size(); line++) {
+			for (size_t index = 0; index < document[line].size(); index++) {
+				auto& glyph = document[line][index];
+
+				if (glyph.color == Color::matchingBracketLevel1 ||
+					glyph.color == Color::matchingBracketLevel2 ||
+					glyph.color == Color::matchingBracketLevel3 ||
+					glyph.color == Color::matchingBracketError) {
+
+					glyph.color = Color::punctuation;
+				}
+			}
+		}
+
+	} else if (showMatchingBrackets && (configChanged || document.isUpdated())) {
 		// if configuration or document changed, recalculate bracket pair list
 		static const Color bracketColors[] = {
 			Color::matchingBracketLevel1,

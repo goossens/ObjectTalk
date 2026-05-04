@@ -12,7 +12,7 @@ set(FT_DISABLE_BROTLI ON CACHE BOOL "" FORCE)
 
 set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)
 
-FetchContent_Declare(freetype GIT_REPOSITORY "https://github.com/freetype/freetype" GIT_TAG "VER-2-14-3")
+FetchContent_Declare(freetype QUIET GIT_REPOSITORY "https://github.com/freetype/freetype" GIT_TAG "VER-2-14-3")
 FetchContent_MakeAvailable(freetype)
 
 if(CMAKE_GENERATOR STREQUAL "Xcode")

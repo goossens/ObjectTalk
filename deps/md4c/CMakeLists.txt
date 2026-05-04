@@ -7,7 +7,7 @@
 set(BUILD_MD2HTML_EXECUTABLE OFF CACHE BOOL "" FORCE)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
-FetchContent_Declare(md4c GIT_REPOSITORY "https://github.com/mity/md4c" GIT_TAG "release-0.5.3")
+FetchContent_Declare(md4c QUIET GIT_REPOSITORY "https://github.com/mity/md4c" GIT_TAG "release-0.5.3")
 FetchContent_MakeAvailable(md4c)
 
 set_target_properties(md4c PROPERTIES FOLDER deps)

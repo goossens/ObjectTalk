@@ -26,8 +26,7 @@ void TextEditor::Bracketeer::update(Config& config, Document& document) {
 	language = config.language;
 
 	if (configChanged && !showMatchingBrackets) {
-		// if configuration changed to not showing matching brackets and/or not line folding
-		// clear the bracket pair list
+		// if configuration changed, clear the bracket pair list
 		clear();
 
 		// and reset glyph colors

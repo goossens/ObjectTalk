@@ -16,7 +16,7 @@
 //	TextEditor::LineFold::update
 //
 
-bool TextEditor::LineFold::update(Config& config, Document& document, const Bracketeer& bracketeer) {
+bool TextEditor::LineFold::update(const Config& config, Document& document, const Bracketeer& bracketeer) {
 	// force update after previous (un)fold request
 	if (forceUpdate) {
 		forceUpdate = false;
@@ -27,11 +27,7 @@ bool TextEditor::LineFold::update(Config& config, Document& document, const Brac
 	if (lineFolding != config.lineFolding) {
 		lineFolding = config.lineFolding;
 
-		if (lineFolding) {
-			// line folding is turned on, ensure bracketeer is also active
-			config.showMatchingBrackets = true;
-
-		} else {
+		if (!lineFolding) {
 			// line folding is turned off, clear list and reset all lines
 			clear();
 

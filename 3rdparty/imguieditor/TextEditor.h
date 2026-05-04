@@ -118,11 +118,11 @@ public:
 	inline bool IsShowScrollbarMiniMapEnabled() const { return config.showScrollbarMiniMap; }
 	inline void SetShowPanScrollIndicatorEnabled(bool value) { config.showPanScrollIndicator = value; }
 	inline bool IsShowPanScrollIndicatorEnabled() const { return config.showPanScrollIndicator; }
-	inline void SetShowMatchingBrackets(bool value) { config.showMatchingBrackets = value; }
+	inline void SetShowMatchingBrackets(bool value) { config.showMatchingBrackets = value; if (!value) { config.lineFolding = false; } }
 	inline bool IsShowingMatchingBrackets() const { return config.showMatchingBrackets; }
 	inline void SetCompletePairedGlyphs(bool value) { config.completePairedGlyphs = value; }
 	inline bool IsCompletingPairedGlyphs() const { return config.completePairedGlyphs; }
-	inline void SetLineFoldingEnabled(bool value) { config.lineFolding = value; }
+	inline void SetLineFoldingEnabled(bool value) { config.lineFolding = value; if (value) { config.showMatchingBrackets = true; } }
 	inline bool IsLineFoldingEnabled() const { return config.lineFolding; }
 	inline void SetOverwriteEnabled(bool value) { config.overwrite = value; }
 	inline bool IsOverwriteEnabled() const { return config.overwrite; }
@@ -1251,7 +1251,7 @@ protected:
 	class LineFold : public std::vector<Fold> {
 	public:
 		// update state (if required)
-		bool update(Config& config, Document& document, const Bracketeer& bracketeer);
+		bool update(const Config& config, Document& document, const Bracketeer& bracketeer);
 
 		// (un)fold line
 		void foldAroundLine(Document& document, size_t line);

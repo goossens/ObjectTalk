@@ -23,6 +23,10 @@ OtObjectTalkEditor::OtObjectTalkEditor() {
 	editor.SetLanguage(language);
 	diff.SetLanguage(language);
 
+	// configure editor options
+	editor.SetShowMiniMapEnabled(true);
+	editor.SetLineFoldingEnabled(true);
+
 	// activate autocomplete
 	trieAutoComplete.Connect(&editor);
 }

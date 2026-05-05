@@ -17,6 +17,11 @@
 //
 
 OtJsonEditor::OtJsonEditor() {
+	// configure language
 	editor.SetLanguage(TextEditor::Language::Json());
 	diff.SetLanguage(TextEditor::Language::Json());
+
+	// configure editor options
+	editor.SetShowMiniMapEnabled(true);
+	editor.SetLineFoldingEnabled(true);
 }

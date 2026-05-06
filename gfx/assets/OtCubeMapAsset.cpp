@@ -66,7 +66,7 @@ OtAssetBase::State OtCubeMapAsset::load() {
 			return State::loaded;
 		}
 
-	} catch ([[maybe_unused]] const OtException& exception) {
+	} catch (const OtException& exception) {
 		errorMessage = exception.what();
 		return State::invalid;
 	}

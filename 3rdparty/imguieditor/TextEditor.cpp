@@ -2373,7 +2373,7 @@ void TextEditor::stripTrailingWhitespaces() {
 	for (size_t i = 0; i < document.size(); i++) {
 		auto& line = document[i];
 		size_t lineSize = line.size();
-		size_t whitespace = std::numeric_limits<std::size_t>::max();
+		size_t whitespace = std::numeric_limits<size_t>::max();
 		bool done = false;
 
 		// look for first non-whitespace glyph at the end of the line
@@ -2393,7 +2393,7 @@ void TextEditor::stripTrailingWhitespaces() {
 		}
 
 		// remove whitespaces (if required)
-		if (whitespace != std::numeric_limits<std::size_t>::max()) {
+		if (whitespace != std::numeric_limits<size_t>::max()) {
 			deleteText(transaction, DocPos(i, whitespace), DocPos(i, lineSize));
 		}
 	}

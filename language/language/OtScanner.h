@@ -157,7 +157,7 @@ private:
 
 		// state transitions
 		size_t transitions[256];
-		static constexpr size_t noTransition = std::numeric_limits<std::size_t>::max();
+		static constexpr size_t noTransition = std::numeric_limits<size_t>::max();
 
 		// token for this state
 		Token token;

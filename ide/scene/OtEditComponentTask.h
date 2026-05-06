@@ -74,5 +74,5 @@ private:
 	uint32_t entityUuid;
 	std::string oldValue;
 	std::string newValue;
-	std::size_t type = typeid(T).hash_code();
+	size_t type = typeid(T).hash_code();
 };

@@ -22,14 +22,14 @@
 
 struct OtHash {
 	template <typename T, typename... REST>
-	static inline void recursive(std::size_t& hash, const T& v, const REST&... rest) {
+	static inline void recursive(size_t& hash, const T& v, const REST&... rest) {
 		hash ^= std::hash<T>{}(v) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
 		(recursive(hash, rest), ...);
 	}
 
 	template <typename... PARS>
-	static inline std::size_t generate(const PARS&... pars) {
-		std::size_t hash = 0;
+	static inline size_t generate(const PARS&... pars) {
+		size_t hash = 0;
 		recursive(hash, pars...);
 		return hash;
 	}

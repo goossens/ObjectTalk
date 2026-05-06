@@ -28,7 +28,7 @@ using OtFunction = OtObjectPointer<OtFunctionClass>;
 
 class OtFunctionClass : public OtPrimitiveClass {
 public:
-	template <typename Args, std::size_t... I>
+	template <typename Args, size_t... I>
 	static inline auto functionArgs(OtObject* parameters, std::index_sequence<I...>) {
 		return std::make_tuple(OtValue<std::tuple_element_t<I, Args>>::decode(parameters[I])...);
 	}
@@ -111,7 +111,7 @@ public:
 		parameterCount = SIZE_MAX;
 	}
 
-	template <typename Class, typename Args, std::size_t... I>
+	template <typename Class, typename Args, size_t... I>
 	static inline auto methodArgs(OtObject* parameters, std::index_sequence<I...>) {
 		return std::make_tuple(
 			OtObjectPointer<Class>(parameters[0]),

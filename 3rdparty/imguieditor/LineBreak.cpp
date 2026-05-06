@@ -110,7 +110,7 @@ static LBC getLineBreakClass(ImWchar codepoint) {
 //	State machine status
 //
 
-static constexpr size_t invalidPos = std::numeric_limits<std::size_t>::max();
+static constexpr size_t invalidPos = std::numeric_limits<size_t>::max();
 static constexpr ImWchar dotCircle = 0x25CC;
 
 struct LineBreakGlyph {

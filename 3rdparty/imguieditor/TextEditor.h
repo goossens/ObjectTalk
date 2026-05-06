@@ -1590,7 +1590,7 @@ protected:
 	inline bool isLineHidden(size_t line) const { return lineFold.isHidden(document, line); }
 
 	// rendering context
-	static constexpr size_t invalidLine = std::numeric_limits<std::size_t>::max();
+	static constexpr size_t invalidLine = std::numeric_limits<size_t>::max();
 
 	static constexpr size_t leftMargin = 1; // margins are expressed in glyphs
 	static constexpr size_t decorationMargin = 1;

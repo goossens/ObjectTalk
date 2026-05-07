@@ -22,7 +22,7 @@
 //	OtLruCache class
 //
 
-template<typename K, typename V, size_t S = 1024>
+template<typename K, typename V, size_t S=1024>
 class OtLruCache {
 public:
 	// change the cache size
@@ -53,7 +53,7 @@ public:
 	}
 
 	// set or update an entry
-	inline void set(const K key, const V value) {
+	inline void set(const K& key, const V& value) {
 		// see if this is a known entry
 		auto pos = index.find(key);
 
@@ -75,13 +75,23 @@ public:
 		}
 	}
 
-	// see if entry is in cache
-	inline bool has(const K key) {
-		return index.find(key) != index.end();
+	// move an entry to the front of the cache
+	inline void touch(const K& key) {
+		// ensure this is a known entry
+		auto pos = index.find(key);
+
+		if (pos != index.end()) {
+			items.splice(items.begin(), items, pos->second);
+		}
 	}
 
-	// get a cache entry and move it to the front for LRU
-	inline V get(const K key) {
+	// see if entry is in cache
+	inline bool has(const K& key) {
+		return index.contains(key);
+	}
+
+	// get a cache entry and move it to the front
+	inline V& get(const K& key) {
 		auto pos = index.find(key);
 
 		if (pos == index.end()) {
@@ -92,7 +102,7 @@ public:
 		return pos->second->second;
 	}
 
-private:
+protected:
 	std::list<std::pair<K, V>> items;
 	std::unordered_map<K, typename std::list<std::pair<K, V>>::iterator> index;
 	size_t size = S;

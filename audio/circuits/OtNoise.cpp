@@ -13,14 +13,14 @@
 
 #include "OtAudioSettings.h"
 #include "OtCircuitFactory.h"
-#include "OtNoise.h"
+#include "OtAudioNoise.h"
 
 
 //
 //	OtNoiseCircuit
 //
 
-class OtNoiseCircuit : public OtFaustCircuit<OtNoise> {
+class OtNoiseCircuit : public OtFaustCircuit<OtAudioNoise> {
 public:
 	// configure pins
 	inline void configure() override {

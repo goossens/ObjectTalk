@@ -25,10 +25,10 @@
 
 
 //
-//  OtNoise
+//  OtAudioNoise
 //
 
-class OtNoise : public OtFaust {
+class OtAudioNoise : public OtFaust {
 protected:
 	float fHslider0;
 	int iRec0[2];
@@ -37,14 +37,14 @@ protected:
 	int fSampleRate;
 
 public:
-	OtNoise() {
+	OtAudioNoise() {
 		init(OtAudioSettings::sampleRate);
 	}
 
 	inline void metadata(Meta* m) {
 		m->declare("category", "Noise");
-		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtNoise -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
-		m->declare("filename", "OtNoise.dsp");
+		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtAudioNoise -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
+		m->declare("filename", "OtAudioNoise.dsp");
 		m->declare("filters.lib/fir:author", "Julius O. Smith III");
 		m->declare("filters.lib/fir:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/fir:license", "MIT-style STK-4.3 license");

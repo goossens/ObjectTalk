@@ -56,7 +56,7 @@ public:
 			OtUi::hSpacer((itemWidth - customW) / 2.0f);
 			ImGui::Image(texture.getTextureID(), ImVec2(customW, customH));
 
-			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiPopupFlags_MouseButtonLeft)) {
+			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
 				ImGui::OpenPopup("Shape Popup");
 			}
 

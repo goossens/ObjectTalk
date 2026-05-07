@@ -72,7 +72,7 @@ public:
 				ImGui::EndPopup();
 			}
 
-			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiPopupFlags_MouseButtonLeft)) {
+			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
 				ImGui::OpenPopup("Geometry Popup");
 			}
 

@@ -13,7 +13,7 @@
 #include "OtLog.h"
 
 #include "OtDynamicBody.h"
-#include "OtWorld.h"
+#include "OtWorld2d.h"
 
 
 //
@@ -22,11 +22,11 @@
 
 void OtDynamicBodyClass::init(OtObject w) {
 	// sanity check
-	if (!w.isKindOf<OtWorldClass>()) {
+	if (!w.isKindOf<OtWorld2dClass>()) {
 		OtLogError("Expected a [World], not a [{}]", w.getTypeName());
 	}
 
-	OtWorld world = OtWorld(w);
+	OtWorld2d world = OtWorld2d(w);
 
 	b2BodyDef def;
 	def.type = b2_dynamicBody;

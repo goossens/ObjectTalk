@@ -20,17 +20,17 @@
 
 
 //
-//	OtWorldClass
+//	OtWorld2dClass
 //
 
-class OtWorldClass;
-using OtWorld = OtObjectPointer<OtWorldClass>;
+class OtWorld2dClass;
+using OtWorld2d = OtObjectPointer<OtWorld2dClass>;
 
-class OtWorldClass : public OtPhysics2DClass, public b2ContactListener {
+class OtWorld2dClass : public OtPhysics2DClass, public b2ContactListener {
 public:
 	// constructor/destructor
-	OtWorldClass();
-	~OtWorldClass();
+	OtWorld2dClass();
+	~OtWorld2dClass();
 
 	// clear all content
 	void clear();

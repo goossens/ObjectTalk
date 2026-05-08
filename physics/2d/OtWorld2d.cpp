@@ -17,33 +17,33 @@
 #include "OtVM.h"
 
 #include "OtBody.h"
-#include "OtWorld.h"
+#include "OtWorld2d.h"
 
 
 //
-//	OtWorldClass::OtWorldClass
+//	OtWorld2dClass::OtWorld2dClass
 //
 
-OtWorldClass::OtWorldClass() {
+OtWorld2dClass::OtWorld2dClass() {
 	world = new b2World(b2Vec2(0.0f, 0.0f));
 	world->SetContactListener(this);
 }
 
 
 //
-//	OtWorldClass::~OtWorldClass
+//	OtWorld2dClass::~OtWorld2dClass
 //
 
-OtWorldClass::~OtWorldClass() {
+OtWorld2dClass::~OtWorld2dClass() {
 	delete world;
 }
 
 
 //
-//	OtWorldClass::clear
+//	OtWorld2dClass::clear
 //
 
-void OtWorldClass::clear() {
+void OtWorld2dClass::clear() {
 	bodies.clear();
 	callbacks.clear();
 
@@ -54,40 +54,40 @@ void OtWorldClass::clear() {
 
 
 //
-//	OtWorldClass::setGravity
+//	OtWorld2dClass::setGravity
 //
 
-OtObject OtWorldClass::setGravity(float x, float y) {
+OtObject OtWorld2dClass::setGravity(float x, float y) {
 	world->SetGravity(b2Vec2(x, y));
 	return OtObject(this);
 }
 
 
 //
-//	OtWorldClass::allowSleeping
+//	OtWorld2dClass::allowSleeping
 //
 
-OtObject OtWorldClass::allowSleeping(bool sleeping) {
+OtObject OtWorld2dClass::allowSleeping(bool sleeping) {
 	world->SetAllowSleeping(sleeping);
 	return OtObject(this);
 }
 
 
 //
-//	OtWorldClass::continuousPhysics
+//	OtWorld2dClass::continuousPhysics
 //
 
-OtObject OtWorldClass::continuousPhysics(bool continuous) {
+OtObject OtWorld2dClass::continuousPhysics(bool continuous) {
 	world->SetContinuousPhysics(continuous);
 	return OtObject(this);
 }
 
 
 //
-//	OtWorldClass::addBeginContactCallback
+//	OtWorld2dClass::addBeginContactCallback
 //
 
-OtObject OtWorldClass::addBeginContactCallback(OtObject callback) {
+OtObject OtWorld2dClass::addBeginContactCallback(OtObject callback) {
 	OtCallbackValidate(callback, 2);
 	beginContactCallback = callback;
 	return OtObject(this);
@@ -95,10 +95,10 @@ OtObject OtWorldClass::addBeginContactCallback(OtObject callback) {
 
 
 //
-//	OtWorldClass::addEndContactCallback
+//	OtWorld2dClass::addEndContactCallback
 //
 
-OtObject OtWorldClass::addEndContactCallback(OtObject callback) {
+OtObject OtWorld2dClass::addEndContactCallback(OtObject callback) {
 	OtCallbackValidate(callback, 2);
 	endContactCallback = callback;
 	return OtObject(this);
@@ -106,10 +106,10 @@ OtObject OtWorldClass::addEndContactCallback(OtObject callback) {
 
 
 //
-//	OtWorldClass::start
+//	OtWorld2dClass::start
 //
 
-OtObject OtWorldClass::start() {
+OtObject OtWorld2dClass::start() {
 	running = true;
 	delta = 0.0f;
 	return OtObject();
@@ -117,20 +117,20 @@ OtObject OtWorldClass::start() {
 
 
 //
-//	OtWorldClass::stop
+//	OtWorld2dClass::stop
 //
 
-OtObject OtWorldClass::stop() {
+OtObject OtWorld2dClass::stop() {
 	running = false;
 	return OtObject();
 }
 
 
 //
-//	OtWorldClass::step
+//	OtWorld2dClass::step
 //
 
-void OtWorldClass::step() {
+void OtWorld2dClass::step() {
 	// ensure we are running
 	if (running) {
 		// calculate time since last update
@@ -152,10 +152,10 @@ void OtWorldClass::step() {
 
 
 //
-//	OtWorldClass::BeginContact
+//	OtWorld2dClass::BeginContact
 //
 
-void OtWorldClass::BeginContact(b2Contact* contact) {
+void OtWorld2dClass::BeginContact(b2Contact* contact) {
 	if (beginContactCallback) {
 		callbacks.push_back(Callback(
 			beginContactCallback,
@@ -166,10 +166,10 @@ void OtWorldClass::BeginContact(b2Contact* contact) {
 
 
 //
-//	OtWorldClass::EndContact
+//	OtWorld2dClass::EndContact
 //
 
-void OtWorldClass::EndContact(b2Contact* contact) {
+void OtWorld2dClass::EndContact(b2Contact* contact) {
 	if (endContactCallback) {
 		callbacks.push_back(Callback(
 			endContactCallback,
@@ -180,24 +180,24 @@ void OtWorldClass::EndContact(b2Contact* contact) {
 
 
 //
-//	OtWorldClass::getMeta
+//	OtWorld2dClass::getMeta
 //
 
-OtType OtWorldClass::getMeta() {
+OtType OtWorld2dClass::getMeta() {
 	static OtType type;
 
 	if (!type) {
-		type = OtType::create<OtWorldClass>("World", OtPhysics2DClass::getMeta());
-		type->set("setGravity", OtFunction::create(&OtWorldClass::setGravity));
-		type->set("allowSleeping", OtFunction::create(&OtWorldClass::allowSleeping));
-		type->set("continuousPhysics", OtFunction::create(&OtWorldClass::continuousPhysics));
+		type = OtType::create<OtWorld2dClass>("World", OtPhysics2DClass::getMeta());
+		type->set("setGravity", OtFunction::create(&OtWorld2dClass::setGravity));
+		type->set("allowSleeping", OtFunction::create(&OtWorld2dClass::allowSleeping));
+		type->set("continuousPhysics", OtFunction::create(&OtWorld2dClass::continuousPhysics));
 
-		type->set("addBeginContactCallback", OtFunction::create(&OtWorldClass::addBeginContactCallback));
-		type->set("addEndContactCallback", OtFunction::create(&OtWorldClass::addEndContactCallback));
+		type->set("addBeginContactCallback", OtFunction::create(&OtWorld2dClass::addBeginContactCallback));
+		type->set("addEndContactCallback", OtFunction::create(&OtWorld2dClass::addEndContactCallback));
 
-		type->set("start", OtFunction::create(&OtWorldClass::start));
-		type->set("stop", OtFunction::create(&OtWorldClass::stop));
-		type->set("step", OtFunction::create(&OtWorldClass::step));
+		type->set("start", OtFunction::create(&OtWorld2dClass::start));
+		type->set("stop", OtFunction::create(&OtWorld2dClass::stop));
+		type->set("step", OtFunction::create(&OtWorld2dClass::step));
 	}
 
 	return type;

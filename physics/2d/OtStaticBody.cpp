@@ -12,7 +12,7 @@
 #include "OtFunction.h"
 
 #include "OtStaticBody.h"
-#include "OtWorld.h"
+#include "OtWorld2d.h"
 
 
 //
@@ -21,8 +21,8 @@
 
 void OtStaticBodyClass::init(OtObject w) {
 	// sanity check
-	w.expect<OtWorldClass>("World");
-	OtWorld world = OtWorld(w);
+	w.expect<OtWorld2dClass>("World");
+	OtWorld2d world = OtWorld2d(w);
 
 	b2BodyDef def;
 	def.type = b2_staticBody;

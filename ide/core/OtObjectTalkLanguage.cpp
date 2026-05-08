@@ -119,7 +119,7 @@ TextEditor::Language* OtObjectTalkLanguage::getDefinition() {
 		};
 
 		static const char* const constants[] = {
-			"e", "false", "null", "pi", "print", "true"
+			"e", "false", "null", "pi", "print", "true", "__FILE__", "__DIR__"
 		};
 
 		language.keywords.clear();

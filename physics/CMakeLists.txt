@@ -21,4 +21,3 @@ target_include_directories(physics PUBLIC ${PHYSICS_INCLUDE_DIRS})
 target_link_libraries(physics PUBLIC language imgui box2d)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${PHYSICS_INCLUDES} ${PHYSICS_SOURCES})
-set_target_properties(physics PROPERTIES FOLDER modules)

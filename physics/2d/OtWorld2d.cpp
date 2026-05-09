@@ -25,8 +25,9 @@
 //
 
 OtWorld2dClass::OtWorld2dClass() {
-	world = new b2World(b2Vec2(0.0f, 0.0f));
-	world->SetContactListener(this);
+	b2WorldDef worldDef = b2DefaultWorldDef();
+	worldDef.gravity = b2Vec2{0.0f, -0.0f};
+	 worldId = b2CreateWorld(&worldDef);
 }
 
 
@@ -35,7 +36,8 @@ OtWorld2dClass::OtWorld2dClass() {
 //
 
 OtWorld2dClass::~OtWorld2dClass() {
-	delete world;
+	b2DestroyWorld(worldId);
+	worldId = b2_nullWorldId;
 }
 
 
@@ -44,12 +46,7 @@ OtWorld2dClass::~OtWorld2dClass() {
 //
 
 void OtWorld2dClass::clear() {
-	bodies.clear();
 	callbacks.clear();
-
-	for (auto body = world->GetBodyList(); body; body->GetNext()) {
-		world->DestroyBody(body);
-	}
 }
 
 
@@ -58,7 +55,7 @@ void OtWorld2dClass::clear() {
 //
 
 OtObject OtWorld2dClass::setGravity(float x, float y) {
-	world->SetGravity(b2Vec2(x, y));
+	b2World_SetGravity(worldId, b2Vec2{x, y});
 	return OtObject(this);
 }
 
@@ -68,7 +65,7 @@ OtObject OtWorld2dClass::setGravity(float x, float y) {
 //
 
 OtObject OtWorld2dClass::allowSleeping(bool sleeping) {
-	world->SetAllowSleeping(sleeping);
+	b2World_EnableSleeping(worldId, sleeping);
 	return OtObject(this);
 }
 
@@ -78,7 +75,7 @@ OtObject OtWorld2dClass::allowSleeping(bool sleeping) {
 //
 
 OtObject OtWorld2dClass::continuousPhysics(bool continuous) {
-	world->SetContinuousPhysics(continuous);
+	b2World_EnableContinuous(worldId, continuous);
 	return OtObject(this);
 }
 
@@ -134,47 +131,33 @@ void OtWorld2dClass::step() {
 	// ensure we are running
 	if (running) {
 		// calculate time since last update
-		delta += double(ImGui::GetIO().DeltaTime);
+		delta += ImGui::GetIO().DeltaTime;
 
 		// run step if required
 		if (delta > secondsPerUpdate) {
 			delta -= secondsPerUpdate;
-			world->Step(secondsPerUpdate, 8, 1);
+			b2World_Step(worldId, secondsPerUpdate, 4);
 
-			for (auto& callback : callbacks) {
-				OtVM::callMemberFunction(callback.callback, "__call__", callback.body1, callback.body2);
+			b2ContactEvents contactEvents = b2World_GetContactEvents(worldId);
+
+			if (beginContactCallback) {
+				for (auto c = 0 ; c < contactEvents.beginCount; c++) {
+					auto& event = contactEvents.beginEvents[c];
+					auto b1 = OtBody(reinterpret_cast<OtBodyClass*>(b2Body_GetUserData(b2Shape_GetBody(event.shapeIdA))));
+					auto b2 = OtBody(reinterpret_cast<OtBodyClass*>(b2Body_GetUserData(b2Shape_GetBody(event.shapeIdB))));
+					OtVM::callMemberFunction(beginContactCallback, "__call__", b1, b2);
+				}
 			}
 
-			callbacks.clear();
+			if (endContactCallback) {
+				for (auto c = 0 ; c < contactEvents.endCount; c++) {
+					auto& event = contactEvents.endEvents[c];
+					auto b1 = OtBody(reinterpret_cast<OtBodyClass*>(b2Body_GetUserData(b2Shape_GetBody(event.shapeIdA))));
+					auto b2 = OtBody(reinterpret_cast<OtBodyClass*>(b2Body_GetUserData(b2Shape_GetBody(event.shapeIdB))));
+					OtVM::callMemberFunction(beginContactCallback, "__call__", b1, b2);
+				}
+			}
 		}
-	}
-}
-
-
-//
-//	OtWorld2dClass::BeginContact
-//
-
-void OtWorld2dClass::BeginContact(b2Contact* contact) {
-	if (beginContactCallback) {
-		callbacks.push_back(Callback(
-			beginContactCallback,
-			OtBody(reinterpret_cast<OtBodyClass*>(contact->GetFixtureA()->GetBody()->GetUserData().pointer)),
-			OtBody(reinterpret_cast<OtBodyClass*>(contact->GetFixtureB()->GetBody()->GetUserData().pointer))));
-	}
-}
-
-
-//
-//	OtWorld2dClass::EndContact
-//
-
-void OtWorld2dClass::EndContact(b2Contact* contact) {
-	if (endContactCallback) {
-		callbacks.push_back(Callback(
-			endContactCallback,
-			OtBody(reinterpret_cast<OtBodyClass*>(contact->GetFixtureA()->GetBody()->GetUserData().pointer)),
-			OtBody(reinterpret_cast<OtBodyClass*>(contact->GetFixtureB()->GetBody()->GetUserData().pointer))));
 	}
 }
 

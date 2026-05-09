@@ -12,8 +12,6 @@
 //	Include files
 //
 
-#include <vector>
-
 #include "box2d/box2d.h"
 
 #include "OtIdentifier.h"
@@ -30,12 +28,8 @@ using OtBody = OtObjectPointer<OtBodyClass>;
 
 class OtBodyClass : public OtPhysics2DClass {
 public:
-	// constructors
-	OtBodyClass() = default;
-	inline OtBodyClass(b2Body* b) : body(b) {}
-
-	// clear all content
-	void clear();
+	// destructor
+	~OtBodyClass();
 
 	// update position, velocity and angle
 	OtObject setPosition(float x, float y);
@@ -47,35 +41,28 @@ public:
 	OtObject disable();
 
 	// add different fixture types
-	OtObject addCircularFixture(float x, float y, float radius);
-	OtObject addEdgeFixture(float x1, float y1, float x2, float y2);
-	OtObject addRectangularFixture(float x, float y, float w, float h);
+	OtObject addCircularShape(float x, float y, float radius);
+	OtObject addRectangularShape(float x, float y, float w, float h);
 
 	// get information
 	OtObject get(OtID id) override;
 
-	inline float getX() { return body->GetPosition().x; }
-	inline float getY() { return body->GetPosition().y; }
-	inline float getLinearVelocityX() { return body->GetLinearVelocity().x; }
-	inline float getLinearVelocityY() { return body->GetLinearVelocity().y; }
+	inline float getX() { return b2Body_GetPosition(bodyId).x; }
+	inline float getY() { return b2Body_GetPosition(bodyId).y; }
+	inline float getLinearVelocityX() { return b2Body_GetLinearVelocity(bodyId).x; }
+	inline float getLinearVelocityY() { return b2Body_GetLinearVelocity(bodyId).y; }
 
 	// manipulate body
 	void applyLinearImpulse(float x, float y);
-
-	// specify a new body
-	void setBody(b2Body* body);
 
 	// get type definition
 	static OtType getMeta();
 
 protected:
-	// tracking our Box2D object
-	b2Body* body = nullptr;
+	// tracking our Box2D body
+	b2BodyId bodyId = b2_nullBodyId;
 
 private:
-	// list of our fixtures
-	std::vector<OtObject> fixtures;
-
 	inline static OtID xID = OtIdentifier::create("x");
 	inline static OtID yID = OtIdentifier::create("y");
 	inline static OtID vxID = OtIdentifier::create("vx");

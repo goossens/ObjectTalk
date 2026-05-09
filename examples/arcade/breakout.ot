@@ -19,6 +19,7 @@ var brickHeight = 0.1;
 var brickRows = 8;
 var brickCols = 14;
 var brickMargin = (worldWidth - (brickCols * brickWidth)) / (brickCols + 1);
+var edgeOffset = 0.05;
 
 var colors = [
 	"#000", "#fff",
@@ -41,29 +42,30 @@ class Breakout : game.Game {
 		// add a floor
 		this.bottom = physics2d.StaticBody(this.world);
 		this.bottom.name = "bottom";
-		this.bottom.addEdgeFixture(0, 0, worldWidth, 0);
+		this.bottom.addRectangularShape(worldWidth / 2.0, edgeOffset, worldWidth, edgeOffset * 2.0);
 
 		// add the walls
 		this.walls = physics2d.StaticBody(this.world);
 		this.walls.name = "walls";
-		this.walls.addEdgeFixture(worldWidth, 0, worldWidth, worldHeight);
-		this.walls.addEdgeFixture(worldWidth, worldHeight, 0, worldHeight);
-		this.walls.addEdgeFixture(0, worldHeight, 0, 0);
+		this.walls.addRectangularShape(edgeOffset, worldHeight / 2.0, edgeOffset * 2.0, worldHeight);
+		this.walls.addRectangularShape(worldWidth - edgeOffset, worldHeight / 2.0, edgeOffset * 2.0, worldHeight);
+		this.walls.addRectangularShape(worldWidth / 2.0, worldHeight - edgeOffset, worldWidth, edgeOffset * 2.0);
 
 		// add a ball
 		this.ball = physics2d.DynamicBody(this.world);
 		this.ball.name = "ball";
 		this.ball.setPosition(-worldWidth, 0.0);
 		this.ball.shape = this.addCircle(0, 0, ballRadius, 32);
-		var fixture = this.ball.addCircularFixture(0.0, 0.0, ballRadius);
-		fixture.setDensity(1.0);
-		fixture.setRestitution(1.0);
+		var shape = this.ball.addCircularShape(0.0, 0.0, ballRadius);
+		shape.enableContextEvents(true);
+		shape.setDensity(1.0);
+		shape.setRestitution(1.0);
 
 		// add a paddle
 		this.paddle = physics2d.StaticBody(this.world);
 		this.paddle.name = "paddle";
 		this.paddle.shape = this.addRectangle(0, 0, 0, 0);
-		this.paddle.addRectangularFixture(0.0, 0.0, paddleWidth, paddleHeight);
+		this.paddle.addRectangularShape(0.0, 0.0, paddleWidth, paddleHeight);
 
 		// add all the bricks
 		this.bricks = [];
@@ -77,7 +79,7 @@ class Breakout : game.Game {
 				brick.name = "brick";
 				brick.points = brickRows - y;
 				brick.setPosition(px, py);
-				brick.addRectangularFixture(0.0, 0.0, brickWidth, brickHeight);
+				brick.addRectangularShape(0.0, 0.0, brickWidth, brickHeight);
 				brick.shape = this.addRectangle(px - brickWidth / 2.0, py - brickHeight / 2.0, brickWidth, brickHeight);
 				this.bricks.append(brick);
 			}
@@ -283,6 +285,7 @@ class Breakout : game.Game {
 	}
 
 	function contact(this, body1, body2) {
+		print(body1.name, body2.name);
 		if (body1.name == "paddle") {
 			// change horizontal velocity of ball based on where paddle was hit
 			this.ball.setLinearVelocity(

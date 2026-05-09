@@ -96,15 +96,15 @@ class Scoreboard : Object {
 //	Walls class
 //
 
-class Walls : physics2d.DynamicBody {
+class Walls : physics2d.StaticBody {
 	function __init__(this, vd, world) {
 		// initialize superclass
 		super.__init__(this, world);
 		this.name = "wall";
 
 		// add simulation parts
-		this.addEdgeFixture(0, edgeOffset, worldWidth, edgeOffset);
-		this.addEdgeFixture(0, worldHeight - edgeOffset, worldWidth, worldHeight - edgeOffset);
+		this.addRectangularShape(worldWidth / 2.0, edgeOffset, worldWidth, edgeOffset * 2.0);
+		this.addRectangularShape(worldWidth / 2.0, worldHeight - edgeOffset, worldWidth, edgeOffset * 2.0);
 
 		// create graphics
 		vd.pushStyle();
@@ -120,14 +120,14 @@ class Walls : physics2d.DynamicBody {
 //	GoalLine class
 //
 
-class GoalLine : physics2d.DynamicBody {
+class GoalLine : physics2d.StaticBody {
 	function __init__(this, vd, world, name, x) {
 		// initialize superclass
 		super.__init__(this, world);
 		this.name = name;
 
 		// add simulation parts
-		this.addEdgeFixture(x, 0.0, x, worldHeight);
+		this.addRectangularShape(x, worldHeight / 2.0, edgeOffset * 2.0, worldHeight);
 	}
 }
 
@@ -142,9 +142,10 @@ class Ball : physics2d.DynamicBody {
 		this.name = "ball";
 
 		// add simulation parts
-		var fixture = this.addCircularFixture(0.0, 0.0, ballRadius);
-		fixture.setDensity(1.0);
-		fixture.setRestitution(1.0);
+		var shape = this.addCircularShape(0.0, 0.0, ballRadius);
+		shape.enableContextEvents(true);
+		shape.setDensity(1.0);
+		shape.setRestitution(1.0);
 
 		// create graphics
 		this.shape = vd.addCircle(0.0, 0.0, ballRadius, 32);
@@ -196,7 +197,7 @@ class Ball : physics2d.DynamicBody {
 //	Paddle class
 //
 
-class Paddle : physics2d.DynamicBody {
+class Paddle : physics2d.StaticBody {
 	function __init__(this, vd, world, name, color, x) {
 		// initialize superclass
 		super.__init__(this, world);
@@ -204,7 +205,7 @@ class Paddle : physics2d.DynamicBody {
 
 		// add simulation parts
 		this.setPosition(x, worldHeight / 2.0);
-		this.addRectangularFixture(0.0, 0.0, paddleWidth, paddleHeight);
+		this.addRectangularShape(0.0, 0.0, paddleWidth, paddleHeight);
 
 		// create graphics
 		vd.pushStyle();

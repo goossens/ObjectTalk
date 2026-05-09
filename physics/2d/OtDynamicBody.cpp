@@ -22,16 +22,13 @@
 
 void OtDynamicBodyClass::init(OtObject w) {
 	// sanity check
-	if (!w.isKindOf<OtWorld2dClass>()) {
-		OtLogError("Expected a [World], not a [{}]", w.getTypeName());
-	}
+	w.expect<OtWorld2dClass>("World");
+	auto worldId = OtWorld2d(w)->getWorldId();
 
-	OtWorld2d world = OtWorld2d(w);
-
-	b2BodyDef def;
-	def.type = b2_dynamicBody;
-	body = world->world->CreateBody(&def);
-	body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+	b2BodyDef bodyDef = b2DefaultBodyDef();
+	bodyDef.type = b2_dynamicBody;
+	bodyDef.userData = this;
+	bodyId = b2CreateBody(worldId, &bodyDef);
 }
 
 

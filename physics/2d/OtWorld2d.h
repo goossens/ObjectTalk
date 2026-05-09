@@ -26,7 +26,7 @@
 class OtWorld2dClass;
 using OtWorld2d = OtObjectPointer<OtWorld2dClass>;
 
-class OtWorld2dClass : public OtPhysics2DClass, public b2ContactListener {
+class OtWorld2dClass : public OtPhysics2DClass {
 public:
 	// constructor/destructor
 	OtWorld2dClass();
@@ -52,22 +52,20 @@ public:
 	// run simulation
 	void step();
 
+	// get world ID
+	inline b2WorldId getWorldId() { return worldId; }
+
 	// get type definition
 	static OtType getMeta();
 
 private:
-	// so they can access the "world" member
-	friend class OtDynamicBodyClass;
-	friend class OtKinematicBodyClass;
-	friend class OtStaticBodyClass;
-
 	// tracking our Box2D object
-	b2World* world = nullptr;
+	b2WorldId worldId = b2_nullWorldId;
 
 	// tracking time in update loop to ensure constant simulation speed
-	static constexpr double secondsPerUpdate = 1 / 30.0f;
+	static constexpr float secondsPerUpdate = 1.0f / 60.0f;
 	bool running = false;
-	double delta = 0.0f;
+	float delta = 0.0f;
 
 	// list of our bodies
 	std::vector<OtObject> bodies;
@@ -83,8 +81,4 @@ private:
 	std::vector<Callback> callbacks;
 	OtObject beginContactCallback;
 	OtObject endContactCallback;
-
-	// handle physics events
-	void BeginContact(b2Contact* contact);
-	void EndContact(b2Contact* contact);
 };

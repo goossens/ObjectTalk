@@ -22,12 +22,12 @@
 void OtKinematicBodyClass::init(OtObject w) {
 	// sanity check
 	w.expect<OtWorld2dClass>("World");
-	OtWorld2d world = OtWorld2d(w);
+	auto worldId = OtWorld2d(w)->getWorldId();
 
-	b2BodyDef def;
-	def.type = b2_kinematicBody;
-	body = world->world->CreateBody(&def);
-	body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+	b2BodyDef bodyDef = b2DefaultBodyDef();
+	bodyDef.type = b2_kinematicBody;
+	bodyDef.userData = this;
+	bodyId = b2CreateBody(worldId, &bodyDef);
 }
 
 

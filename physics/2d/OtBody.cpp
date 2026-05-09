@@ -13,18 +13,17 @@
 #include "OtReal.h"
 
 #include "OtBody.h"
-#include "OtFixture.h"
+#include "OtBodyShape.h"
 
 
 //
-//	OtBodyClass::clear
+//	OtBodyClass::~OtBodyClass
 //
 
-void OtBodyClass::clear() {
-	fixtures.clear();
-
-	for (auto fixture = body->GetFixtureList(); fixture; fixture->GetNext()) {
-		body->DestroyFixture(fixture);
+OtBodyClass::~OtBodyClass() {
+	if (B2_IS_NON_NULL(bodyId)) {
+		b2DestroyBody(bodyId);
+		bodyId = b2_nullBodyId;
 	}
 }
 
@@ -34,7 +33,7 @@ void OtBodyClass::clear() {
 //
 
 OtObject OtBodyClass::setPosition(float x, float y) {
-	body->SetTransform(b2Vec2(x, y), body->GetAngle());
+	b2Body_SetTransform(bodyId, b2Vec2(x, y), b2Body_GetRotation(bodyId));
 	return OtBody(this);
 }
 
@@ -44,7 +43,7 @@ OtObject OtBodyClass::setPosition(float x, float y) {
 //
 
 OtObject OtBodyClass::setLinearVelocity(float x, float y) {
-	body->SetLinearVelocity(b2Vec2(x, y));
+	b2Body_SetLinearVelocity(bodyId, b2Vec2(x, y));
 	return OtBody(this);
 }
 
@@ -54,7 +53,7 @@ OtObject OtBodyClass::setLinearVelocity(float x, float y) {
 //
 
 OtObject OtBodyClass::setAngle(float angle) {
-	body->SetTransform(body->GetPosition(), angle);
+	b2Body_SetTransform(bodyId, b2Body_GetPosition(bodyId), b2MakeRot(angle));
 	return OtBody(this);
 }
 
@@ -64,7 +63,7 @@ OtObject OtBodyClass::setAngle(float angle) {
 //
 
 OtObject OtBodyClass::enable() {
-	body->SetEnabled(true);
+	b2Body_Enable(bodyId);
 	return OtBody(this);
 }
 
@@ -74,48 +73,34 @@ OtObject OtBodyClass::enable() {
 //
 
 OtObject OtBodyClass::disable() {
-	body->SetEnabled(false);
+	b2Body_Disable(bodyId);
 	return OtBody(this);
 }
 
 
 //
-//	OtBodyClass::addCircularFixture
+//	OtBodyClass::addCircularShape
 //
 
-OtObject OtBodyClass::addCircularFixture(float x, float y, float radius) {
-	b2CircleShape circle;
-	circle.m_p = b2Vec2(x, y);
-	circle.m_radius = radius;
-	OtObject fixture = OtFixture::create(body->CreateFixture(&circle, 0.0));
-	fixtures.push_back(fixture);
-	return fixture;
+OtObject OtBodyClass::addCircularShape(float x, float y, float radius) {
+	b2Circle circle(b2Vec2{x, y}, radius);
+	b2ShapeDef shapeDef = b2DefaultShapeDef();
+	shapeDef.enableContactEvents = true;
+	b2ShapeId shapeId = b2CreateCircleShape(bodyId, &shapeDef, &circle);
+	return OtBodyShape::create(shapeId);
 }
 
 
 //
-//	OtBodyClass::addEdgeFixture
+//	OtBodyClass::addRectangularShape
 //
 
-OtObject OtBodyClass::addEdgeFixture(float x1, float y1, float x2, float y2) {
-	b2EdgeShape edge;
-	edge.SetTwoSided(b2Vec2(x1, y1), b2Vec2(x2, y2));
-	OtObject fixture = OtFixture::create(body->CreateFixture(&edge, 0.0));
-	fixtures.push_back(fixture);
-	return fixture;
-}
-
-
-//
-//	OtBodyClass::addRectangularFixture
-//
-
-OtObject OtBodyClass::addRectangularFixture(float x, float y, float w, float h) {
-	b2PolygonShape poly;
-	poly.SetAsBox(w / 2.0, h / 2.0, b2Vec2(x, y), 0.0);
-	OtObject fixture = OtFixture::create(body->CreateFixture(&poly, 0.0));
-	fixtures.push_back(fixture);
-	return fixture;
+OtObject OtBodyClass::addRectangularShape(float x, float y, float w, float h) {
+	b2Polygon box = b2MakeOffsetBox(w / 2.0f, h / 2.0f, b2Vec2(x, y), b2MakeRot(0.0f));
+	b2ShapeDef shapeDef = b2DefaultShapeDef();
+	shapeDef.enableContactEvents = true;
+	b2ShapeId shapeId = b2CreatePolygonShape(bodyId, &shapeDef, &box);
+	return OtBodyShape::create(shapeId);
 }
 
 
@@ -125,16 +110,16 @@ OtObject OtBodyClass::addRectangularFixture(float x, float y, float w, float h) 
 
 OtObject OtBodyClass::get(OtID id) {
 	if (id == xID) {
-		return OtReal::create(body->GetPosition().x);
+		return OtReal::create(b2Body_GetPosition(bodyId).x);
 
 	} else if (id == yID) {
-		return OtReal::create(body->GetPosition().y);
+		return OtReal::create(b2Body_GetPosition(bodyId).y);
 
 	} else if (id == vxID) {
-		return OtReal::create(body->GetLinearVelocity().x);
+		return OtReal::create(b2Body_GetLinearVelocity(bodyId).x);
 
 	} else if (id == vyID) {
-		return OtReal::create(body->GetLinearVelocity().y);
+		return OtReal::create(b2Body_GetLinearVelocity(bodyId).y);
 
 	} else {
 		return OtPhysics2DClass::get(id);
@@ -147,17 +132,7 @@ OtObject OtBodyClass::get(OtID id) {
 //
 
 void OtBodyClass::applyLinearImpulse(float x, float y) {
-	body->ApplyLinearImpulseToCenter(b2Vec2(x, y), true);
-}
-
-
-//
-//	OtBodyClass::setBody
-//
-
-void OtBodyClass::setBody(b2Body* b) {
-	body = b;
-	b->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+	b2Body_ApplyLinearImpulseToCenter(bodyId, b2Vec2(x, y), true);
 }
 
 
@@ -177,9 +152,8 @@ OtType OtBodyClass::getMeta() {
 		type->set("enable", OtFunction::create(&OtBodyClass::enable));
 		type->set("disable", OtFunction::create(&OtBodyClass::disable));
 
-		type->set("addCircularFixture", OtFunction::create(&OtBodyClass::addCircularFixture));
-		type->set("addEdgeFixture", OtFunction::create(&OtBodyClass::addEdgeFixture));
-		type->set("addRectangularFixture", OtFunction::create(&OtBodyClass::addRectangularFixture));
+		type->set("addCircularShape", OtFunction::create(&OtBodyClass::addCircularShape));
+		type->set("addRectangularShape", OtFunction::create(&OtBodyClass::addRectangularShape));
 
 		type->set("applyLinearImpulse", OtFunction::create(&OtBodyClass::applyLinearImpulse));
 	}

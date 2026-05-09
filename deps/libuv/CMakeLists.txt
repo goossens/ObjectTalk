@@ -7,6 +7,7 @@
 set(LIBUV_BUILD_SHARED OFF CACHE BOOL "" FORCE)
 set(LIBUV_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(LIBUV_BUILD_BENCH OFF CACHE BOOL "" FORCE)
+set(ENABLE_CLANG_TIDY OFF CACHE BOOL "" FORCE)
 
 # this hack uses a CMake internal property to stop generating test targets in IDEs
 set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)

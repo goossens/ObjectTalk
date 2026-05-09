@@ -8,5 +8,5 @@ FetchContent_Populate(neural QUIET GIT_REPOSITORY "https://github.com/mikeolipha
 add_subdirectory(${neural_SOURCE_DIR} ${neural_BINARY_DIR} EXCLUDE_FROM_ALL)
 
 set_target_properties(NeuralAudio PROPERTIES FOLDER deps)
-set_target_properties(RTNeural PROPERTIES FOLDER deps)
-set_target_properties(NeuralAudioCAPI PROPERTIES FOLDER deps)
+set_target_properties(RTNeural PROPERTIES FOLDER deps/NeuralAudio)
+set_target_properties(NeuralAudioCAPI PROPERTIES FOLDER deps/NeuralAudio)

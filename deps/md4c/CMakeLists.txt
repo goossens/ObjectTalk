@@ -11,3 +11,4 @@ FetchContent_Declare(md4c QUIET GIT_REPOSITORY "https://github.com/mity/md4c" GI
 FetchContent_MakeAvailable(md4c)
 
 set_target_properties(md4c PROPERTIES FOLDER deps)
+set_target_properties(md4c-html PROPERTIES FOLDER deps/md4c)

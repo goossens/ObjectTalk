@@ -9,6 +9,9 @@
 //	Include files
 //
 
+#include <algorithm>
+#include <vector>
+
 #include "imgui.h"
 
 #include "OtClass.h"

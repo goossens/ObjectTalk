@@ -57,7 +57,7 @@ struct Bbox {
 //	baryCentric
 //
 
-glm::vec3 baryCentric(glm::vec2& a, glm::vec2& b, glm::vec2& c, glm::vec2& p) {
+static glm::vec3 baryCentric(glm::vec2& a, glm::vec2& b, glm::vec2& c, glm::vec2& p) {
 	auto v0 = b - a;
 	auto v1 = c - a;
 	auto v2 = p - a;

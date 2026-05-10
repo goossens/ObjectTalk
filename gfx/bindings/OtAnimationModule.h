@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include <vector>
+#include <string>
 
 #include "tweeny.h"
 

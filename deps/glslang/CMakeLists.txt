@@ -23,3 +23,8 @@ if(CMAKE_GENERATOR STREQUAL "Xcode")
 endif()
 
 set_target_properties(glslang PROPERTIES FOLDER deps)
+set_target_properties(SPIRV PROPERTIES FOLDER deps/SPIRV)
+set_target_properties(GenericCodeGen PROPERTIES FOLDER deps/glslang)
+set_target_properties(OSDependent PROPERTIES FOLDER deps/glslang)
+set_target_properties(MachineIndependent PROPERTIES FOLDER deps/glslang)
+set_target_properties(glslang-default-resource-limits PROPERTIES FOLDER deps/glslang)

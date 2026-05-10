@@ -34,7 +34,7 @@ target_link_libraries(gfx PUBLIC
 	language
 	network
 	shaders
-	glslang
+	# glslang
 	spirv-cross-c
 	spirv-cross-reflect
 	spirv-cross-core

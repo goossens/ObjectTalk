@@ -282,6 +282,10 @@ TextEditor::VisPos TextEditor::TypeSetter::docPos2VisPos(const Document& documen
 //
 
 TextEditor::DocPos TextEditor::TypeSetter::visPos2DocPos(const Document& document, VisPos pos) const {
+	if (pos.row >= size()) {
+		return DocPos(0, 0);
+	}
+
 	auto& row = at(pos.row);
 	auto& line = document[row.line];
 
@@ -417,7 +421,10 @@ void TextEditor::TypeSetter::screenPos2DocPos(const Document& document, ImVec2 s
 //
 
 TextEditor::VisPos TextEditor::TypeSetter::normalizePos(VisPos pos) const {
-	if (pos.row >= totalRows) {
+	if (totalRows == 0) {
+		return VisPos(0, 0);
+
+	} else if (pos.row >= totalRows) {
 		auto lastRow = totalRows - 1;
 		return VisPos(lastRow, at(lastRow).columns);
 

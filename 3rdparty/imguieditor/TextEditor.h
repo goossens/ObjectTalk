@@ -1617,10 +1617,10 @@ protected:
 	ImVec2 glyphSize;
 
 	ImVec2 totalSize;
-	size_t firstVisibleRow;
-	size_t lastVisibleRow;
-	size_t firstVisibleColumn;
-	size_t lastVisibleColumn;
+	size_t firstVisibleRow = 0;
+	size_t lastVisibleRow = 0;
+	size_t firstVisibleColumn = 0;
+	size_t lastVisibleColumn = 0;
 
 	size_t firstMiniMapRow;
 	size_t lastMiniMapRow;

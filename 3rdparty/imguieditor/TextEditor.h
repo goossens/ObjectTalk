@@ -1605,7 +1605,8 @@ protected:
 	static constexpr float miniMapTextHeight = 2.0f;
 	static constexpr float miniMapTextWidth = 1.0f;
 	static constexpr float miniMapAlpha = 0.45f;
-	static constexpr float miniMapViewPortAlpha = 0.1f;
+	static constexpr float miniMapViewPortAlpha = 0.15f;
+	static constexpr float miniMapViewPortActiveAlpha = 0.3f;
 
 	bool editorVisible = false;
 	ImVec2 cursorScreenPos;
@@ -1623,6 +1624,9 @@ protected:
 
 	size_t firstMiniMapRow;
 	size_t lastMiniMapRow;
+	bool miniMapIsScrollbar = false;
+	float miniMapScrollStart;
+	float miniMapScrollY;
 
 	float lineNumberLeftOffset;
 	float lineNumberRightOffset;

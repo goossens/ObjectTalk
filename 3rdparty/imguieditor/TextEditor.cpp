@@ -727,7 +727,7 @@ void TextEditor::renderMiniMap() {
 			auto viewPortBottomRight = ViewPortTopLeft + ImVec2(miniMapWidth, viewportHeight);
 
 			auto fColor = ImGui::ColorConvertU32ToFloat4(palette.get(Color::text));
-			fColor.w *= miniMapViewPortAlpha;
+			fColor.w *= miniMapIsScrollbar ? miniMapViewPortActiveAlpha : miniMapViewPortAlpha;
 			drawList->AddRectFilled(ViewPortTopLeft, viewPortBottomRight, ImGui::ColorConvertFloat4ToU32(fColor));
 		}
 	}
@@ -1120,12 +1120,26 @@ void TextEditor::handleKeyboardInputs() {
 //
 
 void TextEditor::handleMouseInteractions() {
-	// handle middle mouse button modes
-	panning &= config.panMode && ImGui::IsMouseDown(ImGuiMouseButton_Middle);
+	auto io = ImGui::GetIO();
+	auto mousePos = ImGui::GetMousePos() - cursorScreenPos;
 	auto absoluteMousePos = ImGui::GetMousePos() - ImGui::GetWindowPos();
+	auto overLineNumbers = config.showLineNumbers && (absoluteMousePos.x > lineNumberLeftOffset) && (absoluteMousePos.x < lineNumberRightOffset);
+	auto overText = mousePos.x - ImGui::GetScrollX() > textLeftOffset && mousePos.x - ImGui::GetScrollX() < textRightOffset;
+	auto overMiniMap = config.showMiniMap && absoluteMousePos.x > miniMapOffset;
 
+	DocPos glyphPos;
+	DocPos cursorPos;
+
+	typeSetter.screenPos2DocPos(
+		document,
+		ImVec2((mousePos.x - textLeftOffset) / glyphSize.x, mousePos.y / glyphSize.y),
+		glyphPos,
+		cursorPos);
+
+	panning &= config.panMode && ImGui::IsMouseDown(ImGuiMouseButton_Middle);
+
+	// handle middle mouse button panning
 	if (panning && ImGui::IsMouseDragging(ImGuiMouseButton_Middle)) {
-		// handle middle mouse button panning
 		auto windowSize = ImGui::GetWindowSize();
 		auto mouseDelta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Middle);
 		float dragFactor = ImGui::GetIO().DeltaTime * 15.0f;
@@ -1149,8 +1163,8 @@ void TextEditor::handleMouseInteractions() {
 		ImGui::SetScrollY(ImGui::GetScrollY() - mouseDelta.y);
 		ImGui::ResetMouseDragDelta(ImGuiMouseButton_Middle);
 
+	// handle middle mouse button scrolling
 	} else if (scrolling) {
-		// handle middle mouse button scrolling
 		float deadzone = glyphSize.x;
 		auto offset = scrollStart - absoluteMousePos;
 		offset.x = (offset.x < 0.0f) ? std::min(offset.x + deadzone, 0.0f) : std::max(offset.x - deadzone, 0.0f);
@@ -1169,45 +1183,42 @@ void TextEditor::handleMouseInteractions() {
 			scrolling = false;
 		}
 
+	// handle left mouse button dragging
+	} else if (ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
+		// update selection with dragging left mouse button
+		io.WantCaptureMouse = true;
+
+		if (miniMapIsScrollbar) {
+			auto pixelOffset = absoluteMousePos.y - miniMapScrollStart;
+			auto offset = pixelOffset * totalSize.y / textSize.y;
+			auto scrollY = miniMapScrollY + offset;
+			scrollY = std::clamp(scrollY, 0.0f, totalSize.y - textSize.y);
+			ImGui::SetScrollY(scrollY);
+
+		} else if (overLineNumbers) {
+			auto& cursor = cursors.getCurrent();
+			auto start = DocPos(cursorPos.line, 0);
+			auto end = normalizePos(DocPos(cursorPos.line + 1, 0));
+			cursor.update(cursor.getInteractiveEnd() < cursor.getInteractiveStart() ? start : end);
+			makeCursorVisible();
+
+		} else if (overText) {
+			cursors.updateCurrentCursor(cursorPos);
+			makeCursorVisible();
+		}
+
+	// end minimap scroll (if required)
+	} else if (ImGui::IsMouseReleased(ImGuiMouseButton_Left) && miniMapIsScrollbar) {
+		miniMapIsScrollbar = false;
+
 	// ignore other interactions when the editor is not hovered
 	} else if (ImGui::IsWindowHovered()) {
-		auto io = ImGui::GetIO();
-		auto mousePos = ImGui::GetMousePos() - cursorScreenPos;
-		auto overLineNumbers = config.showLineNumbers && (absoluteMousePos.x > lineNumberLeftOffset) && (absoluteMousePos.x < lineNumberRightOffset);
-		auto overText = mousePos.x - ImGui::GetScrollX() > textLeftOffset && mousePos.x - ImGui::GetScrollX() < textRightOffset;
-		auto overMiniMap = config.showMiniMap && absoluteMousePos.x > miniMapOffset;
-
-		DocPos glyphPos;
-		DocPos cursorPos;
-
-		typeSetter.screenPos2DocPos(
-			document,
-			ImVec2((mousePos.x - textLeftOffset) / glyphSize.x, mousePos.y / glyphSize.y),
-			glyphPos,
-			cursorPos);
-
 		// show text cursor if required
 		if (ImGui::IsWindowFocused() && overText) {
 			ImGui::SetMouseCursor(ImGuiMouseCursor_TextInput);
 		}
 
-		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
-			// update selection with dragging left mouse button
-			io.WantCaptureMouse = true;
-
-			if (overLineNumbers) {
-				auto& cursor = cursors.getCurrent();
-				auto start = DocPos(cursorPos.line, 0);
-				auto end = normalizePos(DocPos(cursorPos.line + 1, 0));
-				cursor.update(cursor.getInteractiveEnd() < cursor.getInteractiveStart() ? start : end);
-
-			} else if (overText) {
-				cursors.updateCurrentCursor(cursorPos);
-			}
-
-			makeCursorVisible();
-
-		} else if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle)) {
+		if (ImGui::IsMouseClicked(ImGuiMouseButton_Middle)) {
 			// start panning/scrolling mode on middle mouse click
 			if (config.panMode) {
 				panning = true;
@@ -1327,13 +1338,23 @@ void TextEditor::handleMouseInteractions() {
 					makeCursorVisible();
 
 				} else if (overMiniMap) {
-					moveTo(visPos2DocPos(VisPos(
-						firstMiniMapRow + static_cast<size_t>(absoluteMousePos.y / miniMapRowHeight),
-						static_cast<size_t>((absoluteMousePos.x - miniMapOffset) / miniMapTextWidth))), false);
+					if (ImGui::GetCurrentWindow()->ScrollbarY) {
+						auto clickedRow = firstMiniMapRow + static_cast<size_t>(absoluteMousePos.y / miniMapRowHeight);
+
+						if (clickedRow < firstVisibleRow || clickedRow > lastVisibleRow) {
+							scrollToLine(visPos2DocPos(VisPos(clickedRow, 0)).line, Scroll::alignMiddle);
+
+						} else {
+							miniMapIsScrollbar = true;
+							miniMapScrollStart = absoluteMousePos.y;
+							miniMapScrollY = ImGui::GetScrollY();
+						}
+					}
 				}
 			}
 
 		} else if (textHoverCallback && IsMousePosOverGlyph(ImGui::GetMousePos())) {
+			// capture position  for text hover popup
 			popupDocPos = document.findWordStart(glyphPos, true);
 			auto vizPos = docPos2VisPos(popupDocPos);
 
@@ -1341,6 +1362,7 @@ void TextEditor::handleMouseInteractions() {
 				vizPos.column * glyphSize.x + textLeftOffset + cursorScreenPos.x,
 				vizPos.row * glyphSize.y + cursorScreenPos.y);
 
+			// only open popup if required
 			if (!ImGui::IsPopupOpen("TextHoverPopup")) {
 				ImGui::OpenPopup("TextHoverPopup");
 			}

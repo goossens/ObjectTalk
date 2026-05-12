@@ -455,38 +455,32 @@ void TextEditor::renderText() {
 //
 
 void TextEditor::renderCursors() {
-	// update cursor animation timer
-	cursorAnimationTimer = std::fmod(cursorAnimationTimer + ImGui::GetIO().DeltaTime, 1.0f);
+	if (config.caretsVisible) {
+		// update cursor animation timer
+		cursorAnimationTimer = std::fmod(cursorAnimationTimer + ImGui::GetIO().DeltaTime, 1.0f);
 
-	if (ImGui::IsWindowFocused()) {
-		if (!ImGui::GetIO().ConfigInputTextCursorBlink || cursorAnimationTimer < 0.5f) {
-			auto drawList = ImGui::GetWindowDrawList();
+		if (ImGui::IsWindowFocused()) {
+			if (!ImGui::GetIO().ConfigInputTextCursorBlink || cursorAnimationTimer < 0.5f) {
+				auto drawList = ImGui::GetWindowDrawList();
 
-			for (auto& cursor : cursors) {
-				auto docPos = cursor.getInteractiveEnd();
+				for (auto& cursor : cursors) {
+					auto docPos = cursor.getInteractiveEnd();
 
-				if (document[docPos.line].foldingState != FoldingState::hidden) {
-					auto pos = docPos2VisPos(docPos);
+					if (document[docPos.line].foldingState != FoldingState::hidden) {
+						auto pos = docPos2VisPos(docPos);
 
-					if (pos.row >= firstVisibleRow && pos.row <= lastVisibleRow) {
-						auto x = cursorScreenPos.x + textLeftOffset + pos.column * glyphSize.x - 1;
-						auto y = cursorScreenPos.y + pos.row * glyphSize.y;
-						drawList->AddRectFilled(ImVec2(x, y), ImVec2(x + cursorWidth, y + glyphSize.y), palette.get(Color::cursor));
+						if (pos.row >= firstVisibleRow && pos.row <= lastVisibleRow) {
+							auto x = cursorScreenPos.x + textLeftOffset + pos.column * glyphSize.x - 1;
+							auto y = cursorScreenPos.y + pos.row * glyphSize.y;
+
+							drawList->AddRectFilled(
+								ImVec2(x, y),
+								ImVec2(x + cursorWidth, y + glyphSize.y),
+								palette.get(Color::cursor));
+						}
 					}
 				}
 			}
-		}
-
-		// notify OS of text input position for advanced Input Method Editor (IME)
-		// this is required for the SDL3 backend as it will not report text input events unless we do this
-		// see https://github.com/ocornut/imgui/issues/8584 for details
-		if (!config.readOnly) {
-			auto context = ImGui::GetCurrentContext();
-			context->PlatformImeData.WantVisible = true;
-			context->PlatformImeData.WantTextInput = true;
-			context->PlatformImeData.InputPos = ImVec2(cursorScreenPos.x - 1.0f, cursorScreenPos.y - context->FontSize);
-			context->PlatformImeData.InputLineHeight = context->FontSize;
-			context->PlatformImeData.ViewportId = ImGui::GetCurrentWindow()->Viewport->ID;
 		}
 	}
 }
@@ -1104,6 +1098,18 @@ void TextEditor::handleKeyboardInputs() {
 			}
 
 			io.InputQueueCharacters.resize(0);
+		}
+
+		// notify OS of text input position for advanced Input Method Editor (IME)
+		// this is required for the SDL3 backend as it will not report text input events unless we do this
+		// see https://github.com/ocornut/imgui/issues/8584 for details
+		if (!config.readOnly) {
+			auto context = ImGui::GetCurrentContext();
+			context->PlatformImeData.WantVisible = true;
+			context->PlatformImeData.WantTextInput = true;
+			context->PlatformImeData.InputPos = ImVec2(cursorScreenPos.x - 1.0f, cursorScreenPos.y - context->FontSize);
+			context->PlatformImeData.InputLineHeight = context->FontSize;
+			context->PlatformImeData.ViewportId = ImGui::GetCurrentWindow()->Viewport->ID;
 		}
 	}
 }

@@ -102,6 +102,8 @@ public:
 	inline bool IsWordWrapEnabled() const { return config.wordWrap; }
 	inline void SetReadOnlyEnabled(bool value) { config.readOnly = value; }
 	inline bool IsReadOnlyEnabled() const { return config.readOnly; }
+	inline void SetCaretsVisible(bool value) { config.caretsVisible = value; }
+	inline bool IsCaretsVisible() const { return config.caretsVisible; }
 	inline void SetAutoIndentEnabled(bool value) { config.autoIndent = value; }
 	inline bool IsAutoIndentEnabled() const { return config.autoIndent; }
 	inline void SetShowWhitespacesEnabled(bool value) { config.showSpaces = value; config.showTabs = value; }
@@ -810,6 +812,7 @@ protected:
 		float lineSpacing = 1.0f;
 		bool wordWrap = false;
 		bool readOnly = false;
+		bool caretsVisible = true;
 		bool autoIndent = true;
 		bool showSpaces = true;
 		bool showTabs = true;

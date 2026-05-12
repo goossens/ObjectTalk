@@ -155,6 +155,8 @@ void OtTextEditor::renderMenus() {
 		ImGui::Separator();
 
 		bool flag;
+		flag = editor.IsReadOnlyEnabled(); if (ImGui::MenuItem("Read Only", nullptr, &flag)) { editor.SetReadOnlyEnabled(flag); };
+		flag = editor.IsCaretsVisible(); if (ImGui::MenuItem("Carets Visible", nullptr, &flag)) { editor.SetCaretsVisible(flag); };
 		flag = editor.IsOverwriteEnabled(); if (ImGui::MenuItem("Overwrite", nullptr, &flag)) { editor.SetOverwriteEnabled(flag); };
 		flag = editor.IsWordWrapEnabled(); if (ImGui::MenuItem("Word Wrap", nullptr, &flag)) { editor.SetWordWrapEnabled(flag); };
 		flag = editor.IsLineFoldingEnabled(); if (ImGui::MenuItem("Line Folding", nullptr, &flag)) { editor.SetLineFoldingEnabled(flag); };

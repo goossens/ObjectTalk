@@ -136,8 +136,8 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 		auto drawList = ImGui::GetWindowDrawList();
 
 		drawList->PushClipRect(
-			ImVec2(textLeftOffset, drawList->GetClipRectMin().y),
-			ImVec2(textRightOffset, drawList->GetClipRectMax().y),
+			ImVec2(cursorScreenPos.x + textLeftOffset, drawList->GetClipRectMin().y),
+			ImVec2(cursorScreenPos.x + textRightOffset, drawList->GetClipRectMax().y),
 			false);
 
 		// render parts in the text area
@@ -1189,9 +1189,9 @@ void TextEditor::handleMouseInteractions() {
 		io.WantCaptureMouse = true;
 
 		if (miniMapIsScrollbar) {
-			auto pixelOffset = absoluteMousePos.y - miniMapScrollStart;
-			auto offset = pixelOffset * totalSize.y / textSize.y;
-			auto scrollY = miniMapScrollY + offset;
+			auto localOffset = absoluteMousePos.y - miniMapScrollStart;
+			auto documentOffset = localOffset * totalSize.y / textSize.y;
+			auto scrollY = miniMapScrollY + documentOffset;
 			scrollY = std::clamp(scrollY, 0.0f, totalSize.y - textSize.y);
 			ImGui::SetScrollY(scrollY);
 

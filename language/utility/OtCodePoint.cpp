@@ -218,7 +218,7 @@ bool OtCodePoint::isXidContinue(char32_t codepoint) {
 		return rangeContains(xidContinue16, static_cast<char16_t>(codepoint));
 
 	} else {
-		return rangeContains(xidContinue32, static_cast<char16_t>(codepoint));
+		return rangeContains(xidContinue32, codepoint);
 	}
 }
 

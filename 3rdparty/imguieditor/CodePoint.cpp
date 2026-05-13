@@ -267,7 +267,7 @@ bool TextEditor::CodePoint::isXidContinue(ImWchar codepoint) {
 
 #if defined(IMGUI_USE_WCHAR32)
 	} else if (codepoint >= 0x10000) {
-		return rangeContains(xidContinue32, static_cast<ImWchar16>(codepoint));
+		return rangeContains(xidContinue32, static_cast<ImWchar32>(codepoint));
 #endif
 
 	} else {

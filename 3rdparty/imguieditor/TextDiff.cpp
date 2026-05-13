@@ -243,6 +243,10 @@ void TextDiff::IntegratedView::renderText(Diff& diff) {
 	auto yTop = drawList->GetClipRectMin().y;
 	auto yBottom = drawList->GetClipRectMax().y;
 
+	if (maxColumns * glyphSize.x > textColumnWidth) {
+		yBottom -= ImGui::GetStyle().ScrollbarSize + ImGui::GetCurrentWindow()->WindowBorderSize;
+	}
+
 	// render left text
 	drawList->PushClipRect(ImVec2(textPos, yTop), ImVec2(textEnd, yBottom), false);
 
@@ -620,6 +624,10 @@ void TextDiff::SideBySideView::renderText(Diff& diff) {
 	auto drawList = ImGui::GetWindowDrawList();
 	auto yTop = drawList->GetClipRectMin().y;
 	auto yBottom = drawList->GetClipRectMax().y;
+
+	if (maxColumns * glyphSize.x > textColumnWidth) {
+		yBottom -= ImGui::GetStyle().ScrollbarSize + ImGui::GetCurrentWindow()->WindowBorderSize;
+	}
 
 	// render left text
 	drawList->PushClipRect(ImVec2(leftTextPos, yTop), ImVec2(rightLineNumberPos, yBottom), false);

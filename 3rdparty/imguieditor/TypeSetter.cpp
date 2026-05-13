@@ -234,6 +234,10 @@ bool TextEditor::TypeSetter::update(const Config& config, Document& document, Li
 //
 
 TextEditor::VisPos TextEditor::TypeSetter::docPos2VisPos(const Document& document, DocPos pos) const {
+	if (size() == 0) {
+		return VisPos(0, 0);
+	}
+
 	auto& line = document[pos.line];
 	VisPos visPos(line.row, 0);
 

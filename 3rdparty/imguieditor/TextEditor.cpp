@@ -134,11 +134,12 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 
 		// setup clipping over the text area
 		auto drawList = ImGui::GetWindowDrawList();
+		auto offset = ImGui::GetWindowPos().x;
 
 		drawList->PushClipRect(
-			ImVec2(cursorScreenPos.x + textLeftOffset, drawList->GetClipRectMin().y),
-			ImVec2(cursorScreenPos.x + textRightOffset, drawList->GetClipRectMax().y),
-			false);
+			ImVec2(offset + textLeftOffset - cursorWidth, drawList->GetClipRectMin().y),
+			ImVec2(offset + textRightOffset + cursorWidth, drawList->GetClipRectMax().y),
+			true);
 
 		// render parts in the text area
 		renderActiveBracketBackground();
@@ -470,7 +471,7 @@ void TextEditor::renderCursors() {
 						auto pos = docPos2VisPos(docPos);
 
 						if (pos.row >= firstVisibleRow && pos.row <= lastVisibleRow) {
-							auto x = cursorScreenPos.x + textLeftOffset + pos.column * glyphSize.x - 1;
+							auto x = cursorScreenPos.x + textLeftOffset + pos.column * glyphSize.x - cursorWidth;
 							auto y = cursorScreenPos.y + pos.row * glyphSize.y;
 
 							drawList->AddRectFilled(
@@ -1361,7 +1362,7 @@ void TextEditor::handleMouseInteractions() {
 			}
 
 		} else if (textHoverCallback && IsMousePosOverGlyph(ImGui::GetMousePos())) {
-			// capture position  for text hover popup
+			// capture position for text hover popup
 			popupDocPos = document.findWordStart(glyphPos, true);
 			auto vizPos = docPos2VisPos(popupDocPos);
 
@@ -2295,7 +2296,7 @@ void TextEditor::toggleComments() {
 					start++;
 				}
 
-				while (start + i < document[line].size() && i < comment.size() && document[line][start + i].codepoint == comment[i]) {
+				while (start + i < document[line].size() && i < comment.size() && document[line][start + i].codepoint == static_cast<ImWchar>(comment[i])) {
 					i++;
 				}
 

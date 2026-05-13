@@ -608,7 +608,7 @@ void OtWorkspace::renderEditors() {
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, spacing);
 	}
 
-	// render tab bar with editor windws (if required)
+	// render tab bar with editor windows (if required)
 	if (inTabEditors) {
 		renderTabbedEditors();
 	}

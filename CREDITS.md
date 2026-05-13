@@ -47,7 +47,6 @@ In case User Interface (UI) modules are included, we also use:
 * [pffft](https://bitbucket.org/jpommier/pffft/src/master/) - a Pretty Fast FFT by Julien Pommier released under the [BSD License](https://opensource.org/license/bsd-3-clause).
 * [FFTConvolver](https://github.com/HiFi-LoFi/FFTConvolver) - a C++ library for highly efficient convolution of audio data by [HiFi-LoFi](https://github.com/HiFi-LoFi) released under the [MIT license](https://opensource.org/licenses/MIT).
 * [MidiFile](https://github.com/craigsapp/midifile) - library of C++ classes for reading/writing Standard MIDI files developed by [Craig Stuart Sapp](https://github.com/craigsapp) released under the released under the [2-Clause BSD License](https://opensource.org/license/bsd-2-clause).
-* [NeuralAudio](https://github.com/mikeoliphant/NeuralAudio) - library designed to make it easy to use neural network machine learning models in real-time audio applications. Developed by [Mike Oliphant](https://github.com/mikeoliphant) and released under the [MIT license](https://opensource.org/licenses/MIT).
 
 ## Algorithms
 

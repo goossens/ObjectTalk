@@ -738,7 +738,7 @@ void OtMarkdown::renderTaskMarker(bool checked) {
 	ImU32 border = ImGui::GetColorU32(ImGuiCol_Text);
 	float rounding = sz * 0.15f;
 	float thickness = (sz / 12.0f > 1.0f) ? (sz / 12.0f) : 1.0f;
-	drawList->AddRect(tl, br, border, rounding, 0, thickness);
+	drawList->AddRect(tl, br, border, rounding, thickness);
 
 	if (checked) {
 		ImU32 mark = ImGui::GetColorU32(ImGuiCol_CheckMark);

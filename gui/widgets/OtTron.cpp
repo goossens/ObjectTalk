@@ -207,7 +207,7 @@ void OtTronClass::render() {
 	for (auto i = arcs.begin(); i != arcs.end(); i++) {
 		auto rotation = (i->rotation + tronRotation) * (i->clockwise ? 1.0f : -1.0f);
 		list->PathArcTo(center, i->radius * scale, i->start + rotation, i->end + rotation);
-		list->PathStroke(i->color, ImDrawFlags_None, i->width * scale);
+		list->PathStroke(i->color, i->width * scale, ImDrawFlags_None);
 	}
 
 	// render seconds indicator

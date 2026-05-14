@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Populate(imguizmo QUIET GIT_REPOSITORY "https://github.com/CedricGuillemet/ImGuizmo" GIT_TAG "1.9")
+FetchContent_Populate(imguizmo QUIET GIT_REPOSITORY "https://github.com/CedricGuillemet/ImGuizmo" GIT_TAG "1.10")
 
 set(imguizmo_SOURCES
 	${imguizmo_SOURCE_DIR}/src/ImGuizmo.h

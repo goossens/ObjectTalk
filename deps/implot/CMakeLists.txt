@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Populate(implot QUIET GIT_REPOSITORY "https://github.com/epezent/implot" GIT_TAG "v1.0")
+FetchContent_Populate(implot QUIET GIT_REPOSITORY "https://github.com/epezent/implot" GIT_TAG "1351ab2")
 
 set(implot_SOURCES
 	${implot_SOURCE_DIR}/implot.h

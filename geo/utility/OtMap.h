@@ -82,7 +82,7 @@ public:
 	// render to image
 	void render(OtImage& image, int size, RenderType type);
 
-	// render map to framebuffer
+	// render map to heightmap
 	void renderHeightMap(OtHeightMap& heightmap, int size);
 
 	// version management

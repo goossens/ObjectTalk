@@ -52,13 +52,14 @@ public:
 	float getHeight(int x, int y) const;
 
 	// get height at specified location (in relative coordinates, 0.0 to 1.0)
-	float getHeight(float x, float y) const;
+	float sampleHeight(float x, float y) const;
 
 	// get normal (as normalized vector) at specified location (in relative coordinates, 0.0 to 1.0)
-	glm::vec3 getNormal(float x, float y) const;
+	glm::vec3 sampleNormal(float x, float y) const;
 
 	// get minimum and maximum heights
-	void getMinMaxHeights(float& minHeight, float& maxHeight) const;
+	float getMinHeight() const;
+	float getMaxHeight() const;
 
 	// access the error message
 	inline void setErrorMessage(const std::string& message) { errorMessage = message; }

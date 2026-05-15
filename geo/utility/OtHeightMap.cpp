@@ -196,10 +196,10 @@ float OtHeightMap::getHeight(int x, int y) const {
 
 
 //
-//	OtHeightMap::getHeight
+//	OtHeightMap::sampleHeight
 //
 
-float OtHeightMap::getHeight(float x, float y) const {
+float OtHeightMap::sampleHeight(float x, float y) const {
 	x *= width - 1;
 	y *= height - 1;
 
@@ -220,10 +220,10 @@ float OtHeightMap::getHeight(float x, float y) const {
 
 
 //
-//	OtHeightMap::getNormal
+//	OtHeightMap::sampleNormal
 //
 
-glm::vec3 OtHeightMap::getNormal(float x, float y) const {
+glm::vec3 OtHeightMap::sampleNormal(float x, float y) const {
 	int ix = int(x * width);
 	int iy = int(y * height);
 
@@ -234,19 +234,38 @@ glm::vec3 OtHeightMap::getNormal(float x, float y) const {
 }
 
 
+
 //
-//	OtHeightMap::getMinMaxHeights
+//	OtHeightMap::getMinHeight
 //
 
-void OtHeightMap::getMinMaxHeights(float& minHeight, float& maxHeight) const {
-	minHeight = std::numeric_limits<float>::max();
-	maxHeight = std::numeric_limits<float>::lowest();
+float OtHeightMap::getMinHeight() const {
+	auto minHeight = std::numeric_limits<float>::max();
 
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			auto h = getHeight(x, y);
 			minHeight = std::min(minHeight, h);
+		}
+	}
+
+	return minHeight;
+}
+
+
+//
+//	OtHeightMap::getMaxHeight
+//
+
+float OtHeightMap::getMaxHeight() const {
+	auto maxHeight = std::numeric_limits<float>::lowest();
+
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			auto h = getHeight(x, y);
 			maxHeight = std::max(maxHeight, h);
 		}
 	}
+
+	return maxHeight;
 }

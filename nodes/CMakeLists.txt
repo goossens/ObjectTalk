@@ -25,6 +25,6 @@ target_compile_options(nodes PRIVATE
 	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/W4 /WX>)
 
 target_include_directories(nodes PUBLIC ${NODES_INCLUDE_DIRS})
-target_link_libraries(nodes PUBLIC language json gfx)
+target_link_libraries(nodes PUBLIC language json gfx geo)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${NODES_INCLUDES} ${NODES_SOURCES})

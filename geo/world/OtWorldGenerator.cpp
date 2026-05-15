@@ -13,18 +13,20 @@
 #include <cmath>
 #include <cstdint>
 #include <list>
-#include <limits>
-#include <memory>
 #include <numbers>
 #include <stack>
 
 #include "delaunator.h"
 #include "glm/gtc/matrix_transform.hpp"
+#include "nlohmann/json.hpp"
 
+#include "OtText.h"
+
+#include "OtGlm.h"
 #include "OtNoise.h"
-
 #include "OtImageCanvas.h"
-#include "OtMap.h"
+
+#include "OtWorldGenerator.h"
 
 
 //
@@ -73,26 +75,52 @@ static glm::vec3 baryCentric(glm::vec2& a, glm::vec2& b, glm::vec2& c, glm::vec2
 
 
 //
-//	OtMap::clear
+//	OtWorldGenerator::OtWorldGenerator
 //
 
-void OtMap::clear() {
-	map = nullptr;
+OtWorldGenerator::OtWorldGenerator() {
+	world = std::make_shared<Landscape>();
+}
+
+
+//
+//	OtWorldGenerator::load
+//
+
+void OtWorldGenerator::load(const std::string& filename) {
+	clear();
+	auto text = OtText::load(filename);
+	auto data = nlohmann::json::parse(text);
+	world->deserialize(data);
+}
+
+
+//
+//	OtWorldGenerator::save
+//
+
+void OtWorldGenerator::save(const std::string& filename) {
+	auto data = world->serialize();
+	OtText::save(filename, data.dump(1, '\t'));
+}
+
+
+//
+//	OtWorldGenerator::clear
+//
+
+void OtWorldGenerator::clear() {
+	world = std::make_shared<Landscape>();
 	incrementVersion();
 }
 
 
 //
-//	OtMap::update
+//	OtWorldGenerator::update
 //
 
-void OtMap::update(int seed, int size, float ruggedness) {
-	// create new map definition
-	map = std::make_shared<Map>();
-	map->seed = seed;
-	map->size = size;
-	map->ruggedness = ruggedness;
-
+void OtWorldGenerator::generate() {
+	clear();
 	generateRegions();
 	generateCorners();
 	assignWater();
@@ -104,16 +132,14 @@ void OtMap::update(int seed, int size, float ruggedness) {
 	assignMoisture();
 	assignTemperature();
 	assignBiome();
-
-	incrementVersion();
 }
 
 
 //
-//	OtMap::render
+//	OtWorldGenerator::render
 //
 
-void OtMap::render(OtImage& image, int size, RenderType type) {
+void OtWorldGenerator::render(OtImage& image, int size, RenderType type) {
 	static const char* colors[] = {
 		"#000000",
 		"#44447a",
@@ -141,10 +167,10 @@ void OtMap::render(OtImage& image, int size, RenderType type) {
 	if (type == RenderType::heightMap) {
 		// create heightmap
 		OtHeightMap heightmap;
-		renderHeightMap(heightmap, size);
+		generateHeightMap(heightmap, size);
 
-		float minElevation, maxElevation;
-		heightmap.getMinMaxHeights(minElevation, maxElevation);
+		float minElevation = heightmap.getMinHeight();
+		float maxElevation = heightmap.getMaxHeight();
 		float range = maxElevation - minElevation;
 
 		// get image ready
@@ -162,12 +188,12 @@ void OtMap::render(OtImage& image, int size, RenderType type) {
 		}
 
 	} else {
-		// render the map
+		// render the world
 		OtImageCanvas canvas(size, size);
-		auto scale = static_cast<float>(size) / static_cast<float>(map->size);
+		auto scale = static_cast<float>(size) / static_cast<float>(world->size);
 		canvas.scale(scale, scale);
 
-		for (auto& region : map->regions) {
+		for (auto& region : world->regions) {
 			if (type == RenderType::biomes) {
 				auto color = colors[static_cast<size_t>(region.biome)];
 				canvas.strokeColor(color);
@@ -198,10 +224,10 @@ void OtMap::render(OtImage& image, int size, RenderType type) {
 			}
 
 			canvas.beginPath();
-			canvas.moveTo(map->corners[region.corners[0]].position.x, map->corners[region.corners[0]].position.y);
+			canvas.moveTo(world->corners[region.corners[0]].position.x, world->corners[region.corners[0]].position.y);
 
 			for (size_t i = 1; i < region.corners.size(); i++) {
-				canvas.lineTo(map->corners[region.corners[i]].position.x, map->corners[region.corners[i]].position.y);
+				canvas.lineTo(world->corners[region.corners[i]].position.x, world->corners[region.corners[i]].position.y);
 			}
 
 			canvas.closePath();
@@ -216,10 +242,10 @@ void OtMap::render(OtImage& image, int size, RenderType type) {
 
 
 //
-//	OtMap::renderHeightMap
+//	OtWorldGenerator::generateHeightMap
 //
 
-void OtMap::renderHeightMap(OtHeightMap& heightmap, int size) {
+void OtWorldGenerator::generateHeightMap(OtHeightMap& heightmap, int size) {
 	// create vertex buffers
 	struct Vertex {
 		Vertex(glm::vec2 p, float e) : position(p), elevation(e) {}
@@ -228,16 +254,16 @@ void OtMap::renderHeightMap(OtHeightMap& heightmap, int size) {
 	};
 
 	std::vector<Vertex> vertices;
-	auto scale = static_cast<float>(size) / static_cast<float>(map->size);
+	auto scale = static_cast<float>(size) / static_cast<float>(world->size);
 
-	for (auto& corner : map->corners) {
+	for (auto& corner : world->corners) {
 		vertices.emplace_back(corner.position * scale, corner.elevation);
 	}
 
 	// create index buffer
 	std::vector<size_t> indices;
 
-	for (auto& region : map->regions) {
+	for (auto& region : world->regions) {
 		auto center = vertices.size();
 		vertices.emplace_back(region.center * scale, region.elevation);
 		auto corners = region.corners.size();
@@ -282,93 +308,93 @@ void OtMap::renderHeightMap(OtHeightMap& heightmap, int size) {
 
 
 //
-//	OtMap::generateRegions
+//	OtWorldGenerator::generateRegions
 //
 
-void OtMap::generateRegions() {
+void OtWorldGenerator::generateRegions() {
 	OtNoise noise;
 
 	// create internal regions
-	for (auto y = 1; y < map->size; y++) {
-		for (auto x = 1; x < map->size; x++) {
+	for (auto y = 1; y < world->size; y++) {
+		for (auto x = 1; x < world->size; x++) {
 			addRegion(
 				x + (noise.noise(
 					static_cast<float>(x),
 					static_cast<float>(y),
-					static_cast<float>(map->seed + 1)) * 2.0f - 1.0f) * 0.49f,
+					static_cast<float>(world->seed + 1)) * 2.0f - 1.0f) * 0.49f,
 				y + (noise.noise(
 					static_cast<float>(x),
 					static_cast<float>(y),
-					static_cast<float>(map->seed + 2)) * 2.0f - 1.0f) * 0.49f);
+					static_cast<float>(world->seed + 2)) * 2.0f - 1.0f) * 0.49f);
 		}
 	}
 
 	// create border regions (top and bottom)
-	for (auto x = 0; x <= map->size; x++) {
+	for (auto x = 0; x <= world->size; x++) {
 		addBorderRegion(static_cast<float>(x), 0.0f);
-		addBorderRegion(static_cast<float>(x), static_cast<float>(map->size));
+		addBorderRegion(static_cast<float>(x), static_cast<float>(world->size));
 	}
 
 	// create border regions (left and right)
-	for (auto y = 1; y < map->size; y++) {
+	for (auto y = 1; y < world->size; y++) {
 		addBorderRegion(0.0f, static_cast<float>(y));
-		addBorderRegion(static_cast<float>(map->size), static_cast<float>(y));
+		addBorderRegion(static_cast<float>(world->size), static_cast<float>(y));
 	}
 
 	// create ghost regions (top and bottom)
-	for (auto x = -1; x <= map->size + 1; x++) {
+	for (auto x = -1; x <= world->size + 1; x++) {
 		addGhostRegion(static_cast<float>(x), -10.0f);
-		addGhostRegion(static_cast<float>(x), static_cast<float>(map->size + 10.0f));
+		addGhostRegion(static_cast<float>(x), static_cast<float>(world->size + 10.0f));
 	}
 
 	// create ghost regions (left and right)
-	for (auto y = 0; y <= map->size; y++) {
+	for (auto y = 0; y <= world->size; y++) {
 		addGhostRegion(-10.0f, static_cast<float>(y));
-		addGhostRegion(static_cast<float>(map->size + 10.0f), static_cast<float>(y));
+		addGhostRegion(static_cast<float>(world->size + 10.0f), static_cast<float>(y));
 	}
 
 	// perform Delaunay triangulation on regions
 	std::vector<double> coords;
 
-	for (auto& region : map->regions) {
+	for (auto& region : world->regions) {
 		coords.emplace_back(region.center.x);
 		coords.emplace_back(region.center.y);
 	}
 
 	delaunator::Delaunator delaunator(coords);
-	map->triangles = delaunator.triangles;
-	map->halfedges = delaunator.halfedges;
+	world->triangles = delaunator.triangles;
+	world->halfedges = delaunator.halfedges;
 
 	// mark neighbors of all regions
-	for (auto i = map->triangles.begin(); i < map->triangles.end();) {
+	for (auto i = world->triangles.begin(); i < world->triangles.end();) {
 		auto r1 = *i++;
 		auto r2 = *i++;
 		auto r3 = *i++;
 
-		map->regions[r1].neighbors.insert(r2);
-		map->regions[r1].neighbors.insert(r3);
-		map->regions[r2].neighbors.insert(r1);
-		map->regions[r2].neighbors.insert(r3);
-		map->regions[r3].neighbors.insert(r1);
-		map->regions[r3].neighbors.insert(r2);
+		world->regions[r1].neighbors.insert(r2);
+		world->regions[r1].neighbors.insert(r3);
+		world->regions[r2].neighbors.insert(r1);
+		world->regions[r2].neighbors.insert(r3);
+		world->regions[r3].neighbors.insert(r1);
+		world->regions[r3].neighbors.insert(r2);
 	}
 }
 
 
 //
-//	OtMap::generateCorners
+//	OtWorldGenerator::generateCorners
 //
 
-void OtMap::generateCorners() {
+void OtWorldGenerator::generateCorners() {
 	// determine corners
-	size_t numTriangles = map->triangles.size() / 3;
+	size_t numTriangles = world->triangles.size() / 3;
 
 	for (size_t triangle = 0; triangle < numTriangles; triangle++) {
 		// determine position
 		glm::vec2 sum(0.0f);
 
 		for (size_t vertex = 0; vertex < 3; vertex++) {
-			sum += map->regions[map->triangles[3 * triangle + vertex]].center;
+			sum += world->regions[world->triangles[3 * triangle + vertex]].center;
 		}
 
 		// create a new corner
@@ -376,11 +402,11 @@ void OtMap::generateCorners() {
 	}
 
 	// get corners for all regions
-	auto numEdges = map->halfedges.size();
+	auto numEdges = world->halfedges.size();
 	std::set<size_t> seen;
 
 	for (size_t edge = 0; edge < numEdges; edge++) {
-		auto region = map->triangles[nextHalfEdge(edge)];
+		auto region = world->triangles[nextHalfEdge(edge)];
 
 		if (seen.find(region) == seen.end()) {
 			seen.insert(region);
@@ -388,43 +414,43 @@ void OtMap::generateCorners() {
 
 			do {
 				auto corner = triangleOfEdge(incoming);
-				map->regions[region].corners.emplace_back(corner);
-				map->corners[corner].regions.emplace_back(region);
+				world->regions[region].corners.emplace_back(corner);
+				world->corners[corner].regions.emplace_back(region);
 
 				auto outgoing = nextHalfEdge(incoming);
-				incoming = map->halfedges[outgoing];
+				incoming = world->halfedges[outgoing];
 			} while (incoming != invalidIndex && incoming != edge);
 		}
 	}
 
 	// get neighbors of all corners
-	size_t numCorners = map->corners.size();
+	size_t numCorners = world->corners.size();
 
 	for (size_t corner = 0; corner < numCorners; corner++) {
 		for (size_t vertex = 0; vertex < 3; vertex++) {
-			map->corners[corner].neighbors.emplace_back(3 * corner + vertex);
+			world->corners[corner].neighbors.emplace_back(3 * corner + vertex);
 		}
 	}
 }
 
 
 //
-//	OtMap::assignWater
+//	OtWorldGenerator::assignWater
 //
 
-void OtMap::assignWater() {
+void OtWorldGenerator::assignWater() {
 	OtNoise noise;
-	noise.setFrequency(0.5f + 3.0f * map->ruggedness);
+	noise.setFrequency(0.5f + 3.0f * world->ruggedness);
 
-	auto size = static_cast<float>(map->size);
+	auto size = static_cast<float>(world->size);
 	auto size2 = size / 2.0f;
 
-	for (auto& region : map->regions) {
+	for (auto& region : world->regions) {
 		if (!region.ghost && !region.border) {
 			auto x = (region.center.x - size2) / size2;
 			auto y = (region.center.y - size2) / size2;
 			auto distance = std::max(std::abs(x), std::abs(y));
-			auto n = std::lerp(noise.fbm(x, y, static_cast<float>(map->seed)), 0.5f, 0.5f);
+			auto n = std::lerp(noise.fbm(x, y, static_cast<float>(world->seed)), 0.5f, 0.5f);
 			region.water = (n - (0.5f * distance * distance)) < 0.0f;
 		}
 	}
@@ -432,28 +458,28 @@ void OtMap::assignWater() {
 
 
 //
-//	OtMap::assignOceans
+//	OtWorldGenerator::assignOceans
 //
 
-void OtMap::assignOceans() {
+void OtWorldGenerator::assignOceans() {
 	// start with the border regions since they are always oceans
 	std::stack<size_t> stack;
 
-	for (auto region : map->borders) {
+	for (auto region : world->borders) {
 		stack.push(region);
 	}
 
 	while (!stack.empty()) {
-		auto& region = map->regions[stack.top()];
+		auto& region = world->regions[stack.top()];
 		stack.pop();
 
 		for (auto n : region.neighbors) {
-			auto& neighbor = map->regions[n];
+			auto& neighbor = world->regions[n];
 
 			// expand search to other watery neighbors that have not been marked as oceans yet
 			if (neighbor.water && !neighbor.ocean) {
 				neighbor.ocean = true;
-				map->oceans.insert(neighbor.id);
+				world->oceans.insert(neighbor.id);
 				stack.push(neighbor.id);
 			}
 		}
@@ -462,34 +488,34 @@ void OtMap::assignOceans() {
 
 
 //
-//	OtMap::assignLakes
+//	OtWorldGenerator::assignLakes
 //
 
-void OtMap::assignLakes() {
-	for (auto& region : map->regions) {
+void OtWorldGenerator::assignLakes() {
+	for (auto& region : world->regions) {
 		if (region.water && !region.ocean) {
 			region.lake = true;
-			map->lakes.insert(region.id);
+			world->lakes.insert(region.id);
 		}
 	}
 }
 
 
 //
-//	OtMap::assignShores
+//	OtWorldGenerator::assignShores
 //
 
-void OtMap::assignShores() {
-	for (auto& region : map->regions) {
+void OtWorldGenerator::assignShores() {
+	for (auto& region : world->regions) {
 		if (!region.water) {
 			for (auto neighbor : region.neighbors) {
-				if (map->regions[neighbor].ocean) {
+				if (world->regions[neighbor].ocean) {
 					region.oceanshore = true;
-					map->oceanshores.insert(region.id);
+					world->oceanshores.insert(region.id);
 
-				} else if (map->regions[neighbor].lake) {
+				} else if (world->regions[neighbor].lake) {
 					region.lakeshore = true;
-					map->lakeshores.insert(region.id);
+					world->lakeshores.insert(region.id);
 				}
 			}
 		}
@@ -498,27 +524,27 @@ void OtMap::assignShores() {
 
 
 //
-//	OtMap::assignCoastalDistance
+//	OtWorldGenerator::assignCoastalDistance
 //
 
-void OtMap::assignCoastalDistance() {
+void OtWorldGenerator::assignCoastalDistance() {
 	// process all ocean shoreline regions
 	std::list<size_t> list;
 
-	for (auto shore : map->oceanshores) {
-		map->regions[shore].distance = 0.0f;
+	for (auto shore : world->oceanshores) {
+		world->regions[shore].distance = 0.0f;
 		list.push_back(shore);
 	}
 
 	// process all other regions
 	while (!list.empty()) {
-		auto& region = map->regions[list.front()];
+		auto& region = world->regions[list.front()];
 		list.pop_front();
 
 		auto newDistance = region.distance + 1.0f;
 
 		for (auto n : region.neighbors) {
-			auto& neighbor = map->regions[n];
+			auto& neighbor = world->regions[n];
 
 			if (neighbor.distance == invalidValue || newDistance < neighbor.distance) {
 				neighbor.distance = newDistance;
@@ -530,21 +556,21 @@ void OtMap::assignCoastalDistance() {
 	// find distance limit
 	float maxDistance = std::numeric_limits<float>::lowest();
 
-	for (auto& region : map->regions) {
+	for (auto& region : world->regions) {
 		maxDistance = std::max(maxDistance, region.distance);
 	}
 
 	// normalize distances
-	for (auto& region : map->regions) {
+	for (auto& region : world->regions) {
 		region.distance = region.distance / maxDistance;
 	}
 
 	// assign distances to corners
-	for (auto& corner : map->corners) {
+	for (auto& corner : world->corners) {
 		auto total = 0.0f;
 
 		for (auto region : corner.regions) {
-			total += map->regions[region].distance;
+			total += world->regions[region].distance;
 		}
 
 		corner.distance = total / static_cast<float>(corner.regions.size());
@@ -553,25 +579,25 @@ void OtMap::assignCoastalDistance() {
 
 
 //
-//	OtMap::assignElevation
+//	OtWorldGenerator::assignElevation
 //
 
-void OtMap::assignElevation() {
+void OtWorldGenerator::assignElevation() {
 	// process all ocean shoreline regions
 	std::list<size_t> list;
 
-	for (auto shore : map->oceanshores) {
-		map->regions[shore].elevation = 0.0f;
+	for (auto shore : world->oceanshores) {
+		world->regions[shore].elevation = 0.0f;
 		list.push_back(shore);
 	}
 
 	// process all other regions
 	while (!list.empty()) {
-		auto& region = map->regions[list.front()];
+		auto& region = world->regions[list.front()];
 		list.pop_front();
 
 		for (auto n : region.neighbors) {
-			auto& neighbor = map->regions[n];
+			auto& neighbor = world->regions[n];
 
 			if (neighbor.ocean) {
 				auto newElevation = region.elevation - 1.0f;
@@ -595,9 +621,9 @@ void OtMap::assignElevation() {
 	// add some randomness to land elevation
 	OtNoise noise;
 
-	for (auto& region : map->regions) {
+	for (auto& region : world->regions) {
 		if (!region.water && !region.oceanshore && !region.lakeshore) {
-			auto offset = noise.fbm(region.center.x, region.center.y, static_cast<float>(map->seed + 7));
+			auto offset = noise.fbm(region.center.x, region.center.y, static_cast<float>(world->seed + 7));
 			region.elevation += ((offset * 2.0f) - 1.0f) * 0.25f;
 		}
 	}
@@ -606,13 +632,13 @@ void OtMap::assignElevation() {
 	float minElevation = std::numeric_limits<float>::max();
 	float maxElevation = std::numeric_limits<float>::lowest();
 
-	for (auto& region : map->regions) {
+	for (auto& region : world->regions) {
 		minElevation = std::min(minElevation, region.elevation);
 		maxElevation = std::max(maxElevation, region.elevation);
 	}
 
 	// normalize elevations and redistribute
-	for (auto& region : map->regions) {
+	for (auto& region : world->regions) {
 		if (region.ocean) {
 			float normalizedElevation = region.elevation / minElevation;
 			region.elevation = -std::pow(normalizedElevation, 1.5f);
@@ -624,11 +650,11 @@ void OtMap::assignElevation() {
 	}
 
 	// assign elevations to corners
-	for (auto& corner : map->corners) {
+	for (auto& corner : world->corners) {
 		auto total = 0.0f;
 
 		for (auto region : corner.regions) {
-			total += map->regions[region].elevation;
+			total += world->regions[region].elevation;
 		}
 
 		corner.elevation = total / static_cast<float>(corner.regions.size());
@@ -637,12 +663,12 @@ void OtMap::assignElevation() {
 
 
 //
-//	OtMap::assignMoisture
+//	OtWorldGenerator::assignMoisture
 //
 
-void OtMap::assignMoisture() {
+void OtWorldGenerator::assignMoisture() {
 	// process all water regions
-	for (auto& region : map->regions) {
+	for (auto& region : world->regions) {
 		if (region.water) {
 			region.moisture = 1.0f;
 		}
@@ -651,25 +677,25 @@ void OtMap::assignMoisture() {
 	// process all shoreline regions
 	std::list<size_t> list;
 
-	for (auto shore : map->oceanshores) {
-		map->regions[shore].moisture = 0.9f;
+	for (auto shore : world->oceanshores) {
+		world->regions[shore].moisture = 0.9f;
 		list.push_back(shore);
 	}
 
-	for (auto shore : map->lakeshores) {
-		map->regions[shore].moisture = 0.9f;
+	for (auto shore : world->lakeshores) {
+		world->regions[shore].moisture = 0.9f;
 		list.push_back(shore);
 	}
 
 	// process all other regions
 	while (!list.empty()) {
-		auto& region = map->regions[list.front()];
+		auto& region = world->regions[list.front()];
 		list.pop_front();
 
 		auto newMoisture = region.moisture - 0.2f;
 
 		for (auto n : region.neighbors) {
-			auto& neighbor = map->regions[n];
+			auto& neighbor = world->regions[n];
 
 			if (neighbor.moisture == 0.0f || newMoisture > neighbor.moisture) {
 				neighbor.moisture = newMoisture;
@@ -681,12 +707,12 @@ void OtMap::assignMoisture() {
 	// find lowest moisture level
 	float minMoisture = 0.0f;
 
-	for (auto& region : map->regions) {
+	for (auto& region : world->regions) {
 		minMoisture = std::min(minMoisture, region.moisture);
 	}
 
 	// normalize moisture levels
-	for (auto& region : map->regions) {
+	for (auto& region : world->regions) {
 		if (!region.ocean) {
 			region.moisture = (region.moisture - minMoisture) / (1.0f - minMoisture);
 		}
@@ -695,26 +721,26 @@ void OtMap::assignMoisture() {
 
 
 //
-//	OtMap::assignTemperature
+//	OtWorldGenerator::assignTemperature
 //
 
-void OtMap::assignTemperature() {
-	auto size = static_cast<float>(map->size);
+void OtWorldGenerator::assignTemperature() {
+	auto size = static_cast<float>(world->size);
 
-	for (auto& region : map->regions) {
+	for (auto& region : world->regions) {
 		auto latitude = region.center.y / size;
-		auto bias = std::lerp(map->northBias, map->southBias, latitude);
+		auto bias = std::lerp(world->northBias, world->southBias, latitude);
 		region.temperature = 1.0f - region.elevation + bias;
 	}
 }
 
 
 //
-//	OtMap::assignBiome
+//	OtWorldGenerator::assignBiome
 //
 
-void OtMap::assignBiome() {
-	for (auto& region : map->regions) {
+void OtWorldGenerator::assignBiome() {
+	for (auto& region : world->regions) {
 		if (region.ocean) {
 			region.biome = Biome::ocean;
 
@@ -791,4 +817,180 @@ void OtMap::assignBiome() {
 			}
 		}
 	}
+}
+
+
+//
+//	OtWorldGenerator::Region::serialize
+//
+
+nlohmann::json OtWorldGenerator::Region::serialize() {
+	auto data = nlohmann::json::object();
+
+	data["id"] = id;
+	data["center"] = center;
+	data["distance"] = distance;
+	data["elevation"] = elevation;
+	data["moisture"] = moisture;
+	data["temperature"] = temperature;
+	data["biome"] = biome;
+
+	data["ghost"] = ghost;
+	data["border"] = border;
+	data["water"] = water;
+	data["ocean"] = ocean;
+	data["lake"] = lake;
+	data["oceanshore"] = oceanshore;
+	data["lakeshore"] = lakeshore;
+
+	auto cornersData = nlohmann::json::array();
+	for (auto i : corners) { cornersData.push_back(i); }
+	data["corners"] = cornersData;
+
+	auto neighborsData = nlohmann::json::array();
+	for (auto i : neighbors) { neighborsData.push_back(i); }
+	data["neighbors"] = neighborsData;
+
+	return data;
+}
+
+
+//
+//	OtWorldGenerator::Region::deserialize
+//
+
+void OtWorldGenerator::Region::deserialize(nlohmann::json& data) {
+	id = data.value("id", 0);
+	center = data.value("center", glm::vec2());
+	distance = data.value("distance", invalidValue);
+	elevation = data.value("elevation", invalidValue);
+	moisture = data.value("moisture", 0.0f);
+	temperature = data.value("temperature", 0.0f);
+	biome = data.value("biome", Biome::none);
+
+	ghost = data.value("ghost", false);
+	border = data.value("border", false);
+	water = data.value("water", false);
+	ocean = data.value("ocean", false);
+	lake = data.value("lake", false);
+	oceanshore = data.value("oceanshore", false);
+	lakeshore = data.value("lakeshore", false);
+
+	corners.clear(); for (auto value : data["corners"]) { corners.emplace_back(value); }
+	neighbors.clear(); for (auto value : data["neighbors"]) { neighbors.emplace(value); }
+}
+
+
+//
+//	OtWorldGenerator::Corner::serialize
+//
+
+nlohmann::json OtWorldGenerator::Corner::serialize() {
+	auto data = nlohmann::json::object();
+
+	data["id"] = id;
+	data["position"] = position;
+	data["distance"] = distance;
+	data["elevation"] = elevation;
+
+	auto regionsData = nlohmann::json::array();
+	for (auto i : regions) { regionsData.push_back(i); }
+	data["regions"] = regionsData;
+
+	auto neighborsData = nlohmann::json::array();
+	for (auto i : neighbors) { neighborsData.push_back(i); }
+	data["neighbors"] = neighbors;
+
+	return data;
+}
+
+
+//
+//	OtWorldGenerator::Corner::deserialize
+//
+
+void OtWorldGenerator::Corner::deserialize(nlohmann::json& data) {
+	id = data.value("id", 0);
+	position = data.value("position", glm::vec2());
+	distance = data.value("distance", invalidValue);
+	elevation = data.value("elevation", invalidValue);
+
+	regions.clear(); for (auto value : data["regions"]) { regions.emplace_back(value); }
+	neighbors.clear(); for (auto value : data["neighbors"]) { neighbors.emplace_back(value); }
+}
+
+
+//
+//	OtWorldGenerator::Landscape::serialize
+//
+
+nlohmann::json OtWorldGenerator::Landscape::serialize() {
+	auto data = nlohmann::json::object();
+
+	data["size"] = size;
+	data["seed"] = seed;
+	data["ruggedness"] = ruggedness;
+	data["northBias"] = northBias;
+	data["southBias"] = southBias;
+
+	auto regionsData = nlohmann::json::array();
+	for (auto& region : regions) { regionsData.push_back(region.serialize()); }
+	data["regions"] = regionsData;
+
+	auto cornersData = nlohmann::json::array();
+	for (auto& corner : corners) { cornersData.push_back(corner.serialize()); }
+	data["corners"] = cornersData;
+
+	auto trianglesData = nlohmann::json::array();
+	for (auto i : triangles) { trianglesData.push_back(i); }
+	data["triangles"] = trianglesData;
+
+	auto halfedgesData = nlohmann::json::array();
+	for (auto i : halfedges) { halfedgesData.push_back(i); }
+	data["halfedges"] = halfedgesData;
+
+	auto bordersData = nlohmann::json::array();
+	for (auto i : borders) { bordersData.push_back(i); }
+	data["borders"] = bordersData;
+
+	auto oceansData = nlohmann::json::array();
+	for (auto i : oceans) { oceansData.push_back(i); }
+	data["oceans"] = oceansData;
+
+	auto lakesData = nlohmann::json::array();
+	for (auto i : lakes) { lakesData.push_back(i); }
+	data["lakes"] = lakesData;
+
+	auto oceanshoresData = nlohmann::json::array();
+	for (auto i : oceanshores) { oceanshoresData.push_back(i); }
+	data["oceanshores"] = oceanshoresData;
+
+	auto lakeshoresData = nlohmann::json::array();
+	for (auto i : lakeshores) { lakeshoresData.push_back(i); }
+	data["lakeshores"] = lakeshoresData;
+
+	return data;
+}
+
+
+//
+//	OtWorldGenerator::Landscape::deserialize
+//
+
+void OtWorldGenerator::Landscape::deserialize(nlohmann::json& data) {
+	size = data.value("size", 64);
+	seed = data.value("seed", 37);
+	ruggedness = data.value("ruggedness", 0.4f);
+	northBias = data.value("northBias", -0.2f);
+	southBias = data.value("southBias", 0.2f);
+
+	regions.clear(); for (auto& value : data["regions"]) { regions.emplace_back().deserialize(value); }
+	corners.clear(); for (auto& value : data["corners"]) { corners.emplace_back().deserialize(value); }
+	triangles.clear(); for (auto value : data["triangles"]) { triangles.emplace_back(value); }
+	halfedges.clear(); for (auto value : data["halfedges"]) { halfedges.emplace_back(value); }
+	borders.clear(); for (auto value : data["borders"]) { borders.emplace(value); }
+	oceans.clear(); for (auto value : data["oceans"]) { oceans.emplace(value); }
+	lakes.clear(); for (auto value : data["lakes"]) { lakes.emplace(value); }
+	oceanshores.clear(); for (auto value : data["oceanshores"]) { oceanshores.emplace(value); }
+	lakeshores.clear(); for (auto value : data["lakeshores"]) { lakeshores.emplace(value); }
 }

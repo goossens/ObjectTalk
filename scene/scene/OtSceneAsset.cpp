@@ -11,7 +11,6 @@
 
 
 #include "OtException.h"
-#include "OtLog.h"
 
 #include "OtSceneAsset.h"
 
@@ -37,7 +36,7 @@ OtAssetBase::State OtSceneAsset::load() {
 		return State::ready;
 
 	} catch (const OtException& exception) {
-		OtLogWarning("Can't load scene [{}]: {}", path, exception.what());
+		errorMessage = exception.what();
 		return State::invalid;
 	}
 }

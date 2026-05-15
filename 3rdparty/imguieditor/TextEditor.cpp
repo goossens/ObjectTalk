@@ -1066,13 +1066,11 @@ void TextEditor::handleKeyboardInputs() {
 
 		// handle tabs
 		else if (!config.readOnly && isOptionalShift && ImGui::IsKeyPressed(ImGuiKey_Tab)) {
-			if (cursors.anyHasSelection()) {
-				if (shift) {
-					deindentLines();
+			if (shift) {
+				deindentLines();
 
-				} else {
-					indentLines();
-				}
+			} else if (cursors.anyHasSelection()) {
+				indentLines();
 
 			} else {
 				handleCharacter('\t');
@@ -2180,22 +2178,24 @@ void TextEditor::deindentLines() {
 		auto cursorEnd = cursor->getSelectionEnd();
 
 		for (auto line = cursorStart.line; line <= cursorEnd.line; line++) {
-			// determine how many whitespaces are available at the start with a max of tabSize columns
-			size_t column = 0;
-			size_t index = 0;
+			if (cursorStart == cursorEnd || (DocPos(line, 0) != cursorEnd && document[line].size())) {
+				// determine how many whitespaces are available at the start with a max of tabSize columns
+				size_t column = 0;
+				size_t index = 0;
 
-			while (column < config.tabSize && index < document[line].size() && std::isblank(document[line][index].codepoint)) {
-				column += document[line][index].codepoint == '\t' ? config.tabSize - (column % config.tabSize) : 1;
-				index++;
-			}
+				while (column < config.tabSize && index < document[line].size() && std::isblank(document[line][index].codepoint)) {
+					column += document[line][index].codepoint == '\t' ? config.tabSize - (column % config.tabSize) : 1;
+					index++;
+				}
 
-			// delete that whitespace (if required)
-			DocPos deleteStart(line, 0);
-			DocPos deleteEnd(line, index);
+				// delete that whitespace (if required)
+				DocPos deleteStart(line, 0);
+				DocPos deleteEnd(line, index);
 
-			if (deleteEnd != deleteStart) {
-				deleteText(transaction, deleteStart, deleteEnd);
-				cursors.adjustForDelete(cursor, deleteStart, deleteEnd);
+				if (deleteEnd != deleteStart) {
+					deleteText(transaction, deleteStart, deleteEnd);
+					cursors.adjustForDelete(cursor, deleteStart, deleteEnd);
+				}
 			}
 		}
 	}
@@ -2213,7 +2213,7 @@ void TextEditor::moveUpLines() {
 	if (cursors[0].getSelectionStart().line != 0) {
  		auto transaction = startTransaction();
 
-		for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
+		for (auto cursor = cursors.begin(); cursor <= cursors.end(); cursor++) {
 			auto start = cursor->getSelectionStart();
 			auto end = cursor->getSelectionEnd();
 

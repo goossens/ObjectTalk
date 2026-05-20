@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include "OtException.h"
+
 #include "OtAsset.h"
 #include "OtAssetBase.h"
 #include "OtShape.h"
@@ -36,7 +38,18 @@ public:
 
 protected:
 	// load the asset
-	OtAssetBase::State load() override;
+	OtAssetBase::State load() override {
+		try {
+			// try to load the shape
+			shape.load(path);
+			return State::ready;
+
+		} catch (const OtException& exception) {
+			errorMessage = exception.what();
+			return State::invalid;
+		}
+	}
+
 
 private:
 	// the actual shape

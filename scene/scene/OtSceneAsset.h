@@ -26,7 +26,9 @@
 class OtSceneAsset : public OtAssetBase {
 public:
 	// constructor
-	OtSceneAsset();
+	OtSceneAsset() {
+		scene = std::make_unique<OtScene>();
+	}
 
 	// access the scene
 	inline OtScene* getScene() { return scene.get(); }
@@ -39,7 +41,17 @@ public:
 
 protected:
 	// load the asset
-	OtAssetBase::State load() override;
+	OtAssetBase::State load() override {
+		try {
+			// load the scene
+			scene->load(path);
+			return State::ready;
+
+		} catch (const OtException& exception) {
+			errorMessage = exception.what();
+			return State::invalid;
+		}
+	}
 
 private:
 	// the actual scene

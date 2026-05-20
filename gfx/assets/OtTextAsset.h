@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include "OtException.h"
+
 #include "OtAsset.h"
 #include "OtAssetBase.h"
 
@@ -34,7 +36,17 @@ public:
 
 protected:
 	// load the asset
-	OtAssetBase::State load() override;
+	OtAssetBase::State load() override {
+		try {
+			// try to load the text
+			OtText::load(path, text);
+			return State::ready;
+
+		} catch (const OtException& exception) {
+			errorMessage = exception.what();
+			return State::invalid;
+		}
+	}
 
 	// the actual text
 	std::string text;

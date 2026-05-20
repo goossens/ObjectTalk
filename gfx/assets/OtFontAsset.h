@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include "OtException.h"
+
 #include "OtAsset.h"
 #include "OtAssetBase.h"
 #include "OtFont.h"
@@ -36,7 +38,17 @@ public:
 
 protected:
 	// load the asset
-	OtAssetBase::State load() override;
+	OtAssetBase::State load() override {
+		try {
+			// try to load the font
+			font.load(path);
+			return State::ready;
+
+		} catch (const OtException& exception) {
+			errorMessage = exception.what();
+			return State::invalid;
+		}
+	}
 
 private:
 	// the actual font

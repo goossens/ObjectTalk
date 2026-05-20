@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include "OtException.h"
+
 #include "OtAsset.h"
 #include "OtAssetBase.h"
 

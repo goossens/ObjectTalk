@@ -15,9 +15,10 @@
 #include <string>
 #include <vector>
 
+#include "OtException.h"
+
 #include "OtAsset.h"
 #include "OtAssetBase.h"
-
 #include "OtModel.h"
 
 //
@@ -37,7 +38,17 @@ public:
 
 protected:
 	// load the model
-	OtAssetBase::State load() override;
+	inline OtAssetBase::State load() override {
+		try {
+			// try to load the model
+			model.load(path);
+			return State::ready;
+
+		} catch (const OtException& exception) {
+			errorMessage = exception.what();
+			return State::invalid;
+		}
+	}
 
 private:
 	// the actual model

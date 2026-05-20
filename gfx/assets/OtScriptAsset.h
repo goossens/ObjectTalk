@@ -24,7 +24,10 @@
 class OtScriptAsset : public OtTextAsset {
 public:
 	// compile the script (text) into a module
-	void compile();
+	inline void compile() {
+		module = OtModule::create();
+		module->load(path);
+	}
 
 	// access the script module
 	OtModule& getModule() { return module; }

@@ -107,7 +107,7 @@ void TextEditor::renderFindReplace() {
 		// create window
 		auto availableSpace =
 			ImGui::GetWindowWidth() -
-			(config.showMiniMap ? miniMapWidth : 0.0f) -
+			(config.showMiniMap ? config.miniMapWidth : 0.0f) -
 			(ImGui::GetCurrentWindow()->ScrollbarY ? ImGui::GetStyle().ScrollbarSize : 0.0f);
 
 		ImGui::SetNextWindowPos(

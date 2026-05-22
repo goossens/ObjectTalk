@@ -116,6 +116,8 @@ public:
 	inline bool IsShowLineNumbersEnabled() const { return config.showLineNumbers; }
 	inline void SetShowMiniMapEnabled(bool value) { config.showMiniMap = value; }
 	inline bool IsShowMiniMapEnabled() const { return config.showMiniMap; }
+	inline void SetMiniMapWidth(float value) { config.miniMapWidth = value; }
+	inline float GetMiniMapWidth() const { return config.miniMapWidth; }
 	inline void SetShowScrollbarMiniMapEnabled(bool value) { config.showScrollbarMiniMap = value; }
 	inline bool IsShowScrollbarMiniMapEnabled() const { return config.showScrollbarMiniMap; }
 	inline void SetShowPanScrollIndicatorEnabled(bool value) { config.showPanScrollIndicator = value; }
@@ -818,6 +820,7 @@ protected:
 		bool showTabs = true;
 		bool showLineNumbers = true;
 		bool showMiniMap = false;
+		float miniMapWidth = 120.0f;
 		bool showScrollbarMiniMap = true;
 		bool showMatchingBrackets = true;
 		bool completePairedGlyphs = true;
@@ -1600,8 +1603,7 @@ protected:
 	static constexpr size_t textMargin = 2;
 	static constexpr size_t cursorWidth = 1;
 
-	static constexpr float miniMapWidth = 120.0f; // sizes are expressed in pixels
-	static constexpr float miniMapRowHeight = 3.0f;
+	static constexpr float miniMapRowHeight = 3.0f; // sizes are expressed in logical pixels
 	static constexpr float miniMapTextHeight = 2.0f;
 	static constexpr float miniMapTextWidth = 1.0f;
 	static constexpr float miniMapAlpha = 0.45f;

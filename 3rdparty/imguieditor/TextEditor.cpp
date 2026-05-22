@@ -103,11 +103,11 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 		}
 
 		foldIndicatorOffset = textLeftOffset - glyphSize.x;
-		textRightOffset = visibleSize.x - (config.showMiniMap ? miniMapWidth : 0.0f);
+		textRightOffset = visibleSize.x - (config.showMiniMap ? config.miniMapWidth : 0.0f);
 		miniMapOffset = textRightOffset;
 
 		// determine number of columns at which text will wrap
-		textSize = visibleSize - ImVec2(textLeftOffset + (config.showMiniMap ? miniMapWidth : 0.0f), 0.0f);
+		textSize = visibleSize - ImVec2(textLeftOffset + (config.showMiniMap ? config.miniMapWidth : 0.0f), 0.0f);
 		config.wordWrapColumns = static_cast<size_t>(std::max(std::floor(textSize.x / glyphSize.x), 0.0f));
 
 		// handle possible state changes caused by API calls before first frame or between frames
@@ -705,7 +705,7 @@ void TextEditor::renderMiniMap() {
 			if (row.color) {
 				drawList->AddRectFilled(
 					pos,
-					pos + ImVec2(miniMapWidth, miniMapRowHeight),
+					pos + ImVec2(config.miniMapWidth, miniMapRowHeight),
 					row.color);
 			}
 
@@ -725,7 +725,7 @@ void TextEditor::renderMiniMap() {
 			auto viewPortStart = (firstVisibleRow - firstMiniMapRow) * miniMapRowHeight;
 			auto viewportHeight = (lastVisibleRow - firstVisibleRow) * miniMapRowHeight;
 			auto ViewPortTopLeft = ImGui::GetWindowPos() + ImVec2(miniMapOffset, viewPortStart);
-			auto viewPortBottomRight = ViewPortTopLeft + ImVec2(miniMapWidth, viewportHeight);
+			auto viewPortBottomRight = ViewPortTopLeft + ImVec2(config.miniMapWidth, viewportHeight);
 
 			auto fColor = ImGui::ColorConvertU32ToFloat4(palette.get(Color::text));
 			fColor.w *= miniMapIsScrollbar ? miniMapViewPortActiveAlpha : miniMapViewPortAlpha;
@@ -939,7 +939,7 @@ void TextEditor::updateState() {
 		textLeftOffset +
 		typeSetter.getColumnCount() * glyphSize.x +
 		cursorWidth +
-		(config.showMiniMap ? miniMapWidth : 0.0f);
+		(config.showMiniMap ? config.miniMapWidth : 0.0f);
 
 	auto height = typeSetter.getRowCount() * glyphSize.y;
 	totalSize = ImVec2(width, height);
@@ -1225,10 +1225,7 @@ void TextEditor::handleMouseInteractions() {
 
 	// end minimap scroll (if required)
 	} else if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
-		if (miniMapIsScrollbar) {
-			miniMapIsScrollbar = false;
-		}
-
+		miniMapIsScrollbar = false;
 		selectingText = false;
 
 	// ignore other interactions when the editor is not hovered

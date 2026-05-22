@@ -152,6 +152,12 @@ void OtTextEditor::renderMenus() {
 			ImGui::EndMenu();
 		}
 
+		if (ImGui::BeginMenu("MiniMapWidth")) {
+			float width = editor.GetMiniMapWidth();
+			if (ImGui::SliderFloat("##miniMapWidth", &width, 50.0f, 200.0f)) { editor.SetMiniMapWidth(width); }
+			ImGui::EndMenu();
+		}
+
 		ImGui::Separator();
 
 		bool flag;

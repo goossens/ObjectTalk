@@ -98,4 +98,4 @@ The following tutorials were used in the development of ObjectTalk:
 ## Assets
 
 Some examples use a number of assets (e.g. fonts, images and models) that were reused from other projects.
-A full list with links and licenses can be found in the appropriate asset folders.
+A full list with links and licenses can be found in the appropriate **assets** folders.

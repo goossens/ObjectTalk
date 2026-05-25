@@ -26,14 +26,14 @@
 
 
 //
-//  OtPhaser
+//  OtVibrato
 //
 
-static double OtPhaser_faustpower2_f(double value) {
+static double OtVibrato_faustpower2_f(double value) {
 	return value * value;
 }
 
-class OtPhaser : public OtFaust {
+class OtVibrato : public OtFaust {
 protected:
 	int fSampleRate;
 	double fConst0;
@@ -41,19 +41,16 @@ protected:
 	float fVslider0;
 	double fConst2;
 	int iVec0[2];
-	double fRec0[2];
-	float fVslider1;
-	double fRec10[2];
+	double fRec9[2];
 	double fConst3;
 	double fConst4;
 	double fConst5;
 	double fConst6;
-	float fVslider2;
-	double fRec13[2];
-	double fRec11[2];
+	float fVslider1;
 	double fRec12[2];
+	double fRec10[2];
+	double fRec11[2];
 	double fConst7;
-	double fRec9[3];
 	double fRec8[3];
 	double fRec7[3];
 	double fRec6[3];
@@ -61,17 +58,18 @@ protected:
 	double fRec4[3];
 	double fRec3[3];
 	double fRec2[3];
-	double fRec1[2];
+	double fRec1[3];
+	double fRec0[2];
 
 public:
-	OtPhaser() {
+	OtVibrato() {
 		init(OtAudioSettings::sampleRate);
 	}
 
 	inline void metadata(Meta* m) {
 		m->declare("category", "Modulation");
-		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtPhaser -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
-		m->declare("filename", "OtPhaser.dsp");
+		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtVibrato -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
+		m->declare("filename", "OtVibrato.dsp");
 		m->declare("filters.lib/fir:author", "Julius O. Smith III");
 		m->declare("filters.lib/fir:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/fir:license", "MIT-style STK-4.3 license");
@@ -93,7 +91,7 @@ public:
 		m->declare("maths.lib/license", "LGPL with exception");
 		m->declare("maths.lib/name", "Faust Math Library");
 		m->declare("maths.lib/version", "2.9.0");
-		m->declare("name", "Phaser");
+		m->declare("name", "Vibrato");
 		m->declare("oscillators.lib/name", "Faust Oscillator Library");
 		m->declare("oscillators.lib/version", "1.7.0");
 		m->declare("phaflangers.lib/name", "Faust Phaser and Flanger Library");
@@ -123,13 +121,12 @@ public:
 		fConst4 = 2.0 * fConst3;
 		fConst5 = 1.0 / fConst0;
 		fConst6 = 6.283185307179586 / fConst0;
-		fConst7 = OtPhaser_faustpower2_f(fConst3);
+		fConst7 = OtVibrato_faustpower2_f(fConst3);
 	}
 
 	inline void instanceResetUserInterface() {
-		fVslider0 = static_cast<float>(5e+01);
-		fVslider1 = static_cast<float>(0.0);
-		fVslider2 = static_cast<float>(1.0);
+		fVslider0 = static_cast<float>(0.0);
+		fVslider1 = static_cast<float>(1.0);
 	}
 
 	inline void instanceClear() {
@@ -137,46 +134,43 @@ public:
 			iVec0[l0] = 0;
 		}
 		for (int l1 = 0; l1 < 2; l1 = l1 + 1) {
-			fRec0[l1] = 0.0;
+			fRec9[l1] = 0.0;
 		}
 		for (int l2 = 0; l2 < 2; l2 = l2 + 1) {
-			fRec10[l2] = 0.0;
+			fRec12[l2] = 0.0;
 		}
 		for (int l3 = 0; l3 < 2; l3 = l3 + 1) {
-			fRec13[l3] = 0.0;
+			fRec10[l3] = 0.0;
 		}
 		for (int l4 = 0; l4 < 2; l4 = l4 + 1) {
 			fRec11[l4] = 0.0;
 		}
-		for (int l5 = 0; l5 < 2; l5 = l5 + 1) {
-			fRec12[l5] = 0.0;
+		for (int l5 = 0; l5 < 3; l5 = l5 + 1) {
+			fRec8[l5] = 0.0;
 		}
 		for (int l6 = 0; l6 < 3; l6 = l6 + 1) {
-			fRec9[l6] = 0.0;
+			fRec7[l6] = 0.0;
 		}
 		for (int l7 = 0; l7 < 3; l7 = l7 + 1) {
-			fRec8[l7] = 0.0;
+			fRec6[l7] = 0.0;
 		}
 		for (int l8 = 0; l8 < 3; l8 = l8 + 1) {
-			fRec7[l8] = 0.0;
+			fRec5[l8] = 0.0;
 		}
 		for (int l9 = 0; l9 < 3; l9 = l9 + 1) {
-			fRec6[l9] = 0.0;
+			fRec4[l9] = 0.0;
 		}
 		for (int l10 = 0; l10 < 3; l10 = l10 + 1) {
-			fRec5[l10] = 0.0;
+			fRec3[l10] = 0.0;
 		}
 		for (int l11 = 0; l11 < 3; l11 = l11 + 1) {
-			fRec4[l11] = 0.0;
+			fRec2[l11] = 0.0;
 		}
 		for (int l12 = 0; l12 < 3; l12 = l12 + 1) {
-			fRec3[l12] = 0.0;
+			fRec1[l12] = 0.0;
 		}
-		for (int l13 = 0; l13 < 3; l13 = l13 + 1) {
-			fRec2[l13] = 0.0;
-		}
-		for (int l14 = 0; l14 < 2; l14 = l14 + 1) {
-			fRec1[l14] = 0.0;
+		for (int l13 = 0; l13 < 2; l13 = l13 + 1) {
+			fRec0[l13] = 0.0;
 		}
 	}
 
@@ -200,37 +194,31 @@ public:
 		float* output0 = outputs[0];
 		double fSlow0 = fConst1 * static_cast<double>(fVslider0);
 		double fSlow1 = fConst1 * static_cast<double>(fVslider1);
-		double fSlow2 = fConst1 * static_cast<double>(fVslider2);
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
-			double fTemp0 = static_cast<double>(input0[i0]);
 			iVec0[0] = 1;
-			fRec0[0] = fSlow0 + fConst2 * fRec0[1];
-			fRec10[0] = fSlow1 + fConst2 * fRec10[1];
-			fRec13[0] = fSlow2 + fConst2 * fRec13[1];
-			double fTemp1 = fConst6 * fRec13[0];
-			double fTemp2 = std::sin(fTemp1);
-			double fTemp3 = std::cos(fTemp1);
-			fRec11[0] = fRec12[1] * fTemp2 + fRec11[1] * fTemp3;
-			fRec12[0] = static_cast<double>(1 - iVec0[1]) + fRec12[1] * fTemp3 - fTemp2 * fRec11[1];
-			double fTemp4 = std::cos(fConst5 * (62769.02121872407 * (1.0 - fRec11[0]) + 125.66370614359172));
-			fRec9[0] = fTemp0 + fRec10[0] * fRec1[1] + fConst4 * fRec9[1] * fTemp4 - fConst7 * fRec9[2];
-			fRec8[0] = fRec9[2] + fConst7 * (fRec9[0] - fRec8[2]) - fConst4 * fTemp4 * (fRec9[1] - fRec8[1]);
-			fRec7[0] = fRec8[2] + fConst7 * (fRec8[0] - fRec7[2]) - fConst4 * fTemp4 * (fRec8[1] - fRec7[1]);
-			fRec6[0] = fRec7[2] + fConst7 * (fRec7[0] - fRec6[2]) - fConst4 * fTemp4 * (fRec7[1] - fRec6[1]);
-			fRec5[0] = fRec6[2] + fConst7 * (fRec6[0] - fRec5[2]) - fConst4 * fTemp4 * (fRec6[1] - fRec5[1]);
-			fRec4[0] = fRec5[2] + fConst7 * (fRec5[0] - fRec4[2]) - fConst4 * fTemp4 * (fRec5[1] - fRec4[1]);
-			fRec3[0] = fRec4[2] + fConst7 * (fRec4[0] - fRec3[2]) - fConst4 * fTemp4 * (fRec4[1] - fRec3[1]);
-			fRec2[0] = fRec3[2] + fConst7 * (fRec3[0] - fRec2[2]) - fConst4 * fTemp4 * (fRec3[1] - fRec2[1]);
-			fRec1[0] = fRec2[2] + fConst7 * fRec2[0] - fConst4 * fTemp4 * fRec2[1];
-			output0[i0] = static_cast<float>(fTemp0 * (1.0 - 0.005 * fRec0[0]) + 0.005 * fRec0[0] * fRec1[0]);
+			fRec9[0] = fSlow0 + fConst2 * fRec9[1];
+			fRec12[0] = fSlow1 + fConst2 * fRec12[1];
+			double fTemp0 = fConst6 * fRec12[0];
+			double fTemp1 = std::sin(fTemp0);
+			double fTemp2 = std::cos(fTemp0);
+			fRec10[0] = fRec11[1] * fTemp1 + fRec10[1] * fTemp2;
+			fRec11[0] = static_cast<double>(1 - iVec0[1]) + fRec11[1] * fTemp2 - fTemp1 * fRec10[1];
+			double fTemp3 = std::cos(fConst5 * (62769.02121872407 * (1.0 - fRec10[0]) + 125.66370614359172));
+			fRec8[0] = static_cast<double>(input0[i0]) + fRec9[0] * fRec0[1] + fConst4 * fRec8[1] * fTemp3 - fConst7 * fRec8[2];
+			fRec7[0] = fRec8[2] + fConst7 * (fRec8[0] - fRec7[2]) - fConst4 * fTemp3 * (fRec8[1] - fRec7[1]);
+			fRec6[0] = fRec7[2] + fConst7 * (fRec7[0] - fRec6[2]) - fConst4 * fTemp3 * (fRec7[1] - fRec6[1]);
+			fRec5[0] = fRec6[2] + fConst7 * (fRec6[0] - fRec5[2]) - fConst4 * fTemp3 * (fRec6[1] - fRec5[1]);
+			fRec4[0] = fRec5[2] + fConst7 * (fRec5[0] - fRec4[2]) - fConst4 * fTemp3 * (fRec5[1] - fRec4[1]);
+			fRec3[0] = fRec4[2] + fConst7 * (fRec4[0] - fRec3[2]) - fConst4 * fTemp3 * (fRec4[1] - fRec3[1]);
+			fRec2[0] = fRec3[2] + fConst7 * (fRec3[0] - fRec2[2]) - fConst4 * fTemp3 * (fRec3[1] - fRec2[1]);
+			fRec1[0] = fRec2[2] + fConst7 * (fRec2[0] - fRec1[2]) - fConst4 * fTemp3 * (fRec2[1] - fRec1[1]);
+			fRec0[0] = fRec1[2] + fConst7 * fRec1[0] - fConst4 * fTemp3 * fRec1[1];
+			output0[i0] = static_cast<float>(fRec0[0]);
 			iVec0[1] = iVec0[0];
-			fRec0[1] = fRec0[0];
-			fRec10[1] = fRec10[0];
-			fRec13[1] = fRec13[0];
-			fRec11[1] = fRec11[0];
-			fRec12[1] = fRec12[0];
-			fRec9[2] = fRec9[1];
 			fRec9[1] = fRec9[0];
+			fRec12[1] = fRec12[0];
+			fRec10[1] = fRec10[0];
+			fRec11[1] = fRec11[0];
 			fRec8[2] = fRec8[1];
 			fRec8[1] = fRec8[0];
 			fRec7[2] = fRec7[1];
@@ -245,7 +233,9 @@ public:
 			fRec3[1] = fRec3[0];
 			fRec2[2] = fRec2[1];
 			fRec2[1] = fRec2[0];
+			fRec1[2] = fRec1[1];
 			fRec1[1] = fRec1[0];
+			fRec0[1] = fRec0[0];
 		}
 	}
 
@@ -255,9 +245,6 @@ public:
 		auto spacing = ImGui::GetStyle().ItemSpacing;
 		float width1 = 0.0f;
 		float height1 = 0.0f;
-		width1 += knobWidth;
-		height1 = std::max(height1, knobHeight);
-		width1 += spacing.x;
 		width1 += knobWidth;
 		height1 = std::max(height1, knobHeight);
 		width1 += spacing.x;
@@ -275,10 +262,8 @@ public:
 
 		bool changed = false;
 		ImGui::BeginGroup();
-		ImGui::PushID("Phaser");
+		ImGui::PushID("Vibrato");
 		changed |= editSpeed();
-		ImGui::SameLine();
-		changed |= editDepth();
 		ImGui::SameLine();
 		changed |= editFeedback();
 		ImGui::PopID();
@@ -304,41 +289,34 @@ public:
 
 	struct Parameters {
 		float speed = 1.0f;
-		float depth = 50.0f;
 		float feedback = 0.0f;
 	};
 
 	inline void setParameters([[maybe_unused]] const Parameters& parameters) {
-		fVslider2 = parameters.speed;
-		fVslider0 = parameters.depth;
-		fVslider1 = parameters.feedback;
+		fVslider1 = parameters.speed;
+		fVslider0 = parameters.feedback;
 	}
 
 	inline Parameters getParameters() {
 		Parameters parameters;
-		parameters.speed = fVslider2;
-		parameters.depth = fVslider0;
-		parameters.feedback = fVslider1;
+		parameters.speed = fVslider1;
+		parameters.feedback = fVslider0;
 		return parameters;
 	}
 
 	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
-		callback("speed", &fVslider2, 1.0f);
-		callback("depth", &fVslider0, 50.0f);
-		callback("feedback", &fVslider1, 0.0f);
+		callback("speed", &fVslider1, 1.0f);
+		callback("feedback", &fVslider0, 0.0f);
 	}
 
-	inline bool editSpeed() { return OtAudioUi::knob("Speed", &fVslider2, 0.001f, 20.0f, "%.01fhz", false); }
-	inline bool editDepth() { return OtAudioUi::knob("Depth", &fVslider0, 0.0f, 100.0f, "%.0f%%", false); }
-	inline bool editFeedback() { return OtAudioUi::knob("Feedback", &fVslider1, -1.0f, 1.0f, "%.2f", false); }
+	inline bool editSpeed() { return OtAudioUi::knob("Speed", &fVslider1, 0.001f, 20.0f, "%.01fhz", false); }
+	inline bool editFeedback() { return OtAudioUi::knob("Feedback", &fVslider0, -1.0f, 1.0f, "%.2f", false); }
 
-	inline void setSpeed(float value) { fVslider2 = value; }
-	inline void setDepth(float value) { fVslider0 = value; }
-	inline void setFeedback(float value) { fVslider1 = value; }
+	inline void setSpeed(float value) { fVslider1 = value; }
+	inline void setFeedback(float value) { fVslider0 = value; }
 
-	inline float getSpeed() { return fVslider2; }
-	inline float getDepth() { return fVslider0; }
-	inline float getFeedback() { return fVslider1; }
+	inline float getSpeed() { return fVslider1; }
+	inline float getFeedback() { return fVslider0; }
 
 private:
 	bool initialized = false;

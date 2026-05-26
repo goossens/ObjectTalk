@@ -148,7 +148,7 @@
 					"type": "mono"
 				}
 			],
-			"leftDelayTime": 0.0,
+			"leftDelayTime": 1.0,
 			"outputs": [
 				{
 					"id": 1472752109,
@@ -218,6 +218,21 @@
 			"type": "Spectrum Analyzer",
 			"x": 1056.0,
 			"y": 430.0
+		},
+		{
+			"id": 1536228948,
+			"inputs": [
+				{
+					"id": 2823322911,
+					"name": "Input",
+					"type": "stereo"
+				}
+			],
+			"outputs": [],
+			"title": "dBFS",
+			"type": "dBFS",
+			"x": 1219.0,
+			"y": 148.0
 		}
 	],
 	"metadata": {},
@@ -261,6 +276,11 @@
 			"from": 4212856556,
 			"id": 1327100465,
 			"to": 2872103593
+		},
+		{
+			"from": 2380854781,
+			"id": 2067444759,
+			"to": 2823322911
 		}
 	]
 }

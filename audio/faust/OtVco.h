@@ -31,8 +31,9 @@
 
 class OtVcoSIG0 {
 protected:
-	int iVec0[2];
-	int iRec0[2];
+	int iVec1[2];
+	int iRec1[2];
+	int fSampleRate;
 
 public:
 	int getNumInputsOtVcoSIG0() {
@@ -43,21 +44,22 @@ public:
 	}
 
 	void instanceInitOtVcoSIG0([[maybe_unused]] int sample_rate) {
-		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
-			iVec0[l0] = 0;
-		}
+		fSampleRate = sample_rate;
 		for (int l1 = 0; l1 < 2; l1 = l1 + 1) {
-			iRec0[l1] = 0;
+			iVec1[l1] = 0;
+		}
+		for (int l2 = 0; l2 < 2; l2 = l2 + 1) {
+			iRec1[l2] = 0;
 		}
 	}
 
 	void fillOtVcoSIG0(int count, double* table) {
 		for (int i1 = 0; i1 < count; i1 = i1 + 1) {
-			iVec0[0] = 1;
-			iRec0[0] = (iVec0[1] + iRec0[1]) % 65536;
-			table[i1] = std::sin(9.587379924285257e-05 * static_cast<double>(iRec0[0]));
-			iVec0[1] = iVec0[0];
-			iRec0[1] = iRec0[0];
+			iVec1[0] = 1;
+			iRec1[0] = (iVec1[1] + iRec1[1]) % 65536;
+			table[i1] = std::sin(9.587379924285257e-05 * static_cast<double>(iRec1[0]));
+			iVec1[1] = iVec1[0];
+			iRec1[1] = iRec1[0];
 		}
 	}
 
@@ -73,23 +75,25 @@ static double OtVco_faustpower2_f(double value) {
 
 class OtVco : public OtFaust {
 protected:
+	int iVec0[2];
 	float fHslider0;
-	int iVec1[2];
 	int fSampleRate;
 	double fConst0;
 	double fConst1;
-	double fRec1[2];
+	double fRec2[2];
 	double fConst2;
 	double fConst3;
-	double fRec3[2];
+	double fRec4[2];
 	double fVec2[2];
 	int IOTA0;
 	double fVec3[4096];
 	double fConst4;
-	double fRec2[2];
+	double fRec3[2];
 	double fConst5;
-	double fRec4[2];
+	double fRec5[2];
 	double fConst6;
+	double fVec4[2];
+	double fRec0[2];
 
 public:
 	OtVco() {
@@ -102,12 +106,18 @@ public:
 		m->declare("category", "Generator");
 		m->declare("compile_options", "-lang cpp -fpga-mem-th 4 -ct 1 -cn OtVco -scn OtFaust -es 1 -mcd 16 -mdd 1024 -mdy 33 -double -ftz 0");
 		m->declare("filename", "OtVco.dsp");
+		m->declare("filters.lib/dcblocker:author", "Julius O. Smith III");
+		m->declare("filters.lib/dcblocker:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/dcblocker:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/lowpass0_highpass1", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/name", "Faust Filters Library");
 		m->declare("filters.lib/pole:author", "Julius O. Smith III");
 		m->declare("filters.lib/pole:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/pole:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/version", "1.7.1");
+		m->declare("filters.lib/zero:author", "Julius O. Smith III");
+		m->declare("filters.lib/zero:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/zero:license", "MIT-style STK-4.3 license");
 		m->declare("license", "MIT");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
@@ -122,7 +132,7 @@ public:
 		m->declare("oscillators.lib/saw2ptr:license", "STK-4.3");
 		m->declare("oscillators.lib/sawN:author", "Julius O. Smith III");
 		m->declare("oscillators.lib/sawN:license", "STK-4.3");
-		m->declare("oscillators.lib/version", "1.6.0");
+		m->declare("oscillators.lib/version", "1.7.0");
 		m->declare("platform.lib/name", "Generic Platform Library");
 		m->declare("platform.lib/version", "1.3.0");
 	}
@@ -157,14 +167,14 @@ public:
 	}
 
 	inline void instanceClear() {
-		for (int l2 = 0; l2 < 2; l2 = l2 + 1) {
-			iVec1[l2] = 0;
+		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
+			iVec0[l0] = 0;
 		}
 		for (int l3 = 0; l3 < 2; l3 = l3 + 1) {
-			fRec1[l3] = 0.0;
+			fRec2[l3] = 0.0;
 		}
 		for (int l4 = 0; l4 < 2; l4 = l4 + 1) {
-			fRec3[l4] = 0.0;
+			fRec4[l4] = 0.0;
 		}
 		for (int l5 = 0; l5 < 2; l5 = l5 + 1) {
 			fVec2[l5] = 0.0;
@@ -174,10 +184,16 @@ public:
 			fVec3[l6] = 0.0;
 		}
 		for (int l7 = 0; l7 < 2; l7 = l7 + 1) {
-			fRec2[l7] = 0.0;
+			fRec3[l7] = 0.0;
 		}
 		for (int l8 = 0; l8 < 2; l8 = l8 + 1) {
-			fRec4[l8] = 0.0;
+			fRec5[l8] = 0.0;
+		}
+		for (int l9 = 0; l9 < 2; l9 = l9 + 1) {
+			fVec4[l9] = 0.0;
+		}
+		for (int l10 = 0; l10 < 2; l10 = l10 + 1) {
+			fRec0[l10] = 0.0;
 		}
 	}
 
@@ -207,43 +223,48 @@ public:
 		int iSlow5 = fSlow0 >= 6.0;
 		int iSlow6 = fSlow0 >= 5.0;
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
-			iVec1[0] = 1;
-			int iTemp0 = 1 - iVec1[1];
+			iVec0[0] = 1;
+			int iTemp0 = 1 - iVec0[1];
 			double fTemp1 = static_cast<double>(input0[i0]);
-			double fTemp2 = ((iTemp0) ? 0.0 : fRec1[1] + fConst1 * fTemp1);
-			fRec1[0] = fTemp2 - std::floor(fTemp2);
+			double fTemp2 = ((iTemp0) ? 0.0 : fRec2[1] + fConst1 * fTemp1);
+			fRec2[0] = fTemp2 - std::floor(fTemp2);
 			double fTemp3 = std::max<double>(fTemp1, 23.44894968246214);
 			double fTemp4 = std::max<double>(2e+01, std::fabs(fTemp3));
-			double fTemp5 = ((iTemp0) ? 0.0 : fRec3[1] + fConst1 * fTemp4);
-			fRec3[0] = fTemp5 - std::floor(fTemp5);
-			double fTemp6 = OtVco_faustpower2_f(2.0 * fRec3[0] + -1.0);
+			double fTemp5 = ((iTemp0) ? 0.0 : fRec4[1] + fConst1 * fTemp4);
+			fRec4[0] = fTemp5 - std::floor(fTemp5);
+			double fTemp6 = OtVco_faustpower2_f(2.0 * fRec4[0] + -1.0);
 			fVec2[0] = fTemp6;
-			double fTemp7 = static_cast<double>(iVec1[1]) * (fTemp6 - fVec2[1]) / fTemp4;
+			double fTemp7 = static_cast<double>(iVec0[1]) * (fTemp6 - fVec2[1]) / fTemp4;
 			fVec3[IOTA0 & 4095] = fTemp7;
 			double fTemp8 = std::max<double>(0.0, std::min<double>(2047.0, fConst4 / fTemp3));
 			int iTemp9 = static_cast<int>(fTemp8);
 			double fTemp10 = std::floor(fTemp8);
 			double fTemp11 = fConst3 * (fTemp7 - fVec3[(IOTA0 - iTemp9) & 4095] * (fTemp10 + (1.0 - fTemp8)) - (fTemp8 - fTemp10) * fVec3[(IOTA0 - (iTemp9 + 1)) & 4095]);
-			fRec2[0] = 0.999 * fRec2[1] + fTemp11;
-			double fTemp12 = fTemp1 * fRec2[0];
+			fRec3[0] = 0.999 * fRec3[1] + fTemp11;
+			double fTemp12 = fTemp1 * fRec3[0];
 			double fTemp13 = std::max<double>(2.220446049250313e-16, std::fabs(fTemp1));
-			double fTemp14 = fRec4[1] + fConst1 * fTemp13;
+			double fTemp14 = fRec5[1] + fConst1 * fTemp13;
 			double fTemp15 = fTemp14 + -1.0;
 			int iTemp16 = fTemp15 < 0.0;
-			fRec4[0] = ((iTemp16) ? fTemp14 : fTemp15);
-			double fRec5 = ((iTemp16) ? fTemp14 : fTemp14 + (1.0 - fConst0 / fTemp13) * fTemp15);
-			double fTemp17 = 2.0 * fRec5 + -1.0;
+			fRec5[0] = ((iTemp16) ? fTemp14 : fTemp15);
+			double fRec6 = ((iTemp16) ? fTemp14 : fTemp14 + (1.0 - fConst0 / fTemp13) * fTemp15);
+			double fTemp17 = 2.0 * fRec6 + -1.0;
 			double fTemp18 = std::max<double>(0.0, std::min<double>(2047.0, fConst6 / fTemp3));
 			int iTemp19 = static_cast<int>(fTemp18);
 			double fTemp20 = std::floor(fTemp18);
-			output0[i0] = static_cast<float>(((iSlow1) ? ((iSlow5) ? fConst3 * (fTemp7 - fVec3[(IOTA0 - iTemp19) & 4095] * (fTemp20 + (1.0 - fTemp18)) - (fTemp18 - fTemp20) * fVec3[(IOTA0 - (iTemp19 + 1)) & 4095]) : ((iSlow6) ? fTemp11 : fTemp17)) : ((iSlow2) ? ((iSlow4) ? fConst5 * fTemp12 + 0.25 * fTemp17 : fConst2 * fTemp12) : ((iSlow3) ? ftbl0OtVcoSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec1[0]), 65535))] : 0.0))));
-			iVec1[1] = iVec1[0];
-			fRec1[1] = fRec1[0];
-			fRec3[1] = fRec3[0];
-			fVec2[1] = fVec2[0];
-			IOTA0 = IOTA0 + 1;
+			double fTemp21 = ((iSlow1) ? ((iSlow5) ? fConst3 * (fTemp7 - fVec3[(IOTA0 - iTemp19) & 4095] * (fTemp20 + (1.0 - fTemp18)) - (fTemp18 - fTemp20) * fVec3[(IOTA0 - (iTemp19 + 1)) & 4095]) : ((iSlow6) ? fTemp11 : fTemp17)) : ((iSlow2) ? ((iSlow4) ? fConst5 * fTemp12 + 0.25 * fTemp17 : fConst2 * fTemp12) : ((iSlow3) ? ftbl0OtVcoSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0 * fRec2[0]), 65535))] : 0.0)));
+			fVec4[0] = fTemp21;
+			fRec0[0] = 0.995 * fRec0[1] + fTemp21 - fVec4[1];
+			output0[i0] = static_cast<float>(fRec0[0]);
+			iVec0[1] = iVec0[0];
 			fRec2[1] = fRec2[0];
 			fRec4[1] = fRec4[0];
+			fVec2[1] = fVec2[0];
+			IOTA0 = IOTA0 + 1;
+			fRec3[1] = fRec3[0];
+			fRec5[1] = fRec5[0];
+			fVec4[1] = fVec4[0];
+			fRec0[1] = fRec0[0];
 		}
 	}
 

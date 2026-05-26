@@ -25,7 +25,7 @@
 			"title": "MIDI Input",
 			"type": "MIDI Input",
 			"x": 39.0,
-			"y": 73.0
+			"y": 57.0
 		},
 		{
 			"id": 1345981589,
@@ -94,8 +94,8 @@
 			"rightDelayTime": 0.0,
 			"title": "Mono to Stereo",
 			"type": "Mono to Stereo",
-			"x": 776.0,
-			"y": 67.0
+			"x": 772.0,
+			"y": 57.0
 		},
 		{
 			"id": 2077397141,
@@ -110,7 +110,7 @@
 			"title": "Speaker Out",
 			"type": "Speaker Out",
 			"x": 1111.0,
-			"y": 67.0
+			"y": 57.0
 		},
 		{
 			"id": 3919793741,
@@ -126,6 +126,37 @@
 			"type": "MIDI Probe",
 			"x": 419.0,
 			"y": 29.0
+		},
+		{
+			"id": 3533863784,
+			"inputs": [
+				{
+					"attenuation": 1.0,
+					"id": 2995444076,
+					"name": "Input",
+					"type": "mono"
+				}
+			],
+			"outputs": [],
+			"title": "Spectrum Analyzer",
+			"type": "Spectrum Analyzer",
+			"x": 1111.0,
+			"y": 332.0
+		},
+		{
+			"id": 124683745,
+			"inputs": [
+				{
+					"id": 2095810967,
+					"name": "Input",
+					"type": "stereo"
+				}
+			],
+			"outputs": [],
+			"title": "dBFS",
+			"type": "Vu Meter",
+			"x": 1254.0,
+			"y": 57.0
 		}
 	],
 	"metadata": {},
@@ -154,6 +185,16 @@
 			"from": 414077931,
 			"id": 3180346217,
 			"to": 1591731273
+		},
+		{
+			"from": 414077931,
+			"id": 3475394669,
+			"to": 2995444076
+		},
+		{
+			"from": 72590400,
+			"id": 1860376197,
+			"to": 2095810967
 		}
 	]
 }

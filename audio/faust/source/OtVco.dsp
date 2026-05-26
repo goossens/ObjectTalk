@@ -17,7 +17,7 @@ osc(freq, wf) =
 	os.triangle(freq) * 0.75 + os.sawtooth(freq) * 0.25,
 	os.sawtooth(freq),
 	os.square(freq),
-	os.pulsetrain(freq, 0.7) : ba.selectn(7, wf);
+	os.pulsetrain(freq, 0.7) : ba.selectn(7, wf) : fi.dcblocker;
 
 wf = hslider("[1]WaveForm", 1, 0, 7, 1);
 

@@ -74,4 +74,4 @@ process =
 	vco(vco1WaveForm, vco1Frequency * ba.cent2ratio(vco1Tuning)),
 	vco(vco2WaveForm, vco2Frequency * ba.cent2ratio(vco2Tuning)),
 	no.noise,
-	no.pink_noise : mixer : vcf * vca;
+	no.pink_noise : mixer : vcf * vca : fi.dcblocker;

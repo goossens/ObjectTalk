@@ -55,7 +55,7 @@ public:
 		}
 	}
 
-	static constexpr const char* circuitName = "dBFS";
+	static constexpr const char* circuitName = "Vu Meter";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::probe;
 
 private:

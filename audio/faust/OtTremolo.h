@@ -89,7 +89,7 @@ public:
 
 	inline void instanceResetUserInterface() {
 		fVslider0 = static_cast<float>(5e+01);
-		fVslider1 = static_cast<float>(5.0);
+		fVslider1 = static_cast<float>(8.0);
 	}
 
 	inline void instanceClear() {
@@ -199,7 +199,7 @@ public:
 	}
 
 	struct Parameters {
-		float speed = 5.0f;
+		float speed = 8.0f;
 		float depth = 50.0f;
 	};
 
@@ -216,7 +216,7 @@ public:
 	}
 
 	inline void iterateParameters([[maybe_unused]] std::function<void(const char*, float*, float)> callback) override {
-		callback("speed", &fVslider1, 5.0f);
+		callback("speed", &fVslider1, 8.0f);
 		callback("depth", &fVslider0, 50.0f);
 	}
 

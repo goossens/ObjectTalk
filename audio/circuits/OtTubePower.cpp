@@ -37,6 +37,7 @@ public:
 	inline void configure() override {
 		audioInput = this->addInputPin("Input", OtCircuitPinClass::Type::mono);
 		audioOutput = this->addOutputPin("Output", OtCircuitPinClass::Type::mono);
+		setOnOffToggle(true);
 	}
 
 	// render custom fields
@@ -93,44 +94,49 @@ public:
 				float input[OtAudioSettings::bufferSize];
 				audioInput->getSamples(input);
 
-				auto in = input;
-				auto out = output;
+				if (isOn()) {
+					auto in = input;
+					auto out = output;
 
-				switch (tube) {
-					case Tube::tubeSingleEndedEL84:
-						singleEndedEL84.setPresence(presence);
-						singleEndedEL84.setFeedback(feedback);
-						singleEndedEL84.setVolume(volume);
-						singleEndedEL84.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+					switch (tube) {
+						case Tube::tubeSingleEndedEL84:
+							singleEndedEL84.setPresence(presence);
+							singleEndedEL84.setFeedback(feedback);
+							singleEndedEL84.setVolume(volume);
+							singleEndedEL84.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
 
-					case Tube::tubeSingleEnded6V6:
-						singleEnded6V6.setPresence(presence);
-						singleEnded6V6.setFeedback(feedback);
-						singleEnded6V6.setVolume(volume);
-						singleEnded6V6.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+						case Tube::tubeSingleEnded6V6:
+							singleEnded6V6.setPresence(presence);
+							singleEnded6V6.setFeedback(feedback);
+							singleEnded6V6.setVolume(volume);
+							singleEnded6V6.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
 
-					case Tube::tubePushPullEL34:
-						pushPullEL34.setPresence(presence);
-						pushPullEL34.setFeedback(feedback);
-						pushPullEL34.setVolume(volume);
-						pushPullEL34.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+						case Tube::tubePushPullEL34:
+							pushPullEL34.setPresence(presence);
+							pushPullEL34.setFeedback(feedback);
+							pushPullEL34.setVolume(volume);
+							pushPullEL34.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
 
-					case Tube::tubePushPullEL84:
-						pushPullEL84.setPresence(presence);
-						pushPullEL84.setFeedback(feedback);
-						pushPullEL84.setVolume(volume);
-						pushPullEL84.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+						case Tube::tubePushPullEL84:
+							pushPullEL84.setPresence(presence);
+							pushPullEL84.setFeedback(feedback);
+							pushPullEL84.setVolume(volume);
+							pushPullEL84.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
 
-					case Tube::tubePushPull6L6:
-						pushPull6L6.setPresence(presence);
-						pushPull6L6.setFeedback(feedback);
-						pushPull6L6.setVolume(volume);
-						pushPull6L6.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+						case Tube::tubePushPull6L6:
+							pushPull6L6.setPresence(presence);
+							pushPull6L6.setFeedback(feedback);
+							pushPull6L6.setVolume(volume);
+							pushPull6L6.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
+					}
+
+				} else {
+					std::copy(input, input + OtAudioSettings::bufferSize, output);
 				}
 
 			} else {

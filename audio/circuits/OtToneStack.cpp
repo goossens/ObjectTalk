@@ -42,6 +42,7 @@ public:
 	inline void configure() override {
 		audioInput = this->addInputPin("Input", OtCircuitPinClass::Type::mono);
 		audioOutput = this->addOutputPin("Output", OtCircuitPinClass::Type::mono);
+		setOnOffToggle(true);
 	}
 
 	// render custom fields
@@ -104,79 +105,84 @@ public:
 				float input[OtAudioSettings::bufferSize];
 				audioInput->getSamples(input);
 
-				auto in = input;
-				auto out = output;
+				if (isOn()) {
+					auto in = input;
+					auto out = output;
 
-				switch (tonestackType) {
-					case Type::ampeg:
-						ampeg.setBass(bass);
-						ampeg.setMiddle(middle);
-						ampeg.setTreble(treble);
-						ampeg.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+					switch (tonestackType) {
+						case Type::ampeg:
+							ampeg.setBass(bass);
+							ampeg.setMiddle(middle);
+							ampeg.setTreble(treble);
+							ampeg.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
 
-					case Type::bogner:
-						bogner.setBass(bass);
-						bogner.setMiddle(middle);
-						bogner.setTreble(treble);
-						bogner.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+						case Type::bogner:
+							bogner.setBass(bass);
+							bogner.setMiddle(middle);
+							bogner.setTreble(treble);
+							bogner.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
 
-					case Type::fender:
-						fender.setBass(bass);
-						fender.setMiddle(middle);
-						fender.setTreble(treble);
-						fender.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+						case Type::fender:
+							fender.setBass(bass);
+							fender.setMiddle(middle);
+							fender.setTreble(treble);
+							fender.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
 
-					case Type::ibanez:
-						ibanez.setBass(bass);
-						ibanez.setMiddle(middle);
-						ibanez.setTreble(treble);
-						ibanez.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+						case Type::ibanez:
+							ibanez.setBass(bass);
+							ibanez.setMiddle(middle);
+							ibanez.setTreble(treble);
+							ibanez.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
 
-					case Type::marshall:
-						marshall.setBass(bass);
-						marshall.setMiddle(middle);
-						marshall.setTreble(treble);
-						marshall.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+						case Type::marshall:
+							marshall.setBass(bass);
+							marshall.setMiddle(middle);
+							marshall.setTreble(treble);
+							marshall.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
 
-					case Type::mesa:
-						mesa.setBass(bass);
-						mesa.setMiddle(middle);
-						mesa.setTreble(treble);
-						mesa.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+						case Type::mesa:
+							mesa.setBass(bass);
+							mesa.setMiddle(middle);
+							mesa.setTreble(treble);
+							mesa.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
 
-					case Type::peavey:
-						peavey.setBass(bass);
-						peavey.setMiddle(middle);
-						peavey.setTreble(treble);
-						peavey.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+						case Type::peavey:
+							peavey.setBass(bass);
+							peavey.setMiddle(middle);
+							peavey.setTreble(treble);
+							peavey.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
 
-					case Type::roland:
-						roland.setBass(bass);
-						roland.setMiddle(middle);
-						roland.setTreble(treble);
-						roland.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+						case Type::roland:
+							roland.setBass(bass);
+							roland.setMiddle(middle);
+							roland.setTreble(treble);
+							roland.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
 
-					case Type::soldano:
-						soldano.setBass(bass);
-						soldano.setMiddle(middle);
-						soldano.setTreble(treble);
-						soldano.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+						case Type::soldano:
+							soldano.setBass(bass);
+							soldano.setMiddle(middle);
+							soldano.setTreble(treble);
+							soldano.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
 
-					case Type::vox:
-						vox.setBass(bass);
-						vox.setMiddle(middle);
-						vox.setTreble(treble);
-						vox.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+						case Type::vox:
+							vox.setBass(bass);
+							vox.setMiddle(middle);
+							vox.setTreble(treble);
+							vox.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
+					}
+
+				} else {
+					std::copy(input, input + OtAudioSettings::bufferSize, output);
 				}
 
 			} else {

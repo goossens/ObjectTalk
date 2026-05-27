@@ -724,7 +724,7 @@ void OtNodes::evaluate() {
 		needsEvaluating = true;
 	}
 
-	// update all the nodes and see if we have to (re)run all nodes
+	// update all the nodes and see if we have to (re)evaluate them
 	for (auto& node : nodes) {
 		needsEvaluating |= node->onUpdate();
 		needsEvaluating |= node->needsEvaluating;

@@ -351,8 +351,9 @@ void OtAudioWidget::renderCircuit(ImDrawList* drawlist, OtCircuit circuit) {
 
 	// handle mouse interactions with header
 	bool startCircuitRenaming = false;
-	ImGui::SetCursorScreenPos(topLeft);
-	ImGui::InvisibleButton("", headerBottomRight - topLeft);
+	ImVec2 onOffOffset{circuit->hasOnOffToggle() ? OtUi::smallToggleButtonWidth() : 0.0f, 0.0f};
+	ImGui::SetCursorScreenPos(topLeft + onOffOffset);
+	ImGui::InvisibleButton("", headerBottomRight - topLeft - onOffOffset * 2.0f);
 
 	if (ImGui::IsItemHovered()) {
 		// the header doesn't count as the circuit content area
@@ -365,6 +366,14 @@ void OtAudioWidget::renderCircuit(ImDrawList* drawlist, OtCircuit circuit) {
 				startCircuitRenaming = true;
 			}
 		}
+	}
+
+	// render on/off toggle if required
+	if (circuit->hasOnOffToggle()) {
+		auto pos = ImGui::GetCursorScreenPos();
+		ImGui::SetCursorScreenPos(topLeft + ImVec2(circuitSize.x, 0) - onOffOffset);
+		OtUi::smallToggleButton("##onOff", &circuit->on);
+		ImGui::SetCursorScreenPos(pos);
 	}
 
 	// render title
@@ -581,6 +590,9 @@ void OtAudioWidget::calculateCircuitSize(OtCircuit circuit) {
 	// determine widest line
 	// first we look at circuit title width
 	auto w = ImGui::CalcTextSize(circuit->title.c_str()).x;
+
+	// add possible on/off toggle width
+	w += circuit->hasOnOffToggle() ? OtUi::toggleButtonWidth() * 2.0f : 0.0f;
 
 	// then we look at each pin
 	circuit->eachPin([&](OtCircuitPin pin) {

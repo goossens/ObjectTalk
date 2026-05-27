@@ -36,6 +36,7 @@ public:
 	inline void configure() override {
 		audioInput = this->addInputPin("Input", OtCircuitPinClass::Type::mono);
 		audioOutput = this->addOutputPin("Output", OtCircuitPinClass::Type::mono);
+		setOnOffToggle(true);
 	}
 
 	// render custom fields
@@ -88,33 +89,38 @@ public:
 				float input[OtAudioSettings::bufferSize];
 				audioInput->getSamples(input);
 
-				auto in = input;
-				auto out = output;
+				if (isOn()) {
+					auto in = input;
+					auto out = output;
 
-				switch (tube) {
-					case Tube::tube12at7:
-						tube12at7.setGain(gain);
-						tube12at7.setVolume(volume);
-						tube12at7.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+					switch (tube) {
+						case Tube::tube12at7:
+							tube12at7.setGain(gain);
+							tube12at7.setVolume(volume);
+							tube12at7.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
 
-					case Tube::tube12au7:
-						tube12au7.setGain(gain);
-						tube12au7.setVolume(volume);
-						tube12au7.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+						case Tube::tube12au7:
+							tube12au7.setGain(gain);
+							tube12au7.setVolume(volume);
+							tube12au7.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
 
-					case Tube::tube12ax7:
-						tube12ax7.setGain(gain);
-						tube12ax7.setVolume(volume);
-						tube12ax7.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+						case Tube::tube12ax7:
+							tube12ax7.setGain(gain);
+							tube12ax7.setVolume(volume);
+							tube12ax7.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
 
-					case Tube::tube12ay7:
-						tube12ay7.setGain(gain);
-						tube12ay7.setVolume(volume);
-						tube12ay7.compute(OtAudioSettings::bufferSize, &in, &out);
-						break;
+						case Tube::tube12ay7:
+							tube12ay7.setGain(gain);
+							tube12ay7.setVolume(volume);
+							tube12ay7.compute(OtAudioSettings::bufferSize, &in, &out);
+							break;
+					}
+
+				} else {
+					std::copy(input, input + OtAudioSettings::bufferSize, output);
 				}
 
 			} else {

@@ -71,7 +71,7 @@ public:
 		return changed;
 	}
 
-	// toggle buttons based on float value
+	// toggle buttons based on a float value
 	static bool toggleButton(const char* label, float* value);
 	static bool smallToggleButton(const char* label, float* value);
 	static float smallToggleButtonWidth();

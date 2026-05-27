@@ -34,6 +34,7 @@ public:
 	inline void configure() override {
 		audioInput = this->addInputPin("Input", OtCircuitPinClass::Type::mono);
 		audioOutput = this->addOutputPin("Output", OtCircuitPinClass::Type::mono);
+		setOnOffToggle(true);
 		setCabinetIR();
 	}
 
@@ -95,7 +96,13 @@ public:
 			if (audioInput->isSourceConnected()) {
 				float input[OtAudioSettings::bufferSize];
 				audioInput->getSamples(input);
-				convolver.process(input, output, OtAudioSettings::bufferSize);
+
+				if (isOn()) {
+					convolver.process(input, output, OtAudioSettings::bufferSize);
+
+				} else {
+					std::copy(input, input + OtAudioSettings::bufferSize, output);
+				}
 
 			} else {
 				std::fill(output, output + OtAudioSettings::bufferSize, 0.0f);

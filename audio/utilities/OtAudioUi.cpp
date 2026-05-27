@@ -163,7 +163,7 @@ bool OtAudioUi::smallToggleButton(const char* label, float* value) {
 //
 
 float OtAudioUi::smallToggleButtonWidth() {
-	return ImGui::GetFrameHeight() * 1.4f;;
+	return ImGui::GetFrameHeight() * 1.4f;
 }
 
 

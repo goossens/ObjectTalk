@@ -75,9 +75,11 @@ public:
 	static void header(const char* label, float width=0.0f);
 	static float headerWidth(const char* label);
 
-	// toggle button
+	// toggle buttons
 	static bool toggleButton(const char* label, bool* value);
 	static float toggleButtonWidth();
+	static bool smallToggleButton(const char* label, bool* value);
+	static float smallToggleButtonWidth();
 
 	// latch button
 	static bool latchButton(const char* label, bool* value, const ImVec2& size=ImVec2(0.0f, 0.0f));

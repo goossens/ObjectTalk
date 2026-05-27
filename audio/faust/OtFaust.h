@@ -110,6 +110,8 @@ public:
 
 		audioInput = this->addInputPin("Input", OtCircuitPinClass::Type::mono);
 		audioOutput = this->addOutputPin("Output", OtCircuitPinClass::Type::mono);
+
+		this->setOnOffToggle(true);
 	}
 
 	// process samples
@@ -117,14 +119,20 @@ public:
 		if (audioOutput->isDestinationConnected()) {
 			if (audioInput->isSourceConnected()) {
 				float input[OtAudioSettings::bufferSize];
-				float output[OtAudioSettings::bufferSize];
-
-				auto in = input;
-				auto out = output;
-
 				audioInput->getSamples(input);
-				this->dsp.compute(OtAudioSettings::bufferSize, &in, &out);
-				audioOutput->setSamples(output);
+
+				if (this->isOn()) {
+					float output[OtAudioSettings::bufferSize];
+
+					auto in = input;
+					auto out = output;
+
+					this->dsp.compute(OtAudioSettings::bufferSize, &in, &out);
+					audioOutput->setSamples(output);
+
+				} else {
+					audioOutput->setSamples(input);
+				}
 
 			} else {
 				audioOutput->setSamples(0.0f);
@@ -153,6 +161,8 @@ public:
 
 		audioInput = this->addInputPin("Input", OtCircuitPinClass::Type::stereo);
 		audioOutput = this->addOutputPin("Output", OtCircuitPinClass::Type::stereo);
+
+		this->setOnOffToggle(true);
 	}
 
 	// process samples
@@ -160,14 +170,20 @@ public:
 		if (audioOutput->isDestinationConnected()) {
 			if (audioInput->isSourceConnected()) {
 				float input[OtAudioSettings::bufferSize * 2];
-				float output[OtAudioSettings::bufferSize * 2];
-
-				float* in[] = { input, input + OtAudioSettings::bufferSize };
-				float* out[] = { output, output + OtAudioSettings::bufferSize };
-
 				audioInput->getSamples(input);
-				this->dsp.compute(OtAudioSettings::bufferSize, in, out);
-				audioOutput->setSamples(output);
+
+				if (this->isOn()) {
+					float output[OtAudioSettings::bufferSize * 2];
+
+					float* in[] = { input, input + OtAudioSettings::bufferSize };
+					float* out[] = { output, output + OtAudioSettings::bufferSize };
+
+					this->dsp.compute(OtAudioSettings::bufferSize, in, out);
+					audioOutput->setSamples(output);
+
+				} else {
+					audioOutput->setSamples(input);
+				}
 
 			} else {
 				audioOutput->setSamples(0.0f);

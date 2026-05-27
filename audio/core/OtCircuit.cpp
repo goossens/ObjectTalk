@@ -28,6 +28,7 @@ nlohmann::json OtCircuitClass::serialize(std::string* basedir) {
 	data["id"] = id;
 	data["type"] = type;
 	data["title"] = title;
+	data["on"] = on;
 	data["x"] = x;
 	data["y"] = y;
 
@@ -67,6 +68,7 @@ void OtCircuitClass::deserialize(nlohmann::json& data, bool restoreIDs, std::str
 	x = data.value("x", 0.0f);
 	y = data.value("y", 0.0f);
 	title = data.value("title", type);
+	on = data.value("on", true);
 
 	// restore input pins
 	eachInput([&](OtCircuitPin pin) {

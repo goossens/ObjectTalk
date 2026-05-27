@@ -94,6 +94,11 @@ public:
 		return std::make_shared<OtCircuitControlClass>(name, pin, value);
 	}
 
+	// access on/off functionality
+	inline void setOnOffToggle(bool value) { onOffToggle = value; }
+	inline bool hasOnOffToggle() { return onOffToggle; }
+	inline bool isOn() { return on; }
+
 	// (de)serialize
 	nlohmann::json serialize(std::string* basedir=nullptr);
 	void deserialize(nlohmann::json& data, bool restoreIDs=true, std::string* basedir=nullptr);
@@ -155,6 +160,8 @@ public:
 	float y = 0.0f;
 	float w = 0.0f;
 	float h = 0.0f;
+	bool onOffToggle = false;
+	bool on = true;
 	bool selected = false;
 	bool needsPlacement = false;
 	bool needsSizing = false;

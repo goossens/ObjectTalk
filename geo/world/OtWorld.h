@@ -12,24 +12,24 @@
 //	Include files
 //
 
-#include <algorithm>
-#include <functional>
 #include <limits>
 #include <memory>
 #include <set>
+#include <string>
 #include <vector>
 
 #include "glm/glm.hpp"
+#include "nlohmann/json_fwd.hpp"
 
 #include "OtHeightMap.h"
 #include "OtImage.h"
 
 
 //
-//	OtMap
+//	OtWorld
 //
 
-class OtMap {
+class OtWorld {
 public:
 	// biome types
 	enum class Biome {
@@ -65,25 +65,37 @@ public:
 	static constexpr const char* renderTypes[] = {
 		"Biomes",
 		"Distance To Water",
-		"Height Map"
+		"Height World"
 	};
 
 	static constexpr size_t renderTypeCount = sizeof(renderTypes) / sizeof(*renderTypes);
 
-	// clear the map
+	// constructor
+	OtWorld();
+
+	// load/save world definition
+	void load(const std::string& filename);
+	void save(const std::string& filename);
+
+	// clear the world
 	void clear();
 
-	// see if map is valid
-	inline bool isValid() { return map != nullptr; }
+	// see if world is valid
+	inline bool isValid() { return world != nullptr; }
 
-	// update map
-	void update(int seed, int size, float ruggedness);
+	// set properties
+	inline void setSize(int value) { world->size = value; }
+	inline void setSeed(int value) { world->seed = value; }
+	inline void setRuggedness(float value) { world->ruggedness = value; }
+
+	// generate entire world
+	void generate();
 
 	// render to image
 	void render(OtImage& image, int size, RenderType type);
 
-	// render map to heightmap
-	void renderHeightMap(OtHeightMap& heightmap, int size);
+	// generate heightmap
+	void generateHeightMap(OtHeightMap& heightmap, int size);
 
 	// version management
 	inline void setVersion(int v) { version = v; }
@@ -91,21 +103,25 @@ public:
 	inline void incrementVersion() { version++; }
 
 	// see if maps are identical
-	inline bool operator==(OtMap& rhs) {
-		return map == rhs.map && version == rhs.version;
+	inline bool operator==(OtWorld& rhs) {
+		return world == rhs.world && version == rhs.version;
 	}
 
-	inline bool operator!=(OtMap& rhs) {
+	inline bool operator!=(OtWorld& rhs) {
 		return !operator==(rhs);
 	}
 
 private:
 	// local types
-	class Region {
+	struct Region {
 	public:
+		Region() = default;
 		Region(size_t i, glm::vec2 c) : id(i), center(c) {}
 
-		size_t id;
+		nlohmann::json serialize();
+		void deserialize(nlohmann::json& data);
+
+		size_t id = 0;
 		glm::vec2 center;
 		float distance = invalidValue;
 		float elevation = invalidValue;
@@ -123,11 +139,15 @@ private:
 		std::set<size_t> neighbors;
 	};
 
-	class Corner {
+	struct Corner {
 	public:
+		Corner() = default;
 		Corner(size_t i, glm::vec2 p) : id(i), position(p) {}
 
-		size_t id;
+		nlohmann::json serialize();
+		void deserialize(nlohmann::json& data);
+
+		size_t id = 0;
 		glm::vec2 position;
 		float distance = invalidValue;
 		float elevation = invalidValue;
@@ -135,11 +155,13 @@ private:
 		std::vector<size_t> neighbors;
 	};
 
-	class Map {
-	public:
-		int seed;
-		int size;
-		float ruggedness;
+	struct World {
+		nlohmann::json serialize();
+		void deserialize(nlohmann::json& data);
+
+		int size = 64;
+		int seed = 37;
+		float ruggedness = 0.4f;
 		float northBias = -0.2f;
 		float southBias = 0.2f;
 		std::vector<Region> regions;
@@ -154,10 +176,10 @@ private:
 	};
 
 	// properties
-	std::shared_ptr<Map> map;
+	std::shared_ptr<World> world;
 	int version = 0;
 
-	// private functions to generate map
+	// private functions to generate world
 	void generateRegions();
 	void generateCorners();
 	void assignWater();
@@ -171,28 +193,28 @@ private:
 	void assignBiome();
 
 	// utility functions
-	inline void addRegion(float x, float y) { map->regions.emplace_back(map->regions.size(), glm::vec2(x, y)); }
+	inline void addRegion(float x, float y) { world->regions.emplace_back(world->regions.size(), glm::vec2(x, y)); }
 
 	inline void addBorderRegion(float x, float y) {
-		auto id = map->regions.size();
-		auto& region = map->regions.emplace_back(id, glm::vec2(x, y));
+		auto id = world->regions.size();
+		auto& region = world->regions.emplace_back(id, glm::vec2(x, y));
 		region.border = true;
 		region.water = true;
 		region.ocean = true;
-		map->borders.insert(id);
-		map->oceans.insert(id);
+		world->borders.insert(id);
+		world->oceans.insert(id);
 	}
 
 	inline void addGhostRegion(float x, float y) {
-		auto id = map->regions.size();
-		auto& region = map->regions.emplace_back(id, glm::vec2(x, y));
+		auto id = world->regions.size();
+		auto& region = world->regions.emplace_back(id, glm::vec2(x, y));
 		region.ghost = true;
 		region.water = true;
 		region.ocean = true;
-		map->oceans.insert(id);
+		world->oceans.insert(id);
 	}
 
-	inline void addCorner(glm::vec2 pos) { map->corners.emplace_back(map->corners.size(), pos); }
+	inline void addCorner(glm::vec2 pos) { world->corners.emplace_back(world->corners.size(), pos); }
 
 	inline size_t triangleOfEdge(size_t e) { return e / 3; }
 	inline size_t nextHalfEdge(size_t e) { return (e % 3 == 2) ? e - 2 : e + 1; }

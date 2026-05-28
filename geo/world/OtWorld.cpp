@@ -26,7 +26,7 @@
 #include "OtNoise.h"
 #include "OtImageCanvas.h"
 
-#include "OtWorldGenerator.h"
+#include "OtWorld.h"
 
 
 //
@@ -75,19 +75,19 @@ static glm::vec3 baryCentric(glm::vec2& a, glm::vec2& b, glm::vec2& c, glm::vec2
 
 
 //
-//	OtWorldGenerator::OtWorldGenerator
+//	OtWorld::OtWorld
 //
 
-OtWorldGenerator::OtWorldGenerator() {
-	world = std::make_shared<Landscape>();
+OtWorld::OtWorld() {
+	world = std::make_shared<World>();
 }
 
 
 //
-//	OtWorldGenerator::load
+//	OtWorld::load
 //
 
-void OtWorldGenerator::load(const std::string& filename) {
+void OtWorld::load(const std::string& filename) {
 	clear();
 	auto text = OtText::load(filename);
 	auto data = nlohmann::json::parse(text);
@@ -96,30 +96,30 @@ void OtWorldGenerator::load(const std::string& filename) {
 
 
 //
-//	OtWorldGenerator::save
+//	OtWorld::save
 //
 
-void OtWorldGenerator::save(const std::string& filename) {
+void OtWorld::save(const std::string& filename) {
 	auto data = world->serialize();
 	OtText::save(filename, data.dump(1, '\t'));
 }
 
 
 //
-//	OtWorldGenerator::clear
+//	OtWorld::clear
 //
 
-void OtWorldGenerator::clear() {
-	world = std::make_shared<Landscape>();
+void OtWorld::clear() {
+	world = std::make_shared<World>();
 	incrementVersion();
 }
 
 
 //
-//	OtWorldGenerator::update
+//	OtWorld::update
 //
 
-void OtWorldGenerator::generate() {
+void OtWorld::generate() {
 	clear();
 	generateRegions();
 	generateCorners();
@@ -136,10 +136,10 @@ void OtWorldGenerator::generate() {
 
 
 //
-//	OtWorldGenerator::render
+//	OtWorld::render
 //
 
-void OtWorldGenerator::render(OtImage& image, int size, RenderType type) {
+void OtWorld::render(OtImage& image, int size, RenderType type) {
 	static const char* colors[] = {
 		"#000000",
 		"#44447a",
@@ -242,10 +242,10 @@ void OtWorldGenerator::render(OtImage& image, int size, RenderType type) {
 
 
 //
-//	OtWorldGenerator::generateHeightMap
+//	OtWorld::generateHeightMap
 //
 
-void OtWorldGenerator::generateHeightMap(OtHeightMap& heightmap, int size) {
+void OtWorld::generateHeightMap(OtHeightMap& heightmap, int size) {
 	// create vertex buffers
 	struct Vertex {
 		Vertex(glm::vec2 p, float e) : position(p), elevation(e) {}
@@ -308,10 +308,10 @@ void OtWorldGenerator::generateHeightMap(OtHeightMap& heightmap, int size) {
 
 
 //
-//	OtWorldGenerator::generateRegions
+//	OtWorld::generateRegions
 //
 
-void OtWorldGenerator::generateRegions() {
+void OtWorld::generateRegions() {
 	OtNoise noise;
 
 	// create internal regions
@@ -382,10 +382,10 @@ void OtWorldGenerator::generateRegions() {
 
 
 //
-//	OtWorldGenerator::generateCorners
+//	OtWorld::generateCorners
 //
 
-void OtWorldGenerator::generateCorners() {
+void OtWorld::generateCorners() {
 	// determine corners
 	size_t numTriangles = world->triangles.size() / 3;
 
@@ -435,10 +435,10 @@ void OtWorldGenerator::generateCorners() {
 
 
 //
-//	OtWorldGenerator::assignWater
+//	OtWorld::assignWater
 //
 
-void OtWorldGenerator::assignWater() {
+void OtWorld::assignWater() {
 	OtNoise noise;
 	noise.setFrequency(0.5f + 3.0f * world->ruggedness);
 
@@ -458,10 +458,10 @@ void OtWorldGenerator::assignWater() {
 
 
 //
-//	OtWorldGenerator::assignOceans
+//	OtWorld::assignOceans
 //
 
-void OtWorldGenerator::assignOceans() {
+void OtWorld::assignOceans() {
 	// start with the border regions since they are always oceans
 	std::stack<size_t> stack;
 
@@ -488,10 +488,10 @@ void OtWorldGenerator::assignOceans() {
 
 
 //
-//	OtWorldGenerator::assignLakes
+//	OtWorld::assignLakes
 //
 
-void OtWorldGenerator::assignLakes() {
+void OtWorld::assignLakes() {
 	for (auto& region : world->regions) {
 		if (region.water && !region.ocean) {
 			region.lake = true;
@@ -502,10 +502,10 @@ void OtWorldGenerator::assignLakes() {
 
 
 //
-//	OtWorldGenerator::assignShores
+//	OtWorld::assignShores
 //
 
-void OtWorldGenerator::assignShores() {
+void OtWorld::assignShores() {
 	for (auto& region : world->regions) {
 		if (!region.water) {
 			for (auto neighbor : region.neighbors) {
@@ -524,10 +524,10 @@ void OtWorldGenerator::assignShores() {
 
 
 //
-//	OtWorldGenerator::assignCoastalDistance
+//	OtWorld::assignCoastalDistance
 //
 
-void OtWorldGenerator::assignCoastalDistance() {
+void OtWorld::assignCoastalDistance() {
 	// process all ocean shoreline regions
 	std::list<size_t> list;
 
@@ -579,10 +579,10 @@ void OtWorldGenerator::assignCoastalDistance() {
 
 
 //
-//	OtWorldGenerator::assignElevation
+//	OtWorld::assignElevation
 //
 
-void OtWorldGenerator::assignElevation() {
+void OtWorld::assignElevation() {
 	// process all ocean shoreline regions
 	std::list<size_t> list;
 
@@ -663,10 +663,10 @@ void OtWorldGenerator::assignElevation() {
 
 
 //
-//	OtWorldGenerator::assignMoisture
+//	OtWorld::assignMoisture
 //
 
-void OtWorldGenerator::assignMoisture() {
+void OtWorld::assignMoisture() {
 	// process all water regions
 	for (auto& region : world->regions) {
 		if (region.water) {
@@ -721,10 +721,10 @@ void OtWorldGenerator::assignMoisture() {
 
 
 //
-//	OtWorldGenerator::assignTemperature
+//	OtWorld::assignTemperature
 //
 
-void OtWorldGenerator::assignTemperature() {
+void OtWorld::assignTemperature() {
 	auto size = static_cast<float>(world->size);
 
 	for (auto& region : world->regions) {
@@ -736,10 +736,10 @@ void OtWorldGenerator::assignTemperature() {
 
 
 //
-//	OtWorldGenerator::assignBiome
+//	OtWorld::assignBiome
 //
 
-void OtWorldGenerator::assignBiome() {
+void OtWorld::assignBiome() {
 	for (auto& region : world->regions) {
 		if (region.ocean) {
 			region.biome = Biome::ocean;
@@ -821,10 +821,10 @@ void OtWorldGenerator::assignBiome() {
 
 
 //
-//	OtWorldGenerator::Region::serialize
+//	OtWorld::Region::serialize
 //
 
-nlohmann::json OtWorldGenerator::Region::serialize() {
+nlohmann::json OtWorld::Region::serialize() {
 	auto data = nlohmann::json::object();
 
 	data["id"] = id;
@@ -856,10 +856,10 @@ nlohmann::json OtWorldGenerator::Region::serialize() {
 
 
 //
-//	OtWorldGenerator::Region::deserialize
+//	OtWorld::Region::deserialize
 //
 
-void OtWorldGenerator::Region::deserialize(nlohmann::json& data) {
+void OtWorld::Region::deserialize(nlohmann::json& data) {
 	id = data.value("id", 0);
 	center = data.value("center", glm::vec2());
 	distance = data.value("distance", invalidValue);
@@ -882,10 +882,10 @@ void OtWorldGenerator::Region::deserialize(nlohmann::json& data) {
 
 
 //
-//	OtWorldGenerator::Corner::serialize
+//	OtWorld::Corner::serialize
 //
 
-nlohmann::json OtWorldGenerator::Corner::serialize() {
+nlohmann::json OtWorld::Corner::serialize() {
 	auto data = nlohmann::json::object();
 
 	data["id"] = id;
@@ -906,10 +906,10 @@ nlohmann::json OtWorldGenerator::Corner::serialize() {
 
 
 //
-//	OtWorldGenerator::Corner::deserialize
+//	OtWorld::Corner::deserialize
 //
 
-void OtWorldGenerator::Corner::deserialize(nlohmann::json& data) {
+void OtWorld::Corner::deserialize(nlohmann::json& data) {
 	id = data.value("id", 0);
 	position = data.value("position", glm::vec2());
 	distance = data.value("distance", invalidValue);
@@ -921,10 +921,10 @@ void OtWorldGenerator::Corner::deserialize(nlohmann::json& data) {
 
 
 //
-//	OtWorldGenerator::Landscape::serialize
+//	OtWorld::World::serialize
 //
 
-nlohmann::json OtWorldGenerator::Landscape::serialize() {
+nlohmann::json OtWorld::World::serialize() {
 	auto data = nlohmann::json::object();
 
 	data["size"] = size;
@@ -974,10 +974,10 @@ nlohmann::json OtWorldGenerator::Landscape::serialize() {
 
 
 //
-//	OtWorldGenerator::Landscape::deserialize
+//	OtWorld::World::deserialize
 //
 
-void OtWorldGenerator::Landscape::deserialize(nlohmann::json& data) {
+void OtWorld::World::deserialize(nlohmann::json& data) {
 	size = data.value("size", 64);
 	seed = data.value("seed", 37);
 	ruggedness = data.value("ruggedness", 0.4f);

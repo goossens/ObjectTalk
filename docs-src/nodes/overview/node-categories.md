@@ -48,5 +48,5 @@ Manifolds are often used in CAD applications to create 3D models through
 Constructive Solid Geometry. You can combined or subtract solid shapes,
 transform them, extrude them from 2D shapes or slice 3D models back into 2D
 shapes.
-- **Map Nodes** - These nodes work on geospatial data (either real or
+- **World Nodes** - These nodes work on geospatial data (either real or
 fictitious).

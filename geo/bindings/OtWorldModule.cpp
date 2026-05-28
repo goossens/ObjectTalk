@@ -16,7 +16,7 @@
 
 #include "OtMathModule.h"
 
-#include "OtWorldGenerator.h"
+#include "OtWorld.h"
 #include "OtHeightMap.h"
 
 
@@ -132,7 +132,7 @@ public:
 	}
 
 private:
-	OtWorldGenerator world;
+	OtWorld world;
 };
 
 

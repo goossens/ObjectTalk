@@ -26,7 +26,7 @@ faces that connect vertices.
 is watertight and contains no holes or missing faces that would cause leaks into the
 interior of the shape's volume. For a mesh to be manifold, every edge
 must have exactly two adjacent faces. Geometries do not have this constraint.
-- **Map Pins** - Maps describe geospatial geometries (either real or
+- **World Pins** - Worlds describe geospatial geometries (either real or
 fictitious) including properties of the faces (e.g. biome type).
 - **Instances Pins** -Instances describe the transforms applied to a numbers
 of 3D geometry instances.

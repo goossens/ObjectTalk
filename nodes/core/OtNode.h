@@ -62,7 +62,7 @@ public:
 		shape,
 		geometry,
 		manifold,
-		map,
+		world,
 		virtualize,
 		save,
 		probe
@@ -77,7 +77,7 @@ public:
 		"Shape",
 		"Geometry",
 		"Manifold",
-		"Map",
+		"World",
 		"Virtualize",
 		"Save",
 		"Probe"

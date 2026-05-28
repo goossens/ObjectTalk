@@ -27,49 +27,22 @@
 			"outputs": [
 				{
 					"id": 1197100068,
-					"name": "Map",
-					"type": "map"
+					"name": "World",
+					"type": "world"
 				}
 			],
-			"title": "Map Generator",
-			"type": "Map Generator",
+			"title": "World Generator",
+			"type": "World Generator",
 			"x": 231.0,
 			"y": 148.0
-		},
-		{
-			"id": 145984474,
-			"inputs": [
-				{
-					"id": 286410418,
-					"name": "Map",
-					"type": "map"
-				},
-				{
-					"id": 3658080589,
-					"name": "Size",
-					"type": "int",
-					"value": 32
-				}
-			],
-			"outputs": [
-				{
-					"id": 1474650429,
-					"name": "Texture",
-					"type": "texture"
-				}
-			],
-			"title": "Map to HeightMap",
-			"type": "Map to HeightMap",
-			"x": 502.0,
-			"y": 155.0
 		},
 		{
 			"id": 3782547564,
 			"inputs": [
 				{
 					"id": 1587833024,
-					"name": "Map",
-					"type": "map"
+					"name": "World",
+					"type": "world"
 				},
 				{
 					"id": 1188443633,
@@ -91,8 +64,8 @@
 					"type": "image"
 				}
 			],
-			"title": "Map to Image",
-			"type": "Map to Image",
+			"title": "World to Image",
+			"type": "World to Image",
 			"x": 751.0,
 			"y": 163.0
 		}

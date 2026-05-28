@@ -73,12 +73,12 @@
 			"outputs": [
 				{
 					"id": 468368962,
-					"name": "Map",
-					"type": "map"
+					"name": "World",
+					"type": "world"
 				}
 			],
-			"title": "Map Generator",
-			"type": "Map Generator",
+			"title": "World Generator",
+			"type": "World Generator",
 			"x": 40.0,
 			"y": 487.0
 		},
@@ -87,8 +87,8 @@
 			"inputs": [
 				{
 					"id": 1430325844,
-					"name": "Map",
-					"type": "map"
+					"name": "World",
+					"type": "world"
 				},
 				{
 					"id": 1030008575,
@@ -105,8 +105,8 @@
 				}
 			],
 			"renderType": 1,
-			"title": "Map to Image",
-			"type": "Map to Image",
+			"title": "World to Image",
+			"type": "World to Image",
 			"x": 328.0,
 			"y": 9.0
 		},
@@ -130,8 +130,8 @@
 			"inputs": [
 				{
 					"id": 3177096165,
-					"name": "Map",
-					"type": "map"
+					"name": "World",
+					"type": "world"
 				},
 				{
 					"id": 3043457080,
@@ -148,8 +148,8 @@
 				}
 			],
 			"renderType": 2,
-			"title": "Map to Image",
-			"type": "Map to Image",
+			"title": "World to Image",
+			"type": "World to Image",
 			"x": 319.0,
 			"y": 566.0
 		},
@@ -230,8 +230,8 @@
 			"inputs": [
 				{
 					"id": 801060736,
-					"name": "Map",
-					"type": "map"
+					"name": "World",
+					"type": "world"
 				},
 				{
 					"id": 2481129995,
@@ -248,8 +248,8 @@
 				}
 			],
 			"renderType": 0,
-			"title": "Map to Image",
-			"type": "Map to Image",
+			"title": "World to Image",
+			"type": "World to Image",
 			"x": 325.0,
 			"y": 205.0
 		},
@@ -278,7 +278,7 @@
 				}
 			],
 			"outputs": [],
-			"title": "Height Map",
+			"title": "Height World",
 			"type": "Image Probe",
 			"x": 598.0,
 			"y": 274.0

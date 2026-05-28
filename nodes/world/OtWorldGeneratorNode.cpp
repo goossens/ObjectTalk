@@ -11,23 +11,23 @@
 
 #include <algorithm>
 
-#include "OtMap.h"
+#include "OtWorld.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtMapGeneratorNode
+//	OtWorldGeneratorNode
 //
 
-class OtMapGeneratorNode : public OtNodeClass {
+class OtWorldGeneratorNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
 		addInputPin("Size", size);
 		addInputPin("Seed", seed);
 		addInputPin("Ruggedness", ruggedness);
-		addOutputPin("Map", map);
+		addOutputPin("World", world);
 	}
 
 	// validate input parameters
@@ -37,13 +37,16 @@ public:
 		ruggedness = std::clamp(ruggedness, 0.0f, 1.0f);
 	}
 
-	// run the map generator
+	// run the world generator
 	inline void onExecute() override {
-		map.update(seed, size, ruggedness);
+		world.setSeed(seed);
+		world.setSize(size);
+		world.setRuggedness(ruggedness);
+		world.generate();
 	}
 
-	static constexpr const char* nodeName = "Map Generator";
-	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::map;
+	static constexpr const char* nodeName = "World Generator";
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::world;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 private:
@@ -52,9 +55,9 @@ private:
 	int size = 32;
 	float ruggedness = 0.5f;
 
-	// map component
-	OtMap map;
+	// world component
+	OtWorld world;
 };
 
 
-static OtNodesFactoryRegister<OtMapGeneratorNode> registration;
+static OtNodesFactoryRegister<OtWorldGeneratorNode> registration;

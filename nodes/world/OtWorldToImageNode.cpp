@@ -14,21 +14,21 @@
 #include "nlohmann/json.hpp"
 
 #include "OtImage.h"
-#include "OtMap.h"
+#include "OtWorld.h"
 #include "OtUi.h"
 
 #include "OtNodesFactory.h"
 
 
 //
-//	OtMapToImageNode
+//	OtWorldToImageNode
 //
 
-class OtMapToImageNode : public OtNodeClass {
+class OtWorldToImageNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Map", map);
+		addInputPin("World", world);
 		addInputPin("Size", size);
 		addOutputPin("Image", image);
 	}
@@ -38,7 +38,7 @@ public:
 		ImGui::SetNextItemWidth(itemWidth);
 		auto old = serialize().dump();
 
-		if (OtUi::selectorEnum("##renderType", &renderType, OtMap::renderTypes, OtMap::renderTypeCount)) {
+		if (OtUi::selectorEnum("##renderType", &renderType, OtWorld::renderTypes, OtWorld::renderTypeCount)) {
 			oldState = old;
 			newState = serialize().dump();
 			needsEvaluating = true;
@@ -60,7 +60,7 @@ public:
 	}
 
 	inline void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
-		renderType = data->value("renderType", OtMap::RenderType::biomes);
+		renderType = data->value("renderType", OtWorld::RenderType::biomes);
 	}
 
 	// validate input parameters
@@ -70,27 +70,27 @@ public:
 
 	// generate the image
 	inline void onExecute() override {
-		if (map.isValid()) {
-			map.render(image, size, renderType);
+		if (world.isValid()) {
+			world.render(image, size, renderType);
 
 		} else {
 			image.clear();
 		}
 	}
 
-	static constexpr const char* nodeName = "Map to Image";
-	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::map;
+	static constexpr const char* nodeName = "World to Image";
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::world;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 private:
 	// properties
 	int size = 32;
-	OtMap::RenderType renderType = OtMap::RenderType::biomes;
+	OtWorld::RenderType renderType = OtWorld::RenderType::biomes;
 
-	// map component
-	OtMap map;
+	// world component
+	OtWorld world;
 	OtImage image;
 };
 
 
-static OtNodesFactoryRegister<OtMapToImageNode> registration;
+static OtNodesFactoryRegister<OtWorldToImageNode> registration;

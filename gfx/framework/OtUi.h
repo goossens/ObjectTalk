@@ -194,6 +194,9 @@ public:
 	// bezier curve editor
 	static bool bezier(const char* label, float P[4]);
 
+	// spinner
+	static void spinner(ImVec2 center, float size=40.0f, float speed=7.0f, float radius=4.0f, int circles=12);
+
 protected:
 	// generic glm tools
 	static void viewVecX(const char* labelPlusID, const float* value, int components);

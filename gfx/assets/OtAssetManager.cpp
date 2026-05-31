@@ -11,14 +11,15 @@
 
 #include <algorithm>
 #include <cmath>
-#include <numbers>
 
 #include "imgui.h"
 
 #include "OtAssert.h"
+#include "OtPath.h"
 
 #include "OtAssetManager.h"
-#include "OtPath.h"
+#include "OtThreadPool.h"
+#include "OtUi.h"
 
 
 //
@@ -55,9 +56,6 @@ void OtAssetManager::startManager() {
 //
 
 void OtAssetManager::stopManager() {
-	// wait for all threads to finish
-	threadpool.wait();
-
 	// stop the cleanup timer
 	int status = uv_timer_stop(&cleanupTimerHandle);
 	UV_CHECK_ERROR("uv_timer_stop", status);
@@ -81,39 +79,10 @@ void OtAssetManager::stopManager() {
 //
 
 void OtAssetManager::renderManagerUI() {
-	// see if we are currently loading assets
+	// show spinner if we are currently loading assets
 	if (loading != 0) {
-		// spinner size
-		static constexpr float spinnerRadius = 40.0f;
-		static constexpr float spinnerSpeed = 7.0f;
-		static constexpr float circleRadius = spinnerRadius / 10.0f;
-		static constexpr int spinnerCircles = 12;
-
-		// get window information
-		auto drawList = ImGui::GetWindowDrawList();
-		auto pos = ImGui::GetWindowPos();
-		auto size = ImGui::GetWindowSize();
-		auto center = pos + size / 2.0f;
-
-		static float time = 0.0f;
-		time += ImGui::GetIO().DeltaTime;
-		float offset = static_cast<float>(std::numbers::pi * 2.0 / spinnerCircles);
-
-		for (int i = 0; i < spinnerCircles; i++) {
-			float x = spinnerRadius * std::sin(offset * i);
-			float y = spinnerRadius * std::cos(offset * i);
-			float growth = std::max(0.0f, std::sin(time * spinnerSpeed - i * offset));
-
-			ImVec4 color;
-			ImVec4 dark = ImGui::GetStyleColorVec4(ImGuiCol_Border);
-			ImVec4 light = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
-			color.x = light.x * growth + dark.x * (1.0f - growth);
-			color.y = light.y * growth + dark.y * (1.0f - growth);
-			color.z = light.z * growth + dark.z * (1.0f - growth);
-			color.w = 1.0f;
-
-			drawList->AddCircleFilled(ImVec2(center.x + x, center.y - y), circleRadius + growth * circleRadius * 0.5f, ImGui::GetColorU32(color));
-		}
+		auto center = ImGui::GetWindowPos() + ImGui::GetWindowSize() / 2.0f;
+		OtUi::spinner(center);
 	}
 }
 
@@ -153,7 +122,7 @@ void OtAssetManager::scheduleLoad(OtAssetBase* asset) {
 	asset->state = OtAssetBase::State::loading;
 	loading++;
 
-	threadpool.detach_task([this, asset]() {
+	OtThreadPool::run([this, asset]() {
 		asset->errorMessage.clear();
 		asset->state = asset->load();
 		loading--;

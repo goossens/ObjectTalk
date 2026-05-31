@@ -17,8 +17,6 @@
 #include <string>
 #include <unordered_map>
 
-#include "BS_thread_pool.hpp"
-
 #include "OtHash.h"
 #include "OtLibuv.h"
 #include "OtLog.h"
@@ -148,8 +146,7 @@ private:
 	// clear unused assets
 	void clearUnusedAssets();
 
-	// the thread pool to handle the asset loading
-	BS::thread_pool<> threadpool;
+	// number of assets currently being loaded
 	std::atomic<int> loading = 0;
 
 	// timer to run the "garbage collector"

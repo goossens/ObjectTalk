@@ -14,8 +14,9 @@
 #include "nlohmann/json.hpp"
 
 #include "OtImage.h"
-#include "OtWorld.h"
+#include "OtThreadPool.h"
 #include "OtUi.h"
+#include "OtWorld.h"
 
 #include "OtNodesFactory.h"
 
@@ -68,10 +69,37 @@ public:
 		size = std::clamp(size, 32, 1024);
 	}
 
-	// generate the image
+	// update node status
+	inline bool onUpdate() override {
+		if (generated) {
+			std::swap(image, newImage);
+			generated = false;
+
+			if (moreRequests) {
+				scheduleGeneration();
+				moreRequests = false;
+
+			} else {
+				generating = false;
+			}
+
+			return true;
+
+		} else {
+			return false;
+		}
+	}
+
+	// execute asynchronous image generation
 	inline void onExecute() override {
 		if (world.isValid()) {
-			world.render(image, size, renderType);
+			if (generating) {
+				moreRequests = true;
+
+			} else {
+				generating = true;
+				scheduleGeneration();
+			}
 
 		} else {
 			image.clear();
@@ -90,6 +118,20 @@ private:
 	// world component
 	OtWorld world;
 	OtImage image;
+
+	// work variables
+	bool generating = false;
+	bool generated = false;
+	bool moreRequests = false;
+	OtImage newImage;
+
+	// local functions
+	void scheduleGeneration() {
+		OtThreadPool::run([captureWorld = world, this]() {
+			captureWorld.render(newImage, size, renderType);
+			generated = true;
+		});
+	}
 };
 
 

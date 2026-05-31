@@ -70,9 +70,6 @@ public:
 
 	static constexpr size_t renderTypeCount = sizeof(renderTypes) / sizeof(*renderTypes);
 
-	// constructor
-	OtWorld();
-
 	// load/save world definition
 	void load(const std::string& filename);
 	void save(const std::string& filename);
@@ -81,28 +78,28 @@ public:
 	void clear();
 
 	// see if world is valid
-	inline bool isValid() { return world != nullptr; }
+	inline bool isValid() { return world && world->regions.size(); }
 
 	// set properties
-	inline void setSize(int value) { world->size = value; }
-	inline void setSeed(int value) { world->seed = value; }
-	inline void setRuggedness(float value) { world->ruggedness = value; }
+	inline void setSize(int value) { size = value; }
+	inline void setSeed(int value) { seed = value; }
+	inline void setRuggedness(float value) { ruggedness = value; }
 
-	// generate entire world
+	// generate entire world (synchronously or asynchonously)
 	void generate();
 
 	// render to image
-	void render(OtImage& image, int size, RenderType type);
+	void render(OtImage& image, int size, RenderType type) const;
 
 	// generate heightmap
-	void generateHeightMap(OtHeightMap& heightmap, int size);
+	void generateHeightMap(OtHeightMap& heightmap, int size) const;
 
 	// version management
 	inline void setVersion(int v) { version = v; }
 	inline int getVersion() { return version; }
 	inline void incrementVersion() { version++; }
 
-	// see if maps are identical
+	// see if worlds are identical
 	inline bool operator==(OtWorld& rhs) {
 		return world == rhs.world && version == rhs.version;
 	}
@@ -159,11 +156,25 @@ private:
 		nlohmann::json serialize();
 		void deserialize(nlohmann::json& data);
 
+		void generate();
+		void generateRegions();
+		void generateCorners();
+		void assignWater();
+		void assignOceans();
+		void assignLakes();
+		void assignShores();
+		void assignCoastalDistance();
+		void assignElevation();
+		void assignMoisture();
+		void assignTemperature();
+		void assignBiome();
+
 		int size = 64;
 		int seed = 37;
 		float ruggedness = 0.4f;
 		float northBias = -0.2f;
 		float southBias = 0.2f;
+
 		std::vector<Region> regions;
 		std::vector<Corner> corners;
 		std::vector<size_t> triangles;
@@ -173,52 +184,42 @@ private:
 		std::set<size_t> lakes;
 		std::set<size_t> oceanshores;
 		std::set<size_t> lakeshores;
-	};
 
-	// properties
-	std::shared_ptr<World> world;
-	int version = 0;
-
-	// private functions to generate world
-	void generateRegions();
-	void generateCorners();
-	void assignWater();
-	void assignOceans();
-	void assignLakes();
-	void assignShores();
-	void assignCoastalDistance();
-	void assignElevation();
-	void assignMoisture();
-	void assignTemperature();
-	void assignBiome();
-
-	// utility functions
-	inline void addRegion(float x, float y) { world->regions.emplace_back(world->regions.size(), glm::vec2(x, y)); }
+	inline void addRegion(float x, float y) { regions.emplace_back(regions.size(), glm::vec2(x, y)); }
 
 	inline void addBorderRegion(float x, float y) {
-		auto id = world->regions.size();
-		auto& region = world->regions.emplace_back(id, glm::vec2(x, y));
+		auto id = regions.size();
+		auto& region = regions.emplace_back(id, glm::vec2(x, y));
 		region.border = true;
 		region.water = true;
 		region.ocean = true;
-		world->borders.insert(id);
-		world->oceans.insert(id);
+		borders.insert(id);
+		oceans.insert(id);
 	}
 
 	inline void addGhostRegion(float x, float y) {
-		auto id = world->regions.size();
-		auto& region = world->regions.emplace_back(id, glm::vec2(x, y));
+		auto id = regions.size();
+		auto& region = regions.emplace_back(id, glm::vec2(x, y));
 		region.ghost = true;
 		region.water = true;
 		region.ocean = true;
-		world->oceans.insert(id);
+		oceans.insert(id);
 	}
 
-	inline void addCorner(glm::vec2 pos) { world->corners.emplace_back(world->corners.size(), pos); }
+	inline void addCorner(glm::vec2 pos) { corners.emplace_back(corners.size(), pos); }
 
 	inline size_t triangleOfEdge(size_t e) { return e / 3; }
 	inline size_t nextHalfEdge(size_t e) { return (e % 3 == 2) ? e - 2 : e + 1; }
 	inline size_t prevHalfEdge(size_t e) { return (e % 3 == 0) ? e + 2 : e - 1; }
+};
+
+	// properties
+	int size = 64;
+	int seed = 37;
+	float ruggedness = 0.4f;
+
+	std::shared_ptr<World> world;
+	int version = 0;
 
 	static constexpr size_t invalidIndex = std::numeric_limits<size_t>::max();
 	static constexpr float invalidValue = std::numeric_limits<float>::max();

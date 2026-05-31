@@ -41,6 +41,7 @@
 #include "OtNotification.h"
 #include "OtGpu.h"
 #include "OtMessageBus.h"
+#include "OtThreadPool.h"
 
 
 //
@@ -138,6 +139,9 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 
 	// clear the message bus
 	OtMessageBus::clear();
+
+	// wait for threads in pool to be finished
+	OtThreadPool::wait();
 
 	// call exit callbacks
 	OtFrameworkAtExit::run();

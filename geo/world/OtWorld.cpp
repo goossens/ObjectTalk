@@ -75,15 +75,6 @@ static glm::vec3 baryCentric(glm::vec2& a, glm::vec2& b, glm::vec2& c, glm::vec2
 
 
 //
-//	OtWorld::OtWorld
-//
-
-OtWorld::OtWorld() {
-	world = std::make_shared<World>();
-}
-
-
-//
 //	OtWorld::load
 //
 
@@ -121,17 +112,10 @@ void OtWorld::clear() {
 
 void OtWorld::generate() {
 	clear();
-	generateRegions();
-	generateCorners();
-	assignWater();
-	assignOceans();
-	assignLakes();
-	assignShores();
-	assignCoastalDistance();
-	assignElevation();
-	assignMoisture();
-	assignTemperature();
-	assignBiome();
+	world->seed = seed;
+	world->size = size;
+	world->ruggedness = ruggedness;
+	world->generate();
 }
 
 
@@ -139,7 +123,7 @@ void OtWorld::generate() {
 //	OtWorld::render
 //
 
-void OtWorld::render(OtImage& image, int size, RenderType type) {
+void OtWorld::render(OtImage& image, int size, RenderType type) const {
 	static const char* colors[] = {
 		"#000000",
 		"#44447a",
@@ -245,7 +229,7 @@ void OtWorld::render(OtImage& image, int size, RenderType type) {
 //	OtWorld::generateHeightMap
 //
 
-void OtWorld::generateHeightMap(OtHeightMap& heightmap, int size) {
+void OtWorld::generateHeightMap(OtHeightMap& heightmap, int size) const {
 	// create vertex buffers
 	struct Vertex {
 		Vertex(glm::vec2 p, float e) : position(p), elevation(e) {}
@@ -301,519 +285,6 @@ void OtWorld::generateHeightMap(OtHeightMap& heightmap, int size) {
 					auto elevation = bc.x * v1.elevation + bc.y * v2.elevation + bc.z * v3.elevation;
 					heightmap.setHeight(x, y, elevation);
 				}
-			}
-		}
-	}
-}
-
-
-//
-//	OtWorld::generateRegions
-//
-
-void OtWorld::generateRegions() {
-	OtNoise noise;
-
-	// create internal regions
-	for (auto y = 1; y < world->size; y++) {
-		for (auto x = 1; x < world->size; x++) {
-			addRegion(
-				x + (noise.noise(
-					static_cast<float>(x),
-					static_cast<float>(y),
-					static_cast<float>(world->seed + 1)) * 2.0f - 1.0f) * 0.49f,
-				y + (noise.noise(
-					static_cast<float>(x),
-					static_cast<float>(y),
-					static_cast<float>(world->seed + 2)) * 2.0f - 1.0f) * 0.49f);
-		}
-	}
-
-	// create border regions (top and bottom)
-	for (auto x = 0; x <= world->size; x++) {
-		addBorderRegion(static_cast<float>(x), 0.0f);
-		addBorderRegion(static_cast<float>(x), static_cast<float>(world->size));
-	}
-
-	// create border regions (left and right)
-	for (auto y = 1; y < world->size; y++) {
-		addBorderRegion(0.0f, static_cast<float>(y));
-		addBorderRegion(static_cast<float>(world->size), static_cast<float>(y));
-	}
-
-	// create ghost regions (top and bottom)
-	for (auto x = -1; x <= world->size + 1; x++) {
-		addGhostRegion(static_cast<float>(x), -10.0f);
-		addGhostRegion(static_cast<float>(x), static_cast<float>(world->size + 10.0f));
-	}
-
-	// create ghost regions (left and right)
-	for (auto y = 0; y <= world->size; y++) {
-		addGhostRegion(-10.0f, static_cast<float>(y));
-		addGhostRegion(static_cast<float>(world->size + 10.0f), static_cast<float>(y));
-	}
-
-	// perform Delaunay triangulation on regions
-	std::vector<double> coords;
-
-	for (auto& region : world->regions) {
-		coords.emplace_back(region.center.x);
-		coords.emplace_back(region.center.y);
-	}
-
-	delaunator::Delaunator delaunator(coords);
-	world->triangles = delaunator.triangles;
-	world->halfedges = delaunator.halfedges;
-
-	// mark neighbors of all regions
-	for (auto i = world->triangles.begin(); i < world->triangles.end();) {
-		auto r1 = *i++;
-		auto r2 = *i++;
-		auto r3 = *i++;
-
-		world->regions[r1].neighbors.insert(r2);
-		world->regions[r1].neighbors.insert(r3);
-		world->regions[r2].neighbors.insert(r1);
-		world->regions[r2].neighbors.insert(r3);
-		world->regions[r3].neighbors.insert(r1);
-		world->regions[r3].neighbors.insert(r2);
-	}
-}
-
-
-//
-//	OtWorld::generateCorners
-//
-
-void OtWorld::generateCorners() {
-	// determine corners
-	size_t numTriangles = world->triangles.size() / 3;
-
-	for (size_t triangle = 0; triangle < numTriangles; triangle++) {
-		// determine position
-		glm::vec2 sum(0.0f);
-
-		for (size_t vertex = 0; vertex < 3; vertex++) {
-			sum += world->regions[world->triangles[3 * triangle + vertex]].center;
-		}
-
-		// create a new corner
-		addCorner(sum / 3.0f);
-	}
-
-	// get corners for all regions
-	auto numEdges = world->halfedges.size();
-	std::set<size_t> seen;
-
-	for (size_t edge = 0; edge < numEdges; edge++) {
-		auto region = world->triangles[nextHalfEdge(edge)];
-
-		if (seen.find(region) == seen.end()) {
-			seen.insert(region);
-			auto incoming = edge;
-
-			do {
-				auto corner = triangleOfEdge(incoming);
-				world->regions[region].corners.emplace_back(corner);
-				world->corners[corner].regions.emplace_back(region);
-
-				auto outgoing = nextHalfEdge(incoming);
-				incoming = world->halfedges[outgoing];
-			} while (incoming != invalidIndex && incoming != edge);
-		}
-	}
-
-	// get neighbors of all corners
-	size_t numCorners = world->corners.size();
-
-	for (size_t corner = 0; corner < numCorners; corner++) {
-		for (size_t vertex = 0; vertex < 3; vertex++) {
-			world->corners[corner].neighbors.emplace_back(3 * corner + vertex);
-		}
-	}
-}
-
-
-//
-//	OtWorld::assignWater
-//
-
-void OtWorld::assignWater() {
-	OtNoise noise;
-	noise.setFrequency(0.5f + 3.0f * world->ruggedness);
-
-	auto size = static_cast<float>(world->size);
-	auto size2 = size / 2.0f;
-
-	for (auto& region : world->regions) {
-		if (!region.ghost && !region.border) {
-			auto x = (region.center.x - size2) / size2;
-			auto y = (region.center.y - size2) / size2;
-			auto distance = std::max(std::abs(x), std::abs(y));
-			auto n = std::lerp(noise.fbm(x, y, static_cast<float>(world->seed)), 0.5f, 0.5f);
-			region.water = (n - (0.5f * distance * distance)) < 0.0f;
-		}
-	}
-}
-
-
-//
-//	OtWorld::assignOceans
-//
-
-void OtWorld::assignOceans() {
-	// start with the border regions since they are always oceans
-	std::stack<size_t> stack;
-
-	for (auto region : world->borders) {
-		stack.push(region);
-	}
-
-	while (!stack.empty()) {
-		auto& region = world->regions[stack.top()];
-		stack.pop();
-
-		for (auto n : region.neighbors) {
-			auto& neighbor = world->regions[n];
-
-			// expand search to other watery neighbors that have not been marked as oceans yet
-			if (neighbor.water && !neighbor.ocean) {
-				neighbor.ocean = true;
-				world->oceans.insert(neighbor.id);
-				stack.push(neighbor.id);
-			}
-		}
-	}
-}
-
-
-//
-//	OtWorld::assignLakes
-//
-
-void OtWorld::assignLakes() {
-	for (auto& region : world->regions) {
-		if (region.water && !region.ocean) {
-			region.lake = true;
-			world->lakes.insert(region.id);
-		}
-	}
-}
-
-
-//
-//	OtWorld::assignShores
-//
-
-void OtWorld::assignShores() {
-	for (auto& region : world->regions) {
-		if (!region.water) {
-			for (auto neighbor : region.neighbors) {
-				if (world->regions[neighbor].ocean) {
-					region.oceanshore = true;
-					world->oceanshores.insert(region.id);
-
-				} else if (world->regions[neighbor].lake) {
-					region.lakeshore = true;
-					world->lakeshores.insert(region.id);
-				}
-			}
-		}
-	}
-}
-
-
-//
-//	OtWorld::assignCoastalDistance
-//
-
-void OtWorld::assignCoastalDistance() {
-	// process all ocean shoreline regions
-	std::list<size_t> list;
-
-	for (auto shore : world->oceanshores) {
-		world->regions[shore].distance = 0.0f;
-		list.push_back(shore);
-	}
-
-	// process all other regions
-	while (!list.empty()) {
-		auto& region = world->regions[list.front()];
-		list.pop_front();
-
-		auto newDistance = region.distance + 1.0f;
-
-		for (auto n : region.neighbors) {
-			auto& neighbor = world->regions[n];
-
-			if (neighbor.distance == invalidValue || newDistance < neighbor.distance) {
-				neighbor.distance = newDistance;
-				list.push_back(neighbor.id);
-			}
-		}
-	}
-
-	// find distance limit
-	float maxDistance = std::numeric_limits<float>::lowest();
-
-	for (auto& region : world->regions) {
-		maxDistance = std::max(maxDistance, region.distance);
-	}
-
-	// normalize distances
-	for (auto& region : world->regions) {
-		region.distance = region.distance / maxDistance;
-	}
-
-	// assign distances to corners
-	for (auto& corner : world->corners) {
-		auto total = 0.0f;
-
-		for (auto region : corner.regions) {
-			total += world->regions[region].distance;
-		}
-
-		corner.distance = total / static_cast<float>(corner.regions.size());
-	}
-}
-
-
-//
-//	OtWorld::assignElevation
-//
-
-void OtWorld::assignElevation() {
-	// process all ocean shoreline regions
-	std::list<size_t> list;
-
-	for (auto shore : world->oceanshores) {
-		world->regions[shore].elevation = 0.0f;
-		list.push_back(shore);
-	}
-
-	// process all other regions
-	while (!list.empty()) {
-		auto& region = world->regions[list.front()];
-		list.pop_front();
-
-		for (auto n : region.neighbors) {
-			auto& neighbor = world->regions[n];
-
-			if (neighbor.ocean) {
-				auto newElevation = region.elevation - 1.0f;
-
-				if (neighbor.elevation == invalidValue || newElevation > neighbor.elevation) {
-					neighbor.elevation = newElevation;
-					list.push_back(neighbor.id);
-				}
-
-			} else {
-				auto newElevation = region.elevation + (neighbor.lake ? 0.0f : 1.0f);
-
-				if (neighbor.elevation == invalidValue || newElevation < neighbor.elevation) {
-					neighbor.elevation = newElevation;
-					list.push_back(neighbor.id);
-				}
-			}
-		}
-	}
-
-	// add some randomness to land elevation
-	OtNoise noise;
-
-	for (auto& region : world->regions) {
-		if (!region.water && !region.oceanshore && !region.lakeshore) {
-			auto offset = noise.fbm(region.center.x, region.center.y, static_cast<float>(world->seed + 7));
-			region.elevation += ((offset * 2.0f) - 1.0f) * 0.25f;
-		}
-	}
-
-	// find elevation limits
-	float minElevation = std::numeric_limits<float>::max();
-	float maxElevation = std::numeric_limits<float>::lowest();
-
-	for (auto& region : world->regions) {
-		minElevation = std::min(minElevation, region.elevation);
-		maxElevation = std::max(maxElevation, region.elevation);
-	}
-
-	// normalize elevations and redistribute
-	for (auto& region : world->regions) {
-		if (region.ocean) {
-			float normalizedElevation = region.elevation / minElevation;
-			region.elevation = -std::pow(normalizedElevation, 1.5f);
-
-		} else {
-			float normalizedElevation = region.elevation / maxElevation;
-			region.elevation = std::pow(normalizedElevation, 1.5f);
-		}
-	}
-
-	// assign elevations to corners
-	for (auto& corner : world->corners) {
-		auto total = 0.0f;
-
-		for (auto region : corner.regions) {
-			total += world->regions[region].elevation;
-		}
-
-		corner.elevation = total / static_cast<float>(corner.regions.size());
-	}
-}
-
-
-//
-//	OtWorld::assignMoisture
-//
-
-void OtWorld::assignMoisture() {
-	// process all water regions
-	for (auto& region : world->regions) {
-		if (region.water) {
-			region.moisture = 1.0f;
-		}
-	}
-
-	// process all shoreline regions
-	std::list<size_t> list;
-
-	for (auto shore : world->oceanshores) {
-		world->regions[shore].moisture = 0.9f;
-		list.push_back(shore);
-	}
-
-	for (auto shore : world->lakeshores) {
-		world->regions[shore].moisture = 0.9f;
-		list.push_back(shore);
-	}
-
-	// process all other regions
-	while (!list.empty()) {
-		auto& region = world->regions[list.front()];
-		list.pop_front();
-
-		auto newMoisture = region.moisture - 0.2f;
-
-		for (auto n : region.neighbors) {
-			auto& neighbor = world->regions[n];
-
-			if (neighbor.moisture == 0.0f || newMoisture > neighbor.moisture) {
-				neighbor.moisture = newMoisture;
-				list.push_back(neighbor.id);
-			}
-		}
-	}
-
-	// find lowest moisture level
-	float minMoisture = 0.0f;
-
-	for (auto& region : world->regions) {
-		minMoisture = std::min(minMoisture, region.moisture);
-	}
-
-	// normalize moisture levels
-	for (auto& region : world->regions) {
-		if (!region.ocean) {
-			region.moisture = (region.moisture - minMoisture) / (1.0f - minMoisture);
-		}
-	}
-}
-
-
-//
-//	OtWorld::assignTemperature
-//
-
-void OtWorld::assignTemperature() {
-	auto size = static_cast<float>(world->size);
-
-	for (auto& region : world->regions) {
-		auto latitude = region.center.y / size;
-		auto bias = std::lerp(world->northBias, world->southBias, latitude);
-		region.temperature = 1.0f - region.elevation + bias;
-	}
-}
-
-
-//
-//	OtWorld::assignBiome
-//
-
-void OtWorld::assignBiome() {
-	for (auto& region : world->regions) {
-		if (region.ocean) {
-			region.biome = Biome::ocean;
-
-		} else if (region.water) {
-			if (region.temperature > 0.9f) {
-				region.biome = Biome::marsh;
-
-			} else if (region.temperature < 0.2f) {
-				region.biome = Biome::ice;
-
-			} else {
-				region.biome = Biome::lake;
-
-			}
-
-		} else if (region.oceanshore) {
-			region.biome = Biome::oceanShore;
-
-
-		} else if (region.lakeshore) {
-			region.biome = Biome::lakeShore;
-
-		} else if (region.temperature < 0.2f) {
-			if (region.moisture > 0.50f) {
-				region.biome = Biome::snow;
-
-			} else if (region.moisture > 0.33f) {
-				region.biome = Biome::tundra;
-
-			} else if (region.moisture > 0.16f) {
-				region.biome = Biome::bare;
-
-			} else {
-				region.biome = Biome::scorched;
-			}
-
-		} else if (region.temperature < 0.4f) {
-			if (region.moisture > 0.66f) {
-				region.biome = Biome::taiga;
-
-			} else if (region.moisture > 0.33f) {
-				region.biome = Biome::shrubland;
-
-			} else {
-				region.biome = Biome::temperateDesert;
-			}
-
-		} else if (region.temperature < 0.7f) {
-			if (region.moisture > 0.83f) {
-				region.biome = Biome::temperateRainForest;
-
-			} else if (region.moisture > 0.50f) {
-				region.biome = Biome::temperateDeciduousForest;
-
-			} else if (region.moisture > 0.16f) {
-				region.biome = Biome::grassland;
-
-			} else {
-				region.biome = Biome::temperateDesert;
-			}
-
-		} else {
-			if (region.moisture > 0.66f) {
-				region.biome = Biome::tropicalRainForest;
-
-			} else if (region.moisture > 0.33f) {
-				region.biome = Biome::tropicalSeasonalForest;
-
-			} else if (region.moisture > 0.16f) {
-				region.biome = Biome::grassland;
-
-			} else {
-				region.biome = Biome::subtropicalDesert;
 			}
 		}
 	}
@@ -993,4 +464,533 @@ void OtWorld::World::deserialize(nlohmann::json& data) {
 	lakes.clear(); for (auto value : data["lakes"]) { lakes.emplace(value); }
 	oceanshores.clear(); for (auto value : data["oceanshores"]) { oceanshores.emplace(value); }
 	lakeshores.clear(); for (auto value : data["lakeshores"]) { lakeshores.emplace(value); }
+}
+
+
+//
+//	OtWorld::World::generate
+//
+
+void OtWorld::World::generate() {
+	generateRegions();
+	generateCorners();
+	assignWater();
+	assignOceans();
+	assignLakes();
+	assignShores();
+	assignCoastalDistance();
+	assignElevation();
+	assignMoisture();
+	assignTemperature();
+	assignBiome();
+}
+
+
+//
+//	OtWorld::World::generateRegions
+//
+
+void OtWorld::World::generateRegions() {
+	OtNoise noise;
+
+	// create internal regions
+	for (auto y = 1; y < size; y++) {
+		for (auto x = 1; x < size; x++) {
+			addRegion(
+				x + (noise.noise(
+					static_cast<float>(x),
+					static_cast<float>(y),
+					static_cast<float>(seed + 1)) * 2.0f - 1.0f) * 0.49f,
+				y + (noise.noise(
+					static_cast<float>(x),
+					static_cast<float>(y),
+					static_cast<float>(seed + 2)) * 2.0f - 1.0f) * 0.49f);
+		}
+	}
+
+	// create border regions (top and bottom)
+	for (auto x = 0; x <= size; x++) {
+		addBorderRegion(static_cast<float>(x), 0.0f);
+		addBorderRegion(static_cast<float>(x), static_cast<float>(size));
+	}
+
+	// create border regions (left and right)
+	for (auto y = 1; y < size; y++) {
+		addBorderRegion(0.0f, static_cast<float>(y));
+		addBorderRegion(static_cast<float>(size), static_cast<float>(y));
+	}
+
+	// create ghost regions (top and bottom)
+	for (auto x = -1; x <= size + 1; x++) {
+		addGhostRegion(static_cast<float>(x), -10.0f);
+		addGhostRegion(static_cast<float>(x), static_cast<float>(size + 10.0f));
+	}
+
+	// create ghost regions (left and right)
+	for (auto y = 0; y <= size; y++) {
+		addGhostRegion(-10.0f, static_cast<float>(y));
+		addGhostRegion(static_cast<float>(size + 10.0f), static_cast<float>(y));
+	}
+
+	// perform Delaunay triangulation on regions
+	std::vector<double> coords;
+
+	for (auto& region : regions) {
+		coords.emplace_back(region.center.x);
+		coords.emplace_back(region.center.y);
+	}
+
+	delaunator::Delaunator delaunator(coords);
+	triangles = delaunator.triangles;
+	halfedges = delaunator.halfedges;
+
+	// mark neighbors of all regions
+	for (auto i = triangles.begin(); i < triangles.end();) {
+		auto r1 = *i++;
+		auto r2 = *i++;
+		auto r3 = *i++;
+
+		regions[r1].neighbors.insert(r2);
+		regions[r1].neighbors.insert(r3);
+		regions[r2].neighbors.insert(r1);
+		regions[r2].neighbors.insert(r3);
+		regions[r3].neighbors.insert(r1);
+		regions[r3].neighbors.insert(r2);
+	}
+}
+
+
+//
+//	OtWorld::World::generateCorners
+//
+
+void OtWorld::World::generateCorners() {
+	// determine corners
+	size_t numTriangles = triangles.size() / 3;
+
+	for (size_t triangle = 0; triangle < numTriangles; triangle++) {
+		// determine position
+		glm::vec2 sum(0.0f);
+
+		for (size_t vertex = 0; vertex < 3; vertex++) {
+			sum += regions[triangles[3 * triangle + vertex]].center;
+		}
+
+		// create a new corner
+		addCorner(sum / 3.0f);
+	}
+
+	// get corners for all regions
+	auto numEdges = halfedges.size();
+	std::set<size_t> seen;
+
+	for (size_t edge = 0; edge < numEdges; edge++) {
+		auto region = triangles[nextHalfEdge(edge)];
+
+		if (seen.find(region) == seen.end()) {
+			seen.insert(region);
+			auto incoming = edge;
+
+			do {
+				auto corner = triangleOfEdge(incoming);
+				regions[region].corners.emplace_back(corner);
+				corners[corner].regions.emplace_back(region);
+
+				auto outgoing = nextHalfEdge(incoming);
+				incoming = halfedges[outgoing];
+			} while (incoming != invalidIndex && incoming != edge);
+		}
+	}
+
+	// get neighbors of all corners
+	size_t numCorners = corners.size();
+
+	for (size_t corner = 0; corner < numCorners; corner++) {
+		for (size_t vertex = 0; vertex < 3; vertex++) {
+			corners[corner].neighbors.emplace_back(3 * corner + vertex);
+		}
+	}
+}
+
+
+//
+//	OtWorld::assignWater
+//
+
+void OtWorld::World::assignWater() {
+	OtNoise noise;
+	noise.setFrequency(0.5f + 3.0f * ruggedness);
+
+	auto size2 = static_cast<float>(size) / 2.0f;
+
+	for (auto& region : regions) {
+		if (!region.ghost && !region.border) {
+			auto x = (region.center.x - size2) / size2;
+			auto y = (region.center.y - size2) / size2;
+			auto distance = std::max(std::abs(x), std::abs(y));
+			auto n = std::lerp(noise.fbm(x, y, static_cast<float>(seed)), 0.5f, 0.5f);
+			region.water = (n - (0.5f * distance * distance)) < 0.0f;
+		}
+	}
+}
+
+
+//
+//	OtWorld::assignOceans
+//
+
+void OtWorld::World::assignOceans() {
+	// start with the border regions since they are always oceans
+	std::stack<size_t> stack;
+
+	for (auto region : borders) {
+		stack.push(region);
+	}
+
+	while (!stack.empty()) {
+		auto& region = regions[stack.top()];
+		stack.pop();
+
+		for (auto n : region.neighbors) {
+			auto& neighbor = regions[n];
+
+			// expand search to other watery neighbors that have not been marked as oceans yet
+			if (neighbor.water && !neighbor.ocean) {
+				neighbor.ocean = true;
+				oceans.insert(neighbor.id);
+				stack.push(neighbor.id);
+			}
+		}
+	}
+}
+
+
+//
+//	OtWorld::World::assignLakes
+//
+
+void OtWorld::World::assignLakes() {
+	for (auto& region : regions) {
+		if (region.water && !region.ocean) {
+			region.lake = true;
+			lakes.insert(region.id);
+		}
+	}
+}
+
+
+//
+//	OtWorld::assignShores
+//
+
+void OtWorld::World::assignShores() {
+	for (auto& region : regions) {
+		if (!region.water) {
+			for (auto neighbor : region.neighbors) {
+				if (regions[neighbor].ocean) {
+					region.oceanshore = true;
+					oceanshores.insert(region.id);
+
+				} else if (regions[neighbor].lake) {
+					region.lakeshore = true;
+					lakeshores.insert(region.id);
+				}
+			}
+		}
+	}
+}
+
+
+//
+//	OtWorld::World::assignCoastalDistance
+//
+
+void OtWorld::World::assignCoastalDistance() {
+	// process all ocean shoreline regions
+	std::list<size_t> list;
+
+	for (auto shore : oceanshores) {
+		regions[shore].distance = 0.0f;
+		list.push_back(shore);
+	}
+
+	// process all other regions
+	while (!list.empty()) {
+		auto& region = regions[list.front()];
+		list.pop_front();
+
+		auto newDistance = region.distance + 1.0f;
+
+		for (auto n : region.neighbors) {
+			auto& neighbor = regions[n];
+
+			if (neighbor.distance == invalidValue || newDistance < neighbor.distance) {
+				neighbor.distance = newDistance;
+				list.push_back(neighbor.id);
+			}
+		}
+	}
+
+	// find distance limit
+	float maxDistance = std::numeric_limits<float>::lowest();
+
+	for (auto& region : regions) {
+		maxDistance = std::max(maxDistance, region.distance);
+	}
+
+	// normalize distances
+	for (auto& region : regions) {
+		region.distance = region.distance / maxDistance;
+	}
+
+	// assign distances to corners
+	for (auto& corner : corners) {
+		auto total = 0.0f;
+
+		for (auto region : corner.regions) {
+			total += regions[region].distance;
+		}
+
+		corner.distance = total / static_cast<float>(corner.regions.size());
+	}
+}
+
+
+//
+//	OtWorld::World::assignElevation
+//
+
+void OtWorld::World::assignElevation() {
+	// process all ocean shoreline regions
+	std::list<size_t> list;
+
+	for (auto shore : oceanshores) {
+		regions[shore].elevation = 0.0f;
+		list.push_back(shore);
+	}
+
+	// process all other regions
+	while (!list.empty()) {
+		auto& region = regions[list.front()];
+		list.pop_front();
+
+		for (auto n : region.neighbors) {
+			auto& neighbor = regions[n];
+
+			if (neighbor.ocean) {
+				auto newElevation = region.elevation - 1.0f;
+
+				if (neighbor.elevation == invalidValue || newElevation > neighbor.elevation) {
+					neighbor.elevation = newElevation;
+					list.push_back(neighbor.id);
+				}
+
+			} else {
+				auto newElevation = region.elevation + (neighbor.lake ? 0.0f : 1.0f);
+
+				if (neighbor.elevation == invalidValue || newElevation < neighbor.elevation) {
+					neighbor.elevation = newElevation;
+					list.push_back(neighbor.id);
+				}
+			}
+		}
+	}
+
+	// add some randomness to land elevation
+	OtNoise noise;
+
+	for (auto& region : regions) {
+		if (!region.water && !region.oceanshore && !region.lakeshore) {
+			auto offset = noise.fbm(region.center.x, region.center.y, static_cast<float>(seed + 7));
+			region.elevation += ((offset * 2.0f) - 1.0f) * 0.25f;
+		}
+	}
+
+	// find elevation limits
+	float minElevation = std::numeric_limits<float>::max();
+	float maxElevation = std::numeric_limits<float>::lowest();
+
+	for (auto& region : regions) {
+		minElevation = std::min(minElevation, region.elevation);
+		maxElevation = std::max(maxElevation, region.elevation);
+	}
+
+	// normalize elevations and redistribute
+	for (auto& region : regions) {
+		if (region.ocean) {
+			float normalizedElevation = region.elevation / minElevation;
+			region.elevation = -std::pow(normalizedElevation, 1.5f);
+
+		} else {
+			float normalizedElevation = region.elevation / maxElevation;
+			region.elevation = std::pow(normalizedElevation, 1.5f);
+		}
+	}
+
+	// assign elevations to corners
+	for (auto& corner : corners) {
+		auto total = 0.0f;
+
+		for (auto region : corner.regions) {
+			total += regions[region].elevation;
+		}
+
+		corner.elevation = total / static_cast<float>(corner.regions.size());
+	}
+}
+
+
+//
+//	OtWorld::World::assignMoisture
+//
+
+void OtWorld::World::assignMoisture() {
+	// process all water regions
+	for (auto& region : regions) {
+		if (region.water) {
+			region.moisture = 1.0f;
+		}
+	}
+
+	// process all shoreline regions
+	std::list<size_t> list;
+
+	for (auto shore : oceanshores) {
+		regions[shore].moisture = 0.9f;
+		list.push_back(shore);
+	}
+
+	for (auto shore : lakeshores) {
+		regions[shore].moisture = 0.9f;
+		list.push_back(shore);
+	}
+
+	// process all other regions
+	while (!list.empty()) {
+		auto& region = regions[list.front()];
+		list.pop_front();
+
+		auto newMoisture = region.moisture - 0.2f;
+
+		for (auto n : region.neighbors) {
+			auto& neighbor = regions[n];
+
+			if (neighbor.moisture == 0.0f || newMoisture > neighbor.moisture) {
+				neighbor.moisture = newMoisture;
+				list.push_back(neighbor.id);
+			}
+		}
+	}
+
+	// find lowest moisture level
+	float minMoisture = 0.0f;
+
+	for (auto& region : regions) {
+		minMoisture = std::min(minMoisture, region.moisture);
+	}
+
+	// normalize moisture levels
+	for (auto& region : regions) {
+		if (!region.ocean) {
+			region.moisture = (region.moisture - minMoisture) / (1.0f - minMoisture);
+		}
+	}
+}
+
+
+//
+//	OtWorld::World::assignTemperature
+//
+
+void OtWorld::World::assignTemperature() {
+	for (auto& region : regions) {
+		auto latitude = region.center.y / static_cast<float>(size);
+		auto bias = std::lerp(northBias, southBias, latitude);
+		region.temperature = 1.0f - region.elevation + bias;
+	}
+}
+
+
+//
+//	OtWorld::World::assignBiome
+//
+
+void OtWorld::World::assignBiome() {
+	for (auto& region : regions) {
+		if (region.ocean) {
+			region.biome = Biome::ocean;
+
+		} else if (region.water) {
+			if (region.temperature > 0.9f) {
+				region.biome = Biome::marsh;
+
+			} else if (region.temperature < 0.2f) {
+				region.biome = Biome::ice;
+
+			} else {
+				region.biome = Biome::lake;
+
+			}
+
+		} else if (region.oceanshore) {
+			region.biome = Biome::oceanShore;
+
+
+		} else if (region.lakeshore) {
+			region.biome = Biome::lakeShore;
+
+		} else if (region.temperature < 0.2f) {
+			if (region.moisture > 0.50f) {
+				region.biome = Biome::snow;
+
+			} else if (region.moisture > 0.33f) {
+				region.biome = Biome::tundra;
+
+			} else if (region.moisture > 0.16f) {
+				region.biome = Biome::bare;
+
+			} else {
+				region.biome = Biome::scorched;
+			}
+
+		} else if (region.temperature < 0.4f) {
+			if (region.moisture > 0.66f) {
+				region.biome = Biome::taiga;
+
+			} else if (region.moisture > 0.33f) {
+				region.biome = Biome::shrubland;
+
+			} else {
+				region.biome = Biome::temperateDesert;
+			}
+
+		} else if (region.temperature < 0.7f) {
+			if (region.moisture > 0.83f) {
+				region.biome = Biome::temperateRainForest;
+
+			} else if (region.moisture > 0.50f) {
+				region.biome = Biome::temperateDeciduousForest;
+
+			} else if (region.moisture > 0.16f) {
+				region.biome = Biome::grassland;
+
+			} else {
+				region.biome = Biome::temperateDesert;
+			}
+
+		} else {
+			if (region.moisture > 0.66f) {
+				region.biome = Biome::tropicalRainForest;
+
+			} else if (region.moisture > 0.33f) {
+				region.biome = Biome::tropicalSeasonalForest;
+
+			} else if (region.moisture > 0.16f) {
+				region.biome = Biome::grassland;
+
+			} else {
+				region.biome = Biome::subtropicalDesert;
+			}
+		}
+	}
 }

@@ -11,6 +11,8 @@
 
 #include <algorithm>
 
+#include "OtThreadPool.h"
+
 #include "OtWorld.h"
 
 #include "OtNodesFactory.h"
@@ -37,12 +39,36 @@ public:
 		ruggedness = std::clamp(ruggedness, 0.0f, 1.0f);
 	}
 
-	// run the world generator
+	// update node status
+	inline bool onUpdate() override {
+		if (generated) {
+			std::swap(world, newWorld);
+			generated = false;
+
+			if (moreRequests) {
+				scheduleGeneration();
+				moreRequests = false;
+
+			} else {
+				generating = false;
+			}
+
+			return true;
+
+		} else {
+			return false;
+		}
+	}
+
+	// execute asynchronous world generation
 	inline void onExecute() override {
-		world.setSeed(seed);
-		world.setSize(size);
-		world.setRuggedness(ruggedness);
-		world.generate();
+		if (generating) {
+			moreRequests = true;
+
+		} else {
+			generating = true;
+			scheduleGeneration();
+		}
 	}
 
 	static constexpr const char* nodeName = "World Generator";
@@ -57,6 +83,24 @@ private:
 
 	// world component
 	OtWorld world;
+
+	// work variables
+	bool generating = false;
+	bool generated = false;
+	bool moreRequests = false;
+	OtWorld newWorld;
+
+	// local functions
+	void scheduleGeneration() {
+		newWorld.setSeed(seed);
+		newWorld.setSize(size);
+		newWorld.setRuggedness(ruggedness);
+
+		OtThreadPool::run([this]() {
+			newWorld.generate();
+			generated = true;
+		});
+	}
 };
 
 

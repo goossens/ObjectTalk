@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
+#include <numbers>
 #include <string>
 
 #include "fmt/format.h"
@@ -1112,6 +1113,36 @@ bool OtUi::bezier(const char* label, float P[4]) {
 	ImGui::SetCursorScreenPos(ImVec2(bb.Min.x, bb.Max.y + grabRadius));
 	ImGui::PopID();
 	return changed;
+}
+
+
+//
+//	OtUi::spinner
+//
+
+void OtUi::spinner(ImVec2 center, float size, float speed, float radius, int circles) {
+	// get information
+	auto drawList = ImGui::GetWindowDrawList();
+	static float time = 0.0f;
+	time += ImGui::GetIO().DeltaTime;
+	float offset = static_cast<float>(std::numbers::pi * 2.0 / circles);
+
+	// render all circling balls
+	for (int i = 0; i < circles; i++) {
+		float x = size * std::sin(offset * i);
+		float y = size * std::cos(offset * i);
+		float growth = std::max(0.0f, std::sin(time * speed - i * offset));
+
+		ImVec4 color;
+		ImVec4 dark = ImGui::GetStyleColorVec4(ImGuiCol_Border);
+		ImVec4 light = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
+		color.x = light.x * growth + dark.x * (1.0f - growth);
+		color.y = light.y * growth + dark.y * (1.0f - growth);
+		color.z = light.z * growth + dark.z * (1.0f - growth);
+		color.w = 1.0f;
+
+		drawList->AddCircleFilled(ImVec2(center.x + x, center.y - y), radius + growth * radius * 0.5f, ImGui::GetColorU32(color));
+	}
 }
 
 

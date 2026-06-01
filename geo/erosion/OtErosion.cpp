@@ -143,7 +143,7 @@ OtErosion::Erosion OtErosion::erosionFilter(const glm::vec2 position, glm::vec3 
 //
 
 glm::vec3 OtErosion::fractalNoise(glm::vec2 position, float frequency, int octaves, float lacunarity, float gain, int seed) {
-	glm::vec3 n;
+	glm::vec3 n{0.0f};
 	auto na = 1.0f;
 
 	for (auto i = 0; i < octaves; i++) {
@@ -173,7 +173,7 @@ glm::vec4 OtErosion::phacelleNoise(glm::vec2 position, glm::vec2 normDir, float 
 	// iterate over 4x4 cells, calculating a stripe pattern for each and blending between them
 	auto pInt = glm::floor(position);
 	auto pFrac = glm::fract(position);
-	glm::vec2 phaseDir;
+	glm::vec2 phaseDir{0.0f};
 	auto weightSum = 0.0f;
 
 	for (auto i = -1; i <= 2; i++) {

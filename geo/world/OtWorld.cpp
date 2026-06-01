@@ -123,7 +123,7 @@ void OtWorld::generate() {
 //	OtWorld::render
 //
 
-void OtWorld::render(OtImage& image, int size, RenderType type) const {
+void OtWorld::render(OtImage& image, int dimension, RenderType type) const {
 	static const char* colors[] = {
 		"#000000",
 		"#44447a",
@@ -151,18 +151,18 @@ void OtWorld::render(OtImage& image, int size, RenderType type) const {
 	if (type == RenderType::heightMap) {
 		// create heightmap
 		OtHeightMap heightmap;
-		generateHeightMap(heightmap, size);
+		generateHeightMap(heightmap, dimension);
 
 		float minElevation = heightmap.getMinHeight();
 		float maxElevation = heightmap.getMaxHeight();
 		float range = maxElevation - minElevation;
 
 		// get image ready
-		image.update(size, size, OtImage::Format::rgba32);
+		image.update(dimension, dimension, OtImage::Format::rgba32);
 		auto p = static_cast<float*>(image.getPixels());
 
-		for (int y = 0; y < size; y++) {
-			for (int x = 0; x < size; x++) {
+		for (int y = 0; y < dimension; y++) {
+			for (int x = 0; x < dimension; x++) {
 				auto elevation = heightmap.getHeight(x, y);
 				*p++ = (elevation - minElevation) / range;
 				*p++ = 0.0f;
@@ -173,8 +173,8 @@ void OtWorld::render(OtImage& image, int size, RenderType type) const {
 
 	} else {
 		// render the world
-		OtImageCanvas canvas(size, size);
-		auto scale = static_cast<float>(size) / static_cast<float>(world->size);
+		OtImageCanvas canvas(dimension, dimension);
+		auto scale = static_cast<float>(dimension) / static_cast<float>(world->size);
 		canvas.scale(scale, scale);
 
 		for (auto& region : world->regions) {
@@ -229,7 +229,7 @@ void OtWorld::render(OtImage& image, int size, RenderType type) const {
 //	OtWorld::generateHeightMap
 //
 
-void OtWorld::generateHeightMap(OtHeightMap& heightmap, int size) const {
+void OtWorld::generateHeightMap(OtHeightMap& heightmap, int dimension) const {
 	// create vertex buffers
 	struct Vertex {
 		Vertex(glm::vec2 p, float e) : position(p), elevation(e) {}
@@ -238,7 +238,7 @@ void OtWorld::generateHeightMap(OtHeightMap& heightmap, int size) const {
 	};
 
 	std::vector<Vertex> vertices;
-	auto scale = static_cast<float>(size) / static_cast<float>(world->size);
+	auto scale = static_cast<float>(dimension) / static_cast<float>(world->size);
 
 	for (auto& corner : world->corners) {
 		vertices.emplace_back(corner.position * scale, corner.elevation);
@@ -260,7 +260,7 @@ void OtWorld::generateHeightMap(OtHeightMap& heightmap, int size) const {
 	}
 
 	// resize heightmap (if required)
-	heightmap.update(size, size);
+	heightmap.update(dimension, dimension);
 
 	// render all triangles
 	for (size_t i = 0; i < indices.size(); i += 3) {
@@ -273,7 +273,7 @@ void OtWorld::generateHeightMap(OtHeightMap& heightmap, int size) const {
 		bbox.add(static_cast<int>(v1.position.x), static_cast<int>(v1.position.y));
 		bbox.add(static_cast<int>(v2.position.x), static_cast<int>(v2.position.y));
 		bbox.add(static_cast<int>(v3.position.x), static_cast<int>(v3.position.y));
-		bbox.clamp(0, size - 1, 0, size - 1);
+		bbox.clamp(0, dimension - 1, 0, dimension - 1);
 
 		// render pixels
 		for (int y = bbox.minY; y <= bbox.maxY; y++) {

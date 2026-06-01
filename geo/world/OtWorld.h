@@ -89,10 +89,10 @@ public:
 	void generate();
 
 	// render to image
-	void render(OtImage& image, int size, RenderType type) const;
+	void render(OtImage& image, int dimension, RenderType type) const;
 
 	// generate heightmap
-	void generateHeightMap(OtHeightMap& heightmap, int size) const;
+	void generateHeightMap(OtHeightMap& heightmap, int dimension) const;
 
 	// version management
 	inline void setVersion(int v) { version = v; }

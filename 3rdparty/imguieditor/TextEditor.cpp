@@ -103,11 +103,31 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 		}
 
 		foldIndicatorOffset = textLeftOffset - glyphSize.x;
-		textRightOffset = visibleSize.x - (config.showMiniMap ? config.miniMapWidth : 0.0f);
-		miniMapOffset = textRightOffset;
+
+		if (config.showMiniMap) {
+			auto fontScale = ImGui::GetStyle().FontScaleDpi;
+			miniMapRowHeight = 3.0f * fontScale;
+			miniMapColumnHeight = 2.0f * fontScale;
+			miniMapColumnWidth = 1.0f * fontScale;
+
+			if (config.miniMapColumns == 0.0f) {
+				miniMapWidth = std::floor(
+					(visibleSize.x - textLeftOffset) /
+					(glyphSize.x + miniMapColumnWidth)) * miniMapColumnWidth;
+
+			} else {
+				miniMapWidth = config.miniMapColumns * miniMapColumnWidth;
+			}
+
+			textRightOffset = visibleSize.x - miniMapWidth;
+			miniMapOffset = textRightOffset;
+
+		} else {
+			textRightOffset = visibleSize.x;
+		}
 
 		// determine number of columns at which text will wrap
-		textSize = visibleSize - ImVec2(textLeftOffset + (config.showMiniMap ? config.miniMapWidth : 0.0f), 0.0f);
+		textSize = ImVec2(textRightOffset - textLeftOffset, visibleSize.y);
 		config.wordWrapColumns = static_cast<size_t>(std::max(std::floor(textSize.x / glyphSize.x), 0.0f));
 
 		// handle possible state changes caused by API calls before first frame or between frames
@@ -131,6 +151,9 @@ void TextEditor::render(const char* title, const ImVec2& size, bool border) {
 		if (paletteAlpha != ImGui::GetStyle().Alpha) {
 			updatePalettes();
 		}
+
+		// determine width of cursor
+		cursorWidth = 1.0f * ImGui::GetStyle().FontScaleDpi;
 
 		// setup clipping over the text area
 		auto drawList = ImGui::GetWindowDrawList();
@@ -705,15 +728,15 @@ void TextEditor::renderMiniMap() {
 			if (row.color) {
 				drawList->AddRectFilled(
 					pos,
-					pos + ImVec2(config.miniMapWidth, miniMapRowHeight),
+					pos + ImVec2(miniMapWidth, miniMapRowHeight),
 					row.color);
 			}
 
 			// render text sections
 			for (auto& section : row.sections) {
 				drawList->AddRectFilled(
-					pos + ImVec2(section.start * miniMapTextWidth, 0.0f),
-					pos + ImVec2(section.end * miniMapTextWidth, miniMapTextHeight),
+					pos + ImVec2(section.start * miniMapColumnWidth, 0.0f),
+					pos + ImVec2(section.end * miniMapColumnWidth, miniMapColumnHeight),
 					miniMapPalette.get(section.color));
 			}
 
@@ -725,7 +748,7 @@ void TextEditor::renderMiniMap() {
 			auto viewPortStart = (firstVisibleRow - firstMiniMapRow) * miniMapRowHeight;
 			auto viewportHeight = (lastVisibleRow - firstVisibleRow) * miniMapRowHeight;
 			auto ViewPortTopLeft = ImGui::GetWindowPos() + ImVec2(miniMapOffset, viewPortStart);
-			auto viewPortBottomRight = ViewPortTopLeft + ImVec2(config.miniMapWidth, viewportHeight);
+			auto viewPortBottomRight = ViewPortTopLeft + ImVec2(miniMapWidth, viewportHeight);
 
 			auto fColor = ImGui::ColorConvertU32ToFloat4(palette.get(Color::text));
 			fColor.w *= miniMapIsScrollbar ? miniMapViewPortActiveAlpha : miniMapViewPortAlpha;
@@ -939,7 +962,7 @@ void TextEditor::updateState() {
 		textLeftOffset +
 		typeSetter.getColumnCount() * glyphSize.x +
 		cursorWidth +
-		(config.showMiniMap ? config.miniMapWidth : 0.0f);
+		(config.showMiniMap ? miniMapWidth : 0.0f);
 
 	auto height = typeSetter.getRowCount() * glyphSize.y;
 	totalSize = ImVec2(width, height);

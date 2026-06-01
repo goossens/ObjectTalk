@@ -116,8 +116,8 @@ public:
 	inline bool IsShowLineNumbersEnabled() const { return config.showLineNumbers; }
 	inline void SetShowMiniMapEnabled(bool value) { config.showMiniMap = value; }
 	inline bool IsShowMiniMapEnabled() const { return config.showMiniMap; }
-	inline void SetMiniMapWidth(float value) { config.miniMapWidth = value; }
-	inline float GetMiniMapWidth() const { return config.miniMapWidth; }
+	inline void SetMiniMapColumns(size_t value) { config.miniMapColumns = value; }
+	inline size_t GetMiniMapColumns() const { return config.miniMapColumns; }
 	inline void SetShowScrollbarMiniMapEnabled(bool value) { config.showScrollbarMiniMap = value; }
 	inline bool IsShowScrollbarMiniMapEnabled() const { return config.showScrollbarMiniMap; }
 	inline void SetShowPanScrollIndicatorEnabled(bool value) { config.showPanScrollIndicator = value; }
@@ -625,6 +625,9 @@ public:
 		// text label used when no suggestions are available (this allows for internationalization)
 		std::string noSuggestionsLabel = "No suggestions";
 
+		// width of suggestion popup expressed in number of glyphs
+		size_t suggestionWidth = 30;
+
 		// called when autocomplete is configured, active and the editor needs an updated suggestions list
 		// callback must populate and order suggestions in state object
 		// suggestion list is not cleared by editor between callbacks
@@ -820,7 +823,7 @@ protected:
 		bool showTabs = true;
 		bool showLineNumbers = true;
 		bool showMiniMap = false;
-		float miniMapWidth = 120.0f;
+		size_t miniMapColumns = 0;
 		bool showScrollbarMiniMap = true;
 		bool showMatchingBrackets = true;
 		bool completePairedGlyphs = true;
@@ -1439,7 +1442,6 @@ protected:
 		AutoCompleteState state;
 		bool triggeredManually = false;
 		size_t currentSelection = 0;
-		static constexpr float suggestionWidth = 250.0f;
 
 		// support functions
 		void start(Cursors& cursors);
@@ -1598,37 +1600,18 @@ protected:
 	// rendering context
 	static constexpr size_t invalidLine = std::numeric_limits<size_t>::max();
 
-	static constexpr size_t leftMargin = 1; // margins are expressed in glyphs
+	static constexpr size_t leftMargin = 1; // margins are expressed in number of glyphs
 	static constexpr size_t decorationMargin = 1;
 	static constexpr size_t textMargin = 2;
-	static constexpr size_t cursorWidth = 1;
-
-	static constexpr float miniMapRowHeight = 3.0f; // sizes are expressed in logical pixels
-	static constexpr float miniMapTextHeight = 2.0f;
-	static constexpr float miniMapTextWidth = 1.0f;
-	static constexpr float miniMapAlpha = 0.45f;
-	static constexpr float miniMapViewPortAlpha = 0.15f;
-	static constexpr float miniMapViewPortActiveAlpha = 0.3f;
 
 	bool editorVisible = false;
+	float cursorWidth;
 	ImVec2 cursorScreenPos;
 	ImVec2 visibleSize;
 
 	ImFont* font;
 	float fontSize;
 	ImVec2 glyphSize;
-
-	ImVec2 totalSize;
-	size_t firstVisibleRow = 0;
-	size_t lastVisibleRow = 0;
-	size_t firstVisibleColumn = 0;
-	size_t lastVisibleColumn = 0;
-
-	size_t firstMiniMapRow;
-	size_t lastMiniMapRow;
-	bool miniMapIsScrollbar = false;
-	float miniMapScrollStart;
-	float miniMapScrollY;
 
 	float lineNumberLeftOffset;
 	float lineNumberRightOffset;
@@ -1637,7 +1620,27 @@ protected:
 	float textLeftOffset;
 	float textRightOffset;
 	float miniMapOffset;
+
 	ImVec2 textSize;
+	ImVec2 totalSize;
+	size_t firstVisibleRow = 0;
+	size_t lastVisibleRow = 0;
+	size_t firstVisibleColumn = 0;
+	size_t lastVisibleColumn = 0;
+
+	float miniMapWidth;
+	size_t firstMiniMapRow;
+	size_t lastMiniMapRow;
+	bool miniMapIsScrollbar = false;
+	float miniMapScrollStart;
+	float miniMapScrollY;
+
+	float miniMapRowHeight;
+	float miniMapColumnHeight;
+	float miniMapColumnWidth;
+	static constexpr float miniMapAlpha = 0.45f;
+	static constexpr float miniMapViewPortAlpha = 0.15f;
+	static constexpr float miniMapViewPortActiveAlpha = 0.3f;
 
 	float cursorAnimationTimer = 0.0f;
 	size_t scrollToLineNumber = invalidLine;

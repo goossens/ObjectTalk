@@ -152,9 +152,9 @@ void OtTextEditor::renderMenus() {
 			ImGui::EndMenu();
 		}
 
-		if (ImGui::BeginMenu("MiniMap Width")) {
-			float width = editor.GetMiniMapWidth();
-			if (ImGui::SliderFloat("##miniMapWidth", &width, 50.0f, 200.0f)) { editor.SetMiniMapWidth(width); }
+		if (ImGui::BeginMenu("MiniMap Columns")) {
+			auto columns = editor.GetMiniMapColumns();
+			if (OtUi::dragSizeT("##miniMapColumns", &columns, 0, 200)) { editor.SetMiniMapColumns(columns); }
 			ImGui::EndMenu();
 		}
 

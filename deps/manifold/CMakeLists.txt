@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Populate(manifold QUIET GIT_REPOSITORY "https://github.com/elalish/manifold" GIT_TAG "v3.4.1")
+FetchContent_Populate(manifold QUIET GIT_REPOSITORY "https://github.com/elalish/manifold" GIT_TAG "v3.5.0")
 
 file(GLOB MANIFOLD_SOURCES
 	${manifold_SOURCE_DIR}/src/*.cpp
@@ -17,7 +17,7 @@ target_compile_definitions(manifold PUBLIC "MANIFOLD_PAR=-1")
 
 target_compile_options(manifold PRIVATE
 	$<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wall -Wno-unknown-warning-option -Wno-unused -Wno-shorten-64-to-32>
-	$<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wall -Wno-unknown-warning-option -Wno-unused>
+	$<$<COMPILE_LANG_AND_ID:CXX,GNU>:-Wall -Wno-unused -Wno-sign-compare>
 	$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/wd4244 /wd4267>)
 
 target_include_directories(manifold PUBLIC ${manifold_SOURCE_DIR}/include)

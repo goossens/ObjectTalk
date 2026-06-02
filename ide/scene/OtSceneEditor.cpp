@@ -691,7 +691,7 @@ void OtSceneEditor::determinePanelSizes() {
 	minPanelWidth = available.x * 0.05f;
 	maxPanelWidth = available.x * 0.9f;
 
-	if (panelWidth < 0.0) {
+	if (panelWidth < 0.0f) {
 		panelWidth =  available.x * 0.25f;
 
 	} else {

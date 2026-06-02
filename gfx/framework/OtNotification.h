@@ -227,7 +227,7 @@ private:
 			expired
 		};
 
-		inline static size_t id = 1;
+		static inline size_t id = 1;
 		OtFontAwesome::Type icon;
 		std::string name;
 		Type type;

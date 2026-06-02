@@ -71,8 +71,8 @@ public:
 	// process samples
 	inline void execute() override {
 		if (input->isSourceConnected()) {
-			customW = width;
-			customH = height;
+			customW = getScopeWidth();
+			customH = getScopeHeight();
 
 			// add input signal to data buffer
 			float buffer[OtAudioSettings::bufferSize];
@@ -82,7 +82,7 @@ public:
 			data.insert(buffer, OtAudioSettings::bufferSize);
 
 		} else {
-			customW = width;
+			customW = getScopeWidth();
 			customH = ImGui::GetFrameHeight();
 		}
 
@@ -91,10 +91,11 @@ public:
 
 	static constexpr const char* circuitName = "Oscilloscope";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::probe;
-	static constexpr float width = 300.0f;
-	static constexpr float height = 150.0f;
 	static constexpr size_t N = 1024;
 	static constexpr size_t V = N / 2;
+
+	static inline float getScopeWidth() { return 300.0f * ImGui::GetStyle().FontScaleDpi; }
+	static inline float getScopeHeight() { return 150.0f * ImGui::GetStyle().FontScaleDpi; }
 
 private:
 	// properties

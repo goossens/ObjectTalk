@@ -23,8 +23,8 @@
 class OtFontAudio {
 public:
 	// access font
-	inline static uint8_t* data() { return fontData; }
-	inline static size_t size() { return fontSize; }
+	static inline uint8_t* data() { return fontData; }
+	static inline size_t size() { return fontSize; }
 
 	// glyph information
 #if (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L) || (__cplusplus >= 202002L)

@@ -46,7 +46,7 @@ bool OtSamplerSynth::renderUI(float itemWidth) {
 //
 
 float OtSamplerSynth::getRenderWidth() {
-	return 194.0f;
+	return 194.0f * ImGui::GetStyle().FontScaleDpi;
 }
 
 
@@ -55,7 +55,7 @@ float OtSamplerSynth::getRenderWidth() {
 //
 
 float OtSamplerSynth::getRenderHeight() {
-	return ImGui::GetFrameHeightWithSpacing() * 3.0f + 20.0f;
+	return ImGui::GetFrameHeightWithSpacing() * 3.0f + 20.0f * ImGui::GetStyle().FontScaleDpi;
 }
 
 

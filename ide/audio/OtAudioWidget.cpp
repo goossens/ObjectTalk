@@ -63,18 +63,6 @@ static constexpr ImU32 pinColors[] = {
 	IM_COL32(150, 55, 255, 200)		// MIDI
 };
 
-static constexpr float gridSpacing = 64.0f;
-static constexpr float circuitRounding = 4.0f;
-
-static constexpr float fontSize = 15.0f;
-
-static constexpr float pinRadius = 5.0f;
-static constexpr float pinBox = pinRadius * 2.0f + 2.0f;
-static constexpr float topPadding = 1.0f;
-static constexpr float horizontalPadding = pinRadius + 2.0f;
-
-static constexpr float wireThickness = 1.5f;
-
 
 //
 //	OtAudioWidget::render
@@ -111,9 +99,21 @@ void OtAudioWidget::render(OtAudio* s) {
 	ImGui::PushFont(nullptr, fontSize);
 	ImGui::SetNextWindowContentSize(ImVec2(width, height));
 	ImGui::BeginChild("audio", ImVec2(), ImGuiChildFlags_None, flags);
-	pinOffset = ImGui::GetStyle().FramePadding.y + ImGui::GetFontBaked()->Ascent - pinRadius + 1.0f;
+
+	auto& style = ImGui::GetStyle();
+	pinOffset = style.FramePadding.y + ImGui::GetFontBaked()->Ascent - pinRadius + 1.0f;
 	ImDrawList* drawlist = ImGui::GetWindowDrawList();
 	widgetOffset = ImGui::GetCursorScreenPos();
+
+	auto scale = style.FontScaleDpi;
+	gridSpacing = 64.0f * scale;
+	circuitRounding = 4.0f * scale;
+	fontSize = 15.0f * scale;
+	pinRadius = 5.0f * scale;
+	pinBox = pinRadius * 2.0f + 2.0f * scale;
+	topPadding = 1.0f * scale;
+	horizontalPadding = pinRadius + 2.0f * scale;
+	wireThickness = 1.5f * scale;
 
 	// render the grid
 	if (renderingGrid) {

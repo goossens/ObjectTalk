@@ -70,11 +70,11 @@ private:
 
 template <>
 struct OtValue<OtSound> {
-	inline static OtObject encode(OtSound sound) {
+	static inline OtObject encode(OtSound sound) {
 		return OtSoundObject::create(sound);
 	}
 
-	inline static OtSound decode(OtObject object) {
+	static inline OtSound decode(OtObject object) {
 		object.expect<OtSoundClass>("Sound");
 		return OtSoundObject(object)->getSound();
 	}

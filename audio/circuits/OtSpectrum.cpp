@@ -51,7 +51,7 @@ public:
 		if (input->isSourceConnected()) {
 			ImPlot::PushStyleColor(ImPlotCol_AxisText, ImVec4(0.6f, 0.6f, 0.6f, 1.0f));
 
-			if (ImPlot::BeginPlot("##Spectrum", ImVec2(itemWidth, height), ImPlotFlags_CanvasOnly | ImPlotFlags_NoInputs)) {
+			if (ImPlot::BeginPlot("##Spectrum", ImVec2(itemWidth, getSpectrumHeight()), ImPlotFlags_CanvasOnly | ImPlotFlags_NoInputs)) {
 				{
 					// quickly copy signal to separate buffer
 					// to avoid race conditions and to not hold up audio thread
@@ -113,8 +113,8 @@ public:
 	// process samples
 	inline void execute() override {
 		if (input->isSourceConnected()) {
-			customW = width;
-			customH = height + ImGui::GetStyle().ItemSpacing.y;
+			customW = getSpectrumWidth();
+			customH = getSpectrumHeight() + ImGui::GetStyle().ItemSpacing.y;
 
 			// add input signal to data buffer
 			float buffer[OtAudioSettings::bufferSize];
@@ -124,7 +124,7 @@ public:
 			data.insert(buffer, OtAudioSettings::bufferSize);
 
 		} else {
-			customW = width;
+			customW = getSpectrumWidth();
 			customH = ImGui::GetFrameHeight();
 		}
 
@@ -133,9 +133,10 @@ public:
 
 	static constexpr const char* circuitName = "Spectrum Analyzer";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::probe;
-	static constexpr float width = 300.0f;
-	static constexpr float height = 150.0f;
 	static constexpr size_t N = 4096;
+
+	static inline float getSpectrumWidth() { return 300.0f * ImGui::GetStyle().FontScaleDpi; }
+	static inline float getSpectrumHeight() { return 150.0f * ImGui::GetStyle().FontScaleDpi; }
 
 private:
 	// properties

@@ -145,8 +145,8 @@ private:
 	glm::vec2 value = glm::vec2(1.0f);
 
 	// identifiers
-	inline static OtID xID = OtIdentifier::create("x");
-	inline static OtID yID = OtIdentifier::create("y");
+	static inline OtID xID = OtIdentifier::create("x");
+	static inline OtID yID = OtIdentifier::create("y");
 };
 
 
@@ -282,9 +282,9 @@ private:
 	glm::vec3 value = glm::vec3(1.0f);
 
 	// identifiers
-	inline static OtID xID = OtIdentifier::create("x");
-	inline static OtID yID = OtIdentifier::create("y");
-	inline static OtID zID = OtIdentifier::create("z");
+	static inline OtID xID = OtIdentifier::create("x");
+	static inline OtID yID = OtIdentifier::create("y");
+	static inline OtID zID = OtIdentifier::create("z");
 };
 
 
@@ -427,10 +427,10 @@ private:
 	glm::vec4 value = glm::vec4(1.0f);
 
 	// identifiers
-	inline static OtID xID = OtIdentifier::create("x");
-	inline static OtID yID = OtIdentifier::create("y");
-	inline static OtID zID = OtIdentifier::create("z");
-	inline static OtID wID = OtIdentifier::create("w");
+	static inline OtID xID = OtIdentifier::create("x");
+	static inline OtID yID = OtIdentifier::create("y");
+	static inline OtID zID = OtIdentifier::create("z");
+	static inline OtID wID = OtIdentifier::create("w");
 };
 
 
@@ -676,15 +676,15 @@ private:
 	// data
 	glm::mat4 value = glm::mat4(1.0f);
 
-	inline static OtID row1ID = OtIdentifier::create("row1");
-	inline static OtID row2ID = OtIdentifier::create("row2");
-	inline static OtID row3ID = OtIdentifier::create("row3");
-	inline static OtID row4ID = OtIdentifier::create("row4");
+	static inline OtID row1ID = OtIdentifier::create("row1");
+	static inline OtID row2ID = OtIdentifier::create("row2");
+	static inline OtID row3ID = OtIdentifier::create("row3");
+	static inline OtID row4ID = OtIdentifier::create("row4");
 
-	inline static OtID column1ID = OtIdentifier::create("column1");
-	inline static OtID column2ID = OtIdentifier::create("column2");
-	inline static OtID column3ID = OtIdentifier::create("column3");
-	inline static OtID column4ID = OtIdentifier::create("column4");
+	static inline OtID column1ID = OtIdentifier::create("column1");
+	static inline OtID column2ID = OtIdentifier::create("column2");
+	static inline OtID column3ID = OtIdentifier::create("column3");
+	static inline OtID column4ID = OtIdentifier::create("column4");
 };
 
 

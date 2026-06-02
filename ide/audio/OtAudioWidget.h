@@ -66,6 +66,14 @@ private:
 	// positional properties
 	ImVec2 widgetOffset;
 	float pinOffset;
+	float gridSpacing;
+	float circuitRounding;
+	float fontSize;
+	float pinRadius;
+	float pinBox;
+	float topPadding;
+	float horizontalPadding;
+	float wireThickness;
 
 	// pin locations in screen space
 	std::unordered_map<uint32_t, ImVec2> pinLocations;

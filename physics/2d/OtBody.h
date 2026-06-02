@@ -63,8 +63,8 @@ protected:
 	b2BodyId bodyId = b2_nullBodyId;
 
 private:
-	inline static OtID xID = OtIdentifier::create("x");
-	inline static OtID yID = OtIdentifier::create("y");
-	inline static OtID vxID = OtIdentifier::create("vx");
-	inline static OtID vyID = OtIdentifier::create("vy");
+	static inline OtID xID = OtIdentifier::create("x");
+	static inline OtID yID = OtIdentifier::create("y");
+	static inline OtID vxID = OtIdentifier::create("vx");
+	static inline OtID vyID = OtIdentifier::create("vy");
 };

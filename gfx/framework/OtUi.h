@@ -49,10 +49,10 @@ public:
 
 	// load and access the fonts
 	static void loadFonts();
-	inline static ImFont* getTextFont() { return textFont; }
-	inline static ImFont* getBoldFont() { return boldFont; }
-	inline static ImFont* getAudioFont() { return audioFont; }
-	inline static ImFont* getAwesomeFont() { return awesomeFont; }
+	static inline ImFont* getTextFont() { return textFont; }
+	static inline ImFont* getBoldFont() { return boldFont; }
+	static inline ImFont* getAudioFont() { return audioFont; }
+	static inline ImFont* getAwesomeFont() { return awesomeFont; }
 
 	// adjust cursor position based on alignment
 	static void align(ImVec2 size, Alignment horizontal, Alignment vertical);
@@ -206,10 +206,10 @@ protected:
 	static bool splitter(bool vertical, float* size, float minSize, float maxSize);
 
 	// fonts
-	inline static ImFont* textFont = nullptr;
-	inline static ImFont* boldFont = nullptr;
-	inline static ImFont* audioFont = nullptr;
-	inline static ImFont* awesomeFont = nullptr;
+	static inline ImFont* textFont = nullptr;
+	static inline ImFont* boldFont = nullptr;
+	static inline ImFont* audioFont = nullptr;
+	static inline ImFont* awesomeFont = nullptr;
 };
 
 

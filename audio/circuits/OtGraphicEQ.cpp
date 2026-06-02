@@ -23,18 +23,19 @@ public:
 	// render custom fields
 	bool customRendering([[maybe_unused]] float itemWidth) override {
 		auto parameters = dsp.getParameters();
-		ImVec2 size{sliderWidth, sliderHeight};
+		ImVec2 size{getSliderWidth(), getSliderHeight()};
+		auto spacing = getSliderSpacing();
 		bool changed = false;
 
-		changed |= OtAudioUi::verticalSlider("31", size, &parameters.band1, -70.0f, 10.0f, "%.1fdB"); ImGui::SameLine(0.0f, sliderSpacing);
-		changed |= OtAudioUi::verticalSlider("62", size, &parameters.band2, -70.0f, 10.0f, "%.1fdB"); ImGui::SameLine(0.0f, sliderSpacing);
-		changed |= OtAudioUi::verticalSlider("125", size, &parameters.band3, -70.0f, 10.0f, "%.1fdB"); ImGui::SameLine(0.0f, sliderSpacing);
-		changed |= OtAudioUi::verticalSlider("250", size, &parameters.band4, -70.0f, 10.0f, "%.1fdB"); ImGui::SameLine(0.0f, sliderSpacing);
-		changed |= OtAudioUi::verticalSlider("500", size, &parameters.band5, -70.0f, 10.0f, "%.1fdB"); ImGui::SameLine(0.0f, sliderSpacing);
-		changed |= OtAudioUi::verticalSlider("1k", size, &parameters.band6, -70.0f, 10.0f, "%.1fdB"); ImGui::SameLine(0.0f, sliderSpacing);
-		changed |= OtAudioUi::verticalSlider("2k", size, &parameters.band7, -70.0f, 10.0f, "%.1fdB"); ImGui::SameLine(0.0f, sliderSpacing);
-		changed |= OtAudioUi::verticalSlider("4k", size, &parameters.band8, -70.0f, 10.0f, "%.1fdB"); ImGui::SameLine(0.0f, sliderSpacing);
-		changed |= OtAudioUi::verticalSlider("8k", size, &parameters.band9, -70.0f, 10.0f, "%.1fdB"); ImGui::SameLine(0.0f, sliderSpacing);
+		changed |= OtAudioUi::verticalSlider("31", size, &parameters.band1, -70.0f, 10.0f, "%.1fdB"); ImGui::SameLine(0.0f, spacing);
+		changed |= OtAudioUi::verticalSlider("62", size, &parameters.band2, -70.0f, 10.0f, "%.1fdB"); ImGui::SameLine(0.0f, spacing);
+		changed |= OtAudioUi::verticalSlider("125", size, &parameters.band3, -70.0f, 10.0f, "%.1fdB"); ImGui::SameLine(0.0f, spacing);
+		changed |= OtAudioUi::verticalSlider("250", size, &parameters.band4, -70.0f, 10.0f, "%.1fdB"); ImGui::SameLine(0.0f, spacing);
+		changed |= OtAudioUi::verticalSlider("500", size, &parameters.band5, -70.0f, 10.0f, "%.1fdB"); ImGui::SameLine(0.0f, spacing);
+		changed |= OtAudioUi::verticalSlider("1k", size, &parameters.band6, -70.0f, 10.0f, "%.1fdB"); ImGui::SameLine(0.0f, spacing);
+		changed |= OtAudioUi::verticalSlider("2k", size, &parameters.band7, -70.0f, 10.0f, "%.1fdB"); ImGui::SameLine(0.0f, spacing);
+		changed |= OtAudioUi::verticalSlider("4k", size, &parameters.band8, -70.0f, 10.0f, "%.1fdB"); ImGui::SameLine(0.0f, spacing);
+		changed |= OtAudioUi::verticalSlider("8k", size, &parameters.band9, -70.0f, 10.0f, "%.1fdB"); ImGui::SameLine(0.0f, spacing);
 		changed |= OtAudioUi::verticalSlider("16k", size, &parameters.band10, -70.0f, 10.0f, "%.1fdB");
 
 		if (changed) {
@@ -44,17 +45,18 @@ public:
 	}
 
 	float getCustomRenderingWidth() override {
-		return sliderWidth * 10.0f + sliderSpacing * 9.0f;
+		return getSliderWidth() * 10.0f + getSliderSpacing() * 9.0f;
 	}
 	float getCustomRenderingHeight() override {
-		return sliderHeight + ImGui::GetFrameHeightWithSpacing();
+		return getSliderHeight() + ImGui::GetFrameHeightWithSpacing();
 	}
 
 	static constexpr const char* circuitName = "Graphic EQ";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::equalizer;
-	static inline constexpr float sliderWidth = 20.0f;
-	static inline constexpr float sliderHeight = 100.0f;
-	static inline constexpr float sliderSpacing = 5.0f;
+
+	static inline float getSliderWidth() { return 20.0f * ImGui::GetStyle().FontScaleDpi; }
+	static inline float getSliderHeight() { return 100.0f * ImGui::GetStyle().FontScaleDpi; }
+	static inline float getSliderSpacing() { return 5.0f * ImGui::GetStyle().FontScaleDpi; }
 };
 
 static OtCircuitFactoryRegister<OtGraphicEqCircuit> registration;

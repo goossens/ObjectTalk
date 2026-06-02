@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "nlohmann/json.hpp"
-
 #include "OtAdsr.h"
 #include "OtAudioUi.h"
 #include "OtCircuitFactory.h"
@@ -38,7 +36,7 @@ public:
 		state.decay = dsp.getDecay();
 		state.sustain = dsp.getSustain();
 		state.release = dsp.getRelease();
-		OtAudioUi::adsrEnvelope("##ADSR", state, ImVec2(itemWidth, envelopeHeight));
+		OtAudioUi::adsrEnvelope("##ADSR", state, ImVec2(itemWidth, getEnvelopeHeight()));
 
 		// render envelope control knobs
 		auto changed = dsp.renderUI();
@@ -47,7 +45,7 @@ public:
 	}
 
 	float getCustomRenderingHeight() override {
-		return dsp.getRenderHeight() + envelopeHeight;
+		return dsp.getRenderHeight() + getEnvelopeHeight();
 	}
 
 	// deserialize circuit
@@ -86,7 +84,8 @@ private:
 	OtCircuitPin envelopeOutput;
 
 	OtAudioUi::AdsrState state;
-	static constexpr float envelopeHeight = 100.0f;
+
+	static inline float getEnvelopeHeight() { return 100.0f * ImGui::GetStyle().FontScaleDpi; }
 };
 
 static OtCircuitFactoryRegister<OtEnvelopeCircuit> registration;

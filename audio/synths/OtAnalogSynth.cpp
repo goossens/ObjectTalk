@@ -35,7 +35,7 @@ OtAnalogSynth::OtAnalogSynth() {
 //	OtAnalogSynth::renderUI
 //
 
-bool OtAnalogSynth::renderUI([[maybe_unused]] float itemWidth) {
+bool OtAnalogSynth::renderUI() {
 	auto size = ImVec2(
 		OtAudioUi::knobWidth(4) + ImGui::GetStyle().WindowPadding.x * 2.0f,
 		OtAudioUi::knobHeight(3) + ImGui::GetFrameHeightWithSpacing() * 4.0f + envelopeHeight + ImGui::GetStyle().WindowPadding.y * 2.0f

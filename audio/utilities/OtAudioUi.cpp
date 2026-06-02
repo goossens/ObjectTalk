@@ -390,15 +390,17 @@ static ledInfo ledInfo[] = {
 static constexpr size_t ledCount = sizeof(ledInfo) / sizeof (*ledInfo);
 static constexpr ImU32 ledOff = IM_COL32(64, 64, 64, 196);
 
-static constexpr float dbfsSize = 8.0f;
-static constexpr float dbfsGap = 2.0f;
+static inline float getDbfsSize() { return 8.0f * ImGui::GetStyle().FontScaleDpi; }
+static inline float getDbfsGap() { return 2.0f * ImGui::GetStyle().FontScaleDpi; }
 
 void OtAudioUi::dbfsRenderH(dbfsState& state) {
+	auto size = getDbfsSize();
+	auto gap = getDbfsGap();
 	auto ledHeight = ImGui::GetFrameHeight();
 	auto pos = ImGui::GetCursorScreenPos();
 	auto drawList = ImGui::GetWindowDrawList();
-	auto ledSize = ImVec2(dbfsSize, ledHeight);
-	auto increment = ImVec2(dbfsSize + dbfsGap, 0.0f);
+	auto ledSize = ImVec2(size, ledHeight);
+	auto increment = ImVec2(size + gap, 0.0f);
 
 	for (size_t i = 0; i < ledCount; i++) {
 		auto& led = ledInfo[ledCount - i - 1];
@@ -440,11 +442,13 @@ void OtAudioUi::dbfsRenderH(dbfsState& state) {
 //
 
 void OtAudioUi::dbfsRenderV(dbfsState& state) {
+	auto size = getDbfsSize();
+	auto gap = getDbfsGap();
 	auto ledWidth = ImGui::GetFrameHeight();
 	auto pos = ImGui::GetCursorScreenPos();
 	auto drawList = ImGui::GetWindowDrawList();
-	auto ledSize = ImVec2(ledWidth, dbfsSize);
-	auto increment = ImVec2(0.0f, dbfsSize + dbfsGap);
+	auto ledSize = ImVec2(ledWidth, size);
+	auto increment = ImVec2(0.0f, size + gap);
 
 	for (size_t i = 0; i < ledCount; i++) {
 		auto& led = ledInfo[i];
@@ -486,7 +490,7 @@ void OtAudioUi::dbfsRenderV(dbfsState& state) {
 //
 
 float OtAudioUi::dbfsSizeH() {
-	return dbfsSize * ledCount + dbfsGap * (ledCount - 1);
+	return getDbfsSize() * ledCount + getDbfsGap() * (ledCount - 1);
 }
 
 
@@ -495,7 +499,7 @@ float OtAudioUi::dbfsSizeH() {
 //
 
 float OtAudioUi::dbfsSizeV() {
-	return dbfsSize * ledCount + dbfsGap * (ledCount - 1);
+	return getDbfsSize() * ledCount + getDbfsGap() * (ledCount - 1);
 }
 
 

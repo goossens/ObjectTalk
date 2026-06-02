@@ -23,8 +23,8 @@
 class OtFontDejaVu {
 public:
 	// access font
-	inline static uint8_t* data() { return fontData; }
-	inline static size_t size() { return fontSize; }
+	static inline uint8_t* data() { return fontData; }
+	static inline size_t size() { return fontSize; }
 
 private:
 	static uint8_t fontData[340712];

@@ -35,7 +35,7 @@ public:
 	static constexpr size_t numberOfVoices = 16;
 
 	// UI to change synth properties
-	bool renderUI(float itemWidth);
+	bool renderUI();
 
 	// process MIDI messages
 	void processMidiMessage(OtMidiMessage message);

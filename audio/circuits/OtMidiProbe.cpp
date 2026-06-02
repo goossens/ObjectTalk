@@ -37,7 +37,7 @@ public:
 
 			ImGui_PianoKeyboard(
 				"Piano",
-				ImVec2(itemWidth, height),
+				ImVec2(itemWidth, getKeyboardHeight()),
 				&currentNote,
 				36, 83,
 				[](void* data, int msg, int key, [[maybe_unused]] float velocity) {
@@ -80,8 +80,8 @@ public:
 	// process input
 	inline void execute() override {
 		if (input->isSourceConnected()) {
-			customW = width;
-			customH = height;
+			customW = getKeyboardWidth();
+			customH = getKeyboardHeight();
 
 			auto& messages = input->getMidiInputBuffer();
 
@@ -98,7 +98,7 @@ public:
 			}
 
 		} else {
-			customW = width;
+			customW = getKeyboardWidth();
 			customH = ImGui::GetFrameHeight();
 		}
 
@@ -107,8 +107,9 @@ public:
 
 	static constexpr const char* circuitName = "MIDI Probe";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::probe;
-	static constexpr float width = 300.0f;
-	static constexpr float height = 40.0f;
+
+	static inline float getKeyboardWidth() { return 300.0f * ImGui::GetStyle().FontScaleDpi; }
+	static inline float getKeyboardHeight() { return 40.0f * ImGui::GetStyle().FontScaleDpi; }
 
 private:
 	// properties

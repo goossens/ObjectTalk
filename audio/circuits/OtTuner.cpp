@@ -76,7 +76,7 @@ public:
 	// process samples
 	inline void execute() override {
 		if (input->isSourceConnected()) {
-			customW = width;
+			customW = getWidth();
 			customH = ImGui::GetFrameHeightWithSpacing() * 3.0f;
 
 			// add input signal to data buffer
@@ -87,7 +87,7 @@ public:
 			data.insert(buffer, OtAudioSettings::bufferSize);
 
 		} else {
-			customW = width;
+			customW = getWidth();
 			customH = ImGui::GetFrameHeightWithSpacing();
 		}
 
@@ -96,8 +96,9 @@ public:
 
 	static constexpr const char* circuitName = "Tuner";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::probe;
-	static constexpr float width = 250.0f;
 	static constexpr size_t N = 4096;
+
+	static inline float getWidth() { return 250.0f * ImGui::GetStyle().FontScaleDpi; }
 
 private:
 	// properties

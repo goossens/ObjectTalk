@@ -37,7 +37,7 @@ public:
 		}
 
 		if (ImGui::BeginPopup("synthEdit")) {
-			changed |= synth.renderUI(itemWidth);
+			changed |= synth.renderUI();
 			ImGui::EndPopup();
 		}
 

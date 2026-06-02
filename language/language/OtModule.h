@@ -59,8 +59,8 @@ private:
 	static std::string getFullPath(const std::string& path);
 
 	// module search path
-	inline static std::vector<std::string> modulePath;
-	inline static std::vector<std::string> localPath;
+	static inline std::vector<std::string> modulePath;
+	static inline std::vector<std::string> localPath;
 };
 
 

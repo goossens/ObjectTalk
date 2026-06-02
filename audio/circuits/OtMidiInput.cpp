@@ -64,11 +64,11 @@ public:
 
 		switch (midiSource) {
 			case MidiSource::keyboard: {
-				ImGui::SetNextItemWidth(keyboardWidth);
+				ImGui::SetNextItemWidth(getKeyboardWidth());
 
 				ImGui_PianoKeyboard(
 					"Piano",
-					ImVec2(keyboardWidth, keyboardHeight),
+					ImVec2(getKeyboardWidth(), getKeyboardHeight()),
 					&currentNote,
 					36, 83,
 					[](void* data, int msg, int key, float velocity) {
@@ -163,7 +163,7 @@ public:
 	}
 
 	inline float getCustomRenderingWidth() override {
-		return keyboardWidth;
+		return getKeyboardWidth();
 	}
 
 	inline float getCustomRenderingHeight() override {
@@ -171,7 +171,7 @@ public:
 
 		switch (midiSource) {
 			case MidiSource::keyboard:
-				height += keyboardHeight + ImGui::GetStyle().ItemSpacing.y;
+				height += getKeyboardHeight() + ImGui::GetStyle().ItemSpacing.y;
 				break;
 
 			case MidiSource::midiFile: {
@@ -293,8 +293,9 @@ public:
 
 	static constexpr const char* circuitName = "MIDI Input";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::input;
-	static constexpr float keyboardWidth = 300.0f;
-	static constexpr float keyboardHeight = 40.0f;
+
+	static inline float getKeyboardWidth() { return 300.0f * ImGui::GetStyle().FontScaleDpi; }
+	static inline float getKeyboardHeight() { return 40.0f * ImGui::GetStyle().FontScaleDpi; }
 
 private:
 	// properties

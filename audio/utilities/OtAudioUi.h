@@ -59,7 +59,7 @@ public:
 	}
 
 	template <typename T>
-	inline static bool audioLatchButton(OtFontAudio::Type label, T* value, const char* tooltip=nullptr) {
+	static inline bool audioLatchButton(OtFontAudio::Type label, T* value, const char* tooltip=nullptr) {
 		ImGui::PushFont(getAudioFont(), 0.0f);
 		auto changed = latchButton(reinterpret_cast<const char*>(label), value);
 		ImGui::PopFont();

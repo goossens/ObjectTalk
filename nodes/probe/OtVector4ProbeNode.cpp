@@ -28,7 +28,7 @@ public:
 		addInputPin("Value", value)->addCustomRenderer([&](float width) {
 			ImGui::SetNextItemWidth(width);
 			OtUi::viewVec4("##value", value);
-		}, 260.0f);
+		}, 260.0f * ImGui::GetStyle().FontScaleDpi);
 	}
 
 	static constexpr const char* nodeName = "Vector4 Probe";

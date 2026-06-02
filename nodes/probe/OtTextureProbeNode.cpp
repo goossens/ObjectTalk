@@ -30,22 +30,6 @@ public:
 		addInputPin("Texture", texture);
 	}
 
-	// nothing to do on execute but we'll use it to determine texture size
-	inline void onExecute() override {
-		auto fieldWidth = 170.0f;
-
-		if (texture.isValid()) {
-			customW = std::min(fieldWidth, static_cast<float>(texture.getWidth()));
-			customH = customW * texture.getHeight() / texture.getWidth();
-
-		} else {
-			customW = fieldWidth;
-			customH = ImGui::GetFrameHeightWithSpacing();
-		}
-
-		needsSizing = true;
-	}
-
 	// render custom fields
 	inline void customRendering(float itemWidth) override {
 		if (texture.isValid()) {
@@ -74,6 +58,22 @@ public:
 
 	inline float getCustomRenderingHeight() override {
 		return customH;
+	}
+
+	// nothing to do on execute but we'll use it to determine texture size
+	inline void onExecute() override {
+		auto fieldWidth = 170.0f * ImGui::GetStyle().FontScaleDpi;
+
+		if (texture.isValid()) {
+			customW = std::min(fieldWidth, static_cast<float>(texture.getWidth()));
+			customH = customW * texture.getHeight() / texture.getWidth();
+
+		} else {
+			customW = fieldWidth;
+			customH = ImGui::GetFrameHeightWithSpacing();
+		}
+
+		needsSizing = true;
 	}
 
 	static constexpr const char* nodeName = "Texture Probe";

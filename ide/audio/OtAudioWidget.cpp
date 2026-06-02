@@ -108,7 +108,7 @@ void OtAudioWidget::render(OtAudio* s) {
 	auto scale = style.FontScaleDpi;
 	gridSpacing = 64.0f * scale;
 	circuitRounding = 4.0f * scale;
-	fontSize = 15.0f * scale;
+	fontSize = 15.0f;
 	pinRadius = 5.0f * scale;
 	pinBox = pinRadius * 2.0f + 2.0f * scale;
 	topPadding = 1.0f * scale;

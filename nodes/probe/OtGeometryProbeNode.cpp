@@ -36,26 +36,11 @@ public:
 		addInputPin("Geometry", geometry);
 	}
 
-	// convert geometry to mesh
-	inline void onExecute() override {
-		if (geometry.isValid()) {
-			customW = size;
-			customH = size;
-
-		} else {
-			customW = size;
-			customH = ImGui::GetFrameHeightWithSpacing();
-
-		}
-
-		needsSizing = true;
-	}
-
 	// render custom fields
 	inline void customRendering(float itemWidth) override {
 		if (geometry.isValid()) {
 			OtUi::hSpacer((itemWidth - customW) / 2.0f);
-			preview.render(static_cast<int>(size), static_cast<int>(size), geometry.getMesh(), context);
+			preview.render(static_cast<int>(getSize()), static_cast<int>(getSize()), geometry.getMesh(), context);
 
 			if (ImGui::BeginPopupContextItem("Geometry Context")) {
 				OtUi::header("Settings:");
@@ -113,10 +98,25 @@ public:
 		context.wireframe = data->value("wireframe", false);
 	}
 
+	inline void onExecute() override {
+		if (geometry.isValid()) {
+			customW = getSize();
+			customH = getSize();
+
+		} else {
+			customW = getSize();
+			customH = ImGui::GetFrameHeightWithSpacing();
+
+		}
+
+		needsSizing = true;
+	}
+
 	static constexpr const char* nodeName = "Geometry Probe";
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::probe;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
-	static constexpr float size = 170.0f;
+
+	static float getSize() { return 170.0f  * ImGui::GetStyle().FontScaleDpi; }
 
 private:
 	// properties

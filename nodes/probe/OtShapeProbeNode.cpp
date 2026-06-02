@@ -31,25 +31,6 @@ public:
 	inline void configure() override {
 		addInputPin("Shape", shape);
 	}
-
-	// convert shape to texture and determine size
-	inline void onExecute() override {
-		auto fieldWidth = 170.0f;
-
-		if (shape.isValid()) {
-			shape.renderFill(image, OtColor(1.0, 1.0, 1.0, 1.0));
-			texture.load(image);
-			customW = std::min(fieldWidth, static_cast<float>(image.getWidth()));
-			customH = customW * image.getHeight() / image.getWidth();
-
-		} else {
-			customW = fieldWidth;
-			customH = ImGui::GetFrameHeightWithSpacing();
-		}
-
-		needsSizing = true;
-	}
-
 	// render custom fields
 	inline void customRendering(float itemWidth) override {
 		if (shape.isValid()) {
@@ -78,6 +59,24 @@ public:
 
 	inline float getCustomRenderingHeight() override {
 		return customH;
+	}
+
+	// convert shape to texture and determine size
+	inline void onExecute() override {
+		auto fieldWidth = 170.0f * ImGui::GetStyle().FontScaleDpi;
+
+		if (shape.isValid()) {
+			shape.renderFill(image, OtColor(1.0, 1.0, 1.0, 1.0));
+			texture.load(image);
+			customW = std::min(fieldWidth, static_cast<float>(image.getWidth()));
+			customH = customW * image.getHeight() / image.getWidth();
+
+		} else {
+			customW = fieldWidth;
+			customH = ImGui::GetFrameHeightWithSpacing();
+		}
+
+		needsSizing = true;
 	}
 
 	static constexpr const char* nodeName = "Shape Probe";

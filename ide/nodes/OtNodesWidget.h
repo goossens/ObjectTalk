@@ -54,6 +54,9 @@ private:
 	void calculateNodeSize(OtNode node);
 	void handleInteractions();
 
+	void dashedBezierCubic(ImDrawList* drawlist, const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 color, int segments);
+	void dashedLine(ImDrawList* drawlist, const ImVec2& p1, const ImVec2& p2, ImU32 color, int segments);
+
 	// target nodes
 	OtNodes* nodes;
 
@@ -63,6 +66,14 @@ private:
 	// positional properties
 	ImVec2 widgetOffset;
 	float pinOffset;
+	float gridSpacing;
+	float nodeRounding;
+	float fontSize;
+	float pinRadius;
+	float pinBox;
+	float topPadding;
+	float horizontalPadding;
+	float linkThickness;
 
 	// pin locations in screen space
 	std::unordered_map<uint32_t, ImVec2> pinLocations;

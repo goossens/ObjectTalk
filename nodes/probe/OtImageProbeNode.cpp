@@ -31,23 +31,6 @@ public:
 		addInputPin("Image", image);
 	}
 
-	// convert image to texture and determine size
-	inline void onExecute() override {
-		auto fieldWidth = 170.0f;
-
-		if (image.isValid()) {
-			texture.load(image);
-			customW = std::min(fieldWidth, static_cast<float>(image.getWidth()));
-			customH = customW * image.getHeight() / image.getWidth();
-
-		} else {
-			customW = fieldWidth;
-			customH = ImGui::GetFrameHeightWithSpacing();
-		}
-
-		needsSizing = true;
-	}
-
 	// render custom fields
 	inline void customRendering(float itemWidth) override {
 		if (image.isValid()) {
@@ -76,6 +59,23 @@ public:
 
 	inline float getCustomRenderingHeight() override {
 		return customH;
+	}
+
+	// convert image to texture and determine size
+	inline void onExecute() override {
+		auto fieldWidth = 170.0f * ImGui::GetStyle().FontScaleDpi;
+
+		if (image.isValid()) {
+			texture.load(image);
+			customW = std::min(fieldWidth, static_cast<float>(image.getWidth()));
+			customH = customW * image.getHeight() / image.getWidth();
+
+		} else {
+			customW = fieldWidth;
+			customH = ImGui::GetFrameHeightWithSpacing();
+		}
+
+		needsSizing = true;
 	}
 
 	static constexpr const char* nodeName = "Image Probe";

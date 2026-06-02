@@ -100,8 +100,8 @@
 			],
 			"title": "Cube Manifold",
 			"type": "Cube Manifold",
-			"x": 3.0,
-			"y": 17.0
+			"x": 46.0,
+			"y": 30.0
 		},
 		{
 			"id": 860841340,
@@ -146,8 +146,8 @@
 			],
 			"title": "Cylinder Manifold",
 			"type": "Cylinder Manifold",
-			"x": 3.0,
-			"y": 326.0
+			"x": 46.0,
+			"y": 339.0
 		},
 		{
 			"id": 1428306405,
@@ -174,8 +174,8 @@
 			],
 			"title": "Sphere Manifold",
 			"type": "Sphere Manifold",
-			"x": 3.0,
-			"y": 206.0
+			"x": 46.0,
+			"y": 219.0
 		},
 		{
 			"id": 2401398816,
@@ -190,8 +190,8 @@
 			"path": "assets/manifold.ot",
 			"title": "Manifold Generator",
 			"type": "Manifold Generator",
-			"x": 797.0,
-			"y": 75.0
+			"x": 840.0,
+			"y": 88.0
 		},
 		{
 			"id": 3151400214,
@@ -236,8 +236,8 @@
 			],
 			"title": "Cylinder Manifold",
 			"type": "Cylinder Manifold",
-			"x": 3.0,
-			"y": 520.0
+			"x": 46.0,
+			"y": 533.0
 		},
 		{
 			"id": 4285713672,
@@ -287,8 +287,8 @@
 			],
 			"title": "Manifold Transform",
 			"type": "Manifold Transform",
-			"x": 224.0,
-			"y": 494.0
+			"x": 267.0,
+			"y": 507.0
 		},
 		{
 			"id": 1155901222,
@@ -313,8 +313,8 @@
 			],
 			"title": "Manifold Difference",
 			"type": "Manifold Difference",
-			"x": 791.0,
-			"y": 462.0
+			"x": 834.0,
+			"y": 475.0
 		},
 		{
 			"azimuth": 18.994422912597656,
@@ -341,8 +341,9 @@
 			"title": "Manifold Probe",
 			"type": "Manifold Probe",
 			"wireframe": false,
-			"x": 1090.0,
-			"y": 324.0
+			"x": 1133.0,
+			"y": 337.0,
+			"zoom": 0.949999988079071
 		},
 		{
 			"id": 2736846761,
@@ -367,8 +368,8 @@
 			],
 			"title": "Manifold Difference",
 			"type": "Manifold Difference",
-			"x": 337.0,
-			"y": 54.0
+			"x": 380.0,
+			"y": 67.0
 		},
 		{
 			"azimuth": -17.657163619995117,
@@ -395,8 +396,9 @@
 			"title": "Manifold Probe",
 			"type": "Manifold Probe",
 			"wireframe": false,
-			"x": 580.0,
-			"y": 4.0
+			"x": 623.0,
+			"y": 17.0,
+			"zoom": 0.949999988079071
 		},
 		{
 			"id": 3622050429,
@@ -421,8 +423,8 @@
 			],
 			"title": "Manifold Union",
 			"type": "Manifold Union",
-			"x": 337.0,
-			"y": 223.0
+			"x": 380.0,
+			"y": 236.0
 		},
 		{
 			"azimuth": 24.342378616333008,
@@ -449,8 +451,9 @@
 			"title": "Manifold Probe",
 			"type": "Manifold Probe",
 			"wireframe": false,
-			"x": 580.0,
-			"y": 233.0
+			"x": 623.0,
+			"y": 246.0,
+			"zoom": 0.949999988079071
 		},
 		{
 			"azimuth": 16.596139907836914,
@@ -477,8 +480,9 @@
 			"title": "Manifold Probe",
 			"type": "Manifold Probe",
 			"wireframe": false,
-			"x": 1087.0,
-			"y": 10.0
+			"x": 1130.0,
+			"y": 23.0,
+			"zoom": 0.949999988079071
 		},
 		{
 			"id": 1957370161,
@@ -492,8 +496,8 @@
 			"outputs": [],
 			"title": "Save Manifold to File",
 			"type": "Save Manifold to File",
-			"x": 1088.0,
-			"y": 251.0
+			"x": 1131.0,
+			"y": 264.0
 		}
 	]
 }

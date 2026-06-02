@@ -37,28 +37,11 @@ public:
 		addInputPin("Manifold", manifold);
 	}
 
-	// convert manifold to mesh
-	inline void onExecute() override {
-		if (manifold.isValid()) {
-			manifold.createMesh(mesh);
-
-			customW = size;
-			customH = size;
-
-		} else {
-			customW = size;
-			customH = ImGui::GetFrameHeightWithSpacing();
-
-		}
-
-		needsSizing = true;
-	}
-
 	// render custom fields
 	inline void customRendering(float itemWidth) override {
 		if (manifold.isValid()) {
 			OtUi::hSpacer((itemWidth - customW) / 2.0f);
-			preview.render(static_cast<int>(size), static_cast<int>(size), mesh, context);
+			preview.render(static_cast<int>(getSize()), static_cast<int>(getSize()), mesh, context);
 
 			if (ImGui::BeginPopupContextItem("Manifold Context")) {
 				OtUi::header("Settings:");
@@ -116,10 +99,28 @@ public:
 		context.wireframe = data->value("wireframe", false);
 	}
 
+	// convert manifold to mesh
+	inline void onExecute() override {
+		if (manifold.isValid()) {
+			manifold.createMesh(mesh);
+
+			customW = getSize();
+			customH = getSize();
+
+		} else {
+			customW = getSize();
+			customH = ImGui::GetFrameHeightWithSpacing();
+
+		}
+
+		needsSizing = true;
+	}
+
 	static constexpr const char* nodeName = "Manifold Probe";
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::probe;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
-	static constexpr float size = 170.0f;
+
+	static float getSize() { return 170.0f  * ImGui::GetStyle().FontScaleDpi; }
 
 private:
 	// properties

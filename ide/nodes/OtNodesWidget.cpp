@@ -75,16 +75,6 @@ static constexpr ImU32 pinColors[] = {
 	IM_COL32(0, 160, 220, 255)		// instances
 };
 
-static constexpr float gridSpacing = 64.0f;
-static constexpr float nodeRounding = 4.0f;
-
-static constexpr float pinRadius = 6.0f;
-static constexpr float pinBox = pinRadius * 2.0f + 2.0f;
-static constexpr float topPadding = 2.0f;
-static constexpr float horizontalPadding = pinRadius + 4.0f;
-
-static constexpr float linkThickness = 1.5f;
-
 
 //
 //	OtNodesWidget::render
@@ -118,11 +108,24 @@ void OtNodesWidget::render(OtNodes* n) {
 		ImGuiWindowFlags_NoNavInputs |
 		ImGuiWindowFlags_NoMove;
 
+	ImGui::PushFont(nullptr, fontSize);
 	ImGui::SetNextWindowContentSize(ImVec2(width, height));
 	ImGui::BeginChild("nodes", ImVec2(), ImGuiChildFlags_None, flags);
-	pinOffset = ImGui::GetStyle().FramePadding.y + ImGui::GetFontBaked()->Ascent - pinRadius + 1.0f;
+
+	auto& style = ImGui::GetStyle();
+	pinOffset = style.FramePadding.y + ImGui::GetFontBaked()->Ascent - pinRadius + 1.0f;
 	ImDrawList* drawlist = ImGui::GetWindowDrawList();
 	widgetOffset = ImGui::GetCursorScreenPos();
+
+	auto scale = style.FontScaleDpi;
+	gridSpacing = 64.0f * scale;
+	nodeRounding = 4.0f * scale;
+	fontSize = 15.0f;
+	pinRadius = 5.0f * scale;
+	pinBox = pinRadius * 2.0f + 2.0f * scale;
+	topPadding = 1.0f * scale;
+	horizontalPadding = pinRadius + 2.0f * scale;
+	linkThickness = 1.5f * scale;
 
 	// render the grid
 	if (renderingGrid) {
@@ -178,6 +181,7 @@ void OtNodesWidget::render(OtNodes* n) {
 	// we should be done rendering now
 	drawlist->ChannelsMerge();
 	ImGui::EndChild();
+	ImGui::PopFont();
 }
 
 
@@ -507,7 +511,7 @@ void OtNodesWidget::renderPin(ImDrawList* drawlist, OtNodesPin pin, float x, flo
 //	cubicBezier
 //
 
-static float cubicBezier(float t, float v1, float v2, float v3, float v4) {
+inline static float cubicBezier(float t, float v1, float v2, float v3, float v4) {
 	float k = 1 - t;
 
 	return (k * k * k * v1) +
@@ -518,10 +522,10 @@ static float cubicBezier(float t, float v1, float v2, float v3, float v4) {
 
 
 //
-//	dashedBezierCubic
+//	OtNodesWidget::dashedBezierCubic
 //
 
-static void dashedBezierCubic(ImDrawList* drawlist, const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 color, int segments) {
+void OtNodesWidget::dashedBezierCubic(ImDrawList* drawlist, const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 color, int segments) {
 	auto step = 1.0f / segments;
 	std::vector<ImVec2> points;
 	points.reserve(segments + 1);
@@ -537,7 +541,11 @@ static void dashedBezierCubic(ImDrawList* drawlist, const ImVec2& p1, const ImVe
 }
 
 
-static void dashedLine(ImDrawList* drawlist, const ImVec2& p1, const ImVec2& p2, ImU32 color, int segments) {
+//
+//	OtNodesWidget::dashedLine
+//
+
+void OtNodesWidget::dashedLine(ImDrawList* drawlist, const ImVec2& p1, const ImVec2& p2, ImU32 color, int segments) {
 	auto step = (p2 - p1) / static_cast<float>(segments);
 
 	for (auto i = 1; i < segments - 1; i += 2) {

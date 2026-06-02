@@ -27,7 +27,7 @@ public:
 		addInputPin("Value", value)->addCustomRenderer([&](float width) {
 			ImGui::SetNextItemWidth(width);
 			OtUi::readonlyInt("##value", value);
-		}, 120.0f);
+		}, 120.0f * ImGui::GetStyle().FontScaleDpi);
 	}
 
 	static constexpr const char* nodeName = "Integer Probe";

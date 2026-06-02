@@ -39,7 +39,7 @@ public:
 					needsSaving = true;
 				}
 			}
-		}, 180.0f);
+		}, 180.0f * ImGui::GetStyle().FontScaleDpi);
 	}
 
 	// special rendering for input nodes

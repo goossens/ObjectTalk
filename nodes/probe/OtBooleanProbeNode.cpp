@@ -27,7 +27,7 @@ public:
 		addInputPin("Value", value)->addCustomRenderer([&](float width) {
 			ImGui::SetNextItemWidth(width);
 			OtUi::readonlyBool("##value", value);
-		}, 100.0f);
+		}, 100.0f * ImGui::GetStyle().FontScaleDpi);
 	}
 
 	static constexpr const char* nodeName = "Boolean Probe";

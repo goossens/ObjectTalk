@@ -108,7 +108,7 @@ public:
 		m->declare("name", "OtPushPull6L6");
 		m->declare("platform.lib/name", "Generic Platform Library");
 		m->declare("platform.lib/version", "1.3.0");
-		m->declare("signals.lib/name", "Faust Signal Routing Library");
+		m->declare("signals.lib/name", "Faust Routing Library");
 		m->declare("signals.lib/version", "1.6.0");
 		m->declare("webaudio.lib/author", "GRAME");
 		m->declare("webaudio.lib/copyright", "GRAME");

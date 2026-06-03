@@ -85,7 +85,7 @@ private:
 
 	OtAudioUi::AdsrState state;
 
-	static inline float getEnvelopeHeight() { return 100.0f * ImGui::GetStyle().FontScaleDpi; }
+	static inline float getEnvelopeHeight() { return OtUi::size(5.0f); }
 };
 
 static OtCircuitFactoryRegister<OtEnvelopeCircuit> registration;

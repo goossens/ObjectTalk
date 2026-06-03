@@ -32,6 +32,7 @@
 class OtChorusSIG0 {
 protected:
 	int iRec1[2];
+	int fSampleRate;
 
 public:
 	int getNumInputsOtChorusSIG0() {
@@ -42,6 +43,7 @@ public:
 	}
 
 	void instanceInitOtChorusSIG0([[maybe_unused]] int sample_rate) {
+		fSampleRate = sample_rate;
 		for (int l2 = 0; l2 < 2; l2 = l2 + 1) {
 			iRec1[l2] = 0;
 		}

@@ -23,8 +23,8 @@
 //	OtTerrainMaterial::renderUI
 //
 
-#define W1() ImGui::SetNextItemWidth(200.0f)
-#define W2() ImGui::SetNextItemWidth(100.0f)
+#define W1() ImGui::SetNextItemWidth(OtUi::size(10.0f))
+#define W2() ImGui::SetNextItemWidth(OtUi::size(5.0f))
 
 bool OtTerrainMaterial::renderUI() {
 	auto changed = false;

@@ -294,8 +294,8 @@ public:
 	static constexpr const char* circuitName = "MIDI Input";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::input;
 
-	static inline float getKeyboardWidth() { return 300.0f * ImGui::GetStyle().FontScaleDpi; }
-	static inline float getKeyboardHeight() { return 40.0f * ImGui::GetStyle().FontScaleDpi; }
+	static inline float getKeyboardWidth() { return OtUi::size(15.0f); }
+	static inline float getKeyboardHeight() { return OtUi::size(2.0f); }
 
 private:
 	// properties

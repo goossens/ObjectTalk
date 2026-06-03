@@ -24,7 +24,7 @@
 //	OtMaterial::renderUI
 //
 
-#define W() ImGui::SetNextItemWidth(250.0f)
+#define W() ImGui::SetNextItemWidth(OtUi::size(12.0f))
 
 bool OtMaterial::renderUI() {
 	auto changed = false;

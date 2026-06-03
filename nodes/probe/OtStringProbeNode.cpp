@@ -27,7 +27,7 @@ public:
 		addInputPin("Value", value)->addCustomRenderer([&](float width) {
 			ImGui::SetNextItemWidth(width);
 			OtUi::readonlyText("##value", value);
-		}, 180.0f * ImGui::GetStyle().FontScaleDpi);
+		}, OtUi::size(9.0f));
 	}
 
 	static constexpr const char* nodeName = "String Probe";

@@ -195,8 +195,8 @@ public:
 		m->declare("reverbs.lib/version", "1.5.1");
 		m->declare("routes.lib/hadamard:author", "Remy Muller, revised by Romain Michon");
 		m->declare("routes.lib/name", "Faust Signal Routing Library");
-		m->declare("routes.lib/version", "1.2.0");
-		m->declare("signals.lib/name", "Faust Signal Routing Library");
+		m->declare("routes.lib/version", "1.3.0");
+		m->declare("signals.lib/name", "Faust Routing Library");
 		m->declare("signals.lib/version", "1.6.0");
 	}
 

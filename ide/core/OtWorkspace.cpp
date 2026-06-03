@@ -588,7 +588,7 @@ void OtWorkspace::renderEditors() {
 	}
 
 	// create workspace window
-	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
+	ImGui::SetNextWindowPos(ImVec2());
 	ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 
@@ -603,7 +603,7 @@ void OtWorkspace::renderEditors() {
 		// split the screen between the editors and the console
 		determinePanelHeights();
 		auto spacing = ImGui::GetStyle().ItemSpacing;
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2());
 		ImGui::BeginChild("Editors", ImVec2(0.0f, contentsHeight));
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, spacing);
 	}
@@ -970,7 +970,7 @@ void OtWorkspace::renderConfirmError() {
 
 void OtWorkspace::renderSubProcess() {
 	// create sub-process window
-	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
+	ImGui::SetNextWindowPos(ImVec2());
 	ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 

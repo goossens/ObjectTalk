@@ -5,6 +5,7 @@
 			"inputs": [],
 			"midiFile": "assets/chopin.mid",
 			"midiSource": 1,
+			"on": true,
 			"outputs": [
 				{
 					"id": 3706492645,
@@ -40,6 +41,7 @@
 			"mixerOsc2": 0.8399999737739563,
 			"mixerPink": 0.0,
 			"mixerWhite": 0.0,
+			"on": true,
 			"outputs": [
 				{
 					"id": 3568801586,
@@ -86,6 +88,7 @@
 					"type": "midi"
 				}
 			],
+			"on": true,
 			"outputs": [],
 			"title": "MIDI Probe",
 			"type": "MIDI Probe",
@@ -102,6 +105,7 @@
 					"type": "mono"
 				}
 			],
+			"on": true,
 			"outputs": [
 				{
 					"id": 4212856556,
@@ -126,6 +130,7 @@
 					"type": "mono"
 				}
 			],
+			"on": true,
 			"outputs": [
 				{
 					"id": 2503869085,
@@ -149,6 +154,7 @@
 				}
 			],
 			"leftDelayTime": 1.0,
+			"on": true,
 			"outputs": [
 				{
 					"id": 1472752109,
@@ -176,6 +182,7 @@
 				}
 			],
 			"level": 0.5,
+			"on": true,
 			"outputs": [
 				{
 					"id": 2380854781,
@@ -197,6 +204,7 @@
 					"type": "stereo"
 				}
 			],
+			"on": true,
 			"outputs": [],
 			"title": "Speaker Out",
 			"type": "Speaker Out",
@@ -213,11 +221,12 @@
 					"type": "mono"
 				}
 			],
+			"on": true,
 			"outputs": [],
 			"title": "Spectrum Analyzer",
 			"type": "Spectrum Analyzer",
-			"x": 1056.0,
-			"y": 430.0
+			"x": 1075.0,
+			"y": 486.0
 		},
 		{
 			"id": 1536228948,
@@ -228,6 +237,7 @@
 					"type": "stereo"
 				}
 			],
+			"on": true,
 			"outputs": [],
 			"title": "dBFS",
 			"type": "Vu Meter",

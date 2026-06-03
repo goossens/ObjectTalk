@@ -94,8 +94,8 @@ public:
 	static constexpr size_t N = 1024;
 	static constexpr size_t V = N / 2;
 
-	static inline float getScopeWidth() { return 300.0f * ImGui::GetStyle().FontScaleDpi; }
-	static inline float getScopeHeight() { return 150.0f * ImGui::GetStyle().FontScaleDpi; }
+	static inline float getScopeWidth() { return OtUi::size(15.0f); }
+	static inline float getScopeHeight() { return OtUi::size(8.0f); }
 
 private:
 	// properties

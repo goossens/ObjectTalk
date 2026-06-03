@@ -390,8 +390,8 @@ static ledInfo ledInfo[] = {
 static constexpr size_t ledCount = sizeof(ledInfo) / sizeof (*ledInfo);
 static constexpr ImU32 ledOff = IM_COL32(64, 64, 64, 196);
 
-static inline float getDbfsSize() { return 8.0f * ImGui::GetStyle().FontScaleDpi; }
-static inline float getDbfsGap() { return 2.0f * ImGui::GetStyle().FontScaleDpi; }
+static inline float getDbfsSize() { return OtUi::size(0.5f); }
+static inline float getDbfsGap() { return OtUi::size(0.2f); }
 
 void OtAudioUi::dbfsRenderH(dbfsState& state) {
 	auto size = getDbfsSize();

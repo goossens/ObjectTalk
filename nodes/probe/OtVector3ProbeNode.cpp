@@ -28,7 +28,7 @@ public:
 		addInputPin("Value", value)->addCustomRenderer([&](float width) {
 			ImGui::SetNextItemWidth(width);
 			OtUi::viewVec3("##value", value);
-		}, 200.0f * ImGui::GetStyle().FontScaleDpi);
+		}, OtUi::size(10.0f));
 	}
 
 	static constexpr const char* nodeName = "Vector3 Probe";

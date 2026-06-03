@@ -33,6 +33,7 @@ class OtLfoSIG0 {
 protected:
 	int iVec0[2];
 	int iRec0[2];
+	int fSampleRate;
 
 public:
 	int getNumInputsOtLfoSIG0() {
@@ -43,6 +44,7 @@ public:
 	}
 
 	void instanceInitOtLfoSIG0([[maybe_unused]] int sample_rate) {
+		fSampleRate = sample_rate;
 		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
 			iVec0[l0] = 0;
 		}
@@ -101,7 +103,7 @@ public:
 		m->declare("oscillators.lib/name", "Faust Oscillator Library");
 		m->declare("oscillators.lib/saw1:author", "Bart Brouns");
 		m->declare("oscillators.lib/saw1:licence", "STK-4.3");
-		m->declare("oscillators.lib/version", "1.6.0");
+		m->declare("oscillators.lib/version", "1.7.0");
 		m->declare("platform.lib/name", "Generic Platform Library");
 		m->declare("platform.lib/version", "1.3.0");
 	}
@@ -178,8 +180,8 @@ public:
 	inline void calculateSizes() {
 		float width1 = 0.0f;
 		float height1 = 0.0f;
-		width1 = std::max(width1, 100.0f);
-		height1 += 20.0f;
+		width1 = std::max(width1, OtUi::size(5.0f));
+		height1 += OtUi::size(1.0f);
 		width = width1;
 		height = height1;
 		initialized = true;
@@ -233,7 +235,7 @@ public:
 		callback("waveForm", &fHslider0, 1.0f);
 	}
 
-	inline bool editWaveForm() { ImGui::SetNextItemWidth(100.0f); return ImGui::SliderFloat("WaveForm", &fHslider0, 0.0f, 7.0f, "%.0f"); }
+	inline bool editWaveForm() { ImGui::SetNextItemWidth(OtUi::size(5.0f)); return ImGui::SliderFloat("WaveForm", &fHslider0, 0.0f, 7.0f, "%.0f"); }
 
 	inline void setWaveForm(float value) { fHslider0 = value; }
 

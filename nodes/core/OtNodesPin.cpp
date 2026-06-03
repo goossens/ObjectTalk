@@ -192,8 +192,8 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec2& value) {
 		[&](OtNodesPin pin, float width) {
 			auto vec = value;
 			ImGui::PushID(&value);
-			OtUi::hSpacer(width - 120.0f);
-			ImGui::SetNextItemWidth(120.0f);
+			OtUi::hSpacer(width - OtUi::size(6.0f));
+			ImGui::SetNextItemWidth(OtUi::size(6.0f));
 
 			if (OtUi::editVec2("##value", &vec)) {
 				auto node = pin->node;
@@ -218,8 +218,8 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec3& value) {
 		[&](OtNodesPin pin, float width) {
 			auto vec = value;
 			ImGui::PushID(&value);
-			OtUi::hSpacer(width - 180.0f);
-			ImGui::SetNextItemWidth(180.0f);
+			OtUi::hSpacer(width - OtUi::size(9.0f));
+			ImGui::SetNextItemWidth(OtUi::size(9.0f));
 
 			if (OtUi::editVec3("##value", &vec)) {
 				auto node = pin->node;
@@ -244,8 +244,8 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec4& value) {
 		[&](OtNodesPin pin, float width) {
 			auto vec = value;
 			ImGui::PushID(&value);
-			OtUi::hSpacer(width - 240.0f);
-			ImGui::SetNextItemWidth(240.0f);
+			OtUi::hSpacer(width - OtUi::size(12.0f));
+			ImGui::SetNextItemWidth(OtUi::size(12.0f));
 
 			if (OtUi::editVec4("##value", &vec)) {
 				auto node = pin->node;

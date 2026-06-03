@@ -54,9 +54,9 @@ public:
 	static constexpr const char* circuitName = "Graphic EQ";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::equalizer;
 
-	static inline float getSliderWidth() { return 20.0f * ImGui::GetStyle().FontScaleDpi; }
-	static inline float getSliderHeight() { return 100.0f * ImGui::GetStyle().FontScaleDpi; }
-	static inline float getSliderSpacing() { return 5.0f * ImGui::GetStyle().FontScaleDpi; }
+	static inline float getSliderWidth() { return OtUi::size(1.0f); }
+	static inline float getSliderHeight() { return OtUi::size(5.0f); }
+	static inline float getSliderSpacing() { return OtUi::size(0.25f); }
 };
 
 static OtCircuitFactoryRegister<OtGraphicEqCircuit> registration;

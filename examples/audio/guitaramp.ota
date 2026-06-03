@@ -3,6 +3,7 @@
 		{
 			"id": 2024564051,
 			"inputs": [],
+			"on": true,
 			"outputs": [
 				{
 					"attenuation": 1.0,
@@ -27,6 +28,7 @@
 					"type": "mono"
 				}
 			],
+			"on": true,
 			"outputs": [
 				{
 					"id": 983386080,
@@ -52,6 +54,7 @@
 				}
 			],
 			"middle": 0.41999998688697815,
+			"on": true,
 			"outputs": [
 				{
 					"id": 2294597394,
@@ -76,6 +79,7 @@
 					"type": "mono"
 				}
 			],
+			"on": true,
 			"outputs": [
 				{
 					"id": 801167103,
@@ -101,6 +105,7 @@
 					"type": "mono"
 				}
 			],
+			"on": true,
 			"outputs": [
 				{
 					"id": 1154099198,
@@ -124,6 +129,7 @@
 					"type": "mono"
 				}
 			],
+			"on": true,
 			"outputs": [
 				{
 					"id": 2130943400,
@@ -147,6 +153,7 @@
 				}
 			],
 			"leftDelayTime": 0.0,
+			"on": true,
 			"outputs": [
 				{
 					"id": 1136698534,
@@ -170,6 +177,7 @@
 					"type": "stereo"
 				}
 			],
+			"on": true,
 			"outputs": [],
 			"title": "Speaker Out",
 			"type": "Speaker Out",
@@ -185,6 +193,7 @@
 					"type": "mono"
 				}
 			],
+			"on": true,
 			"outputs": [],
 			"title": "Oscilloscope",
 			"type": "Oscilloscope",
@@ -201,6 +210,7 @@
 					"type": "mono"
 				}
 			],
+			"on": true,
 			"outputs": [],
 			"title": "Spectrum Analyzer",
 			"type": "Spectrum Analyzer",
@@ -251,11 +261,12 @@
 					"type": "mono"
 				}
 			],
+			"on": true,
 			"outputs": [],
 			"title": "Meter Bridge",
 			"type": "Meter Bridge",
-			"x": 823.0,
-			"y": 530.0
+			"x": 799.0,
+			"y": 531.0
 		}
 	],
 	"metadata": {},

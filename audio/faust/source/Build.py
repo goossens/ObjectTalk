@@ -109,8 +109,8 @@ class UI:
 			"max": maxValue,
 			"step": stepValue})
 
-		sliderLength = "100.0f"
-		sliderWidth = "20.0f"
+		sliderLength = "OtUi::size(5.0f)"
+		sliderWidth = "OtUi::size(1.0f)"
 
 		if style == "knob":
 			self.editors.append(f"\tinline bool edit{address}() {{ return OtAudioUi::knob(\"{label}\", &{varname}, {minValue}, {maxValue}, \"{format}\", {log}); }}")

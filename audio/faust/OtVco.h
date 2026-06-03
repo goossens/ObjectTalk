@@ -271,8 +271,8 @@ public:
 	inline void calculateSizes() {
 		float width1 = 0.0f;
 		float height1 = 0.0f;
-		width1 = std::max(width1, 100.0f);
-		height1 += 20.0f;
+		width1 = std::max(width1, OtUi::size(5.0f));
+		height1 += OtUi::size(1.0f);
 		width = width1;
 		height = height1;
 		initialized = true;
@@ -326,7 +326,7 @@ public:
 		callback("waveForm", &fHslider0, 1.0f);
 	}
 
-	inline bool editWaveForm() { ImGui::SetNextItemWidth(100.0f); return ImGui::SliderFloat("WaveForm", &fHslider0, 0.0f, 7.0f, "%.0f"); }
+	inline bool editWaveForm() { ImGui::SetNextItemWidth(OtUi::size(5.0f)); return ImGui::SliderFloat("WaveForm", &fHslider0, 0.0f, 7.0f, "%.0f"); }
 
 	inline void setWaveForm(float value) { fHslider0 = value; }
 

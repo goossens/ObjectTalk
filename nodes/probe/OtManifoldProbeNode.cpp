@@ -120,7 +120,7 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::probe;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-	static float getSize() { return 170.0f  * ImGui::GetStyle().FontScaleDpi; }
+	static float getSize() { return OtUi::size(9.0f); }
 
 private:
 	// properties

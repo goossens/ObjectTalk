@@ -66,12 +66,12 @@ public:
 		m->declare("name", "Ladder");
 		m->declare("platform.lib/name", "Generic Platform Library");
 		m->declare("platform.lib/version", "1.3.0");
-		m->declare("signals.lib/name", "Faust Signal Routing Library");
+		m->declare("signals.lib/name", "Faust Routing Library");
 		m->declare("signals.lib/version", "1.6.0");
 		m->declare("vaeffects.lib/lowpassLadder4:author", "Dario Sanfilippo");
 		m->declare("vaeffects.lib/lowpassLadder4:license", "MIT License");
 		m->declare("vaeffects.lib/name", "Faust Virtual Analog Filter Effect Library");
-		m->declare("vaeffects.lib/version", "1.4.0");
+		m->declare("vaeffects.lib/version", "1.5.0");
 	}
 
 	inline int getNumInputs() {

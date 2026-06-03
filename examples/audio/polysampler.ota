@@ -5,6 +5,7 @@
 			"inputs": [],
 			"midiFile": "assets/chopin.mid",
 			"midiSource": 1,
+			"on": true,
 			"outputs": [
 				{
 					"id": 2019671728,
@@ -36,6 +37,7 @@
 					"type": "midi"
 				}
 			],
+			"on": true,
 			"outputs": [
 				{
 					"id": 2813232505,
@@ -60,6 +62,7 @@
 					"type": "mono"
 				}
 			],
+			"on": true,
 			"outputs": [
 				{
 					"id": 414077931,
@@ -83,6 +86,7 @@
 				}
 			],
 			"leftDelayTime": 0.0,
+			"on": true,
 			"outputs": [
 				{
 					"id": 72590400,
@@ -106,6 +110,7 @@
 					"type": "stereo"
 				}
 			],
+			"on": true,
 			"outputs": [],
 			"title": "Speaker Out",
 			"type": "Speaker Out",
@@ -121,6 +126,7 @@
 					"type": "midi"
 				}
 			],
+			"on": true,
 			"outputs": [],
 			"title": "MIDI Probe",
 			"type": "MIDI Probe",
@@ -137,11 +143,12 @@
 					"type": "mono"
 				}
 			],
+			"on": true,
 			"outputs": [],
 			"title": "Spectrum Analyzer",
 			"type": "Spectrum Analyzer",
-			"x": 1111.0,
-			"y": 332.0
+			"x": 1119.0,
+			"y": 377.0
 		},
 		{
 			"id": 124683745,
@@ -152,6 +159,7 @@
 					"type": "stereo"
 				}
 			],
+			"on": true,
 			"outputs": [],
 			"title": "dBFS",
 			"type": "Vu Meter",

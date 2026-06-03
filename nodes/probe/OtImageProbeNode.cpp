@@ -63,7 +63,7 @@ public:
 
 	// convert image to texture and determine size
 	inline void onExecute() override {
-		auto fieldWidth = 170.0f * ImGui::GetStyle().FontScaleDpi;
+		auto fieldWidth = OtUi::size(9.0f);
 
 		if (image.isValid()) {
 			texture.load(image);

@@ -63,7 +63,7 @@ public:
 
 	// convert shape to texture and determine size
 	inline void onExecute() override {
-		auto fieldWidth = 170.0f * ImGui::GetStyle().FontScaleDpi;
+		auto fieldWidth = OtUi::size(9.0f);
 
 		if (shape.isValid()) {
 			shape.renderFill(image, OtColor(1.0, 1.0, 1.0, 1.0));

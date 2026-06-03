@@ -369,7 +369,7 @@ public:
 		m->declare("name", "Graphic EQ");
 		m->declare("platform.lib/name", "Generic Platform Library");
 		m->declare("platform.lib/version", "1.3.0");
-		m->declare("signals.lib/name", "Faust Signal Routing Library");
+		m->declare("signals.lib/name", "Faust Routing Library");
 		m->declare("signals.lib/version", "1.6.0");
 	}
 
@@ -1254,35 +1254,35 @@ public:
 		auto spacing = ImGui::GetStyle().ItemSpacing;
 		float width1 = 0.0f;
 		float height1 = 0.0f;
-		width1 += 20.0f;
-		height1 = std::max(height1, 100.0f);
+		width1 += OtUi::size(1.0f);
+		height1 = std::max(height1, OtUi::size(5.0f));
 		width1 += spacing.x;
-		width1 += 20.0f;
-		height1 = std::max(height1, 100.0f);
+		width1 += OtUi::size(1.0f);
+		height1 = std::max(height1, OtUi::size(5.0f));
 		width1 += spacing.x;
-		width1 += 20.0f;
-		height1 = std::max(height1, 100.0f);
+		width1 += OtUi::size(1.0f);
+		height1 = std::max(height1, OtUi::size(5.0f));
 		width1 += spacing.x;
-		width1 += 20.0f;
-		height1 = std::max(height1, 100.0f);
+		width1 += OtUi::size(1.0f);
+		height1 = std::max(height1, OtUi::size(5.0f));
 		width1 += spacing.x;
-		width1 += 20.0f;
-		height1 = std::max(height1, 100.0f);
+		width1 += OtUi::size(1.0f);
+		height1 = std::max(height1, OtUi::size(5.0f));
 		width1 += spacing.x;
-		width1 += 20.0f;
-		height1 = std::max(height1, 100.0f);
+		width1 += OtUi::size(1.0f);
+		height1 = std::max(height1, OtUi::size(5.0f));
 		width1 += spacing.x;
-		width1 += 20.0f;
-		height1 = std::max(height1, 100.0f);
+		width1 += OtUi::size(1.0f);
+		height1 = std::max(height1, OtUi::size(5.0f));
 		width1 += spacing.x;
-		width1 += 20.0f;
-		height1 = std::max(height1, 100.0f);
+		width1 += OtUi::size(1.0f);
+		height1 = std::max(height1, OtUi::size(5.0f));
 		width1 += spacing.x;
-		width1 += 20.0f;
-		height1 = std::max(height1, 100.0f);
+		width1 += OtUi::size(1.0f);
+		height1 = std::max(height1, OtUi::size(5.0f));
 		width1 += spacing.x;
-		width1 += 20.0f;
-		height1 = std::max(height1, 100.0f);
+		width1 += OtUi::size(1.0f);
+		height1 = std::max(height1, OtUi::size(5.0f));
 		width = width1;
 		height = height1;
 		initialized = true;
@@ -1390,16 +1390,16 @@ public:
 		callback("band9", &fVslider1, -10.0f);
 	}
 
-	inline bool editBand10() { return OtAudioUi::verticalSlider("Band10", ImVec2(20.0f, 100.0f), &fVslider0, -70.0f, 10.0f, "%.1fdB"); }
-	inline bool editBand1() { return OtAudioUi::verticalSlider("Band1", ImVec2(20.0f, 100.0f), &fVslider8, -70.0f, 10.0f, "%.1fdB"); }
-	inline bool editBand2() { return OtAudioUi::verticalSlider("Band2", ImVec2(20.0f, 100.0f), &fVslider9, -70.0f, 10.0f, "%.1fdB"); }
-	inline bool editBand3() { return OtAudioUi::verticalSlider("Band3", ImVec2(20.0f, 100.0f), &fVslider7, -70.0f, 10.0f, "%.1fdB"); }
-	inline bool editBand4() { return OtAudioUi::verticalSlider("Band4", ImVec2(20.0f, 100.0f), &fVslider6, -70.0f, 10.0f, "%.1fdB"); }
-	inline bool editBand5() { return OtAudioUi::verticalSlider("Band5", ImVec2(20.0f, 100.0f), &fVslider5, -70.0f, 10.0f, "%.1fdB"); }
-	inline bool editBand6() { return OtAudioUi::verticalSlider("Band6", ImVec2(20.0f, 100.0f), &fVslider4, -70.0f, 10.0f, "%.1fdB"); }
-	inline bool editBand7() { return OtAudioUi::verticalSlider("Band7", ImVec2(20.0f, 100.0f), &fVslider3, -70.0f, 10.0f, "%.1fdB"); }
-	inline bool editBand8() { return OtAudioUi::verticalSlider("Band8", ImVec2(20.0f, 100.0f), &fVslider2, -70.0f, 10.0f, "%.1fdB"); }
-	inline bool editBand9() { return OtAudioUi::verticalSlider("Band9", ImVec2(20.0f, 100.0f), &fVslider1, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand10() { return OtAudioUi::verticalSlider("Band10", ImVec2(OtUi::size(1.0f), OtUi::size(5.0f)), &fVslider0, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand1() { return OtAudioUi::verticalSlider("Band1", ImVec2(OtUi::size(1.0f), OtUi::size(5.0f)), &fVslider8, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand2() { return OtAudioUi::verticalSlider("Band2", ImVec2(OtUi::size(1.0f), OtUi::size(5.0f)), &fVslider9, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand3() { return OtAudioUi::verticalSlider("Band3", ImVec2(OtUi::size(1.0f), OtUi::size(5.0f)), &fVslider7, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand4() { return OtAudioUi::verticalSlider("Band4", ImVec2(OtUi::size(1.0f), OtUi::size(5.0f)), &fVslider6, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand5() { return OtAudioUi::verticalSlider("Band5", ImVec2(OtUi::size(1.0f), OtUi::size(5.0f)), &fVslider5, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand6() { return OtAudioUi::verticalSlider("Band6", ImVec2(OtUi::size(1.0f), OtUi::size(5.0f)), &fVslider4, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand7() { return OtAudioUi::verticalSlider("Band7", ImVec2(OtUi::size(1.0f), OtUi::size(5.0f)), &fVslider3, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand8() { return OtAudioUi::verticalSlider("Band8", ImVec2(OtUi::size(1.0f), OtUi::size(5.0f)), &fVslider2, -70.0f, 10.0f, "%.1fdB"); }
+	inline bool editBand9() { return OtAudioUi::verticalSlider("Band9", ImVec2(OtUi::size(1.0f), OtUi::size(5.0f)), &fVslider1, -70.0f, 10.0f, "%.1fdB"); }
 
 	inline void setBand10(float value) { fVslider0 = value; }
 	inline void setBand1(float value) { fVslider8 = value; }

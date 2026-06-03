@@ -79,13 +79,13 @@ public:
 		m->declare("name", "VCF");
 		m->declare("platform.lib/name", "Generic Platform Library");
 		m->declare("platform.lib/version", "1.3.0");
-		m->declare("signals.lib/name", "Faust Signal Routing Library");
+		m->declare("signals.lib/name", "Faust Routing Library");
 		m->declare("signals.lib/version", "1.6.0");
 		m->declare("vaeffects.lib/moog_vcf_2b:author", "Julius O. Smith III");
 		m->declare("vaeffects.lib/moog_vcf_2b:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("vaeffects.lib/moog_vcf_2b:license", "MIT-style STK-4.3 license");
 		m->declare("vaeffects.lib/name", "Faust Virtual Analog Filter Effect Library");
-		m->declare("vaeffects.lib/version", "1.4.0");
+		m->declare("vaeffects.lib/version", "1.5.0");
 	}
 
 	inline int getNumInputs() {

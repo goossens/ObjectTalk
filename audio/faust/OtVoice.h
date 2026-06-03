@@ -652,8 +652,8 @@ public:
 		width4 += knobWidth;
 		height4 = std::max(height4, knobHeight);
 		width4 += spacing.x;
-		width4 += 100.0f;
-		height4 = std::max(height4, 20.0f);
+		width4 += OtUi::size(5.0f);
+		height4 = std::max(height4, OtUi::size(1.0f));
 		width4 += spacing.x;
 		width4 += knobWidth;
 		height4 = std::max(height4, knobHeight);
@@ -664,8 +664,8 @@ public:
 		width4 += knobWidth;
 		height4 = std::max(height4, knobHeight);
 		width4 += spacing.x;
-		width4 += 100.0f;
-		height4 = std::max(height4, 20.0f);
+		width4 += OtUi::size(5.0f);
+		height4 = std::max(height4, OtUi::size(1.0f));
 		width1 = std::max(width1, width4);
 		height1 += height4;
 		float width5 = 0.0f;
@@ -941,11 +941,11 @@ public:
 	inline bool editVcfRelease() { return OtAudioUi::knob("Release", &fVslider2, 0.0f, 10.0f, "%.3fs", true); }
 	inline bool editVcfGate() { ImGui::Button("Gate"); return ImGui::IsItemActive() ? 1.0f : 0.0f; }
 	inline bool editVcfEnvMod() { return OtAudioUi::knob("EnvMod", &fVslider1, 0.0f, 2.0f, "%.2f", false); }
-	inline bool editVcfEnvPower() { ImGui::SetNextItemWidth(100.0f); return ImGui::SliderFloat("EnvPower", &fHslider1, 0.0f, 1.0f, "%.0f"); }
+	inline bool editVcfEnvPower() { ImGui::SetNextItemWidth(OtUi::size(5.0f)); return ImGui::SliderFloat("EnvPower", &fHslider1, 0.0f, 1.0f, "%.0f"); }
 	inline bool editVcfWaveForm() { return OtAudioUi::knob("WaveForm", &fHslider3, 0.0f, 7.0f, "%.0f", false); }
 	inline bool editVcfLfoFreq() { return OtAudioUi::knob("Freq", &fHslider4, 0.1f, 100.0f, "%.1fhz", false); }
 	inline bool editVcfLfoMod() { return OtAudioUi::knob("LfoMod", &fVslider6, 0.0f, 2.0f, "%.2f", false); }
-	inline bool editVcfLfoPower() { ImGui::SetNextItemWidth(100.0f); return ImGui::SliderFloat("LfoPower", &fHslider2, 0.0f, 1.0f, "%.0f"); }
+	inline bool editVcfLfoPower() { ImGui::SetNextItemWidth(OtUi::size(5.0f)); return ImGui::SliderFloat("LfoPower", &fHslider2, 0.0f, 1.0f, "%.0f"); }
 	inline bool editVcaAttack() { return OtAudioUi::knob("Attack", &fVslider9, 0.0f, 10.0f, "%.3fs", true); }
 	inline bool editVcaDecay() { return OtAudioUi::knob("Decay", &fVslider10, 0.0f, 10.0f, "%.3fs", true); }
 	inline bool editVcaSustain() { return OtAudioUi::knob("Sustain", &fVslider11, 0.0f, 1.0f, "%.2f", false); }

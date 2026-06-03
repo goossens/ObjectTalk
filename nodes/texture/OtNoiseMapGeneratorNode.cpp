@@ -52,7 +52,7 @@ public:
 	}
 
 	inline float getCustomRenderingWidth() override {
-		return 180.0f * ImGui::GetStyle().FontScaleDpi;
+		return OtUi::size(9.0f);
 	}
 
 	inline float getCustomRenderingHeight() override {

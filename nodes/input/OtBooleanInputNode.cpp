@@ -37,7 +37,7 @@ public:
 					needsSaving = true;
 				}
 			}
-		}, 100.0f * ImGui::GetStyle().FontScaleDpi);
+		}, OtUi::size(5.0f));
 	}
 
 	// special rendering for input nodes

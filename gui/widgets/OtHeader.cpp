@@ -44,7 +44,7 @@ void OtHeaderClass::init(size_t count, OtObject* parameters) {
 void OtHeaderClass::render() {
 	ImGui::PushID(this);
 	OtUi::header(label.c_str());
-	ImGui::Dummy(ImVec2(0.0f, 0.0f));
+	ImGui::Dummy(ImVec2());
 	ImGui::PopID();
 }
 

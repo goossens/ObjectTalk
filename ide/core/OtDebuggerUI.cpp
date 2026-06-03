@@ -36,7 +36,7 @@ void OtDebuggerUI::update(const std::string& message) {
 
 void OtDebuggerUI::render(OtSubProcess& subprocess, OtConsole& console) {
 	// create debugger window
-	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
+	ImGui::SetNextWindowPos(ImVec2());
 	ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 
@@ -50,7 +50,7 @@ void OtDebuggerUI::render(OtSubProcess& subprocess, OtConsole& console) {
 	// split the screen between the debugger and the console
 	determinePanelHeights();
 	auto spacing = ImGui::GetStyle().ItemSpacing;
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2());
 	ImGui::BeginChild("Debugger", ImVec2(0.0f, contentsHeight));
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, spacing);
 

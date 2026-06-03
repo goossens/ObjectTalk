@@ -62,7 +62,7 @@ public:
 
 	// nothing to do on execute but we'll use it to determine texture size
 	inline void onExecute() override {
-		auto fieldWidth = 170.0f * ImGui::GetStyle().FontScaleDpi;
+		auto fieldWidth = OtUi::size(9.0f);
 
 		if (texture.isValid()) {
 			customW = std::min(fieldWidth, static_cast<float>(texture.getWidth()));

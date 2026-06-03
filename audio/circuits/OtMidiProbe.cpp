@@ -108,8 +108,8 @@ public:
 	static constexpr const char* circuitName = "MIDI Probe";
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::probe;
 
-	static inline float getKeyboardWidth() { return 300.0f * ImGui::GetStyle().FontScaleDpi; }
-	static inline float getKeyboardHeight() { return 40.0f * ImGui::GetStyle().FontScaleDpi; }
+	static inline float getKeyboardWidth() { return OtUi::size(15.0f); }
+	static inline float getKeyboardHeight() { return OtUi::size(2.0f); }
 
 private:
 	// properties

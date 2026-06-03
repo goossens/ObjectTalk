@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <cmath>
 #include <limits>
 #include <string>
 
@@ -54,6 +55,10 @@ public:
 	static inline ImFont* getAudioFont() { return audioFont; }
 	static inline ImFont* getAwesomeFont() { return awesomeFont; }
 
+	// get size for specified units in pixels (to support low and high DPI monitors)
+	// (each unit is the vertical distance between two text lines or about the average width of two glyphs)
+	inline static float size(float units=1.0f) { return std::floor(ImGui::GetTextLineHeightWithSpacing() * units); }
+
 	// adjust cursor position based on alignment
 	static void align(ImVec2 size, Alignment horizontal, Alignment vertical);
 
@@ -82,11 +87,11 @@ public:
 	static float smallToggleButtonWidth();
 
 	// latch button
-	static bool latchButton(const char* label, bool* value, const ImVec2& size=ImVec2(0.0f, 0.0f));
+	static bool latchButton(const char* label, bool* value, const ImVec2& size=ImVec2());
 
 	// radio button
 	template <typename T>
-	static bool radioButton(const char* label, T* value, T buttonValue, const ImVec2& size=ImVec2(0.0f, 0.0f)) {
+	static bool radioButton(const char* label, T* value, T buttonValue, const ImVec2& size=ImVec2()) {
 		auto changed = false;
 		auto colors = ImGui::GetStyle().Colors;
 

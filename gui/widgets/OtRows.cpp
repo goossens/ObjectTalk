@@ -128,7 +128,7 @@ void OtRowsClass::render() {
 
 		// render child widget
 		auto spacing = ImGui::GetStyle().ItemSpacing;
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2());
 		ImGui::BeginChild("row", ImVec2(0.0f, screenHeights[i]), borders ? ImGuiChildFlags_Borders : ImGuiChildFlags_None);
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, spacing);
 		renderChild(children[i]);

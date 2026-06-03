@@ -98,7 +98,7 @@ public:
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::probe;
 	static constexpr size_t N = 4096;
 
-	static inline float getWidth() { return 250.0f * ImGui::GetStyle().FontScaleDpi; }
+	static inline float getWidth() { return OtUi::size(12.0f); }
 
 private:
 	// properties

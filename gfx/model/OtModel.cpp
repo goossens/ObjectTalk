@@ -585,7 +585,7 @@ void OtModel::renderNodeTransforms(size_t nodeID) {
 
 	if (ImGui::BeginPopup("NodeTransformPopup")) {
 		auto& node = nodes.getNode(nodeID);
-		ImGui::PushItemWidth(300.0f);
+		ImGui::PushItemWidth(OtUi::size(15.0f));
 		OtUi::viewMat4("Local", node.localTransform);
 		ImGui::TextUnformatted("");
 		OtUi::viewMat4("Model", node.modelTransform);

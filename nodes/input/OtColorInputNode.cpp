@@ -13,6 +13,7 @@
 #include "nlohmann/json.hpp"
 
 #include "OtColor.h"
+#include "OtUi.h"
 
 #include "OtNodesFactory.h"
 
@@ -37,7 +38,7 @@ public:
 					needsSaving = true;
 				}
 			}
-		}, 50.0f * ImGui::GetStyle().FontScaleDpi);
+		}, OtUi::size(2.5f));
 	}
 
 	// special rendering for input nodes

@@ -344,7 +344,7 @@ void OtSceneEditor::renderMenus() {
 		auto oldValue = processor.serialize(nullptr).dump();
 
 		OtUi::header("Post Processing Settings");
-		ImGui::Dummy(ImVec2(0.0f, 0.0f));
+		ImGui::Dummy(ImVec2());
 
 		if (processor.renderUI()) {
 			auto newValue = processor.serialize(nullptr).dump();
@@ -489,7 +489,7 @@ void OtSceneEditor::renderPanels() {
 
 	// create the entities panel
 	auto spacing = ImGui::GetStyle().ItemSpacing;
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2());
 	ImGui::BeginChild("entities", ImVec2(0.0f, entityPanelHeight), ImGuiChildFlags_Borders);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, spacing);
 	renderEntitiesPanel();
@@ -738,7 +738,7 @@ void OtSceneEditor::renderPanel(const std::string& name, bool canAdd, std::funct
 
 	// render panel context
 	ImGui::BeginChild("content");
-	ImGui::PushItemWidth(200.0f);
+	ImGui::PushItemWidth(OtUi::size(10.0f));
 	content();
 	ImGui::PopItemWidth();
 	ImGui::EndChild();
@@ -824,7 +824,7 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 
 	// are we renaming this entity?
 	if (entity == renamingEntity) {
-		ImGui::SameLine(rectMin.x - ImGui::GetStyle().FramePadding.y - 1);
+		ImGui::SameLine(rectMin.x - ImGui::GetStyle().FramePadding.y - 1.0f);
 
 		ImGui::SetNextItemWidth(
 			rectMax.x - rectMin.x -

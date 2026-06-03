@@ -14,6 +14,7 @@
 
 #include "OtGeometry.h"
 #include "OtPrimitiveFactory.h"
+#include "OtUi.h"
 
 #include "OtNodesFactory.h"
 
@@ -79,7 +80,7 @@ public:
 	}
 
 	inline float getCustomRenderingWidth() override {
-		return 150.0f * ImGui::GetStyle().FontScaleDpi;
+		return OtUi::size(8.0f);
 	}
 
 	inline float getCustomRenderingHeight() override {

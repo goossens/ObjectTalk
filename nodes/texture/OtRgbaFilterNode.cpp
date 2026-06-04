@@ -30,16 +30,14 @@ public:
 		addInputPin("Alpha", alpha);
 	}
 
-	// validate input
-	inline void onValidate() override {
+	// run filter
+	inline void onFilter(OtTexture& input, OtTexture& output) override {
+		// limit values
 		red = std::clamp(red, 0.0f, 1.0f);
 		green = std::clamp(green, 0.0f, 1.0f);
 		blue = std::clamp(blue, 0.0f, 1.0f);
 		alpha = std::clamp(alpha, 0.0f, 1.0f);
-	}
 
-	// run filter
-	inline void onFilter(OtTexture& input, OtTexture& output) override {
 		rgba.setRgba(glm::vec4(red, green, blue, alpha));
 		rgba.render(input, output);
 	}

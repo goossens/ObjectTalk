@@ -85,7 +85,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(int& value) {
 	return new OtNodesPinInputConfig{
 		[&](nlohmann::json* data) { (*data)["value"] = value; },
 		[&](nlohmann::json* data) { if (data->contains("value")) { value = (*data)["value"]; } },
-		[]() { return 60.0f; },
+		[]() { return OtUi::size(3.0f); },
 
 		[&](OtNodesPin pin, float width) {
 			auto node = pin->node;
@@ -109,7 +109,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(float& value) {
 	return new OtNodesPinInputConfig{
 		[&](nlohmann::json* data) { (*data)["value"] = value; },
 		[&](nlohmann::json* data) { if (data->contains("value")) { value = (*data)["value"]; } },
-		[]() { return 60.0f; },
+		[]() { return OtUi::size(3.0f); },
 
 		[&](OtNodesPin pin, float width) {
 			auto node = pin->node;
@@ -133,7 +133,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(std::string& value) {
 	return new OtNodesPinInputConfig{
 		[&](nlohmann::json* data) { (*data)["value"] = value; },
 		[&](nlohmann::json* data) { if (data->contains("value")) { value = (*data)["value"]; } },
-		[]() { return 100.0f; },
+		[]() { return OtUi::size(5.0f); },
 
 		[&](OtNodesPin pin, float width) {
 			auto text = value;
@@ -158,7 +158,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(OtColor& value) {
 	return new OtNodesPinInputConfig{
 		[&](nlohmann::json* data) { (*data)["value"] = value; },
 		[&](nlohmann::json* data) { if (data->contains("value")) { value = (*data)["value"]; } },
-		[]() { return 20.0f; },
+		[]() { return OtUi::size(1.0f); },
 
 		[&](OtNodesPin pin, float width) {
 			auto node = pin->node;
@@ -187,7 +187,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec2& value) {
 	return new OtNodesPinInputConfig{
 		[&](nlohmann::json* data) { (*data)["value"] = value; },
 		[&](nlohmann::json* data) { if (data->contains("value")) { value = (*data)["value"]; } },
-		[]() { return 120.0f; },
+		[]() { return OtUi::size(6.0f); },
 
 		[&](OtNodesPin pin, float width) {
 			auto vec = value;
@@ -213,7 +213,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec3& value) {
 	return new OtNodesPinInputConfig{
 		[&](nlohmann::json* data) { (*data)["value"] = value; },
 		[&](nlohmann::json* data) { if (data->contains("value")) { value = (*data)["value"]; } },
-		[]() { return 180.0f; },
+		[]() { return OtUi::size(9.0f); },
 
 		[&](OtNodesPin pin, float width) {
 			auto vec = value;
@@ -239,7 +239,7 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig(glm::vec4& value) {
 	return new OtNodesPinInputConfig{
 		[&](nlohmann::json* data) { (*data)["value"] = value; },
 		[&](nlohmann::json* data) { if (data->contains("value")) { value = (*data)["value"]; } },
-		[]() { return 240.0f; },
+		[]() { return OtUi::size(12.0f); },
 
 		[&](OtNodesPin pin, float width) {
 			auto vec = value;

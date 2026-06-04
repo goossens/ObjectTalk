@@ -743,7 +743,6 @@ void OtNodes::evaluate() {
 		if (node->needsEvaluating) {
 			try {
 				node->error.clear();
-				node->onValidate();
 				node->onExecute();
 
 			} catch (OtException& e) {

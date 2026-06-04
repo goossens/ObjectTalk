@@ -200,7 +200,7 @@ public:
 	static bool bezier(const char* label, float P[4]);
 
 	// spinner
-	static void spinner(ImVec2 center, float size=40.0f, float speed=7.0f, float radius=4.0f, int circles=12);
+	static void spinner(ImVec2 center, float size=OtUi::size(2.0f), float speed=7.0f, float radius=OtUi::size(0.2f), int circles=12);
 
 protected:
 	// generic glm tools

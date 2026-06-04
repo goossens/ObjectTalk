@@ -16,6 +16,7 @@
 #include "OtImage.h"
 #include "OtThreadPool.h"
 #include "OtUi.h"
+
 #include "OtWorld.h"
 
 #include "OtNodesFactory.h"
@@ -45,6 +46,11 @@ public:
 			needsEvaluating = true;
 			needsSaving = true;
 		}
+
+		if (generating) {
+			auto pos = ImGui::GetCursorScreenPos();
+			OtUi::spinner(ImVec2(pos.x + itemWidth * 0.5f, pos.y), OtUi::size(1.0f));
+		}
 	}
 
 	inline float getCustomRenderingWidth() override {
@@ -64,13 +70,11 @@ public:
 		renderType = data->value("renderType", OtWorld::RenderType::biomes);
 	}
 
-	// validate input parameters
-	inline void onValidate() override {
-		size = std::clamp(size, 32, 1024);
-	}
-
 	// update node status
 	inline bool onUpdate() override {
+		// limit values
+		size = std::clamp(size, 32, 1024);
+
 		if (generated) {
 			std::swap(image, newImage);
 			generated = false;

@@ -12,6 +12,7 @@
 #include <algorithm>
 
 #include "OtThreadPool.h"
+#include "OtUi.h"
 
 #include "OtWorld.h"
 
@@ -33,10 +34,11 @@ public:
 	}
 
 	// validate input parameters
-	inline void onValidate() override {
-		seed = std::clamp(seed, 1, 256);
-		size = std::clamp(size, 4, 128);
-		ruggedness = std::clamp(ruggedness, 0.0f, 1.0f);
+	inline void customRendering([[maybe_unused]] float itemWidth) override {
+		if (generating) {
+			auto pos = ImGui::GetCursorScreenPos();
+			OtUi::spinner(ImVec2(pos.x + itemWidth * 0.5f, pos.y + ImGui::GetFrameHeightWithSpacing()), OtUi::size(1.0f));
+		}
 	}
 
 	// update node status
@@ -92,9 +94,9 @@ private:
 
 	// local functions
 	void scheduleGeneration() {
-		newWorld.setSeed(seed);
-		newWorld.setSize(size);
-		newWorld.setRuggedness(ruggedness);
+		newWorld.setSeed(std::clamp(seed, 1, 1024));
+		newWorld.setSize(std::clamp(size, 4, 4096));
+		newWorld.setRuggedness(std::clamp(ruggedness, 0.0f, 1.0f));
 
 		OtThreadPool::run([this]() {
 			newWorld.generate();

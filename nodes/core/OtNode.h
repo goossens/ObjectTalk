@@ -163,7 +163,6 @@ public:
 
 	// interfaces
 	virtual inline bool onUpdate() { return false; };
-	virtual inline void onValidate() {};
 	virtual inline void onExecute() {};
 
 	// handle custom section of nodes

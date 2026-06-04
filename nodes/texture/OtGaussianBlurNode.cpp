@@ -30,14 +30,12 @@ public:
 		addInputPin("Iterations", iterations);
 	}
 
-	// validate input
-	inline void onValidate() override {
-		radius = std::clamp(radius, 0.5f, 10.0f);
-		iterations = std::clamp(iterations, 1, 50);
-	}
-
 	// run filter
 	inline void onFilter(OtTexture& input, OtTexture& output) override {
+		// limit values
+		radius = std::clamp(radius, 0.5f, 10.0f);
+		iterations = std::clamp(iterations, 1, 50);
+
 		temp1.update(input.getWidth(), input.getHeight(), input.getFormat(), input.getUsage());
 		temp2.update(input.getWidth(), input.getHeight(), input.getFormat(), input.getUsage());
 		gaussian.setRadius(radius);

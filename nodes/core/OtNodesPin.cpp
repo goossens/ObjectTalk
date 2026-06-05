@@ -269,3 +269,4 @@ OtNodesPinInputConfig* OtNodesPinCreateInputConfig([[maybe_unused]]OtGeometry& v
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig([[maybe_unused]]OtManifold& value) { return nullptr; }
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig([[maybe_unused]]OtWorld& value) { return nullptr; }
 OtNodesPinInputConfig* OtNodesPinCreateInputConfig([[maybe_unused]]OtInstances& value) { return nullptr; }
+OtNodesPinInputConfig* OtNodesPinCreateInputConfig([[maybe_unused]]OtHeightMap& value) { return nullptr; }

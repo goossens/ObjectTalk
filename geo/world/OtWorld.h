@@ -65,7 +65,7 @@ public:
 	static constexpr const char* renderTypes[] = {
 		"Biomes",
 		"Distance To Water",
-		"Height World"
+		"Height Map"
 	};
 
 	static constexpr size_t renderTypeCount = sizeof(renderTypes) / sizeof(*renderTypes);

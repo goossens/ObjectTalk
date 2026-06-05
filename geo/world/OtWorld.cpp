@@ -153,8 +153,8 @@ void OtWorld::render(OtImage& image, int dimension, RenderType type) const {
 		OtHeightMap heightmap;
 		generateHeightMap(heightmap, dimension);
 
-		float minElevation = heightmap.getMinHeight();
-		float maxElevation = heightmap.getMaxHeight();
+		float minElevation = heightmap.getMinElevation();
+		float maxElevation = heightmap.getMaxElevation();
 		float range = maxElevation - minElevation;
 
 		// get image ready
@@ -163,7 +163,7 @@ void OtWorld::render(OtImage& image, int dimension, RenderType type) const {
 
 		for (int y = 0; y < dimension; y++) {
 			for (int x = 0; x < dimension; x++) {
-				auto elevation = heightmap.getHeight(x, y);
+				auto elevation = heightmap.getElevation(x, y);
 				*p++ = (elevation - minElevation) / range;
 				*p++ = 0.0f;
 				*p++ = 0.0f;
@@ -283,7 +283,7 @@ void OtWorld::generateHeightMap(OtHeightMap& heightmap, int dimension) const {
 
 				if (bc.x > 0.0f && bc.y >= 0.0f && bc.z >= 0.0f && !std::isnan(bc.x)) {
 					auto elevation = bc.x * v1.elevation + bc.y * v2.elevation + bc.z * v3.elevation;
-					heightmap.setHeight(x, y, elevation);
+					heightmap.setElevation(x, y, elevation);
 				}
 			}
 		}

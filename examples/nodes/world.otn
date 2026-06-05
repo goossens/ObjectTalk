@@ -36,14 +36,19 @@
 			"to": 1557016206
 		},
 		{
-			"from": 2865025510,
-			"id": 3720703396,
-			"to": 3545046684
-		},
-		{
 			"from": 2058357043,
 			"id": 3667428162,
 			"to": 3644423933
+		},
+		{
+			"from": 468368962,
+			"id": 1283815608,
+			"to": 564795910
+		},
+		{
+			"from": 599750789,
+			"id": 3613672735,
+			"to": 3791022720
 		}
 	],
 	"metadata": {},
@@ -107,7 +112,7 @@
 			"renderType": 1,
 			"title": "World to Image",
 			"type": "World to Image",
-			"x": 328.0,
+			"x": 320.5,
 			"y": 9.0
 		},
 		{
@@ -150,16 +155,43 @@
 			"renderType": 2,
 			"title": "World to Image",
 			"type": "World to Image",
-			"x": 319.0,
-			"y": 566.0
+			"x": 320.5,
+			"y": 390.0
+		},
+		{
+			"id": 2113648312,
+			"inputs": [
+				{
+					"id": 564795910,
+					"name": "World",
+					"type": "world"
+				},
+				{
+					"id": 3831320626,
+					"name": "Size",
+					"type": "int",
+					"value": 256
+				}
+			],
+			"outputs": [
+				{
+					"id": 599750789,
+					"name": "Height Map",
+					"type": "Heightmap"
+				}
+			],
+			"title": "World to Height Map",
+			"type": "World to Height Map",
+			"x": 330.0,
+			"y": 595.0
 		},
 		{
 			"id": 2359960004,
 			"inputs": [
 				{
-					"id": 3545046684,
+					"id": 3791022720,
 					"name": "Input",
-					"type": "image"
+					"type": "Heightmap"
 				}
 			],
 			"outputs": [
@@ -250,7 +282,7 @@
 			"renderType": 0,
 			"title": "World to Image",
 			"type": "World to Image",
-			"x": 325.0,
+			"x": 320.5,
 			"y": 205.0
 		},
 		{
@@ -278,7 +310,7 @@
 				}
 			],
 			"outputs": [],
-			"title": "Height World",
+			"title": "Height Map",
 			"type": "Image Probe",
 			"x": 598.0,
 			"y": 274.0

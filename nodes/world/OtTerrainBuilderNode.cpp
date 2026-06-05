@@ -10,7 +10,7 @@
 //
 
 #include "OtGeometry.h"
-#include "OtImage.h"
+#include "OtHeightMap.h"
 
 #include "OtNodesFactory.h"
 
@@ -23,26 +23,26 @@ class OtTerrainBuilderNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Input", image);
+		addInputPin("Input", heightMap);
 		addOutputPin("Output", geometry);
 	}
 
 	// create grid and apply heightmap
 	inline void onExecute() override {
 		// do we have a valid input
-		if (image.isValid()) {
+		if (heightMap.isValid()) {
 			// recreate mesh if required
-			auto imageWidth = image.getWidth();
-			auto imageHeight = image.getHeight();
+			auto heightMapWidth = heightMap.getWidth();
+			auto heightMapHeight = heightMap.getHeight();
 
-			if (width != imageWidth || depth != imageHeight) {
-				width = imageWidth;
-				depth = imageHeight;
+			if (width != heightMapWidth || depth != heightMapHeight) {
+				width = heightMapWidth;
+				depth = heightMapHeight;
 				createMesh();
 			}
 
 			// update heightmap
-			updateHeights();
+			updateElevations();
 
 		} else {
 			// no valid input, just clear the geometry
@@ -84,8 +84,8 @@ public:
 		}
 	}
 
-	// update the terrain heights
-	void updateHeights() {
+	// update the terrain elevations
+	void updateElevations() {
 		// get accesss to the mesh and vertex list
 		auto& mesh = geometry.getMesh();
 		OtVertex* vertex = mesh.getVertices(true).data();
@@ -93,7 +93,7 @@ public:
 		// update height of each vertex
 		for (auto vz = 0; vz < depth; vz++) {
 			for (auto vx = 0; vx < width; vx++) {
-				(vertex++)->position.y = image.getPixelGray(vx, vz);
+				(vertex++)->position.y = heightMap.getElevation(vx, vz);
 			}
 		}
 
@@ -107,12 +107,12 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Terrain Builder";
-	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::geometry;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::world;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 private:
 	// properties
-	OtImage image;
+	OtHeightMap heightMap;
 	OtGeometry geometry;
 	int width = 0;
 	int depth = 0;

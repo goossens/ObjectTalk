@@ -72,7 +72,8 @@ static constexpr ImU32 pinColors[] = {
 	IM_COL32(0, 120, 65, 255),		// geometry
 	IM_COL32(25, 135, 125, 255),	// manifold
 	IM_COL32(0, 100, 200, 255),		// map
-	IM_COL32(0, 160, 220, 255)		// instances
+	IM_COL32(0, 160, 220, 255),		// instances,
+	IM_COL32(140, 100, 220, 255)	// heightmap
 };
 
 

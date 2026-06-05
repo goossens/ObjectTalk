@@ -33,41 +33,54 @@ public:
 	// save heightmap to file
 	void save(const std::string& path);
 
-	// void load(const std::string& path, float minValue, float maxValue);
-
 	// clear heightmap
-	inline void clear() {
-		heightmap = nullptr;
-		width = 0;
-		height = 0;
-	}
+	void clear();
 
 	// see if heightmap is valid
 	inline bool isValid() const { return heightmap != nullptr; }
 
-	// set height at specified location
-	void setHeight(int x, int y, float value) const;
+	// set elevation at specified location
+	void setElevation(int x, int y, float value) const;
 
-	// get height at absolute location
-	float getHeight(int x, int y) const;
+	// get elevation at specified location
+	float getElevation(int x, int y) const;
 
-	// get height at specified location (in relative coordinates, 0.0 to 1.0)
-	float sampleHeight(float x, float y) const;
+	// sample elevation at relative location (coordinates are 0.0 to 1.0 on both axis)
+	float sampleElevation(float x, float y) const;
 
-	// get normal (as normalized vector) at specified location (in relative coordinates, 0.0 to 1.0)
+	// get normal at relative location (coordinates are 0.0 to 1.0 on both axis)
 	glm::vec3 sampleNormal(float x, float y) const;
 
-	// get minimum and maximum heights
-	float getMinHeight() const;
-	float getMaxHeight() const;
+	// get minimum and maximum elevations
+	float getMinElevation() const;
+	float getMaxElevation() const;
+
+	// get height map dimensions
+	inline int getWidth() { return width; }
+	inline int getHeight() { return height; }
 
 	// access the error message
 	inline void setErrorMessage(const std::string& message) { errorMessage = message; }
 	inline std::string getErrorMessage() const { return errorMessage; }
 
+	// version management
+	inline void setVersion(int v) { version = v; }
+	inline int getVersion() { return version; }
+	inline void incrementVersion() { version++; }
+
+	// see if heightmaps are identical
+	inline bool operator==(OtHeightMap& rhs) {
+		return heightmap == rhs.heightmap && version == rhs.version;
+	}
+
+	inline bool operator!=(OtHeightMap& rhs) {
+		return !operator==(rhs);
+	}
+
 private:
 	// properties
-	std::unique_ptr<float[]> heightmap = nullptr;
+	std::shared_ptr<float[]> heightmap;
+	int version = 0;
 	int width = 0;
 	int height = 0;
 	std::string errorMessage;

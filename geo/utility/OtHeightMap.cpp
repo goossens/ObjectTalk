@@ -35,9 +35,10 @@ void OtHeightMap::update(int w, int h, bool clear) {
 
 	// allocate heightmap (if required)
 	if (!heightmap || width != w || height != h) {
-		heightmap = std::make_unique<float[]>(w * h);
+		heightmap = std::make_shared<float[]>(w * h);
 		width = w;
 		height = h;
+		incrementVersion();
 	}
 
 	// clear values if required
@@ -166,10 +167,22 @@ void OtHeightMap::save(const std::string& path) {
 
 
 //
-//	OtHeightMap::setHeight
+//	OtHeightMap::clear
 //
 
-void OtHeightMap::setHeight(int x, int y, float value) const {
+void OtHeightMap::clear() {
+	heightmap = nullptr;
+	width = 0;
+	height = 0;
+	incrementVersion();
+}
+
+
+//
+//	OtHeightMap::setElevation
+//
+
+void OtHeightMap::setElevation(int x, int y, float value) const {
 	// sanity checks
 	OtAssert(heightmap != nullptr);
 	OtAssert(x >= 0 && x < width);
@@ -181,10 +194,10 @@ void OtHeightMap::setHeight(int x, int y, float value) const {
 
 
 //
-//	OtHeightMap::getHeight
+//	OtHeightMap::getElevation
 //
 
-float OtHeightMap::getHeight(int x, int y) const {
+float OtHeightMap::getElevation(int x, int y) const {
 	// sanity check
 	OtAssert(heightmap != nullptr);
 
@@ -196,10 +209,10 @@ float OtHeightMap::getHeight(int x, int y) const {
 
 
 //
-//	OtHeightMap::sampleHeight
+//	OtHeightMap::sampleElevation
 //
 
-float OtHeightMap::sampleHeight(float x, float y) const {
+float OtHeightMap::sampleElevation(float x, float y) const {
 	x *= width - 1;
 	y *= height - 1;
 
@@ -208,10 +221,10 @@ float OtHeightMap::sampleHeight(float x, float y) const {
 	int x2 = x1 + 1;
 	int y2 = y1 + 1;
 
-	auto h11 = getHeight(x1, y1);
-	auto h21 = getHeight(x2, y1);
-	auto h12 = getHeight(x1, y2);
-	auto h22 = getHeight(x2, y2);
+	auto h11 = getElevation(x1, y1);
+	auto h21 = getElevation(x2, y1);
+	auto h12 = getElevation(x1, y2);
+	auto h22 = getElevation(x2, y2);
 
 	auto hx1 = std::lerp(h11, h21, x - x1);
 	auto hx2 = std::lerp(h12, h22, x - x1);
@@ -228,44 +241,44 @@ glm::vec3 OtHeightMap::sampleNormal(float x, float y) const {
 	int iy = int(y * height);
 
 	return glm::normalize(glm::vec3(
-		getHeight(ix - 1, iy) - getHeight(ix + 1, iy),
+		getElevation(ix - 1, iy) - getElevation(ix + 1, iy),
 		2.0,
-		getHeight(ix, iy - 1) - getHeight(ix, iy + 1)));
+		getElevation(ix, iy - 1) - getElevation(ix, iy + 1)));
 }
 
 
 
 //
-//	OtHeightMap::getMinHeight
+//	OtHeightMap::getMinElevation
 //
 
-float OtHeightMap::getMinHeight() const {
-	auto minHeight = std::numeric_limits<float>::max();
+float OtHeightMap::getMinElevation() const {
+	auto minElevation = std::numeric_limits<float>::max();
 
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
-			auto h = getHeight(x, y);
-			minHeight = std::min(minHeight, h);
+			auto h = getElevation(x, y);
+			minElevation = std::min(minElevation, h);
 		}
 	}
 
-	return minHeight;
+	return minElevation;
 }
 
 
 //
-//	OtHeightMap::getMaxHeight
+//	OtHeightMap::getMaxElevation
 //
 
-float OtHeightMap::getMaxHeight() const {
-	auto maxHeight = std::numeric_limits<float>::lowest();
+float OtHeightMap::getMaxElevation() const {
+	auto maxElevation = std::numeric_limits<float>::lowest();
 
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
-			auto h = getHeight(x, y);
-			maxHeight = std::max(maxHeight, h);
+			auto h = getElevation(x, y);
+			maxElevation = std::max(maxElevation, h);
 		}
 	}
 
-	return maxHeight;
+	return maxElevation;
 }

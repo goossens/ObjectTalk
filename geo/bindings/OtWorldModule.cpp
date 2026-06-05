@@ -39,15 +39,15 @@ public:
 	inline void load(const std::string& path) { heightmap.load(path); }
 	inline void save(const std::string& path) { heightmap.save(path); }
 
-	// access height/normal data
-	inline void setHeight(int x, int y, float value) { heightmap.setHeight(x, y, value); }
-	inline float getHeight(int x, int y) { return heightmap.getHeight(x, y); }
-	inline float sampleHeight(float x, float y) { return heightmap.sampleHeight(x, y); }
+	// access altitude/normal data
+	inline void setElevation(int x, int y, float value) { heightmap.setElevation(x, y, value); }
+	inline float getElevation(int x, int y) { return heightmap.getElevation(x, y); }
+	inline float sampleElevation(float x, float y) { return heightmap.sampleElevation(x, y); }
 	inline glm::vec3 sampleNormal(float x, float y) { return heightmap.sampleNormal(x, y); }
 
 	// get heightmap limits
-	inline float getMinHeight() { return heightmap.getMinHeight(); }
-	inline float getMaxHeight() { return heightmap.getMaxHeight(); }
+	inline float getMinElevation() { return heightmap.getMinElevation(); }
+	inline float getMaxElevation() { return heightmap.getMaxElevation(); }
 
 	// get type definition
 	static OtType getMeta() {
@@ -61,14 +61,14 @@ public:
 			type->set("load", OtFunction::create(&OtHeightMapClass::load));
 			type->set("save", OtFunction::create(&OtHeightMapClass::save));
 
-			type->set("setHeight", OtFunction::create(&OtHeightMapClass::setHeight));
-			type->set("getHeight", OtFunction::create(&OtHeightMapClass::getHeight));
+			type->set("setElevation", OtFunction::create(&OtHeightMapClass::setElevation));
+			type->set("getElevation", OtFunction::create(&OtHeightMapClass::getElevation));
 
-			type->set("sampleHeight", OtFunction::create(&OtHeightMapClass::sampleHeight));
+			type->set("sampleElevation", OtFunction::create(&OtHeightMapClass::sampleElevation));
 			type->set("sampleNormal", OtFunction::create(&OtHeightMapClass::sampleNormal));
 
-			type->set("getMinHeight", OtFunction::create(&OtHeightMapClass::getMinHeight));
-			type->set("getMinHeight", OtFunction::create(&OtHeightMapClass::getMaxHeight));
+			type->set("getMinElevation", OtFunction::create(&OtHeightMapClass::getMinElevation));
+			type->set("getMinElevation", OtFunction::create(&OtHeightMapClass::getMaxElevation));
 		}
 
 		return type;

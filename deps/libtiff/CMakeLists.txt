@@ -14,3 +14,5 @@ FetchContent_Populate(libtiff QUIET GIT_REPOSITORY "https://gitlab.com/libtiff/l
 add_subdirectory(${libtiff_SOURCE_DIR} ${libtiff_BINARY_DIR} EXCLUDE_FROM_ALL)
 
 set_target_properties(tiff PROPERTIES FOLDER deps)
+set_target_properties(tiff_release PROPERTIES FOLDER deps/tiff)
+set_target_properties(tiffxx PROPERTIES FOLDER deps/tiff)

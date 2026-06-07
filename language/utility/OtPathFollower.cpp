@@ -32,7 +32,7 @@ void OtPathFollower::follow(const std::string& p, std::function<void()> cb) {
 	int status = uv_fs_event_init(uv_default_loop(), fsEventHandle);
 	UV_CHECK_ERROR("uv_fs_event_init", status);
 
-	status = uv_fs_event_start(
+	uv_fs_event_start(
 		fsEventHandle,
 		[](uv_fs_event_t* handle, [[maybe_unused]] const char* filename, int events, [[maybe_unused]] int status) {
 			// get pointer to follower object

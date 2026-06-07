@@ -1,0 +1,242 @@
+{
+	"links": [
+		{
+			"from": 591397593,
+			"id": 303502022,
+			"to": 1852624315
+		},
+		{
+			"from": 468368962,
+			"id": 576811603,
+			"to": 3177096165
+		},
+		{
+			"from": 2865025510,
+			"id": 4002341040,
+			"to": 1557016206
+		},
+		{
+			"from": 2058357043,
+			"id": 3667428162,
+			"to": 3644423933
+		},
+		{
+			"from": 468368962,
+			"id": 931632622,
+			"to": 2923444569
+		},
+		{
+			"from": 1332750672,
+			"id": 2333724994,
+			"to": 1884847250
+		}
+	],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 1579014303,
+			"inputs": [
+				{
+					"id": 3359103614,
+					"name": "Size",
+					"type": "int",
+					"value": 80
+				},
+				{
+					"id": 3612237621,
+					"name": "Seed",
+					"type": "int",
+					"value": 37
+				},
+				{
+					"id": 1799471862,
+					"name": "Ruggedness",
+					"type": "float",
+					"value": 0.4000000059604645
+				}
+			],
+			"outputs": [
+				{
+					"id": 468368962,
+					"name": "World",
+					"type": "world"
+				}
+			],
+			"title": "World Generator",
+			"type": "World Generator",
+			"x": 13.0,
+			"y": 258.0
+		},
+		{
+			"id": 2189420124,
+			"inputs": [
+				{
+					"id": 3177096165,
+					"name": "World",
+					"type": "world"
+				},
+				{
+					"id": 3043457080,
+					"name": "Size",
+					"type": "int",
+					"value": 1024
+				}
+			],
+			"outputs": [
+				{
+					"id": 2865025510,
+					"name": "Image",
+					"type": "image"
+				}
+			],
+			"renderType": 2,
+			"title": "World to Image",
+			"type": "World to Image",
+			"x": 266.0,
+			"y": 208.0
+		},
+		{
+			"id": 3891177825,
+			"inputs": [
+				{
+					"id": 2923444569,
+					"name": "World",
+					"type": "world"
+				},
+				{
+					"id": 2667384876,
+					"name": "Size",
+					"type": "int",
+					"value": 256
+				}
+			],
+			"outputs": [
+				{
+					"id": 1332750672,
+					"name": "Height Map",
+					"type": "Heightmap"
+				}
+			],
+			"title": "World to Height Map",
+			"type": "World to Height Map",
+			"x": 273.0,
+			"y": 387.0
+		},
+		{
+			"id": 2359960004,
+			"inputs": [
+				{
+					"id": 1884847250,
+					"name": "Input",
+					"type": "Heightmap"
+				}
+			],
+			"outputs": [
+				{
+					"id": 591397593,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Terrain Builder",
+			"type": "Terrain Builder",
+			"x": 742.0,
+			"y": 366.0
+		},
+		{
+			"id": 364438754,
+			"inputs": [
+				{
+					"id": 1852624315,
+					"name": "Input",
+					"type": "geometry"
+				},
+				{
+					"id": 642812204,
+					"name": "Translate",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 4199914809,
+					"name": "Rotate",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 330560579,
+					"name": "Scale",
+					"type": "vector3",
+					"value": [
+						10.0,
+						2.0,
+						10.0
+					]
+				}
+			],
+			"outputs": [
+				{
+					"id": 2058357043,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Geometry Transform",
+			"type": "Geometry Transform",
+			"x": 905.0,
+			"y": 203.0
+		},
+		{
+			"id": 2401587037,
+			"inputs": [
+				{
+					"id": 1557016206,
+					"name": "Image",
+					"type": "image"
+				}
+			],
+			"outputs": [],
+			"title": "Height Map",
+			"type": "Image Probe",
+			"x": 519.0,
+			"y": 33.0
+		},
+		{
+			"azimuth": 19.5653076171875,
+			"elevation": 37.595115661621094,
+			"id": 1546965795,
+			"inputs": [
+				{
+					"id": 3644423933,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"lightColor": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"meshColor": [
+				1.0,
+				0.8500000238418579,
+				0.0
+			],
+			"outputs": [],
+			"title": "Geometry Probe",
+			"type": "Geometry Probe",
+			"wireframe": false,
+			"x": 1214.0,
+			"y": 33.0,
+			"zoom": 1.3976020812988281
+		}
+	]
+}

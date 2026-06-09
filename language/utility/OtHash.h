@@ -34,7 +34,7 @@ struct OtHash {
 		return hash;
 	}
 
-	// hash a uint32_t integer into a float in the range [0, 1]
+	// hash a uint32_t integer(s) into a float in the range [0, 1]
 	static float toFloat(uint32_t x);
 	static float toFloat(uint32_t x, uint32_t y);
 	static float toFloat(uint32_t x, uint32_t y, uint32_t z);

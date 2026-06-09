@@ -19,6 +19,7 @@
 #include "tiffio.h"
 
 #include "OtAssert.h"
+#include "OtHash.h"
 #include "OtLog.h"
 
 #include "OtHeightMap.h"
@@ -194,17 +195,52 @@ void OtHeightMap::setElevation(int x, int y, float value) const {
 
 
 //
-//	OtHeightMap::getElevation
+//	OtHeightMap::adjustElevation
 //
 
-float OtHeightMap::getElevation(int x, int y) const {
-	// sanity check
+void OtHeightMap::adjustElevation(int x, int y, float value) const {
+	// sanity checks
 	OtAssert(heightmap != nullptr);
+	OtAssert(x >= 0 && x < width);
+	OtAssert(y >= 0 && y < height);
 
-	// get height value
-	x = std::clamp(x, 0, width - 1);
-	y = std::clamp(y, 0, height - 1);
-	return heightmap[y * width + x];
+	// adjust height
+	heightmap[y * width + x] += value;
+}
+
+
+//
+//	OtHeightMap::getNormal
+//
+
+glm::vec3 OtHeightMap::getNormal(int x, int y) const {
+	static constexpr auto w10 = glm::vec3(0.1f);
+	static constexpr auto w15 = glm::vec3(0.15f);
+	static constexpr auto scale = 60.0f;
+	static constexpr auto sqrt2 = 1.41421356f;
+
+	auto tl = getElevation(x - 1, y - 1);
+	auto tc = getElevation(x, y - 1);
+	auto tr = getElevation(x + 1, y - 1);
+	auto ml = getElevation(x - 1, y);
+	auto mc = getElevation(x, y);
+	auto mr = getElevation(x + 1, y);
+	auto bl = getElevation(x - 1, y + 1);
+	auto bc = getElevation(x, y + 1);
+	auto br = getElevation(x + 1, y + 1);
+
+	glm::vec3 n;
+	n += w15 * glm::normalize(glm::vec3(scale * (mc - mr), 1.0f, 0.0f));
+	n += w15 * glm::normalize(glm::vec3(scale * (ml - mc), 1.0f, 0.0f));
+	n += w15 * glm::normalize(glm::vec3(0.0f, 1.0f, scale * (mc - bc)));
+	n += w15 * glm::normalize(glm::vec3(0.0f, 1.0f, scale * (tc - mc)));
+
+	n += w10 * glm::normalize(glm::vec3(scale * (mc - tl) / sqrt2, sqrt2, scale * (mc - tl) / sqrt2));
+	n += w10 * glm::normalize(glm::vec3(scale * (mc - tr) / sqrt2, sqrt2, scale * (mc - tr) / sqrt2));
+	n += w10 * glm::normalize(glm::vec3(scale * (mc - bl) / sqrt2, sqrt2, scale * (mc - bl) / sqrt2));
+	n += w10 * glm::normalize(glm::vec3(scale * (mc - br) / sqrt2, sqrt2, scale * (mc - br) / sqrt2));
+
+	return n;
 }
 
 
@@ -247,7 +283,6 @@ glm::vec3 OtHeightMap::sampleNormal(float x, float y) const {
 }
 
 
-
 //
 //	OtHeightMap::getMinElevation
 //
@@ -255,8 +290,8 @@ glm::vec3 OtHeightMap::sampleNormal(float x, float y) const {
 float OtHeightMap::getMinElevation() const {
 	auto minElevation = std::numeric_limits<float>::max();
 
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
+	for (auto y = 0; y < height; y++) {
+		for (auto x = 0; x < width; x++) {
 			auto h = getElevation(x, y);
 			minElevation = std::min(minElevation, h);
 		}
@@ -273,12 +308,60 @@ float OtHeightMap::getMinElevation() const {
 float OtHeightMap::getMaxElevation() const {
 	auto maxElevation = std::numeric_limits<float>::lowest();
 
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
+	for (auto y = 0; y < height; y++) {
+		for (auto x = 0; x < width; x++) {
 			auto h = getElevation(x, y);
 			maxElevation = std::max(maxElevation, h);
 		}
 	}
 
 	return maxElevation;
+}
+
+
+//
+//	OtHeightMap::erode
+//
+
+void OtHeightMap::erode(int run, int drops) {
+	for (auto i = 0; i < drops; i++) {
+		// pick random location for a drop of water
+		Particle drop(glm::vec2(
+			OtHash::toFloat(
+				static_cast<uint32_t>(seed),
+				static_cast<uint32_t>(run),
+				static_cast<uint32_t>(i + 17)) * (width - 1),
+			OtHash::toFloat(
+				static_cast<uint32_t>(seed),
+				static_cast<uint32_t>(run),
+				static_cast<uint32_t>(i + 67)) * (height - 1)));
+
+		// run until water drop is "dry"
+		while (drop.volume < minimumVolume) {
+			// get surface normal at drop
+			glm::ivec2 ipos = drop.pos;
+			glm::vec3 n = getNormal(ipos.x, ipos.y);
+
+			// accelerate particle using newtonian mechanics using the surface normal
+			drop.speed += dt * glm::vec2(n.x, n.z)  / (drop.volume * density);
+			drop.pos += dt * drop.speed;
+			drop.speed *= 1.0 - dt * friction;
+
+			// ensure drop is inbounds
+			if (glm::all(glm::greaterThanEqual(drop.pos, glm::vec2(0.0f))) && glm::all(glm::lessThan(drop.pos, glm::vec2(width, height)))) {
+				// compute sediment capacity difference
+				glm::ivec2 newIpos = drop.pos;
+				auto elevationChange = heightmap[ipos.y * width + ipos.x] - heightmap[newIpos.y * width + newIpos.x];
+				float maxSediment = std::max(drop.volume * glm::length(drop.speed) * elevationChange, 0.0f);
+				float sdiff = maxSediment - drop.sediment;
+
+				// act on the heightmap and droplet
+				drop.sediment += dt * depositionRate * sdiff;
+				heightmap[newIpos.y * width + newIpos.x] += dt * drop.volume * depositionRate * sdiff;
+
+				// evaporate the droplet
+				drop.volume *= (1.0 - dt * evaporationRate);
+			}
+		}
+	}
 }

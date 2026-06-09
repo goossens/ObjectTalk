@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include <cmath>
 #include <memory>
 #include <string>
 
@@ -42,13 +43,23 @@ public:
 	// set elevation at specified location
 	void setElevation(int x, int y, float value) const;
 
-	// get elevation at specified location
-	float getElevation(int x, int y) const;
+	// adjust elevation t specified location
+	void adjustElevation(int x, int y, float value) const;
 
-	// sample elevation at relative location (coordinates are 0.0 to 1.0 on both axis)
+	// get elevation at specified location
+	inline float getElevation(int x, int y) const {
+		x = std::clamp(x, 0, width - 1);
+		y = std::clamp(y, 0, height - 1);
+		return heightmap[y * width + x];
+	}
+
+	// get normal at specified location
+	glm::vec3 getNormal(int x, int y) const;
+
+	// sample interpolated elevation at relative location (coordinates are 0.0 to 1.0 on both axis)
 	float sampleElevation(float x, float y) const;
 
-	// get normal at relative location (coordinates are 0.0 to 1.0 on both axis)
+	// sample interpolated normal at relative location (coordinates are 0.0 to 1.0 on both axis)
 	glm::vec3 sampleNormal(float x, float y) const;
 
 	// get minimum and maximum elevations
@@ -77,11 +88,56 @@ public:
 		return !operator==(rhs);
 	}
 
+	// access erosion properties
+	inline void setSeed(int value) { seed = value; }
+	inline int getSeed() const { return seed; }
+
+	inline void setDT(float value) { dt = value; }
+	inline float getDT() const { return dt; }
+
+	inline void setDensity(float value) { density = value; }
+	inline float getDensity() const { return density; }
+
+	inline void setEvaporationRate(float value) { evaporationRate = value; }
+	inline float getEvaporationRate() const { return evaporationRate; }
+
+	inline void setDepositionRate(float value) { depositionRate = value; }
+	inline float getDepositionRate() const { return depositionRate; }
+
+	inline void setMinimumVolume(float value) { minimumVolume = value; }
+	inline float getMinimumVolume() const { return minimumVolume; }
+
+	inline void setFriction(float value) { friction = value; }
+	inline float getFriction() const { return friction; }
+
+	// erode heightmap
+	void erode(int run, int drops);
+
 private:
-	// properties
+	// heightmap properties
 	std::shared_ptr<float[]> heightmap;
 	int version = 0;
 	int width = 0;
 	int height = 0;
 	std::string errorMessage;
+
+	// erosion properties
+	int seed = 1337;
+	float dt = 1.2f;
+	float density = 1.0f;
+	float evaporationRate = 0.001f;
+	float depositionRate = 0.1f;
+	float minimumVolume = 0.01f;
+	float friction = 0.05f;
+
+	// single particle that started as a drop of water that carries sediment
+	struct Particle {
+		Particle(glm::vec2 pos) : pos(pos) {}
+
+		glm::vec2 pos;
+		glm::vec2 speed = glm::vec2(0.0f);
+
+		float volume = 1.0f;
+		float sediment = 0.0f;
+	};
 };

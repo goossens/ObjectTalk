@@ -41,6 +41,7 @@ public:
 
 	// access altitude/normal data
 	inline void setElevation(int x, int y, float value) { heightmap.setElevation(x, y, value); }
+	inline void adjustElevation(int x, int y, float value) { heightmap.adjustElevation(x, y, value); }
 	inline float getElevation(int x, int y) { return heightmap.getElevation(x, y); }
 	inline float sampleElevation(float x, float y) { return heightmap.sampleElevation(x, y); }
 	inline glm::vec3 sampleNormal(float x, float y) { return heightmap.sampleNormal(x, y); }
@@ -62,6 +63,7 @@ public:
 			type->set("save", OtFunction::create(&OtHeightMapClass::save));
 
 			type->set("setElevation", OtFunction::create(&OtHeightMapClass::setElevation));
+			type->set("adjustElevation", OtFunction::create(&OtHeightMapClass::adjustElevation));
 			type->set("getElevation", OtFunction::create(&OtHeightMapClass::getElevation));
 
 			type->set("sampleElevation", OtFunction::create(&OtHeightMapClass::sampleElevation));

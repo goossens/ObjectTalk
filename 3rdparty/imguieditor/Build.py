@@ -28,6 +28,20 @@ def append(filename, skip):
 
 
 #
+#	copyExtras
+#
+
+def copyExtras(filename):
+	with open(destination + "extras/" + filename, "w") as output:
+		with open(filename, "r") as input:
+			for line in input:
+				if (line == '#include "TextEditor.h"\n'):
+					output.write('#include "../TextEditor.h"\n')
+				else:
+					output.write(line)
+
+
+#
 #	__main__
 #
 
@@ -73,3 +87,8 @@ if __name__ == "__main__":
 	shutil.copyfile("dtl.h", destination + "dtl.h")
 	shutil.copyfile("TextDiff.h", destination + "TextDiff.h")
 	shutil.copyfile("TextDiff.cpp", destination + "TextDiff.cpp")
+
+	copyExtras("LspBridge.cpp")
+	copyExtras("LspBridge.h")
+	copyExtras("TrieAutoComplete.cpp")
+	copyExtras("TrieAutoComplete.h")

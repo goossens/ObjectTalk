@@ -22,13 +22,33 @@
 		},
 		{
 			"from": 468368962,
-			"id": 931632622,
+			"id": 1440493193,
 			"to": 2923444569
 		},
 		{
-			"from": 1332750672,
-			"id": 2333724994,
+			"from": 159415055,
+			"id": 795238764,
 			"to": 1884847250
+		},
+		{
+			"from": 1332750672,
+			"id": 2088027394,
+			"to": 2644451241
+		},
+		{
+			"from": 1332750672,
+			"id": 3411805750,
+			"to": 1975699371
+		},
+		{
+			"from": 4285072921,
+			"id": 2101268236,
+			"to": 1748004075
+		},
+		{
+			"from": 3245872349,
+			"id": 2939942947,
+			"to": 3509323241
 		}
 	],
 	"metadata": {},
@@ -119,8 +139,29 @@
 			],
 			"title": "World to Height Map",
 			"type": "World to Height Map",
-			"x": 273.0,
-			"y": 387.0
+			"x": 272.0,
+			"y": 364.0
+		},
+		{
+			"id": 661474334,
+			"inputs": [
+				{
+					"id": 2644451241,
+					"name": "World",
+					"type": "Heightmap"
+				}
+			],
+			"outputs": [
+				{
+					"id": 159415055,
+					"name": "Height Map",
+					"type": "Heightmap"
+				}
+			],
+			"title": "Erode Height Map",
+			"type": "Erode Height Map",
+			"x": 511.0,
+			"y": 663.0
 		},
 		{
 			"id": 2359960004,
@@ -140,8 +181,8 @@
 			],
 			"title": "Terrain Builder",
 			"type": "Terrain Builder",
-			"x": 742.0,
-			"y": 366.0
+			"x": 707.0,
+			"y": 639.0
 		},
 		{
 			"id": 364438754,
@@ -191,8 +232,8 @@
 			],
 			"title": "Geometry Transform",
 			"type": "Geometry Transform",
-			"x": 905.0,
-			"y": 203.0
+			"x": 888.0,
+			"y": 614.0
 		},
 		{
 			"id": 2401587037,
@@ -234,8 +275,109 @@
 			"title": "Geometry Probe",
 			"type": "Geometry Probe",
 			"wireframe": false,
-			"x": 1214.0,
-			"y": 33.0,
+			"x": 1263.5,
+			"y": 439.0,
+			"zoom": 1.3976020812988281
+		},
+		{
+			"id": 1220326949,
+			"inputs": [
+				{
+					"id": 1975699371,
+					"name": "Input",
+					"type": "Heightmap"
+				}
+			],
+			"outputs": [
+				{
+					"id": 4285072921,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Terrain Builder",
+			"type": "Terrain Builder",
+			"x": 709.0,
+			"y": 339.0
+		},
+		{
+			"id": 3894068503,
+			"inputs": [
+				{
+					"id": 1748004075,
+					"name": "Input",
+					"type": "geometry"
+				},
+				{
+					"id": 1668420525,
+					"name": "Translate",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 981338156,
+					"name": "Rotate",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 2587757578,
+					"name": "Scale",
+					"type": "vector3",
+					"value": [
+						10.0,
+						2.0,
+						10.0
+					]
+				}
+			],
+			"outputs": [
+				{
+					"id": 3245872349,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Geometry Transform",
+			"type": "Geometry Transform",
+			"x": 890.0,
+			"y": 314.0
+		},
+		{
+			"azimuth": 19.5653076171875,
+			"elevation": 37.595115661621094,
+			"id": 1374531763,
+			"inputs": [
+				{
+					"id": 3509323241,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"lightColor": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"meshColor": [
+				1.0,
+				0.8500000238418579,
+				0.0
+			],
+			"outputs": [],
+			"title": "Geometry Probe",
+			"type": "Geometry Probe",
+			"wireframe": false,
+			"x": 1263.5,
+			"y": 141.0,
 			"zoom": 1.3976020812988281
 		}
 	]

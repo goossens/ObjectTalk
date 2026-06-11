@@ -47,6 +47,8 @@ public:
 		} else {
 			// no valid input, just clear the geometry
 			geometry.clear();
+			width = 0;
+			depth = 0;
 		}
 	}
 

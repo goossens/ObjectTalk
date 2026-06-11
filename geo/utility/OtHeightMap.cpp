@@ -168,6 +168,23 @@ void OtHeightMap::save(const std::string& path) {
 
 
 //
+//	OtHeightMap::clone
+//
+
+OtHeightMap OtHeightMap::clone() {
+	OtHeightMap hm;
+
+	if (isValid()) {
+		hm.update(width, height);
+		std::copy(heightmap.get(), heightmap.get() + width * height, hm.heightmap.get());
+	}
+
+	hm.setVersion(getVersion());
+	return hm;
+}
+
+
+//
 //	OtHeightMap::clear
 //
 
@@ -214,6 +231,7 @@ void OtHeightMap::adjustElevation(int x, int y, float value) const {
 //
 
 glm::vec3 OtHeightMap::getNormal(int x, int y) const {
+	// determine surface normal using Sobel filter
 	static constexpr auto w10 = glm::vec3(0.1f);
 	static constexpr auto w15 = glm::vec3(0.15f);
 	static constexpr auto scale = 60.0f;
@@ -273,13 +291,34 @@ float OtHeightMap::sampleElevation(float x, float y) const {
 //
 
 glm::vec3 OtHeightMap::sampleNormal(float x, float y) const {
-	int ix = int(x * width);
-	int iy = int(y * height);
+	// determine surface normal using Sobel filter
+	static constexpr auto w10 = glm::vec3(0.1f);
+	static constexpr auto w15 = glm::vec3(0.15f);
+	static constexpr auto scale = 60.0f;
+	static constexpr auto sqrt2 = 1.41421356f;
 
-	return glm::normalize(glm::vec3(
-		getElevation(ix - 1, iy) - getElevation(ix + 1, iy),
-		2.0,
-		getElevation(ix, iy - 1) - getElevation(ix, iy + 1)));
+	auto tl = sampleElevation(x - 1.0f, y - 1.0f);
+	auto tc = sampleElevation(x, y - 1.0f);
+	auto tr = sampleElevation(x + 1.0f, y - 1.0f);
+	auto ml = sampleElevation(x - 1.0f, y);
+	auto mc = sampleElevation(x, y);
+	auto mr = sampleElevation(x + 1.0f, y);
+	auto bl = sampleElevation(x - 1.0f, y + 1.0f);
+	auto bc = sampleElevation(x, y + 1.0f);
+	auto br = sampleElevation(x + 1.0f, y + 1.0f);
+
+	glm::vec3 n;
+	n += w15 * glm::normalize(glm::vec3(scale * (mc - mr), 1.0f, 0.0f));
+	n += w15 * glm::normalize(glm::vec3(scale * (ml - mc), 1.0f, 0.0f));
+	n += w15 * glm::normalize(glm::vec3(0.0f, 1.0f, scale * (mc - bc)));
+	n += w15 * glm::normalize(glm::vec3(0.0f, 1.0f, scale * (tc - mc)));
+
+	n += w10 * glm::normalize(glm::vec3(scale * (mc - tl) / sqrt2, sqrt2, scale * (mc - tl) / sqrt2));
+	n += w10 * glm::normalize(glm::vec3(scale * (mc - tr) / sqrt2, sqrt2, scale * (mc - tr) / sqrt2));
+	n += w10 * glm::normalize(glm::vec3(scale * (mc - bl) / sqrt2, sqrt2, scale * (mc - bl) / sqrt2));
+	n += w10 * glm::normalize(glm::vec3(scale * (mc - br) / sqrt2, sqrt2, scale * (mc - br) / sqrt2));
+
+	return n;
 }
 
 
@@ -336,8 +375,10 @@ void OtHeightMap::erode(int run, int drops) {
 				static_cast<uint32_t>(run),
 				static_cast<uint32_t>(i + 67)) * (height - 1)));
 
-		// run until water drop is "dry"
-		while (drop.volume < minimumVolume) {
+		// run until water drop is "dry" or the flow is now out-of-bounds
+		bool outOfBounds = false;
+
+		while (drop.volume > minimumVolume && !outOfBounds) {
 			// get surface normal at drop
 			glm::ivec2 ipos = drop.pos;
 			glm::vec3 n = getNormal(ipos.x, ipos.y);
@@ -355,13 +396,18 @@ void OtHeightMap::erode(int run, int drops) {
 				float maxSediment = std::max(drop.volume * glm::length(drop.speed) * elevationChange, 0.0f);
 				float sdiff = maxSediment - drop.sediment;
 
-				// act on the heightmap and droplet
+				// adjust heightmap and droplet
 				drop.sediment += dt * depositionRate * sdiff;
 				heightmap[newIpos.y * width + newIpos.x] += dt * drop.volume * depositionRate * sdiff;
 
 				// evaporate the droplet
 				drop.volume *= (1.0 - dt * evaporationRate);
+
+			} else {
+				outOfBounds = true;
 			}
 		}
 	}
+
+	incrementVersion();
 }

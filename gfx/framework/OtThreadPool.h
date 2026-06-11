@@ -25,6 +25,12 @@
 
 class OtThreadPool : OtSingleton<OtThreadPool> {
 public:
+	// submit a task to run in thread and return a std::future
+	template <typename T>
+	static std::future<T> submit(std::function<T()> task) {
+		return instance().threadpool.submit_task(task);
+	}
+
 	// run a task in a thread
 	static void run(std::function<void()> task) {
 		instance().threadpool.detach_task(task);

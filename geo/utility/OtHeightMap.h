@@ -34,6 +34,9 @@ public:
 	// save heightmap to file
 	void save(const std::string& path);
 
+	// clone this heightmap
+	OtHeightMap clone();
+
 	// clear heightmap
 	void clear();
 

@@ -74,6 +74,7 @@ public:
 	// render text
 	static void text(const char* txt);
 	static inline void text(const std::string& txt) { text(txt.c_str()); }
+	static void centerTextInSpace(const char* text, float width);
 	static void centerTextInWindow(const char* text);
 
 	// header with specified width

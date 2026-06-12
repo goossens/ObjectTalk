@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include <algorithm>
+#include <format>
 
 #include "OtHeightMap.h"
 #include "OtThreadPool.h"
@@ -24,6 +24,13 @@
 
 class OtErodeHeightMapNode : public OtNodeClass {
 public:
+	// destructor
+	~OtErodeHeightMapNode() {
+		if (generating && future.valid()) {
+			future.wait();
+		}
+	}
+
 	// configure node
 	inline void configure() override {
 		addInputPin("World", heightMap);
@@ -32,29 +39,71 @@ public:
 
 	// render custom fields
 	inline void customRendering(float itemWidth) override {
+		auto status = std::format("Drops: {}", run * dropPerRun);
+		OtUi::centerTextInSpace(status.c_str(), itemWidth);
+
 		if (generating) {
 			auto pos = ImGui::GetCursorScreenPos();
+
+			if (ImGui::Button("Stop")) {
+				generating = false;
+			}
+
 			OtUi::spinner(ImVec2(pos.x + itemWidth * 0.5f, pos.y), OtUi::size(1.0f));
+
+		} else {
+			if (!heightMap.isValid()) {
+				ImGui::BeginDisabled();
+			}
+
+			if (ImGui::Button("Start")) {
+				run = 0;
+				generating = true;
+				workHeightMap = heightMap.clone();
+				inputVersion = heightMap.getVersion();
+				scheduleGeneration();
+			}
+
+			if (!heightMap.isValid()) {
+				ImGui::EndDisabled();
+			}
 		}
+	}
+
+	inline float getCustomRenderingWidth() override {
+		return OtUi::size(7.0f);
+	}
+
+	inline float getCustomRenderingHeight() override {
+		return ImGui::GetFrameHeightWithSpacing() * 2.0f;
 	}
 
 	// update node status
 	inline bool onUpdate() override {
-		if (future.valid() && future.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
-			future.get();
-			auto version = erodedHeightMap.getVersion();
-			erodedHeightMap = workHeightMap;
-			erodedHeightMap.setVersion(version + 1);
+		if (generating) {
+			if (future.valid() && future.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
+				future.get();
+				erodedHeightMap = workHeightMap;
+				run++;
 
-			if (currentRun < runs) {
-				currentRun++;
-				scheduleGeneration();
+				if (heightMap.isValid()) {
+					if (heightMap.getVersion() != inputVersion) {
+						run = 0;
+						workHeightMap = heightMap.clone();
+						inputVersion = heightMap.getVersion();
+					}
+
+					scheduleGeneration();
+
+				} else {
+					generating = false;
+				}
+
+				return true;
 
 			} else {
-				generating = false;
+				return false;
 			}
-
-			return true;
 
 		} else {
 			return false;
@@ -63,14 +112,7 @@ public:
 
 	// execute asynchronous image generation
 	inline void onExecute() override {
-		if (heightMap.isValid()) {
-			if (!generating) {
-				generating = true;
-				workHeightMap = heightMap.clone();
-				scheduleGeneration();
-			}
-
-		} else {
+		if (!heightMap.isValid()) {
 			erodedHeightMap.clear();
 		}
 	}
@@ -81,8 +123,9 @@ public:
 
 private:
 	// properties
-	int runs = 100;
-	int currentRun = 0;
+	int run = 0;
+	int dropPerRun = 1000;
+	int inputVersion;
 
 	// world component
 	OtHeightMap heightMap;
@@ -95,8 +138,8 @@ private:
 
 	// local functions
 	void scheduleGeneration() {
-		future = OtThreadPool::submit<void>([whm = workHeightMap, cr = currentRun]() mutable {
-			whm.erode(cr, 1000);
+		future = OtThreadPool::submit<void>([this]() {
+			workHeightMap.erode(run, dropPerRun);
 		});
 	}
 };

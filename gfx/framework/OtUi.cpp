@@ -170,6 +170,16 @@ void OtUi::text(const char* txt) {
 
 
 //
+//	OtUi::centerTextInSpace
+//
+
+void OtUi::centerTextInSpace(const char* txt, float width) {
+	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (width - ImGui::CalcTextSize(txt).x) * 0.5f);
+	text(txt);
+}
+
+
+//
 //	OtUi::centerTextInWindow
 //
 
@@ -466,8 +476,8 @@ bool OtUi::inputText(const char* label, std::string* value, ImGuiInputTextFlags 
 
 bool OtUi::inputMultilineText(const char* label, std::string* value, const ImVec2& size, ImGuiInputTextFlags flags) {
 	flags |=
-	ImGuiInputTextFlags_NoUndoRedo |
-	ImGuiInputTextFlags_CallbackResize;
+		ImGuiInputTextFlags_NoUndoRedo |
+		ImGuiInputTextFlags_CallbackResize;
 
 	ImGui::InputTextMultiline(label, (char*) value->c_str(), value->capacity() + 1, size, flags, [](ImGuiInputTextCallbackData* data) {
 		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {

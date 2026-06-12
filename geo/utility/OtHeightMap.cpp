@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include <algorithm>
-#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <limits>
@@ -386,7 +384,7 @@ void OtHeightMap::erode(int run, int drops) {
 			// accelerate particle using newtonian mechanics using the surface normal
 			drop.speed += dt * glm::vec2(n.x, n.z)  / (drop.volume * density);
 			drop.pos += dt * drop.speed;
-			drop.speed *= 1.0 - dt * friction;
+			drop.speed *= 1.0f - dt * friction;
 
 			// ensure drop is inbounds
 			if (glm::all(glm::greaterThanEqual(drop.pos, glm::vec2(0.0f))) && glm::all(glm::lessThan(drop.pos, glm::vec2(width, height)))) {
@@ -401,7 +399,7 @@ void OtHeightMap::erode(int run, int drops) {
 				heightmap[newIpos.y * width + newIpos.x] += dt * drop.volume * depositionRate * sdiff;
 
 				// evaporate the droplet
-				drop.volume *= (1.0 - dt * evaporationRate);
+				drop.volume *= (1.0f - dt * evaporationRate);
 
 			} else {
 				outOfBounds = true;

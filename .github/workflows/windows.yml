@@ -4,14 +4,14 @@ on: [push]
 
 jobs:
   verify-windows:
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v5
 
     - name: Configure
-      run: cmake -B build -G "Visual Studio 18 2026" -A x64
+      run: cmake -B build -G "Visual Studio 17 2022" -A x64
 
     - name: Build
       run: cmake --build build --config Release

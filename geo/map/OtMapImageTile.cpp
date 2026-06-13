@@ -11,8 +11,6 @@
 
 #include <string>
 
-#include "fmt/format.h"
-
 #include "OtMapImageTile.h"
 
 

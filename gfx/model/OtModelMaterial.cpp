@@ -10,9 +10,9 @@
 //
 
 #include <cstring>
+#include <format>
 
 #include "assimp/texture.h"
-#include "fmt/format.h"
 #include "glm/glm.hpp"
 
 #include "OtPath.h"
@@ -106,7 +106,7 @@ std::string OtModelMaterial::getTexturePath(size_t modelID, const aiScene* scene
 	auto [texture, textureID] = scene->GetEmbeddedTextureAndIndex(file.c_str());
 
 	if (textureID != -1) {
-		return fmt::format("virtual:model{}.{}", modelID, textureID);
+		return std::format("virtual:model{}.{}", modelID, textureID);
 
 	} else {
 		return OtPath::join(dir, file);

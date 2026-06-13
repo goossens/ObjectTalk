@@ -12,10 +12,9 @@
 //	Include files
 //
 
+#include <format>
 #include <fstream>
 #include <string>
-
-#include "fmt/format.h"
 
 #include "OtSingleton.h"
 
@@ -42,7 +41,7 @@ public:
 
 	template<typename... ARGS>
 	static inline void log(const char* filename, int lineno, Type type, const char* format, ARGS... args) {
-		auto message = fmt::format(fmt::runtime(format), args...);
+		auto message = std::vformat(format, std::make_format_args(args...));
 		instance().logMessage(filename, lineno, type, message);
 	}
 

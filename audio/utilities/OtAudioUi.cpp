@@ -11,9 +11,9 @@
 
 #include <algorithm>
 #include <cmath>
+#include <format>
 #include <numbers>
 
-#include "fmt/format.h"
 #include "imgui-knobs.h"
 #include "implot.h"
 
@@ -66,7 +66,7 @@ bool OtAudioUi::decoratedHeader(const char* label, float* attenuation, float* tu
 			ImGui::SameLine();
 		}
 
-		auto id = fmt::format("##{}Power", label);
+		auto id = std::format("##{}Power", label);
 		changed |= smallToggleButton(id.c_str(), power);
 	}
 
@@ -115,7 +115,7 @@ bool OtAudioUi::smallToggleButton(const char* label, float* value) {
 	float height = ImGui::GetFrameHeight();
 	float width = height * 1.4f;
 
-	auto id = fmt::format("##{}Button", label);
+	auto id = std::format("##{}Button", label);
 	ImGui::InvisibleButton(id.c_str(), ImVec2(width, height));
 
 	if (ImGui::IsItemClicked()) {

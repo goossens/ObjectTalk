@@ -9,9 +9,8 @@
 //	Include files
 //
 
+#include <format>
 #include <string>
-
-#include "fmt/format.h"
 
 #include "OtAssert.h"
 #include "OtClass.h"
@@ -266,7 +265,7 @@ OtObject OtVM::executeByteCode(OtByteCode bytecode, size_t callingParameters) {
 
 			} else {
 				// format long message
-				auto fullMessage = fmt::format(
+				auto fullMessage = std::format(
 					"{}\nModule: {}\n{}",
 					e.getLongErrorMessage(),
 					bytecode->getModule(),

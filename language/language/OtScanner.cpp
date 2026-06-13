@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "fmt/format.h"
+#include <format>
 
 #include "OtException.h"
 #include "OtScanner.h"
@@ -367,7 +367,7 @@ void OtScanner::error(std::string message) {
 	}
 
 	marker += '^';
-	auto fullMessage = fmt::format("Module: {}, Line: {}: {}:\n{}\n{}", moduleName, lineNumber, message, lineText, marker);
+	auto fullMessage = std::format("Module: {}, Line: {}: {}:\n{}\n{}", moduleName, lineNumber, message, lineText, marker);
 
 	// throw exception
 	throw OtException(moduleName, lineNumber, tokenStart, tokenEnd, message, fullMessage);
@@ -385,7 +385,7 @@ void OtScanner::expect(Token expectedToken, bool advanceToNextToken) {
 		}
 
 	} else {
-		error(fmt::format("Expected [{}]", tokens[expectedToken]));
+		error(std::format("Expected [{}]", tokens[expectedToken]));
 	}
 }
 

@@ -99,8 +99,8 @@ void OtTextEditor::renderMenus() {
 
 		if (ImGui::MenuItem("Indent Line(s)", " " OT_UI_SHORTCUT "]", nullptr, !editor.IsEmpty())) { editor.IndentLines(); }
 		if (ImGui::MenuItem("Deindent Line(s)", " " OT_UI_SHORTCUT "[", nullptr, !editor.IsEmpty())) { editor.DeindentLines(); }
-		if (ImGui::MenuItem("Move Line(s) Up", " " OT_UI_SHORTCUT "\u2191", nullptr, !editor.IsEmpty())) { editor.MoveUpLines(); }
-		if (ImGui::MenuItem("Move Line(s) Down", " " OT_UI_SHORTCUT "\u2193", nullptr, !editor.IsEmpty())) { editor.MoveDownLines(); }
+		if (ImGui::MenuItem("Move Line(s) Up", reinterpret_cast<const char*>(" " OT_UI_SHORTCUT u8"\u2191"), nullptr, !editor.IsEmpty())) { editor.MoveUpLines(); }
+		if (ImGui::MenuItem("Move Line(s) Down", reinterpret_cast<const char*>(" " OT_UI_SHORTCUT u8"\u2193"), nullptr, !editor.IsEmpty())) { editor.MoveDownLines(); }
 		if (ImGui::MenuItem("Toggle Comments", " " OT_UI_SHORTCUT "/", nullptr, editor.HasLanguage())) { editor.ToggleComments(); }
 		ImGui::Separator();
 

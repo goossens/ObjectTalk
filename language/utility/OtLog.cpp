@@ -18,6 +18,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <format>
 #include <iostream>
 
 #if _WIN32
@@ -25,8 +26,6 @@
 #else
 #include <signal.h>
 #endif
-
-#include "fmt/format.h"
 
 #include "OtConfig.h"
 #include "OtException.h"
@@ -80,7 +79,7 @@ void OtLog::logMessage(const char* filename, int lineno, Type type, const std::s
 	auto timestamp = GetTimestamp();
 	auto shortname = OtPath::getFilename(filename);
 	auto messageType = messageTypes[static_cast<int>(type)];
-	auto output = fmt::format("{} [{}] {} ({}): {}\n", timestamp, messageType, shortname, lineno, message);
+	auto output = std::format("{} [{}] {} ({}): {}\n", timestamp, messageType, shortname, lineno, message);
 
 	// send to IDE (if required)
 	if (OtConfig::inSubprocessMode()) {

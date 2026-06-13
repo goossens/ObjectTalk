@@ -13,10 +13,10 @@
 //
 
 #include <chrono>
+#include <format>
 #include <string>
 #include <vector>
 
-#include "fmt/format.h"
 #include "imgui.h"
 #include "imgui_internal.h"
 
@@ -71,7 +71,7 @@ private:
 	struct Notification {
 		// constructor
 		Notification(Type type, const std::string& message, int dismissTime) : type(type), message(message) {
-			name = fmt::format("Notification{}", id++);
+			name = std::format("Notification{}", id++);
 
 			switch (type) {
 				case Type::success:

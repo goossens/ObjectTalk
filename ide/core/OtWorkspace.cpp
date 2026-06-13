@@ -10,9 +10,9 @@
 //
 
 #include <algorithm>
+#include <format>
 #include <string>
 
-#include "fmt/format.h"
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
 
@@ -280,7 +280,7 @@ void OtWorkspace::newFile(const std::string& extension) {
 	std::string name;
 
 	while (!name.size()) {
-		std::string temp = fmt::format("untitled{}{}", seqno++, extension);
+		std::string temp = std::format("untitled{}{}", seqno++, extension);
 
 		if (!findEditor(temp)) {
 			name = temp;
@@ -338,7 +338,7 @@ void OtWorkspace::openFile(const std::string& path, OtEditor::VisualState visual
 
 		} else {
 			state = State::confirmError;
-			message = fmt::format("Can't open file with extension: {}", extension);
+			message = std::format("Can't open file with extension: {}", extension);
 		}
 
 	} else {
@@ -423,10 +423,10 @@ void OtWorkspace::runFile() {
 		args,
 		[this](int64_t status, int signal) {
 			if (status || signal != 0) {
-				console.writeError(fmt::format("\n[{}] terminated with status {} and signal {}\n", currentRunnable, status, signal));
+				console.writeError(std::format("\n[{}] terminated with status {} and signal {}\n", currentRunnable, status, signal));
 
 			} else {
-				console.writeSuccess(fmt::format("\n[{}] terminated normally\n", currentRunnable));
+				console.writeSuccess(std::format("\n[{}] terminated normally\n", currentRunnable));
 			}
 
 			consoleAsPanel = OtPath::getExtension(currentRunnable) == ".ot";
@@ -982,12 +982,12 @@ void OtWorkspace::renderSubProcess() {
 		ImGuiWindowFlags_NoBringToFrontOnFocus);
 
 	// render the subprocess control bar
-	if (ImGui::Button("\u25a0 Stop", ImVec2(100.0f, 0.0f))) {
+	if (ImGui::Button(reinterpret_cast<const char*>(u8"\u25a0 Stop"), ImVec2(100.0f, 0.0f))) {
 		subprocess.kill(SIGINT);
 	}
 
 	ImGui::SameLine();
-	std::string title = fmt::format("Runnning [{}]...", currentRunnable);
+	std::string title = std::format("Runnning [{}]...", currentRunnable);
 	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", title.c_str());
 
 	// render the console

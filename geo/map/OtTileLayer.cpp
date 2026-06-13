@@ -9,9 +9,8 @@
 //	Include files
 //
 
+#include <format>
 #include <vector>
-
-#include "fmt/format.h"
 
 #include "OtFramework.h"
 #include "OtMapTile.h"
@@ -95,7 +94,7 @@ std::shared_ptr<OtMapImageTile> OtTileLayer::getTile(const OtMapTile& tile) {
 
 	} else {
 		// no, load new tile
-		auto url = fmt::format("http://{}/{}/{}/{}.png", host, tile.zoom, tile.x, tile.y);
+		auto url = std::format("http://{}/{}/{}/{}.png", host, tile.zoom, tile.x, tile.y);
 		imageTile = std::make_shared<OtMapImageTile>(tile, url);
 		cache.set(tile.hash, imageTile);
 	}

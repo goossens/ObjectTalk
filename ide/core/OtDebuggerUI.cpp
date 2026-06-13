@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <format>
+
 #include "imgui.h"
 
 #include "OtText.h"
@@ -122,7 +124,7 @@ void OtDebuggerUI::renderControlBar(OtSubProcess& subprocess) {
 	}
 
 	ImGui::SameLine();
-	std::string title = fmt::format("Debugging [{}]...", currentDebuggable);
+	std::string title = std::format("Debugging [{}]...", currentDebuggable);
 	ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", title.c_str());
 	ImGui::Spacing();
 }
@@ -197,7 +199,7 @@ void OtDebuggerUI::renderVariables() {
 		size_t i = 0;
 
 		for (auto& frame : debugState.frames) {
-			std::string label = fmt::format("{}: {}", frame.module, frame.line);
+			std::string label = std::format("{}: {}", frame.module, frame.line);
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();

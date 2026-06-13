@@ -9,9 +9,9 @@
 //	Include files
 //
 
+#include <format>
 #include <vector>
 
-#include "fmt/format.h"
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
 
@@ -38,10 +38,10 @@ void OtAssetSelector::showErrorPopup(Info& info) {
 	std::string message("Error: ");
 
 	if (info.isMissing) {
-		message += fmt::format("Asset [{}] is missing", info.path);
+		message += std::format("Asset [{}] is missing", info.path);
 
 	} else if (info.isInvalid) {
-		message += fmt::format("Asset [{}] is invalid:\n{}", info.path, info.errorMessage);
+		message += std::format("Asset [{}] is invalid:\n{}", info.path, info.errorMessage);
 	}
 
 	ImGui::PushStyleColor(ImGuiCol_Border, errorColor);
@@ -86,7 +86,7 @@ bool OtAssetSelector::renderUI(Info& info) {
 
 	// get file dialog information
 	auto dialog = ImGuiFileDialog::Instance();
-	auto dialogID = fmt::format("select-file-{}", info.id);
+	auto dialogID = std::format("select-file-{}", info.id);
 	std::string filter = info.supportedFileTypes;
 
 	if (filter.find(',') != std::string::npos) {

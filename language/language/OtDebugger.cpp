@@ -11,10 +11,10 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <format>
 #include <iostream>
 #include <vector>
 
-#include "fmt/format.h"
 #include "isocline.h"
 #include "nlohmann/json.hpp"
 
@@ -223,7 +223,7 @@ void OtDebuggerClass::processCommandLine() {
 				ic_print(disassemble().c_str());
 
 			} else {
-				ic_println(fmt::format("[red]Unknown command: {}[/red]", input).c_str());
+				ic_println(std::format("[red]Unknown command: {}[/red]", input).c_str());
 			}
 
 			ic_free(input);
@@ -307,7 +307,7 @@ bool OtDebuggerClass::isBreaking() {
 std::string OtDebuggerClass::where() {
 	auto bytecode = OtVM::getByteCode();
 
-	return fmt::format(
+	return std::format(
 		"Module: {}, PC: {}\n{}\n",
 		bytecode->getModule(),
 		OtVM::getPC(),

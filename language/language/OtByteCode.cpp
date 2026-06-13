@@ -10,11 +10,10 @@
 //
 
 #include <algorithm>
+#include <format>
 #include <iomanip>
 #include <sstream>
 #include <unordered_map>
-
-#include "fmt/format.h"
 
 #include "OtByteCode.h"
 #include "OtLog.h"
@@ -592,7 +591,7 @@ std::string OtByteCodeClass::getStatementSourceCode(size_t pc) {
 			statement += '\n';
 		}
 
-		statement += fmt::format("Line {}: {}", lineNo++, text);
+		statement += std::format("Line {}: {}", lineNo++, text);
 	});
 
 	return statement;

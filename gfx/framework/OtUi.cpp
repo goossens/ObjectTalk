@@ -16,10 +16,10 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
+#include <format>
 #include <numbers>
 #include <string>
 
-#include "fmt/format.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui_internal.h"
 #include "ImGuiFileDialog.h"
@@ -318,7 +318,7 @@ bool OtUi::smallToggleButton(const char* label, bool* value) {
 	float height = ImGui::GetFrameHeight();
 	float width = height * 1.4f;
 
-	auto id = fmt::format("##{}Button", label);
+	auto id = std::format("##{}Button", label);
 	ImGui::InvisibleButton(id.c_str(), ImVec2(width, height));
 
 	if (ImGui::IsItemClicked()) {
@@ -445,7 +445,7 @@ void OtUi::readonlySizeT(const char* label, size_t value) {
 //
 
 void OtUi::readonlyFloat(const char* label, float value, const char* format) {
-	std::string text = format ? fmt::format(fmt::runtime(format), value) : std::to_string(value);
+	std::string text = format ? std::vformat(format, std::make_format_args(value)) : std::to_string(value);
 	readonlyText(label, text);
 }
 
@@ -610,16 +610,16 @@ void OtUi::viewVecX(const char* labelPlusID, const float* value, int components)
 		std::string text;
 
 		if (absValue < 1.0f) {
-			text = fmt::format("{:.3f}", value[i]);
+			text = std::format("{:.3f}", value[i]);
 
 		} else if (absValue < 10.0f) {
-			text = fmt::format("{:.2f}", value[i]);
+			text = std::format("{:.2f}", value[i]);
 
 		} else if (absValue < 100.0f) {
-			text = fmt::format("{:.1f}", value[i]);
+			text = std::format("{:.1f}", value[i]);
 
 		} else {
-			text = fmt::format("{:.0f}", value[i]);
+			text = std::format("{:.0f}", value[i]);
 		}
 
 		readonlyText("##value", text);
@@ -725,9 +725,9 @@ void OtUi::viewMat4(const char* labelPlusID, const glm::mat4& matrix) {
 	splitLabel(labelPlusID, label, id);
 
 	viewVecX(labelPlusID, data, 4);
-	viewVecX(fmt::format("##{}1", label).c_str(), data + 4, 4);
-	viewVecX(fmt::format("##{}2", label).c_str(), data + 8, 4);
-	viewVecX(fmt::format("##{}3", label).c_str(), data + 12, 4);
+	viewVecX(std::format("##{}1", label).c_str(), data + 4, 4);
+	viewVecX(std::format("##{}2", label).c_str(), data + 8, 4);
+	viewVecX(std::format("##{}3", label).c_str(), data + 12, 4);
 }
 
 

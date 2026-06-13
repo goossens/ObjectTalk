@@ -9,9 +9,8 @@
 //	Include files
 //
 
+#include <format>
 #include <vector>
-
-#include "fmt/format.h"
 
 #include "OtByteCodeFunction.h"
 #include "OtCaptureReference.h"
@@ -263,7 +262,7 @@ void OtCompiler::declareVariable(OtID id, bool alreadyOnStack) {
 
 	// avoid double declaration
 	if (scope.locals.count(id)) {
-		scanner.error(fmt::format("Variable [{}] already defined in this scope", OtIdentifier::name(id)));
+		scanner.error(std::format("Variable [{}] already defined in this scope", OtIdentifier::name(id)));
 	}
 
 	// see if this variable obscures one referenced from a different scope
@@ -366,7 +365,7 @@ void OtCompiler::resolveVariable(OtID id, bool processSymbol) {
 
 	// generate error if variable is not found
 	if (!found) {
-		scanner.error(fmt::format("Unknown variable [{}]", OtIdentifier::name(id)));
+		scanner.error(std::format("Unknown variable [{}]", OtIdentifier::name(id)));
 	}
 }
 

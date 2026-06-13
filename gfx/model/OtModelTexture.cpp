@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "fmt/format.h"
+#include <format>
 
 #include "OtModelTexture.h"
 
@@ -20,7 +20,7 @@
 
 void OtModelTexture::load(size_t modelID, size_t textureID, const aiTexture* texture) {
 	// create a virtual asset for the texture
-	asset = fmt::format("virtual:model{}.{}", modelID, textureID);
+	asset = std::format("virtual:model{}.{}", modelID, textureID);
 
 	// create texture from embedded image (loading is asynchronous as models are loaded in separate thread)
 	if (texture->mHeight == 0) {

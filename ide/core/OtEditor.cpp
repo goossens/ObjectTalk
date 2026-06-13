@@ -9,7 +9,8 @@
 //	Include files
 //
 
-#include "fmt/format.h"
+#include <format>
+
 #include "imgui.h"
 
 #include "OtMessageBus.h"
@@ -176,7 +177,7 @@ void OtEditor::follow() {
 
 		} else {
 			// file was edited; don't reload but show message
-			OtMessageBus::send(fmt::format("warning File {} was edited externally.\nBe careful when saving!", path));
+			OtMessageBus::send(std::format("warning File {} was edited externally.\nBe careful when saving!", path));
 		}
 	});
 }

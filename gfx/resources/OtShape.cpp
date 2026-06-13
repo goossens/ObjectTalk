@@ -11,8 +11,7 @@
 
 #include <algorithm>
 #include <cmath>
-
-#include "fmt/core.h"
+#include <format>
 
 #include "OtLog.h"
 #include "OtText.h"
@@ -54,17 +53,17 @@ void OtShape::save(const std::string& filepath) {
 
 		switch (command) {
 			case PLUTOVG_PATH_COMMAND_MOVE_TO:
-				ctx->output->append(fmt::format("M {} {}\n", points[0].x, points[0].y));
+				ctx->output->append(std::format("M {} {}\n", points[0].x, points[0].y));
 				ctx->empty = false;
 				break;
 
 			case PLUTOVG_PATH_COMMAND_LINE_TO:
-				ctx->output->append(fmt::format("L {} {}\n", points[0].x, points[0].y));
+				ctx->output->append(std::format("L {} {}\n", points[0].x, points[0].y));
 				ctx->empty = false;
 				break;
 
 			case PLUTOVG_PATH_COMMAND_CUBIC_TO:
-				ctx->output->append(fmt::format("C {} {} {} {} {} {}\n", points[0].x, points[0].y, points[1].x, points[1].y, points[2].x, points[2].y));
+				ctx->output->append(std::format("C {} {} {} {} {} {}\n", points[0].x, points[0].y, points[1].x, points[1].y, points[2].x, points[2].y));
 				ctx->empty = false;
 				break;
 

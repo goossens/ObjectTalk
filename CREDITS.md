@@ -6,7 +6,6 @@ been a lot harder to implement the project.
 ## Software
 
 * [libuv](https://libuv.org) - multi-platform support library with a focus on asynchronous I/O released under the [MIT license](https://opensource.org/licenses/MIT). Its documentation is released under the [CC BY 4.0 license](https://creativecommons.org/licenses/by/4.0/)
-* [{fmt}](https://github.com/fmtlib/fmt) - open-source formatting library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [JSON for Modern C++](https://github.com/nlohmann/json) - JSON creation/parsing library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [argparse](https://github.com/p-ranav/argparse) - command line argument parser released under the [MIT license](https://opensource.org/licenses/MIT).
 * [cpp-httplib](https://github.com/yhirose/cpp-httplib) - cross platform HTTP/HTTPS library released under the [MIT license](https://opensource.org/licenses/MIT).

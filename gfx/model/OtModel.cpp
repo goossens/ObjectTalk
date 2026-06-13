@@ -13,11 +13,11 @@
 #include <atomic>
 #include <cmath>
 #include <cstdint>
+#include <format>
 
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
-#include "fmt/format.h"
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "nlohmann/json.hpp"
@@ -617,7 +617,7 @@ void OtModel::renderAnimations() {
 			ImGui::TextUnformatted(std::to_string(animations[i].duration).c_str());
 			ImGui::TableNextColumn();
 
-			std::string label = fmt::format("{}##{}",i, animations[i].channels.size());
+			std::string label = std::format("{}##{}",i, animations[i].channels.size());
 
 			if (ImGui::Button(label.c_str(), ImVec2(ImGui::CalcItemWidth(), 0.0f))) {
 				ImGui::OpenPopup("AnimationChannelsPopup");

@@ -10,9 +10,9 @@
 //
 
 #include <cctype>
+#include <format>
 #include <regex>
 
-#include "fmt/format.h"
 #include "httplib.h"
 
 #include "OtLog.h"
@@ -130,10 +130,10 @@ void OtUrl::parse(const std::string& urlString) {
 //
 
 const std::string& OtUrl::download() {
-	auto schemeHostPort = fmt::format("{}://{}", scheme, host);
+	auto schemeHostPort = std::format("{}://{}", scheme, host);
 
 	if (port != 80) {
-		schemeHostPort += fmt::format(":{}", port);
+		schemeHostPort += std::format(":{}", port);
 	}
 
 	httplib::Headers headers = {{"User-Agent", "ObjectTalk/0.4"}};

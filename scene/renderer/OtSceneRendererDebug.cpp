@@ -10,9 +10,9 @@
 //
 
 #include <cstdint>
+#include <format>
 #include <string>
 
-#include "fmt/format.h"
 #include "imgui.h"
 
 #include "OtAssetManager.h"
@@ -107,7 +107,7 @@ void OtSceneRendererDebug::renderShadowMaps(OtSceneRenderer& renderer) {
 			auto size = renderer.ctx.csm.getSize();
 
 			for (size_t i = 0; i < OtCascadedShadowMap::maxCascades; i++) {
-				auto title = fmt::format("Cascade {}", i + 1);
+				auto title = std::format("Cascade {}", i + 1);
 				renderTexture(title.c_str(), renderer.ctx.csm.getDepthTexture(i).getTextureID(), size, size);
 			}
 

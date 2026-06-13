@@ -14,7 +14,6 @@ function(process package)
 endfunction()
 
 process(argparse)
-process(fmt)
 process(json)
 process(libuv)
 process(httplib)

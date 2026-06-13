@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "fmt/format.h"
+#include <format>
 
 #include "OtFunction.h"
 #include "OtHttpNotFound.h"
@@ -58,7 +58,7 @@ OtHttpSessionClass::OtHttpSessionClass(uv_stream_t* stream, OtHttpRouter r) : ro
 	settings.on_headers_complete = [](llhttp_t* parser) -> int {
 		((OtHttpSessionClass*)(parser->data))->request->onHeadersComplete(
 			std::string(llhttp_method_name((llhttp_method_t) parser->method)),
-			fmt::format("HTTP/{}.{}", parser->http_major, parser->http_minor));
+			std::format("HTTP/{}.{}", parser->http_major, parser->http_minor));
 
 		return HPE_OK;
 	};

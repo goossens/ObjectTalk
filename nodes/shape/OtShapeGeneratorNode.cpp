@@ -9,7 +9,8 @@
 //	Include files
 //
 
-#include "fmt/format.h"
+#include <format>
+
 #include "nlohmann/json.hpp"
 
 #include "OtClass.h"
@@ -159,7 +160,7 @@ public:
 		error = e.what();
 
 		if (e.getModule().size()) {
-			OtMessageBus::send(fmt::format("highlight {}", e.serialize()));
+			OtMessageBus::send(std::format("highlight {}", e.serialize()));
 		}
 	}
 

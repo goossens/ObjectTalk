@@ -9,12 +9,12 @@
 //	Include files
 //
 
+#include <format>
 #include <fstream>
 
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
-#include "fmt/format.h"
 
 #include "OtLog.h"
 
@@ -128,22 +128,22 @@ void OtMesh::save(const std::string& path) {
 
 	// write all vertices
 	for (auto& vertex : vertices) {
-		stream << fmt::format("v {:.4f} {:.4f} {:.4f}\n", vertex.position.x, vertex.position.y, vertex.position.z);
+		stream << std::format("v {:.4f} {:.4f} {:.4f}\n", vertex.position.x, vertex.position.y, vertex.position.z);
 	}
 
 	// write all normals
 	for (auto& vertex : vertices) {
-		stream << fmt::format("vn {:.4f} {:.4f} {:.4f}\n", vertex.normal.x, vertex.normal.y, vertex.normal.z);
+		stream << std::format("vn {:.4f} {:.4f} {:.4f}\n", vertex.normal.x, vertex.normal.y, vertex.normal.z);
 	}
 
 	// write all texture coordinates
 	for (auto& vertex : vertices) {
-		stream << fmt::format("vt {:.4f} {:.4f}\n", vertex.uv.x, vertex.uv.y);
+		stream << std::format("vt {:.4f} {:.4f}\n", vertex.uv.x, vertex.uv.y);
 	}
 
 	// write all indices
 	for (auto i = indices.begin(); i < indices.end(); i += 3) {
-		stream << fmt::format(
+		stream << std::format(
 			"f {}/{}/{} {}/{}/{} {}/{}/{}\n",
 			*i + 1, *i + 1, *i + 1,
 			*(i + 1) + 1, *(i + 1) + 1, *(i + 1) + 1,

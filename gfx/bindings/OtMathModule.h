@@ -12,7 +12,8 @@
 //	Include files
 //
 
-#include "fmt/format.h"
+#include <format>
+
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_access.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -50,8 +51,8 @@ public:
 	}
 
 	// debugging support
-	inline std::string describe() override { return fmt::format("Vec2({}, {})", value.x, value.y); }
-	inline operator std::string() override { return fmt::format("{}, {}", value.x, value.y); }
+	inline std::string describe() override { return std::format("Vec2({}, {})", value.x, value.y); }
+	inline operator std::string() override { return std::format("{}, {}", value.x, value.y); }
 
 	// access members
 	inline operator glm::vec2() { return value; }
@@ -176,8 +177,8 @@ public:
 	}
 
 	// debugging support
-	inline std::string describe() override { return fmt::format("Vec3({}, {}, {})", value.x, value.y, value.z); }
-	inline operator std::string() override { return fmt::format("{}, {}, {}", value.x, value.y, value.z); }
+	inline std::string describe() override { return std::format("Vec3({}, {}, {})", value.x, value.y, value.z); }
+	inline operator std::string() override { return std::format("{}, {}, {}", value.x, value.y, value.z); }
 
 	// access members
 	inline operator glm::vec3() { return value; }
@@ -315,8 +316,8 @@ public:
 	}
 
 	// debugging support
-	inline std::string describe() override { return fmt::format("Vec4({}, {}, {}, {})", value.x, value.y, value.z, value.w); }
-	inline operator std::string() override { return fmt::format("{}, {}, {}, {}", value.x, value.y, value.z, value.w); }
+	inline std::string describe() override { return std::format("Vec4({}, {}, {}, {})", value.x, value.y, value.z, value.w); }
+	inline operator std::string() override { return std::format("{}, {}, {}, {}", value.x, value.y, value.z, value.w); }
 
 	// access members
 	inline operator glm::vec4() { return value; }
@@ -543,7 +544,7 @@ public:
 	inline std::string describe() override {
 		auto data = glm::value_ptr(value);
 
-		return fmt::format(
+		return std::format(
 			"Mat4({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})",
 			data[0], data[1], data[2], data[3],
 			data[4], data[5], data[6], data[7],
@@ -554,7 +555,7 @@ public:
 	inline operator std::string() override {
 		auto data = glm::value_ptr(value);
 
-		return fmt::format(
+		return std::format(
 			"{} {} {} {}\n{} {} {} {}\n{} {} {} {}\n{} {} {} {}",
 			data[0], data[4], data[8], data[12],
 			data[1], data[5], data[9], data[13],

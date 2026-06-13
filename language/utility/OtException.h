@@ -15,8 +15,6 @@
 #include <exception>
 #include <string>
 
-#include "fmt/format.h"
-
 
 //
 //	OtException

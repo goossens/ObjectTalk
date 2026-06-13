@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <cstring>
+
 #include "OtException.h"
 #include "OtFunction.h"
 #include "OtLog.h"

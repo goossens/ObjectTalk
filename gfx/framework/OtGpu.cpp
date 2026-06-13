@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <cstring>
+
 #include "SDL3_shadercross/SDL_shadercross.h"
 
 #include "OtConfig.h"

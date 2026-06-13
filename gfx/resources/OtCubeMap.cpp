@@ -10,6 +10,7 @@
 //
 
 #include <cstdint>
+#include <cstring>
 
 #include "nlohmann/json.hpp"
 #include "stb_image.h"

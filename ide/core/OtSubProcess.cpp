@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <cstring>
+
 #include "OtLog.h"
 
 #include "OtSubProcess.h"

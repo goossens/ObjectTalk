@@ -13,7 +13,16 @@
 #include <format>
 #include <regex>
 
+#if defined _MSC_VER
+#pragma warning(push)
+#pragma warning(disable:4127)
+#endif
+
 #include "httplib.h"
+
+#if defined _MSC_VER
+#pragma warning(pop)
+#endif
 
 #include "OtLog.h"
 #include "OtText.h"

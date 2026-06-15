@@ -63,6 +63,13 @@ TextEditor::LineState TextEditor::Colorizer::updateLine(const Config& config, Li
 			if (CodePoint::isWhiteSpace(glyph->codepoint)) {
 				(glyph++)->color = Color::whitespace;
 
+			// are we starting a multiline comment
+			} else if (language->commentStart.size() && matches(glyph, line.end(), language->commentStart)) {
+				state = LineState::inComment;
+				auto size = language->commentEnd.size();
+				setColor(glyph, glyph + size, Color::comment);
+				glyph += size;
+
 			// handle single line comments
 			} else if (language->singleLineComment.size() && matches(glyph, line.end(), language->singleLineComment)) {
 				setColor(glyph, line.end(), Color::comment);
@@ -71,13 +78,6 @@ TextEditor::LineState TextEditor::Colorizer::updateLine(const Config& config, Li
 			} else if (language->singleLineCommentAlt.size() && matches(glyph, line.end(), language->singleLineCommentAlt)) {
 				setColor(glyph, line.end(), Color::comment);
 				glyph = line.end();
-
-			// are we starting a multiline comment
-			} else if (language->commentStart.size() && matches(glyph, line.end(), language->commentStart)) {
-				state = LineState::inComment;
-				auto size = language->commentEnd.size();
-				setColor(glyph, glyph + size, Color::comment);
-				glyph += size;
 
 			// are we starting a special string
 			} else if (language->otherStringStart.size() && matches(glyph, line.end(), language->otherStringStart)) {

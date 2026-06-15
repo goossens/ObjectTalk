@@ -33,7 +33,7 @@ static TextEditor::Iterator getLuaStyleNumber(TextEditor::Iterator start, TextEd
 
 	digit*																{ return i; }		// decimal integer
 	("0x" | "0X") hexDigit+ ("." hexDigit*)? ([pP] [+-]? hexDigit*)?	{ return i; }		// hexadecimal integer
-	digit* ("." digit*)? ([eE] [+-]? digit*)?							{ return i; }		// float
+	(digit* "." digit+ | digit+ "." digit*) ([eE] [+-]? digit+)?		{ return i; }		// float
 
 	* { return start; }
 */

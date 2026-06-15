@@ -244,6 +244,17 @@ float OtUi::headerWidth(const char* label) {
 
 
 //
+//	OtUi::centeredButton
+//
+
+bool OtUi::centeredButton(const char* label, float width) {
+	float buttonWidth = ImGui::CalcTextSize(label).x + (ImGui::GetStyle().FramePadding.x * 2.0f);
+	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (width - buttonWidth) * 0.5f);
+	return ImGui::Button(label);
+}
+
+
+//
 //	OtUi::toggleButton
 //
 

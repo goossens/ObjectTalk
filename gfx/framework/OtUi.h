@@ -81,6 +81,9 @@ public:
 	static void header(const char* label, float width=0.0f);
 	static float headerWidth(const char* label);
 
+	// centered button
+	static bool centeredButton(const char* label, float width);
+
 	// toggle buttons
 	static bool toggleButton(const char* label, bool* value);
 	static float toggleButtonWidth();

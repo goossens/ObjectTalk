@@ -9,7 +9,10 @@
 //	Include files
 //
 
+#include <chrono>
+#include <cmath>
 #include <format>
+#include <future>
 
 #include "OtHeightMap.h"
 #include "OtThreadPool.h"
@@ -40,23 +43,28 @@ public:
 	// render custom fields
 	inline void customRendering(float itemWidth) override {
 		auto status = std::format("Drops: {}", run * dropPerRun);
+		time += ImGui::GetIO().DeltaTime * 8.0f;
+
+		if (generating) {
+			status += " ";
+			static constexpr const char* sequence[] = {"←", "↖", "↑", "↗", "→", "↘", "↓", "↙"};
+			static constexpr float elements = static_cast<float>(sizeof(sequence) / sizeof(sequence[0]));
+			status += sequence[static_cast<int>(std::fmod(time, elements))];
+		}
+
 		OtUi::centerTextInSpace(status.c_str(), itemWidth);
 
 		if (generating) {
-			auto pos = ImGui::GetCursorScreenPos();
-
-			if (ImGui::Button("Stop")) {
+			if (OtUi::centeredButton("Stop", itemWidth)) {
 				generating = false;
 			}
-
-			OtUi::spinner(ImVec2(pos.x + itemWidth * 0.5f, pos.y), OtUi::size(1.0f));
 
 		} else {
 			if (!heightMap.isValid()) {
 				ImGui::BeginDisabled();
 			}
 
-			if (ImGui::Button("Start")) {
+			if (OtUi::centeredButton("Start", itemWidth)) {
 				run = 0;
 				generating = true;
 				workHeightMap = heightMap.clone();
@@ -126,6 +134,7 @@ private:
 	int run = 0;
 	int dropPerRun = 1000;
 	int inputVersion;
+	float time = 0.0f;
 
 	// world component
 	OtHeightMap heightMap;

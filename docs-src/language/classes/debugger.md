@@ -20,4 +20,5 @@ on the debug instance.
 | ------ | ----------- |
 | where() | Return the current execution location as a string. |
 | disassemble() | Disassemble the current function and return it as a string. |
-| getVariableNames() | Return the variable in use at the current context as an array of strings. |
+| getVariableNames() | Return the variable names in use at the current context as an array of strings. |
+| getVariableValues() | Return the variables in use at the current context and their values as a dictionary. |

@@ -21,6 +21,7 @@
 #include "OtArray.h"
 #include "OtConfig.h"
 #include "OtDebugger.h"
+#include "OtDict.h"
 #include "OtFunction.h"
 #include "OtLog.h"
 #include "OtStderrMultiplexer.h"
@@ -119,6 +120,38 @@ OtObject OtDebuggerClass::getVariableNames() {
 
 	array->sort();
 	return array;
+}
+
+
+//
+//	OtDebuggerClass::getVariableValues
+//
+
+OtObject OtDebuggerClass::getVariableValues() {
+	auto symbols = OtVM::getByteCode()->getUsedSymbols(OtVM::getPC());
+	auto dict = OtDict::create();
+
+	for (auto& symbol : symbols) {
+		auto name = std::string(OtIdentifier::name(symbol.id));
+		OtObject value;
+
+		switch (symbol.type) {
+			case OtSymbol::Type::heap:
+				value = symbol.object->get(symbol.id);
+				break;
+
+			case OtSymbol::Type::stack:
+				value = OtVM::getStack()->getFrameItem(symbol.slot);
+				break;
+
+			case OtSymbol::Type::capture:
+				break;
+		}
+
+		dict->setEntry(name, value);
+	}
+
+	return dict;
 }
 
 
@@ -405,6 +438,7 @@ OtType OtDebuggerClass::getMeta() {
 		type->set("where", OtFunction::create(&OtDebuggerClass::where));
 		type->set("disassemble", OtFunction::create(&OtDebuggerClass::disassemble));
 		type->set("getVariableNames", OtFunction::create(&OtDebuggerClass::getVariableNames));
+		type->set("getVariableValues", OtFunction::create(&OtDebuggerClass::getVariableValues));
 	}
 
 	return type;

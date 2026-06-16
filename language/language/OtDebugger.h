@@ -34,6 +34,9 @@ public:
 	// get variable names
 	OtObject getVariableNames();
 
+	// get variable values
+	OtObject getVariableValues();
+
 	// get type definition
 	static OtType getMeta();
 

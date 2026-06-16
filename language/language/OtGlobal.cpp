@@ -50,7 +50,13 @@ OtGlobalClass::OtGlobalClass() {
 	set("true", OtBoolean::create(true));
 	set("false", OtBoolean::create(false));
 	set("pi", OtReal::create(std::numbers::pi));
+	set("tau", OtReal::create(std::numbers::pi * 2.0));
 	set("e", OtReal::create(std::numbers::e));
+	set("phi", OtReal::create(std::numbers::phi));
+	set("sqrt2", OtReal::create(std::numbers::sqrt2));
+	set("sqrt3", OtReal::create(std::numbers::sqrt3));
+	set("ln2", OtReal::create(std::numbers::ln2));
+	set("ln10", OtReal::create(std::numbers::ln10));
 
 	// add default functions
 	set("assert", OtFunction::create(&OtGlobalClass::doAssert));

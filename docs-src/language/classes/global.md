@@ -12,7 +12,13 @@ core classes and instances of core classes as a convenience.
 | true | Boolean true. |
 | false | Boolean false. |
 | pi | Mathematical constant that is the ratio of a circle's circumference to its diameter. |
+| tau | Mathematical constant that is the ratio of a circle's circumference to its radius. |
+| phi | Mathematical constant that is the golden ratio. |
+| sqrt2 | Mathematical constant that is the square root of 2. |
+| sqrt3 | Mathematical constant that is the square root of 3. |
 | e | Mathematical constant that is the base of the natural logarithm and exponential function. |
+| ln2 | Mathematical constant that is the natural logarithm of 2. |
+| ln10 | Mathematical constant that is the natural logarithm of. |
 
 **Global Functions**
 

@@ -101,8 +101,8 @@ meaning that the extremes are -9,223,372,036,854,775,808 and
 [Reals](language-classes.html#real) in ObjectTalk are double-precision floating
 point numbers. On most systems, Reals are implemented using 8 bytes
 and have a range of 1.7E +/- 308 (15 digits). The default global language
-context predefines the variable **pi** (3.14...) and **e** (2.71...)
-as a convenience.
+context predefines the variables **pi**, **tau**, **phi**,
+**sqrt2**, **sqrt3**, **e**, **ln2** and **ln10** as a convenience.
 
 In ObjectTalk, [Strings](language-classes.html#string) are captured in double
 quotes and can span multiple lines. Strings may contain UTF-8 characters

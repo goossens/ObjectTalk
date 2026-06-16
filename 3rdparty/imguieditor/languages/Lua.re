@@ -62,6 +62,130 @@ static bool isLuaStylePunctuation(ImWchar character) {
 
 
 //
+//	luaCommentLevelStart
+//
+
+static TextEditor::Iterator luaCommentLevelStart(TextEditor::Iterator start, TextEditor::Iterator end, size_t& level) {
+	TextEditor::Iterator i = start;
+	TextEditor::Iterator marker;
+
+/*!re2c
+	re2c:api = custom;
+	re2c:api:style = free-form;
+	re2c:define:YYCTYPE = ImWchar;
+	re2c:define:YYPEEK = "i < end ? *i : 0";
+	re2c:define:YYSKIP = "++i;";
+	re2c:define:YYBACKUP = "marker = i;";
+	re2c:define:YYRESTORE = "i = marker;";
+	re2c:define:YYLESSTHAN = "i >= end";
+	re2c:yyfill:enable = 0;
+	re2c:eof = 0;
+
+	"--[" "="* "[" {
+		level = i - start - 4;
+		return i;
+	}
+
+	$ { return start; }
+	* { return start; }
+*/
+}
+
+
+//
+//	luaCommentLevelEnd
+//
+
+static TextEditor::Iterator luaCommentLevelEnd(TextEditor::Iterator start, TextEditor::Iterator end, size_t& level) {
+	TextEditor::Iterator i = start;
+	TextEditor::Iterator marker;
+
+/*!re2c
+	re2c:api = custom;
+	re2c:api:style = free-form;
+	re2c:define:YYCTYPE = ImWchar;
+	re2c:define:YYPEEK = "i < end ? *i : 0";
+	re2c:define:YYSKIP = "++i;";
+	re2c:define:YYBACKUP = "marker = i;";
+	re2c:define:YYRESTORE = "i = marker;";
+	re2c:define:YYLESSTHAN = "i >= end";
+	re2c:yyfill:enable = 0;
+	re2c:eof = 0;
+
+	"]" "="* "]" {
+		level = i - start - 2;
+		return i;
+	}
+
+	$ { return start; }
+	* { return start; }
+*/
+}
+
+
+//
+//	luaStringLevelStart
+//
+
+static TextEditor::Iterator luaStringLevelStart(TextEditor::Iterator start, TextEditor::Iterator end, size_t& level) {
+	TextEditor::Iterator i = start;
+	TextEditor::Iterator marker;
+
+/*!re2c
+	re2c:api = custom;
+	re2c:api:style = free-form;
+	re2c:define:YYCTYPE = ImWchar;
+	re2c:define:YYPEEK = "i < end ? *i : 0";
+	re2c:define:YYSKIP = "++i;";
+	re2c:define:YYBACKUP = "marker = i;";
+	re2c:define:YYRESTORE = "i = marker;";
+	re2c:define:YYLESSTHAN = "i >= end";
+	re2c:yyfill:enable = 0;
+	re2c:eof = 0;
+
+	"[" "="* "[" {
+		level = i - start - 2;
+		return i;
+	}
+
+	$ { return start; }
+	* { return start; }
+*/
+}
+
+
+//
+//	luaStringLevelEnd
+//
+
+static TextEditor::Iterator luaStringLevelEnd(TextEditor::Iterator start, TextEditor::Iterator end, size_t& level) {
+	TextEditor::Iterator i = start;
+	TextEditor::Iterator marker;
+
+/*!re2c
+	re2c:api = custom;
+	re2c:api:style = free-form;
+	re2c:define:YYCTYPE = ImWchar;
+	re2c:define:YYPEEK = "i < end ? *i : 0";
+	re2c:define:YYSKIP = "++i;";
+	re2c:define:YYBACKUP = "marker = i;";
+	re2c:define:YYRESTORE = "i = marker;";
+	re2c:define:YYLESSTHAN = "i >= end";
+	re2c:yyfill:enable = 0;
+	re2c:eof = 0;
+
+	"]" "="* "]" {
+		level = i - start - 2;
+		return i;
+	}
+
+	$ { return start; }
+	* { return start; }
+*/
+}
+
+
+//
 //	TextEditor::Language::Lua
 //
 
@@ -72,12 +196,12 @@ const TextEditor::Language* TextEditor::Language::Lua() {
 	if (!initialized) {
 		language.name = "Lua";
 		language.singleLineComment = "--";
-		language.commentStart = "--[[";
-		language.commentEnd = "]]";
+		language.commentLevelStart = luaCommentLevelStart;
+		language.commentLevelEnd = luaCommentLevelEnd;
 		language.hasSingleQuotedStrings = true;
 		language.hasDoubleQuotedStrings = true;
-		language.otherStringStart = "[[";
-		language.otherStringEnd = "]]";
+		language.stringLevelStart = luaStringLevelStart;
+		language.stringLevelEnd = luaStringLevelEnd;
 		language.stringEscape = '\\';
 
 		static const char* const keywords[] = {

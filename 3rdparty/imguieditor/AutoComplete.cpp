@@ -347,13 +347,8 @@ void TextEditor::AutoComplete::updateState(Document& document, const Language* l
 		state.inNumber = false;
 
 		auto lineState = document[currentLocation.line].state;
-		state.inComment = lineState == LineState::inComment;
-
-		state.inString =
-			lineState == LineState::inDoubleQuotedString ||
-			lineState == LineState::inSingleQuotedString||
-			lineState == LineState::inOtherString ||
-			lineState == LineState::inOtherStringAlt;
+		state.inComment = lineStateInComment(lineState);
+		state.inString = lineStateInString(lineState);
 
 	} else {
 		auto color = document.getColor(document.getLeft(currentLocation));

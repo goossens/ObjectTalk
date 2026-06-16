@@ -48,8 +48,9 @@ TextEditor::LineState TextEditor::Colorizer::updateLine(const Config& config, Li
 	// process all glyphs on this line
 	auto nonWhiteSpace = false;
 	auto glyph = line.begin();
+	auto end = line.end();
 
-	while (glyph < line.end()) {
+	while (glyph < end) {
 		if (state == LineState::inText) {
 			// special handling for preprocessor lines
 			if (!nonWhiteSpace && language->preprocess && glyph->codepoint != language->preprocess && !CodePoint::isWhiteSpace(glyph->codepoint)) {
@@ -59,65 +60,99 @@ TextEditor::LineState TextEditor::Colorizer::updateLine(const Config& config, Li
 			// start parsing glyphs
 			auto start = glyph;
 
-			// mark whitespace characters
-			if (CodePoint::isWhiteSpace(glyph->codepoint)) {
-				(glyph++)->color = Color::whitespace;
-
-			// are we starting a multiline comment
-			} else if (language->commentStart.size() && matches(glyph, line.end(), language->commentStart)) {
-				state = LineState::inComment;
-				auto size = language->commentEnd.size();
-				setColor(glyph, glyph + size, Color::comment);
-				glyph += size;
-
-			// handle single line comments
-			} else if (language->singleLineComment.size() && matches(glyph, line.end(), language->singleLineComment)) {
-				setColor(glyph, line.end(), Color::comment);
-				glyph = line.end();
-
-			} else if (language->singleLineCommentAlt.size() && matches(glyph, line.end(), language->singleLineCommentAlt)) {
-				setColor(glyph, line.end(), Color::comment);
-				glyph = line.end();
-
-			// are we starting a special string
-			} else if (language->otherStringStart.size() && matches(glyph, line.end(), language->otherStringStart)) {
-				state = LineState::inOtherString;
-				auto size = language->otherStringStart.size();
-				setColor(glyph, glyph + size, Color::string);
-				glyph += size;
-
-			} else if (language->otherStringAltStart.size() && matches(glyph, line.end(), language->otherStringAltStart)) {
-				state = LineState::inOtherStringAlt;
-				auto size = language->otherStringAltStart.size();
-				setColor(glyph, glyph + size, Color::string);
-				glyph += size;
-
-			// are we starting a single quoted string
-			} else if (language->hasSingleQuotedStrings && glyph->codepoint == CodePoint::singleQuote) {
-				state = LineState::inSingleQuotedString;
-				(glyph++)->color = Color::string;
-
-			// are we starting a double quoted string
-			} else if (language->hasDoubleQuotedStrings && glyph->codepoint == CodePoint::doubleQuote) {
-				state = LineState::inDoubleQuotedString;
-				(glyph++)->color = Color::string;
-
-			// is this a preprocessor line
-			} else if (language->preprocess && !nonWhiteSpace && glyph->codepoint == language->preprocess) {
-				setColor(line.begin(), line.end(), Color::preprocessor);
-				glyph = line.end();
-
-			// handle custom tokenizer (if we have one)
-			} else if (language->customTokenizer) {
-				Color color;
+			// are we starting a multilevel, multiline comment
+			if (language->commentLevelStart) {
+				size_t level;
 				Iterator tokenStart(&*glyph);
 				Iterator lineEnd(line.data() + line.size());
-				Iterator tokenEnd = language->customTokenizer(tokenStart, lineEnd, color);
+				Iterator tokenEnd = language->commentLevelStart(tokenStart, lineEnd, level);
 
 				if (tokenEnd != tokenStart) {
+					level = std::min(level, maxCommentLevel);
+					state = commentLevelToLineState(level);
 					auto size = tokenEnd - tokenStart;
-					setColor(glyph, glyph + size, color);
+					setColor(glyph, glyph + size, Color::comment);
 					glyph += size;
+				}
+			}
+
+			// are we starting a multilevel, multiline string
+			if (glyph == start && language->stringLevelStart) {
+				size_t level;
+				Iterator tokenStart(&*glyph);
+				Iterator lineEnd(line.data() + line.size());
+				Iterator tokenEnd = language->stringLevelStart(tokenStart, lineEnd, level);
+
+				if (tokenEnd != tokenStart) {
+					level = std::min(level, maxStringLevel);
+					state = stringLevelToLineState(level);
+					auto size = tokenEnd - tokenStart;
+					setColor(glyph, glyph + size, Color::string);
+					glyph += size;
+				}
+			}
+
+			if (glyph == start) {
+				// mark whitespace characters
+				if (CodePoint::isWhiteSpace(glyph->codepoint)) {
+					(glyph++)->color = Color::whitespace;
+
+				// are we starting a multiline comment
+				} else if (language->commentStart.size() && matches(glyph, end, language->commentStart)) {
+					state = LineState::inComment;
+					auto size = language->commentStart.size();
+					setColor(glyph, glyph + size, Color::comment);
+					glyph += size;
+
+				// handle single line comments
+				} else if (language->singleLineComment.size() && matches(glyph, end, language->singleLineComment)) {
+					setColor(glyph, end, Color::comment);
+					glyph = end;
+
+				} else if (language->singleLineCommentAlt.size() && matches(glyph, end, language->singleLineCommentAlt)) {
+					setColor(glyph, end, Color::comment);
+					glyph = end;
+
+				// are we starting a special string
+				} else if (language->otherStringStart.size() && matches(glyph, end, language->otherStringStart)) {
+					state = LineState::inOtherString;
+					auto size = language->otherStringStart.size();
+					setColor(glyph, glyph + size, Color::string);
+					glyph += size;
+
+				} else if (language->otherStringAltStart.size() && matches(glyph, end, language->otherStringAltStart)) {
+					state = LineState::inOtherStringAlt;
+					auto size = language->otherStringAltStart.size();
+					setColor(glyph, glyph + size, Color::string);
+					glyph += size;
+
+				// are we starting a single quoted string
+				} else if (language->hasSingleQuotedStrings && glyph->codepoint == CodePoint::singleQuote) {
+					state = LineState::inSingleQuotedString;
+					(glyph++)->color = Color::string;
+
+				// are we starting a double quoted string
+				} else if (language->hasDoubleQuotedStrings && glyph->codepoint == CodePoint::doubleQuote) {
+					state = LineState::inDoubleQuotedString;
+					(glyph++)->color = Color::string;
+
+				// is this a preprocessor line
+				} else if (language->preprocess && !nonWhiteSpace && glyph->codepoint == language->preprocess) {
+					setColor(line.begin(), end, Color::preprocessor);
+					glyph = end;
+
+				// handle custom tokenizer (if we have one)
+				} else if (language->customTokenizer) {
+					Color color;
+					Iterator tokenStart(&*glyph);
+					Iterator lineEnd(line.data() + line.size());
+					Iterator tokenEnd = language->customTokenizer(tokenStart, lineEnd, color);
+
+					if (tokenEnd != tokenStart) {
+						auto size = tokenEnd - tokenStart;
+						setColor(glyph, glyph + size, color);
+						glyph += size;
+					}
 				}
 			}
 
@@ -176,16 +211,59 @@ TextEditor::LineState TextEditor::Colorizer::updateLine(const Config& config, Li
 				}
 			}
 
-		} else if (state == LineState::inComment) {
+		} else if (lineStateInComment(state)) {
 			// stay in comment state until we see the end sequence
-			if (matches(glyph, line.end(), language->commentEnd)) {
-				auto size = language->commentEnd.size();
+			auto size = language->commentEnd.size();
+
+			if (size && matches(glyph, end, language->commentEnd)) {
 				setColor(glyph, glyph + size, Color::comment);
 				glyph += size;
 				state = LineState::inText;
 
-			} else {
+			} else if (language->commentLevelEnd) {
+				size_t level;
+				Iterator tokenStart(&*glyph);
+				Iterator lineEnd(line.data() + line.size());
+				Iterator tokenEnd = language->commentLevelEnd(tokenStart, lineEnd, level);
+
+				if (tokenEnd != tokenStart) {
+					level = std::min(level, maxCommentLevel);
+
+					if (state == commentLevelToLineState(level)) {
+						size = tokenEnd - tokenStart;
+						setColor(glyph, glyph + size, Color::comment);
+						glyph += size;
+						state = LineState::inText;
+					}
+				}
+			}
+
+			if (lineStateInComment(state)) {
 				(glyph++)->color = Color::comment;
+			}
+
+		} else if (lineStateInStringLevel(state)) {
+			// stay in string level until matching closing is detected
+			size_t level;
+			Iterator tokenStart(&*glyph);
+			Iterator lineEnd(line.data() + line.size());
+			Iterator tokenEnd = language->stringLevelEnd(tokenStart, lineEnd, level);
+
+			if (tokenEnd != tokenStart) {
+				level = std::min(level, maxStringLevel);
+
+				if (state == stringLevelToLineState(level)) {
+					auto size = tokenEnd - tokenStart;
+					setColor(glyph, glyph + size, Color::string);
+					glyph += size;
+					state = LineState::inText;
+
+				} else {
+					(glyph++)->color = Color::string;
+				}
+
+			} else {
+				(glyph++)->color = Color::string;
 			}
 
 		} else if (state == LineState::inOtherString) {
@@ -194,18 +272,18 @@ TextEditor::LineState TextEditor::Colorizer::updateLine(const Config& config, Li
 			if (glyph->codepoint == language->stringEscape) {
 				(glyph++)->color = Color::string;
 
-				if (glyph < line.end()) {
+				if (glyph < end) {
 					(glyph++)->color = Color::string;
 				}
 
-			} else if (matches(glyph, line.end(), language->otherStringEnd)) {
+			} else if (matches(glyph, end, language->otherStringEnd)) {
 				auto size = language->otherStringEnd.size();
 				setColor(glyph, glyph + size, Color::string);
 				glyph += size;
 				state = LineState::inText;
 
 			} else {
-				(glyph++)->color = Color::comment;
+				(glyph++)->color = Color::string;
 			}
 
 		} else if (state == LineState::inOtherStringAlt) {
@@ -214,18 +292,18 @@ TextEditor::LineState TextEditor::Colorizer::updateLine(const Config& config, Li
 			if (glyph->codepoint == language->stringEscape) {
 				(glyph++)->color = Color::string;
 
-				if (glyph < line.end()) {
+				if (glyph < end) {
 					(glyph++)->color = Color::string;
 				}
 
-			} else if (matches(glyph, line.end(), language->otherStringAltEnd)) {
+			} else if (matches(glyph, end, language->otherStringAltEnd)) {
 				auto size = language->otherStringAltEnd.size();
 				setColor(glyph, glyph + size, Color::string);
 				glyph += size;
 				state = LineState::inText;
 
 			} else {
-				(glyph++)->color = Color::comment;
+				(glyph++)->color = Color::string;
 			}
 
 		} else if (state == LineState::inSingleQuotedString) {
@@ -234,7 +312,7 @@ TextEditor::LineState TextEditor::Colorizer::updateLine(const Config& config, Li
 			if (glyph->codepoint == language->stringEscape) {
 				(glyph++)->color = Color::string;
 
-				if (glyph < line.end()) {
+				if (glyph < end) {
 					(glyph++)->color = Color::string;
 				}
 
@@ -252,7 +330,7 @@ TextEditor::LineState TextEditor::Colorizer::updateLine(const Config& config, Li
 			if (glyph->codepoint == language->stringEscape) {
 				(glyph++)->color = Color::string;
 
-				if (glyph < line.end()) {
+				if (glyph < end) {
 					(glyph++)->color = Color::string;
 				}
 

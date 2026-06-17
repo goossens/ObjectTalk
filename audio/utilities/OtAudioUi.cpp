@@ -171,7 +171,7 @@ float OtAudioUi::smallToggleButtonWidth() {
 //	OtAudioUi::knob
 //
 
-static constexpr float pi = static_cast<float>(std::numbers::pi);
+static constexpr float pi = std::numbers::pi_v<float>;
 
 bool OtAudioUi::knob(const char* label, float* value, float minValue, float maxValue, const char* format, bool logarithmic) {
 	auto size = ImGui::GetTextLineHeight() - 2.0f;

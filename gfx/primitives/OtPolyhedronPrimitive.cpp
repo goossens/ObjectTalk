@@ -33,7 +33,7 @@ static float correctUV(const glm::vec3& normal, float u, float azimuth) {
 		return u - 1.0f;
 
 	} else if ((normal.x == 0.0f) && (normal.z == 0.0f)) {
-		return azimuth / 2.0f / static_cast<float>(std::numbers::pi) + 0.5f;
+		return azimuth / 2.0f / std::numbers::pi_v<float> + 0.5f;
 
 	} else {
 		return u;

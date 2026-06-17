@@ -212,7 +212,7 @@ void OtTronClass::render() {
 
 	// render seconds indicator
 	for (auto c = 0; c < 60; c += 1) {
-		auto angle = c * static_cast<float>(std::numbers::pi) * 2.0f / 60.0f;
+		auto angle = c * std::numbers::pi_v<float> * 2.0f / 60.0f;
 		auto inner = 240.0f * scale;
 		auto outer = 280.0f * scale;
 

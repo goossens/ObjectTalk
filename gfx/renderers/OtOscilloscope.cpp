@@ -78,7 +78,7 @@ void OtOscilloscope::drawRectangle(float x, float y, float w, float h, float lin
 void OtOscilloscope::drawCircle(float x, float y, float radius, float steps, float lineWidth, glm::vec4& color) {
 	beginDraw(x, y - radius);
 
-	float step = static_cast<float>(std::numbers::pi) * 2.0f / steps;
+	float step = std::numbers::pi_v<float> * 2.0f / steps;
 
 	for (float angle = step; angle < static_cast<float>(2.0 * std::numbers::pi - 0.001); angle += step) {
 		drawTo(x + radius * std::sin(angle), y - radius * std::cos(angle));
@@ -430,7 +430,7 @@ void OtOscilloscope::drawTo(float x, float y) {
 //
 
 static inline float normalizeAngle(float angle) {
-	float wrap = 2.0f * static_cast<float>(std::numbers::pi);
+	float wrap = 2.0f * std::numbers::pi_v<float>;
 	float result = std::fmod(angle, wrap);
 	return result < 0.0f ? result + wrap : result;
 }
@@ -511,7 +511,7 @@ void OtOscilloscope::endDraw(float lineWidth, glm::vec4& color) {
 			if (std::min(a2pa, pa2a) <= (std::numbers::pi / 2.0f + 0.00001f)) {
 				if (a2pa < pa2a) {
 					float shorten = t * std::sin(a2pa / 2.0f) / std::cos(a2pa / 2.0f);
-					float a = (static_cast<float>(std::numbers::pi) - a2pa) / 2.0f;
+					float a = (std::numbers::pi_v<float> - a2pa) / 2.0f;
 
 					if (shorten > maxshorten) {
 						line->s0 = pline->s1 = maxshorten;
@@ -523,7 +523,7 @@ void OtOscilloscope::endDraw(float lineWidth, glm::vec4& color) {
 
 				} else {
 					float shorten = t * std::sin(pa2a / 2.0f) / std::cos(pa2a / 2.0f);
-					float a = (static_cast<float>(std::numbers::pi) - pa2a) / 2.0f;
+					float a = (std::numbers::pi_v<float> - pa2a) / 2.0f;
 
 					if (shorten > maxshorten) {
 						line->s0  = pline->s1 = maxshorten;

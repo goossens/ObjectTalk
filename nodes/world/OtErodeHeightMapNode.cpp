@@ -14,9 +14,10 @@
 #include <format>
 #include <future>
 
-#include "OtHeightMap.h"
 #include "OtThreadPool.h"
 #include "OtUi.h"
+
+#include "OtHeightMap.h"
 
 #include "OtNodesFactory.h"
 

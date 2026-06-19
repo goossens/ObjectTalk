@@ -1,0 +1,138 @@
+{
+	"links": [
+		{
+			"from": 3060538275,
+			"id": 4293153435,
+			"to": 1264149917
+		},
+		{
+			"from": 3826284022,
+			"id": 1415352701,
+			"to": 88131336
+		},
+		{
+			"from": 1641551683,
+			"id": 2345148019,
+			"to": 705837528
+		}
+	],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 202233619,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 1641551683,
+					"name": "Height Map",
+					"type": "Heightmap"
+				}
+			],
+			"title": "Height Map Generator",
+			"type": "Height Map Generator",
+			"x": 100.0,
+			"y": 249.0
+		},
+		{
+			"id": 1658004535,
+			"inputs": [
+				{
+					"id": 705837528,
+					"name": "Input",
+					"type": "Heightmap"
+				}
+			],
+			"outputs": [
+				{
+					"id": 3060538275,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Terrain Builder",
+			"type": "Terrain Builder",
+			"x": 363.0,
+			"y": 225.0
+		},
+		{
+			"id": 953896457,
+			"inputs": [
+				{
+					"id": 1264149917,
+					"name": "Input",
+					"type": "geometry"
+				},
+				{
+					"id": 2515776066,
+					"name": "Translate",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 1337251280,
+					"name": "Rotate",
+					"type": "vector3",
+					"value": [
+						0.0,
+						0.0,
+						0.0
+					]
+				},
+				{
+					"id": 474370636,
+					"name": "Scale",
+					"type": "vector3",
+					"value": [
+						10.0,
+						18.0,
+						10.0
+					]
+				}
+			],
+			"outputs": [
+				{
+					"id": 3826284022,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Geometry Transform",
+			"type": "Geometry Transform",
+			"x": 544.0,
+			"y": 200.0
+		},
+		{
+			"azimuth": -33.567527770996094,
+			"elevation": 37.04219436645508,
+			"id": 3538181111,
+			"inputs": [
+				{
+					"id": 88131336,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"lightColor": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"meshColor": [
+				1.0,
+				0.8500000238418579,
+				0.0
+			],
+			"outputs": [],
+			"title": "Geometry Probe",
+			"type": "Geometry Probe",
+			"wireframe": false,
+			"x": 919.5,
+			"y": 25.0,
+			"zoom": 1.3976020812988281
+		}
+	]
+}

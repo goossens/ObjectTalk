@@ -42,7 +42,7 @@ public:
 	void clear();
 
 	// see if heightmap is valid
-	inline bool isValid() const { return heightmap != nullptr; }
+	inline bool isValid() const { return data != nullptr; }
 
 	// set elevation at specified location
 	void setElevation(int x, int y, float value) const;
@@ -54,7 +54,7 @@ public:
 	inline float getElevation(int x, int y) const {
 		x = std::clamp(x, 0, width - 1);
 		y = std::clamp(y, 0, height - 1);
-		return heightmap[y * width + x];
+		return data[y * width + x];
 	}
 
 	// get normal at specified location
@@ -85,7 +85,7 @@ public:
 
 	// see if heightmaps are identical
 	inline bool operator==(OtHeightMap& rhs) {
-		return heightmap == rhs.heightmap && version == rhs.version;
+		return data == rhs.data && version == rhs.version;
 	}
 
 	inline bool operator!=(OtHeightMap& rhs) {
@@ -119,7 +119,7 @@ public:
 
 private:
 	// heightmap properties
-	std::shared_ptr<float[]> heightmap;
+	std::shared_ptr<float[]> data;
 	int version = 0;
 	int width = 0;
 	int height = 0;

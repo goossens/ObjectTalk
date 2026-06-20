@@ -33,8 +33,8 @@ void OtHeightMap::update(int w, int h, bool clear) {
 	OtAssert(h > 0);
 
 	// allocate heightmap (if required)
-	if (!heightmap || width != w || height != h) {
-		heightmap = std::make_shared<float[]>(w * h);
+	if (!data || width != w || height != h) {
+		data = std::make_shared<float[]>(w * h);
 		width = w;
 		height = h;
 		incrementVersion();
@@ -42,7 +42,7 @@ void OtHeightMap::update(int w, int h, bool clear) {
 
 	// clear values if required
 	if (clear) {
-		std::fill(heightmap.get(), heightmap.get() + w * h, 0.0f);
+		std::fill(data.get(), data.get() + w * h, 0.0f);
 	}
 }
 
@@ -100,7 +100,7 @@ void OtHeightMap::load(const std::string& path) {
 
 	if (sampleFormat == SAMPLEFORMAT_IEEEFP) {
 		update(static_cast<int>(columns), static_cast<int>(rows));
-		auto p = heightmap.get();
+		auto p = data.get();
 
 		for (uint32_t row = 0; row < rows; row++) {
 			if (TIFFReadScanline(tiff, p, row) != 1) {
@@ -123,7 +123,7 @@ void OtHeightMap::load(const std::string& path) {
 //
 
 void OtHeightMap::save(const std::string& path) {
-	if (!heightmap) {
+	if (!data) {
 		OtLogError("Can't save invalid heightmap");
 	}
 
@@ -152,13 +152,15 @@ void OtHeightMap::save(const std::string& path) {
 	TIFFSetField(tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_IEEEFP);
 
 	// write data row by row (scanline)
-	auto p = heightmap.get();
+	auto p = data.get();
 	auto rows = static_cast<uint32_t>(height);
 
 	for (uint32_t row = 0; row < rows; row++) {
 		if (TIFFWriteScanline(tiff, p, row) != 1) {
 			OtLogError("Error while writing to TIFF file [{}]: {}", path, errorMessage);
 		}
+
+		p += width;
 	}
 
 	TIFFClose(tiff);
@@ -174,7 +176,7 @@ OtHeightMap OtHeightMap::clone() {
 
 	if (isValid()) {
 		hm.update(width, height);
-		std::copy(heightmap.get(), heightmap.get() + width * height, hm.heightmap.get());
+		std::copy(data.get(), data.get() + width * height, hm.data.get());
 	}
 
 	hm.setVersion(getVersion());
@@ -187,7 +189,7 @@ OtHeightMap OtHeightMap::clone() {
 //
 
 void OtHeightMap::clear() {
-	heightmap = nullptr;
+	data = nullptr;
 	width = 0;
 	height = 0;
 	incrementVersion();
@@ -200,12 +202,12 @@ void OtHeightMap::clear() {
 
 void OtHeightMap::setElevation(int x, int y, float value) const {
 	// sanity checks
-	OtAssert(heightmap != nullptr);
+	OtAssert(data != nullptr);
 	OtAssert(x >= 0 && x < width);
 	OtAssert(y >= 0 && y < height);
 
 	// set height
-	heightmap[y * width + x] = value;
+	data[y * width + x] = value;
 }
 
 
@@ -215,12 +217,12 @@ void OtHeightMap::setElevation(int x, int y, float value) const {
 
 void OtHeightMap::adjustElevation(int x, int y, float value) const {
 	// sanity checks
-	OtAssert(heightmap != nullptr);
+	OtAssert(data != nullptr);
 	OtAssert(x >= 0 && x < width);
 	OtAssert(y >= 0 && y < height);
 
 	// adjust height
-	heightmap[y * width + x] += value;
+	data[y * width + x] += value;
 }
 
 
@@ -390,13 +392,13 @@ void OtHeightMap::erode(int run, int drops) {
 			if (glm::all(glm::greaterThanEqual(drop.pos, glm::vec2(0.0f))) && glm::all(glm::lessThan(drop.pos, glm::vec2(width, height)))) {
 				// compute sediment capacity difference
 				glm::ivec2 newIpos = drop.pos;
-				auto elevationChange = heightmap[ipos.y * width + ipos.x] - heightmap[newIpos.y * width + newIpos.x];
+				auto elevationChange = data[ipos.y * width + ipos.x] - data[newIpos.y * width + newIpos.x];
 				float maxSediment = std::max(drop.volume * glm::length(drop.speed) * elevationChange, 0.0f);
 				float sdiff = maxSediment - drop.sediment;
 
 				// adjust heightmap and droplet
 				drop.sediment += dt * depositionRate * sdiff;
-				heightmap[newIpos.y * width + newIpos.x] += dt * drop.volume * depositionRate * sdiff;
+				data[newIpos.y * width + newIpos.x] += dt * drop.volume * depositionRate * sdiff;
 
 				// evaporate the droplet
 				drop.volume *= (1.0f - dt * evaporationRate);

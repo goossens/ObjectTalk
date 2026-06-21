@@ -69,11 +69,3 @@ The Instances on Faces node generates a set of specified instances based on the 
 **Inputs**
 
 **Outputs**
-
-#### Terrain Builder
-
-![screenshot](img/terrain-builder.png#right)
-
-**Inputs**
-
-**Outputs**

@@ -28,3 +28,8 @@
 
 **Inputs**
 
+#### Save Height Map to File
+
+![screenshot](img/save-heightmap-to-file.png#right)
+
+**Inputs**

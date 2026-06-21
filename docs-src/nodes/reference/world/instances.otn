@@ -33,8 +33,8 @@
 			],
 			"title": "World Generator",
 			"type": "World Generator",
-			"x": 231.0,
-			"y": 148.0
+			"x": 190.0,
+			"y": 69.0
 		},
 		{
 			"id": 3782547564,
@@ -49,12 +49,6 @@
 					"name": "Size",
 					"type": "int",
 					"value": 32
-				},
-				{
-					"id": 1363584450,
-					"name": "Biome",
-					"type": "bool",
-					"value": false
 				}
 			],
 			"outputs": [
@@ -64,10 +58,95 @@
 					"type": "image"
 				}
 			],
+			"renderType": 0,
 			"title": "World to Image",
 			"type": "World to Image",
-			"x": 751.0,
-			"y": 163.0
+			"x": 416.0,
+			"y": 69.0
+		},
+		{
+			"id": 586305724,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 1125872933,
+					"name": "Height Map",
+					"type": "Heightmap"
+				}
+			],
+			"title": "Height Map Generator",
+			"type": "Height Map Generator",
+			"x": 190.0,
+			"y": 244.0
+		},
+		{
+			"id": 682859771,
+			"inputs": [
+				{
+					"id": 2645386454,
+					"name": "Input",
+					"type": "Heightmap"
+				}
+			],
+			"outputs": [
+				{
+					"id": 1841991250,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Terrain Builder",
+			"type": "Terrain Builder",
+			"x": 662.0,
+			"y": 244.0
+		},
+		{
+			"id": 2176311928,
+			"inputs": [
+				{
+					"id": 4036298643,
+					"name": "World",
+					"type": "world"
+				},
+				{
+					"id": 1707713571,
+					"name": "Size",
+					"type": "int",
+					"value": 32
+				}
+			],
+			"outputs": [
+				{
+					"id": 417141776,
+					"name": "Height Map",
+					"type": "Heightmap"
+				}
+			],
+			"title": "World to Height Map",
+			"type": "World to Height Map",
+			"x": 662.0,
+			"y": 69.0
+		},
+		{
+			"id": 693814898,
+			"inputs": [
+				{
+					"id": 2381320904,
+					"name": "World",
+					"type": "Heightmap"
+				}
+			],
+			"outputs": [
+				{
+					"id": 3733402587,
+					"name": "Height Map",
+					"type": "Heightmap"
+				}
+			],
+			"title": "Erode Height Map",
+			"type": "Erode Height Map",
+			"x": 416.0,
+			"y": 244.0
 		}
 	]
 }

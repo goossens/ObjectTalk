@@ -20,7 +20,7 @@
 			"outputs": [],
 			"title": "Save Geometry to Virtual",
 			"type": "Save Geometry to Virtual",
-			"x": 324.0,
+			"x": 322.0,
 			"y": 266.0
 		},
 		{
@@ -41,7 +41,7 @@
 			"outputs": [],
 			"title": "Save Image to Virtual",
 			"type": "Save Image to Virtual",
-			"x": 327.0,
+			"x": 322.0,
 			"y": 108.0
 		},
 		{
@@ -106,6 +106,27 @@
 			"type": "Save Instances to Virtual",
 			"x": 893.0,
 			"y": 266.0
+		},
+		{
+			"id": 2178813376,
+			"inputs": [
+				{
+					"id": 3255886900,
+					"name": "Input",
+					"type": "Heightmap"
+				},
+				{
+					"id": 18218272,
+					"name": "Name",
+					"type": "string",
+					"value": ""
+				}
+			],
+			"outputs": [],
+			"title": "Save Height Map to Virtual",
+			"type": "Save Height Map to Virtual",
+			"x": 322.0,
+			"y": 421.0
 		}
 	]
 }

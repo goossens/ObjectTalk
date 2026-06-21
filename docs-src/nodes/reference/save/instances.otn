@@ -14,8 +14,8 @@
 			"outputs": [],
 			"title": "Save Geometry to File",
 			"type": "Save Geometry to File",
-			"x": 762.0,
-			"y": 219.0
+			"x": 758.0,
+			"y": 173.0
 		},
 		{
 			"id": 3614851485,
@@ -29,7 +29,7 @@
 			"outputs": [],
 			"title": "Save Image to File",
 			"type": "Save Image to File",
-			"x": 767.0,
+			"x": 758.0,
 			"y": 94.0
 		},
 		{
@@ -44,8 +44,8 @@
 			"outputs": [],
 			"title": "Save Instances to File",
 			"type": "Save Instances to File",
-			"x": 759.0,
-			"y": 448.0
+			"x": 758.0,
+			"y": 332.0
 		},
 		{
 			"id": 1781918542,
@@ -59,8 +59,8 @@
 			"outputs": [],
 			"title": "Save Manifold to File",
 			"type": "Save Manifold to File",
-			"x": 760.0,
-			"y": 333.0
+			"x": 758.0,
+			"y": 248.0
 		},
 		{
 			"id": 1080097940,
@@ -74,8 +74,23 @@
 			"outputs": [],
 			"title": "Save Shape to File",
 			"type": "Save Shape to File",
-			"x": 765.0,
-			"y": 570.0
+			"x": 758.0,
+			"y": 410.0
+		},
+		{
+			"id": 3381986045,
+			"inputs": [
+				{
+					"id": 1246428267,
+					"name": "Input",
+					"type": "Heightmap"
+				}
+			],
+			"outputs": [],
+			"title": "Save Height Map to File",
+			"type": "Save Height Map to File",
+			"x": 758.0,
+			"y": 493.0
 		}
 	]
 }

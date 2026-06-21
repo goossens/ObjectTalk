@@ -81,3 +81,9 @@
 ![screenshot](img/vector4-input.png#right)
 
 **Outputs**
+
+#### Height Map Input
+
+![screenshot](img/heightmap-input.png#right)
+
+**Outputs**

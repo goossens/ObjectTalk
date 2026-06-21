@@ -242,6 +242,22 @@
 			],
 			"x": 52.0,
 			"y": 180.0
+		},
+		{
+			"id": 2739521458,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 190068641,
+					"name": "HeightMap",
+					"type": "Heightmap"
+				}
+			],
+			"path": "",
+			"title": "Height Map Input",
+			"type": "Height Map Input",
+			"x": 52.0,
+			"y": 642.0
 		}
 	]
 }

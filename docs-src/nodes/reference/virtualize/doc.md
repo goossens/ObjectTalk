@@ -27,3 +27,9 @@
 ![screenshot](img/save-instances-to-virtual.png#right)
 
 **Inputs**
+
+#### Save Height Map to Virtual
+
+![screenshot](img/save-heightmap-to-virtual.png#right)
+
+**Inputs**

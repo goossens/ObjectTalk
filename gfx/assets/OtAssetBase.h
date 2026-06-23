@@ -15,9 +15,9 @@
 #include <functional>
 #include <string>
 
+#include "OtFileWatcher.h"
 #include "OtLibuv.h"
 #include "OtPath.h"
-#include "OtPathFollower.h"
 #include "OtPubSub.h"
 #include "OtText.h"
 
@@ -111,8 +111,8 @@ private:
 	// loader event handling
 	uv_async_t* loaderEventHandle = nullptr;
 
-	// follower to detect file system changes
-	OtPathFollower follower;
+	// to detect file changes
+	OtFileWatcher watcher;
 
 	// our publisher to notify subscribers
 	struct Publisher : OtPublisher<OtAssetChanged> {

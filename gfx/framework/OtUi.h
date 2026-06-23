@@ -57,7 +57,7 @@ public:
 
 	// get size for specified units in pixels (to support low and high DPI monitors)
 	// (each unit is the vertical distance between two text lines or about the average width of two glyphs)
-	inline static float size(float units=1.0f) { return std::floor(ImGui::GetTextLineHeightWithSpacing() * units); }
+	static inline float size(float units=1.0f) { return std::floor(ImGui::GetTextLineHeightWithSpacing() * units); }
 
 	// adjust cursor position based on alignment
 	static void align(ImVec2 size, Alignment horizontal, Alignment vertical);

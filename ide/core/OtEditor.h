@@ -15,7 +15,7 @@
 #include <string>
 
 #include "OtException.h"
-#include "OtPathFollower.h"
+#include "OtFileWatcher.h"
 
 
 //
@@ -71,6 +71,6 @@ protected:
 
 	// properties
 	std::string path;
-	OtPathFollower follower;
+	OtFileWatcher watcher;
 	VisualState visualState = VisualState::inTab;
 };

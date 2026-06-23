@@ -512,7 +512,7 @@ void OtNodesWidget::renderPin(ImDrawList* drawlist, OtNodesPin pin, float x, flo
 //	cubicBezier
 //
 
-inline static float cubicBezier(float t, float v1, float v2, float v3, float v4) {
+static inline float cubicBezier(float t, float v1, float v2, float v3, float v4) {
 	float k = 1 - t;
 
 	return (k * k * k * v1) +

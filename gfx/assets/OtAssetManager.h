@@ -106,7 +106,7 @@ public:
 						manager->scheduleLoad(asset);
 
 						// also follow path so we can detect file changes
-						asset->follower.follow(path, [manager, asset]() {
+						asset->watcher.follow(path, [manager, asset](OtFileWatcher::Event) {
 							manager->scheduleLoad(asset);
 						});
 

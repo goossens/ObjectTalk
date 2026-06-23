@@ -166,18 +166,23 @@ void OtEditor::renderMenuBar(bool canRun) {
 //
 
 void OtEditor::follow() {
-	// follow file changes
-	follower.follow(path, [this](){
+	// watcher for file changes
+	watcher.follow(path, [this](OtFileWatcher::Event event){
 		if (ignoreNextFileUpdate) {
 			ignoreNextFileUpdate = false;
 
-		} else if (!isDirty()) {
-			// file was not yet edited; it's safe to reload
-			load();
-
 		} else {
-			// file was edited; don't reload but show message
-			OtMessageBus::send(std::format("warning File {} was edited externally.\nBe careful when saving!", path));
+			if (isDirty()) {
+				// file was edited; don't reload but show message
+				OtMessageBus::send(std::format("warning File {} was changed externally.\nBe careful when saving!", path));
+
+			} else if (event == OtFileWatcher::Event::created || event == OtFileWatcher::Event::updated) {
+				// file was not yet edited; it's safe to reload
+				load();
+
+			} else {
+				clear();
+			}
 		}
 	});
 }
@@ -188,5 +193,5 @@ void OtEditor::follow() {
 //
 
 void OtEditor::unfollow() {
-	follower.unfollow();
+	watcher.unfollow();
 }

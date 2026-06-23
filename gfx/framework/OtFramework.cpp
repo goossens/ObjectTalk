@@ -36,6 +36,7 @@
 
 #include "OtAnimationModule.h"
 #include "OtAssetManager.h"
+#include "OtFileWatcher.h"
 #include "OtFramework.h"
 #include "OtFrameworkAtExit.h"
 #include "OtNotification.h"
@@ -116,6 +117,9 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 		// this is done at this point so asynchronous callbacks
 		// can take part in the rendering process and use the GPU
 		uv_run(uv_default_loop(), UV_RUN_NOWAIT);
+
+		// process file watching events
+		OtFileWatcher::run();
 
 		// let app render a frame
 		{

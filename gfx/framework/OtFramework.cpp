@@ -182,16 +182,3 @@ bool OtFramework::canQuit() {
 	// ask app if we can quit
 	return app->onCanQuit();
 }
-
-
-//
-//	OtFramework::setAntiAliasing
-//
-
-void OtFramework::setAntiAliasing(int aa) {
-	if (aa < 0 || aa > 4) {
-		OtLogError("Anti-aliasing setting must be between 0 and 4");
-	}
-
-	antiAliasing = aa;
-}

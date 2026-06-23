@@ -167,7 +167,6 @@ void OtFramework::renderProfiler() {
 	ImGui::Text("GPU wait [ms]:"); ImGui::SameLine(labelWith); ImGui::Text("%5.2f", gpuWaitTime);
 	ImGui::Text("Back buffer width:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", gpu.width);
 	ImGui::Text("Back buffer height:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", gpu.height);
-	ImGui::Text("Anti-aliasing:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", antiAliasing);
 
 	ImGui::Separator();
 	ImGui::Text("Compute passes:"); ImGui::SameLine(labelWith); ImGui::Text("%5d", gpu.computePasses.load());

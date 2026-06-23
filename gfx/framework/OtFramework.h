@@ -36,9 +36,6 @@ public:
 	bool canClose();
 	bool canQuit();
 
-	// set anti-aliasing
-	void setAntiAliasing(int level);
-
 	// open specified URL in browser
 	static void openURL(const std::string& url);
 
@@ -72,9 +69,6 @@ private:
 	float cpuTime;
 	float gpuTime;
 	float gpuWaitTime;
-
-	// anti-aliasing setting
-	int antiAliasing = 0;
 
 	// show/hide profiler/demo
 	bool profiler = false;

@@ -23,7 +23,7 @@
 class OtCreateWireTask : public OtEditorTask {
 public:
 	// constructor
-	inline OtCreateWireTask(OtAudio* s, uint32_t f, uint32_t t) : audio(s), from(f), to(t) {}
+	OtCreateWireTask(OtAudio* s, uint32_t f, uint32_t t) : audio(s), from(f), to(t) {}
 
 	// get task name
 	std::string name() { return "create wire"; }

@@ -60,7 +60,7 @@ public:
 	};
 
 	// constructor
-	inline OtCircuitClass() {
+	OtCircuitClass() {
 		id = OtCircuitGenerateID();
 	}
 

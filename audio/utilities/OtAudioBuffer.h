@@ -27,7 +27,7 @@
 class OtAudioBuffer {
 public:
 	// constructor
-	inline OtAudioBuffer(size_t c) : channels(c) {
+	OtAudioBuffer(size_t c) : channels(c) {
 		buffer.resize(channels * OtAudioSettings::bufferSize);
 	}
 

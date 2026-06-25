@@ -26,7 +26,7 @@
 class OtDuplicateCircuitsTask : public OtEditorTask {
 public:
 	// constructor
-	inline OtDuplicateCircuitsTask(OtAudio* s) : audio(s) {}
+	OtDuplicateCircuitsTask(OtAudio* s) : audio(s) {}
 
 	// get task name
 	std::string name() { return "duplicate circuits"; }

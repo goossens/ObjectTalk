@@ -44,7 +44,7 @@ struct OtVertex {
 	// constructors
 	OtVertex() = default;
 
-	inline OtVertex(const glm::vec3& p, const glm::vec3& n=glm::vec3(0.0f), const glm::vec2& u=glm::vec2(0.0f), const glm::vec3 t=glm::vec3(0.0f), const glm::vec3 b=glm::vec3(0.0f)) :
+	OtVertex(const glm::vec3& p, const glm::vec3& n=glm::vec3(0.0f), const glm::vec2& u=glm::vec2(0.0f), const glm::vec3 t=glm::vec3(0.0f), const glm::vec3 b=glm::vec3(0.0f)) :
 		position(p), normal(n), tangent(t), bitangent(b), uv(u) {
 	}
 
@@ -127,8 +127,7 @@ struct OtVertexPosColor {
 
 	// constructors
 	OtVertexPosColor() = default;
-
-	inline OtVertexPosColor(const glm::vec3& p, const glm::vec4& c) : position(p), color(c) {}
+	OtVertexPosColor(const glm::vec3& p, const glm::vec4& c) : position(p), color(c) {}
 
 	// get vertex description
 	static inline OtVertexDescription* getDescription() {
@@ -154,7 +153,7 @@ struct OtVertexPosUvw {
 
 	// constructors
 	OtVertexPosUvw() = default;
-	inline OtVertexPosUvw(const glm::vec3& p, const glm::vec3& u=glm::vec3(0.0f)) : position(p), uvw(u) {}
+	OtVertexPosUvw(const glm::vec3& p, const glm::vec3& u=glm::vec3(0.0f)) : position(p), uvw(u) {}
 
 	// get vertex description
 	static inline OtVertexDescription* getDescription() {
@@ -179,7 +178,7 @@ struct OtVertexPos {
 
 	// constructors
 	OtVertexPos() = default;
-	inline OtVertexPos(const glm::vec3& p) : position(p) {}
+	OtVertexPos(const glm::vec3& p) : position(p) {}
 
 	// get vertex description
 	static inline OtVertexDescription* getDescription() {
@@ -289,9 +288,9 @@ struct OtVertexPointLight {
 
 	// constructors
 	OtVertexPointLight() = default;
-	inline OtVertexPointLight(glm::vec3 p, glm::vec3 c, float r) : position(p), color(c), radius(r) {}
+	OtVertexPointLight(glm::vec3 p, glm::vec3 c, float r) : position(p), color(c), radius(r) {}
 
-		// get vertex description
+	// get vertex description
 	static inline OtVertexDescription* getDescription() {
 		static SDL_GPUVertexAttribute attributes[] = {
 			{0, 0, SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3, offsetof(OtVertexPointLight, position)},

@@ -37,7 +37,7 @@ protected:
 	// constructor
 	friend class OtObjectPointer<OtPathIteratorClass>;
 	OtPathIteratorClass() = default;
-	inline OtPathIteratorClass(OtPathObject p) { path = p; iterator = p->path.begin(); last = p->path.end(); }
+	OtPathIteratorClass(OtPathObject path) : path(path), iterator(path->path.begin()), last(path->path.end()) {}
 
 private:
 	OtPathObject path;

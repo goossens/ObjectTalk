@@ -38,7 +38,7 @@ protected:
 	// constructors
 	friend class OtObjectPointer<OtSetIteratorClass>;
 	OtSetIteratorClass() = default;
-	inline OtSetIteratorClass(OtSet s) : set(s) { iterator = set->set.begin(); }
+	OtSetIteratorClass(OtSet s) : set(s) { iterator = set->set.begin(); }
 
 private:
 	// data

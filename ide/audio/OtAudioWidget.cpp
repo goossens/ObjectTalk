@@ -100,7 +100,7 @@ void OtAudioWidget::render(OtAudio* s) {
 	ImGui::SetNextWindowContentSize(ImVec2(width, height));
 	ImGui::BeginChild("audio", ImVec2(), ImGuiChildFlags_None, flags);
 
-	auto& style = ImGui::GetStyle();
+	const auto& style = ImGui::GetStyle();
 	pinOffset = style.FramePadding.y + ImGui::GetFontBaked()->Ascent - pinRadius + 1.0f;
 	ImDrawList* drawlist = ImGui::GetWindowDrawList();
 	widgetOffset = ImGui::GetCursorScreenPos();

@@ -26,7 +26,7 @@
 class OtDeleteCircuitsTask : public OtEditorTask {
 public:
 	// constructor
-	inline OtDeleteCircuitsTask(OtAudio* s) : audio(s) {}
+	OtDeleteCircuitsTask(OtAudio* s) : audio(s) {}
 
 	// get task name
 	std::string name() { return "delete circuits"; }

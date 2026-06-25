@@ -41,7 +41,7 @@ inline float OtMeasureFunction(F func, Args&&... args) {
 class OtMeasureStopWatch {
 public:
 	// constructor
-	inline OtMeasureStopWatch() {
+	OtMeasureStopWatch() {
 		reset();
 	}
 

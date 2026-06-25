@@ -477,7 +477,7 @@ std::string OtText::toJSON(const std::string& text) {
 //	OtText::fromJSON
 //
 
-std::string OtText::fromJSON(const std::string text) {
+std::string OtText::fromJSON(const std::string& text) {
 	std::ostringstream o;
 	auto c = text.begin();
 

@@ -643,7 +643,7 @@ void OtModel::renderAnimationChannels(size_t animationID) {
 	auto& channels = animation.channels;
 	auto duration = animation.duration;
 	auto lineHeight = ImGui::GetTextLineHeightWithSpacing();
-	auto& style = ImGui::GetStyle();
+	const auto& style = ImGui::GetStyle();
 
 
 	ImU32 lineColor = ImGui::ColorConvertFloat4ToU32(style.Colors[ImGuiCol_Button]);

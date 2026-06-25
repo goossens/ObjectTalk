@@ -27,6 +27,9 @@ if (UNIX)
 	set(LANGUAGE_EXTRA_LIBS m)
 endif()
 
+set(CPPCHECK_ARGS "cppcheck" "--enable=performance,portability" "--suppress=*:deps/*" "--inline-suppr")
+set_target_properties(language PROPERTIES CXX_CPPCHECK "${CPPCHECK_ARGS}")
+
 target_include_directories(language PUBLIC ${LANGUAGE_INCLUDE_DIRS})
 target_link_libraries(language PUBLIC uv_a json isocline ${LANGUAGE_EXTRA_LIBS})
 

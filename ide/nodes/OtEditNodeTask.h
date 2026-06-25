@@ -23,7 +23,7 @@
 class OtEditNodeTask : public OtEditorTask {
 public:
 	// constructor
-	inline OtEditNodeTask(OtNodes* n, uint32_t tn) : nodes(n), node(tn) {}
+	OtEditNodeTask(OtNodes* n, uint32_t tn) : nodes(n), node(tn) {}
 
 	// get task name
 	std::string name() { return "change node"; }

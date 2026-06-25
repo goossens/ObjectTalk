@@ -91,7 +91,7 @@ public:
 	};
 
 	// constructor
-	inline OtNodeClass() {
+	OtNodeClass() {
 		id = OtNodesGenerateID();
 	}
 

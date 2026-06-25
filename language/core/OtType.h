@@ -71,7 +71,9 @@ using OtObject = OtObjectPointer<OtObjectClass>;
 class OtTypeClass {
 public:
 	// constructor
-	OtTypeClass(OtID id, OtType p={}, OtTypeAllocator a=nullptr);
+	OtTypeClass(OtID id, OtType parent={}, OtTypeAllocator a=nullptr) : typeID(id), parent(parent) {
+		allocator = a ? a : parent ? parent->allocator : nullptr;
+	}
 
 	// allocate a new instance
 	OtObject allocate();

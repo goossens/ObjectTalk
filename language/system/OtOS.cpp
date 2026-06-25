@@ -17,6 +17,7 @@
 #include <chrono>
 #include <ctime>
 #include <random>
+#include <vector>
 
 #include "OtArray.h"
 #include "OtDict.h"
@@ -31,9 +32,8 @@
 
 bool OtOSClass::hasenv(const std::string& name) {
 	size_t size = 256;
-	char* value = (char*) malloc(size);
-	int result = uv_os_getenv(name.c_str(), value, &size);
-	free(value);
+	std::vector<char> buffer(size);
+	int result = uv_os_getenv(name.c_str(), buffer.data(), &size);
 	return result != UV_ENOENT;
 }
 
@@ -44,21 +44,19 @@ bool OtOSClass::hasenv(const std::string& name) {
 
 std::string OtOSClass::getenv(const std::string& name) {
 	size_t size = 256;
-	char* value = (char*) malloc(size);
-	int result = uv_os_getenv(name.c_str(), value, &size);
+	std::vector<char> buffer(size);
+	int result = uv_os_getenv(name.c_str(), buffer.data(), &size);
 
 	if (result == UV_ENOBUFS) {
-		value = (char*) realloc(value, size);
-		result = uv_os_getenv(name.c_str(), value, &size);
+		buffer.resize(size);
+		result = uv_os_getenv(name.c_str(), buffer.data(), &size);
 	}
 
 	if (result == UV_ENOENT) {
 		return "";
 	}
 
-	std::string v = value;
-	free(value);
-	return v;
+	return std::string(buffer.data(), size);
 }
 
 
@@ -290,7 +288,7 @@ void OtOSClass::sleep(int64_t milliseconds) {
 int OtOSClass::getYear() {
 	time_t rawtime;
 	time(&rawtime);
-	struct tm* timeinfo = localtime(&rawtime);
+	const struct tm* timeinfo = localtime(&rawtime);
 	return timeinfo->tm_year;
 }
 
@@ -302,7 +300,7 @@ int OtOSClass::getYear() {
 int OtOSClass::getMonth() {
 	time_t rawtime;
 	time(&rawtime);
-	struct tm* timeinfo = localtime(&rawtime);
+	const struct tm* timeinfo = localtime(&rawtime);
 	return timeinfo->tm_mon;
 }
 
@@ -314,7 +312,7 @@ int OtOSClass::getMonth() {
 int OtOSClass::getDay() {
 	time_t rawtime;
 	time(&rawtime);
-	struct tm* timeinfo = localtime(&rawtime);
+	const struct tm* timeinfo = localtime(&rawtime);
 	return timeinfo->tm_mday;
 }
 
@@ -326,7 +324,7 @@ int OtOSClass::getDay() {
 int OtOSClass::getHours() {
 	time_t rawtime;
 	time(&rawtime);
-	struct tm* timeinfo = localtime(&rawtime);
+	const struct tm* timeinfo = localtime(&rawtime);
 	return timeinfo->tm_hour;
 }
 
@@ -338,7 +336,7 @@ int OtOSClass::getHours() {
 int OtOSClass::getMinutes() {
 	time_t rawtime;
 	time(&rawtime);
-	struct tm* timeinfo = localtime(&rawtime);
+	const struct tm* timeinfo = localtime(&rawtime);
 	return timeinfo->tm_min;
 }
 
@@ -350,7 +348,7 @@ int OtOSClass::getMinutes() {
 int OtOSClass::getSeconds() {
 	time_t rawtime;
 	time(&rawtime);
-	struct tm* timeinfo = localtime(&rawtime);
+	const struct tm* timeinfo = localtime(&rawtime);
 	return timeinfo->tm_sec;
 }
 
@@ -362,7 +360,7 @@ int OtOSClass::getSeconds() {
 int OtOSClass::getDayOfWeek() {
 	time_t rawtime;
 	time(&rawtime);
-	struct tm* timeinfo = localtime(&rawtime);
+	const struct tm* timeinfo = localtime(&rawtime);
 	return timeinfo->tm_wday;
 }
 
@@ -374,7 +372,7 @@ int OtOSClass::getDayOfWeek() {
 int OtOSClass::getDayOfYear() {
 	time_t rawtime;
 	time(&rawtime);
-	struct tm* timeinfo = localtime(&rawtime);
+	const struct tm* timeinfo = localtime(&rawtime);
 	return timeinfo->tm_yday;
 }
 
@@ -386,7 +384,7 @@ int OtOSClass::getDayOfYear() {
 bool OtOSClass::isDST() {
 	time_t rawtime;
 	time(&rawtime);
-	struct tm* timeinfo = localtime(&rawtime);
+	const struct tm* timeinfo = localtime(&rawtime);
 	return timeinfo->tm_isdst > 0;
 }
 

@@ -31,7 +31,7 @@
 class OtCircuitCategory {
 public:
 	// constructor
-	inline OtCircuitCategory(const char* n) : name(n) {}
+	OtCircuitCategory(const char* n) : name(n) {}
 
 	// add a new type
 	inline void addType(const char* typeName) {

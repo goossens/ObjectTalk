@@ -60,8 +60,8 @@ public:
 class OtStack {
 public:
 	// constructor/destructor
-	inline OtStack() { reserve(512); }
-	inline ~OtStack() { release(); }
+	OtStack() { reserve(512); }
+	~OtStack() { release(); }
 
 	// stack access functions
 	inline void push(const OtObject& object) { if (sp == capacity) { reserve(capacity * 2); } stack[sp++] = object; }

@@ -31,7 +31,7 @@
 class OtNodeCategory {
 public:
 	// constructor
-	inline OtNodeCategory(const char* n) : name(n) {}
+	OtNodeCategory(const char* n) : name(n) {}
 
 	// add a new type
 	inline void addType(const char* typeName) {

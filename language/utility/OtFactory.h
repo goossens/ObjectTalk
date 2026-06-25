@@ -28,8 +28,8 @@
 template <typename B, typename... Ts>
 class OtFactory {
 public:
-	// constructors
-	inline OtFactory() {
+	// constructor
+	OtFactory() {
 		(add<Ts>(), ...);
 	}
 

@@ -25,7 +25,7 @@
 class OtCreateCircuitTask : public OtEditorTask {
 public:
 	// constructor
-	inline OtCreateCircuitTask(OtAudio* s, const std::string& tn, float _x, float _y) : audio(s), typeName(tn), x(_x), y(_y) {}
+	OtCreateCircuitTask(OtAudio* s, const std::string& tn, float _x, float _y) : audio(s), typeName(tn), x(_x), y(_y) {}
 
 	// get task name
 	std::string name() { return "create circuit"; }

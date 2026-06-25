@@ -37,7 +37,7 @@ public:
 	};
 
 	// constructor
-	inline OtAlignCircuitsTask(OtAudio* s, Alignment a) : audio(s), alignment(a) {}
+	OtAlignCircuitsTask(OtAudio* s, Alignment a) : audio(s), alignment(a) {}
 
 	// get task name
 	std::string name() { return "align circuits"; }

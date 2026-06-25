@@ -28,7 +28,7 @@ class OtBodyShapeClass : public OtPhysics2DClass {
 public:
 	// constructors
 	OtBodyShapeClass() = default;
-	inline OtBodyShapeClass(b2ShapeId shape) : shape(shape) {}
+	OtBodyShapeClass(b2ShapeId shape) : shape(shape) {}
 
 	// get type definition
 	static OtType getMeta();

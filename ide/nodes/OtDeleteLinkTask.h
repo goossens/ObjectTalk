@@ -23,7 +23,7 @@
 class OtDeleteLinkTask : public OtEditorTask {
 public:
 	// constructor
-	inline OtDeleteLinkTask(OtNodes* n, uint32_t f, uint32_t t) : nodes(n), from(f), to(t) {}
+	OtDeleteLinkTask(OtNodes* n, uint32_t f, uint32_t t) : nodes(n), from(f), to(t) {}
 
 	// get task name
 	std::string name() { return "delete link"; }

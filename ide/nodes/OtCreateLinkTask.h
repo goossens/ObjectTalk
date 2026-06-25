@@ -23,7 +23,7 @@
 class OtCreateLinkTask : public OtEditorTask {
 public:
 	// constructor
-	inline OtCreateLinkTask(OtNodes* n, uint32_t f, uint32_t t) : nodes(n), from(f), to(t) {}
+	OtCreateLinkTask(OtNodes* n, uint32_t f, uint32_t t) : nodes(n), from(f), to(t) {}
 
 	// get task name
 	std::string name() { return "create link"; }

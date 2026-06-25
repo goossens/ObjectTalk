@@ -860,7 +860,7 @@ void OtSceneEditor::renderEntity(OtEntity entity) {
 	}
 
 	// add button to remove an entity
-	auto& style = ImGui::GetStyle();
+	const auto& style = ImGui::GetStyle();
 	auto right = ImGui::GetCursorPos().x + ImGui::GetContentRegionAvail().x;
 	ImGui::SameLine(right - buttonSize * 2.0f - style.FramePadding.y);
 

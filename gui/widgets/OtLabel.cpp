@@ -52,7 +52,7 @@ void OtLabelClass::init(size_t count, OtObject* parameters) {
 
 void OtLabelClass::render() {
 	// determine label size
-	auto& style = ImGui::GetStyle();
+	const auto& style = ImGui::GetStyle();
 	ImVec2 size = ImGui::CalcTextSize(label.c_str());
 	size.y += style.FramePadding.y * 2.0f + style.ItemSpacing.y;
 

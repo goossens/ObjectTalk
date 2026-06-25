@@ -244,10 +244,8 @@ void OtCompiler::declareCapture(OtID id, std::pair<size_t, size_t> item) {
 		OtLogError("Internal error: no function scope on stack");
 	}
 
-	// add item to list of captured variables (if not already captured)
-	if (scope->captures.count(id) == 0) {
-		scope->captures[id] = item;
-	}
+	// add item to list of captured variables
+	scope->captures[id] = item;
 }
 
 

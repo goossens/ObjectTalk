@@ -25,7 +25,7 @@
 class OtDragCircuitsTask : public OtEditorTask {
 public:
 	// constructor
-	inline OtDragCircuitsTask(OtAudio* s, const ImVec2& o) : audio(s), offset(o) {}
+	OtDragCircuitsTask(OtAudio* s, const ImVec2& o) : audio(s), offset(o) {}
 
 	// get task name
 	std::string name() { return "drag circuits"; }

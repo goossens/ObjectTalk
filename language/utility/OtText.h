@@ -129,5 +129,5 @@ public:
 
 	//	JSON Conversion Functions
 	static std::string toJSON(const std::string& text);
-	static std::string fromJSON(const std::string text);
+	static std::string fromJSON(const std::string& text);
 };

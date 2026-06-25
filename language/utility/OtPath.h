@@ -39,14 +39,14 @@ public:
 	static inline bool hasStem(const std::string& path) { return std::filesystem::path(path).has_stem(); }
 	static inline bool hasExtension(const std::string& path) { return std::filesystem::path(path).has_extension(); }
 
-	static inline std::uintmax_t getFileSize(const std::string path) { return std::filesystem::file_size(std::filesystem::path(path)); }
+	static inline size_t getFileSize(const std::string& path) { return static_cast<size_t>(std::filesystem::file_size(std::filesystem::path(path))); }
 	static inline std::string getParent(const std::string& path) { return std::filesystem::path(path).parent_path().string(); }
 	static inline std::string getFilename(const std::string& path) { return std::filesystem::path(path).filename().string(); }
 	static inline std::string getStem(const std::string& path) { return std::filesystem::path(path).stem().string(); }
 	static inline std::string getExtension(const std::string& path) { return std::filesystem::path(path).extension().string(); }
 	static inline std::string getCanonical(const std::string& path) { return std::filesystem::canonical(std::filesystem::path(path)).string(); }
 
-	static std::string replaceExtension(const std::string path, const std::string& extension);
+	static std::string replaceExtension(const std::string& path, const std::string& extension);
 	static inline std::string join(const std::string& base, const std::string& tail) { return (std::filesystem::path(base) / std::filesystem::path(tail)).string(); }
 
 	static std::string getExecutable();

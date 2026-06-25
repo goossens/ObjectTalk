@@ -80,7 +80,7 @@ std::string::const_iterator OtCodePoint::read(std::string::const_iterator i, std
 	// parse a UTF-8 sequence into a unicode codepoint
 	if (i < end && (uch(*i) & 0x80) == 0) {
 		*codepoint = uch(*i);
-		i++;
+		++i;
 
 	} else if (i + 1 < end && (uch(*i) & 0xE0) == 0xC0) {
 		*codepoint = ((uch(*i) & 0x1f) << 6) | (uch(*(i + 1)) & 0x3f);
@@ -96,7 +96,7 @@ std::string::const_iterator OtCodePoint::read(std::string::const_iterator i, std
 
 	} else {
 		*codepoint = invalidCodePoint;
-		i++;
+		++i;
 	}
 
 	return i;

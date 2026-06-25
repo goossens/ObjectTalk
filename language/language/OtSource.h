@@ -51,7 +51,7 @@ public:
 	size_t getLineNumber(size_t location);
 
 	// get module
-	std::string getModule() { return module; }
+	const std::string& getModule() { return module; }
 
 	// create a new instance
 	static OtSource create(const std::string& module, const std::string& source);

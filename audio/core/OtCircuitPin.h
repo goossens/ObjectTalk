@@ -66,7 +66,7 @@ public:
 	};
 
 	// constructor
-	inline OtCircuitPinClass(const char* n, Type t, Direction d) : name(n), type(t), direction(d) {
+	OtCircuitPinClass(const char* n, Type t, Direction d) : name(n), type(t), direction(d) {
 		id = OtCircuitGenerateID();
 
 		if (direction == Direction::output) {

@@ -47,11 +47,7 @@ protected:
 	// constructors
 	friend class OtObjectPointer<OtStringIteratorClass>;
 	OtStringIteratorClass() = default;
-
-	inline OtStringIteratorClass(OtString string) {
-		pos = string->value.cbegin();
-		last = string->value.cend();
-	}
+	OtStringIteratorClass(OtString string) : pos(string->value.cbegin()), last(string->value.cend()) {}
 
 private:
 	// data

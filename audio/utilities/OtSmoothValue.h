@@ -23,7 +23,7 @@ template<typename T>
 class OtSmoothValue {
 public:
 	// constructor
-	inline OtSmoothValue(size_t t) : smoothingSamples(t) {}
+	OtSmoothValue(size_t t) : smoothingSamples(t) {}
 
 	// reset state
 	inline void reset(T value) {

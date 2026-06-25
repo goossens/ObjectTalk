@@ -129,7 +129,7 @@ public:
 	inline std::string getText() { return source->substr(tokenStart, position - tokenStart); }
 	inline int64_t getInteger() { return integerValue; }
 	inline double getReal() { return realValue; }
-	inline std::string getString() { return stringValue; }
+	inline const std::string& getString() { return stringValue; }
 	inline OtID getID() { return OtIdentifier::create(getText()); }
 
 	// throw an exception
@@ -141,13 +141,13 @@ public:
 
 private:
 	// specify a new token to the scanner
-	void addToken(const std::string text, Token textToken);
+	void addToken(const std::string& text, Token textToken);
 
 	// state definition for token state/transition table
 	class OtScannerState {
 	public:
 		// constructor
-		inline OtScannerState() {
+		OtScannerState() {
 			for (auto c = 0; c < 256; c++) {
 				transitions[c] = noTransition;
 			}

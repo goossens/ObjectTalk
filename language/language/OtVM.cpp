@@ -29,7 +29,7 @@
 
 class OtTryCatch {
 public:
-	OtTryCatch(size_t p, OtStackState s) : pc(p), stack(s) {}
+	OtTryCatch(size_t p, const OtStackState& s) : pc(p), stack(s) {}
 	size_t pc;
 	OtStackState stack;
 };

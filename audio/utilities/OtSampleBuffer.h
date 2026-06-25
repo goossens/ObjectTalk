@@ -27,7 +27,7 @@
 class OtSampleBuffer {
 public:
 	// constructor
-	inline OtSampleBuffer(size_t c, size_t s) : channels(c), samples(s) {
+	OtSampleBuffer(size_t c, size_t s) : channels(c), samples(s) {
 		buffer.resize(channels * samples);
 	}
 

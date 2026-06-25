@@ -21,7 +21,7 @@
 //	OtPath::replaceExtension
 //
 
-std::string OtPath::replaceExtension(const std::string path, const std::string& extension) {
+std::string OtPath::replaceExtension(const std::string& path, const std::string& extension) {
 	auto work = std::filesystem::path(path);
 	work.replace_extension(extension);
 	return work.string();

@@ -394,7 +394,7 @@ void OtScanner::expect(Token expectedToken, bool advanceToNextToken) {
 //	OtScanner::addToken
 //
 
-void OtScanner::addToken(const std::string text, Token textToken) {
+void OtScanner::addToken(const std::string& text, Token textToken) {
 	// add token to lookup
 	tokens[textToken] = text;
 

@@ -28,7 +28,7 @@ public:
 	// constructors
 	OtCamera() = default;
 
-	inline OtCamera(int w, int h, const glm::mat4 pm, const glm::mat4& vm) :
+	OtCamera(int w, int h, const glm::mat4 pm, const glm::mat4& vm) :
 		width(w),
 		height(h),
 		viewMatrix(vm),
@@ -38,7 +38,7 @@ public:
 		update();
 	}
 
-	inline OtCamera(int w, int h, float nearPlane, float farPlane, float fov, const glm::mat4& vm) :
+	OtCamera(int w, int h, float nearPlane, float farPlane, float fov, const glm::mat4& vm) :
 		width(w),
 		height(h),
 		viewMatrix(vm) {
@@ -50,7 +50,7 @@ public:
 		update();
 	}
 
-	inline OtCamera(int w, int h, float nearPlane, float farPlane, float fov, const glm::vec3& eye, const glm::vec3& at) :
+	OtCamera(int w, int h, float nearPlane, float farPlane, float fov, const glm::vec3& eye, const glm::vec3& at) :
 		width(w),
 		height(h) {
 

@@ -62,7 +62,7 @@ protected:
 	friend class OtObjectPointer<OtClassClass>;
 	OtClassClass() = default;
 	OtClassClass(OtType t) : classType(t) {}
-	OtClassClass(OtID id) { classType = OtType::create(id); }
+	OtClassClass(OtID id) : classType(OtType::create(id)) {}
 
 	// data
 	OtType classType;

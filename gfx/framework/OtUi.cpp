@@ -263,7 +263,7 @@ bool OtUi::toggleButton(const char* labelPlusID, bool* value) {
 	std::string id;
 	splitLabel(labelPlusID, label, id);
 
-	ImVec4* colors = ImGui::GetStyle().Colors;
+	const ImVec4* colors = ImGui::GetStyle().Colors;
 	ImVec2 p = ImGui::GetCursorScreenPos();
 	ImDrawList* drawlist = ImGui::GetWindowDrawList();
 	auto changed = false;
@@ -345,7 +345,7 @@ bool OtUi::smallToggleButton(const char* label, bool* value) {
 	height = diameter;
 	width = diameter * 1.55f;
 
-	ImVec4* colors = ImGui::GetStyle().Colors;
+	const ImVec4* colors = ImGui::GetStyle().Colors;
 	ImDrawList* drawlist = ImGui::GetWindowDrawList();
 
 	if (ImGui::IsItemHovered()) {
@@ -387,7 +387,7 @@ float OtUi::smallToggleButtonWidth() {
 
 bool OtUi::latchButton(const char* label, bool* value, const ImVec2& size) {
 	auto changed = false;
-	ImVec4* colors = ImGui::GetStyle().Colors;
+	const ImVec4* colors = ImGui::GetStyle().Colors;
 
 	if (*value) {
 		ImGui::PushStyleColor(ImGuiCol_Button, colors[ImGuiCol_ButtonActive]);
@@ -492,7 +492,7 @@ bool OtUi::inputMultilineText(const char* label, std::string* value, const ImVec
 
 	ImGui::InputTextMultiline(label, (char*) value->c_str(), value->capacity() + 1, size, flags, [](ImGuiInputTextCallbackData* data) {
 		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
-			std::string* value = (std::string*) data->UserData;
+			std::string* value = static_cast<std::string*>(data->UserData);
 			value->resize(data->BufTextLen);
 			data->Buf = (char*) value->c_str();
 		}

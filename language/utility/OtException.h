@@ -40,17 +40,17 @@ public:
 			longMessage(lm) {
 	}
 
-	OtException(std::string m) : shortMessage(m), longMessage(m) {}
+	OtException(const std::string& m) : shortMessage(m), longMessage(m) {}
 
 	inline const char* what() const noexcept { return longMessage.c_str(); }
 
 	// access properties
-	inline std::string getModule() const { return module; }
+	inline const std::string& getModule() const { return module; }
 	inline size_t getLineNumber() const { return lineNumber; }
 	inline size_t getStart() const { return start; }
 	inline size_t getEnd() const { return end; }
-	inline std::string getShortErrorMessage() const { return shortMessage; }
-	inline std::string getLongErrorMessage() const { return longMessage; }
+	inline const std::string& getShortErrorMessage() const { return shortMessage; }
+	inline const std::string& getLongErrorMessage() const { return longMessage; }
 
 	// (de)serializer
 	std::string serialize();

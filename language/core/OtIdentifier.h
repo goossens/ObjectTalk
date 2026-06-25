@@ -71,9 +71,9 @@ private:
 
 		} else {
 			OtID id = (OtID) identifiers.size();
-			auto name = saveIdentifier(text);
-			identifiers.emplace_back(name);
-			identifierIndex[name] = id;
+			auto idName = saveIdentifier(text);
+			identifiers.emplace_back(idName);
+			identifierIndex[idName] = id;
 			return id;
 		}
 	}

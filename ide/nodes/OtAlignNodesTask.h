@@ -37,7 +37,7 @@ public:
 	};
 
 	// constructor
-	inline OtAlignNodesTask(OtNodes* n, Alignment a) : nodes(n), alignment(a) {}
+	OtAlignNodesTask(OtNodes* n, Alignment a) : nodes(n), alignment(a) {}
 
 	// get task name
 	std::string name() { return "align nodes"; }

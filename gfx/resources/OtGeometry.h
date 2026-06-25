@@ -25,14 +25,14 @@
 class OtGeometry {
 public:
 	// constructors
-	inline OtGeometry() {
+	OtGeometry() {
 		mesh = std::make_shared<OtMesh>();
 	}
 
-	inline OtGeometry(std::shared_ptr<OtMesh> m) : mesh(m) {
+	OtGeometry(std::shared_ptr<OtMesh> m) : mesh(m) {
 	}
 
-	inline OtGeometry(const std::string& path) {
+	OtGeometry(const std::string& path) {
 		mesh = std::make_shared<OtMesh>();
 		mesh->load(path);
 	}

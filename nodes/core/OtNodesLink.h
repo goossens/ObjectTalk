@@ -31,7 +31,7 @@ using OtNodesLink = std::shared_ptr<OtNodesLinkClass>;
 class OtNodesLinkClass {
 public:
 	// constructor
-	inline OtNodesLinkClass(OtNodesPin f, OtNodesPin t, uint32_t i=0) : from(f), to(t) {
+	OtNodesLinkClass(OtNodesPin f, OtNodesPin t, uint32_t i=0) : from(f), to(t) {
 		id = i ? i : OtNodesGenerateID();
 	}
 

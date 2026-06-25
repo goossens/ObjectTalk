@@ -40,24 +40,24 @@ public:
 	static_assert(std::is_base_of<OtObjectClass, T>::value, "Instance is not derived from OtObjectClass");
 
 	// default constructor
-	inline OtObjectPointer() : ptr(nullptr) {}
+	OtObjectPointer() : ptr(nullptr) {}
 
 	// null constructor
-	inline OtObjectPointer(std::nullptr_t) : ptr(nullptr) {}
+	OtObjectPointer(std::nullptr_t) : ptr(nullptr) {}
 
 	// constructor for when we already have a pointer
-	inline OtObjectPointer(T* instance) : ptr(instance) {
+	OtObjectPointer(T* instance) : ptr(instance) {
 		incrementReference();
 	}
 
 	// copy constructor
-	inline OtObjectPointer(const OtObjectPointer& ref) {
+	OtObjectPointer(const OtObjectPointer& ref) {
 		ptr = ref.ptr;
 		incrementReference();
 	}
 
 	template<typename Ts>
-	inline OtObjectPointer(const OtObjectPointer<Ts>& ref) {
+	OtObjectPointer(const OtObjectPointer<Ts>& ref) {
 		static_assert(std::is_base_of<Ts, T>::value || std::is_base_of<T, Ts>::value, "Can't convert smart pointers");
 		ptr = dynamic_cast<T*>(ref.ptr);
 		OtAssert(ptr || !ref.ptr);
@@ -65,13 +65,13 @@ public:
 	}
 
 	// move constructors
-	inline OtObjectPointer(OtObjectPointer&& ref) {
+	OtObjectPointer(OtObjectPointer&& ref) {
 		ptr = ref.ptr;
 		ref.ptr = nullptr;
 	}
 
 	template<typename Ts>
-	inline OtObjectPointer(OtObjectPointer<Ts>&& ref) {
+	OtObjectPointer(OtObjectPointer<Ts>&& ref) {
 		static_assert(std::is_base_of<Ts, T>::value || std::is_base_of<T, Ts>::value, "Can't convert smart pointers");
 		ptr = dynamic_cast<T*>(ref.ptr);
 		OtAssert(ptr || !ref.ptr);
@@ -79,7 +79,7 @@ public:
 	}
 
 	// destructor
-	inline ~OtObjectPointer() {
+	~OtObjectPointer() {
 		decrementReference();
 	}
 

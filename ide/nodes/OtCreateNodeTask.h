@@ -25,7 +25,7 @@
 class OtCreateNodeTask : public OtEditorTask {
 public:
 	// constructor
-	inline OtCreateNodeTask(OtNodes* n, const std::string& tn, float _x, float _y) : nodes(n), typeName(tn), x(_x), y(_y) {}
+	OtCreateNodeTask(OtNodes* n, const std::string& tn, float _x, float _y) : nodes(n), typeName(tn), x(_x), y(_y) {}
 
 	// get task name
 	std::string name() { return "create node"; }

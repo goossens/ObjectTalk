@@ -112,7 +112,7 @@ public:
 	};
 
 	// constructor
-	inline OtNodesPinClass(const char* n, Direction d) : name(n), direction(d) {
+	OtNodesPinClass(const char* n, Direction d) : name(n), direction(d) {
 		id = OtNodesGenerateID();
 	}
 
@@ -206,7 +206,7 @@ template <typename T>
 class OtNodesPinImpl : public OtNodesPinClass {
 public:
 	// constructor
-	inline OtNodesPinImpl(const char* n, Direction d, T& v) : OtNodesPinClass(n, d) {
+	OtNodesPinImpl(const char* n, Direction d, T& v) : OtNodesPinClass(n, d) {
 		static_assert(OtTypeListIndexOf<T, OtNodesPinTypes>() != -1, "Data type not allowed for node pin");
 		type = OtTypeListIndexOf<T, OtNodesPinTypes>();
 		value = &v;

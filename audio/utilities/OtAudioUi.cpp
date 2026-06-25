@@ -131,7 +131,7 @@ bool OtAudioUi::smallToggleButton(const char* label, float* value) {
 	height = diameter;
 	width = diameter * 1.55f;
 
-	ImVec4* colors = ImGui::GetStyle().Colors;
+	const ImVec4* colors = ImGui::GetStyle().Colors;
 	ImDrawList* drawlist = ImGui::GetWindowDrawList();
 
 	if (ImGui::IsItemHovered()) {

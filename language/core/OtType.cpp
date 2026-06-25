@@ -22,17 +22,6 @@ std::list<OtTypeClass> OtType::types;
 
 
 //
-//	OtTypeClass::OtTypeClass
-//
-
-OtTypeClass::OtTypeClass(OtID i, OtType p, OtTypeAllocator a) {
-	typeID = i;
-	parent = p;
-	allocator = a ? a : p ? p->allocator : nullptr;
-}
-
-
-//
 //	OtTypeClass::allocate
 //
 

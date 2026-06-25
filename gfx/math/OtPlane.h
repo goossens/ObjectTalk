@@ -23,15 +23,15 @@ class OtPlane {
 public:
 	// constructors
 	OtPlane() = default;
-	inline OtPlane(float a, float b, float c, float d) : normal(glm::vec3(a, b, c)), distanceToOrigin(d) {}
-	inline OtPlane(const glm::vec3& n, float d) : normal(n), distanceToOrigin(d) {}
-	inline OtPlane(const glm::vec4& v) : normal(v.x, v.y, v.z), distanceToOrigin(v.w) {}
+	OtPlane(float a, float b, float c, float d) : normal(glm::vec3(a, b, c)), distanceToOrigin(d) {}
+	OtPlane(const glm::vec3& n, float d) : normal(n), distanceToOrigin(d) {}
+	OtPlane(const glm::vec4& v) : normal(v.x, v.y, v.z), distanceToOrigin(v.w) {}
 
-	inline OtPlane(const glm::vec3& n, const glm::vec3& p) : normal(n) {
+	OtPlane(const glm::vec3& n, const glm::vec3& p) : normal(n) {
 		distanceToOrigin = -glm::dot(p, n);
 	}
 
-	inline OtPlane(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3) {
+	OtPlane(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3) {
 		normal = glm::normalize(glm::cross((p2 - p1), (p3 - p1)));
 		distanceToOrigin = -glm::dot(p1, normal);
 	}

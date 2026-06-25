@@ -204,7 +204,7 @@ void OtTextEditor::renderEditor() {
 	editor.Render("TextEditor");
 	ImGui::PopFont();
 
-	auto viewport = ImGui::GetMainViewport();
+	const ImGuiViewport* viewport = ImGui::GetMainViewport();
 
 	if (popupDiff) {
 		ImGui::OpenPopup("Changes since Opening File##diff");

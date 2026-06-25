@@ -34,7 +34,7 @@ public:
 	}
 
 	template<typename ...Args>
-	inline OtFunctionClass(void (*function)(Args...)) {
+	OtFunctionClass(void (*function)(Args...)) {
 		caller = [function]([[maybe_unused]] size_t count, OtObject* parameters) {
 			std::apply(
 				function,
@@ -49,7 +49,7 @@ public:
 	}
 
 	template<typename Result, typename ...Args>
-	inline OtFunctionClass(Result (*function)(Args...)) {
+	OtFunctionClass(Result (*function)(Args...)) {
 		caller = [function]([[maybe_unused]] size_t count, OtObject* parameters) {
 			return OtValue<Result>::encode(
 				std::apply(
@@ -63,7 +63,7 @@ public:
 	}
 
 	template<typename ...Args>
-	inline OtFunctionClass(std::function<void(Args...)> function) {
+	OtFunctionClass(std::function<void(Args...)> function) {
 		caller = [function]([[maybe_unused]] size_t count, OtObject* parameters) {
 			std::apply(function,
 				functionArgs<typename std::tuple<Args...>>(
@@ -77,7 +77,7 @@ public:
 	}
 
 	template<typename Result, typename ...Args>
-	inline OtFunctionClass(std::function<Result(Args...)> function) {
+	OtFunctionClass(std::function<Result(Args...)> function) {
 		caller = [function]([[maybe_unused]] size_t count, OtObject* parameters) {
 			return OtValue<Result>::encode(
 				std::apply(
@@ -91,7 +91,7 @@ public:
 	}
 
 	template<typename Class>
-	inline OtFunctionClass(void (Class::*method)(size_t, OtObject*)) {
+	OtFunctionClass(void (Class::*method)(size_t, OtObject*)) {
 		caller = [method](size_t count, OtObject* parameters) {
 			OtObjectPointer<Class> object = parameters[0];
 			((*object).*method)(count - 1, parameters + 1);
@@ -102,7 +102,7 @@ public:
 	}
 
 	template<typename Class>
-	inline OtFunctionClass(OtObject (Class::*method)(size_t, OtObject*)) {
+	OtFunctionClass(OtObject (Class::*method)(size_t, OtObject*)) {
 		caller = [method](size_t count, OtObject* parameters) {
 			OtObjectPointer<Class> object = parameters[0];
 			return ((*object).*method)(count - 1, parameters + 1);
@@ -119,7 +119,7 @@ public:
 	}
 
 	template<typename Class, typename ...Args>
-	inline OtFunctionClass(void (Class::*method)(Args...)) {
+	OtFunctionClass(void (Class::*method)(Args...)) {
 		caller = [method]([[maybe_unused]] size_t count, OtObject* parameters) {
 			std::apply(
 				method,
@@ -134,7 +134,7 @@ public:
 	}
 
 	template<typename Class, typename Result, typename ...Args>
-	inline OtFunctionClass(Result (Class::*method)(Args...)) {
+	OtFunctionClass(Result (Class::*method)(Args...)) {
 		caller = [method]([[maybe_unused]] size_t count, OtObject* parameters) {
 			return OtValue<Result>::encode(
 				std::apply(
@@ -148,7 +148,7 @@ public:
 	}
 
 	template<typename Class, typename Result, typename ...Args>
-	inline OtFunctionClass(Result (Class::*method)(Args...) const) {
+	OtFunctionClass(Result (Class::*method)(Args...) const) {
 		caller = [method]([[maybe_unused]] size_t count, OtObject* parameters) {
 			return OtValue<Result>::encode(
 				std::apply(
@@ -175,7 +175,7 @@ protected:
 	friend class OtObjectPointer<OtFunctionClass>;
 	OtFunctionClass() = default;
 
-	inline OtFunctionClass(void (*function)(size_t, OtObject*)) {
+	OtFunctionClass(void (*function)(size_t, OtObject*)) {
 		caller = [function](size_t count, OtObject* parameters) {
 			function(count, parameters);
 			return nullptr;
@@ -184,7 +184,7 @@ protected:
 		parameterCount = SIZE_MAX;
 	}
 
-	inline OtFunctionClass(OtObject (*function)(size_t, OtObject*)) {
+	OtFunctionClass(OtObject (*function)(size_t, OtObject*)) {
 		caller = [function](size_t count, OtObject* parameters) {
 			return function(count, parameters);
 		};

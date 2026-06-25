@@ -34,7 +34,7 @@ public:
 
 	// de-multiplex stderr stream
 	static inline void deMultiplex(
-		std::string input,
+		const std::string& input,
 		std::function<void(const std::string& message)> normal,
 		std::function<void(OtLog::Type type, const std::string& message)> log,
 		std::function<void(const std::string& message)> debugger,

@@ -45,13 +45,13 @@ public:
 	// constructors
 	OtAsset() = default;
 
-	inline OtAsset(T* instance) {
+	OtAsset(T* instance) {
 		ptr = instance;
 		ptr->reference();
 		follow();
 	}
 
-	inline OtAsset(const OtAsset& asset) {
+	OtAsset(const OtAsset& asset) {
 		if (asset.ptr) {
 			ptr = asset.ptr;
 			virtualMode = asset.virtualMode;
@@ -72,7 +72,7 @@ public:
 		}
 	}
 
-	inline OtAsset(OtAsset&& asset) {
+	OtAsset(OtAsset&& asset) {
 		if (asset.ptr) {
 			ptr = asset.ptr;
 			virtualMode = asset.virtualMode;
@@ -102,7 +102,7 @@ public:
 	}
 
 	// destructor
-	inline ~OtAsset() {
+	~OtAsset() {
 		if (ptr) {
 			unfollow();
 			ptr->dereference();

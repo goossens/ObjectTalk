@@ -31,7 +31,7 @@ using OtWire = std::shared_ptr<OtWireClass>;
 class OtWireClass {
 public:
 	// constructor
-	inline OtWireClass(OtCircuitPin f, OtCircuitPin t, uint32_t i=0) : from(f), to(t) {
+	OtWireClass(OtCircuitPin f, OtCircuitPin t, uint32_t i=0) : from(f), to(t) {
 		id = i ? i : OtCircuitGenerateID();
 	}
 

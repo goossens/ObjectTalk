@@ -25,17 +25,9 @@
 class OtGeometry {
 public:
 	// constructors
-	OtGeometry() {
-		mesh = std::make_shared<OtMesh>();
-	}
-
-	OtGeometry(std::shared_ptr<OtMesh> m) : mesh(m) {
-	}
-
-	OtGeometry(const std::string& path) {
-		mesh = std::make_shared<OtMesh>();
-		mesh->load(path);
-	}
+	OtGeometry() : mesh(std::make_shared<OtMesh>()) {}
+	OtGeometry(std::shared_ptr<OtMesh> m) : mesh(m) {}
+	OtGeometry(const std::string& path) : mesh(std::make_shared<OtMesh>()) { mesh->load(path); }
 
 	// clear the geometry
 	inline void clear() {

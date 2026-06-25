@@ -31,12 +31,11 @@ public:
 		distanceToOrigin = -glm::dot(p, n);
 	}
 
-	OtPlane(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3) {
-		normal = glm::normalize(glm::cross((p2 - p1), (p3 - p1)));
+	OtPlane(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3): normal(glm::normalize(glm::cross((p2 - p1), (p3 - p1)))) {
 		distanceToOrigin = -glm::dot(p1, normal);
 	}
 
-	// settters/getters
+	// setters/getters
 	inline void setNormal(const glm::vec3& n) { normal = n; }
 	inline void setDistance(float d) { distanceToOrigin = d; }
 

@@ -51,7 +51,7 @@ public:
 
 	std::string getParam(const std::string& p) { return queryParams.find(p)->second; }
 
-	std::unordered_map<std::string, std::string> getParams() {
+	const std::unordered_map<std::string, std::string>& getParams() {
 		return queryParams;
 	}
 

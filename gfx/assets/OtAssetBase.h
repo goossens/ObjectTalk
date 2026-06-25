@@ -63,7 +63,7 @@ public:
 	const char* getStateName();
 	bool supportsFileType(const std::string& ext);
 
-	inline std::string getErrorMessage() { return errorMessage; }
+	inline const std::string& getErrorMessage() { return errorMessage; }
 
 	// asset properties
 	static constexpr bool hasEditor = false;

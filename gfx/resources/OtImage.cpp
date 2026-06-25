@@ -260,7 +260,7 @@ glm::vec4 OtImage::getPixelRgba(int x, int y) {
 	} else if (surface->format == SDL_PIXELFORMAT_RGBA128_FLOAT) {
 		auto p = static_cast<uint8_t*>(surface->pixels);
 		p += surface->pitch * y + x * 16;
-		auto f = (float*) p;
+		auto f = reinterpret_cast<float*>(p);
 		return glm::vec4(f[0], f[1], f[2], f[3]);
 
 	} else {

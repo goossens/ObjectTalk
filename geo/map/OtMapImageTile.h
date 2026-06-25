@@ -28,9 +28,7 @@
 class OtMapImageTile {
 public:
 	// constructor
-	OtMapImageTile(OtMapTile t, const std::string& url) : tile(t) {
-		texture = url;
-	}
+	OtMapImageTile(const OtMapTile& tile, const std::string& url) : tile(tile), texture(url) {}
 
 	// render tile
 	void render(ImDrawList* drawlist, OtProjector& projector);

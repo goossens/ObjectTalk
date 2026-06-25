@@ -25,7 +25,7 @@
 class OtNeedle : public OtFilter {
 public:
 	// set properties
-	inline void setNeedle(OtTexture value) { needleTexture = value; }
+	inline void setNeedle(const OtTexture& value) { needleTexture = value; }
 	inline void setTransform(const glm::mat4& value) { transform = value; }
 
 	// configure the compute pass

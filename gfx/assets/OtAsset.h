@@ -51,6 +51,10 @@ public:
 		follow();
 	}
 
+	OtAsset(const std::string& path) {
+		load(path);
+	}
+
 	OtAsset(const OtAsset& asset) {
 		if (asset.ptr) {
 			ptr = asset.ptr;

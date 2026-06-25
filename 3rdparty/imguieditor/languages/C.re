@@ -14,10 +14,10 @@
 
 static TextEditor::Iterator getCStyleIdentifier(TextEditor::Iterator start, TextEditor::Iterator end) {
 	if (start < end && TextEditor::CodePoint::isXidStart(*start)) {
-		start++;
+		++start;
 
 		while (start < end && TextEditor::CodePoint::isXidContinue(*start)) {
-			start++;
+			++start;
 		}
 	}
 
@@ -81,7 +81,7 @@ static TextEditor::Iterator getCStyleNumber(TextEditor::Iterator start, TextEdit
 //
 
 static bool isCStylePunctuation(ImWchar character) {
-	static bool punctuation[128] = {
+	static const bool punctuation[128] = {
 		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
 		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
 		false,  true, false, false, false,  true,  true, false,  true,  true,  true,  true,  true,  true,  true,  true,

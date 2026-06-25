@@ -67,7 +67,7 @@ bool TextEditor::LineFold::update(const Config& config, Document& document, cons
 			line.foldingState = FoldingState::visible;
 		}
 
-		for (auto& fold : *this) {
+		for (const auto& fold : *this) {
 			if (previouslyFolded.find(fold.start) != previouslyFolded.end()) {
 				document[fold.start].foldingState = FoldingState::folded;
 
@@ -92,7 +92,7 @@ bool TextEditor::LineFold::update(const Config& config, Document& document, cons
 void TextEditor::LineFold::foldAroundLine(Document& document, size_t line) {
 	auto lineToFold = invalidLine;
 
-	for (auto& fold : *this) {
+	for (const auto& fold : *this) {
 		if (line > fold.start && line <= fold.end) {
 			if (document[fold.start].foldingState == FoldingState::foldable) {
 				lineToFold = fold.start;
@@ -112,7 +112,7 @@ void TextEditor::LineFold::foldAroundLine(Document& document, size_t line) {
 //
 
 void TextEditor::LineFold::unfoldAroundLine(Document& document, size_t line) {
-	for (auto& fold : *this) {
+	for (const auto& fold : *this) {
 		if (line > fold.start && line <= fold.end) {
 			if (document[fold.start].foldingState == FoldingState::folded) {
 				document[fold.start].foldingState = FoldingState::foldable;
@@ -134,7 +134,7 @@ void TextEditor::LineFold::toggleAtLine(Document& document, size_t lineNo) {
 	if (state == FoldingState::foldable) {
 		line.foldingState = FoldingState::folded;
 
-		for (auto& fold : *this) {
+		for (const auto& fold : *this) {
 			if (fold.start == lineNo) {
 				for (size_t i = fold.start + 1; i <= fold.end; i++) {
 					document[i].foldingState = FoldingState::hidden;
@@ -147,7 +147,7 @@ void TextEditor::LineFold::toggleAtLine(Document& document, size_t lineNo) {
 	} else if (state == FoldingState::folded) {
 		line.foldingState = FoldingState::foldable;
 
-		for (auto& fold : *this) {
+		for (const auto& fold : *this) {
 			if (fold.start == lineNo) {
 				for (size_t i = fold.start + 1; i <= fold.end; i++) {
 					document[i].foldingState = FoldingState::visible;
@@ -165,7 +165,7 @@ void TextEditor::LineFold::toggleAtLine(Document& document, size_t lineNo) {
 //
 
 void TextEditor::LineFold::unfoldAll(Document& document) {
-	for (auto& fold : *this) {
+	for (const auto& fold : *this) {
 		if (document[fold.start].foldingState == FoldingState::folded) {
 			document[fold.start].foldingState = FoldingState::foldable;
 			forceUpdate = true;

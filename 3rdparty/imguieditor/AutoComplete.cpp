@@ -209,7 +209,7 @@ bool TextEditor::AutoComplete::render(Document& document, Cursors& cursors, Type
 
 	auto suggestions = state.suggestions.size();
 	auto visibleSuggestions = (suggestions == 0) ? 1 : std::min(static_cast<size_t>(10), suggestions);
-	auto& style = ImGui::GetStyle();
+	const auto& style = ImGui::GetStyle();
 	auto height = ImGui::GetFrameHeightWithSpacing() * visibleSuggestions + style.WindowPadding.y * 2.0f;
 	ImGui::SetNextWindowSize(ImVec2(configuration.suggestionWidth * glyphSize.x, height));
 
@@ -312,7 +312,7 @@ void TextEditor::AutoComplete::setSuggestions(const std::vector<std::string>& su
 //	TextEditor::AutoComplete::isSpecialKeyPressed
 //
 
-bool TextEditor::AutoComplete::isSpecialKeyPressed() const {
+bool TextEditor::AutoComplete::isSpecialKeyPressed() {
 	for (auto key : {ImGuiKey_Tab, ImGuiKey_Enter, ImGuiKey_KeypadEnter, ImGuiKey_UpArrow, ImGuiKey_DownArrow}) {
 		if (ImGui::IsKeyPressed(key)) {
 			return true;

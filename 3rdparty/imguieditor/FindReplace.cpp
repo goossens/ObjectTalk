@@ -20,7 +20,7 @@
 
 static bool latchButton(const char* label, bool* value, const ImVec2& size) {
 	auto changed = false;
-	ImVec4* colors = ImGui::GetStyle().Colors;
+	const ImVec4* colors = ImGui::GetStyle().Colors;
 
 	if (*value) {
 		ImGui::PushStyleColor(ImGuiCol_Button, colors[ImGuiCol_ButtonActive]);
@@ -54,9 +54,9 @@ static bool inputString(const char* label, std::string* value, ImGuiInputTextFla
 		ImGuiInputTextFlags_NoUndoRedo |
 		ImGuiInputTextFlags_CallbackResize;
 
-	return ImGui::InputText(label, (char*) value->c_str(), value->capacity() + 1, flags, [](ImGuiInputTextCallbackData* data) {
+	return ImGui::InputText(label, value->data(), value->capacity() + 1, flags, [](ImGuiInputTextCallbackData* data) {
 		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
-			std::string* value = (std::string*) data->UserData;
+			std::string* value = static_cast<std::string*>(data->UserData);
 			value->resize(data->BufTextLen);
 			data->Buf = (char*) value->c_str();
 		}
@@ -78,7 +78,7 @@ void TextEditor::renderFindReplace() {
 
 		// calculate sizes
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6.0f, 4.0f));
-		auto& style = ImGui::GetStyle();
+		const auto& style = ImGui::GetStyle();
 		auto fieldWidth = 250.0f * ImGui::GetStyle().FontScaleDpi;
 
 		auto button1Width = ImGui::CalcTextSize(findButtonLabel.c_str()).x + style.ItemSpacing.x * 2.0f;

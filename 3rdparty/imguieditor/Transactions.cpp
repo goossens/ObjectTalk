@@ -53,7 +53,7 @@ void TextEditor::Transactions::add(std::shared_ptr<Transaction> transaction) {
 //	TextEditor::Transactions::undo
 //
 
-void TextEditor::Transactions::undo(Config& config, Document& document, Cursors& cursors) {
+void TextEditor::Transactions::undo(const Config& config, Document& document, Cursors& cursors) {
 	auto transaction = at(--undoIndex);
 
 	for (auto action = transaction->rbegin(); action < transaction->rend(); action++) {
@@ -88,7 +88,7 @@ void TextEditor::Transactions::undo(Config& config, Document& document, Cursors&
 //	TextEditor::Transactions::redo
 //
 
-void TextEditor::Transactions::redo(Config& config, Document& document, Cursors& cursors) {
+void TextEditor::Transactions::redo(const Config& config, Document& document, Cursors& cursors) {
 	auto transaction = at(undoIndex++);
 
 	for (auto action = transaction->begin(); action < transaction->end(); action++) {

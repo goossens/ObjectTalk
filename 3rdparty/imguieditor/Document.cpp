@@ -16,7 +16,7 @@
 //	TextEditor::Document::setText
 //
 
-void TextEditor::Document::setText(Config& config, const std::string_view& text) {
+void TextEditor::Document::setText(const Config& config, const std::string_view& text) {
 	// reset document
 	clearDocument();
 	appendLine();
@@ -54,13 +54,13 @@ void TextEditor::Document::setText(Config& config, const std::string_view& text)
 //	TextEditor::Document::setText
 //
 
-void TextEditor::Document::setText(Config& config, const std::vector<std::string_view>& text) {
+void TextEditor::Document::setText(const Config& config, const std::vector<std::string_view>& text) {
 	// reset document
 	clearDocument();
 
 	if (text.size()) {
 		// process input UTF-8 and generate lines of glyphs
-		for (auto& line : text) {
+		for (const auto& line : text) {
 			appendLine();
 			auto i = line.begin();
 			auto end = line.end();
@@ -96,7 +96,7 @@ void TextEditor::Document::setText(Config& config, const std::vector<std::string
 //	TextEditor::Document::insertText
 //
 
-TextEditor::DocPos TextEditor::Document::insertText(Config& config, DocPos start, const std::string_view& text) {
+TextEditor::DocPos TextEditor::Document::insertText(const Config& config, DocPos start, const std::string_view& text) {
 	auto line = begin() + start.line;
 	auto index = start.index;
 	auto lineNo = start.line;
@@ -157,7 +157,7 @@ TextEditor::DocPos TextEditor::Document::insertText(Config& config, DocPos start
 //	TextEditor::Document::deleteText
 //
 
-void TextEditor::Document::deleteText(Config& config, DocPos start, DocPos end) {
+void TextEditor::Document::deleteText(const Config& config, DocPos start, DocPos end) {
 	auto& startLine = at(start.line);
 	auto startIndex = start.index;
 	auto& endLine = at(end.line);
@@ -379,7 +379,7 @@ TextEditor::DocPos TextEditor::Document::getEndOfLine(DocPos from) const {
 //
 
 TextEditor::DocPos TextEditor::Document::findWordStart(DocPos from, bool wordOnly) const {
-	auto& line = at(from.line);
+	const auto& line = at(from.line);
 	auto lineSize = line.size();
 
 	if (from.index == 0 || lineSize == 0) {
@@ -415,7 +415,7 @@ TextEditor::DocPos TextEditor::Document::findWordStart(DocPos from, bool wordOnl
 //
 
 TextEditor::DocPos TextEditor::Document::findWordEnd(DocPos from, bool wordOnly) const {
-	auto& line = at(from.line);
+	const auto& line = at(from.line);
 	auto index = from.index;
 	auto size = line.size();
 
@@ -636,7 +636,7 @@ TextEditor::DocPos TextEditor::Document::findPreviousNonWhiteSpace(DocPos from, 
 	bool done = false;
 
 	while (!done) {
-		auto& line = at(from.line);
+		const auto& line = at(from.line);
 		auto index = from.index;
 
 		while (!done && index > 0) {
@@ -671,7 +671,7 @@ TextEditor::DocPos TextEditor::Document::findNextNonWhiteSpace(DocPos from, bool
 	bool done = false;
 
 	while (!done) {
-		auto& line = at(from.line);
+		const auto& line = at(from.line);
 		auto index = from.index;
 
 		while (!done && index < line.size()) {
@@ -816,7 +816,7 @@ void TextEditor::Document::clearDocument() {
 //	TextEditor::Document::updateIndents
 //
 
-void TextEditor::Document::updateIndents(Config& config, size_t start, size_t end) {
+void TextEditor::Document::updateIndents(const Config& config, size_t start, size_t end) {
 	for (size_t i = start; i <= end; i++) {
 		auto& line = at(i);
 		line.indent = 0;

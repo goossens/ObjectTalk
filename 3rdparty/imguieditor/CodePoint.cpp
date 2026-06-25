@@ -54,7 +54,7 @@ std::string_view::const_iterator TextEditor::CodePoint::read(std::string_view::c
 	// parse a UTF-8 sequence into a unicode codepoint and return updated iterator
 	if (i < end && (uch(*i) & 0x80) == 0) {
 		*codepoint = uch(*i);
-		i++;
+		++i;
 
 	} else if (i + 1 < end && (uch(*i) & 0xE0) == 0xC0) {
 		*codepoint = ((uch(*i) & 0x1f) << 6) | (uch(*(i + 1)) & 0x3f);
@@ -74,7 +74,7 @@ std::string_view::const_iterator TextEditor::CodePoint::read(std::string_view::c
 
 	} else {
 		*codepoint = IM_UNICODE_CODEPOINT_INVALID;
-		i++;
+		++i;
 	}
 
 	return i;

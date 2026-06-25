@@ -40,7 +40,7 @@ bool TextEditor::MiniMap::update(const Config& config, const Document& document,
 
 				// determine visible part of document line on row
 				if (config.wordWrap && line.sections) {
-					auto& section = line.sections->at(typeSetter[i].section);
+					const auto& section = line.sections->at(typeSetter[i].section);
 					index = section.startIndex;
 					column = section.indent;
 					endColumn = section.columns;

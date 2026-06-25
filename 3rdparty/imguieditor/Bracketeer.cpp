@@ -16,7 +16,7 @@
 //	TextEditor::Bracketeer::update
 //
 
-void TextEditor::Bracketeer::update(Config& config, Document& document) {
+void TextEditor::Bracketeer::update(const Config& config, Document& document) {
 	// see if the configuration changed
 	bool configChanged =
 		showMatchingBrackets != config.showMatchingBrackets ||
@@ -104,7 +104,7 @@ void TextEditor::Bracketeer::update(Config& config, Document& document) {
 		// handle levels left open and mark them as errors
 		if (levels.size()) {
 			for (auto i = levels.rbegin(); i < levels.rend(); i++) {
-				auto& start = at(*i).start;
+				const auto& start = at(*i).start;
 				document[start.line][start.index].color = Color::matchingBracketError;
 				erase(begin() + *i);
 			}
@@ -138,7 +138,7 @@ void TextEditor::Bracketeer::update(Config& config, Document& document) {
 			}
 
 			// sort visible and invisible blocks by block start
-			std::sort(begin(), end(), [](BracketPair& a, BracketPair& b) {
+			std::sort(begin(), end(), [](const BracketPair& a, const BracketPair& b) {
 				return a.start < b.start;
 			});
 		}
@@ -152,11 +152,11 @@ void TextEditor::Bracketeer::update(Config& config, Document& document) {
 //	TextEditor::Bracketeer::getEnclosingBrackets
 //
 
-TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingBrackets(DocPos location) {
-	iterator brackets = end();
+TextEditor::Bracketeer::const_iterator TextEditor::Bracketeer::getEnclosingBrackets(DocPos location) const {
+	auto brackets = cend();
 	bool done = false;
 
-	for (auto i = begin(); !done && i < end(); i++) {
+	for (auto i = cbegin(); !done && i < end(); i++) {
 		// brackets are sorted so no need to go past specified location
 		if (i->isAfter(location)) {
 			done = true;
@@ -176,11 +176,11 @@ TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingBrackets(Do
 //	TextEditor::Bracketeer::getEnclosingBrackets
 //
 
-TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingBrackets(DocPos first, DocPos last) {
-	iterator brackets = end();
+TextEditor::Bracketeer::const_iterator TextEditor::Bracketeer::getEnclosingBrackets(DocPos first, DocPos last) const {
+	auto brackets = cend();
 	bool done = false;
 
-	for (auto i = begin(); !done && i < end(); i++) {
+	for (auto i = cbegin(); !done && i < end(); i++) {
 		// brackets are sorted so no need to go past specified location
 		if (i->isAfter(first)) {
 			done = true;
@@ -200,8 +200,8 @@ TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getEnclosingBrackets(Do
 //	TextEditor::Bracketeer::getInnerBrackets
 //
 
-TextEditor::Bracketeer::iterator TextEditor::Bracketeer::getInnerBrackets(DocPos first, DocPos last) {
-	iterator brackets = end();
+TextEditor::Bracketeer::const_iterator TextEditor::Bracketeer::getInnerBrackets(DocPos first, DocPos last) const {
+	auto brackets = cend();
 	auto outer = getEnclosingBrackets(first, last);
 
 	if (outer != end()) {

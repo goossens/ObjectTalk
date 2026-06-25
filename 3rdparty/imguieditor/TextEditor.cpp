@@ -262,7 +262,7 @@ void TextEditor::renderSelections() {
 			auto end = cursor.getSelectionEnd();
 
 			for (size_t i = begin.line; i <= end.line; i++) {
-				auto& line = document[i];
+				const auto& line = document[i];
 
 				if (line.foldingState != FoldingState::hidden) {
 					if (line.rows == 1) {
@@ -330,7 +330,7 @@ void TextEditor::renderTextMarkers() {
 			auto markerIndex = document[typeSetter[row].line].marker;
 
 			if (markerIndex) {
-				auto& marker = markers[markerIndex - 1];
+				const auto& marker = markers[markerIndex - 1];
 				auto y = cursorScreenPos.y + row * glyphSize.y;
 
 				if (((marker.textColor >> IM_COL32_A_SHIFT) & 0xFF) != 0) {
@@ -369,7 +369,7 @@ void TextEditor::renderMatchingBracketLines() {
 				auto column = std::min(docPos2VisPos(bracket->start).column, docPos2VisPos(bracket->end).column);
 
 				for (size_t i = bracket->start.line + 1; i < bracket->end.line; i++) {
-					auto& line = document[i];
+					const auto& line = document[i];
 
 					if (line.foldingState != FoldingState::hidden) {
 						auto lineX = cursorScreenPos.x + textLeftOffset + column * glyphSize.x;
@@ -404,7 +404,7 @@ void TextEditor::renderText() {
 		size_t endColumn;
 
 		if (config.wordWrap && line.sections) {
-			auto& section = line.sections->at(typeSetter[i].section);
+			const auto& section = line.sections->at(typeSetter[i].section);
 			index = section.startIndex;
 			column = section.indent;
 			endColumn = section.columns;
@@ -522,7 +522,7 @@ void TextEditor::renderLineNumberMarkers() {
 			auto markerIndex = document[typeSetter[row].line].marker;
 
 			if (markerIndex) {
-				auto& marker = markers[markerIndex - 1];
+				const auto& marker = markers[markerIndex - 1];
 				auto y = cursorScreenPos.y + row * glyphSize.y;
 
 				if (((marker.lineNumberColor >> IM_COL32_A_SHIFT) & 0xFF) != 0) {
@@ -673,7 +673,7 @@ void TextEditor::renderMiniMap() {
 			auto end = cursor.getSelectionEnd();
 
 			for (size_t i = begin.line; i <= end.line; i++) {
-				auto& line = document[i];
+				const auto& line = document[i];
 
 				if (line.foldingState != FoldingState::hidden) {
 					for (size_t j = 0; j < line.rows; j++) {
@@ -783,7 +783,7 @@ void TextEditor::renderScrollbarMiniMap() {
 				auto end = cursor.getSelectionEnd();
 
 				for (size_t i = begin.line; i <= end.line; i++) {
-					auto& line = document[i];
+					const auto& line = document[i];
 
 					if (line.foldingState != FoldingState::hidden) {
 						auto ly1 = std::round(rect.Min.y + line.row * rowHeight);
@@ -2451,13 +2451,14 @@ void TextEditor::stripTrailingWhitespaces() {
 
 	// process all the lines
 	for (size_t i = 0; i < document.size(); i++) {
-		auto& line = document[i];
+		const auto& line = document[i];
 		size_t lineSize = line.size();
 		size_t whitespace = std::numeric_limits<size_t>::max();
-		bool done = false;
 
 		// look for first non-whitespace glyph at the end of the line
 		if (lineSize) {
+			bool done = false;
+
 			for (auto index = lineSize - 1; !done; index--) {
 				if (CodePoint::isWhiteSpace(line[index].codepoint)) {
 					whitespace = index;
@@ -2526,7 +2527,6 @@ void TextEditor::tabsToSpaces() {
 		size_t pos = 0;
 
 		while (i < end) {
-			char utf8[4];
 			ImWchar codepoint;
 			i = CodePoint::read(i, end, &codepoint);
 
@@ -2536,6 +2536,7 @@ void TextEditor::tabsToSpaces() {
 				pos += spaces;
 
 			} else {
+				char utf8[4];
 				output.append(utf8, CodePoint::write(utf8, codepoint));
 				pos++;
 			}
@@ -2559,7 +2560,6 @@ void TextEditor::spacesToTabs() {
 		size_t spaces = 0;
 
 		while (i < end) {
-			char utf8[4];
 			ImWchar codepoint;
 			i = CodePoint::read(i, end, &codepoint);
 
@@ -2597,6 +2597,7 @@ void TextEditor::spacesToTabs() {
 					pos += config.tabSize - (pos % config.tabSize);
 
 				} else {
+					char utf8[4];
 					output.append(utf8, CodePoint::write(utf8, codepoint));
 					pos++;
 				}

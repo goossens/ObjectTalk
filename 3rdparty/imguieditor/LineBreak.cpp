@@ -133,7 +133,7 @@ struct LineBreakState {
 	size_t ri = 0;
 
 	// move to the next state
-	inline void push(LineBreakGlyph step) {
+	inline void push(const LineBreakGlyph& step) {
 		if (next.ignored) {
 			current.pos = next.pos;
 
@@ -146,7 +146,7 @@ struct LineBreakState {
 	}
 
 	// get the codepoint at specified location
-	ImWchar getCodepoint(size_t pos) {
+	ImWchar getCodepoint(size_t pos) const {
 		if (pos < size) {
 			return glyphs[pos].codepoint;
 
@@ -156,7 +156,7 @@ struct LineBreakState {
 	}
 
 	// get the line break class at specified location
-	LBC getClass(size_t pos) {
+	LBC getClass(size_t pos) const {
 		if (pos < size) {
 			return getLineBreakClass(glyphs[pos].codepoint);
 
@@ -199,7 +199,7 @@ static inline bool isPi(ImWchar codepoint) {
 }
 
 
-static inline bool isAkCircleAs(LineBreakGlyph& lbg) {
+static inline bool isAkCircleAs(const LineBreakGlyph& lbg) {
 	return (lbg.cls == LBC::ak) || (lbg.codepoint == 0x25CC) || (lbg.cls == LBC::as);
 }
 
@@ -210,7 +210,7 @@ static inline bool isAkCircleAs(LineBreakGlyph& lbg) {
 //	Partly ported from on https://github.com/cto-af/linebreak
 //
 
-static inline TextEditor::BreakOption lb2(LineBreakState& state) {
+static inline TextEditor::BreakOption lb2(const LineBreakState& state) {
 	// LB2: never break at the start of text
 	// sot ×
 	if (state.current.cls == LBC::sot && state.next.cls != LBC::eot) {
@@ -222,7 +222,7 @@ static inline TextEditor::BreakOption lb2(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb3(LineBreakState& state) {
+static inline TextEditor::BreakOption lb3(const LineBreakState& state) {
 	// LB3: always break at the end of text
 	// ! eot
 	if (state.next.cls == LBC::eot) {
@@ -234,7 +234,7 @@ static inline TextEditor::BreakOption lb3(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb4(LineBreakState& state) {
+static inline TextEditor::BreakOption lb4(const LineBreakState& state) {
 	// LB4: always break after hard line breaks
 	// BK !
 	if (state.current.cls == LBC::bk) {
@@ -246,7 +246,7 @@ static inline TextEditor::BreakOption lb4(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb5(LineBreakState& state) {
+static inline TextEditor::BreakOption lb5(const LineBreakState& state) {
 	// LB5: treat CR followed by LF, as well as CR, LF, and NL as hard line breaks
 	// CR × LF
 	// CR !
@@ -270,7 +270,7 @@ static inline TextEditor::BreakOption lb5(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb6(LineBreakState& state) {
+static inline TextEditor::BreakOption lb6(const LineBreakState& state) {
 	// LB6: do not break before hard line breaks
 	// × ( BK | CR | LF | NL )
 	switch (state.next.cls) {
@@ -303,7 +303,7 @@ static inline TextEditor::BreakOption lbSpaceStop(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb7(LineBreakState& state) {
+static inline TextEditor::BreakOption lb7(const LineBreakState& state) {
 	// LB7: do not break before spaces or zero width space
 	// × ZW
 	if (state.next.cls == LBC::zw) {
@@ -350,7 +350,7 @@ static inline TextEditor::BreakOption lb8(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb8a(LineBreakState& state) {
+static inline TextEditor::BreakOption lb8a(const LineBreakState& state) {
 	// LB8a: do not break after a zero width joiner
 	// ZWJ ×
 	if (state.current.cls == LBC::zwj) {
@@ -394,7 +394,7 @@ static inline TextEditor::BreakOption lb10(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb11(LineBreakState& state) {
+static inline TextEditor::BreakOption lb11(const LineBreakState& state) {
 	// LB11: do not break before or after word joiner and related characters
 	// × WJ
 	// WJ ×
@@ -407,7 +407,7 @@ static inline TextEditor::BreakOption lb11(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb12(LineBreakState& state) {
+static inline TextEditor::BreakOption lb12(const LineBreakState& state) {
 	// LB12: do not break after NBSP and related characters
 	// GL ×
 	if (state.current.cls == LBC::gl) {
@@ -419,7 +419,7 @@ static inline TextEditor::BreakOption lb12(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb12a(LineBreakState& state) {
+static inline TextEditor::BreakOption lb12a(const LineBreakState& state) {
 	// LB12a: do not break before NBSP and related characters, except after spaces and hyphens
 	// [^SP BA HY HH] × GL
 	if (state.next.cls == LBC::gl) {
@@ -439,7 +439,7 @@ static inline TextEditor::BreakOption lb12a(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb13(LineBreakState& state) {
+static inline TextEditor::BreakOption lb13(const LineBreakState& state) {
 	// LB13: do not break before ‘]’ or ‘!’ or ‘;’ or ‘/’, even after spaces
 	// × CL
 	// × CP
@@ -493,7 +493,7 @@ static inline TextEditor::BreakOption lb15a(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb15b(LineBreakState& state) {
+static inline TextEditor::BreakOption lb15b(const LineBreakState& state) {
 	// LB15b: do not break before an unresolved final punctuation that lies at the end of the line,
 	// before a space, before a prohibited break, or before an unresolved quotation mark, even after spaces
 	static const std::unordered_set<LBC> SPGLWJCLQUCPEXISSYBKCRLFNLZW = {
@@ -518,7 +518,7 @@ static inline TextEditor::BreakOption lb15b(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb15c(LineBreakState& state) {
+static inline TextEditor::BreakOption lb15c(const LineBreakState& state) {
 	// LB15c: Break before a decimal mark that follows a space, for instance, in ‘subtract .5’
 	// SP ÷ IS NU
 	if ((state.current.cls == LBC::sp) && (state.next.cls == LBC::is)) {
@@ -531,7 +531,7 @@ static inline TextEditor::BreakOption lb15c(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb15d(LineBreakState& state) {
+static inline TextEditor::BreakOption lb15d(const LineBreakState& state) {
 	// LB15d: otherwise, do not break before ‘;’, ‘,’, or ‘.’, even after spaces
 	// × IS
 	if (state.next.cls == LBC::is) {
@@ -598,7 +598,7 @@ static inline TextEditor::BreakOption lb17(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb18(LineBreakState& state) {
+static inline TextEditor::BreakOption lb18(const LineBreakState& state) {
 	// LB18: Break after spaces
 	// SP ÷
 	if (state.current.cls == LBC::sp) {
@@ -609,7 +609,7 @@ static inline TextEditor::BreakOption lb18(LineBreakState& state) {
 	}
 }
 
-static inline TextEditor::BreakOption lb19(LineBreakState& state) {
+static inline TextEditor::BreakOption lb19(const LineBreakState& state) {
 	// LB19: do not break before non-initial unresolved quotation marks, such as ‘ ” ’ or ‘ " ’,
 	// nor after non-final unresolved quotation marks, such as ‘ “ ’ ‘ " ’
 	// × [ QU - \p{Pi} ]
@@ -628,7 +628,7 @@ static inline TextEditor::BreakOption lb19(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb19a(LineBreakState& state) {
+static inline TextEditor::BreakOption lb19a(const LineBreakState& state) {
 	// LB19a: unless surrounded by East Asian characters, do not break either side
 	// [^$EastAsian] × QU
 	if (!TextEditor::CodePoint::isEastAsian(state.current.codepoint) && (state.next.cls == LBC::qu)) {
@@ -659,7 +659,7 @@ static inline TextEditor::BreakOption lb19a(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb20(LineBreakState& state) {
+static inline TextEditor::BreakOption lb20(const LineBreakState& state) {
 	// LB20: break before and after unresolved CB
 	// ÷ CB
 	// CB ÷
@@ -672,7 +672,7 @@ static inline TextEditor::BreakOption lb20(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb20a(LineBreakState& state) {
+static inline TextEditor::BreakOption lb20a(const LineBreakState& state) {
 	// LB20a: do not break after a word-initial hyphen
 	static const std::unordered_set<LBC> sotBKCRLFNLSPZWCBGL = {
 		LBC::sot, LBC::bk, LBC::cr, LBC::lf, LBC::nl, LBC::sp, LBC::zw, LBC::cb, LBC::gl
@@ -691,7 +691,7 @@ static inline TextEditor::BreakOption lb20a(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb21(LineBreakState& state) {
+static inline TextEditor::BreakOption lb21(const LineBreakState& state) {
 	// LB21: do not break before hyphen-minus, other hyphens, fixed-width spaces, small kana, and other non-starters, or after acute accents
 	// BB ×
 	if (state.current.cls == LBC::bb) {
@@ -712,7 +712,7 @@ static inline TextEditor::BreakOption lb21(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb21a(LineBreakState& state) {
+static inline TextEditor::BreakOption lb21a(const LineBreakState& state) {
 	// LB21a: do not break after the hyphen in Hebrew + Hyphen + non-Hebrew
 	// HL (HY | HH) × [^HL]
 	if ((state.previous.cls == LBC::hl) &&
@@ -727,7 +727,7 @@ static inline TextEditor::BreakOption lb21a(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb21b(LineBreakState& state) {
+static inline TextEditor::BreakOption lb21b(const LineBreakState& state) {
 	// don’t break between Solidus and Hebrew letters
 	// SY × HL
 	if ((state.current.cls == LBC::sy) && (state.next.cls == LBC::hl)) {
@@ -739,7 +739,7 @@ static inline TextEditor::BreakOption lb21b(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb22(LineBreakState& state) {
+static inline TextEditor::BreakOption lb22(const LineBreakState& state) {
 	// do not break before ellipses
 	// × IN
 	if (state.next.cls == LBC::in) {
@@ -751,7 +751,7 @@ static inline TextEditor::BreakOption lb22(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb23(LineBreakState& state) {
+static inline TextEditor::BreakOption lb23(const LineBreakState& state) {
 	// do not break between digits and letters
 	switch (state.current.cls) {
 		case LBC::al:
@@ -779,7 +779,7 @@ static inline TextEditor::BreakOption lb23(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb23a(LineBreakState& state) {
+static inline TextEditor::BreakOption lb23a(const LineBreakState& state) {
 	// LB23a: do not break between numeric prefixes and ideographs, or between ideographs and numeric postfixes
 	static const std::unordered_set<LBC> IDEBEM = {LBC::id, LBC::eb, LBC::em};
 
@@ -797,7 +797,7 @@ static inline TextEditor::BreakOption lb23a(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb24(LineBreakState& state) {
+static inline TextEditor::BreakOption lb24(const LineBreakState& state) {
 	// LB24: do not break between numeric prefix/postfix and letters, or between letters and prefix/postfix
 	// (PR | PO) × (AL | HL)
 	if ((state.current.cls == LBC::pr || state.current.cls == LBC::po) &&
@@ -815,7 +815,7 @@ static inline TextEditor::BreakOption lb24(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb25(LineBreakState& state) {
+static inline TextEditor::BreakOption lb25(const LineBreakState& state) {
 	// LB25: do not break numbers
 	// approach: find the end of a matching run, then no-break everything as we go past it
 	static const std::unordered_set<LBC> POPR = {LBC::po, LBC::pr};
@@ -903,7 +903,7 @@ static inline TextEditor::BreakOption lb25(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb26(LineBreakState& state) {
+static inline TextEditor::BreakOption lb26(const LineBreakState& state) {
 	// LB26 do not break a Korean syllable
 	static const std::unordered_set<LBC> JLJVH2H3 = {LBC::jl, LBC::jv, LBC::h2, LBC::h3};
 	static const std::unordered_set<LBC> JVJT = {LBC::jv, LBC::jt};
@@ -943,7 +943,7 @@ static inline TextEditor::BreakOption lb26(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb27(LineBreakState& state) {
+static inline TextEditor::BreakOption lb27(const LineBreakState& state) {
 	// LB27: treat a Korean Syllable Block the same as LBC::id
 	static const std::unordered_set<LBC> JLJVJTH2H3 = {LBC::jl, LBC::jv, LBC::jt, LBC::h2, LBC::h3};
 
@@ -976,7 +976,7 @@ static inline TextEditor::BreakOption lb27(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb28(LineBreakState& state) {
+static inline TextEditor::BreakOption lb28(const LineBreakState& state) {
 	// LB28 do not break between alphabetics (“at”)
 	// (AL | HL) × (AL | HL)
 	if ((state.current.cls == LBC::al || state.current.cls == LBC::hl) &&
@@ -990,7 +990,7 @@ static inline TextEditor::BreakOption lb28(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb28a(LineBreakState& state) {
+static inline TextEditor::BreakOption lb28a(const LineBreakState& state) {
 	// LB28a: do not break inside the orthographic syllables of Brahmic scripts
 	// AP × (AK | [◌] | AS)
 	if ((state.current.cls == LBC::ap) && isAkCircleAs(state.next)) {
@@ -1020,7 +1020,7 @@ static inline TextEditor::BreakOption lb28a(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb29(LineBreakState& state) {
+static inline TextEditor::BreakOption lb29(const LineBreakState& state) {
 	// LB29: do not break between numeric punctuation and alphabetics (“e.g.”)
 	// IS × (AL | HL)
 	if (state.current.cls == LBC::is && (state.next.cls == LBC::al || state.next.cls == LBC::hl)) {
@@ -1032,7 +1032,7 @@ static inline TextEditor::BreakOption lb29(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb30(LineBreakState& state) {
+static inline TextEditor::BreakOption lb30(const LineBreakState& state) {
 	// LB30: do not break between letters, numbers, or ordinary symbols and opening or closing parentheses
 	static const std::unordered_set<LBC> ALHLNU = {LBC::al, LBC::hl, LBC::nu};
 
@@ -1083,7 +1083,7 @@ static inline TextEditor::BreakOption lb30a(LineBreakState& state) {
 }
 
 
-static inline TextEditor::BreakOption lb30b(LineBreakState& state) {
+static inline TextEditor::BreakOption lb30b(const LineBreakState& state) {
 	// LB30b: do not break between an emoji base (or potential emoji) and an emoji modifier
 	// EB × EM
 	if ((state.current.cls == LBC::eb) && (state.next.cls == LBC::em)) {
@@ -1114,7 +1114,7 @@ static inline TextEditor::BreakOption lb30b(LineBreakState& state) {
 	}
 
 
-static inline TextEditor::BreakOption applyRules(TextEditor::LineBreakConfig config, LineBreakState& state) {
+static inline TextEditor::BreakOption applyRules(TextEditor::LineBreakConfig& config, LineBreakState& state) {
 	TextEditor::BreakOption result;
 	RULE2(lb2);
 	RULE2(lb3);
@@ -1191,7 +1191,7 @@ void TextEditor::LineBreak::classify(Line& line) {
 		state.size = size;
 
 		for (size_t i = 0; i < size; i++) {
-			auto& glyph = line[i];
+			const auto& glyph = line[i];
 			state.push(LineBreakGlyph(glyph.codepoint, getLineBreakClass(glyph.codepoint), i));
 			auto breakOption = applyRules(config, state);
 

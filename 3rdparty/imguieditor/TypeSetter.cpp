@@ -111,7 +111,7 @@ void TextEditor::TypeSetter::wrapLine(Line& line) {
 
 		line.columns = 0;
 
-		for (auto& section : sections) {
+		for (const auto& section : sections) {
 			line.columns = std::max(line.columns, section.columns);
 		}
 
@@ -142,7 +142,7 @@ void TextEditor::TypeSetter::updateLine(Line& line) {
 		// determine the maximum column number for this line
 		line.columns = 0;
 
-		for (auto& glyph : line) {
+		for (const auto& glyph : line) {
 			line.columns = (glyph.codepoint == '\t') ? ((line.columns / tabSize) + 1) * tabSize : line.columns + 1;
 		}
 
@@ -158,7 +158,7 @@ void TextEditor::TypeSetter::updateLine(Line& line) {
 //	TextEditor::TypeSetter::update
 //
 
-bool TextEditor::TypeSetter::update(const Config& config, Document& document, LineFold& lineFold) {
+bool TextEditor::TypeSetter::update(const Config& config, Document& document, const LineFold& lineFold) {
 	// see if the configuration changed
 	bool configChanged =
 		tabSize != config.tabSize ||
@@ -304,7 +304,7 @@ TextEditor::DocPos TextEditor::TypeSetter::visPos2DocPos(const Document& documen
 	Line::const_iterator end;
 
 	if (line.sections) {
-		auto& section = line.sections->at(row.section);
+		const auto& section = line.sections->at(row.section);
 		index = section.startIndex;
 		leftColumn = section.indent;
 		rightColumn = section.indent;
@@ -368,7 +368,7 @@ void TextEditor::TypeSetter::screenPos2DocPos(const Document& document, ImVec2 s
 
 		} else if (colNo > row.columns) {
 			if (line.sections) {
-				auto& section = line.sections->at(row.section);
+				const auto& section = line.sections->at(row.section);
 				glyphPos = DocPos(row.line, section.endIndex);
 
 			} else {
@@ -386,7 +386,7 @@ void TextEditor::TypeSetter::screenPos2DocPos(const Document& document, ImVec2 s
 			Line::const_iterator end;
 
 			if (line.sections) {
-				auto& section = line.sections->at(row.section);
+				const auto& section = line.sections->at(row.section);
 				index = section.startIndex;
 				leftColumn = section.indent;
 				rightColumn = section.indent;

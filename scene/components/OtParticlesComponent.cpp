@@ -22,9 +22,7 @@
 //	OtParticlesComponent::OtParticlesComponent
 //
 
-OtParticlesComponent::OtParticlesComponent() {
-	particles = std::make_shared<OtParticles>();
-}
+OtParticlesComponent::OtParticlesComponent() : particles(std::make_shared<OtParticles>()) {}
 
 
 //

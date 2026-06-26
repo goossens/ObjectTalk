@@ -28,35 +28,31 @@ public:
 	// constructors
 	OtCamera() = default;
 
-	OtCamera(int w, int h, const glm::mat4 pm, const glm::mat4& vm) :
-		width(w),
-		height(h),
-		viewMatrix(vm),
-		projectionMatrix(pm) {
+	OtCamera(int width, int height, const glm::mat4 viewMatrix, const glm::mat4& projectionMatrix) :
+		width(width),
+		height(height),
+		viewMatrix(viewMatrix),
+		projectionMatrix(projectionMatrix) {
 
 		// update camera
 		update();
 	}
 
-	OtCamera(int w, int h, float nearPlane, float farPlane, float fov, const glm::mat4& vm) :
-		width(w),
-		height(h),
-		viewMatrix(vm) {
-
-		// calculate projection matrix
-		projectionMatrix = glm::perspectiveFovRH_ZO(glm::radians(fov), static_cast<float>(width), static_cast<float>(height), nearPlane, farPlane);
+	OtCamera(int width, int height, float nearPlane, float farPlane, float fov, const glm::mat4& viewMatrix) :
+		width(width),
+		height(height),
+		viewMatrix(viewMatrix),
+		projectionMatrix(glm::perspectiveFovRH_ZO(glm::radians(fov), static_cast<float>(width), static_cast<float>(height), nearPlane, farPlane)) {
 
 		// update camera
 		update();
 	}
 
-	OtCamera(int w, int h, float nearPlane, float farPlane, float fov, const glm::vec3& eye, const glm::vec3& at) :
-		width(w),
-		height(h) {
-
-		// determine view and projection matrices
-		viewMatrix = glm::lookAt(eye, at, glm::vec3(0.0f, 1.0f, 0.0f));
-		projectionMatrix = glm::perspectiveFovRH_ZO(glm::radians(fov), static_cast<float>(width), static_cast<float>(height), nearPlane, farPlane);
+	OtCamera(int width, int height, float nearPlane, float farPlane, float fov, const glm::vec3& eye, const glm::vec3& at) :
+		width(width),
+		height(height),
+		viewMatrix(glm::lookAt(eye, at, glm::vec3(0.0f, 1.0f, 0.0f))),
+		projectionMatrix(glm::perspectiveFovRH_ZO(glm::radians(fov), static_cast<float>(width), static_cast<float>(height), nearPlane, farPlane)) {
 
 		// initialize camera
 		update();

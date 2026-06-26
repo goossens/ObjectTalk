@@ -76,7 +76,7 @@ public:
 
 	// access the error message
 	inline void setErrorMessage(const std::string& message) { errorMessage = message; }
-	inline std::string getErrorMessage() const { return errorMessage; }
+	inline const std::string& getErrorMessage() const { return errorMessage; }
 
 	// version management
 	inline void setVersion(int v) { version = v; }

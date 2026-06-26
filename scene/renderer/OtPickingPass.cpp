@@ -33,7 +33,7 @@ OtEntity OtPickingPass::render(OtSceneRendererContext& ctx, glm::vec2 uv) {
 
 	// setup camera for identification buffer
 	auto camera = ctx.camera;
-	ctx.camera = OtCamera(idBuffer.getWidth(), idBuffer.getHeight(), camera.projectionMatrix, camera.viewMatrix);
+	ctx.camera = OtCamera(idBuffer.getWidth(), idBuffer.getHeight(), camera.viewMatrix, camera.projectionMatrix);
 
 	// setup pass to render entities as opaque blobs
 	OtRenderPass pass;

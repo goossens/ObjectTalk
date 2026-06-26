@@ -18,9 +18,7 @@
 //	OtGrassComponent::OtGrassComponent
 //
 
-OtGrassComponent::OtGrassComponent() {
-	grass = std::make_shared<OtGrass>();
-}
+OtGrassComponent::OtGrassComponent() : grass(std::make_shared<OtGrass>()) {}
 
 
 //

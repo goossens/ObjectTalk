@@ -63,13 +63,9 @@ public:
 private:
 	// list of events with timestamps
 	struct Event {
-		Event(float t, uint8_t* msg, size_t size) {
-			time = t;
-			message = std::make_shared<OtMidiMessageClass>(msg, size);
-		}
-
-		OtMidiMessage message;
+		Event(float time, uint8_t* msg, size_t size) : time(time), message(std::make_shared<OtMidiMessageClass>(msg, size)) {}
 		float time;
+		OtMidiMessage message;
 	};
 
 	std::shared_ptr<std::vector<Event>> events;

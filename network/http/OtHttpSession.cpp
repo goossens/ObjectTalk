@@ -22,10 +22,10 @@
 //	OtHttpSessionClass::OtHttpSessionClass
 //
 
-OtHttpSessionClass::OtHttpSessionClass(uv_stream_t* stream, OtHttpRouter r) : router(r) {
-	// setup request/response objects
-	request = OtHttpRequest::create();
-	response = OtHttpResponse::create();
+OtHttpSessionClass::OtHttpSessionClass(uv_stream_t* stream, OtHttpRouter router) :
+	request(OtHttpRequest::create()),
+	response(OtHttpResponse::create()),
+	router(router) {
 
 	// setup parser settings
 	llhttp_settings_init(&settings);

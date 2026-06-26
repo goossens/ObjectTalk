@@ -165,15 +165,26 @@ void OtHttpResponseClass::sendHeaders() {
 	// send response
 	std::string headerText = stream.str();
 	char* text = (char*) std::malloc(headerText.size() + 1);
-	std::memcpy(text, headerText.c_str(), headerText.size() + 1);
 
+	if (!text) {
+		OtLogFatal("Out of memory");
+		std::exit(EXIT_FAILURE);
+	}
+
+	std::memcpy(text, headerText.c_str(), headerText.size() + 1);
 	uv_buf_t buffer = uv_buf_init(text, (unsigned int) headerText.size());
 	uv_write_t* uv_write_req = (uv_write_t*) std::malloc(sizeof(uv_write_t));
+
+	if (!uv_write_req) {
+		OtLogFatal("Out of memory");
+		std::exit(EXIT_FAILURE);
+	}
+
 	uv_write_req->data = buffer.base;
 
 	uv_write(uv_write_req, clientStream, &buffer, 1, [](uv_write_t* req, [[maybe_unused]] int status) {
-		free(req->data);
-		free(req);
+		std::free(req->data);
+		std::free(req);
 	});
 
 	responseState = ResponseState::headersSent;
@@ -190,16 +201,28 @@ OtObject OtHttpResponseClass::write(const char* data, size_t size) {
 	}
 
 	// send body
-	char* text = (char*) malloc(size + 1);
-	memcpy(text, data, size);
+	char* text = (char*)std::malloc(size + 1);
+
+	if (!text) {
+		OtLogFatal("Out of memory");
+		std::exit(EXIT_FAILURE);
+	}
+
+	std::memcpy(text, data, size);
 	text[size] = 0;
 	uv_buf_t buffer = uv_buf_init(text, (unsigned int) size);
-	uv_write_t* uv_write_req = (uv_write_t*) malloc(sizeof(uv_write_t));
+	uv_write_t* uv_write_req = (uv_write_t*) std::malloc(sizeof(uv_write_t));
+
+	if (!uv_write_req) {
+		OtLogFatal("Out of memory");
+		std::exit(EXIT_FAILURE);
+	}
+
 	uv_write_req->data = buffer.base;
 
 	uv_write(uv_write_req, clientStream, &buffer, 1, [](uv_write_t* req, [[maybe_unused]] int status) {
-		free(req->data);
-		free(req);
+		std::free(req->data);
+		std::free(req);
 	});
 
 	return OtHttpResponse(this);
@@ -292,7 +315,13 @@ OtObject OtHttpResponseClass::sendFile(const std::string& name) {
 		uv_read_fd = (uv_file) open_req.result;
 
 		uv_read_req.data = this;
-		uv_read_buffer = (char*) malloc(64 * 1024);
+		uv_read_buffer = (char*) std::malloc(64 * 1024);
+
+		if (!uv_read_buffer) {
+			OtLogFatal("Out of memory");
+			std::exit(EXIT_FAILURE);
+		}
+
 		uv_buf_t buffer = uv_buf_init(uv_read_buffer, 64 * 1024);
 
 		status = uv_fs_read(uv_default_loop(), &uv_read_req, uv_read_fd, &buffer, 1, -1, [](uv_fs_t* req) {
@@ -330,7 +359,7 @@ void OtHttpResponseClass::onFileRead(ssize_t size) {
 		uv_fs_t close_req;
 		uv_fs_close(uv_default_loop(), &close_req, uv_read_fd, nullptr);
 		uv_fs_req_cleanup(&close_req);
-		free(uv_read_buffer);
+		std::free(uv_read_buffer);
 		end();
 
 	} else {

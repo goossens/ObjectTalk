@@ -25,7 +25,7 @@
 
 class OtHttpMethodHandler : public OtHttpRouterClass::Handler {
 public:
-	OtHttpMethodHandler(const std::string& m, const std::string& p, OtObject cb) : method(m), path(p), callback(cb) {
+	OtHttpMethodHandler(const std::string& method, const std::string& p, OtObject callback) : method(method), path(p), callback(callback) {
 		// sanity check
 		OtCallbackValidate(callback, 3);
 
@@ -34,7 +34,7 @@ public:
 
 		} else if (path.back() == '*') {
 			type = STARTSWITH;
-			path = path.substr(0, path.length() - 1);
+			path.resize(path.length() - 1);
 
 		} else if (path.find(':') != std::string::npos) {
 			type = REGEX;

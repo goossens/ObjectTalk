@@ -37,7 +37,7 @@ public:
 	void onURL(const char* data, size_t length);
 	void onHeaderField(const char* data, size_t length);
 	void onHeaderValue(const char* data, size_t length);
-	void onHeadersComplete(const std::string m, const std::string v);
+	void onHeadersComplete(const std::string& m, const std::string& v);
 	void onBody(const char* data, size_t length);
 	void onMessageComplete();
 

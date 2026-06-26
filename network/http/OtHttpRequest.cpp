@@ -122,7 +122,7 @@ void OtHttpRequestClass::onHeaderValue(const char* data, size_t length) {
 //	OtHttpRequestClass::onHeadersComplete
 //
 
-void OtHttpRequestClass::onHeadersComplete(const std::string m, const std::string v) {
+void OtHttpRequestClass::onHeadersComplete(const std::string& m, const std::string& v) {
 	// save method and version
 	method = m;
 	version = v;
@@ -507,7 +507,7 @@ void OtHttpRequestClass::setCookie(const std::string& name, const std::string& v
 //
 
 bool OtHttpRequestClass::hasCookie(const std::string& cookie) {
-	return cookies.find(cookie) != params.end();
+	return cookies.find(cookie) != cookies.end();
 }
 
 

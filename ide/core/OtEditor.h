@@ -38,7 +38,7 @@ public:
 	void openFile(const std::string& path);
 	void saveFile();
 	void saveAsFile(const std::string& path);
-	std::string getPath() { return path; }
+	const std::string& getPath() { return path; }
 
 	// render the editor parts
 	void renderMenuBar(bool canRun);

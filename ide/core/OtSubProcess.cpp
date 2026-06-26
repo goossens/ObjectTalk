@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <cstdlib>
 #include <cstring>
 
 #include "OtLog.h"
@@ -99,10 +100,22 @@ void OtSubProcess::start(const std::string& path, const std::vector<std::string>
 
 void OtSubProcess::send(const std::string& message) {
 	char* text = (char*) std::malloc(message.size() + 1);
+
+	if (!text) {
+		OtLogFatal("Out of memory");
+		std::exit(EXIT_FAILURE);
+	}
+
 	std::memcpy(text, message.c_str(), message.size() + 1);
 
 	uv_buf_t buffer = uv_buf_init(text, (unsigned int) message.size());
 	uv_write_t* request = (uv_write_t*) std::malloc(sizeof(uv_write_t));
+
+	if (!request) {
+		OtLogFatal("Out of memory");
+		std::exit(EXIT_FAILURE);
+	}
+
 	request->data = buffer.base;
 
 	UV_CHECK_ERROR("uv_write", uv_write(
@@ -111,8 +124,8 @@ void OtSubProcess::send(const std::string& message) {
 		&buffer,
 		1,
 		[](uv_write_t* request, [[maybe_unused]] int status) {
-			free(request->data);
-			free(request);
+			std::free(request->data);
+			std::free(request);
 		}));
 }
 

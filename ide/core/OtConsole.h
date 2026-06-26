@@ -64,7 +64,7 @@ private:
 	};
 
 	struct Line {
-		Line(Type tp, std::string txt) : type(tp), text(txt) {}
+		Line(Type type, const std::string& text) : type(type), text(text) {}
 		Type type;
 		std::string text;
 	};

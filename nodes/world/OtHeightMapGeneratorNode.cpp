@@ -12,7 +12,9 @@
 #include <future>
 
 #include "imgui.h"
+#include "nlohmann/json.hpp"
 
+#include "OtGlm.h"
 #include "OtThreadPool.h"
 #include "OtUi.h"
 
@@ -42,8 +44,6 @@ public:
 
 	// render custom fields
 	inline void customRendering(float itemWidth) override {
-		bool changed = false;
-
 		// render button
 		if (ImGui::Button("Edit", ImVec2(itemWidth, 0.0f))) {
 			ImGui::OpenPopup("ErosionPopup");
@@ -51,6 +51,9 @@ public:
 
 		// open popup (if required)
 		if (ImGui::BeginPopup("ErosionPopup")) {
+			auto old = serialize().dump();
+			bool changed = false;
+
 			auto size = ImVec2(
 				OtUi::size(16.0f),
 				ImGui::GetFrameHeightWithSpacing() * 7);
@@ -78,13 +81,15 @@ public:
 			changed |= OtUi::dragFloat("Gully Weight", &erosionConfig.gullyWeight, 0.1f, 1.0f);
 			changed |= OtUi::dragFloat("Detail", &erosionConfig.detail, 0.1f, 5.0f);
 
+			if (changed) {
+				oldState = old;
+				newState = serialize().dump();
+				needsEvaluating = true;
+				needsSaving = true;
+			}
+
 			ImGui::EndChild();
 			ImGui::EndPopup();
-		}
-
-		if (changed) {
-			needsEvaluating = true;
-			needsSaving = true;
 		}
 	}
 
@@ -94,6 +99,46 @@ public:
 
 	inline float getCustomRenderingHeight() override {
 		return ImGui::GetFrameHeightWithSpacing();
+	}
+
+	// (de)serialize node
+	void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
+		auto heightData = nlohmann::json::object();
+		heightData["octaves"] = heightConfig.octaves;
+		heightData["gain"] = heightConfig.gain;
+		heightData["lacunarity"] = heightConfig.lacunarity;
+		heightData["amplitude"] = heightConfig.amplitude;
+		heightData["frequency"] = heightConfig.frequency;
+		heightData["offset"] = heightConfig.offset;
+
+		auto erosionData = nlohmann::json::object();
+		erosionData["scale"] = erosionConfig.scale;
+		erosionData["strength"] = erosionConfig.strength;
+		erosionData["gullyWeight"] = erosionConfig.gullyWeight;
+		erosionData["detail"] = erosionConfig.detail;
+
+		(*data)["height"] = heightData;
+		(*data)["erosion"] = erosionData;
+	}
+
+	void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
+		if (data->contains("height")) {
+			auto& heightData = (*data)["height"];
+			heightConfig.octaves = heightData.value("octaves", 3);
+			heightConfig.gain = heightData.value("gain", 0.1f);
+			heightConfig.lacunarity = heightData.value("lacunarity", 2.0f);
+			heightConfig.amplitude = heightData.value("amplitude", 0.125f);
+			heightConfig.frequency = heightData.value("frequency", 3.0f);
+			heightConfig.offset = heightData.value("offset", glm::vec2(-0.65f, 0.0f));
+	}
+
+		if (data->contains("erosion")) {
+			auto erosionData = (*data)["erosion"];
+			erosionConfig.scale = erosionData.value("scale", 0.15f);
+			erosionConfig.strength = erosionData.value("strength", 0.22f);
+			erosionConfig.gullyWeight = erosionData.value("gullyWeight", 0.5f);
+			erosionConfig.detail = erosionData.value("detail", 1.5f);
+		}
 	}
 
 	// update node status

@@ -87,7 +87,7 @@ bool OtDictClass::operator==(OtObject operand) {
 
 	// compare all elements
 	for (auto& it : dict) {
-		if (op->dict.find(it.first) == op->dict.end()) {
+		if (!op->dict.contains(it.first)) {
 			return false;
 
 		} else if (!it.second->equal(op->dict[it.first])) {
@@ -143,7 +143,7 @@ OtObject OtDictClass::setEntry(const std::string& index, OtObject object) {
 
 OtObject OtDictClass::getEntry(const std::string& index) {
 	// sanity check
-	if (dict.find(index) == dict.end()) {
+	if (!dict.contains(index)) {
 		OtLogError("Unkown dictionary member [{}]", index);
 	}
 
@@ -222,7 +222,7 @@ OtObject OtDictClass::merge(OtObject value) {
 //
 
 void OtDictClass::eraseEntry(const std::string& index) {
-	if (dict.find(index) == dict.end()) {
+	if (!dict.contains(index)) {
 		OtLogError("Unkown dictionary member [{}]", index);
 	}
 

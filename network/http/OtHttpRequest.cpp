@@ -377,7 +377,7 @@ void OtHttpRequestClass::setHeader(const std::string& name, const std::string& v
 //
 
 bool OtHttpRequestClass::hasHeader(const std::string& header) {
-	return headers.find(header) != headers.end();
+	return headers.contains(header);
 }
 
 
@@ -458,7 +458,7 @@ void OtHttpRequestClass::setParam(const std::string& name, const std::string& va
 //
 
 bool OtHttpRequestClass::hasParam(const std::string& param) {
-	return params.find(param) != params.end();
+	return params.contains(param);
 }
 
 
@@ -507,7 +507,7 @@ void OtHttpRequestClass::setCookie(const std::string& name, const std::string& v
 //
 
 bool OtHttpRequestClass::hasCookie(const std::string& cookie) {
-	return cookies.find(cookie) != cookies.end();
+	return cookies.contains(cookie);
 }
 
 

@@ -259,12 +259,12 @@ void OtCompiler::declareVariable(OtID id, bool alreadyOnStack) {
 	auto offset = scope.bytecode ? scope.bytecode->size() : 0;
 
 	// avoid double declaration
-	if (scope.locals.count(id)) {
+	if (scope.locals.contains(id)) {
 		scanner.error(std::format("Variable [{}] already defined in this scope", OtIdentifier::name(id)));
 	}
 
 	// see if this variable obscures one referenced from a different scope
-	if (scope.symbolIndex.count(id)) {
+	if (scope.symbolIndex.contains(id)) {
 		// close the visibility of that variable
 		scope.symbols[scope.symbolIndex[id]].opcodeEnd = offset;
 	}
@@ -309,7 +309,7 @@ void OtCompiler::resolveVariable(OtID id, bool processSymbol) {
 	// look at all scope levels in reverse order
 	for (auto i = scopeStack.rbegin(); !found && i != scopeStack.rend(); i++) {
 		// is variable in this scope?
-		if (i->locals.count(id)) {
+		if (i->locals.contains(id)) {
 			// yes, handle different scope types
 			switch(i->type) {
 				case Scope::Type::object:
@@ -317,7 +317,7 @@ void OtCompiler::resolveVariable(OtID id, bool processSymbol) {
 					bytecode->push(OtMemberReference::create(i->object, id));
 
 					// process symbol (if required)
-					if (processSymbol && !scope.symbolIndex.count(id)) {
+					if (processSymbol && !scope.symbolIndex.contains(id)) {
 						scope.symbols.emplace_back(id, i->object, statementStart);
 					}
 
@@ -330,7 +330,7 @@ void OtCompiler::resolveVariable(OtID id, bool processSymbol) {
 						bytecode->push(OtStackReference::create(id, i->locals[id]));
 
 						// process symbol if (required)
-						if (processSymbol && !scope.symbolIndex.count(id)) {
+						if (processSymbol && !scope.symbolIndex.contains(id)) {
 							scope.symbols.emplace_back(id, i->locals[id], statementStart);
 						}
 
@@ -340,7 +340,7 @@ void OtCompiler::resolveVariable(OtID id, bool processSymbol) {
 						bytecode->push(OtCaptureReference::create(id));
 
 						// process symbol if (required)
-						if (processSymbol && !scope.symbolIndex.count(id)) {
+						if (processSymbol && !scope.symbolIndex.contains(id)) {
 							scope.symbols.emplace_back(id, statementStart);
 						}
 					}

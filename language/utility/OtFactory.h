@@ -54,7 +54,7 @@ public:
 
 	// see if a specified name can be instantiated
 	inline bool exists(std::string_view name) {
-		return map.find(name) != map.cend();
+		return map.contains(name);
 	}
 
 	// iterate through the type names

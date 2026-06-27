@@ -266,7 +266,7 @@ void OtWorkspace::newFile() {
 //
 
 std::shared_ptr<OtEditor> OtWorkspace::createEditor(const std::string &extension) {
-	return editorTypes.count(extension) ? editorTypes[extension]() : nullptr;
+	return editorTypes.contains(extension) ? editorTypes[extension]() : nullptr;
 }
 
 

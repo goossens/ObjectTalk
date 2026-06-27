@@ -45,15 +45,9 @@ public:
 	inline const std::string& getQuery() { return query; }
 	inline const std::string& getFragment() { return fragment; }
 
-	inline bool hasParam(const std::string& p) {
-		return queryParams.find(p) != queryParams.end();
-	}
-
+	inline bool hasParam(const std::string& p) { return queryParams.contains(p); }
 	std::string getParam(const std::string& p) { return queryParams.find(p)->second; }
-
-	const std::unordered_map<std::string, std::string>& getParams() {
-		return queryParams;
-	}
+	const std::unordered_map<std::string, std::string>& getParams() { return queryParams; }
 
 	// access the data
 	const std::string& download();

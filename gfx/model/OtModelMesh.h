@@ -51,7 +51,7 @@ public:
 		size_t node;
 	};
 
-	inline bool hasBone(const std::string& nm) { return boneIndex.find(nm) != boneIndex.end(); }
+	inline bool hasBone(const std::string& nm) { return boneIndex.contains(nm); }
 	inline Bone& getNode(const std::string& nm) { return bones[boneIndex[nm]]; }
 	inline Bone& getBone(size_t boneID) { return bones[boneID]; }
 

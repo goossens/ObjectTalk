@@ -52,7 +52,7 @@ public:
 	static inline bool isLoaded(const std::string& path) {
 		Key key{typeid(T).hash_code(), path};
 		auto& assets = instance().assets;
-		return assets.find(key) != assets.end();
+		return assets.contains(key);
 	}
 
 	// acquire an asset

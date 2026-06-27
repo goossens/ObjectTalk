@@ -587,7 +587,7 @@ void OtWorld::World::generateCorners() {
 	for (size_t edge = 0; edge < numEdges; edge++) {
 		auto region = triangles[nextHalfEdge(edge)];
 
-		if (seen.find(region) == seen.end()) {
+		if (!seen.contains(region)) {
 			seen.insert(region);
 			auto incoming = edge;
 

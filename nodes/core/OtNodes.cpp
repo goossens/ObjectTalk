@@ -87,10 +87,10 @@ void OtNodes::loadFromString(const std::string& string, std::string& basedir) {
 			uint32_t fromId = link["from"];
 			uint32_t toId = link["to"];
 
-			if (pinIndex.count(fromId) == 0) {
+			if (!pinIndex.contains(fromId)) {
 				OtLogError("Invalid 'from' pin ID [{}] in link [{}]", fromId, linkId);
 
-			} else if (pinIndex.count(toId) == 0) {
+			} else if (!pinIndex.contains(toId)) {
 				OtLogError("Invalid 'to' pin ID [{}] in link [{}]", toId, linkId);
 			}
 

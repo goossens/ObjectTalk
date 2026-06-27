@@ -203,10 +203,10 @@ void OtAudio::loadFromString(const std::string& string, std::string& basedir) {
 			uint32_t fromId = wire["from"];
 			uint32_t toId = wire["to"];
 
-			if (pinIndex.count(fromId) == 0) {
+			if (!pinIndex.contains(fromId)) {
 				OtLogError("Invalid 'from' pin ID [{}] in wire [{}]", fromId, wireId);
 
-			} else if (pinIndex.count(toId) == 0) {
+			} else if (!pinIndex.contains(toId)) {
 				OtLogError("Invalid 'to' pin ID [{}] in wire [{}]", toId, wireId);
 			}
 

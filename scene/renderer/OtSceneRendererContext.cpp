@@ -237,7 +237,7 @@ void OtSceneRendererContext::initialize(OtScene* s, OtCamera c) {
 
 	// remove geometries that might have disappeared
 	for (auto i = geometryRenderData.begin(); i != geometryRenderData.end();) {
-		if (currentEntities.find(i->first) == currentEntities.end()) {
+		if (!currentEntities.contains(i->first)) {
 			i = geometryRenderData.erase(i);
 
 		} else {
@@ -264,7 +264,7 @@ void OtSceneRendererContext::initialize(OtScene* s, OtCamera c) {
 
 	// remove models that might have disappeared
 	for (auto i = modelRenderData.begin(); i != modelRenderData.end();) {
-		if (currentEntities.find(i->first) == currentEntities.end()) {
+		if (!currentEntities.contains(i->first)) {
 			i = modelRenderData.erase(i);
 
 		} else {

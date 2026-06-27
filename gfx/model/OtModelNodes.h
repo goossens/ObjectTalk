@@ -79,7 +79,7 @@ public:
 	};
 
 	// access nodes
-	inline bool hasNode(const std::string& name) { return index.find(name) != index.end(); }
+	inline bool hasNode(const std::string& name) { return index.contains(name); }
 	inline Node& getNode(const std::string& name) { return nodes[index[name]]; }
 	inline Node& getNode(size_t nodeID) { return nodes[nodeID]; }
 	inline size_t getNodeID(const std::string& name) { return index[name]; }

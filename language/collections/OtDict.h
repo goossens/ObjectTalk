@@ -60,7 +60,7 @@ public:
 	OtObject add(OtObject value);
 
 	// does dictionary contains specified object
-	inline bool contains(const std::string& name) { return dict.find(name) != dict.end(); }
+	inline bool contains(const std::string& name) { return dict.contains(name); }
 
 	// get dictionary size
 	inline size_t size() { return dict.size(); }

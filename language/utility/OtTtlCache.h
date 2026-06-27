@@ -36,7 +36,7 @@ public:
 
 	// see if entry is in cache
 	inline bool has(const K& key) {
-		return entries.find(key) != entries.end();
+		return entries.contains(key);
 	}
 
 	// create a new cache entry in place and return a reference

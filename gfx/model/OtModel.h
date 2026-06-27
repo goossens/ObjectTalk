@@ -41,7 +41,7 @@ public:
 	void clear();
 
 	// access animations
-	inline bool hasAnimation(const std::string& name) { return animationIndex.find(name) != animationIndex.end(); }
+	inline bool hasAnimation(const std::string& name) { return animationIndex.contains(name); }
 	inline size_t getAnimationCount() { return animations.size(); }
 	inline std::string getAnimationName(size_t index) { return animations[index].getName(); }
 

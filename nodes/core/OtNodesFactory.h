@@ -98,7 +98,7 @@ public:
 		// sanity check
 		auto& factory = instance();
 
-		if (factory.constructors.count(name) == 0) {
+		if (!factory.constructors.contains(name)) {
 			OtLogError("Unknown node type[{}]", name);
 		}
 

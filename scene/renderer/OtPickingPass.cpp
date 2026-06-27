@@ -71,7 +71,7 @@ OtEntity OtPickingPass::render(OtSceneRendererContext& ctx, glm::vec2 uv) {
 			if (pick) {
 				int count = 1;
 
-				if (frequency.find(pick) != frequency.end()) {
+				if (frequency.contains(pick)) {
 					count = frequency[pick] + 1;
 				}
 

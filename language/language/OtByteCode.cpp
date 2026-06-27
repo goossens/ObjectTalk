@@ -607,7 +607,7 @@ std::vector<OtSymbol> OtByteCodeClass::getUsedSymbols(size_t pc) {
 	std::unordered_map<size_t, bool> index;
 
 	for (auto& symbol : symbols) {
-		if (pc > symbol.opcodeStart && pc <= symbol.opcodeEnd && index.count(symbol.id) == 0) {
+		if (pc > symbol.opcodeStart && pc <= symbol.opcodeEnd && !index.contains(symbol.id)) {
 			syms.emplace_back(symbol);
 			index[symbol.id] = true;
 		}
@@ -626,7 +626,7 @@ std::vector<std::string> OtByteCodeClass::getUsedSymbolNames(size_t pc) {
 	std::unordered_map<size_t, bool> index;
 
 	for (auto& symbol : symbols) {
-		if (pc > symbol.opcodeStart && pc <= symbol.opcodeEnd && index.count(symbol.id) == 0) {
+		if (pc > symbol.opcodeStart && pc <= symbol.opcodeEnd && !index.contains(symbol.id)) {
 			names.emplace_back(OtIdentifier::name(symbol.id));
 			index[symbol.id] = true;
 		}

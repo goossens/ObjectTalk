@@ -179,12 +179,12 @@ public:
 
 	// translate entity <-> UUID
 	inline uint32_t getUuidFromEntity(OtEntity entity) {
-		OtAssert(mapEntityToUuid.count(entity) > 0);
+		OtAssert(mapEntityToUuid.contains(entity));
 		return mapEntityToUuid[entity];
 	}
 
 	inline OtEntity getEntityFromUuid(uint32_t uuid) {
-		OtAssert(mapUuidToEntity.count(uuid) > 0);
+		OtAssert(mapUuidToEntity.contains(uuid));
 		return mapUuidToEntity[uuid];
 	}
 

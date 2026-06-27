@@ -78,7 +78,7 @@ static std::unordered_map<std::string, std::string> OtMimeType = {
 //
 
 std::string OtMimeTypeGet(std::string extension) {
-	if (OtMimeType.find(extension) != OtMimeType.end()) {
+	if (OtMimeType.contains(extension)) {
 		return OtMimeType[extension];
 
 	} else {

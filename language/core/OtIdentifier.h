@@ -66,7 +66,7 @@ private:
 
 	inline OtID get(const std::string_view text) {
 		// see if this id was already created
-		if (identifierIndex.count(text)) {
+		if (identifierIndex.contains(text)) {
 			return identifierIndex[text];
 
 		} else {

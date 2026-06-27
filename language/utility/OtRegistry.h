@@ -29,7 +29,7 @@ class OtRegistry {
 public:
 	// add a new member to the registry
 	inline void set(const std::string& name, T member) {
-		if (registry.count(name)) {
+		if (registry.contains(name)) {
 			OtLogError("Member [{}] already in registry", name);
 		}
 
@@ -38,7 +38,7 @@ public:
 
 	// get member from registry
 	inline T get(const std::string& name) {
-		if (!registry.count(name)) {
+		if (!registry.contains(name)) {
 			OtLogError("Member [{}] not in registry", name);
 		}
 
@@ -47,7 +47,7 @@ public:
 
 	// get reference to registry member
 	inline T& at(const std::string& name) {
-		if (!registry.count(name)) {
+		if (!registry.contains(name)) {
 			OtLogError("Member [{}] not in registry", name);
 		}
 
@@ -56,7 +56,7 @@ public:
 
 	// see if registry has specified member
 	inline bool has(const std::string& name) {
-		return registry.count(name) != 0;
+		return registry.contains(name);
 	}
 
 	// iterate through registry members

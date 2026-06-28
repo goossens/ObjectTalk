@@ -22,6 +22,7 @@
 
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui_internal.h"
+#include "imgui_freetype.h"
 #include "ImGuiFileDialog.h"
 #include "nlohmann/json.hpp"
 
@@ -44,6 +45,7 @@ void OtUi::loadFonts() {
 
 	ImFontConfig textConfig{};
 	std::strncpy(textConfig.Name, "DejaVu", sizeof(textConfig.Name));
+	textConfig.FontLoaderFlags = ImGuiFreeTypeLoaderFlags_LightHinting;
 	textConfig.FontDataOwnedByAtlas = false;
 
 	textFont = io.Fonts->AddFontFromMemoryTTF(
@@ -54,6 +56,7 @@ void OtUi::loadFonts() {
 
 	ImFontConfig boldConfig{};
 	std::strncpy(boldConfig.Name, "DejaVuBold", sizeof(textConfig.Name));
+	boldConfig.FontLoaderFlags = ImGuiFreeTypeLoaderFlags_LightHinting;
 	boldConfig.FontDataOwnedByAtlas = false;
 
 	boldFont = io.Fonts->AddFontFromMemoryTTF(
@@ -64,6 +67,7 @@ void OtUi::loadFonts() {
 
 	ImFontConfig audioConfig{};
 	std::strncpy(audioConfig.Name, "FontAudio", sizeof(audioConfig.Name));
+	audioConfig.FontLoaderFlags = ImGuiFreeTypeLoaderFlags_LightHinting;
 	audioConfig.FontDataOwnedByAtlas = false;
 
 	audioFont = io.Fonts->AddFontFromMemoryTTF(
@@ -74,6 +78,7 @@ void OtUi::loadFonts() {
 
 	ImFontConfig awesomeConfig{};
 	std::strncpy(awesomeConfig.Name, "FontAwesome", sizeof(awesomeConfig.Name));
+	awesomeConfig.FontLoaderFlags = ImGuiFreeTypeLoaderFlags_LightHinting;
 	awesomeConfig.FontDataOwnedByAtlas = false;
 
 	awesomeFont = io.Fonts->AddFontFromMemoryTTF(

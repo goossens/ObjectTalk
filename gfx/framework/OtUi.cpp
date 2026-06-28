@@ -45,8 +45,6 @@ void OtUi::loadFonts() {
 	ImFontConfig textConfig{};
 	std::strncpy(textConfig.Name, "DejaVu", sizeof(textConfig.Name));
 	textConfig.FontDataOwnedByAtlas = false;
-	textConfig.OversampleH = 1;
-	textConfig.OversampleV = 1;
 
 	textFont = io.Fonts->AddFontFromMemoryTTF(
 		static_cast<void*>(OtFontDejaVu::data()),
@@ -57,8 +55,6 @@ void OtUi::loadFonts() {
 	ImFontConfig boldConfig{};
 	std::strncpy(boldConfig.Name, "DejaVuBold", sizeof(textConfig.Name));
 	boldConfig.FontDataOwnedByAtlas = false;
-	boldConfig.OversampleH = 1;
-	boldConfig.OversampleV = 1;
 
 	boldFont = io.Fonts->AddFontFromMemoryTTF(
 		static_cast<void*>(OtFontDejaVuBold::data()),
@@ -69,8 +65,6 @@ void OtUi::loadFonts() {
 	ImFontConfig audioConfig{};
 	std::strncpy(audioConfig.Name, "FontAudio", sizeof(audioConfig.Name));
 	audioConfig.FontDataOwnedByAtlas = false;
-	audioConfig.OversampleH = 1;
-	audioConfig.OversampleV = 1;
 
 	audioFont = io.Fonts->AddFontFromMemoryTTF(
 		static_cast<void*>(OtFontAudio::data()),
@@ -81,8 +75,6 @@ void OtUi::loadFonts() {
 	ImFontConfig awesomeConfig{};
 	std::strncpy(awesomeConfig.Name, "FontAwesome", sizeof(awesomeConfig.Name));
 	awesomeConfig.FontDataOwnedByAtlas = false;
-	awesomeConfig.OversampleH = 1;
-	awesomeConfig.OversampleV = 1;
 
 	awesomeFont = io.Fonts->AddFontFromMemoryTTF(
 		static_cast<void*>(OtFontAwesome::data()),

@@ -37,7 +37,7 @@ public:
 	}
 
 	// render custom fields
-	inline void customRendering(float itemWidth) override {
+	inline bool customRendering(float itemWidth) override {
 		if (geometry.isValid()) {
 			OtUi::hSpacer((itemWidth - customW) / 2.0f);
 			preview.render(static_cast<int>(getSize()), static_cast<int>(getSize()), geometry.getMesh(), context);
@@ -70,6 +70,8 @@ public:
 		} else {
 			ImGui::TextUnformatted("No geometry available");
 		}
+
+		return false;
 	}
 
 	inline float getCustomRenderingWidth() override {

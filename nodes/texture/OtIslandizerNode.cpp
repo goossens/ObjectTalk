@@ -26,16 +26,9 @@
 class OtIslandizerNode : public OtTextureFilterNode {
 public:
 	// render custom fields
-	inline void customRendering(float itemWidth) override {
-		auto old = serialize().dump();
+	inline bool customRendering(float itemWidth) override {
 		ImGui::SetNextItemWidth(itemWidth);
-
-		if (OtUi::selectorEnum("##distance", &distance, OtIslandizer::distanceFunctions, OtIslandizer::distanceFunctionCount)) {
-			oldState = old;
-			newState = serialize().dump();
-			needsEvaluating = true;
-			needsSaving = true;
-		}
+		return OtUi::selectorEnum("##distance", &distance, OtIslandizer::distanceFunctions, OtIslandizer::distanceFunctionCount);
 	}
 
 	inline float getCustomRenderingWidth() override {

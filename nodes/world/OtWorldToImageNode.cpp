@@ -36,21 +36,16 @@ public:
 	}
 
 	// render custom fields
-	inline void customRendering(float itemWidth) override {
+	inline bool customRendering(float itemWidth) override {
 		ImGui::SetNextItemWidth(itemWidth);
-		auto old = serialize().dump();
-
-		if (OtUi::selectorEnum("##renderType", &renderType, OtWorld::renderTypes, OtWorld::renderTypeCount)) {
-			oldState = old;
-			newState = serialize().dump();
-			needsEvaluating = true;
-			needsSaving = true;
-		}
+		auto changed = OtUi::selectorEnum("##renderType", &renderType, OtWorld::renderTypes, OtWorld::renderTypeCount);
 
 		if (generating) {
 			auto pos = ImGui::GetCursorScreenPos();
 			OtUi::spinner(ImVec2(pos.x + itemWidth * 0.5f, pos.y), OtUi::size(1.0f));
 		}
+
+		return changed;
 	}
 
 	inline float getCustomRenderingWidth() override {

@@ -38,9 +38,8 @@ public:
 	}
 
 	// render custom fields
-	inline void customRendering(float itemWidth) override {
+	inline bool customRendering(float itemWidth) override {
 		auto changed = false;
-		auto old = serialize().dump();
 
 		ImGui::PushID("Mode");
 		changed |= OtUi::radioButton("RGB", &mode, OtRgbaCurve::Mode::rgb);
@@ -66,13 +65,7 @@ public:
 		}
 
 		changed |= ImGui::Curve(modeSelector, size, curvePoints, lut.data(), &lutSelection);
-
-		if (changed) {
-			oldState = old;
-			newState = serialize().dump();
-			needsEvaluating = true;
-			needsSaving = true;
-		}
+		return changed;
 	}
 
 	inline float getCustomRenderingWidth() override {

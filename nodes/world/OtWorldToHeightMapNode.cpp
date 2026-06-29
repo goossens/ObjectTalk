@@ -34,11 +34,13 @@ public:
 	}
 
 	// render custom fields
-	inline void customRendering(float itemWidth) override {
+	inline bool customRendering(float itemWidth) override {
 		if (generating) {
 			auto pos = ImGui::GetCursorScreenPos();
 			OtUi::spinner(ImVec2(pos.x + itemWidth * 0.5f, pos.y), OtUi::size(1.0f));
 		}
+
+		return false;
 	}
 
 	// update node status

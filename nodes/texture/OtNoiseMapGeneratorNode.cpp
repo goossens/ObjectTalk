@@ -39,16 +39,9 @@ public:
 	}
 
 	// render custom fields
-	inline void customRendering(float itemWidth) override {
+	inline bool customRendering(float itemWidth) override {
 		ImGui::SetNextItemWidth(itemWidth);
-		auto old = serialize().dump();
-
-		if (OtUi::selectorEnum("##noiseType", &noiseType, OtFbm::noiseTypes, OtFbm::noiseTypeCount)) {
-			oldState = old;
-			newState = serialize().dump();
-			needsEvaluating = true;
-			needsSaving = true;
-		}
+		return OtUi::selectorEnum("##noiseType", &noiseType, OtFbm::noiseTypes, OtFbm::noiseTypeCount);
 	}
 
 	inline float getCustomRenderingWidth() override {

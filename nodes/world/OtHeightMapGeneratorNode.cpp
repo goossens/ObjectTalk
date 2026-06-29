@@ -43,17 +43,16 @@ public:
 	}
 
 	// render custom fields
-	inline void customRendering(float itemWidth) override {
+	inline bool customRendering(float itemWidth) override {
 		// render button
+		bool changed = false;
+
 		if (ImGui::Button("Edit", ImVec2(itemWidth, 0.0f))) {
 			ImGui::OpenPopup("ErosionPopup");
 		}
 
 		// open popup (if required)
 		if (ImGui::BeginPopup("ErosionPopup")) {
-			auto old = serialize().dump();
-			bool changed = false;
-
 			auto size = ImVec2(
 				OtUi::size(16.0f),
 				ImGui::GetFrameHeightWithSpacing() * 7);
@@ -81,16 +80,11 @@ public:
 			changed |= OtUi::dragFloat("Gully Weight", &erosionConfig.gullyWeight, 0.1f, 1.0f);
 			changed |= OtUi::dragFloat("Detail", &erosionConfig.detail, 0.1f, 5.0f);
 
-			if (changed) {
-				oldState = old;
-				newState = serialize().dump();
-				needsEvaluating = true;
-				needsSaving = true;
-			}
-
 			ImGui::EndChild();
 			ImGui::EndPopup();
 		}
+
+		return changed;
 	}
 
 	inline float getCustomRenderingWidth() override {

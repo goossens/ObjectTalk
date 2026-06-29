@@ -31,7 +31,7 @@ public:
 	}
 
 	// render custom fields
-	inline void customRendering(float itemWidth) override {
+	inline bool customRendering(float itemWidth) override {
 		if (texture.isValid()) {
 			OtUi::hSpacer((itemWidth - customW) / 2.0f);
 			ImGui::Image(texture.getTextureID(), ImVec2(customW, customH));
@@ -50,6 +50,8 @@ public:
 		} else {
 			ImGui::TextUnformatted("No texture available");
 		}
+
+		return false;
 	}
 
 	inline float getCustomRenderingWidth() override {

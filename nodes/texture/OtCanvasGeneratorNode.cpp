@@ -56,26 +56,17 @@ public:
 	}
 
 	// render custom fields
-	inline void customRendering(float itemWidth) override {
+	inline bool customRendering(float itemWidth) override {
 		ImGui::SetNextItemWidth(itemWidth);
-		auto old = serialize().dump();
 
-		auto changed = script.renderUI("##script", [](const std::string& path) {
+		return script.renderUI("##script", [](const std::string& path) {
 			// create a new script file
 			OtText::save(path, scriptTemplate);
 		});
-
-		// do some state management if we have a new script specification
-		if (changed) {
-			oldState = old;
-			newState = serialize().dump();
-			needsEvaluating = true;
-			needsSaving = true;
-		}
 	}
 
 	inline float getCustomRenderingWidth() override {
-		return 200.0f;
+		return OtUi::size(10.0f);
 	}
 
 	inline float getCustomRenderingHeight() override {

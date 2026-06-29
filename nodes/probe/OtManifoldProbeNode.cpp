@@ -38,7 +38,7 @@ public:
 	}
 
 	// render custom fields
-	inline void customRendering(float itemWidth) override {
+	inline bool customRendering(float itemWidth) override {
 		if (manifold.isValid()) {
 			OtUi::hSpacer((itemWidth - customW) / 2.0f);
 			preview.render(static_cast<int>(getSize()), static_cast<int>(getSize()), mesh, context);
@@ -71,6 +71,8 @@ public:
 		} else {
 			ImGui::TextUnformatted("No manifold available");
 		}
+
+		return false;
 	}
 
 	inline float getCustomRenderingWidth() override {

@@ -42,7 +42,7 @@ public:
 	}
 
 	// render custom fields
-	inline void customRendering(float itemWidth) override {
+	inline bool customRendering(float itemWidth) override {
 		auto status = std::format("Drops: {}", run * dropPerRun);
 		time += ImGui::GetIO().DeltaTime * 8.0f;
 
@@ -77,6 +77,8 @@ public:
 				ImGui::EndDisabled();
 			}
 		}
+
+		return false;
 	}
 
 	inline float getCustomRenderingWidth() override {

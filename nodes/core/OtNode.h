@@ -166,7 +166,7 @@ public:
 	virtual inline void onExecute() {};
 
 	// handle custom section of nodes
-	virtual inline void customRendering([[maybe_unused]] float itemWidth) {}
+	virtual inline bool customRendering([[maybe_unused]] float itemWidth) { return false; }
 	virtual inline float getCustomRenderingWidth() { return 0.0f; }
 	virtual inline float getCustomRenderingHeight() { return 0.0f; }
 

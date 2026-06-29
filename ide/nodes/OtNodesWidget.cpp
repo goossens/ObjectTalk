@@ -393,7 +393,14 @@ void OtNodesWidget::renderNode(ImDrawList* drawlist, OtNode node) {
 	});
 
 	// do the custom node rendering
-	node->customRendering(node->w - horizontalPadding * 2.0f);
+	auto oldState = node->serialize().dump();
+
+	if (node->customRendering(node->w - horizontalPadding * 2.0f)) {
+		node->oldState = oldState;
+		node->newState = node->serialize().dump();
+		node->needsEvaluating = true;
+		node->needsSaving = true;
+	}
 
 	// render all input pins
 	node->eachInput([&](OtNodesPin pin) {

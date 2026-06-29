@@ -32,7 +32,9 @@ public:
 	}
 
 	// render custom fields
-	inline void customRendering(float itemWidth) override {
+	inline bool customRendering(float itemWidth) override {
+		auto changed = false;
+
 		// render button
 		auto geometryType = primitive->getTypeName();
 
@@ -42,10 +44,6 @@ public:
 
 		// open popup (if required)
 		if (ImGui::BeginPopup("primitivePopup")) {
-			auto old = serialize().dump();
-
-			auto changed = false;
-
 			if (ImGui::BeginCombo("Type", geometryType)) {
 				factory.each([&](const char* name) {
 					bool isSelectedOne = !std::strcmp(geometryType, name);
@@ -67,16 +65,10 @@ public:
 			}
 
 			changed |= primitive->renderUI();
-
-			if (changed) {
-				oldState = old;
-				newState = serialize().dump();
-				needsEvaluating = true;
-				needsSaving = true;
-			}
-
 			ImGui::EndPopup();
 		}
+
+		return changed;
 	}
 
 	inline float getCustomRenderingWidth() override {

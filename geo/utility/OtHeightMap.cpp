@@ -168,6 +168,56 @@ void OtHeightMap::save(const std::string& path) {
 
 
 //
+//	OtHeightMap::loadFromImage
+//
+
+void OtHeightMap::loadFromImage(const OtImage& image, float minValue, float maxValue) {
+	if (image.isValid()) {
+		auto range = maxValue - minValue;
+		auto w = image.getWidth();
+		auto h = image.getHeight();
+		update(w, h);
+
+		for (auto y = 0; y < h; y++) {
+			for (auto x = 0; x < w; x++) {
+				data[y * width + x] = image.getPixelGray(x, y) * range + minValue;
+			}
+		}
+
+		incrementVersion();
+
+	} else {
+		clear();
+	}
+}
+
+
+//
+//	OtHeightMap::saveToImage
+//
+
+void OtHeightMap::saveToImage(OtImage& image) {
+	if (isValid()) {
+		auto minValue = getMinElevation();
+		auto maxValue = getMaxElevation();
+		auto range = maxValue - minValue;
+		image.update(width, height, OtImage::Format::rgba32);
+
+		for (auto y = 0; y < height; y++) {
+			for (auto x = 0; x < width; x++) {
+				image.setPixelGray(x, y, (getElevation(x, y) - minValue) / range);
+			}
+		}
+
+		image.incrementVersion();
+
+	} else {
+		image.clear();
+	}
+}
+
+
+//
 //	OtHeightMap::clone
 //
 

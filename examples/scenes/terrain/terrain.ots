@@ -70,7 +70,7 @@
 					"component": "Terrain",
 					"hScale": 1.0,
 					"heights": {
-						"amplitude": 0.5,
+						"amplitude": 0.6100000143051147,
 						"frequency": 10,
 						"lacunarity": 2,
 						"normalStrength": 10.0,
@@ -117,7 +117,7 @@
 					},
 					"tileSize": 64,
 					"vOffset": -5.0,
-					"vScale": 15.0,
+					"vScale": 14.0,
 					"wireframe": false
 				}
 			]

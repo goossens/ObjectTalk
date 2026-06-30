@@ -215,7 +215,7 @@ void OtTextEditor::renderEditor() {
 	}
 
 	if (ImGui::BeginPopupModal("Changes since Opening File##diff", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-		diff.Render("diff", viewport->Size * 0.8f, true);
+		diff.Render("diff", viewport->Size * 0.8f, ImGuiChildFlags_Borders);
 
 		ImGui::Separator();
 		static constexpr float buttonWidth = 80.0f;

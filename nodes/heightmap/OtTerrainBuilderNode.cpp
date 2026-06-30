@@ -109,7 +109,7 @@ public:
 	}
 
 	static constexpr const char* nodeName = "Terrain Builder";
-	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::world;
+	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::heightmap;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
 private:

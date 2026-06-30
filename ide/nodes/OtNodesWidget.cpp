@@ -50,7 +50,8 @@ static constexpr ImU32 nodeColors[] = {
 	IM_COL32(80, 130, 170, 255),	// shape
 	IM_COL32(30, 110, 90, 255),		// geometry
 	IM_COL32(15, 125, 115, 255),	// manifold
-	IM_COL32(0, 70, 170, 255),		// map
+	IM_COL32(120, 80, 190, 255),	// heightmap
+	IM_COL32(0, 70, 170, 255),		// world
 	IM_COL32(10, 80, 80, 255),		// virtualizer
 	IM_COL32(120, 115, 55, 255),	// save
 	IM_COL32(50, 50, 90, 255)		// probe

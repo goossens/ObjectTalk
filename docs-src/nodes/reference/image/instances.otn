@@ -1,0 +1,129 @@
+{
+	"links": [],
+	"metadata": {},
+	"nodes": [
+		{
+			"id": 1853619714,
+			"inputs": [
+				{
+					"id": 3913926801,
+					"name": "Input",
+					"type": "image"
+				}
+			],
+			"outputs": [
+				{
+					"id": 283360772,
+					"name": "Output",
+					"type": "Heightmap"
+				}
+			],
+			"title": "Image to Height Map",
+			"type": "Image to Height Map",
+			"x": 242.0,
+			"y": 120.0
+		},
+		{
+			"id": 4002325680,
+			"inputs": [
+				{
+					"id": 305974962,
+					"name": "Input",
+					"type": "image"
+				}
+			],
+			"outputs": [
+				{
+					"id": 3516683920,
+					"name": "Output",
+					"type": "texture"
+				}
+			],
+			"title": "Image to Texture",
+			"type": "Image to Texture",
+			"x": 464.0,
+			"y": 123.0
+		},
+		{
+			"id": 3081064454,
+			"inputs": [
+				{
+					"id": 4194232256,
+					"name": "Image",
+					"type": "image"
+				},
+				{
+					"id": 1734308269,
+					"name": "U",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 2076699178,
+					"name": "V",
+					"type": "float",
+					"value": 0.0
+				}
+			],
+			"outputs": [
+				{
+					"id": 3034992312,
+					"name": "Gray",
+					"type": "float"
+				}
+			],
+			"title": "Sample Gray Image",
+			"type": "Sample Gray Image",
+			"x": 248.0,
+			"y": 262.0
+		},
+		{
+			"id": 1486069586,
+			"inputs": [
+				{
+					"id": 1340410970,
+					"name": "Image",
+					"type": "image"
+				},
+				{
+					"id": 2291190591,
+					"name": "U",
+					"type": "float",
+					"value": 0.0
+				},
+				{
+					"id": 301258091,
+					"name": "V",
+					"type": "float",
+					"value": 0.0
+				}
+			],
+			"outputs": [
+				{
+					"id": 723045488,
+					"name": "R",
+					"type": "float"
+				},
+				{
+					"id": 1923649712,
+					"name": "G",
+					"type": "float"
+				},
+				{
+					"id": 1274767328,
+					"name": "B",
+					"type": "float"
+				},
+				{
+					"id": 1383228518,
+					"name": "A",
+					"type": "float"
+				}
+			],
+			"title": "Sample RGBA Image",
+			"type": "Sample RGBA Image",
+			"x": 481.0,
+			"y": 267.0
+		}
+	]
+}

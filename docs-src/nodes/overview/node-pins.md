@@ -30,3 +30,4 @@ must have exactly two adjacent faces. Geometries do not have this constraint.
 fictitious) including properties of the faces (e.g. biome type).
 - **Instances Pins** -Instances describe the transforms applied to a numbers
 of 3D geometry instances.
+- **Heightmap Pins** -Heightmaps contain 2D data to store elevations.

@@ -19,6 +19,8 @@
 
 #include "glm/glm.hpp"
 
+#include "OtImage.h"
+
 
 //
 //	OtHeightMap
@@ -35,6 +37,12 @@ public:
 	// save heightmap to file
 	void save(const std::string& path);
 
+	// load heightmap from image
+	void loadFromImage(const OtImage& image, float minValue=0.0f, float maxValue=1.0f);
+
+	// save heightmap to image
+	void saveToImage(OtImage& image);
+
 	// clone this heightmap
 	OtHeightMap clone();
 
@@ -47,7 +55,7 @@ public:
 	// set elevation at specified location
 	void setElevation(int x, int y, float value) const;
 
-	// adjust elevation t specified location
+	// adjust elevation at specified location
 	void adjustElevation(int x, int y, float value) const;
 
 	// get elevation at specified location

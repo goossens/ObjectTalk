@@ -225,7 +225,7 @@ void OtImage::load(int width, int height, Format format, void* pixels) {
 //	OtImage::saveToPNG
 //
 
-void OtImage::saveToPNG(const std::string& path) {
+void OtImage::saveToPNG(const std::string& path) const {
 	// sanity check
 	OtAssert(isValid());
 
@@ -237,10 +237,56 @@ void OtImage::saveToPNG(const std::string& path) {
 
 
 //
+//	OtImage::setPixelGray
+//
+
+void OtImage::setPixelGray(int x, int y, float color) {
+	// sanity check
+	OtAssert(isValid());
+
+	x = std::clamp(x, 0, surface->w - 1);
+	y = std::clamp(y, 0, surface->h - 1);
+
+	switch (static_cast<Format>(surface->format)) {
+		case Format::none:
+			break;
+
+		case Format::r8: {
+			auto p = static_cast<uint8_t*>(surface->pixels);
+			p += surface->pitch * y + x;
+			*p = static_cast<uint8_t>(color) * 255;
+			break;
+		}
+
+		case Format::rgba8: {
+			auto color256 = static_cast<uint8_t>(color) * 255;
+			auto p = static_cast<uint8_t*>(surface->pixels);
+			p += surface->pitch * y + x * 4;
+			*p++ = color256;
+			*p++ = color256;
+			*p++ = color256;
+			*p = 255;
+			break;
+		}
+
+		case Format::rgba32: {
+			auto p = static_cast<float*>(surface->pixels);
+			p += surface->w * 4 * y + x * 4;
+			*p++ = color;
+			*p++ = color;
+			*p++ = color;
+			*p = 1.0f;
+			break;
+		}
+	}
+}
+
+
+//
 //	OtImage::getPixelRgba
 //
 
-glm::vec4 OtImage::getPixelRgba(int x, int y) {
+glm::vec4 OtImage::getPixelRgba(int x, int y) const {
 	// sanity check
 	OtAssert(isValid());
 
@@ -274,7 +320,7 @@ glm::vec4 OtImage::getPixelRgba(int x, int y) {
 //	OtImage::sampleValueRgba
 //
 
-glm::vec4 OtImage::sampleValueRgba(float x, float y) {
+glm::vec4 OtImage::sampleValueRgba(float x, float y) const {
 	// sanity check
 	OtAssert(isValid());
 
@@ -301,7 +347,7 @@ glm::vec4 OtImage::sampleValueRgba(float x, float y) {
 //	OtImage::sampleValueGray
 //
 
-float OtImage::sampleValueGray(float x, float y) {
+float OtImage::sampleValueGray(float x, float y) const {
 	// sanity check
 	OtAssert(isValid());
 

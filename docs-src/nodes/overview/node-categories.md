@@ -50,3 +50,4 @@ transform them, extrude them from 2D shapes or slice 3D models back into 2D
 shapes.
 - **World Nodes** - These nodes work on geospatial data (either real or
 fictitious).
+- **Height Map Nodes** - These nodes work on height maps.

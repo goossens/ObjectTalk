@@ -158,7 +158,7 @@ void OtDebuggerUI::renderSourceCode() {
 
 	// render source code
 	ImGui::PushFont(nullptr, 17.0f);
-	sourceCode.Render("SourceCode", ImVec2(sourceCodeWidth, 0.0f), true);
+	sourceCode.Render("SourceCode", ImVec2(sourceCodeWidth, 0.0f), ImGuiChildFlags_Borders);
 	ImGui::PopFont();
 }
 

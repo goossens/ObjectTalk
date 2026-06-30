@@ -50,19 +50,19 @@ public:
 	void load(int width, int height, Format format, void* pixels);
 
 	// save the image to disk
-	void saveToPNG(const std::string& path);
+	void saveToPNG(const std::string& path) const;
 
 	// see if image is valid
-	inline bool isValid() { return surface != nullptr; }
+	inline bool isValid() const { return surface != nullptr; }
 
 	// get information about image
-	inline Format getFormat() { return static_cast<Format>(surface->format); }
-	inline int getWidth() { return surface->w; }
-	inline int getHeight() { return surface->h; }
-	inline void* getPixels() { return surface->pixels; }
-	inline int getPitch() { return surface->pitch; }
+	inline Format getFormat() const { return static_cast<Format>(surface->format); }
+	inline int getWidth() const { return surface->w; }
+	inline int getHeight() const { return surface->h; }
+	inline void* getPixels() const { return surface->pixels; }
+	inline int getPitch() const { return surface->pitch; }
 
-	inline int getBpp() {
+	inline int getBpp() const {
 		switch (getFormat()) {
 			case Format::none: return 0;
 			case Format::r8: return 1;
@@ -73,24 +73,28 @@ public:
 		return 0;
 	}
 
-	// get pixel values
-	glm::vec4 getPixelRgba(int x, int y);
-	inline float getPixelGray(int x, int y) { return getPixelRgba(x, y).r; }
+	// set pixel value
+	void setPixelRgba(int x, int y, const glm::vec4& color);
+	void setPixelGray(int x, int y, float color);
 
-	glm::vec4 sampleValueRgba(float u, float v);
-	float sampleValueGray(float u, float v);
+	// get pixel values
+	glm::vec4 getPixelRgba(int x, int y) const;
+	inline float getPixelGray(int x, int y) const { return getPixelRgba(x, y).r; }
+
+	glm::vec4 sampleValueRgba(float u, float v) const;
+	float sampleValueGray(float u, float v) const ;
 
 	// version management
 	inline void setVersion(int v) { version = v; }
-	inline int getVersion() { return version; }
+	inline int getVersion() const { return version; }
 	inline void incrementVersion() { version++; }
 
 	// see if images are identical
-	inline bool operator==(OtImage& rhs) {
+	inline bool operator==(OtImage& rhs) const {
 		return surface == rhs.surface && version == rhs.version;
 	}
 
-	inline bool operator!=(OtImage& rhs) {
+	inline bool operator!=(OtImage& rhs) const {
 		return !operator==(rhs);
 	}
 

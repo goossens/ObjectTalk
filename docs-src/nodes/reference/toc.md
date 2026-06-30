@@ -2,6 +2,8 @@
 * [Introduction](#reference)
 * [Field Nodes](#field)
 * [Geometry Nodes](#geometry)
+* [Height Map Nodes](#heightmap)
+* [Image Nodes](#image)
 * [Input Nodes](#input)
 * [Manifold Nodes](#manifold)
 * [Math Nodes](#math)

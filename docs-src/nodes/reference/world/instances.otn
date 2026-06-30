@@ -65,42 +65,6 @@
 			"y": 69.0
 		},
 		{
-			"id": 586305724,
-			"inputs": [],
-			"outputs": [
-				{
-					"id": 1125872933,
-					"name": "Height Map",
-					"type": "Heightmap"
-				}
-			],
-			"title": "Height Map Generator",
-			"type": "Height Map Generator",
-			"x": 190.0,
-			"y": 244.0
-		},
-		{
-			"id": 682859771,
-			"inputs": [
-				{
-					"id": 2645386454,
-					"name": "Input",
-					"type": "Heightmap"
-				}
-			],
-			"outputs": [
-				{
-					"id": 1841991250,
-					"name": "Output",
-					"type": "geometry"
-				}
-			],
-			"title": "Terrain Builder",
-			"type": "Terrain Builder",
-			"x": 662.0,
-			"y": 244.0
-		},
-		{
 			"id": 2176311928,
 			"inputs": [
 				{
@@ -126,27 +90,6 @@
 			"type": "World to Height Map",
 			"x": 662.0,
 			"y": 69.0
-		},
-		{
-			"id": 693814898,
-			"inputs": [
-				{
-					"id": 2381320904,
-					"name": "World",
-					"type": "Heightmap"
-				}
-			],
-			"outputs": [
-				{
-					"id": 3733402587,
-					"name": "Height Map",
-					"type": "Heightmap"
-				}
-			],
-			"title": "Erode Height Map",
-			"type": "Erode Height Map",
-			"x": 416.0,
-			"y": 244.0
 		}
 	]
 }

@@ -42,7 +42,7 @@ public:
 	static constexpr OtNodeClass::Category nodeCategory = OtNodeClass::Category::heightmap;
 	static constexpr OtNodeClass::Kind nodeKind = OtNodeClass::Kind::fixed;
 
-private:œ
+private:
 	// properties
 	OtHeightMap heightMap;
 	OtImage image;

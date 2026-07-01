@@ -29,6 +29,7 @@
 					"type": "Heightmap"
 				}
 			],
+			"size": 128,
 			"title": "Height Map Generator",
 			"type": "Height Map Generator",
 			"x": 163.0,
@@ -52,8 +53,8 @@
 			],
 			"title": "Terrain Builder",
 			"type": "Terrain Builder",
-			"x": 635.0,
-			"y": 64.0
+			"x": 399.0,
+			"y": 261.0
 		},
 		{
 			"id": 693814898,
@@ -94,8 +95,30 @@
 			],
 			"title": "Height Map to Image",
 			"type": "Height Map to Image",
-			"x": 183.0,
-			"y": 263.0
+			"x": 172.0,
+			"y": 261.0
+		},
+		{
+			"distance": 0,
+			"id": 4068493251,
+			"inputs": [
+				{
+					"id": 1160556337,
+					"name": "Input",
+					"type": "Heightmap"
+				}
+			],
+			"outputs": [
+				{
+					"id": 1293389274,
+					"name": "Output",
+					"type": "Heightmap"
+				}
+			],
+			"title": "Islandize Height Map",
+			"type": "Islandize Height Map",
+			"x": 616.0,
+			"y": 64.0
 		}
 	]
 }

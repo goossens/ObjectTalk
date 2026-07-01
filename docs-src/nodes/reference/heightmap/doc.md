@@ -12,6 +12,14 @@
 
 **Outputs**
 
+#### Islandize Height Map
+
+![screenshot](img/islandize-heightmap.png#right)
+
+**Inputs**
+
+**Outputs**
+
 #### Terrain Builder
 
 ![screenshot](img/terrain-builder.png#right)

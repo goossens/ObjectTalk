@@ -97,6 +97,8 @@ public:
 
 	// (de)serialize node
 	void customSerialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
+		(*data)["size"] = heightSize;
+
 		auto heightData = nlohmann::json::object();
 		heightData["octaves"] = heightConfig.octaves;
 		heightData["gain"] = heightConfig.gain;
@@ -116,6 +118,8 @@ public:
 	}
 
 	void customDeserialize(nlohmann::json* data, [[maybe_unused]] std::string* basedir) override {
+		heightSize = data->value("size", 128);
+
 		if (data->contains("height")) {
 			auto& heightData = (*data)["height"];
 			heightConfig.octaves = heightData.value("octaves", 3);
@@ -124,7 +128,7 @@ public:
 			heightConfig.amplitude = heightData.value("amplitude", 0.125f);
 			heightConfig.frequency = heightData.value("frequency", 3.0f);
 			heightConfig.offset = heightData.value("offset", glm::vec2(-0.65f, 0.0f));
-	}
+		}
 
 		if (data->contains("erosion")) {
 			auto erosionData = (*data)["erosion"];

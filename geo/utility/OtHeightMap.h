@@ -125,6 +125,28 @@ public:
 	// erode heightmap
 	void erode(int run, int drops);
 
+	// islandizer distance function types
+	enum class DistanceFunction {
+		squareBump,
+		euclidean,
+		euclidean2,
+		hyperboloid,
+		diagonal
+	};
+
+	static constexpr const char* distanceFunctions[] = {
+		"Square Bump Distance",
+		"Euclidean Distance",
+		"Euclidean2 Distance",
+		"Hyperboloid Distance",
+		"Diagonal Distance"
+	};
+
+	static constexpr size_t distanceFunctionCount = sizeof(distanceFunctions) / sizeof(*distanceFunctions);
+
+	// islandize the heightmap
+	void islandize(DistanceFunction distanceFunction);
+
 private:
 	// heightmap properties
 	std::shared_ptr<float[]> data;

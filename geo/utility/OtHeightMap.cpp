@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <algorithm>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <limits>
@@ -459,5 +461,82 @@ void OtHeightMap::erode(int run, int drops) {
 		}
 	}
 
+	incrementVersion();
+}
+
+
+//
+//	OtHeightMap::islandize
+//
+
+template<typename F>
+void applyIsland(float* output, float* input, int w, int h, int minElevation, F function) {
+	auto w2 = w >> 1;
+	auto h2 = h >> 1;
+	auto scaleX = 2.0f / static_cast<float>(w);
+	auto scaleY = 2.0f / static_cast<float>(h);
+
+	for (auto y = 0; y < h; y++) {
+		for (auto x = 0; x < w; x++) {
+			auto height = *(input + y * w + x) - minElevation;
+			auto distance = function(static_cast<float>(x - w2) * scaleX, static_cast<float>(y - h2) * scaleY);
+			*output++ = height * (1.0f - distance) + minElevation;
+		}
+	}
+}
+
+void OtHeightMap::islandize(DistanceFunction distanceFunction) {
+	auto newData = std::make_shared<float[]>(width * height);
+
+	switch (distanceFunction) {
+		case DistanceFunction::squareBump:
+			applyIsland(
+				newData.get(), data.get(),
+				width, height,
+				getMinElevation(),
+				[](float x, float y) { return 1.0f - (1.0f - x * x) * (1.0f - y * y); });
+
+			break;
+
+		case DistanceFunction::euclidean:
+			applyIsland(
+				newData.get(), data.get(),
+				width, height,
+				getMinElevation(),
+				[](float x, float y) { return std::sqrt(x * x + y * y) / 1.414213562373095f; });
+
+			break;
+
+		case DistanceFunction::euclidean2:
+			applyIsland(
+				newData.get(), data.get(),
+				width, height,
+				getMinElevation(),
+				[](float x, float y) { return (x * x + y * y) / 2.0f; });
+
+			break;
+
+		case DistanceFunction::hyperboloid:
+			static constexpr float C = 0.2f;
+
+			applyIsland(
+				newData.get(), data.get(),
+				width, height,
+				getMinElevation(),
+				[](float x, float y) { return (std::sqrt(x * x + y * y + C * C) - C) / (std::sqrt(1.0f + C * C) - C); });
+
+			break;
+
+		case DistanceFunction::diagonal:
+			applyIsland(
+				newData.get(), data.get(),
+				width, height,
+				getMinElevation(),
+				[](float x, float y) { return std::max(std::abs(x), std::abs(y)); });
+
+			break;
+	}
+
+	data = newData;
 	incrementVersion();
 }

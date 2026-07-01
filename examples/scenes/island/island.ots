@@ -108,9 +108,9 @@
 					"settings": {
 						"178414412": {
 							"value": [
-								200.0,
-								58.0,
-								200.0
+								180.0,
+								73.0,
+								180.0
 							]
 						},
 						"2320418202": {
@@ -211,6 +211,7 @@
 		"type": "scene"
 	},
 	"processing": {
+		"backgroundFogRatio": 1.0,
 		"bloom": true,
 		"bloomIntensity": 0.800000011920929,
 		"contrast": 1.0,

@@ -36,7 +36,7 @@ float radialDistance(vec2 uv) {
 		return (uv.x * uv.x + uv.y * uv.y) / 2.0f;
 
 	} else if (distanceFunction == hyperboloidFunction) {
-		return (sqrt(uv.x * uv.x + uv.y * uv.y + C * C) - C) / (sqrt(1.0 + C * C) - C);
+		return (sqrt(uv.x * uv.x + uv.y * uv.y + C * C) - C) / (sqrt(1.0f + C * C) - C);
 
 	} else if (distanceFunction == diagonalFunction) {
 		return max(abs(uv.x), abs(uv.y));
@@ -58,7 +58,7 @@ void main() {
 
 	float distance = radialDistance(uv);
 	float height = texture(inTexture, uv).x;
-	height *= 1.0 - distance;
+	height *= 1.0f - distance;
 
 	imageStore(outTexture, coord, vec4(height, 0.0f, 0.0f, 1.0f));
 }

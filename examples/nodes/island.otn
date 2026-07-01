@@ -1,16 +1,6 @@
 {
 	"links": [
 		{
-			"from": 4243123040,
-			"id": 408184764,
-			"to": 56501210
-		},
-		{
-			"from": 2550862960,
-			"id": 4213277278,
-			"to": 217555214
-		},
-		{
 			"from": 2105882391,
 			"id": 215882111,
 			"to": 486684054
@@ -21,165 +11,72 @@
 			"to": 3582590217
 		},
 		{
-			"from": 4243123040,
-			"id": 916739136,
-			"to": 2225849993
+			"from": 2914940052,
+			"id": 1223595773,
+			"to": 995947077
 		},
 		{
-			"from": 2550862960,
-			"id": 689960354,
-			"to": 1158247233
-		},
-		{
-			"from": 916885396,
-			"id": 377246124,
-			"to": 3786237720
-		},
-		{
-			"from": 368292718,
-			"id": 931351973,
+			"from": 696851855,
+			"id": 2103967143,
 			"to": 2155753882
 		}
 	],
 	"metadata": {},
 	"nodes": [
 		{
-			"id": 1863888524,
-			"inputs": [
-				{
-					"id": 1526405463,
-					"name": "Width",
-					"type": "int",
-					"value": 256
-				},
-				{
-					"id": 4094783600,
-					"name": "Height",
-					"type": "int",
-					"value": 256
-				},
-				{
-					"id": 849638715,
-					"name": "Frequency",
-					"type": "int",
-					"value": 7
-				},
-				{
-					"id": 3698526399,
-					"name": "Lacunarity",
-					"type": "float",
-					"value": 1.7000000476837158
-				},
-				{
-					"id": 2380244455,
-					"name": "Amplitude",
-					"type": "float",
-					"value": 0.5
-				},
-				{
-					"id": 850026902,
-					"name": "Persistence",
-					"type": "float",
-					"value": 0.5
-				},
-				{
-					"id": 3017524261,
-					"name": "Octaves",
-					"type": "int",
-					"value": 6
-				}
-			],
-			"noiseType": 1,
+			"erosion": {
+				"detail": 1.5,
+				"gullyWeight": 0.5,
+				"scale": 0.15000000596046448,
+				"strength": 0.2199999988079071
+			},
+			"height": {
+				"amplitude": 0.125,
+				"frequency": 3.0,
+				"gain": 0.10000000149011612,
+				"lacunarity": 2.0,
+				"octaves": 3,
+				"offset": [
+					-0.6499999761581421,
+					0.0
+				]
+			},
+			"id": 1715225438,
+			"inputs": [],
 			"outputs": [
 				{
-					"id": 4243123040,
-					"name": "Texture",
-					"type": "texture"
+					"id": 2914940052,
+					"name": "Height Map",
+					"type": "Heightmap"
 				}
 			],
-			"title": "NoiseMap Generator",
-			"type": "NoiseMap Generator",
-			"x": 14.0,
-			"y": 43.0
+			"size": 256,
+			"title": "Height Map Generator",
+			"type": "Height Map Generator",
+			"x": 36.0,
+			"y": 440.0
 		},
 		{
-			"distance": 0,
-			"id": 2454258453,
+			"distance": 1,
+			"id": 2140828500,
 			"inputs": [
 				{
-					"id": 56501210,
+					"id": 995947077,
 					"name": "Input",
-					"type": "texture"
+					"type": "Heightmap"
 				}
 			],
 			"outputs": [
 				{
-					"id": 2550862960,
-					"name": "Output",
-					"type": "texture"
-				}
-			],
-			"title": "Islandizer",
-			"type": "Islandizer",
-			"x": 254.0,
-			"y": 317.0
-		},
-		{
-			"id": 3557975928,
-			"inputs": [
-				{
-					"id": 217555214,
-					"name": "Texture",
-					"type": "texture"
-				}
-			],
-			"outputs": [],
-			"title": "Texture Probe",
-			"type": "Texture Probe",
-			"x": 514.0,
-			"y": 43.0
-		},
-		{
-			"id": 203687548,
-			"inputs": [
-				{
-					"id": 1158247233,
-					"name": "Input",
-					"type": "texture"
-				}
-			],
-			"outputs": [
-				{
-					"id": 916885396,
-					"name": "Output",
-					"type": "image"
-				}
-			],
-			"title": "Texture to Image",
-			"type": "Texture to Image",
-			"x": 586.0,
-			"y": 594.0
-		},
-		{
-			"id": 932966353,
-			"inputs": [
-				{
-					"id": 3786237720,
-					"name": "Input",
-					"type": "image"
-				}
-			],
-			"outputs": [
-				{
-					"id": 368292718,
+					"id": 696851855,
 					"name": "Output",
 					"type": "Heightmap"
 				}
 			],
-			"title": "Image to Height Map",
-			"type": "Image to Height Map",
-			"x": 574.0,
-			"y": 480.0
+			"title": "Islandize Height Map",
+			"type": "Islandize Height Map",
+			"x": 289.0,
+			"y": 391.0
 		},
 		{
 			"id": 978565693,
@@ -236,7 +133,7 @@
 					"type": "vector3",
 					"value": [
 						4.0,
-						1.0,
+						2.200000047683716,
 						4.0
 					]
 				}
@@ -281,21 +178,6 @@
 			"x": 1176.0,
 			"y": 166.0,
 			"zoom": 1.1302343606948853
-		},
-		{
-			"id": 2474077943,
-			"inputs": [
-				{
-					"id": 2225849993,
-					"name": "Texture",
-					"type": "texture"
-				}
-			],
-			"outputs": [],
-			"title": "Texture Probe",
-			"type": "Texture Probe",
-			"x": 266.0,
-			"y": 43.0
 		}
 	]
 }

@@ -583,7 +583,7 @@ void OtMarkdown::renderText(const char* text, const char* end) {
 			isStrong = true;
 
 			setFont(true);
-			ImGui::TextUnformatted(admonitionLabel(kind));
+			OtUi::text(admonitionLabel(kind));
 			setFont(false);
 
 			isStrong = savedStrong;

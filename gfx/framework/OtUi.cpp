@@ -179,9 +179,9 @@ void OtUi::centerTextInSpace(const char* txt, float width) {
 //	OtUi::centerTextInWindow
 //
 
-void OtUi::centerTextInWindow(const char* text) {
-	ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(text).x) * 0.5f);
-	ImGui::TextUnformatted(text);
+void OtUi::centerTextInWindow(const char* txt) {
+	ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(txt).x) * 0.5f);
+	text(txt);
 }
 
 
@@ -298,7 +298,7 @@ bool OtUi::toggleButton(const char* labelPlusID, bool* value) {
 	// render label (if required)
 	if (label.size()) {
 		ImGui::SameLine(0.0f, ImGui::CalcItemWidth() - width + ImGui::GetStyle().ItemInnerSpacing.x);
-		ImGui::TextUnformatted(label.c_str());
+		OtUi::text(label);
 	}
 
 	return changed;

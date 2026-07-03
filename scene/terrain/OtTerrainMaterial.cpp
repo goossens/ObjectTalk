@@ -35,17 +35,17 @@ bool OtTerrainMaterial::renderUI() {
 	}
 
 	ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-	ImGui::TextUnformatted("Material");
+	OtUi::text("Material");
 
 	// open popup (if required)
 	if (ImGui::BeginPopup("TerrainMaterialPopup")) {
 		if (ImGui::BeginTable("layout", 6)) {
 			ImGui::TableNextRow();
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Color");
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Texture");
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Scale");
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Transition");
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Overlap");
+			ImGui::TableNextColumn(); OtUi::text("Color");
+			ImGui::TableNextColumn(); OtUi::text("Texture");
+			ImGui::TableNextColumn(); OtUi::text("Scale");
+			ImGui::TableNextColumn(); OtUi::text("Transition");
+			ImGui::TableNextColumn(); OtUi::text("Overlap");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W1(); changed |= ImGui::ColorEdit3("##region1Color", glm::value_ptr(region1Color));
@@ -53,7 +53,7 @@ bool OtTerrainMaterial::renderUI() {
 			ImGui::TableNextColumn(); W2(); changed |= OtUi::dragFloat("##region1TextureScale", &region1TextureScale, 1.0f, 500.0f);
 			ImGui::TableNextColumn(); W2(); changed |= OtUi::dragFloat("##region1Transition", &region1Transition, 0.0f, 1.0f);
 			ImGui::TableNextColumn(); W2(); changed |= OtUi::dragFloat("##region1Overlap", &region1Overlap, 0.0f, 1.0f);
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Region 1");
+			ImGui::TableNextColumn(); OtUi::text("Region 1");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W1(); changed |= ImGui::ColorEdit3("##region2Color", glm::value_ptr(region2Color));
@@ -61,7 +61,7 @@ bool OtTerrainMaterial::renderUI() {
 			ImGui::TableNextColumn(); W2(); changed |= OtUi::dragFloat("##region2TextureScale", &region2TextureScale, 1.0f, 500.0f);
 			ImGui::TableNextColumn(); W2(); changed |= OtUi::dragFloat("##region2Transition", &region2Transition, 0.0f, 1.0f);
 			ImGui::TableNextColumn(); W2(); changed |= OtUi::dragFloat("##region2Overlap", &region2Overlap, 0.0f, 1.0f);
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Region 2");
+			ImGui::TableNextColumn(); OtUi::text("Region 2");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W1(); changed |= ImGui::ColorEdit3("##region3Color", glm::value_ptr(region3Color));
@@ -69,7 +69,7 @@ bool OtTerrainMaterial::renderUI() {
 			ImGui::TableNextColumn(); W2(); changed |= OtUi::dragFloat("##region3TextureScale", &region3TextureScale, 1.0f, 500.0f);
 			ImGui::TableNextColumn(); W2(); changed |= OtUi::dragFloat("##region3Transition", &region3Transition, 0.0f, 1.0f);
 			ImGui::TableNextColumn(); W2(); changed |= OtUi::dragFloat("##regio3Overlap", &region3Overlap, 0.0f, 1.0f);
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Region 3");
+			ImGui::TableNextColumn(); OtUi::text("Region 3");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W1(); changed |= ImGui::ColorEdit3("##region4Color", glm::value_ptr(region4Color));
@@ -77,7 +77,7 @@ bool OtTerrainMaterial::renderUI() {
 			ImGui::TableNextColumn(); W2(); changed |= OtUi::dragFloat("##region4TextureScale", &region4TextureScale, 1.0f, 500.0f);
 			ImGui::TableNextColumn();
 			ImGui::TableNextColumn();
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Region 4");
+			ImGui::TableNextColumn(); OtUi::text("Region 4");
 			ImGui::EndTable();
 		}
 

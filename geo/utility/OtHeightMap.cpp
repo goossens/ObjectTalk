@@ -470,7 +470,7 @@ void OtHeightMap::erode(int run, int drops) {
 //
 
 template<typename F>
-void applyIsland(float* output, float* input, int w, int h, int minElevation, F function) {
+void applyIsland(float* output, float* input, int w, int h, float minElevation, F function) {
 	auto w2 = w >> 1;
 	auto h2 = h >> 1;
 	auto scaleX = 2.0f / static_cast<float>(w);
@@ -516,7 +516,7 @@ void OtHeightMap::islandize(DistanceFunction distanceFunction) {
 
 			break;
 
-		case DistanceFunction::hyperboloid:
+		case DistanceFunction::hyperboloid: {
 			static constexpr float C = 0.2f;
 
 			applyIsland(
@@ -526,6 +526,7 @@ void OtHeightMap::islandize(DistanceFunction distanceFunction) {
 				[](float x, float y) { return (std::sqrt(x * x + y * y + C * C) - C) / (std::sqrt(1.0f + C * C) - C); });
 
 			break;
+		}
 
 		case DistanceFunction::diagonal:
 			applyIsland(

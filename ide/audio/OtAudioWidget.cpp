@@ -432,7 +432,7 @@ void OtAudioWidget::renderCircuit(ImDrawList* drawlist, OtCircuit circuit) {
 		ImGui::PushStyleColor(ImGuiCol_Border, errorTooltipColor);
 		ImGui::PushStyleVar(ImGuiStyleVar_PopupBorderSize, 3.0f);
 		ImGui::BeginTooltip();
-		ImGui::TextUnformatted(message.c_str());
+		OtUi::text(message);
 		ImGui::EndTooltip();
 		ImGui::PopStyleVar();
 		ImGui::PopStyleColor();

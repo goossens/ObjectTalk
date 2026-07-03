@@ -16,6 +16,7 @@
 #include "OtReal.h"
 
 #include "OtGlm.h"
+#include "OtUi.h"
 
 #include "OtMaterial.h"
 
@@ -35,54 +36,54 @@ bool OtMaterial::renderUI() {
 	}
 
 	ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-	ImGui::TextUnformatted("Material");
+	OtUi::text("Material");
 
 	// open popup (if required)
 	if (ImGui::BeginPopup("MaterialPopup")) {
 		if (ImGui::BeginTable("layout", 3)) {
 			ImGui::TableNextRow();
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Fixed Values");
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Texture Maps");
+			ImGui::TableNextColumn(); OtUi::text("Fixed Values");
+			ImGui::TableNextColumn(); OtUi::text("Texture Maps");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::ColorEdit4("##albedoColor", glm::value_ptr(albedo));
 			ImGui::TableNextColumn(); W(); changed |= albedoTexture.renderUI("##albedoTexture");
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Albedo");
+			ImGui::TableNextColumn(); OtUi::text("Albedo");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();
 			ImGui::TableNextColumn(); W(); changed |= normalTexture.renderUI("##normalTexture");
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Normals");
+			ImGui::TableNextColumn(); OtUi::text("Normals");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= OtUi::dragFloat("##metallic", &metallic, 0.0f, 1.0f);
 			ImGui::TableNextColumn(); W(); changed |= metallicRoughnessTexture.renderUI("##metallicRoughnessTexture");
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Metallic");
+			ImGui::TableNextColumn(); OtUi::text("Metallic");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); OtUi::dragFloat("##roughness", &roughness, 0.0f, 1.0f);
 			ImGui::TableNextColumn();
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Roughness");
+			ImGui::TableNextColumn(); OtUi::text("Roughness");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= ImGui::ColorEdit3("##emissive", glm::value_ptr(emissive));
 			ImGui::TableNextColumn(); W(); changed |= emissiveTexture.renderUI("##emissiveTexture");
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Emissive");
+			ImGui::TableNextColumn(); OtUi::text("Emissive");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= OtUi::dragFloat("##ambientOcclusion", &ao, 0.0f, 1.0f);
 			ImGui::TableNextColumn(); W(); changed |= aoTexture.renderUI("##aoTexture");
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Ambient Occlusion");
+			ImGui::TableNextColumn(); OtUi::text("Ambient Occlusion");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= OtUi::editVec2("##offset", &offset, 0.0f, 1.0f);
 			ImGui::TableNextColumn();
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Texture Offset");
+			ImGui::TableNextColumn(); OtUi::text("Texture Offset");
 
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn(); W(); changed |= OtUi::dragFloat("##scale", &scale, 0.0f, 100.0f);
 			ImGui::TableNextColumn();
-			ImGui::TableNextColumn(); ImGui::TextUnformatted("Texture Scale");
+			ImGui::TableNextColumn(); OtUi::text("Texture Scale");
 			ImGui::EndTable();
 		}
 

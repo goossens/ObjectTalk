@@ -462,19 +462,19 @@ void OtModel::renderMeshes() {
 		for (auto& mesh : meshes) {
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();
-			ImGui::TextUnformatted(mesh.name.c_str());
+			OtUi::text(mesh.name);
 			ImGui::TableNextColumn();
-			ImGui::TextUnformatted(std::to_string(mesh.vertices.size()).c_str());
+			OtUi::text(std::to_string(mesh.vertices.size()));
 			ImGui::TableNextColumn();
-			ImGui::TextUnformatted(std::to_string(mesh.indices.size()).c_str());
+			OtUi::text(std::to_string(mesh.indices.size()));
 			ImGui::TableNextColumn();
-			ImGui::TextUnformatted(std::to_string(mesh.getMaterialIndex()).c_str());
+			OtUi::text(std::to_string(mesh.getMaterialIndex()));
 			ImGui::TableNextColumn();
-			ImGui::TextUnformatted(std::to_string(mesh.bones.size()).c_str());
+			OtUi::text(std::to_string(mesh.bones.size()));
 
 			if (mesh.hasRootNode()) {
 				ImGui::TableNextColumn();
-				ImGui::TextUnformatted(std::to_string(mesh.getRootNode()).c_str());
+				OtUi::text(std::to_string(mesh.getRootNode()));
 			}
 		}
 
@@ -496,9 +496,9 @@ void OtModel::renderMaterials() {
 		for (size_t i = 0; i < materials.size(); i++) {
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();
-			ImGui::TextUnformatted(std::to_string(i).c_str());
+			OtUi::text(std::to_string(i));
 			ImGui::TableNextColumn();
-			ImGui::TextUnformatted(materials[i].name.c_str());
+			OtUi::text(materials[i].name);
 		}
 
 		ImGui::EndTable();
@@ -519,9 +519,9 @@ void OtModel::renderTextures() {
 		for (size_t i = 0; i < textures.size(); i++) {
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();
-			ImGui::TextUnformatted(std::to_string(i).c_str());
+			OtUi::text(std::to_string(i));
 			ImGui::TableNextColumn();
-			ImGui::TextUnformatted(textures[i].asset.getPath().c_str());
+			OtUi::text(textures[i].asset.getPath());
 		}
 
 		ImGui::EndTable();
@@ -558,9 +558,9 @@ void OtModel::renderNode(size_t nodeID) {
 	ImGui::TableNextColumn();
 	bool open = ImGui::TreeNodeEx(node.name.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
 	ImGui::TableNextColumn();
-	ImGui::TextUnformatted(std::to_string(node.id).c_str());
+	OtUi::text(std::to_string(node.id));
 	ImGui::TableNextColumn();
-	ImGui::TextUnformatted(std::to_string(node.meshes.size()).c_str());
+	OtUi::text(std::to_string(node.meshes.size()));
 	ImGui::TableNextColumn();
 	renderNodeTransforms(nodeID);
 
@@ -587,7 +587,7 @@ void OtModel::renderNodeTransforms(size_t nodeID) {
 		auto& node = nodes.getNode(nodeID);
 		ImGui::PushItemWidth(OtUi::size(15.0f));
 		OtUi::viewMat4("Local", node.localTransform);
-		ImGui::TextUnformatted("");
+		OtUi::text("");
 		OtUi::viewMat4("Model", node.modelTransform);
 		ImGui::PopItemWidth();
 		ImGui::EndPopup();
@@ -610,11 +610,11 @@ void OtModel::renderAnimations() {
 		for (size_t i = 0; i < animations.size(); i++) {
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();
-			ImGui::TextUnformatted(std::to_string(i).c_str());
+			OtUi::text(std::to_string(i));
 			ImGui::TableNextColumn();
-			ImGui::TextUnformatted(animations[i].name.c_str());
+			OtUi::text(animations[i].name);
 			ImGui::TableNextColumn();
-			ImGui::TextUnformatted(std::to_string(animations[i].duration).c_str());
+			OtUi::text(std::to_string(animations[i].duration));
 			ImGui::TableNextColumn();
 
 			std::string label = std::format("{}##{}",i, animations[i].channels.size());
@@ -664,7 +664,7 @@ void OtModel::renderAnimationChannels(size_t animationID) {
 		auto& channel = channels[c];
 		ImVec2 pos = ImGui::GetCursorScreenPos();
 		ImGui::Spacing();
-		ImGui::TextUnformatted(std::to_string(channel.node).c_str());
+		OtUi::text(std::to_string(channel.node));
 
 		drawList->AddLine(ImVec2(left, pos.y + lineHeight * 0.3f), ImVec2(right, pos.y + lineHeight * 0.3f), lineColor);
 		drawList->AddLine(ImVec2(left, pos.y + lineHeight * 0.6f), ImVec2(right, pos.y + lineHeight * 0.6f), lineColor);

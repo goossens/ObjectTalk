@@ -30,17 +30,19 @@ public:
 		addInputPin("Size", size);
 		addInputPin("Seed", seed);
 		addInputPin("Ruggedness", ruggedness);
-		addOutputPin("World", world);
-	}
+		static constexpr const char* outputLabel = "World";
 
-	// validate input parameters
-	inline bool customRendering([[maybe_unused]] float itemWidth) override {
-		if (generating) {
-			auto pos = ImGui::GetCursorScreenPos();
-			OtUi::spinner(ImVec2(pos.x + itemWidth * 0.5f, pos.y + ImGui::GetFrameHeightWithSpacing()), OtUi::size(1.0f));
-		}
+		addOutputPin(outputLabel, world)->addCustomRenderer([this](float width) {
+			if (generating) {
+				ImGui::SetNextItemWidth(width);
+				ImGui::ProgressBar(static_cast<float>(-ImGui::GetTime()), ImVec2(), "Generating...");
 
-		return false;
+			} else {
+				OtUi::hSpacer(width - ImGui::CalcTextSize(outputLabel).x);
+				OtUi::text(outputLabel);
+			}
+
+		}, OtUi::size(8.0f));
 	}
 
 	// update node status

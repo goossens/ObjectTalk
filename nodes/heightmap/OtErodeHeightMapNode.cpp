@@ -38,21 +38,24 @@ public:
 	// configure node
 	inline void configure() override {
 		addInputPin("World", heightMap);
-		addOutputPin("Height Map", erodedHeightMap);
+		static constexpr const char* outputLabel = "Height Map";
+
+		addOutputPin(outputLabel, erodedHeightMap)->addCustomRenderer([this](float width) {
+			if (generating) {
+				ImGui::SetNextItemWidth(width);
+				ImGui::ProgressBar(static_cast<float>(-ImGui::GetTime()), ImVec2(), "Generating...");
+
+			} else {
+				OtUi::hSpacer(width - ImGui::CalcTextSize(outputLabel).x);
+				OtUi::text(outputLabel);
+			}
+
+		}, OtUi::size(8.0f));
 	}
 
 	// render custom fields
 	inline bool customRendering(float itemWidth) override {
 		auto status = std::format("Drops: {}", run * dropPerRun);
-		time += ImGui::GetIO().DeltaTime * 8.0f;
-
-		if (generating) {
-			status += " ";
-			static constexpr const char* sequence[] = {"←", "↖", "↑", "↗", "→", "↘", "↓", "↙"};
-			static constexpr float elements = static_cast<float>(sizeof(sequence) / sizeof(sequence[0]));
-			status += sequence[static_cast<int>(std::fmod(time, elements))];
-		}
-
 		OtUi::centerTextInSpace(status.c_str(), itemWidth);
 
 		if (generating) {
@@ -82,7 +85,7 @@ public:
 	}
 
 	inline float getCustomRenderingWidth() override {
-		return OtUi::size(7.0f);
+		return OtUi::size(6.0f);
 	}
 
 	inline float getCustomRenderingHeight() override {
@@ -137,7 +140,6 @@ private:
 	int run = 0;
 	int dropPerRun = 1000;
 	int inputVersion;
-	float time = 0.0f;
 
 	// world component
 	OtHeightMap heightMap;

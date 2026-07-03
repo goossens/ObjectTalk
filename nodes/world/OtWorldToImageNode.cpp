@@ -32,20 +32,26 @@ public:
 	inline void configure() override {
 		addInputPin("World", world);
 		addInputPin("Size", size);
-		addOutputPin("Image", image);
+
+		static constexpr const char* outputLabel = "Image";
+
+		addOutputPin(outputLabel, image)->addCustomRenderer([this](float width) {
+			if (generating) {
+				ImGui::SetNextItemWidth(width);
+				ImGui::ProgressBar(static_cast<float>(-ImGui::GetTime()), ImVec2(), "Generating...");
+
+			} else {
+				OtUi::hSpacer(width - ImGui::CalcTextSize(outputLabel).x);
+				OtUi::text(outputLabel);
+			}
+
+		}, OtUi::size(8.0f));
 	}
 
 	// render custom fields
 	inline bool customRendering(float itemWidth) override {
 		ImGui::SetNextItemWidth(itemWidth);
-		auto changed = OtUi::selectorEnum("##renderType", &renderType, OtWorld::renderTypes, OtWorld::renderTypeCount);
-
-		if (generating) {
-			auto pos = ImGui::GetCursorScreenPos();
-			OtUi::spinner(ImVec2(pos.x + itemWidth * 0.5f, pos.y), OtUi::size(1.0f));
-		}
-
-		return changed;
+		return OtUi::selectorEnum("##renderType", &renderType, OtWorld::renderTypes, OtWorld::renderTypeCount);
 	}
 
 	inline float getCustomRenderingWidth() override {

@@ -48,7 +48,7 @@ public:
 			}
 
 		} else {
-			ImGui::TextUnformatted("No texture available");
+			OtUi::text("No texture available");
 		}
 
 		return false;

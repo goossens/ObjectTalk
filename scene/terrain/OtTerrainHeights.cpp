@@ -31,7 +31,7 @@ bool OtTerrainHeights::renderUI() {
 	}
 
 	ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-	ImGui::TextUnformatted("Heights");
+	OtUi::text("Heights");
 
 	// open popup (if required)
 	if (ImGui::BeginPopup("TerrainHeightPopup")) {

@@ -60,7 +60,7 @@
 					"id": 3359103614,
 					"name": "Size",
 					"type": "int",
-					"value": 80
+					"value": 200
 				},
 				{
 					"id": 3612237621,
@@ -170,7 +170,7 @@
 					"id": 3831320626,
 					"name": "Size",
 					"type": "int",
-					"value": 256
+					"value": 512
 				}
 			],
 			"outputs": [

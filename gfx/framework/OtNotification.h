@@ -182,14 +182,12 @@ private:
 				ImGui::BringWindowToDisplayFront(ImGui::GetCurrentWindow());
 
 				ImGui::PushStyleColor(ImGuiCol_Text, titleColor);
-				ImGui::AlignTextToFramePadding();
 				ImGui::PushFont(OtUi::getAwesomeFont(), 0.0f);
-				ImGui::TextUnformatted(reinterpret_cast<const char*>(icon));
+				OtUi::text(reinterpret_cast<const char*>(icon));
 				ImGui::PopFont();
 
 				ImGui::SameLine();
-				ImGui::AlignTextToFramePadding();
-				ImGui::Text("%s", title.c_str());
+				OtUi::text(title);
 				ImGui::PopStyleColor();
 
 				auto buttonWidth = ImGui::CalcTextSize("x").x + ImGui::GetStyle().FramePadding.x * 2.0f;
@@ -200,8 +198,7 @@ private:
 				}
 
 				ImGui::PushTextWrapPos(mainWindowSize.x / 4.0f);
-				ImGui::AlignTextToFramePadding();
-				ImGui::Text("%s", message.c_str());
+				OtUi::text(message);
 				ImGui::PopTextWrapPos();
 
 				height = ImGui::GetWindowHeight();

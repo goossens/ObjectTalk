@@ -11,6 +11,8 @@
 
 #include "imgui.h"
 
+#include "OtUi.h"
+
 #include "OtConsole.h"
 
 
@@ -70,7 +72,7 @@ void OtConsole::render() {
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 1.0f, 1.0f));
 			}
 
-			ImGui::TextUnformatted(lines[i].text.c_str());
+			OtUi::text(lines[i].text);
 			ImGui::PopStyleColor();
 		}
 	}

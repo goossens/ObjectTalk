@@ -39,7 +39,19 @@ public:
 
 	// configure node
 	inline void configure() override {
-		addOutputPin("Height Map", heightMap);
+		static constexpr const char* outputLabel = "Height Map";
+
+		addOutputPin(outputLabel, heightMap)->addCustomRenderer([this](float width) {
+			if (generating) {
+				ImGui::SetNextItemWidth(width);
+				ImGui::ProgressBar(static_cast<float>(-ImGui::GetTime()), ImVec2(), "Generating...");
+
+			} else {
+				OtUi::hSpacer(width - ImGui::CalcTextSize(outputLabel).x);
+				OtUi::text(outputLabel);
+			}
+
+		}, OtUi::size(8.0f));
 	}
 
 	// render custom fields

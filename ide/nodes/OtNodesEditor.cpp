@@ -269,7 +269,7 @@ void OtNodesEditor::renderEditor() {
 
 	if (ImGui::BeginPopup("Background Context")) {
 		auto nodePosition = widget.getContextMenuPos();
-		ImGui::TextUnformatted("Create Node");
+		OtUi::text("Create Node");
 		ImGui::Separator();
 
 		OtNodesFactory::eachCategory([&](OtNodeCategory& category) {

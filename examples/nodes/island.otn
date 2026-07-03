@@ -1,24 +1,29 @@
 {
 	"links": [
 		{
-			"from": 2105882391,
-			"id": 215882111,
-			"to": 486684054
+			"from": 3060538275,
+			"id": 4293153435,
+			"to": 1264149917
 		},
 		{
-			"from": 902124213,
-			"id": 4030250391,
-			"to": 3582590217
+			"from": 3826284022,
+			"id": 1415352701,
+			"to": 88131336
 		},
 		{
-			"from": 2914940052,
-			"id": 1223595773,
-			"to": 995947077
+			"from": 1641551683,
+			"id": 1094392532,
+			"to": 2495678197
 		},
 		{
-			"from": 696851855,
-			"id": 2103967143,
-			"to": 2155753882
+			"from": 2331667755,
+			"id": 2640073867,
+			"to": 705837528
+		},
+		{
+			"from": 2331667755,
+			"id": 2607420619,
+			"to": 2291056705
 		}
 	],
 	"metadata": {},
@@ -26,89 +31,89 @@
 		{
 			"erosion": {
 				"detail": 1.5,
-				"gullyWeight": 0.5,
+				"gullyWeight": 0.7300000190734863,
 				"scale": 0.15000000596046448,
-				"strength": 0.2199999988079071
+				"strength": 0.4000000059604645
 			},
 			"height": {
 				"amplitude": 0.125,
 				"frequency": 3.0,
 				"gain": 0.10000000149011612,
 				"lacunarity": 2.0,
-				"octaves": 3,
+				"octaves": 8,
 				"offset": [
 					-0.6499999761581421,
 					0.0
 				]
 			},
-			"id": 1715225438,
+			"id": 202233619,
 			"inputs": [],
 			"outputs": [
 				{
-					"id": 2914940052,
+					"id": 1641551683,
 					"name": "Height Map",
 					"type": "Heightmap"
 				}
 			],
-			"size": 256,
+			"size": 512,
 			"title": "Height Map Generator",
 			"type": "Height Map Generator",
-			"x": 36.0,
-			"y": 440.0
+			"x": 93.0,
+			"y": 300.0
 		},
 		{
 			"distance": 1,
-			"id": 2140828500,
+			"id": 2342642630,
 			"inputs": [
 				{
-					"id": 995947077,
+					"id": 2495678197,
 					"name": "Input",
 					"type": "Heightmap"
 				}
 			],
 			"outputs": [
 				{
-					"id": 696851855,
+					"id": 2331667755,
 					"name": "Output",
 					"type": "Heightmap"
 				}
 			],
 			"title": "Islandize Height Map",
 			"type": "Islandize Height Map",
-			"x": 289.0,
-			"y": 391.0
+			"x": 320.0,
+			"y": 249.0
 		},
 		{
-			"id": 978565693,
+			"id": 1658004535,
 			"inputs": [
 				{
-					"id": 2155753882,
+					"id": 705837528,
 					"name": "Input",
 					"type": "Heightmap"
 				}
 			],
 			"outputs": [
 				{
-					"id": 2105882391,
+					"id": 3060538275,
 					"name": "Output",
 					"type": "geometry"
 				}
 			],
 			"title": "Terrain Builder",
 			"type": "Terrain Builder",
-			"x": 590.0,
-			"y": 365.0
+			"x": 570.0,
+			"y": 223.0
 		},
 		{
-			"id": 4090088266,
+			"id": 953896457,
 			"inputs": [
 				{
-					"id": 486684054,
+					"id": 1264149917,
 					"name": "Input",
 					"type": "geometry"
 				},
 				{
-					"id": 1779359825,
+					"id": 2515776066,
 					"name": "Translate",
 					"type": "vector3",
 					"value": [
@@ -118,7 +123,7 @@
 					]
 				},
 				{
-					"id": 950104550,
+					"id": 1337251280,
 					"name": "Rotate",
 					"type": "vector3",
 					"value": [
@@ -128,35 +133,35 @@
 					]
 				},
 				{
-					"id": 3080108351,
+					"id": 474370636,
 					"name": "Scale",
 					"type": "vector3",
 					"value": [
-						4.0,
-						2.200000047683716,
-						4.0
+						10.0,
+						25.0,
+						10.0
 					]
 				}
 			],
 			"outputs": [
 				{
-					"id": 902124213,
+					"id": 3826284022,
 					"name": "Output",
 					"type": "geometry"
 				}
 			],
 			"title": "Geometry Transform",
 			"type": "Geometry Transform",
-			"x": 815.0,
-			"y": 340.0
+			"x": 751.0,
+			"y": 198.0
 		},
 		{
-			"azimuth": -18.803956985473633,
-			"elevation": 36.31919860839844,
-			"id": 1846866574,
+			"azimuth": -11.37641429901123,
+			"elevation": 25.428659439086914,
+			"id": 3538181111,
 			"inputs": [
 				{
-					"id": 3582590217,
+					"id": 88131336,
 					"name": "Geometry",
 					"type": "geometry"
 				}
@@ -175,9 +180,24 @@
 			"title": "Geometry Probe",
 			"type": "Geometry Probe",
 			"wireframe": false,
-			"x": 1176.0,
-			"y": 166.0,
-			"zoom": 1.1302343606948853
+			"x": 1074.5,
+			"y": 23.0,
+			"zoom": 1.3976020812988281
+		},
+		{
+			"id": 758302865,
+			"inputs": [
+				{
+					"id": 2291056705,
+					"name": "Input",
+					"type": "Heightmap"
+				}
+			],
+			"outputs": [],
+			"title": "Save Height Map to File",
+			"type": "Save Height Map to File",
+			"x": 570.0,
+			"y": 105.0
 		}
 	]
 }

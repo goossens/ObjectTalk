@@ -49,7 +49,7 @@ public:
 			}
 
 		} else {
-			ImGui::TextUnformatted("No image available");
+			OtUi::text("No image available");
 		}
 
 		return false;

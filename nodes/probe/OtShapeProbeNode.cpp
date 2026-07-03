@@ -49,7 +49,7 @@ public:
 			}
 
 		} else {
-			ImGui::TextUnformatted("No shape available");
+			OtUi::text("No shape available");
 		}
 
 		return false;

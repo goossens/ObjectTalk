@@ -59,7 +59,7 @@ void OtLabelClass::render() {
 	// render label
 	ImGui::Dummy(ImVec2(0.0f, style.FramePadding.y + style.ItemSpacing.y));
 	OtUi::align(size, horizontalAlign, verticalAlign);
-	ImGui::TextUnformatted(label.c_str());
+	OtUi::text(label);
 }
 
 

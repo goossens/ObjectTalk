@@ -207,16 +207,16 @@ void OtSceneRendererDebug::renderAssets() {
 				auto name = OtPath::getFilename(path);
 
 				ImGui::TableNextRow();
-				ImGui::TableNextColumn(); ImGui::TextUnformatted(name.c_str());
+				ImGui::TableNextColumn(); OtUi::text(name);
 
 				if (ImGui::IsItemHovered(ImGuiHoveredFlags_ForTooltip)) {
 					ImGui::BeginTooltip();
-					ImGui::TextUnformatted(path.c_str());
+					OtUi::text(path.c_str());
 					ImGui::EndTooltip();
 				}
 
-				ImGui::TableNextColumn(); ImGui::TextUnformatted(asset->getStateName());
-				ImGui::TableNextColumn(); ImGui::TextUnformatted(std::to_string(asset->getReferences()).c_str());
+				ImGui::TableNextColumn(); OtUi::text(asset->getStateName());
+				ImGui::TableNextColumn(); OtUi::text(std::to_string(asset->getReferences()));
 			});
 
 			ImGui::EndTable();

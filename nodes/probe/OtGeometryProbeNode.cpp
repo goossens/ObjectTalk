@@ -49,7 +49,7 @@ public:
 				ImGui::ColorEdit3("Light Color", glm::value_ptr(context.lightColor));
 				ImGui::ColorEdit3("Mesh Color", glm::value_ptr(context.meshColor));
 
-				ImGui::TextUnformatted("");
+				OtUi::text("");
 				OtUi::header("Statistics:");
 				OtUi::readonlySizeT("Vertices", geometry.getMesh().getVertexCount());
 				OtUi::readonlySizeT("Triangles", geometry.getMesh().getTriangleCount());
@@ -68,7 +68,7 @@ public:
 			}
 
 		} else {
-			ImGui::TextUnformatted("No geometry available");
+			OtUi::text("No geometry available");
 		}
 
 		return false;

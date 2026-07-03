@@ -309,8 +309,8 @@ void OtAnalogSynth::renderVoiceUsage() {
 	auto labelWidth = ImGui::CalcTextSize(label).x;
 	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (displayWidth - labelWidth) * 0.5f);
 	ImGui::GetCurrentContext()->CurrentWindow->DC.CurrLineTextBaseOffset = 0;
-	ImGui::TextUnformatted(label);
-	ImGui::TextUnformatted("");
+	OtUi::text(label);
+	OtUi::text("");
 
 	// render voice status
 	auto drawList = ImGui::GetWindowDrawList();

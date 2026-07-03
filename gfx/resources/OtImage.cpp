@@ -254,12 +254,12 @@ void OtImage::setPixelGray(int x, int y, float color) {
 		case Format::r8: {
 			auto p = static_cast<uint8_t*>(surface->pixels);
 			p += surface->pitch * y + x;
-			*p = static_cast<uint8_t>(color) * 255;
+			*p = static_cast<uint8_t>(color * 255.0f);
 			break;
 		}
 
 		case Format::rgba8: {
-			auto color256 = static_cast<uint8_t>(color) * 255;
+			auto color256 = static_cast<uint8_t>(color * 255.0f);
 			auto p = static_cast<uint8_t*>(surface->pixels);
 			p += surface->pitch * y + x * 4;
 			*p++ = color256;

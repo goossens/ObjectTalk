@@ -30,17 +30,20 @@ public:
 	inline void configure() override {
 		addInputPin("World", world);
 		addInputPin("Size", size);
-		addOutputPin("Height Map", heightMap);
-	}
 
-	// render custom fields
-	inline bool customRendering(float itemWidth) override {
-		if (generating) {
-			auto pos = ImGui::GetCursorScreenPos();
-			OtUi::spinner(ImVec2(pos.x + itemWidth * 0.5f, pos.y), OtUi::size(1.0f));
-		}
+		static constexpr const char* outputLabel = "Height Map";
 
-		return false;
+		addOutputPin(outputLabel, heightMap)->addCustomRenderer([this](float width) {
+			if (generating) {
+				ImGui::SetNextItemWidth(width);
+				ImGui::ProgressBar(static_cast<float>(-ImGui::GetTime()), ImVec2(), "Generating...");
+
+			} else {
+				OtUi::hSpacer(width - ImGui::CalcTextSize(outputLabel).x);
+				OtUi::text(outputLabel);
+			}
+
+		}, OtUi::size(8.0f));
 	}
 
 	// update node status

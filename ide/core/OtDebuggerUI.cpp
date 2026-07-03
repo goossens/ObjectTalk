@@ -169,7 +169,7 @@ void OtDebuggerUI::renderSourceCode() {
 
 void OtDebuggerUI::renderDecorations(TextEditor::Decorator& decorator) {
 	std::string decoration = (static_cast<size_t>(decorator.line) == stackFrame->line - 1) ? reinterpret_cast<const char*>(u8" \u25b7") : "  ";
-	ImGui::TextUnformatted(decoration.c_str());
+	OtUi::text(decoration);
 }
 
 
@@ -239,9 +239,9 @@ void OtDebuggerUI::renderVariable(OtDebugState::Variable& variable) {
 	if (variable.members.size()) {
 		bool open = ImGui::TreeNodeEx(variable.name.c_str(), ImGuiTreeNodeFlags_SpanAllColumns);
 		ImGui::TableNextColumn();
-		ImGui::TextUnformatted(variable.type.c_str());
+		OtUi::text(variable.type);
 		ImGui::TableNextColumn();
-		ImGui::TextUnformatted(variable.value.c_str());
+		OtUi::text(variable.value);
 
 		if (open) {
 			for (auto& memberVariable : variable.members) {
@@ -260,9 +260,9 @@ void OtDebuggerUI::renderVariable(OtDebugState::Variable& variable) {
 
 		ImGui::TreeNodeEx(variable.name.c_str(), flags);
 		ImGui::TableNextColumn();
-		ImGui::TextUnformatted(variable.type.c_str());
+		OtUi::text(variable.type);
 		ImGui::TableNextColumn();
-		ImGui::TextUnformatted(variable.value.c_str());
+		OtUi::text(variable.value);
 	}
 }
 

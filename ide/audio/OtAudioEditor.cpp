@@ -269,7 +269,7 @@ void OtAudioEditor::renderEditor() {
 
 	if (ImGui::BeginPopup("Background Context")) {
 		auto circuitPosition = widget.getContextMenuPos();
-		ImGui::TextUnformatted("Create Circuit");
+		OtUi::text("Create Circuit");
 		ImGui::Separator();
 
 		OtCircuitFactory::eachCategory([&](OtCircuitCategory& category) {

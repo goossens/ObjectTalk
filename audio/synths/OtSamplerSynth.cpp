@@ -194,9 +194,8 @@ void OtSamplerSynth::renderVoiceUsage(float itemWidth) {
 
 	// render label
 	auto labelWidth = ImGui::CalcTextSize(label).x;
-	ImGui::TextUnformatted("");
 	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (itemWidth - labelWidth) * 0.5f);
-	ImGui::TextUnformatted(label);
+	OtUi::text(label);
 
 	// render voice status
 	auto drawList = ImGui::GetWindowDrawList();

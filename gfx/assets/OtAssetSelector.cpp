@@ -47,7 +47,7 @@ void OtAssetSelector::showErrorPopup(Info& info) {
 	ImGui::PushStyleColor(ImGuiCol_Border, errorColor);
 	ImGui::PushStyleVar(ImGuiStyleVar_PopupBorderSize, 3.0f);
 	ImGui::BeginTooltip();
-	ImGui::TextUnformatted(message.c_str());
+	OtUi::text(message);
 	ImGui::EndTooltip();
 	ImGui::PopStyleVar();
 	ImGui::PopStyleColor();
@@ -210,7 +210,7 @@ bool OtAssetSelector::renderUI(Info& info) {
 	// render label (if required)
 	if (realLabel.size()) {
 		ImGui::SameLine(0.0f, spacing);
-		ImGui::TextUnformatted(realLabel.c_str());
+		OtUi::text(realLabel);
 	}
 
 	// show file selector (if required)

@@ -100,7 +100,7 @@ bool OtNodesComponent::renderUI() {
 			ImGui::PushID(node.get());
 			changed |= node->customInputRendering(width);
 			ImGui::SameLine(0.0f, spacing);
-			ImGui::TextUnformatted(node->title.c_str());
+			OtUi::text(node->title);
 			ImGui::PopID();
 		}
 

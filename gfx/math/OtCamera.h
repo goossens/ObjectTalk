@@ -67,7 +67,7 @@ public:
 	// update camera
 	inline void update() {
 		// determine camera position
-		position = -glm::vec3(viewMatrix[3]);
+		position = glm::vec3(glm::inverse(viewMatrix)[3]);
 
 		// determine view/projection matrix
 		viewProjectionMatrix = projectionMatrix * viewMatrix;

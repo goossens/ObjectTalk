@@ -93,7 +93,7 @@ public:
 		std::array<float, 256> lutValues;
 
 		for (auto i = 0; i < 256; i++) {
-			lutValues[i] = ImGui::CurveValueSmooth(float(i) / 255.0f, curvePoints, lut.data());
+			lutValues[i] = ImGui::CurveValueSmooth(static_cast<float>(i) / 255.0f, curvePoints, lut.data());
 		}
 
 		rgbCurve.setMode(mode);

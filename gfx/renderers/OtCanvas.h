@@ -74,8 +74,8 @@ public:
 	// manage images
 	int loadImage(const std::string& path, int flags);
 	inline void deleteImage(int image) { nvgDeleteImage(context, image); }
-	inline float getImageWidth(int image) { int w, h; nvgImageSize(context, image, &w, &h); return float(w); }
-	inline float getImageHeight(int image) { int w, h; nvgImageSize(context, image, &w, &h); return float(h); }
+	inline float getImageWidth(int image) { int w, h; nvgImageSize(context, image, &w, &h); return static_cast<float>(w); }
+	inline float getImageHeight(int image) { int w, h; nvgImageSize(context, image, &w, &h); return static_cast<float>(h); }
 
 	// manage paints
 	int createLinearGradient(float sx, float sy, float ex, float ey, const std::string& startColor, const std::string& endColor);

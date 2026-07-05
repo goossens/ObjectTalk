@@ -326,15 +326,15 @@ void OtOscilloscope::render(OtTexture& texture) {
 
 	switch (origin) {
 		case Origin::topLeft:
-			vertexUniforms.matrix = glm::ortho(0.0f, float(width), float(height), 0.0f);
+			vertexUniforms.matrix = glm::ortho(0.0f, static_cast<float>(width), static_cast<float>(height), 0.0f);
 			break;
 
 		case Origin::bottomLeft:
-			vertexUniforms.matrix = glm::ortho(0.0f, float(width), 0.0f, float(height));
+			vertexUniforms.matrix = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height));
 			break;
 
 		case Origin::center:
-			vertexUniforms.matrix = glm::ortho(float(-width / 2), float(width / 2), float(-height / 2), float(height / 2));
+			vertexUniforms.matrix = glm::ortho(static_cast<float>(-width / 2), static_cast<float>(width / 2), static_cast<float>(-height / 2), static_cast<float>(height / 2));
 			break;
 	}
 

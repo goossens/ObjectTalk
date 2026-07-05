@@ -959,7 +959,7 @@ void bezierTable(ImVec2 P[4], ImVec2 results[steps + 1]) {
 
 	if (!initialized) {
 		for (unsigned step = 0; step <= steps; ++step) {
-			float t = (float)step/(float)steps;
+			float t = static_cast<float>(step) / static_cast<float>(steps);
 			C[step * 4 + 0] = (1 - t) * (1 - t) * (1 - t);		// * P0
 			C[step * 4 + 1] = 3 * (1 - t) * (1 - t) * t;		// * P1
 			C[step * 4 + 2] = 3 * (1 - t) * t * t;				// * P2

@@ -559,8 +559,8 @@ bool Curve(const char* label, const ImVec2& size, const int maxpoints, ImVec2* p
 	static constexpr int smoothness = 128;
 
 	for (i = 0; i < smoothness; i++) {
-		float px = (i + 0) / float(smoothness);
-		float qx = (i + 1) / float(smoothness);
+		float px = (i + 0) / static_cast<float>(smoothness);
+		float qx = (i + 1) / static_cast<float>(smoothness);
 
 		const float py = CurveValueSmooth(px, maxpoints, points);
 		const float qy = CurveValueSmooth(qx, maxpoints, points);
@@ -658,8 +658,8 @@ bool Curve(const char* label, const ImVec2& size, const int maxpoints, ImVec2* p
 			for (int item = 0; item < IM_ARRAYSIZE(items); item++) {
 				if (ImGui::MenuItem(items[item])) {
 					for (i = 0; i < maxpoints; i++) {
-						const float px = i / float(maxpoints - 1);
-						const float py = float(tween::ease(item + 1, px));
+						const float px = i / static_cast<float>(maxpoints - 1);
+						const float py = static_cast<float>(tween::ease(item + 1, px));
 						points[i] = ImVec2(px, py);
 					}
 

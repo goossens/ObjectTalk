@@ -55,7 +55,7 @@ public:
 	// get cubemap information
 	inline int getSize() { return size; }
 	inline bool hasMip() { return mip; }
-	inline int getMipLevels() { return mip ? (int) std::ceil(std::log2(float(size))) : 0; }
+	inline int getMipLevels() { return mip ? (int) std::ceil(std::log2(static_cast<float>(size))) : 0; }
 	inline Format getFormat() { return format; }
 
 	// version management

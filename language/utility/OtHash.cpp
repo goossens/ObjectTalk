@@ -107,7 +107,7 @@ static inline uint32_t hash(uint32_t kx, uint32_t ky, uint32_t kz, uint32_t kw) 
 }
 
 static inline float uint32ToFloat(uint32_t k) {
-	return float(k) / float(0xFFFFFFFFu);
+	return static_cast<float>(k) / static_cast<float>(0xFFFFFFFFu);
 }
 
 

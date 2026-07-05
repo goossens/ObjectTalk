@@ -148,7 +148,7 @@ void OtTerrain::update(OtCamera& camera) {
 
 	// lambda function to process a single tile
 	auto processTile = [&](OtTerrainTile& tile, OtCamera& camera, int lod) {
-		OtTerrainMesh mesh(tile, float(tileSize), centerX, vOffset, centerZ, hScale * (1 << lod), vScale);
+		OtTerrainMesh mesh(tile, static_cast<float>(tileSize), centerX, vOffset, centerZ, hScale * (1 << lod), vScale);
 
 		if (camera.isVisibleAABB(mesh.aabb)) {
 			meshes.push_back(mesh);
@@ -183,7 +183,7 @@ void OtTerrain::createVertices()
 	// generate vertices
 	for (auto z = 0; z < tileVertices; z++) {
 		for (auto x = 0; x < tileVertices; x++) {
-			buffer.emplace_back(float(x), 0.0f, float(z));
+			buffer.emplace_back(static_cast<float>(x), 0.0f, static_cast<float>(z));
 		}
 	}
 
@@ -299,7 +299,7 @@ void OtTerrain::createTiles() {
 	centerTiles.emplace_back(vertices, fullTriangles, fullLines, 0.0f, 0.0f, 270.0f);
 
 	// create the 12 ring tiles for LOD 1..N
-	float size = float(tileSize);
+	float size = static_cast<float>(tileSize);
 
 	// top
 	ringTiles.emplace_back(vertices, cornerTriangles, cornerLines, size, size, 180.0f);

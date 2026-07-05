@@ -302,7 +302,7 @@ void OtSceneRendererDebug::renderCubeMapAsCross(OtCubeMap& cubemap, CubeMapDebug
 
 	// set vertext uniforms
 	glm::mat4 view = glm::scale(glm::mat4(1.0f), glm::vec3(width / 2.0f, height / 1.5f, 1.0f));
-	glm::mat4 projection = glm::ortho(0.0f, float(width), float(height), 0.0f);
+	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(width), static_cast<float>(height), 0.0f);
 
 	struct VertexUniforms {
 		glm::mat4 viewProjectionMatrix;

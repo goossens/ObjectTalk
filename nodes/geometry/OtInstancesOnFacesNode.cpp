@@ -113,7 +113,7 @@ private:
 	// get random point inside triangle based on barycentric coordinate
 	OtVertex getRandomPoint(int instanceID, OtVertex* vertices, uint32_t* indices, size_t triangles) {
 		// select a random triangle
-		int triangle = int(OtHash::toFloat(instanceID, seed) * float(triangles - 1));
+		int triangle = int(OtHash::toFloat(instanceID, seed) * static_cast<float>(triangles - 1));
 
 		// get the corners of the triangle
 		auto index = indices + triangle * 3;

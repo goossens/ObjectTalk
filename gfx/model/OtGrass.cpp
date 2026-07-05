@@ -162,8 +162,8 @@ void OtGrass::updateBuffers() {
 
 	for (auto i = 0; i < vertexCount; i++) {
 		vertices.emplace_back(
-			float(i & 1) - 0.5f,
-			float((i % verticesPerSide) / 2) / bladeSegments,
+			static_cast<float>(i & 1) - 0.5f,
+			static_cast<float>((i % verticesPerSide) / 2) / bladeSegments,
 			0.0f);
 	}
 

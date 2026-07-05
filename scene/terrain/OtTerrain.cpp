@@ -142,7 +142,7 @@ void OtTerrain::update(OtCamera& camera) {
 	meshes.clear();
 
 	// determine center of terrain's geoClipMap
-	float factor = 16.0f * hScale;
+	float factor = static_cast<float>(tileSize) * hScale * 0.5f;
 	centerX = std::floor(camera.position.x / factor) * factor;
 	centerZ = std::floor(camera.position.z / factor) * factor;
 

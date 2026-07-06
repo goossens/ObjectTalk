@@ -53,7 +53,6 @@ public:
 			static_cast<int32_t>(octaves)
 		};
 
-
 		pass.addUniforms(&uniforms, sizeof(uniforms));
 	}
 

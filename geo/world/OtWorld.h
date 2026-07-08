@@ -109,6 +109,8 @@ public:
 	}
 
 private:
+	friend class OtWorldModel;
+
 	// local types
 	struct Region {
 	public:

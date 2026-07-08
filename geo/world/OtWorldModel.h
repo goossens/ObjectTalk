@@ -12,20 +12,15 @@
 //	Include files
 //
 
-#include <string>
-
 
 //
-//	OtWorldLayer
+//	OtWorldModel
 //
 
-class OtWorldLayer {
+class OtWorldModel {
 public:
-	// constructor
-	OtWorldLayer(const std::string& name, deform=false) : name(name), deform(deform) {}
+	// generate world model
+	void generate();
 
 private:
-	// properties
-	std::string name;
-	bool deform;
 };

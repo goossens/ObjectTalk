@@ -290,7 +290,6 @@ void OtWorld::generateHeightMap(OtHeightMap& heightmap, int dimension) const {
 	}
 }
 
-
 //
 //	OtWorld::Region::serialize
 //

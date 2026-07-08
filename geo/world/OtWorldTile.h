@@ -17,13 +17,13 @@
 
 
 //
-//	OtTile
+//	OtWorldTile
 //
 
 template<typename T>
-struct Landscape {
+struct OtWorldTile {
 	// constructor
-	Landscape(const OtTileID& id) : id(id) {}
+	OtWorldTile(const OtWorldTileID& id) : id(id) {}
 
 	// check tile status
 	inline bool isNull() { return asset.isNull(); }
@@ -35,6 +35,6 @@ struct Landscape {
 	inline bool isVirtual() { return asset.isVirtual(); }
 
 	// properties
-	OtTileID id;
+	OtWorldTileID id;
 	OtAsset<T> asset;
 };

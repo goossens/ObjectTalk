@@ -38,7 +38,7 @@ In case User Interface (UI) modules are included, we also use:
 * [Manifold](https://github.com/elalish/manifold) - a geometry library dedicated to creating and operating on manifold triangle meshes released under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 * [NanoVG](https://github.com/memononen/nanovg) - a small antialiased vector graphics rendering library modeled after HTML5 canvas API by [Mikko Mononen](https://github.com/memononen/nanovg) and updates from [Timothy Schoen](https://github.com/timothyschoen/nanovg) released under the [zlib license](https://opensource.org/licenses/Zlib).
 * [FreeType](https://github.com/freetype/freetype) - a freely available software library to render fonts released under the [FreeType Project License](https://spdx.org/licenses/FTL.html).
-* [delaunator]() - a really fast C++ library for Delaunay triangulation of 2D points released under the [MIT license](https://opensource.org/licenses/MIT).
+* [delaunator](https://github.com/delfrrr/delaunator-cpp) - a really fast C++ library for Delaunay triangulation of 2D points released under the [MIT license](https://opensource.org/licenses/MIT).
 * [md4c](https://github.com/mity/md4c) - a Markdown parser implementation in C released under the [MIT license](https://opensource.org/licenses/MIT).
 * [tweeny](https://github.com/mobius3/tweeny) - animation library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [Clipper2](https://github.com/AngusJohnson/Clipper2) - a Polygon clipping and offsetting library developed by [Angus Johnson](https://github.com/AngusJohnson) and released under the [Boost Software License - Version 1.0](https://www.boost.org/LICENSE_1_0.txt).

@@ -15,6 +15,8 @@
 #include <functional>
 #include <string>
 
+#include "OtLruCache.h"
+
 #include "OtWorldTile.h"
 #include "OtWorldTileID.h"
 
@@ -24,21 +26,21 @@
 //
 
 template<typename T, size_t S=256>
-class OtWorldTileCache : public OtLruCache<OtTileID, OtTile<T>, S> {
+class OtWorldTileCache : public OtLruCache<OtWorldTileID, OtWorldTile<T>, S> {
 public:
 	// constructor
-	using Loader = std::function<void(OtTile<T>&)>;
+	using Loader = std::function<void(OtWorldTile<T>&)>;
 	OtWorldTileCache(const std::string& name, Loader loader) : name(name), loader(loader) {}
 
-	OtTile<T>& getOrCreate(const OtTileID& id) {
-		if (!has(id)) {
-			set(id, OtTile<T>(id));
-			auto& tile = get(id);
+	OtWorldTile<T>& getOrCreate(const OtWorldTileID& id) {
+		if (!this->has(id)) {
+			set(id, OtWorldTile<T>(id));
+			auto& tile = this->get(id);
 			loader(tile);
 			return tile;
 
 		} else {
-			return get(id);
+			return this->get(id);
 		}
 	}
 

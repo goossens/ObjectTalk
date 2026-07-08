@@ -22,7 +22,7 @@
 //	OtLruCache class
 //
 
-template<typename K, typename V, size_t S=1024>
+template<typename K, typename V, size_t S=256>
 class OtLruCache {
 public:
 	// change the cache size

@@ -19,8 +19,7 @@
 //	OtWorldTileID
 //
 
-class OtWorldTileID {
-public:
+struct OtWorldTileID {
 	// constructors
 	OtWorldTileID() = default;
 	OtWorldTileID(size_t level, size_t tx, size_t ty) : level(level), tx(tx), ty(ty) {}
@@ -44,8 +43,8 @@ public:
 
 namespace std {
 	template<>
-	struct hash<OtTileID> {
-		size_t operator()(const OtTileID& id) const noexcept {
+	struct hash<OtWorldTileID> {
+		size_t operator()(const OtWorldTileID& id) const noexcept {
 			// combine hashes of members
 			return id.hash();
 		}

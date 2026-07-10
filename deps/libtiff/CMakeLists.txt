@@ -9,7 +9,7 @@ set(tiff-tests OFF CACHE BOOL "" FORCE)
 set(tiff-contrib OFF CACHE BOOL "" FORCE)
 set(tiff-docs OFF CACHE BOOL "" FORCE)
 
-FetchContent_Populate(libtiff QUIET GIT_REPOSITORY "https://gitlab.com/libtiff/libtiff" GIT_TAG "v4.7.1")
+FetchContent_Populate(libtiff QUIET GIT_REPOSITORY "https://gitlab.com/libtiff/libtiff" GIT_TAG "v4.7.2")
 add_subdirectory(${libtiff_SOURCE_DIR} ${libtiff_BINARY_DIR} EXCLUDE_FROM_ALL)
 
 set_target_properties(tiff PROPERTIES FOLDER deps)

@@ -20,6 +20,7 @@
 #include "glm/glm.hpp"
 
 #include "OtImage.h"
+#include "OtTexture.h"
 
 
 //
@@ -42,6 +43,9 @@ public:
 
 	// save heightmap to image
 	void saveToImage(OtImage& image);
+
+	// save heightmap to texture
+	void saveToTexture(OtTexture& texture);
 
 	// clone this heightmap
 	OtHeightMap clone();

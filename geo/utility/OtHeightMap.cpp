@@ -220,6 +220,21 @@ void OtHeightMap::saveToImage(OtImage& image) {
 
 
 //
+//	OtHeightMap::saveToTexture
+//
+
+void OtHeightMap::saveToTexture(OtTexture& texture) {
+	if (isValid()) {
+		texture.update(width, height, OtTexture::Format::r32, OtTexture::Usage::rwDefault);
+		texture.update(0, 0, width, height, data.get());
+
+	} else {
+		clear();
+	}
+}
+
+
+//
 //	OtHeightMap::clone
 //
 

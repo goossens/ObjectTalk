@@ -29,13 +29,13 @@ void main() {
 
 	// convert height map to normal map using Sobel filter
 	float tl = texture(inTexture, uv + vec2(-texelSize.x, -texelSize.y)).r;
-	float tc = texture(inTexture, uv + vec2(0.0, -texelSize.y)).r;
+	float tc = texture(inTexture, uv + vec2(0.0f, -texelSize.y)).r;
 	float tr = texture(inTexture, uv + vec2(texelSize.x, -texelSize.y)).r;
-	float ml = texture(inTexture, uv + vec2(-texelSize.x, 0.0)).r;
+	float ml = texture(inTexture, uv + vec2(-texelSize.x, 0.0f)).r;
 	float mc = texture(inTexture, uv).r;
-	float mr = texture(inTexture, uv + vec2(texelSize.x, 0.0)).r;
+	float mr = texture(inTexture, uv + vec2(texelSize.x, 0.0f)).r;
 	float bl = texture(inTexture, uv + vec2(-texelSize.x, texelSize.y)).r;
-	float bc = texture(inTexture, uv + vec2(0.0, texelSize.y)).r;
+	float bc = texture(inTexture, uv + vec2(0.0f, texelSize.y)).r;
 	float br = texture(inTexture, uv + vec2(texelSize.x, texelSize.y)).r;
 
 	vec3 normal = normalize(vec3(

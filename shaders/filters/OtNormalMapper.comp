@@ -40,8 +40,8 @@ void main() {
 
 	vec3 normal = normalize(vec3(
 		(tr + (2.0f * mr) + br) - (tl + (2.0f * ml) + bl),
-		(bl + (2.0f * bc) + br) - (tl + (2.0f * tc) + tr),
-		1.0 / normalStrength));
+		1.0 / normalStrength,
+		(bl + (2.0f * bc) + br) - (tl + (2.0f * tc) + tr)));
 
 	imageStore(outTexture, coord, vec4(normal * 0.5f + 0.5f, includeHeight ? mc : 1.0f));
 }

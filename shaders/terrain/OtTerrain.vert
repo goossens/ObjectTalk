@@ -26,21 +26,20 @@ layout(set=0, binding=0) uniform sampler2D normalMapTexture;
 
 void main() {
 	// determine height map coordinates
-	vec2 uv = (modelMatrix * vec4(aPosition, 1.0)).xz * hScale / heightMapSize;
+	vec2 uv = (modelMatrix * vec4(aPosition, 1.0f)).xz * hScale / heightMapSize;
 
 	// determine height and normal
-	vec4 normalMapSample = textureLod(normalMapTexture, uv, 0.0);
+	vec4 normalMapSample = textureLod(normalMapTexture, uv, 0.0f);
 	float height = normalMapSample.w;
-
-	vec3 normal = normalMapSample.xzy;
-	normal -= 0.5;
-	normal *= 2.0;
+	vec3 normal = normalMapSample.xyz;
+	normal -= 0.5f;
+	normal *= 2.0f;
 
 	// determine world position
-	vec3 position = (modelMatrix * vec4(aPosition.x, height, aPosition.z, 1.0)).xyz;
+	vec3 position = (modelMatrix * vec4(aPosition.x, height, aPosition.z, 1.0f)).xyz;
 
 	// generate output
 	vPosition = position;
 	vNormal = normal;
-	gl_Position = viewProjectionMatrix * vec4(position, 1.0);
+	gl_Position = viewProjectionMatrix * vec4(position, 1.0f);
 }

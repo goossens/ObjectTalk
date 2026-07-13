@@ -74,9 +74,11 @@ void main() {
 
 	// adjust texture by slope
 	float slope = abs(dot(vNormal, vec3(0.0, 1.0, 0.0)));
-	float coef = 1.0 - smoothstep(0.5, 0.6, slope);
+	float coef = 1.0 - smoothstep(0.5, 0.7, slope);
 	region2Albedo = mix(region2Albedo, region3Albedo, coef);
 	region4Albedo = mix(region4Albedo, region3Albedo, coef);
+	coef = smoothstep(0.90, 0.98, slope);
+	region2Albedo = mix(region2Albedo, region4Albedo, coef);
 
 	// region 1
 	vec3 albedo;

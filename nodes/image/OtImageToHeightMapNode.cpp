@@ -17,10 +17,10 @@
 
 
 //
-//	OtHeightMapToTextureNode
+//	OtImageToHeightMapNode
 //
 
-class OtHeightMapToTextureNode : public OtNodeClass {
+class OtImageToHeightMapNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
@@ -48,4 +48,4 @@ private:
 	OtHeightMap heightMap;
 };
 
-static OtNodesFactoryRegister<OtHeightMapToTextureNode> registration;
+static OtNodesFactoryRegister<OtImageToHeightMapNode> registration;

@@ -73,7 +73,7 @@
 						"amplitude": 0.6100000143051147,
 						"frequency": 10,
 						"lacunarity": 2,
-						"normalStrength": 3.4000000953674316,
+						"normalStrength": 8.100000381469727,
 						"octaves": 5,
 						"persistence": 0.5,
 						"size": 256
@@ -97,7 +97,7 @@
 						"region2Overlap": 0.07000000029802322,
 						"region2Texture": "assets/terrain.jpg",
 						"region2TextureScale": 340.0,
-						"region2Transition": 0.5199999809265137,
+						"region2Transition": 0.5400000214576721,
 						"region3Color": [
 							0.6991150379180908,
 							0.6511668562889099,
@@ -106,14 +106,14 @@
 						"region3Overlap": 0.019999999552965164,
 						"region3Texture": "assets/rock.jpg",
 						"region3TextureScale": 67.0,
-						"region3Transition": 0.6899999976158142,
+						"region3Transition": 0.6700000166893005,
 						"region4Color": [
 							0.8716814517974854,
 							0.8716814517974854,
 							0.8716814517974854
 						],
 						"region4Texture": "assets/snow.jpg",
-						"region4TextureScale": 200.0
+						"region4TextureScale": 7.099999904632568
 					},
 					"tileSize": 32,
 					"vOffset": -7.199999809265137,
@@ -158,14 +158,14 @@
 			"far": 5000.0,
 			"fov": 60.0,
 			"near": 1.0,
-			"pitch": -22.080936431884766,
+			"pitch": -14.603039741516113,
 			"position": [
-				-2.110628843307495,
-				27.0373477935791,
-				504.91845703125
+				-4.839917182922363,
+				32.62546920776367,
+				519.5062255859375
 			],
 			"speed": 3.0,
-			"yaw": 54.48646926879883
+			"yaw": -8.475434303283691
 		},
 		"gizmo": {
 			"enabled": false,
@@ -186,7 +186,7 @@
 	"processing": {
 		"backgroundFogRatio": 0.0,
 		"bloom": true,
-		"bloomIntensity": 0.6299999952316284,
+		"bloomIntensity": 0.6200000047683716,
 		"contrast": 1.2000000476837158,
 		"exposure": 1.2000000476837158,
 		"fog": true,
@@ -195,7 +195,7 @@
 			0.5,
 			0.800000011920929
 		],
-		"fogDensity": 0.3400000035762787,
+		"fogDensity": 0.3499999940395355,
 		"fxaa": true,
 		"godrays": false,
 		"tonemap": 3

@@ -35,7 +35,7 @@ public:
 
 		// determine world space bounding box
 		aabb.addPoint(OtGlmMul(transform, glm::vec3(0.0f, 0.0f, 0.0f)));
-		aabb.addPoint(OtGlmMul(transform, glm::vec3(size, 1.0f, size)));
+		aabb.addPoint(OtGlmMul(transform, glm::vec3(size, 1.0f, -size)));
 	}
 
 	// properties

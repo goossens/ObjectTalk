@@ -26,6 +26,7 @@
 //	C = center tile
 //	R = ring tile
 //	R1..N = subsequent rings with lower Levels Of Detail (LOD)
+//	O = origin
 //
 //	    |               |               |
 //	    |               |               |
@@ -37,7 +38,7 @@
 //	    |       | R | R | R | R |       |
 //	    | R1..N +---+---+---+---+ R1..N +
 //	    |       | R | C | C | R |       |
-//	----+-------+---+---+---+---+-------+----
+//	----+-------+---+---O---+---+-------+----
 //	    |       | R | C | C | R |       |
 //	    | R1..N +---+---+---+---+ R1..N +
 //	    |       | R | R | R | R |       |
@@ -48,7 +49,15 @@
 //	----+-------+-------+-------+-------+----
 //	    |               |               |
 //	    |               |               |
-
+//
+//	coordinate system (left-handed like scenes):
+//		- positive x points east
+//		- negative x points west
+//		- positive z points south
+//		- negative z points north
+//		- positive y points up
+//		- negative x points down
+//
 
 //
 //	OtTerrain::renderUI
@@ -183,7 +192,7 @@ void OtTerrain::createVertices()
 	// generate vertices
 	for (auto z = 0; z < tileVertices; z++) {
 		for (auto x = 0; x < tileVertices; x++) {
-			buffer.emplace_back(static_cast<float>(x), 0.0f, static_cast<float>(z));
+			buffer.emplace_back(static_cast<float>(x), 0.0f, -static_cast<float>(z));
 		}
 	}
 
@@ -209,14 +218,14 @@ void OtTerrain::createIndices(OtIndexBuffer& triangleBuffer, OtIndexBuffer& line
 	int tileVertices = tileSize + 1;
 
 	// process all triangle quads
-	for (auto z = 0; z < tileSize; z += 2) {
+	for (auto y = 0; y < tileSize; y += 2) {
 		for (auto x = 0; x < tileSize; x += 2) {
-			// A---B---C
+			// G---H---I
 			// | \ | / |
 			// D---E---F
 			// | / | \ |
-			// G---H---I
-			auto A = z * tileVertices + x;
+			// A---B---C
+			auto A = y * tileVertices + x;
 			auto B = A + 1;
 			auto C = B + 1;
 			auto D = A + tileVertices;
@@ -227,56 +236,56 @@ void OtTerrain::createIndices(OtIndexBuffer& triangleBuffer, OtIndexBuffer& line
 			auto I = H + 1;
 
 			// edge case transitions to lower resolution of next "ring"
-			if (z == 0 && (degenerate & topDegenerate)) {
-				// A---B---C
+			if (y == tileSize - 2 && (degenerate & topDegenerate)) {
+				// G---H---I
 				// | \   / |
 				// D---E---F
 				// | / | \ |
-				// G---H---I
-				TRIANGLE(A, E, C);
+				// A---B---C
+				TRIANGLE(G, E, I);
 
 			} else {
-				TRIANGLE(A, E, B);
-				TRIANGLE(B, E, C);
+				TRIANGLE(G, E, H);
+				TRIANGLE(H, E, I);
 			}
 
 			if (x == 0 && (degenerate & leftDegenerate)) {
-				// A---B---C
+				// G---H---I
 				// | \ | / |
 				// D   E---F
 				// | / | \ |
-				// G---H---I
-				TRIANGLE(A, G, E);
+				// A---B---C
+				TRIANGLE(A, E, G);
 
 			} else {
-				TRIANGLE(A, D, E);
-				TRIANGLE(D, G, E);
+				TRIANGLE(A, E, D);
+				TRIANGLE(D, E, G);
 			}
 
-			if (z == tileSize - 2 && (degenerate & bottomDegenerate)) {
-				// A---B---C
+			if (y == 0 && (degenerate & bottomDegenerate)) {
+				// G---H---I
 				// | \ | / |
 				// D---E---F
 				// | /   \ |
-				// G---H---I
-				TRIANGLE(G, I, E);
+				// A---B---C
+				TRIANGLE(A, C, E);
 
 			} else {
-				TRIANGLE(G, H, E);
-				TRIANGLE(H, I, E);
+				TRIANGLE(A, B, E);
+				TRIANGLE(B, C, E);
 			}
 
 			if (x == tileSize - 2 && (degenerate & rightDegenerate)) {
-				// A---B---C
+				// G---H---I
 				// | \ | / |
 				// D---E   F
 				// | / | \ |
-				// G---H---I
-				TRIANGLE(I, C, E);
+				// A---B---C
+				TRIANGLE(C, I, E);
 
 			} else {
-				TRIANGLE(I, F, E);
-				TRIANGLE(F, C, E);
+				TRIANGLE(C, F, E);
+				TRIANGLE(F, I, E);
 			}
 		}
 	}
@@ -302,24 +311,24 @@ void OtTerrain::createTiles() {
 	float size = static_cast<float>(tileSize);
 
 	// top
-	ringTiles.emplace_back(vertices, cornerTriangles, cornerLines, size, size, 180.0f);
-	ringTiles.emplace_back(vertices, sideTriangles, sideLines, size, -size, 90.0f);
+	ringTiles.emplace_back(vertices, cornerTriangles, cornerLines, size, -size, 90.0f);
 	ringTiles.emplace_back(vertices, sideTriangles, sideLines, size, 0.0f, 90.0f);
-	ringTiles.emplace_back(vertices, cornerTriangles, cornerLines, size, size, 90.0f);
+	ringTiles.emplace_back(vertices, sideTriangles, sideLines, size, size, 90.0f);
+	ringTiles.emplace_back(vertices, cornerTriangles, cornerLines, size, -size, 0.0f);
 
 	// left
-	ringTiles.emplace_back(vertices, sideTriangles, sideLines, size, -size, 180.0f);
+	ringTiles.emplace_back(vertices, sideTriangles, sideLines, size, size, 180.0f);
 	ringTiles.emplace_back(vertices, sideTriangles, sideLines, size, 0.0f, 180.0f);
 
 	// right
-	ringTiles.emplace_back(vertices, sideTriangles, sideLines, size, -size, 0.0f);
 	ringTiles.emplace_back(vertices, sideTriangles, sideLines, size, 0.0f, 0.0f);
+	ringTiles.emplace_back(vertices, sideTriangles, sideLines, size, size, 0.0f);
 
 	// bottom
-	ringTiles.emplace_back(vertices, cornerTriangles, cornerLines, size, size, 270.0f);
-	ringTiles.emplace_back(vertices, sideTriangles, sideLines, size, -size, 270.0f);
-	ringTiles.emplace_back(vertices, sideTriangles, sideLines, size, 0.0f, 270.0f);
-	ringTiles.emplace_back(vertices, cornerTriangles, cornerLines, size, size, 0.0f);
+	ringTiles.emplace_back(vertices, cornerTriangles, cornerLines, size, -size, 180.0f);
+	ringTiles.emplace_back(vertices, sideTriangles, sideLines, size, size, 270.0f);
+	ringTiles.emplace_back(vertices, sideTriangles, sideLines, size, 0, 270.0f);
+	ringTiles.emplace_back(vertices, cornerTriangles, cornerLines, size, -size, 270.0f);
 }
 
 
@@ -334,7 +343,7 @@ void OtTerrain::initialize() {
 	// create indices
 	createIndices(fullTriangles, fullLines, noDegenerate);
 	createIndices(sideTriangles, sideLines, rightDegenerate);
-	createIndices(cornerTriangles, cornerLines, rightDegenerate | bottomDegenerate);
+	createIndices(cornerTriangles, cornerLines, rightDegenerate | topDegenerate);
 
 	// create tiles
 	createTiles();

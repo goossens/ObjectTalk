@@ -15,7 +15,7 @@
 class OtLatLon {
 public:
 	OtLatLon() : lat(0.0), lon(0.0) {}
-	OtLatLon(double lt, double ln) : lat(lt), lon(ln) {}
+	OtLatLon(double lat, double lon) : lat(lat), lon(lon) {}
 
 	double lat;
 	double lon;

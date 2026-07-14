@@ -29,7 +29,7 @@
 class OtTileLayer : public OtMapLayer {
 public:
 	// constructor
-	OtTileLayer(const std::string& h) : host(h) {}
+	OtTileLayer(const std::string& host) : host(host) {}
 
 	// render the layer
 	void render(ImDrawList* drawlist, OtProjector& projector) override;

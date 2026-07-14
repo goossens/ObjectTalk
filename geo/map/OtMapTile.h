@@ -22,7 +22,7 @@
 class OtMapTile {
 public:
 	// constructor
-	OtMapTile(int z, int _x, int _y) : zoom(z), x(_x), y(_y) {
+	OtMapTile(int z, int x, int y) : zoom(z), x(x), y(y) {
 		hash = OtHash::generate(zoom, x, y);
 	}
 

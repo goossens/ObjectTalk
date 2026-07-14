@@ -12,7 +12,7 @@
 class OtMapRaster {
 public:
 	OtMapRaster() : x(0.0), y(0.0) {}
-	OtMapRaster(double _x, double _y) : x(_x), y(_y) {}
+	OtMapRaster(double x, double y) : x(x), y(y) {}
 
 	OtMapRaster operator+(const OtMapRaster& rh) { return OtMapRaster(x + rh.x, y + rh.y); }
 	OtMapRaster operator-(const OtMapRaster& rh) { return OtMapRaster(x - rh.x, y - rh.y); }

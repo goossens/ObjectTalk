@@ -35,7 +35,7 @@ public:
 	void deserialize(nlohmann::json& data, std::string* basedir);
 
 	// properties
-	int heightmapSize = 256;
+	int heightMapSize = 256;
 	float normalStrength = 10.0f;
 	int frequency = 10;
 	int lacunarity = 2;

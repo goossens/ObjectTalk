@@ -38,10 +38,9 @@ void main() {
 	float bc = texture(inTexture, uv + vec2(0.0f, texelSize.y)).r;
 	float br = texture(inTexture, uv + vec2(texelSize.x, texelSize.y)).r;
 
-	vec3 normal = normalize(vec3(
-		(tr + (2.0f * mr) + br) - (tl + (2.0f * ml) + bl),
-		1.0 / normalStrength,
-		(bl + (2.0f * bc) + br) - (tl + (2.0f * tc) + tr)));
+	float dx = (tr + (2.0f * mr) + br) - (tl + (2.0f * ml) + bl);
+	float dy = (bl + (2.0f * bc) + br) - (tl + (2.0f * tc) + tr);
+	vec3 normal = normalize(vec3(-dx, 1.0 / normalStrength, -dy));
 
 	imageStore(outTexture, coord, vec4(normal * 0.5f + 0.5f, includeHeight ? mc : 1.0f));
 }

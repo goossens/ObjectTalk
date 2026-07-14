@@ -25,17 +25,18 @@ layout(std140, set=1, binding=1) uniform MeshUBO {
 layout(set=0, binding=0) uniform sampler2D normalMapTexture;
 
 void main() {
-	// determine height map coordinates
+	// determine height map UV from world space
 	vec2 uv = (modelMatrix * vec4(aPosition, 1.0f)).xz * hScale / heightMapSize;
+	uv.y = 1.0f + uv.y;
 
-	// determine height and normal
+	// determine height and normal (in world space)
 	vec4 normalMapSample = textureLod(normalMapTexture, uv, 0.0f);
 	float height = normalMapSample.w;
 	vec3 normal = normalMapSample.xyz;
 	normal -= 0.5f;
-	normal *= 2.0f;
+	normal *= vec3(2.0f, 2.0f, -2.0f);
 
-	// determine world position
+	// determine real world position (including height)
 	vec3 position = (modelMatrix * vec4(aPosition.x, height, aPosition.z, 1.0f)).xyz;
 
 	// generate output

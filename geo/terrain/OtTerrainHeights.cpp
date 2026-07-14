@@ -39,7 +39,7 @@ bool OtTerrainHeights::renderUI() {
 			ImGui::TableNextRow();
 
 			ImGui::TableNextColumn();
-			changed |= OtUi::selectorPowerOfTwo("Heightmap Size", &heightmapSize, 256, 2048);
+			changed |= OtUi::selectorPowerOfTwo("Heightmap Size", &heightMapSize, 256, 2048);
 			changed |= OtUi::dragFloat("Normal Strength", &normalStrength, 1.0f, 100.0f);
 			changed |= OtUi::dragInt("Frequency", &frequency, 2, 20);
 			changed |= OtUi::dragInt("Lacunarity", &lacunarity, 1, 10);
@@ -70,7 +70,7 @@ bool OtTerrainHeights::renderUI() {
 
 nlohmann::json OtTerrainHeights::serialize([[maybe_unused]] std::string* basedir) {
 	auto data = nlohmann::json::object();
-	data["size"] = heightmapSize;
+	data["size"] = heightMapSize;
 	data["normalStrength"] = normalStrength;
 	data["frequency"] = frequency;
 	data["lacunarity"] = lacunarity;
@@ -86,7 +86,7 @@ nlohmann::json OtTerrainHeights::serialize([[maybe_unused]] std::string* basedir
 //
 
 void OtTerrainHeights::deserialize(nlohmann::json& data, [[maybe_unused]] std::string* basedir) {
-	heightmapSize = data.value("size", 256);
+	heightMapSize = data.value("size", 256);
 	normalStrength = data.value("normalStrength", 10.0f);
 	frequency = data.value("frequency", 10);
 	lacunarity = data.value("lacunarity", 2);
@@ -103,8 +103,8 @@ void OtTerrainHeights::deserialize(nlohmann::json& data, [[maybe_unused]] std::s
 
 void OtTerrainHeights::update(OtTileableFbm& noise, OtNormalMapper& normals) {
 	// update size of framebuffer
-	heightmap.update(heightmapSize, heightmapSize, OtTexture::Format::r32, OtTexture::Usage::rwDefault);
-	normalmap.update(heightmapSize, heightmapSize, OtTexture::Format::rgba32, OtTexture::Usage::rwDefault);
+	heightmap.update(heightMapSize, heightMapSize, OtTexture::Format::r32, OtTexture::Usage::rwDefault);
+	normalmap.update(heightMapSize, heightMapSize, OtTexture::Format::rgba32, OtTexture::Usage::rwDefault);
 
 	// create noise map
 	noise.setFrequency(frequency);

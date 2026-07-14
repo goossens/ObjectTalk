@@ -304,7 +304,7 @@ void OtSceneRenderEntitiesPass::renderTerrainHelper(
 	} terrainVertexUniforms {
 		ctx.camera.viewProjectionMatrix,
 		terrain.hScale,
-		static_cast<float>(heights.heightmapSize)
+		static_cast<float>(heights.heightMapSize)
 	};
 
 	ctx.pass->bindVertexUniforms(0, &terrainVertexUniforms, sizeof(terrainVertexUniforms));
@@ -351,7 +351,7 @@ void OtSceneRenderEntitiesPass::renderTerrainHelper(
 			terrain.hScale,
 			terrain.vScale,
 			terrain.vOffset,
-			static_cast<float>(heights.heightmapSize),
+			static_cast<float>(heights.heightMapSize),
 
 			static_cast<float>(material.region1Texture.isReady() ? material.region1Texture->getTexture().getWidth() : 1),
 			static_cast<float>(material.region2Texture.isReady() ? material.region2Texture->getTexture().getWidth() : 1),

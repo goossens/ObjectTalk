@@ -39,7 +39,7 @@ bool OtWaterComponent::renderUI() {
 	changed |= OtUi::dragFloat("Roughness", &roughness, 0.0f, 1.0f);
 	changed |= OtUi::dragFloat("Ambient Occlusion", &ao, 0.0f, 1.0f);
 	changed |= OtUi::dragFloat("Reflectivity", &reflectivity, 0.1f, 10.0f);
-	changed |= OtUi::dragFloat("Depth Factor", &depthFactor, 0.001f, 1000.0f);
+	changed |= OtUi::dragFloat("Depth Factor", &depthFactor, 0.01f, 10.0f);
 	return changed;
 }
 

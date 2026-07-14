@@ -202,11 +202,11 @@ void OtSceneRendererContext::initialize(OtScene* s, OtCamera c) {
 		// setup the reflection camera
 		int width = camera.width / 2;
 		int height = camera.height / 2;
-		reflectionCamera = OtCamera{width, height, camera.projectionMatrix, reflectionViewMatrix};
+		reflectionCamera = OtCamera{width, height, reflectionViewMatrix, camera.projectionMatrix};
 
 		// setup the refraction camera (if required)
 		if (water.useRefractance) {
-			refractionCamera = OtCamera{width, height, camera.projectionMatrix, camera.viewMatrix};
+			refractionCamera = OtCamera{width, height, camera.viewMatrix, camera.projectionMatrix};
 		}
 	}
 

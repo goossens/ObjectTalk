@@ -44,12 +44,12 @@
 					"uuid": 769720788
 				},
 				{
-					"azimuth": 113.0,
+					"azimuth": 160.0,
 					"castShadow": true,
 					"cirrus": 0.421999990940094,
 					"component": "Sky",
 					"cumulus": 0.6209999918937683,
-					"elevation": 17.0,
+					"elevation": 54.0,
 					"mieCoefficient": 5.0,
 					"mieScattering": 0.9900000095367432,
 					"rayleighCoefficient": 3.5,
@@ -68,7 +68,7 @@
 				{
 					"castShadow": true,
 					"component": "Geometry",
-					"cullBack": false,
+					"cullBack": true,
 					"path": "virtual:island",
 					"transparent": false,
 					"wireframe": false
@@ -86,19 +86,19 @@
 						"ao": 1.0,
 						"aoTexture": "",
 						"emissive": [
-							0.0,
-							0.0,
-							0.0
+							0.09803921729326248,
+							0.0941176488995552,
+							0.11372549086809158
 						],
 						"emissiveTexture": "",
 						"metallic": 0.5,
 						"metallicRoughnessTexture": "",
 						"normalTexture": "",
 						"offset": [
-							0.0,
-							0.0
+							0.009999999776482582,
+							0.09000000357627869
 						],
-						"roughness": 0.5,
+						"roughness": 0.0,
 						"scale": 15.100000381469727
 					}
 				},
@@ -160,9 +160,9 @@
 				{
 					"ao": 0.1899999976158142,
 					"color": [
-						0.43417656421661377,
-						0.5241270661354065,
-						0.8761062026023865
+						0.2033831924200058,
+						0.3529183268547058,
+						0.9380530714988708
 					],
 					"component": "Water",
 					"depthFactor": 1.0,

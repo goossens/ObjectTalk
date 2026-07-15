@@ -156,6 +156,15 @@ void OtFramework::endSDL() {
 
 
 //
+//	OtFramework::getRunningTime
+//
+
+float OtFramework::getRunningTime() {
+	return static_cast<float>(SDL_GetTicks()) / 1000.0f;
+}
+
+
+//
 //	OtFramework::openURL
 //
 

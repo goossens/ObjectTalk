@@ -32,6 +32,7 @@
 #include "OtFontAwesome.h"
 #include "OtFontDejaVu.h"
 #include "OtFontDejaVuBold.h"
+#include "OtFramework.h"
 #include "OtUi.h"
 
 
@@ -1140,15 +1141,13 @@ bool OtUi::bezier(const char* label, float P[4]) {
 void OtUi::spinner(ImVec2 center, float size, float speed, float radius, int circles) {
 	// get information
 	auto drawList = ImGui::GetWindowDrawList();
-	static float time = 0.0f;
-	time += ImGui::GetIO().DeltaTime;
 	float offset = static_cast<float>(std::numbers::pi * 2.0 / circles);
 
 	// render all circling balls
 	for (int i = 0; i < circles; i++) {
 		float x = size * std::sin(offset * i);
 		float y = size * std::cos(offset * i);
-		float growth = std::max(0.0f, std::sin(time * speed - i * offset));
+		float growth = std::max(0.0f, std::sin(OtFramework::getRunningTime() * speed - i * offset));
 
 		ImVec4 color;
 		ImVec4 dark = ImGui::GetStyleColorVec4(ImGuiCol_Border);

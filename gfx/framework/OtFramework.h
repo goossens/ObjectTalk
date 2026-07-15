@@ -36,6 +36,9 @@ public:
 	bool canClose();
 	bool canQuit();
 
+	// get time in seconds since program start
+	static float getRunningTime();
+
 	// open specified URL in browser
 	static void openURL(const std::string& url);
 

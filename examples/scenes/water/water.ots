@@ -81,8 +81,8 @@
 					"normals": "assets/normalMap.png",
 					"reflectivity": 0.8399999737739563,
 					"roughness": 0.25999999046325684,
-					"scale": 10.0,
-					"speed": 4.0,
+					"scale": 25.0,
+					"speed": 3.0,
 					"useRefractance": false
 				}
 			]
@@ -189,6 +189,7 @@
 		"type": "scene"
 	},
 	"processing": {
+		"backgroundFogRatio": 1.0,
 		"bloom": true,
 		"bloomIntensity": 0.5699999928474426,
 		"contrast": 1.0,

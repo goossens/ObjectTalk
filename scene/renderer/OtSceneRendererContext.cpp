@@ -13,6 +13,8 @@
 
 #include "glm/gtc/type_ptr.hpp"
 
+#include "OtFramework.h"
+
 #include "OtSceneRendererContext.h"
 
 
@@ -25,6 +27,9 @@ void OtSceneRendererContext::initialize(OtScene* s, OtCamera c) {
 	scene = s;
 	camera = c;
 	cameraID = getMainCameraID();
+
+	// get current time
+	runningTime = OtFramework::getRunningTime();
 
 	// reset state
 	hasImageBasedLighting = false;

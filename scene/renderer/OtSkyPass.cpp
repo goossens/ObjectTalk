@@ -76,10 +76,6 @@ void OtSkyPass::renderSky(OtSceneRendererContext& ctx, OtSkyComponent& sky) {
 	// bind pipeline
 	ctx.pass->bindPipeline(skyPipeline);
 
-	// set the uniform values
-	static float time = 0.0f;
-	time += ImGui::GetIO().DeltaTime;
-
 	// set fragment uniforms
 	struct Uniforms {
 		glm::vec3 sunPosition;
@@ -91,7 +87,7 @@ void OtSkyPass::renderSky(OtSceneRendererContext& ctx, OtSkyComponent& sky) {
 		float g;
 	} uniforms {
 		sky.getDirectionToSun(),
-		time * sky.speed / 10.0f,
+		ctx.runningTime * sky.speed / 10.0f,
 		sky.cirrus,
 		sky.cumulus,
 		sky.rayleighCoefficient / 1000.0f,

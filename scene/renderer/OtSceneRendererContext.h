@@ -46,6 +46,9 @@ public:
 	// scene to render
 	OtScene* scene;
 
+	// time information
+	float runningTime;
+
 	// camera information
 	OtCamera camera;
 	OtCamera reflectionCamera;

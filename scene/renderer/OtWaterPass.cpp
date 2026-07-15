@@ -15,8 +15,8 @@
 
 #include "OtRenderPass.h"
 
-#include "OtWaterPass.h"
 #include "OtShaders.h"
+#include "OtWaterPass.h"
 
 
 //
@@ -112,9 +112,7 @@ void OtWaterPass::renderWater(OtSceneRendererContext& ctx, OtWaterComponent& wat
 	ctx.pass = &pass;
 
 	// determine wave movement factor
-	static float time = 0.0f;
-	time += ImGui::GetIO().DeltaTime;
-	float moveFactor = std::fmod(water.speed * 0.01f * time, 1.0f);
+	float moveFactor = std::fmod(water.speed * 0.01f * ctx.runningTime, 1.0f);
 
 	// get maximum distance in clip space
 	glm::vec4 farPoint = ctx.camera.projectionMatrix * glm::vec4(0.0, water.level, -water.distance, 1.0);

@@ -172,7 +172,7 @@ void OtMesh::generateAABB() {
 //
 
 void OtMesh::generateNormals() {
-	// clear tangents
+	// clear normals
 	for (auto& vertex : vertices) {
 		vertex.normal = glm::vec3(0.0f);
 	}
@@ -183,7 +183,7 @@ void OtMesh::generateNormals() {
 		OtVertex& v1 = vertices[indices[c + 1]];
 		OtVertex& v2 = vertices[indices[c + 2]];
 
-		auto normal = glm::cross(v2.position - v1.position, v0.position - v1.position);
+		auto normal = glm::cross(v1.position - v0.position, v2.position - v0.position);
 		v0.normal += normal;
 		v1.normal += normal;
 		v2.normal += normal;
@@ -203,13 +203,15 @@ void OtMesh::generateNormals() {
 //
 
 void OtMesh::generateTangents() {
-	// clear tangents and bitangent
+	// inspired by https://learnopengl.com/Advanced-Lighting/Normal-Mapping
+
+	// clear (bi)tangents
 	for (auto& vertex : vertices) {
 		vertex.tangent = glm::vec3(0.0f);
 		vertex.bitangent = glm::vec3(0.0f);
 	}
 
-	// generate new tangents and bitangent
+	// generate new (bi)tangents
 	for (size_t i = 0; i < indices.size(); i += 3) {
 		OtVertex& v0 = vertices[indices[i]];
 		OtVertex& v1 = vertices[indices[i + 1]];
@@ -218,33 +220,30 @@ void OtMesh::generateTangents() {
 		glm::vec3 edge1 = v1.position - v0.position;
 		glm::vec3 edge2 = v2.position - v0.position;
 
-		float deltaU1 = v1.uv.x - v0.uv.x;
-		float deltaV1 = v1.uv.y - v0.uv.y;
-		float deltaU2 = v2.uv.x - v0.uv.x;
-		float deltaV2 = v2.uv.y - v0.uv.y;
-
-		float f = 1.0f / (deltaU1 * deltaV2 - deltaU2 * deltaV1);
+		glm::vec2 deltaUV1 = v1.uv - v0.uv;
+		glm::vec2 deltaUV2 = v2.uv - v0.uv;
+		float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
 
 		glm::vec3 tangent;
-		tangent.x = f * (deltaV2 * edge1.x - deltaV1 * edge2.x);
-		tangent.y = f * (deltaV2 * edge1.y - deltaV1 * edge2.y);
-		tangent.z = f * (deltaV2 * edge1.z - deltaV1 * edge2.z);
+		tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+		tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+		tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
 
 		v0.tangent += tangent;
 		v1.tangent += tangent;
 		v2.tangent += tangent;
 
 		glm::vec3 bitangent;
-		bitangent.x = f * (-deltaU2 * edge1.x + deltaU1 * edge2.x);
-		bitangent.y = f * (-deltaU2 * edge1.y + deltaU1 * edge2.y);
-		bitangent.z = f * (-deltaU2 * edge1.z + deltaU1 * edge2.z);
+		bitangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+		bitangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+		bitangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
 
 		v0.bitangent += bitangent;
 		v1.bitangent += bitangent;
 		v2.bitangent += bitangent;
 	}
 
-	// normalize the tangents and bitangent
+	// normalize the (bi)tangents
 	for (auto& vertex : vertices) {
 		vertex.tangent = glm::normalize(vertex.tangent);
 		vertex.bitangent = glm::normalize(vertex.bitangent);

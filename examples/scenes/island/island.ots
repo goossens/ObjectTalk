@@ -44,12 +44,12 @@
 					"uuid": 769720788
 				},
 				{
-					"azimuth": 160.0,
+					"azimuth": 100.0,
 					"castShadow": true,
 					"cirrus": 0.421999990940094,
 					"component": "Sky",
 					"cumulus": 0.6209999918937683,
-					"elevation": 54.0,
+					"elevation": 40.0,
 					"mieCoefficient": 5.0,
 					"mieScattering": 0.9900000095367432,
 					"rayleighCoefficient": 3.5,
@@ -66,7 +66,7 @@
 					"uuid": 2028805799
 				},
 				{
-					"castShadow": true,
+					"castShadow": false,
 					"component": "Geometry",
 					"cullBack": true,
 					"path": "virtual:island",
@@ -83,15 +83,15 @@
 							1.0
 						],
 						"albedoTexture": "assets/rock.jpg",
-						"ao": 1.0,
+						"ao": 0.6600000262260437,
 						"aoTexture": "",
 						"emissive": [
-							0.09803921729326248,
-							0.0941176488995552,
-							0.11372549086809158
+							0.0,
+							0.0,
+							0.0
 						],
 						"emissiveTexture": "",
-						"metallic": 0.5,
+						"metallic": 0.0,
 						"metallicRoughnessTexture": "",
 						"normalTexture": "",
 						"offset": [
@@ -182,10 +182,10 @@
 	],
 	"metadata": {
 		"camera": {
-			"far": 2000.0,
+			"far": 500.0,
 			"fov": 60.0,
 			"near": 1.0,
-			"pitch": 0.8528481721878052,
+			"pitch": 1.7000000476837158,
 			"position": [
 				0.0,
 				20.0,

@@ -38,6 +38,7 @@ layout(std140, set=3, binding=0) uniform UBO {
 	float depthFactor;
 	float scale;
 	float moveFactor;
+	float waveStrength;
 	float metallic;
 	float roughness;
 	float ao;
@@ -72,7 +73,6 @@ void main() {
 	}
 
 	// get water normal
-	const float waveStrength = 0.015;
 	vec2 textureCoords = waterWorldPos.xz / size * scale;
 	vec2 distortedTexCoords = texture(waterDuDvMapTexture, vec2(textureCoords.x + moveFactor, textureCoords.y)).rg * 0.1;
 	distortedTexCoords = textureCoords + vec2(distortedTexCoords.x, distortedTexCoords.y + moveFactor);

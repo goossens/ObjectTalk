@@ -83,7 +83,8 @@
 					"roughness": 0.25999999046325684,
 					"scale": 25.0,
 					"speed": 3.0,
-					"useRefractance": false
+					"useRefractance": false,
+					"waveStrength": 0.07100000232458115
 				}
 			]
 		},

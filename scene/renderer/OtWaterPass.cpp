@@ -138,6 +138,7 @@ void OtWaterPass::renderWater(OtSceneRendererContext& ctx, OtWaterComponent& wat
 		float distance;
 		float depthFactor;
 		float scale;
+		float waveStrength;
 		float moveFactor;
 		float metallic;
 		float roughness;
@@ -155,6 +156,7 @@ void OtWaterPass::renderWater(OtSceneRendererContext& ctx, OtWaterComponent& wat
 		water.depthFactor,
 		water.scale,
 		moveFactor,
+		water.waveStrength,
 		water.metallic,
 		water.roughness,
 		water.ao,

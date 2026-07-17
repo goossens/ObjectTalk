@@ -43,6 +43,7 @@ public:
 	OtAsset<OtTextureAsset> normals;
 	float scale = 10.0f;
 	float speed = 1.0f;
+	float randomFactor = 1.0f;
 	float waveStrength = 0.01f;
 	float metallic = 0.3f;
 	float roughness = 0.2f;

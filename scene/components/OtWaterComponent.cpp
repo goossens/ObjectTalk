@@ -35,6 +35,7 @@ bool OtWaterComponent::renderUI() {
 	changed |= normals.renderUI("Normal Map");
 	changed |= OtUi::dragFloat("Scale", &scale, 0.01f, 100.0f);
 	changed |= OtUi::dragFloat("Speed", &speed, 0.0f, 10.0f);
+	changed |= OtUi::dragFloat("Random Factor", &randomFactor, 1.0f, 5.0f);
 	changed |= OtUi::dragFloat("Wave Strength", &waveStrength, 0.001f, 0.99f);
 	changed |= OtUi::dragFloat("Metallic", &metallic, 0.0f, 1.0f);
 	changed |= OtUi::dragFloat("Roughness", &roughness, 0.0f, 1.0f);
@@ -59,6 +60,7 @@ nlohmann::json OtWaterComponent::serialize(std::string* basedir) {
 	data["normals"] = OtAssetSerialize(normals.getPath(), basedir);
 	data["scale"] = scale;
 	data["speed"] = speed;
+	data["randomFactor"] = randomFactor;
 	data["waveStrength"] = waveStrength;
 	data["metallic"] = metallic;
 	data["roughness"] = roughness;
@@ -82,6 +84,7 @@ void OtWaterComponent::deserialize(nlohmann::json& data, std::string* basedir) {
 	normals = OtAssetDeserialize(&data, "normals", basedir);
 	scale = data.value("scale", 10.0f);
 	speed = data.value("speed", 1.0f);
+	randomFactor = data.value("randomFactor", 1.0f);
 	waveStrength = data.value("waveStrength", 0.01f);
 	metallic = data.value("metallic", 0.3f);
 	roughness = data.value("roughness", 0.2f);

@@ -4,8 +4,7 @@
 //	This work is licensed under the terms of the MIT license.
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
-//	Inspired by: https://vincenguyen.super.site/blog/blog-posts-1/how-to-render-pretty-water
-//	Which was in inspired by https://www.youtube.com/playlist?list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh
+//	Inspired  by https://www.youtube.com/playlist?list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh
 
 #version 450 core
 #extension GL_GOOGLE_include_directive : require
@@ -18,6 +17,7 @@
 #define SHADOW_SAMPLERS 8
 #include "shadow.glsl"
 
+#include "hash.glsl"
 #include "pbr.glsl"
 #include "utilities.glsl"
 
@@ -38,6 +38,7 @@ layout(std140, set=3, binding=0) uniform UBO {
 	float depthFactor;
 	float scale;
 	float moveFactor;
+	float randomFactor;
 	float waveStrength;
 	float metallic;
 	float roughness;
@@ -79,7 +80,8 @@ void main() {
 	vec2 totalDistortion = (texture(waterDuDvMapTexture, distortedTexCoords).rg * 2.0 - 1.0) * waveStrength;
 
 	vec4 normalMapColor = texture(waterNormalMapTexture, distortedTexCoords);
-	vec3 N = normalize(vec3(normalMapColor.r * 2.0 - 1.0, normalMapColor.b, normalMapColor.g * 2.0 - 1.0));
+	float heightRandom = remap(hash12(waterWorldPos.xz), 0.0, 1.0, 1.0 / randomFactor, randomFactor);
+	vec3 N = normalize(vec3(normalMapColor.r * 2.0 - 1.0, normalMapColor.b * heightRandom, normalMapColor.g * 2.0 - 1.0));
 
 	// determine reflection and refraction colors
 	vec2 refractionUv = gl_FragCoord.xy / size + totalDistortion;

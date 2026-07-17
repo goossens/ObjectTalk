@@ -68,9 +68,9 @@
 				{
 					"ao": 0.4699999988079071,
 					"color": [
-						0.09515232592821121,
-						0.12980680167675018,
-						0.19911503791809082
+						0.22037746012210846,
+						0.34455937147140503,
+						0.5929203629493713
 					],
 					"component": "Water",
 					"depthFactor": 1.0,
@@ -79,12 +79,13 @@
 					"level": 0.0,
 					"metallic": 0.0,
 					"normals": "assets/normalMap.png",
+					"randomFactor": 3.0,
 					"reflectivity": 0.8399999737739563,
 					"roughness": 0.25999999046325684,
-					"scale": 25.0,
-					"speed": 3.0,
+					"scale": 13.0,
+					"speed": 2.5,
 					"useRefractance": false,
-					"waveStrength": 0.07100000232458115
+					"waveStrength": 0.13099999725818634
 				}
 			]
 		},

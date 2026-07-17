@@ -144,6 +144,7 @@
 					"level": 6.610000133514404,
 					"metallic": 0.0,
 					"normals": "assets/normalMap.png",
+					"randomFactor": 3.0,
 					"reflectivity": 7.409999847412109,
 					"roughness": 0.7599999904632568,
 					"scale": 100.0,

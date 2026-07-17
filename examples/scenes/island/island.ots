@@ -44,7 +44,7 @@
 					"uuid": 769720788
 				},
 				{
-					"azimuth": 100.0,
+					"azimuth": 130.0,
 					"castShadow": true,
 					"cirrus": 0.421999990940094,
 					"component": "Sky",
@@ -66,7 +66,7 @@
 					"uuid": 2028805799
 				},
 				{
-					"castShadow": false,
+					"castShadow": true,
 					"component": "Geometry",
 					"cullBack": true,
 					"path": "virtual:island",

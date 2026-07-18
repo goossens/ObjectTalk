@@ -30,14 +30,6 @@
 
 **Outputs**
 
-#### Heightmap To Normalmap
-
-![screenshot](img/heightmap-to-normalmap.png#right)
-
-**Inputs**
-
-**Outputs**
-
 #### Islandizer
 
 ![screenshot](img/islandizer.png#right)

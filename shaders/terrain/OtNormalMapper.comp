@@ -14,7 +14,6 @@ layout(set=1, binding=0, rgba8) uniform writeonly image2D outTexture;
 layout(std140, set=2, binding=0) uniform UBO {
 	vec2 texelSize;
 	float normalStrength;
-	bool includeHeight;
 };
 
 void main() {
@@ -42,5 +41,5 @@ void main() {
 	float dy = (bl + (2.0f * bc) + br) - (tl + (2.0f * tc) + tr);
 	vec3 normal = normalize(vec3(-dx, 1.0 / normalStrength, -dy));
 
-	imageStore(outTexture, coord, vec4(normal * 0.5f + 0.5f, includeHeight ? mc : 1.0f));
+	imageStore(outTexture, coord, vec4(normal * 0.5f + 0.5f, mc));
 }

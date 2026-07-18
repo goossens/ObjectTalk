@@ -139,7 +139,7 @@ void OtTerrain::deserialize(nlohmann::json& data, std::string* basedir) {
 void OtTerrain::update(OtCamera& camera) {
 	// update heights (if required)
 	if (heights.dirty) {
-		heights.update(tileableFbm, normalMapper);
+		heights.update();
 	}
 
 	// initialize (if required)

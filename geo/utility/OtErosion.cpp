@@ -35,7 +35,6 @@ static constexpr float tau = pi * 2.0f;
 glm::vec2 OtErosion::sample(glm::vec2 position, HeightConfig& height, ErosionConfig& erosion, int seed) {
 	// calculate the FBM terrain height (in the [-1, 1] range in n.x) and its derivatives (in n.yz)
 	auto n = fractalNoise(position, height.frequency, height.octaves, height.lacunarity, height.gain, seed);
-	// return glm::vec2(n.x, 0.0f);
 	n *= height.amplitude;
 
 	// define the erosion fade target based on the altitude of the pre-eroded terrain
@@ -116,7 +115,7 @@ OtErosion::Erosion OtErosion::erosionFilter(const glm::vec2 position, glm::vec3 
 		auto newMask = easeOut(smoothStart(sloping * erosion.onset.y, roundingForOctave * erosion.onset.y));
 		combiMask = powInv(combiMask, erosion.detail) * newMask;
 
-		// update the ridgeMap fadeTarget and mask.
+		// update the ridgeMap fadeTarget and mask
 		ridgeMapFadeTarget = std::lerp(ridgeMapFadeTarget, gullies.x, ridgeMapCombiMask);
 		auto newRidgeMapMask = easeOut(sloping * erosion.onset.w);
 		ridgeMapCombiMask *= newRidgeMapMask;

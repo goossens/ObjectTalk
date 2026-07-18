@@ -16,9 +16,10 @@
 
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtNormalMapper.h"
+#include "OtFilter.h"
+#include "OtGenerator.h"
+#include "OtShaders.h"
 #include "OtTexture.h"
-#include "OtTileableFbm.h"
 
 
 //
@@ -37,11 +38,6 @@ public:
 	// properties
 	int heightMapSize = 256;
 	float normalStrength = 10.0f;
-	int frequency = 10;
-	int lacunarity = 2;
-	float amplitude = 0.5f;
-	float persistence = 0.5f;
-	int octaves = 5;
 
 	// rendering tools
 	bool dirty = true;
@@ -51,5 +47,66 @@ public:
 	OtTexture normalmap;
 
 	// update the heightmap
-	void update(OtTileableFbm& noise, OtNormalMapper& normals);
+	void update();
+
+private:
+	// generators/filters
+	struct Noise : public OtGenerator {
+		// configure the compute pass
+		void configurePass(OtComputePass& pass) override {
+			// initialize pipeline (if required)
+			if (!pipeline.isValid()) {
+				pipeline.setShader(OtTerrainNoiseComp, OtTerrainNoiseCompSize);
+			}
+
+			// set uniforms
+			struct Uniforms {
+				int32_t frequency;
+				int32_t lacunarity;
+				float amplitude;
+				float persistence;
+				int32_t octaves;
+			} uniforms{
+				static_cast<int32_t>(frequency),
+				static_cast<int32_t>(lacunarity),
+				amplitude,
+				persistence,
+				static_cast<int32_t>(octaves)
+			};
+
+			pass.addUniforms(&uniforms, sizeof(uniforms));
+		}
+
+		// properties
+		int frequency = 10;
+		int lacunarity = 2;
+		float amplitude = 0.5f;
+		float persistence = 0.5f;
+		int octaves = 5;
+	} noise;
+
+	struct Normals : public OtFilter {
+	public:
+		// configure the compute pass
+		void configurePass(OtComputePass& pass) override {
+			// initialize pipeline (if required)
+			if (!pipeline.isValid()) {
+				pipeline.setShader(OtNormalMapperComp, OtNormalMapperCompSize);
+			}
+
+			// set uniforms
+			struct Uniforms {
+				glm::vec2 texelSize;
+				float normalStrength;
+			} uniforms {
+				sourceTexelSize,
+				normalStrength
+			};
+
+			pass.addUniforms(&uniforms, sizeof(uniforms));
+		}
+
+		// properties
+		float normalStrength = 10.0f;
+	} normals;
 };

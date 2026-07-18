@@ -101,27 +101,6 @@
 			"y": 368.0
 		},
 		{
-			"id": 3923683874,
-			"inputs": [
-				{
-					"id": 2793099169,
-					"name": "Input",
-					"type": "texture"
-				}
-			],
-			"outputs": [
-				{
-					"id": 3039378331,
-					"name": "Output",
-					"type": "texture"
-				}
-			],
-			"title": "HeightMap to NormalMap",
-			"type": "HeightMap to NormalMap",
-			"x": 617.0,
-			"y": 366.0
-		},
-		{
 			"distance": 0,
 			"id": 3943392282,
 			"inputs": [

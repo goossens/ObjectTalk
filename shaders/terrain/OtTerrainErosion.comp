@@ -1,0 +1,204 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2026 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+#version 450 core
+
+layout(local_size_x=16, local_size_y=16, local_size_z=1) in;
+
+layout(set=0, binding=0) uniform sampler2D inTexture;
+layout(set=1, binding=0, r32f) uniform writeonly image2D outTexture;
+
+layout(std140, set=2, binding=0) uniform UBO {
+	vec4 rounding;
+	vec4 onset;
+	vec2 assumedSlope;
+	vec2 texelSize;
+	float scale;
+	float strength;
+	float gullyWeight;
+	float detail;
+	float cellScale;
+	float gain;
+	float lacunarity;
+	float normalization;
+	int octaves;
+};
+
+#define pi 3.14159265358979
+#define tau 6.28318530717959
+
+float smoothStart(float t, float smoothing) {
+	return t >= smoothing ? t - 0.5f * smoothing : 0.5f * t * t / smoothing;
+}
+
+float powInv(float t, float power) {
+	return 1.0f - pow(1.0f - clamp(t, 0.0f, 1.0f), power);
+}
+
+float easeOut(float t) {
+	float v = 1.0f - clamp(t, 0.0f, 1.0f);
+	return 1.0f - v * v;
+}
+
+vec2 hash(in vec2 x) {
+    const vec2 k = vec2(0.3183099f, 0.3678794f);
+    x = x * k + k.yx;
+    return -1.0f + 2.0f * fract(16.0f * k * fract(x.x * x.y * (x.x + x.y)));
+}
+
+vec4 phacelleNoise(vec2 position, vec2 normDir, float frequency, float offset, float normalization) {
+	// get a vector orthogonal to the input direction, with a magnitude proportional to the frequency of the stripes
+	vec2 sideDir = normDir.yx * vec2(-1.0f, 1.0f) * frequency * tau;
+	offset *= tau;
+
+	// iterate over 4x4 cells, calculating a stripe pattern for each and blending between them
+	vec2 pInt = floor(position);
+	vec2 pFrac = fract(position);
+	vec2 phaseDir = vec2(0.0f);
+	float weightSum = 0.0f;
+
+	for (int i = -1; i <= 2; i++) {
+		for (int j = -1; j <= 2; j++) {
+			vec2 gridOffset = vec2(i, j);
+
+			// calculate a cell point by starting off with a point in the integer grid
+			vec2 gridPoint = pInt + gridOffset;
+
+			// calculate a random offset for the cell point between -0.5 and 0.5 on each axis
+			vec2 randomOffset = hash(gridPoint) * 0.5f;
+
+			// the final cell point (we don't store it) is the gridPoint plus the randomOffset
+			vec2 vectorFromCellPoint = pFrac - gridOffset - randomOffset;
+
+			// bell-shaped weight function which is 1 at dist 0 and nearly 0 at dist 1.5
+			// due to the random offsets of up to 0.5, the closest a cell point not in the 4x4 grid
+			// can be to the current point p is 1.5 units away
+			float sqrDist = dot(vectorFromCellPoint, vectorFromCellPoint);
+			float weight = exp(-sqrDist * 2.0f);
+
+			// subtract 0.01111 to make the function actually 0 at distance 1.5, which avoids some (very subtle) grid line artifacts
+			weight = max(0.0f, weight - 0.01111f);
+
+			// keep track of the total sum of weights
+			weightSum += weight;
+
+			// the waveInput is a gradient which increases in value along sideDir. Its rate of
+			// change is the frequency times tau, due to the multiplier pre-applied to sideDir
+			float waveInput = dot(vectorFromCellPoint, sideDir) + offset;
+
+			// add this cell's cosine and sine wave contributions to the interpolated value
+			phaseDir += vec2(cos(waveInput), sin(waveInput)) * weight;
+		}
+	}
+
+	// get the raw interpolated value
+	vec2 interpolated = phaseDir / weightSum;
+
+	// interpret the value as a vector whose length represents the magnitude of both waves
+	float magnitude = sqrt(dot(interpolated, interpolated));
+
+	// apply a lower threshold to show small magnitudes we're going to fully normalize
+	magnitude = max(1.0f - normalization, magnitude);
+
+	// return a vector containing the normalized cosine and sine waves, as well as the direction
+	// vector, which can be multiplied onto the sine to get the derivatives of the cosine
+	return vec4(interpolated / magnitude, sideDir);
+}
+
+void main() {
+	ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = imageSize(outTexture);
+
+	if (coord.x >= size.x || coord.y >= size.y) {
+		return;
+	}
+
+	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
+
+	// compute height and slope (Sobel derivatives)
+	float height = texture(inTexture, uv).r;
+
+	float tl = texture(inTexture, uv + vec2(-texelSize.x, -texelSize.y)).r;
+	float tc = texture(inTexture, uv + vec2(0.0f, -texelSize.y)).r;
+	float tr = texture(inTexture, uv + vec2(texelSize.x, -texelSize.y)).r;
+	float ml = texture(inTexture, uv + vec2(-texelSize.x, 0.0f)).r;
+	float mr = texture(inTexture, uv + vec2(texelSize.x, 0.0f)).r;
+	float bl = texture(inTexture, uv + vec2(-texelSize.x, texelSize.y)).r;
+	float bc = texture(inTexture, uv + vec2(0.0f, texelSize.y)).r;
+	float br = texture(inTexture, uv + vec2(texelSize.x, texelSize.y)).r;
+
+	vec2 slope = vec2(
+		(tr + (2.0f * mr) + br) - (tl + (2.0f * ml) + bl),
+		(bl + (2.0f * bc) + br) - (tl + (2.0f * tc) + tr));
+
+	// setup erosion variables
+	float scaledStrength = scale * strength;
+	float fadeTarget = clamp(height * 2.0f - 1.0f, -1.0f, 1.0f);
+
+	float frequency = 1.0f / (cellScale * scale);
+	float slopeLength = max(length(slope), 1e-10f);
+	float magnitude = 0.0f;
+	float roundingMult = 1.0f;
+
+	float roundingForInput = mix(rounding.y, rounding.x, clamp(fadeTarget + 0.5f, 0.0f, 1.0f)) * rounding.z;
+
+	// the combined accumulating mask, based first on initial slope, and later on slope of each octave too.
+	float combiMask = easeOut(smoothStart(slopeLength * onset.x, roundingForInput * onset.x));
+
+	// initialize the ridgeMap fadeTarget and mask
+	float ridgeMapCombiMask = easeOut(slopeLength * onset.z);
+	float ridgeMapFadeTarget = fadeTarget;
+
+	// determine the strength of the initial slope used for gully directions
+	// based on the specified mix of the actual slope and an assumed slope
+	vec2 gullySlope = mix(slope, slope / slopeLength * assumedSlope.x, assumedSlope.y);
+
+	for (int i = 0; i < octaves; i++) {
+		// calculate and add gullies to the height and slope
+		vec4 phacelle = phacelleNoise(uv * frequency, normalize(gullySlope), cellScale * scale, 0.25f, normalization);
+
+		// multiply with frequency since p was multiplied with frequency and negate since we use slope directions that point down
+		phacelle.zw *= -frequency;
+
+		// amount of slope as value from 0 to 1.
+		float sloping = abs(phacelle.y);
+
+		// add non-masked, normalized slope to gullySlope, for use by subsequent octaves
+		// it's normalized to use the steepest part of the sine wave everywhere
+		gullySlope += sign(phacelle.y) * phacelle.zw * scaledStrength * gullyWeight;
+
+		// gullies has height offset (from -1 to 1) in x and derivative in yz
+		vec3 gullies = vec3(phacelle.x, phacelle.y * phacelle.zw);
+
+		// fade gullies towards fadeTarget based on combiMask
+		vec3 fadedGullies = mix(vec3(fadeTarget, 0.0, 0.0), gullies * gullyWeight, combiMask);
+
+		// apply height offset and derivative (slope) according to strength of current octave
+		height += fadedGullies.x * scaledStrength;
+		slope += fadedGullies.yz * scaledStrength;
+		magnitude += scaledStrength;
+
+		// Update fadeTarget to include the new octave
+		fadeTarget = fadedGullies.x;
+
+		// update the mask to include the new octave
+		float roundingForOctave = mix(rounding.y, rounding.x, clamp(phacelle.x + 0.5f, 0.0f, 1.0f)) * roundingMult;
+		float newMask = easeOut(smoothStart(sloping * onset.y, roundingForOctave * onset.y));
+		combiMask = powInv(combiMask, detail) * newMask;
+
+		// update the ridgeMap fadeTarget and mask
+		ridgeMapFadeTarget = mix(ridgeMapFadeTarget, gullies.x, ridgeMapCombiMask);
+		float newRidgeMapMask = easeOut(sloping * onset.w);
+		ridgeMapCombiMask = ridgeMapCombiMask * newRidgeMapMask;
+
+		// prepare the next octave
+		scaledStrength *= gain;
+		frequency *= lacunarity;
+		roundingMult *= rounding.w;
+	}
+
+	imageStore(outTexture, coord, vec4(height));
+}

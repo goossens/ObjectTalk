@@ -21,8 +21,6 @@
 #include "OtAABB.h"
 #include "OtCamera.h"
 #include "OtIndexBuffer.h"
-#include "OtNormalMapper.h"
-#include "OtTileableFbm.h"
 #include "OtVertexBuffer.h"
 
 #include "OtTerrainHeights.h"
@@ -85,8 +83,6 @@ private:
 	// terrain heights and material
 	OtTerrainHeights heights;
 	OtTerrainMaterial material;
-	OtTileableFbm tileableFbm;
-	OtNormalMapper normalMapper;
 
 	// current geoClipMap center
 	float centerX;

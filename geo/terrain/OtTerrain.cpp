@@ -327,7 +327,7 @@ void OtTerrain::createTiles() {
 	// bottom
 	ringTiles.emplace_back(vertices, cornerTriangles, cornerLines, size, -size, 180.0f);
 	ringTiles.emplace_back(vertices, sideTriangles, sideLines, size, size, 270.0f);
-	ringTiles.emplace_back(vertices, sideTriangles, sideLines, size, 0, 270.0f);
+	ringTiles.emplace_back(vertices, sideTriangles, sideLines, size, 0.0f, 270.0f);
 	ringTiles.emplace_back(vertices, cornerTriangles, cornerLines, size, -size, 270.0f);
 }
 

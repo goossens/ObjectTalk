@@ -13,6 +13,7 @@ layout(location=0) out vec2 vUv; // just a dummy to match the fragment shaders
 layout(std140, set=1, binding=0) uniform TerrainUBO {
 	mat4 viewProjectionMatrix;
 	float hScale;
+	float heightMapDensity;
 	float heightMapSize;
 };
 
@@ -25,7 +26,7 @@ layout(set=0, binding=0) uniform sampler2D normalMapTexture;
 // functions
 void main() {
 	// determine height map coordinates
-	vec2 uv = (modelMatrix * vec4(aPosition, 1.0)).xz * hScale / heightMapSize;
+	vec2 uv = (modelMatrix * vec4(aPosition, 1.0)).xz * hScale * heightMapDensity/ heightMapSize;
 
 	// determine height
 	float height = texture(normalMapTexture, uv).w;

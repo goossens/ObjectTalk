@@ -138,7 +138,7 @@ void OtTerrain::deserialize(nlohmann::json& data, std::string* basedir) {
 
 void OtTerrain::update(OtCamera& camera) {
 	// update heights (if required)
-	if (heights.dirty) {
+	if (heights.needsUpdate()) {
 		heights.update();
 	}
 

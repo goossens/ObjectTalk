@@ -31,34 +31,34 @@ layout(std140, set=2, binding=0) uniform UBO {
 #define tau 6.28318530717959
 
 float smoothStart(float t, float smoothing) {
-	return t >= smoothing ? t - 0.5f * smoothing : 0.5f * t * t / smoothing;
+	return t >= smoothing ? t - 0.5 * smoothing : 0.5 * t * t / smoothing;
 }
 
 float powInv(float t, float power) {
-	return 1.0f - pow(1.0f - clamp(t, 0.0f, 1.0f), power);
+	return 1.0 - pow(1.0 - clamp(t, 0.0, 1.0), power);
 }
 
 float easeOut(float t) {
-	float v = 1.0f - clamp(t, 0.0f, 1.0f);
-	return 1.0f - v * v;
+	float v = 1.0 - clamp(t, 0.0, 1.0);
+	return 1.0 - v * v;
 }
 
 vec2 hash(in vec2 x) {
-    const vec2 k = vec2(0.3183099f, 0.3678794f);
+    const vec2 k = vec2(0.3183099, 0.3678794);
     x = x * k + k.yx;
-    return -1.0f + 2.0f * fract(16.0f * k * fract(x.x * x.y * (x.x + x.y)));
+    return -1.0 + 2.0 * fract(16.0 * k * fract(x.x * x.y * (x.x + x.y)));
 }
 
 vec4 phacelleNoise(vec2 position, vec2 normDir, float frequency, float offset, float normalization) {
 	// get a vector orthogonal to the input direction, with a magnitude proportional to the frequency of the stripes
-	vec2 sideDir = normDir.yx * vec2(-1.0f, 1.0f) * frequency * tau;
+	vec2 sideDir = normDir.yx * vec2(-1.0, 1.0) * frequency * tau;
 	offset *= tau;
 
 	// iterate over 4x4 cells, calculating a stripe pattern for each and blending between them
 	vec2 pInt = floor(position);
 	vec2 pFrac = fract(position);
-	vec2 phaseDir = vec2(0.0f);
-	float weightSum = 0.0f;
+	vec2 phaseDir = vec2(0.0);
+	float weightSum = 0.0;
 
 	for (int i = -1; i <= 2; i++) {
 		for (int j = -1; j <= 2; j++) {
@@ -68,7 +68,7 @@ vec4 phacelleNoise(vec2 position, vec2 normDir, float frequency, float offset, f
 			vec2 gridPoint = pInt + gridOffset;
 
 			// calculate a random offset for the cell point between -0.5 and 0.5 on each axis
-			vec2 randomOffset = hash(gridPoint) * 0.5f;
+			vec2 randomOffset = hash(gridPoint) * 0.5;
 
 			// the final cell point (we don't store it) is the gridPoint plus the randomOffset
 			vec2 vectorFromCellPoint = pFrac - gridOffset - randomOffset;
@@ -77,10 +77,10 @@ vec4 phacelleNoise(vec2 position, vec2 normDir, float frequency, float offset, f
 			// due to the random offsets of up to 0.5, the closest a cell point not in the 4x4 grid
 			// can be to the current point p is 1.5 units away
 			float sqrDist = dot(vectorFromCellPoint, vectorFromCellPoint);
-			float weight = exp(-sqrDist * 2.0f);
+			float weight = exp(-sqrDist * 2.0);
 
 			// subtract 0.01111 to make the function actually 0 at distance 1.5, which avoids some (very subtle) grid line artifacts
-			weight = max(0.0f, weight - 0.01111f);
+			weight = max(0.0, weight - 0.01111);
 
 			// keep track of the total sum of weights
 			weightSum += weight;
@@ -101,7 +101,7 @@ vec4 phacelleNoise(vec2 position, vec2 normDir, float frequency, float offset, f
 	float magnitude = sqrt(dot(interpolated, interpolated));
 
 	// apply a lower threshold to show small magnitudes we're going to fully normalize
-	magnitude = max(1.0f - normalization, magnitude);
+	magnitude = max(1.0 - normalization, magnitude);
 
 	// return a vector containing the normalized cosine and sine waves, as well as the direction
 	// vector, which can be multiplied onto the sine to get the derivatives of the cosine
@@ -116,34 +116,34 @@ void main() {
 		return;
 	}
 
-	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
+	vec2 uv = (vec2(coord) + 0.f) / vec2(size);
 
 	// compute height and slope (Sobel derivatives)
 	float height = texture(inTexture, uv).r;
 
 	float tl = texture(inTexture, uv + vec2(-texelSize.x, -texelSize.y)).r;
-	float tc = texture(inTexture, uv + vec2(0.0f, -texelSize.y)).r;
+	float tc = texture(inTexture, uv + vec2(0.0, -texelSize.y)).r;
 	float tr = texture(inTexture, uv + vec2(texelSize.x, -texelSize.y)).r;
-	float ml = texture(inTexture, uv + vec2(-texelSize.x, 0.0f)).r;
-	float mr = texture(inTexture, uv + vec2(texelSize.x, 0.0f)).r;
+	float ml = texture(inTexture, uv + vec2(-texelSize.x, 0.0)).r;
+	float mr = texture(inTexture, uv + vec2(texelSize.x, 0.0)).r;
 	float bl = texture(inTexture, uv + vec2(-texelSize.x, texelSize.y)).r;
-	float bc = texture(inTexture, uv + vec2(0.0f, texelSize.y)).r;
+	float bc = texture(inTexture, uv + vec2(0.0, texelSize.y)).r;
 	float br = texture(inTexture, uv + vec2(texelSize.x, texelSize.y)).r;
 
 	vec2 slope = vec2(
-		(tr + (2.0f * mr) + br) - (tl + (2.0f * ml) + bl),
-		(bl + (2.0f * bc) + br) - (tl + (2.0f * tc) + tr));
+		(tr + (2.0 * mr) + br) - (tl + (2.0 * ml) + bl),
+		(bl + (2.0 * bc) + br) - (tl + (2.0 * tc) + tr));
 
 	// setup erosion variables
 	float scaledStrength = scale * strength;
-	float fadeTarget = clamp(height * 2.0f - 1.0f, -1.0f, 1.0f);
+	float fadeTarget = clamp(height * 2.0 - 1.0, -1.0, 1.0);
 
-	float frequency = 1.0f / (cellScale * scale);
+	float frequency = 1.0 / (cellScale * scale);
 	float slopeLength = max(length(slope), 1e-10f);
-	float magnitude = 0.0f;
-	float roundingMult = 1.0f;
+	float magnitude = 0.0;
+	float roundingMult = 1.0;
 
-	float roundingForInput = mix(rounding.y, rounding.x, clamp(fadeTarget + 0.5f, 0.0f, 1.0f)) * rounding.z;
+	float roundingForInput = mix(rounding.y, rounding.x, clamp(fadeTarget + 0.5, 0.0, 1.0)) * rounding.z;
 
 	// the combined accumulating mask, based first on initial slope, and later on slope of each octave too.
 	float combiMask = easeOut(smoothStart(slopeLength * onset.x, roundingForInput * onset.x));
@@ -185,7 +185,7 @@ void main() {
 		fadeTarget = fadedGullies.x;
 
 		// update the mask to include the new octave
-		float roundingForOctave = mix(rounding.y, rounding.x, clamp(phacelle.x + 0.5f, 0.0f, 1.0f)) * roundingMult;
+		float roundingForOctave = mix(rounding.y, rounding.x, clamp(phacelle.x + 0.5, 0.0, 1.0)) * roundingMult;
 		float newMask = easeOut(smoothStart(sloping * onset.y, roundingForOctave * onset.y));
 		combiMask = powInv(combiMask, detail) * newMask;
 

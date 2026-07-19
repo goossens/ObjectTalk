@@ -15,6 +15,7 @@ layout(location=1) out vec3 vNormal;
 layout(std140, set=1, binding=0) uniform TerrainUBO {
 	mat4 viewProjectionMatrix;
 	float hScale;
+	float heightMapDensity;
 	float heightMapSize;
 };
 
@@ -26,21 +27,20 @@ layout(set=0, binding=0) uniform sampler2D normalMapTexture;
 
 void main() {
 	// determine height map UV from world space
-	vec2 uv = (modelMatrix * vec4(aPosition, 1.0f)).xz * hScale / heightMapSize;
-	uv.y = 1.0f + uv.y;
+	vec2 uv = (modelMatrix * vec4(aPosition, 1.0)).xz * hScale * heightMapDensity/ heightMapSize;
+	uv.y = 1.0 + uv.y;
 
 	// determine height and normal (in world space)
-	vec4 normalMapSample = textureLod(normalMapTexture, uv, 0.0f);
+	vec4 normalMapSample = textureLod(normalMapTexture, uv, 0.0);
 	float height = normalMapSample.w;
 	vec3 normal = normalMapSample.xyz;
-	normal -= 0.5f;
-	normal *= vec3(2.0f, 2.0f, -2.0f);
+	normal *= vec3(1.0, 1.0, -1.0);
 
 	// determine real world position (including height)
-	vec3 position = (modelMatrix * vec4(aPosition.x, height, aPosition.z, 1.0f)).xyz;
+	vec3 position = (modelMatrix * vec4(aPosition.x, height, aPosition.z, 1.0)).xyz;
 
 	// generate output
 	vPosition = position;
 	vNormal = normal;
-	gl_Position = viewProjectionMatrix * vec4(position, 1.0f);
+	gl_Position = viewProjectionMatrix * vec4(position, 1.0);
 }

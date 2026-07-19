@@ -25,11 +25,11 @@ float tileableNoise(vec2 p, float scale) {
 	p *= scale;
 	vec2 f = fract(p);
 	p = floor(p);
-	f = f * f * (3.0f - 2.0f * f);
+	f = f * f * (3.0 - 2.0 * f);
 
 	return mix(
-		mix(hash(p, scale), hash(p + vec2(1.0f, 0.0f), scale), f.x),
-		mix(hash(p + vec2(0.0f, 1.0f), scale), hash(p + vec2(1.0f, 1.0f), scale), f.x), f.y);
+		mix(hash(p, scale), hash(p + vec2(1.0, 0.0), scale), f.x),
+		mix(hash(p + vec2(0.0, 1.0), scale), hash(p + vec2(1.0, 1.0), scale), f.x), f.y);
 }
 
 void main() {
@@ -40,9 +40,9 @@ void main() {
 		return;
 	}
 
-	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
+	vec2 uv = (vec2(coord) + 0.5) / vec2(size);
 
-	float sum = 0.0f;
+	float sum = 0.0;
 	float f = frequency;
 	float a = amplitude;
 
@@ -52,5 +52,5 @@ void main() {
 		a *= persistence;
 	}
 
-	imageStore(outTexture, coord, vec4(sum, 0.0f, 0.0f, 1.0f));
+	imageStore(outTexture, coord, vec4(sum, 0.0, 0.0, 1.0));
 }

@@ -300,15 +300,17 @@ void OtSceneRenderEntitiesPass::renderTerrainHelper(
 	struct TerrainVertexUniforms {
 		glm::mat4 viewProjectionMatrix;
 		float hScale;
+		float heightMapDensity;
 		float heightMapSize;
 	} terrainVertexUniforms {
 		ctx.camera.viewProjectionMatrix,
 		terrain.hScale,
+		heights.heightMapDensity,
 		static_cast<float>(heights.heightMapSize)
 	};
 
 	ctx.pass->bindVertexUniforms(0, &terrainVertexUniforms, sizeof(terrainVertexUniforms));
-	ctx.pass->bindVertexSampler(0, ctx.normalmapSampler, heights.normalmap);
+	ctx.pass->bindVertexSampler(0, ctx.normalmapSampler, heights.normalMap);
 
 	// set fragment uniforms
 	if (bindFragmentUniforms) {

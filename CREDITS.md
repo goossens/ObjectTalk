@@ -53,6 +53,9 @@ In case User Interface (UI) modules are included, we also use:
 * The sky shader is based on a [GitHub project](https://github.com/shff/opengl_sky) released under the [MIT License](https://opensource.org/licenses/MIT).
 * The Image Based Lighting (IBL) shaders are based on an article by [Bruno Opsenica](https://bruop.github.io/ibl/).
 * The Fast Approximate Anti-Aliasing (FXAA) post-processing shader was originally developed by Timothy Lottes at Nvidia. It was released under a public domain license. A later version is released under a [3-clause BSD license](https://opensource.org/license/bsd-3-clause).
+* Terrain erosion is based on the [Fast and Gorgeous Erosion Filter blog post](https://blog.runevision.com/2026/03/fast-and-gorgeous-erosion-filter.html) by Rune Skovbo Johansen released under the [Mozilla Public License Version 2.0](https://www.mozilla.org/en-US/MPL/2.0/).
+* The sky shader is based on [OpenGL Sky](https://github.com/shff/opengl_sky/tree/master) released under the [MIT License](https://opensource.org/licenses/MIT).
+* The water shader is based on a [YouTube tutorial series](https://www.youtube.com/watch?v=HusvGeEDU_U) by Karl Wimble also known as [ThinMatrix](https://www.youtube.com/@ThinMatrix).
 * Some shaders and shader ideas are based on [JungleIN](https://github.com/BKcore/JungleIN), an OpenGL jungle viewer written as part of a scholar project, released under the [MIT license](https://opensource.org/licenses/MIT).
 
 ## Fonts

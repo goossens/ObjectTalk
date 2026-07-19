@@ -12,7 +12,7 @@
 					"component": "Transform",
 					"rotation": [
 						-16.422727584838867,
-						-32.9482307434082,
+						0.0,
 						0.0
 					],
 					"scale": [
@@ -44,7 +44,7 @@
 					"uuid": 864477290
 				},
 				{
-					"azimuth": 80.0,
+					"azimuth": 50.0,
 					"castShadow": true,
 					"cirrus": 0.45399999618530273,
 					"component": "Sky",
@@ -70,13 +70,38 @@
 					"component": "Terrain",
 					"hScale": 1.0,
 					"heights": {
-						"amplitude": 0.47999998927116394,
-						"frequency": 18,
-						"lacunarity": 2,
-						"normalStrength": 6.0,
-						"octaves": 5,
-						"persistence": 0.5400000214576721,
-						"size": 256
+						"erosionAssumedSlope": [
+							0.699999988079071,
+							1.0
+						],
+						"erosionCellScale": 0.699999988079071,
+						"erosionDetail": 1.5,
+						"erosionGain": 0.5,
+						"erosionGullyWeight": 0.9399999976158142,
+						"erosionLacunarity": 2.0,
+						"erosionNormalization": 0.5600000023841858,
+						"erosionOctaves": 10,
+						"erosionOnset": [
+							1.25,
+							1.25,
+							2.799999952316284,
+							1.5
+						],
+						"erosionRounding": [
+							0.10000000149011612,
+							0.0,
+							0.10000000149011612,
+							2.0
+						],
+						"erosionScale": 0.6600000262260437,
+						"erosionStrength": 0.20000000298023224,
+						"noiseAmplitude": 0.5,
+						"noiseFrequency": 19,
+						"noiseLacunarity": 2,
+						"noiseOctaves": 5,
+						"noisePersistence": 0.5,
+						"normalStrength": 15.100000381469727,
+						"size": 2048
 					},
 					"lod": 3,
 					"material": {
@@ -113,11 +138,11 @@
 							0.8716814517974854
 						],
 						"region4Texture": "assets/snow.jpg",
-						"region4TextureScale": 7.099999904632568
+						"region4TextureScale": 25.100000381469727
 					},
 					"tileSize": 32,
 					"vOffset": -2.5,
-					"vScale": 22.0,
+					"vScale": 16.0,
 					"wireframe": false
 				}
 			]
@@ -141,7 +166,7 @@
 					"depthFactor": 0.8899999856948853,
 					"distance": 310.0,
 					"dudv": "assets/dudvMap.png",
-					"level": 6.610000133514404,
+					"level": 4.0,
 					"metallic": 0.0,
 					"normals": "assets/normalMap.png",
 					"randomFactor": 3.0,
@@ -160,14 +185,14 @@
 			"far": 570.0,
 			"fov": 60.0,
 			"near": 1.0,
-			"pitch": -16.39668846130371,
+			"pitch": -28.81978416442871,
 			"position": [
-				-31.68327522277832,
-				19.738746643066406,
-				514.0614013671875
+				-32.602691650390625,
+				31.26873207092285,
+				538.3153076171875
 			],
 			"speed": 3.0,
-			"yaw": -83.62635040283203
+			"yaw": -67.1045150756836
 		},
 		"gizmo": {
 			"enabled": false,

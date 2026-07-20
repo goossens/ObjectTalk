@@ -25,18 +25,18 @@ void main() {
 		return;
 	}
 
-	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
+	vec2 uv = (vec2(coord) + 0.5) / vec2(size);
 
 	vec4 color;
-	color  = texture(inTexture, uv - offset * 4.0f) * 0.05f;
-	color += texture(inTexture, uv - offset * 3.0f) * 0.09f;
-	color += texture(inTexture, uv - offset * 2.0f) * 0.12f;
-	color += texture(inTexture, uv - offset * 1.0f) * 0.15f;
-	color += texture(inTexture, uv + offset * 0.0f) * 0.16f;
-	color += texture(inTexture, uv + offset * 1.0f) * 0.15f;
-	color += texture(inTexture, uv + offset * 2.0f) * 0.12f;
-	color += texture(inTexture, uv + offset * 3.0f) * 0.09f;
-	color += texture(inTexture, uv + offset * 4.0f) * 0.05f;
+	color  = texture(inTexture, uv - offset * 4.0) * 0.05;
+	color += texture(inTexture, uv - offset * 3.0) * 0.09;
+	color += texture(inTexture, uv - offset * 2.0) * 0.12;
+	color += texture(inTexture, uv - offset * 1.0) * 0.15;
+	color += texture(inTexture, uv + offset * 0.0) * 0.16;
+	color += texture(inTexture, uv + offset * 1.0) * 0.15;
+	color += texture(inTexture, uv + offset * 2.0) * 0.12;
+	color += texture(inTexture, uv + offset * 3.0) * 0.09;
+	color += texture(inTexture, uv + offset * 4.0) * 0.05;
 
 	imageStore(outTexture, coord, color * vec4(brightness, brightness, brightness, transparency));
 }

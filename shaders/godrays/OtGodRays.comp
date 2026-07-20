@@ -29,7 +29,7 @@ void main() {
 		return;
 	}
 
-	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
+	vec2 uv = (vec2(coord) + 0.5) / vec2(size);
 
 	int samples = 50;
 	vec2 deltaTexCoord = (uv - lightUv) * density / float(samples);

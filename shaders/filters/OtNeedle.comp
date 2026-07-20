@@ -24,12 +24,12 @@ void main() {
 		return;
 	}
 
-	vec2 uvBg = (vec2(coord) + 0.5f) / vec2(size);
-	vec2 uvFg = (transform * vec4(uvBg, 0.0f, 1.0f)).xy;
+	vec2 uvBg = (vec2(coord) + 0.5) / vec2(size);
+	vec2 uvFg = (transform * vec4(uvBg, 0.0, 1.0)).xy;
 
 	vec4 bg = texture(inTexture, uvBg);
 	vec4 fg = texture(inOverlay, uvFg);
-	float inv = 1.0f - fg.a;
+	float inv = 1.0 - fg.a;
 	float alpha = fg.a + bg.a * inv;
 
 	imageStore(outTexture, coord, vec4(

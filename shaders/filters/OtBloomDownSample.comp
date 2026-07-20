@@ -23,25 +23,25 @@ void main() {
 		return;
 	}
 
-	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
-	vec2 halfTexel = texelSize * 0.5f;
+	vec2 uv = (vec2(coord) + 0.5) / vec2(size);
+	vec2 halfTexel = texelSize * 0.5;
 
-	vec3 sum = (4.0f / 32.0f) * texture(inTexture, uv).rgb;
+	vec3 sum = (4.0 / 32.0) * texture(inTexture, uv).rgb;
 
-	sum += (4.0f / 32.0f) * texture(inTexture, uv + vec2(-halfTexel.x, -halfTexel.y)).rgb;
-	sum += (4.0f / 32.0f) * texture(inTexture, uv + vec2(+halfTexel.x, +halfTexel.y)).rgb;
-	sum += (4.0f / 32.0f) * texture(inTexture, uv + vec2(+halfTexel.x, -halfTexel.y)).rgb;
-	sum += (4.0f / 32.0f) * texture(inTexture, uv + vec2(-halfTexel.x, +halfTexel.y)).rgb;
+	sum += (4.0 / 32.0) * texture(inTexture, uv + vec2(-halfTexel.x, -halfTexel.y)).rgb;
+	sum += (4.0 / 32.0) * texture(inTexture, uv + vec2(+halfTexel.x, +halfTexel.y)).rgb;
+	sum += (4.0 / 32.0) * texture(inTexture, uv + vec2(+halfTexel.x, -halfTexel.y)).rgb;
+	sum += (4.0 / 32.0) * texture(inTexture, uv + vec2(-halfTexel.x, +halfTexel.y)).rgb;
 
-	sum += (2.0f / 32.0f) * texture(inTexture, uv + vec2(+texelSize.x, 0.0f)).rgb;
-	sum += (2.0f / 32.0f) * texture(inTexture, uv + vec2(-texelSize.x, 0.0f)).rgb;
-	sum += (2.0f / 32.0f) * texture(inTexture, uv + vec2(0.0f, +texelSize.y)).rgb;
-	sum += (2.0f / 32.0f) * texture(inTexture, uv + vec2(0.0f, -texelSize.y)).rgb;
+	sum += (2.0 / 32.0) * texture(inTexture, uv + vec2(+texelSize.x, 0.0)).rgb;
+	sum += (2.0 / 32.0) * texture(inTexture, uv + vec2(-texelSize.x, 0.0)).rgb;
+	sum += (2.0 / 32.0) * texture(inTexture, uv + vec2(0.0, +texelSize.y)).rgb;
+	sum += (2.0 / 32.0) * texture(inTexture, uv + vec2(0.0, -texelSize.y)).rgb;
 
-	sum += (1.0f / 32.0f) * texture(inTexture, uv + vec2(+texelSize.x, +texelSize.y)).rgb;
-	sum += (1.0f / 32.0f) * texture(inTexture, uv + vec2(-texelSize.x, +texelSize.y)).rgb;
-	sum += (1.0f / 32.0f) * texture(inTexture, uv + vec2(+texelSize.x, -texelSize.y)).rgb;
-	sum += (1.0f / 32.0f) * texture(inTexture, uv + vec2(-texelSize.x, -texelSize.y)).rgb;
+	sum += (1.0 / 32.0) * texture(inTexture, uv + vec2(+texelSize.x, +texelSize.y)).rgb;
+	sum += (1.0 / 32.0) * texture(inTexture, uv + vec2(-texelSize.x, +texelSize.y)).rgb;
+	sum += (1.0 / 32.0) * texture(inTexture, uv + vec2(+texelSize.x, -texelSize.y)).rgb;
+	sum += (1.0 / 32.0) * texture(inTexture, uv + vec2(-texelSize.x, -texelSize.y)).rgb;
 
-	imageStore(outTexture, coord, vec4(sum, 1.0f));
+	imageStore(outTexture, coord, vec4(sum, 1.0));
 }

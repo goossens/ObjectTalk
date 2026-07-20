@@ -26,8 +26,8 @@ void main() {
 	float x = coord.x % posterizeSize;
 	float y = coord.y % posterizeSize;
 
-	x = floor(posterizeSize / 2.0f) - x;
-	y = floor(posterizeSize / 2.0f) - y;
+	x = floor(posterizeSize / 2.0) - x;
+	y = floor(posterizeSize / 2.0) - y;
 
 	x = coord.x + x;
 	y = coord.y + y;

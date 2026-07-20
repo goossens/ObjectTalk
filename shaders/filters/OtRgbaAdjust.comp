@@ -23,6 +23,6 @@ void main() {
 		return;
 	}
 
-	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
+	vec2 uv = (vec2(coord) + 0.5) / vec2(size);
 	imageStore(outTexture, coord, texture(inTexture, uv) * rgba);
 }

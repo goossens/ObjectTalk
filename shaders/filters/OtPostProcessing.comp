@@ -42,7 +42,7 @@ void main() {
 		return;
 	}
 
-	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
+	vec2 uv = (vec2(coord) + 0.5) / vec2(size);
 
 	// HDR tonemapping
 	vec3 color = texture(inTexture, uv).rgb;
@@ -70,11 +70,11 @@ void main() {
 	}
 
 	// gamma correction
-	color = pow(color, vec3(1.0f / 2.2f));
+	color = pow(color, vec3(1.0 / 2.2));
 
 	// apply exposure and contrast
-	color = ((color - 0.5f) * contrast + 0.5f) * exposure;
+	color = ((color - 0.5) * contrast + 0.5) * exposure;
 
 	// store final result
-	imageStore(outTexture, coord, vec4(color, 1.0f));
+	imageStore(outTexture, coord, vec4(color, 1.0));
 }

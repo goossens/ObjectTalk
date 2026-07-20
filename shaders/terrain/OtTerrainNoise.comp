@@ -18,7 +18,7 @@ layout(std140, set=2, binding=0) uniform UBO {
 };
 
 float hash(vec2 p, float scale) {
-	return fract(sin(dot(mod(p, scale), vec2(27.16898f, 38.90563f))) * 5151.5473453f);
+	return fract(sin(dot(mod(p, scale), vec2(27.16898, 38.90563))) * 5151.5473453);
 }
 
 float tileableNoise(vec2 p, float scale) {

@@ -27,16 +27,16 @@ void main() {
 		return;
 	}
 
-	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
+	vec2 uv = (vec2(coord) + 0.5) / vec2(size);
 
-	vec2 off1 = vec2(1.3846153846f) * direction * texelSize;
-	vec2 off2 = vec2(3.2307692308f) * direction * texelSize;
+	vec2 off1 = vec2(1.3846153846) * direction * texelSize;
+	vec2 off2 = vec2(3.2307692308) * direction * texelSize;
 
-	vec4 color = preMultiplyAlpha(texture(inTexture, uv)) * 0.2270270270f;
-	color += preMultiplyAlpha(texture(inTexture, uv + off1)) * 0.3162162162f;
-	color += preMultiplyAlpha(texture(inTexture, uv - off1)) * 0.3162162162f;
-	color += preMultiplyAlpha(texture(inTexture, uv + off2)) * 0.0702702703f;
-	color += preMultiplyAlpha(texture(inTexture, uv - off2)) * 0.0702702703f;
+	vec4 color = preMultiplyAlpha(texture(inTexture, uv)) * 0.2270270270;
+	color += preMultiplyAlpha(texture(inTexture, uv + off1)) * 0.3162162162;
+	color += preMultiplyAlpha(texture(inTexture, uv - off1)) * 0.3162162162;
+	color += preMultiplyAlpha(texture(inTexture, uv + off2)) * 0.0702702703;
+	color += preMultiplyAlpha(texture(inTexture, uv - off2)) * 0.0702702703;
 
 	imageStore(outTexture, coord, unPreMultiplyAlpha(color));
 }

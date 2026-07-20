@@ -23,7 +23,7 @@ void main() {
 		return;
 	}
 
-	vec2 uv = (vec2(coord) + 0.5f) / vec2(size);
-	vec2 st = fract(uv * repeat) - 0.5f;
-	imageStore(outTexture, coord, mix(blackColor, whiteColor, step(st.x * st.y, 0.0f)));
+	vec2 uv = (vec2(coord) + 0.5) / vec2(size);
+	vec2 st = fract(uv * repeat) - 0.5;
+	imageStore(outTexture, coord, mix(blackColor, whiteColor, step(st.x * st.y, 0.0)));
 }

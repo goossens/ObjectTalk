@@ -9,6 +9,7 @@
 //	Include files
 //
 
+#include <format>
 #include <string>
 
 #include "imgui.h"
@@ -37,6 +38,8 @@ public:
 				ImGui::BeginDisabled();
 			}
 
+			auto dialogID = std::format("shape-manifold-as-{}", id);
+
 			if (ImGui::Button("Save As...", ImVec2(width, 0.0f))) {
 				IGFD::FileDialogConfig config;
 				config.countSelectionMax = 1;
@@ -45,18 +48,18 @@ public:
 						ImGuiFileDialogFlags_DontShowHiddenFiles |
 						ImGuiFileDialogFlags_ConfirmOverwrite;
 
-				ImGuiFileDialog::Instance()->OpenDialog("manifold-saveas", "Save Manifold as...", ".stl,.gltf,.obj", config);
+				ImGuiFileDialog::Instance()->OpenDialog(dialogID, "Save Manifold as...", ".stl,.gltf,.obj", config);
 			}
 
 			if (!manifold.isValid()) {
 				ImGui::EndDisabled();
 			}
 
-			// handle saveas dialog
+			// handle save as dialog
 			ImVec2 maxSize = ImGui::GetMainViewport()->Size;
 			ImVec2 minSize = ImVec2(maxSize.x * 0.5f, maxSize.y * 0.5f);
 
-			if (ImGuiFileDialog::Instance()->Display("manifold-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
+			if (ImGuiFileDialog::Instance()->Display(dialogID, ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 				// save file (if required)
 				if (ImGuiFileDialog::Instance()->IsOk()) {
 					auto dialog = ImGuiFileDialog::Instance();

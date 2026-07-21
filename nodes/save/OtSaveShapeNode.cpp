@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <format>
+
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
 
@@ -33,6 +35,8 @@ public:
 				ImGui::BeginDisabled();
 			}
 
+			auto dialogID = std::format("shape-save-as-{}", id);
+
 			if (ImGui::Button("Save As...", ImVec2(width, 0.0f))) {
 				IGFD::FileDialogConfig config;
 				config.countSelectionMax = 1;
@@ -41,18 +45,18 @@ public:
 						ImGuiFileDialogFlags_DontShowHiddenFiles |
 						ImGuiFileDialogFlags_ConfirmOverwrite;
 
-				ImGuiFileDialog::Instance()->OpenDialog("shape-saveas", "Save Shape as...", ".shape", config);
+				ImGuiFileDialog::Instance()->OpenDialog(dialogID, "Save Shape as...", ".shape", config);
 			}
 
 			if (!shape.isValid()) {
 				ImGui::EndDisabled();
 			}
 
-			// handle saveas dialog
+			// handle save as dialog
 			ImVec2 maxSize = ImGui::GetMainViewport()->Size;
 			ImVec2 minSize = ImVec2(maxSize.x * 0.5f, maxSize.y * 0.5f);
 
-			if (ImGuiFileDialog::Instance()->Display("shape-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
+			if (ImGuiFileDialog::Instance()->Display(dialogID, ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 				// save file (if required)
 				if (ImGuiFileDialog::Instance()->IsOk()) {
 					auto dialog = ImGuiFileDialog::Instance();

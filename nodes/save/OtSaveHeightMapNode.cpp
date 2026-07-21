@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include <format>
+
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
 
@@ -33,6 +35,8 @@ public:
 				ImGui::BeginDisabled();
 			}
 
+			auto dialogID = std::format("height-map-save-as-{}", id);
+
 			if (ImGui::Button("Save As...", ImVec2(width, 0.0f))) {
 				IGFD::FileDialogConfig config;
 				config.countSelectionMax = 1;
@@ -41,7 +45,7 @@ public:
 						ImGuiFileDialogFlags_DontShowHiddenFiles |
 						ImGuiFileDialogFlags_ConfirmOverwrite;
 
-				ImGuiFileDialog::Instance()->OpenDialog("heightMap-saveas", "Save Height Map as...", ".tiff", config);
+				ImGuiFileDialog::Instance()->OpenDialog(dialogID, "Save Height Map as...", ".tiff", config);
 			}
 
 			if (!heightMap.isValid()) {
@@ -52,7 +56,7 @@ public:
 			ImVec2 maxSize = ImGui::GetMainViewport()->Size;
 			ImVec2 minSize = ImVec2(maxSize.x * 0.5f, maxSize.y * 0.5f);
 
-			if (ImGuiFileDialog::Instance()->Display("heightMap-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
+			if (ImGuiFileDialog::Instance()->Display(dialogID, ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
 				// save file (if required)
 				if (ImGuiFileDialog::Instance()->IsOk()) {
 					auto dialog = ImGuiFileDialog::Instance();

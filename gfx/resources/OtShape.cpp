@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <format>
 
 #include "OtLog.h"
@@ -174,6 +175,79 @@ void OtShape::shear(float sx, float sy) {
 	plutovg_matrix_t matrix;
 	plutovg_matrix_init_shear(&matrix, sx, sy);
 	plutovg_path_transform(path, &matrix);
+}
+
+
+//
+//	OtShape::clip
+//
+
+OtShape OtShape::clip(float x, float y, float w, float h) {
+	Clipper2Lib::Paths64 input;
+	toPaths(input);
+
+	Clipper2Lib::Rect64 rect{
+		static_cast<int64_t>(x * precision),
+		static_cast<int64_t>(y * precision),
+		static_cast<int64_t>((x + w) * precision),
+		static_cast<int64_t>((y + h) * precision)
+	};
+
+	auto output = Clipper2Lib::RectClip(rect, input);
+	OtShape shape;
+	shape.fromPaths(output);
+	return shape;
+}
+
+
+//
+//	OtShape::operator+
+//
+
+OtShape OtShape::operator+(OtShape& shape) {
+	Clipper2Lib::Paths64 subject;
+	Clipper2Lib::Paths64 clipper;
+	toPaths(subject);
+	shape.toPaths(clipper);
+
+	auto output = Clipper2Lib::BooleanOp(Clipper2Lib::ClipType::Union, Clipper2Lib::FillRule::EvenOdd, subject, clipper);
+	OtShape result;
+	result.fromPaths(output);
+	return result;
+}
+
+
+//
+//	OtShape::operator-
+//
+
+OtShape OtShape::operator-(OtShape& shape) {
+	Clipper2Lib::Paths64 subject;
+	Clipper2Lib::Paths64 clipper;
+	toPaths(subject);
+	shape.toPaths(clipper);
+
+	auto output = Clipper2Lib::BooleanOp(Clipper2Lib::ClipType::Difference, Clipper2Lib::FillRule::EvenOdd, subject, clipper);
+	OtShape result;
+	result.fromPaths(output);
+	return result;
+}
+
+
+//
+//	OtShape::operator^
+//
+
+OtShape OtShape::operator^(OtShape& shape) {
+	Clipper2Lib::Paths64 subject;
+	Clipper2Lib::Paths64 clipper;
+	toPaths(subject);
+	shape.toPaths(clipper);
+
+	auto output = Clipper2Lib::BooleanOp(Clipper2Lib::ClipType::Intersection, Clipper2Lib::FillRule::EvenOdd, subject, clipper);
+	OtShape result;
+	result.fromPaths(output);
+	return result;
 }
 
 
@@ -418,4 +492,80 @@ void OtShape::renderFill(OtImage& image, const OtColor& color) {
 	// cleanup
 	plutovg_canvas_destroy(canvas);
 	plutovg_surface_destroy(surface);
+}
+
+
+//
+//	OtShape::toPaths
+//
+
+void OtShape::toPaths(Clipper2Lib::Paths64& output) {
+	output.clear();
+
+	plutovg_path_traverse(path, [](void* closure, plutovg_path_command_t command, const plutovg_point_t* points, [[maybe_unused]] int npoints) {
+		Clipper2Lib::Paths64* paths = (Clipper2Lib::Paths64*) closure;
+
+		switch (command) {
+			case PLUTOVG_PATH_COMMAND_MOVE_TO:
+				paths->emplace_back(Clipper2Lib::Path64{});
+				paths->back().emplace_back(convertPoint(points[0]));
+				break;
+
+			case PLUTOVG_PATH_COMMAND_LINE_TO:
+				paths->back().emplace_back(convertPoint(points[0]));
+				break;
+
+			case PLUTOVG_PATH_COMMAND_CUBIC_TO: {
+				auto last = convertPoint(paths->back().back());
+				std::vector<glm::vec2> points;
+				glm::vec2 p0 {last.x, last.y};
+				glm::vec2 p1{points[0].x, points[0].y};
+				glm::vec2 p2{points[1].x, points[1].y};
+				glm::vec2 p3{points[2].x, points[2].y};
+				flattenBezier(p0, p1, p2, p3, 0.001f, &points);
+
+				for (auto& point : points) {
+					paths->back().emplace_back(convertPoint(point));
+				}
+
+				break;
+			}
+
+			case PLUTOVG_PATH_COMMAND_CLOSE:
+				auto first = paths->back().back();
+				auto last = paths->back().back();
+
+				if (first.x != last.x || first.y != last.y) {
+					paths->back().emplace_back(first);
+				}
+
+				break;
+		}
+	}, &output);
+
+}
+
+
+//
+//	OtShape::fromPaths
+//
+
+void OtShape::fromPaths(Clipper2Lib::Paths64& input) {
+	clear();
+
+	for (auto& path : input) {
+		auto first = true;
+
+		for (auto& point : path) {
+			auto current = convertPoint(point);
+
+			if (first) {
+				moveTo(current.x, current.y);
+				first = false;
+
+			} else {
+				lineTo(current.x, current.y);
+			}
+		}
+	}
 }

@@ -12,10 +12,13 @@
 //	Include files
 //
 
+#include <cmath>
+#include <cstdint>
 #include <string>
 #include <utility>
 #include <vector>
 
+#include "clipper2/clipper.h"
 #include "glm/glm.hpp"
 #include "plutovg.h"
 
@@ -101,6 +104,14 @@ public:
 	void scale(float sx, float sy);
 	void shear(float sx, float sy);
 
+	// clip shape to rectangle
+	OtShape clip(float x, float y, float w, float h);
+
+	// boolean operations
+	OtShape operator+(OtShape& shape);  // union
+	OtShape operator-(OtShape& shape);  // difference
+	OtShape operator^(OtShape& shape);  // intersect
+
 	// get dimensions of shape
 	void getDimensions(float& x, float& y, float& w, float& h, float& length);
 
@@ -128,4 +139,29 @@ public:
 private:
 	plutovg_path_t* path;
 	int version = 0;
+
+	// support function
+	static constexpr float precision = 1000000.0f;
+	void toPaths(Clipper2Lib::Paths64& output);
+	void fromPaths(Clipper2Lib::Paths64& input);
+
+	static inline Clipper2Lib::Point64 convertPoint(glm::vec2 point) {
+		return Clipper2Lib::Point64{
+			static_cast<int64_t>(point.x * precision),
+			static_cast<int64_t>(point.y * precision)
+		};
+	}
+
+	static inline Clipper2Lib::Point64 convertPoint(plutovg_point_t point) {
+		return Clipper2Lib::Point64{
+			static_cast<int64_t>(point.x * precision),
+			static_cast<int64_t>(point.y * precision)
+		};
+	}
+	static inline  plutovg_point_t convertPoint(Clipper2Lib::Point64 point) {
+		return plutovg_point_t{
+			static_cast<float>(point.x) / precision,
+			static_cast<float>(point.y) / precision
+		};
+	}
 };

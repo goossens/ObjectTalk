@@ -206,11 +206,11 @@ OtShape OtShape::clip(float x, float y, float w, float h) {
 
 OtShape OtShape::operator+(OtShape& shape) {
 	Clipper2Lib::Paths64 subject;
-	Clipper2Lib::Paths64 clipper;
+	Clipper2Lib::Paths64 other;
 	toPaths(subject);
-	shape.toPaths(clipper);
+	shape.toPaths(other);
 
-	auto output = Clipper2Lib::BooleanOp(Clipper2Lib::ClipType::Union, Clipper2Lib::FillRule::EvenOdd, subject, clipper);
+	auto output = Clipper2Lib::BooleanOp(Clipper2Lib::ClipType::Union, Clipper2Lib::FillRule::EvenOdd, subject, other);
 	OtShape result;
 	result.fromPaths(output);
 	return result;
@@ -223,11 +223,45 @@ OtShape OtShape::operator+(OtShape& shape) {
 
 OtShape OtShape::operator-(OtShape& shape) {
 	Clipper2Lib::Paths64 subject;
-	Clipper2Lib::Paths64 clipper;
+	Clipper2Lib::Paths64 other;
 	toPaths(subject);
-	shape.toPaths(clipper);
+	shape.toPaths(other);
 
-	auto output = Clipper2Lib::BooleanOp(Clipper2Lib::ClipType::Difference, Clipper2Lib::FillRule::EvenOdd, subject, clipper);
+	auto output = Clipper2Lib::BooleanOp(Clipper2Lib::ClipType::Difference, Clipper2Lib::FillRule::EvenOdd, subject, other);
+	OtShape result;
+	result.fromPaths(output);
+	return result;
+}
+
+
+//
+//	OtShape::operator&
+//
+
+OtShape OtShape::operator&(OtShape& shape) {
+	Clipper2Lib::Paths64 subject;
+	Clipper2Lib::Paths64 other;
+	toPaths(subject);
+	shape.toPaths(other);
+
+	auto output = Clipper2Lib::BooleanOp(Clipper2Lib::ClipType::Intersection, Clipper2Lib::FillRule::EvenOdd, subject, other);
+	OtShape result;
+	result.fromPaths(output);
+	return result;
+}
+
+
+//
+//	OtShape::operator|
+//
+
+OtShape OtShape::operator|(OtShape& shape) {
+	Clipper2Lib::Paths64 subject;
+	Clipper2Lib::Paths64 other;
+	toPaths(subject);
+	shape.toPaths(other);
+
+	auto output = Clipper2Lib::BooleanOp(Clipper2Lib::ClipType::Union, Clipper2Lib::FillRule::EvenOdd, subject, other);
 	OtShape result;
 	result.fromPaths(output);
 	return result;
@@ -240,11 +274,11 @@ OtShape OtShape::operator-(OtShape& shape) {
 
 OtShape OtShape::operator^(OtShape& shape) {
 	Clipper2Lib::Paths64 subject;
-	Clipper2Lib::Paths64 clipper;
+	Clipper2Lib::Paths64 other;
 	toPaths(subject);
-	shape.toPaths(clipper);
+	shape.toPaths(other);
 
-	auto output = Clipper2Lib::BooleanOp(Clipper2Lib::ClipType::Intersection, Clipper2Lib::FillRule::EvenOdd, subject, clipper);
+	auto output = Clipper2Lib::BooleanOp(Clipper2Lib::ClipType::Xor, Clipper2Lib::FillRule::EvenOdd, subject, other);
 	OtShape result;
 	result.fromPaths(output);
 	return result;
@@ -517,14 +551,14 @@ void OtShape::toPaths(Clipper2Lib::Paths64& output) {
 
 			case PLUTOVG_PATH_COMMAND_CUBIC_TO: {
 				auto last = convertPoint(paths->back().back());
-				std::vector<glm::vec2> points;
+				std::vector<glm::vec2> pts;
 				glm::vec2 p0 {last.x, last.y};
 				glm::vec2 p1{points[0].x, points[0].y};
 				glm::vec2 p2{points[1].x, points[1].y};
 				glm::vec2 p3{points[2].x, points[2].y};
-				flattenBezier(p0, p1, p2, p3, 0.001f, &points);
+				flattenBezier(p0, p1, p2, p3, 0.001f, &pts);
 
-				for (auto& point : points) {
+				for (auto& point : pts) {
 					paths->back().emplace_back(convertPoint(point));
 				}
 

@@ -12,7 +12,6 @@
 
 **Outputs**
 
-
 #### Shape Transform
 
 ![screenshot](img/shape-transform.png#right)
@@ -21,6 +20,13 @@
 
 **Outputs**
 
+#### Boolean Shapes
+
+![screenshot](img/boolean-shapes.png#right)
+
+**Inputs**
+
+**Outputs**
 
 #### Merge Shapes
 

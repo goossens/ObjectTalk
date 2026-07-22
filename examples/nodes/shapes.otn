@@ -1,11 +1,6 @@
 {
 	"links": [
 		{
-			"from": 2554285984,
-			"id": 3992194556,
-			"to": 4119941361
-		},
-		{
 			"from": 3119975211,
 			"id": 3469349317,
 			"to": 2764411236
@@ -39,6 +34,41 @@
 			"from": 2554285984,
 			"id": 1939937135,
 			"to": 2241928552
+		},
+		{
+			"from": 2554285984,
+			"id": 3992194556,
+			"to": 4119941361
+		},
+		{
+			"from": 315110367,
+			"id": 3775223000,
+			"to": 3049385772
+		},
+		{
+			"from": 3373327755,
+			"id": 3675397796,
+			"to": 3321510325
+		},
+		{
+			"from": 812531869,
+			"id": 2438012723,
+			"to": 3094677760
+		},
+		{
+			"from": 315110367,
+			"id": 3798653644,
+			"to": 2137311040
+		},
+		{
+			"from": 3373327755,
+			"id": 122292010,
+			"to": 2818885372
+		},
+		{
+			"from": 2223449075,
+			"id": 1818322424,
+			"to": 3675901256
 		}
 	],
 	"metadata": {},
@@ -56,8 +86,8 @@
 			"path": "assets/heart.ot",
 			"title": "Shape Generator",
 			"type": "Shape Generator",
-			"x": 43.0,
-			"y": 125.0
+			"x": 17.0,
+			"y": 131.0
 		},
 		{
 			"id": 1273660806,
@@ -72,8 +102,8 @@
 			"path": "assets/hole.ot",
 			"title": "Shape Generator",
 			"type": "Shape Generator",
-			"x": 43.0,
-			"y": 236.0
+			"x": 17.0,
+			"y": 250.0
 		},
 		{
 			"id": 1405573252,
@@ -98,8 +128,8 @@
 			],
 			"title": "Merge Shapes",
 			"type": "Merge Shapes",
-			"x": 442.0,
-			"y": 212.0
+			"x": 480.0,
+			"y": 193.0
 		},
 		{
 			"id": 2972530100,
@@ -143,23 +173,8 @@
 			],
 			"title": "Shape Transform",
 			"type": "Shape Transform",
-			"x": 645.0,
-			"y": 398.0
-		},
-		{
-			"id": 4057788996,
-			"inputs": [
-				{
-					"id": 4119941361,
-					"name": "Input",
-					"type": "shape"
-				}
-			],
-			"outputs": [],
-			"title": "Save Shape to File",
-			"type": "Save Shape to File",
-			"x": 1168.0,
-			"y": 245.0
+			"x": 650.0,
+			"y": 169.0
 		},
 		{
 			"id": 1502717984,
@@ -196,8 +211,8 @@
 			],
 			"title": "Shape to Image",
 			"type": "Shape to Image",
-			"x": 960.0,
-			"y": 406.0
+			"x": 931.0,
+			"y": 260.0
 		},
 		{
 			"id": 2743362932,
@@ -211,8 +226,8 @@
 			"outputs": [],
 			"title": "Image Probe",
 			"type": "Image Probe",
-			"x": 1168.0,
-			"y": 321.0
+			"x": 1172.0,
+			"y": 174.0
 		},
 		{
 			"id": 4187570850,
@@ -226,8 +241,8 @@
 			"outputs": [],
 			"title": "Shape Probe",
 			"type": "Shape Probe",
-			"x": 1168.0,
-			"y": 11.0
+			"x": 296.0,
+			"y": 14.0
 		},
 		{
 			"id": 1775110685,
@@ -241,8 +256,142 @@
 			"outputs": [],
 			"title": "Save Image to File",
 			"type": "Save Image to File",
-			"x": 1168.0,
-			"y": 547.0
+			"x": 1105.0,
+			"y": 400.0
+		},
+		{
+			"id": 418327651,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 315110367,
+					"name": "Shape",
+					"type": "shape"
+				}
+			],
+			"path": "assets/star.shape",
+			"title": "Shape Input",
+			"type": "Shape Input",
+			"x": 17.0,
+			"y": 549.0
+		},
+		{
+			"id": 2901783728,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 3373327755,
+					"name": "Shape",
+					"type": "shape"
+				}
+			],
+			"path": "assets/heart.shape",
+			"title": "Shape Input",
+			"type": "Shape Input",
+			"x": 17.0,
+			"y": 614.0
+		},
+		{
+			"id": 2020610214,
+			"inputs": [
+				{
+					"id": 3049385772,
+					"name": "Shape",
+					"type": "shape"
+				}
+			],
+			"outputs": [],
+			"title": "Shape Probe",
+			"type": "Shape Probe",
+			"x": 296.0,
+			"y": 439.0
+		},
+		{
+			"id": 4057788996,
+			"inputs": [
+				{
+					"id": 4119941361,
+					"name": "Input",
+					"type": "shape"
+				}
+			],
+			"outputs": [],
+			"title": "Save Shape to File",
+			"type": "Save Shape to File",
+			"x": 931.0,
+			"y": 179.0
+		},
+		{
+			"id": 737633247,
+			"inputs": [
+				{
+					"id": 3321510325,
+					"name": "Shape",
+					"type": "shape"
+				}
+			],
+			"outputs": [],
+			"title": "Shape Probe",
+			"type": "Shape Probe",
+			"x": 296.0,
+			"y": 667.0
+		},
+		{
+			"id": 1069525347,
+			"inputs": [
+				{
+					"id": 3094677760,
+					"name": "Shape",
+					"type": "shape"
+				}
+			],
+			"outputs": [],
+			"title": "Shape Probe",
+			"type": "Shape Probe",
+			"x": 296.0,
+			"y": 300.0
+		},
+		{
+			"id": 3686805793,
+			"inputs": [
+				{
+					"id": 2137311040,
+					"name": "A",
+					"type": "shape"
+				},
+				{
+					"id": 2818885372,
+					"name": "B",
+					"type": "shape"
+				}
+			],
+			"operator": 3,
+			"outputs": [
+				{
+					"id": 2223449075,
+					"name": "Result",
+					"type": "shape"
+				}
+			],
+			"title": "Boolean Shapes",
+			"type": "Boolean Shapes",
+			"x": 480.0,
+			"y": 545.0
+		},
+		{
+			"id": 2897076812,
+			"inputs": [
+				{
+					"id": 3675901256,
+					"name": "Shape",
+					"type": "shape"
+				}
+			],
+			"outputs": [],
+			"title": "Shape Probe",
+			"type": "Shape Probe",
+			"x": 650.0,
+			"y": 519.0
 		}
 	]
 }

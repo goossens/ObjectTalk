@@ -32,8 +32,8 @@
 			],
 			"title": "Extrude Shape",
 			"type": "Extrude Shape",
-			"x": 631.0,
-			"y": 306.0
+			"x": 881.0,
+			"y": 309.0
 		},
 		{
 			"id": 2535259453,
@@ -196,8 +196,35 @@
 			],
 			"title": "Shape to Image",
 			"type": "Shape to Image",
-			"x": 886.0,
-			"y": 307.0
+			"x": 1136.0,
+			"y": 310.0
+		},
+		{
+			"id": 3468534047,
+			"inputs": [
+				{
+					"id": 3681766798,
+					"name": "A",
+					"type": "shape"
+				},
+				{
+					"id": 1825009046,
+					"name": "B",
+					"type": "shape"
+				}
+			],
+			"operator": 0,
+			"outputs": [
+				{
+					"id": 3212080891,
+					"name": "Result",
+					"type": "shape"
+				}
+			],
+			"title": "Boolean Shapes",
+			"type": "Boolean Shapes",
+			"x": 636.0,
+			"y": 319.0
 		}
 	]
 }

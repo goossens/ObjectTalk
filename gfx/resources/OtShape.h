@@ -107,10 +107,12 @@ public:
 	// clip shape to rectangle
 	OtShape clip(float x, float y, float w, float h);
 
-	// boolean operations
-	OtShape operator+(OtShape& shape);  // union
-	OtShape operator-(OtShape& shape);  // difference
-	OtShape operator^(OtShape& shape);  // intersect
+	// operators
+	OtShape operator+(OtShape& shape);
+	OtShape operator-(OtShape& shape);
+	OtShape operator&(OtShape& shape);
+	OtShape operator|(OtShape& shape);
+	OtShape operator^(OtShape& shape);
 
 	// get dimensions of shape
 	void getDimensions(float& x, float& y, float& w, float& h, float& length);

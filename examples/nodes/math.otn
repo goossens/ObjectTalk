@@ -145,7 +145,7 @@
 			"outputs": [],
 			"title": "Float Probe",
 			"type": "Float Probe",
-			"x": 388.0,
+			"x": 405.0,
 			"y": 103.0
 		},
 		{
@@ -172,7 +172,7 @@
 			],
 			"title": "Binary Float",
 			"type": "Binary Float",
-			"x": 397.0,
+			"x": 405.0,
 			"y": 204.0
 		},
 		{
@@ -246,7 +246,7 @@
 			],
 			"title": "Unary Float",
 			"type": "Unary Float",
-			"x": 364.0,
+			"x": 405.0,
 			"y": 408.0
 		},
 		{

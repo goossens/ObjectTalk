@@ -28,7 +28,7 @@
 #include "OtDeleteLinkTask.h"
 #include "OtDeleteNodesTask.h"
 #include "OtDuplicateNodesTask.h"
-#include "OtDragNodesTask.h"
+#include "OtMoveNodesTask.h"
 #include "OtEditNodeTask.h"
 #include "OtPasteNodesTask.h"
 
@@ -211,8 +211,31 @@ void OtNodesEditor::handleShortcuts() {
 			nodes.selectAll();
 		}
 
-	} else if ((ImGui::IsKeyPressed(ImGuiKey_Backspace, false) || ImGui::IsKeyPressed(ImGuiKey_Delete, false)) && selected) {
-		deleteSelectedNodes();
+	} else if (selected) {
+		if (ImGui::IsKeyPressed(ImGuiKey_Backspace, false) || ImGui::IsKeyPressed(ImGuiKey_Delete, false)) {
+			deleteSelectedNodes();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
+			nodes.deselectAll();
+
+		} else {
+			static struct Move {
+				ImGuiKey key;
+				ImVec2 slow;
+				ImVec2 fast;
+			} moves[] = {
+				{ImGuiKey_LeftArrow, ImVec2(-1.0f, 0.0f), ImVec2(-10.0f, 0.0f)},
+				{ImGuiKey_RightArrow, ImVec2(1.0f, 0.0f), ImVec2(10.0f, 0.0f)},
+				{ImGuiKey_UpArrow, ImVec2(0.0f, -1.0f), ImVec2(0.0f, -10.0f)},
+				{ImGuiKey_DownArrow, ImVec2(0.0f, 1.0f), ImVec2(0.0f, 10.0f)}
+			};
+
+			for (auto& move : moves) {
+				if (ImGui::IsKeyPressed(move.key)) {
+					nextTask = std::make_shared<OtMoveNodesTask>(&nodes, ImGui::IsKeyDown(ImGuiMod_Shift) ? move.fast : move.slow);
+				}
+			}
+		}
 	}
 }
 
@@ -255,11 +278,11 @@ void OtNodesEditor::renderEditor() {
 		nextTask = std::make_shared<OtChangeLinkTask>(&nodes, from, to, newTo);
 	}
 
-	// handle node dragging
+	// handle node moving
 	ImVec2 offset;
 
 	if (widget.isDraggingComplete(offset)) {
-		nextTask = std::make_shared<OtDragNodesTask>(&nodes, offset);
+		nextTask = std::make_shared<OtMoveNodesTask>(&nodes, offset);
 	}
 
 	// handle context menu

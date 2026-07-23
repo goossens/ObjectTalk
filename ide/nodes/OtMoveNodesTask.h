@@ -19,13 +19,13 @@
 
 
 //
-//	OtDragNodesTask
+//	OtMoveNodesTask
 //
 
-class OtDragNodesTask : public OtEditorTask {
+class OtMoveNodesTask : public OtEditorTask {
 public:
 	// constructor
-	OtDragNodesTask(OtNodes* nodes, const ImVec2& offset) : nodes(nodes), offset(offset) {}
+	OtMoveNodesTask(OtNodes* nodes, const ImVec2& offset) : nodes(nodes), offset(offset) {}
 
 	// get task name
 	std::string name() { return "drag nodes"; }

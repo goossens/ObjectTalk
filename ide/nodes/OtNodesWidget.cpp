@@ -18,7 +18,6 @@
 #include "nlohmann/json.hpp"
 
 #include "OtException.h"
-#include "OtLog.h"
 
 #include "OtUi.h"
 

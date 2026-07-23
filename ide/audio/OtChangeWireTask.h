@@ -23,7 +23,8 @@
 class OtChangeWireTask : public OtEditorTask {
 public:
 	// constructor
-	OtChangeWireTask(OtAudio* s, uint32_t f, uint32_t ot, uint32_t nt) : audio(s), from(f), oldTo(ot), newTo(nt) {}
+	OtChangeWireTask(OtAudio* audio, uint32_t from, uint32_t oldTo, uint32_t newTo) :
+		audio(audio), from(from), oldTo(oldTo), newTo(newTo) {}
 
 	// get task name
 	std::string name() { return "change wire"; }

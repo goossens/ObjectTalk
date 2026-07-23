@@ -23,7 +23,7 @@
 class OtDeleteWireTask : public OtEditorTask {
 public:
 	// constructor
-	OtDeleteWireTask(OtAudio* s, uint32_t f, uint32_t t) : audio(s), from(f), to(t) {}
+	OtDeleteWireTask(OtAudio* audio, uint32_t from, uint32_t to) : audio(audio), from(from), to(to) {}
 
 	// get task name
 	std::string name() { return "delete wire"; }

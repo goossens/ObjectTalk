@@ -26,7 +26,7 @@
 class OtDuplicateNodesTask : public OtEditorTask {
 public:
 	// constructor
-	OtDuplicateNodesTask(OtNodes* n) : nodes(n) {}
+	OtDuplicateNodesTask(OtNodes* nodes) : nodes(nodes) {}
 
 	// get task name
 	std::string name() { return "duplicate nodes"; }

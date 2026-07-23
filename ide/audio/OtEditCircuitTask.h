@@ -23,7 +23,7 @@
 class OtEditCircuitTask : public OtEditorTask {
 public:
 	// constructor
-	OtEditCircuitTask(OtAudio* s, uint32_t tn) : audio(s), circuit(tn) {}
+	OtEditCircuitTask(OtAudio* audio, uint32_t circuit) : audio(audio), circuit(circuit) {}
 
 	// get task name
 	std::string name() { return "change circuit"; }

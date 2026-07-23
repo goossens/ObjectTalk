@@ -25,7 +25,7 @@
 class OtCopyCircuitsTask : public OtEditorTask {
 public:
 	// constructor
-	OtCopyCircuitsTask(OtAudio* s, std::string& c) : audio(s), clipboard(c) {}
+	OtCopyCircuitsTask(OtAudio* audio, std::string& clipboard) : audio(audio), clipboard(clipboard) {}
 
 	// get task name
 	std::string name() { return "copy circuits"; }

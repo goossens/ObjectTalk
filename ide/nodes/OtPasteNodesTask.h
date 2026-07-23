@@ -26,7 +26,7 @@
 class OtPasteNodesTask : public OtEditorTask {
 public:
 	// constructor
-	OtPasteNodesTask(OtNodes* n, std::string& c) : nodes(n), clipboard(c) {}
+	OtPasteNodesTask(OtNodes* nodes, std::string& clipboard) : nodes(nodes), clipboard(clipboard) {}
 
 	// get task name
 	std::string name() { return "paste nodes"; }

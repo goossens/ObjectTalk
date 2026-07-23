@@ -23,7 +23,8 @@
 class OtChangeLinkTask : public OtEditorTask {
 public:
 	// constructor
-	OtChangeLinkTask(OtNodes* n, uint32_t f, uint32_t ot, uint32_t nt) : nodes(n), from(f), oldTo(ot), newTo(nt) {}
+	OtChangeLinkTask(OtNodes* nodes, uint32_t from, uint32_t oldTo, uint32_t newTo) :
+		nodes(nodes), from(from), oldTo(oldTo), newTo(newTo) {}
 
 	// get task name
 	std::string name() { return "change link"; }

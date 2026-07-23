@@ -25,7 +25,7 @@
 class OtDragNodesTask : public OtEditorTask {
 public:
 	// constructor
-	OtDragNodesTask(OtNodes* n, const ImVec2& o) : nodes(n), offset(o) {}
+	OtDragNodesTask(OtNodes* nodes, const ImVec2& offset) : nodes(nodes), offset(offset) {}
 
 	// get task name
 	std::string name() { return "drag nodes"; }

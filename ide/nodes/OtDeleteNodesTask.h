@@ -26,7 +26,7 @@
 class OtDeleteNodesTask : public OtEditorTask {
 public:
 	// constructor
-	OtDeleteNodesTask(OtNodes* n) : nodes(n) {}
+	OtDeleteNodesTask(OtNodes* nodes) : nodes(nodes) {}
 
 	// get task name
 	std::string name() { return "delete nodes"; }

@@ -28,7 +28,7 @@
 #include "OtDeleteWireTask.h"
 #include "OtDeleteCircuitsTask.h"
 #include "OtDuplicateCircuitsTask.h"
-#include "OtDragCircuitsTask.h"
+#include "OtMoveCircuitsTask.h"
 #include "OtEditCircuitTask.h"
 #include "OtPasteCircuitsTask.h"
 
@@ -211,8 +211,31 @@ void OtAudioEditor::handleShortcuts() {
 			audio.selectAll();
 		}
 
-	} else if ((ImGui::IsKeyPressed(ImGuiKey_Backspace, false) || ImGui::IsKeyPressed(ImGuiKey_Delete, false)) && selected) {
-		deleteSelectedCircuits();
+} else if (selected) {
+		if (ImGui::IsKeyPressed(ImGuiKey_Backspace, false) || ImGui::IsKeyPressed(ImGuiKey_Delete, false)) {
+			deleteSelectedCircuits();
+
+		} else if (ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
+			audio.deselectAll();
+
+		} else {
+			static struct Move {
+				ImGuiKey key;
+				ImVec2 slow;
+				ImVec2 fast;
+			} moves[] = {
+				{ImGuiKey_LeftArrow, ImVec2(-1.0f, 0.0f), ImVec2(-10.0f, 0.0f)},
+				{ImGuiKey_RightArrow, ImVec2(1.0f, 0.0f), ImVec2(10.0f, 0.0f)},
+				{ImGuiKey_UpArrow, ImVec2(0.0f, -1.0f), ImVec2(0.0f, -10.0f)},
+				{ImGuiKey_DownArrow, ImVec2(0.0f, 1.0f), ImVec2(0.0f, 10.0f)}
+			};
+
+			for (auto& move : moves) {
+				if (ImGui::IsKeyPressed(move.key)) {
+					nextTask = std::make_shared<OtMoveCircuitsTask>(&audio, ImGui::IsKeyDown(ImGuiMod_Shift) ? move.fast : move.slow);
+				}
+			}
+		}
 	}
 }
 
@@ -259,7 +282,7 @@ void OtAudioEditor::renderEditor() {
 	ImVec2 offset;
 
 	if (widget.isDraggingComplete(offset)) {
-		nextTask = std::make_shared<OtDragCircuitsTask>(&audio, offset);
+		nextTask = std::make_shared<OtMoveCircuitsTask>(&audio, offset);
 	}
 
 	// handle context menu

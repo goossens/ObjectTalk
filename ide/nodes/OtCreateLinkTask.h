@@ -23,13 +23,20 @@
 class OtCreateLinkTask : public OtEditorTask {
 public:
 	// constructor
-	OtCreateLinkTask(OtNodes* n, uint32_t f, uint32_t t) : nodes(n), from(f), to(t) {}
+	OtCreateLinkTask(OtNodes* nodes, uint32_t oldFrom, uint32_t from, uint32_t to) :
+		nodes(nodes), oldFrom(oldFrom), from(from), to(to) {}
 
 	// get task name
 	std::string name() { return "create link"; }
 
 	// do action
 	void perform() override {
+		// remove old link (if required)
+		if (oldFrom) {
+			oldLink = nodes->findLink(oldFrom, to)->id;
+			nodes->deleteLink(oldFrom, to);
+		}
+
 		// create the link
 		link = nodes->createLink(from, to)->id;
 	}
@@ -37,17 +44,27 @@ public:
 	// undo action
 	void undo() override {
 		nodes->deleteLink(link);
+
+		if (oldFrom) {
+			nodes->createLink(oldFrom, to, oldLink);
+		}
 	}
 
 	// redo action
 	void redo() override {
+		if (oldFrom) {
+			nodes->deleteLink(oldFrom, to);
+		}
+
 		nodes->createLink(from, to, link);
 	}
 
 private:
 	// properties
 	OtNodes* nodes;
+	uint32_t oldFrom;
 	uint32_t from;
 	uint32_t to;
+	uint32_t oldLink;
 	uint32_t link;
 };

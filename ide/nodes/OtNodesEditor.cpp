@@ -236,11 +236,13 @@ void OtNodesEditor::renderEditor() {
 	}
 
 	// handle link creations
+	uint32_t oldFrom;
 	uint32_t from;
 	uint32_t to;
+	uint32_t newTo;
 
-	if (widget.isCreatingLink(from, to)) {
-		nextTask = std::make_shared<OtCreateLinkTask>(&nodes, from, to);
+	if (widget.isCreatingLink(oldFrom, from, to)) {
+		nextTask = std::make_shared<OtCreateLinkTask>(&nodes, oldFrom, from, to);
 	}
 
 	// handle link deletion
@@ -249,8 +251,6 @@ void OtNodesEditor::renderEditor() {
 	}
 
 	// handle link redirection
-	uint32_t newTo;
-
 	if (widget.isChangingLink(from, to, newTo)) {
 		nextTask = std::make_shared<OtChangeLinkTask>(&nodes, from, to, newTo);
 	}

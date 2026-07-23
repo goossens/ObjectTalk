@@ -269,9 +269,6 @@ bool OtNodes::isLinkValid(OtNodesPin from, OtNodesPin to) {
 	if (from->isInput() || to->isOutput()) {
 		return false;
 
-	} else if (to->isSourceConnected()) {
-		return false;
-
 	} else if (from->type != to->type) {
 		return false;
 

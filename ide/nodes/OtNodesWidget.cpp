@@ -207,18 +207,11 @@ bool OtNodesWidget::isNodeEdited(uint32_t& node) {
 //	OtNodesWidget::isCreatingLink
 //
 
-bool OtNodesWidget::isCreatingLink(uint32_t& from, uint32_t& to) {
+bool OtNodesWidget::isCreatingLink(uint32_t& oldFrom, uint32_t& from, uint32_t& to) {
 	if (connectingDone) {
-		if (outputToInput) {
-			from = fromPin;
-			to = toPin;
-
-		} else {
-			from = toPin;
-			to = fromPin;
-
-		}
-
+		oldFrom = oldFromPin;
+		from = fromPin;
+		to = toPin;
 		connectingDone = false;
 		return true;
 
@@ -818,6 +811,12 @@ void OtNodesWidget::handleInteractions() {
 
 		} else {
 			if (linkValid) {
+				if (!outputToInput) {
+					std::swap(fromPin, toPin);
+				}
+
+				auto pin = nodes->getPin(toPin);
+				oldFromPin = pin->isSourceConnected() ? pin->getSource()->id : 0;
 				connectingDone = true;
 			}
 

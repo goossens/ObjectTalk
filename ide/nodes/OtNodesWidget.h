@@ -35,7 +35,7 @@ public:
 
 	// check for interactions
 	bool isNodeEdited(uint32_t& node);
-	bool isCreatingLink(uint32_t& from, uint32_t& to);
+	bool isCreatingLink(uint32_t& oldFrom, uint32_t& from, uint32_t& to);
 	bool isDroppingLink(uint32_t& from, uint32_t& to);
 	bool isChangingLink(uint32_t& from, uint32_t& oldTo, uint32_t& newTo);
 	bool isDraggingComplete(ImVec2& offset);
@@ -115,6 +115,7 @@ private:
 	ImVec2 draggedOffset;
 
 	uint32_t ignoreLink = 0;
+	uint32_t oldFromPin = 0;
 	uint32_t fromPin = 0;
 	uint32_t toPin = 0;
 	uint32_t oldToPin = 0;

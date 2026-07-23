@@ -35,7 +35,7 @@ public:
 
 	// check for interactions
 	bool isCircuitEdited(uint32_t& circuit);
-	bool isCreatingWire(uint32_t& from, uint32_t& to);
+	bool isCreatingWire(uint32_t& oldFrom, uint32_t& from, uint32_t& to);
 	bool isDroppingWire(uint32_t& from, uint32_t& to);
 	bool isChangingWire(uint32_t& from, uint32_t& oldTo, uint32_t& newTo);
 	bool isDraggingComplete(ImVec2& offset);
@@ -115,6 +115,7 @@ private:
 	ImVec2 draggedOffset;
 
 	uint32_t ignoreWire = 0;
+	uint32_t oldFromPin = 0;
 	uint32_t fromPin = 0;
 	uint32_t toPin = 0;
 	uint32_t oldToPin = 0;

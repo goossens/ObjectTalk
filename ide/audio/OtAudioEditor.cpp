@@ -236,11 +236,13 @@ void OtAudioEditor::renderEditor() {
 	}
 
 	// handle wire creations
+	uint32_t oldFrom;
 	uint32_t from;
 	uint32_t to;
+	uint32_t newTo;
 
-	if (widget.isCreatingWire(from, to)) {
-		nextTask = std::make_shared<OtCreateWireTask>(&audio, from, to);
+	if (widget.isCreatingWire(oldFrom, from, to)) {
+		nextTask = std::make_shared<OtCreateWireTask>(&audio, oldFrom, from, to);
 	}
 
 	// handle wire deletion
@@ -249,8 +251,6 @@ void OtAudioEditor::renderEditor() {
 	}
 
 	// handle wire redirection
-	uint32_t newTo;
-
 	if (widget.isChangingWire(from, to, newTo)) {
 		nextTask = std::make_shared<OtChangeWireTask>(&audio, from, to, newTo);
 	}

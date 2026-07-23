@@ -192,18 +192,11 @@ bool OtAudioWidget::isCircuitEdited(uint32_t& circuit) {
 //	OtAudioWidget::isCreatingWire
 //
 
-bool OtAudioWidget::isCreatingWire(uint32_t& from, uint32_t& to) {
+bool OtAudioWidget::isCreatingWire(uint32_t& oldFrom, uint32_t& from, uint32_t& to) {
 	if (connectingDone) {
-		if (outputToInput) {
-			from = fromPin;
-			to = toPin;
-
-		} else {
-			from = toPin;
-			to = fromPin;
-
-		}
-
+		oldFrom = oldFromPin;
+		from = fromPin;
+		to = toPin;
 		connectingDone = false;
 		return true;
 
@@ -788,6 +781,12 @@ void OtAudioWidget::handleInteractions() {
 
 		} else {
 			if (wireValid) {
+				if (!outputToInput) {
+					std::swap(fromPin, toPin);
+				}
+
+				auto pin = audio->getPin(toPin);
+				oldFromPin = pin->isSourceConnected() ? pin->getSource()->id : 0;
 				connectingDone = true;
 			}
 

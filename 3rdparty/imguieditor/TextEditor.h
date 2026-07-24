@@ -133,6 +133,12 @@ public:
 	inline void SetMiddleMousePanMode() { config.panMode = true; }
 	inline void SetMiddleMouseScrollMode() { config.panMode = false; }
 	inline bool IsMiddleMousePanMode() const { return config.panMode; }
+	inline void SetLineNumberLeftMargin(size_t value) { config.leftMargin = value; } // margins are expressed in glyphs
+	inline size_t GetLineNumberLeftMargin() const { return config.leftMargin; }
+	inline void SetLineNumberDecorationMargin(size_t value) { config.decorationMargin = value; }
+	inline size_t GetDecorationMarginMargin() const { return config.decorationMargin; }
+	inline void SetTextMarginMargin(size_t value) { config.textMargin = value; }
+	inline size_t GetTextMarginMargin() const { return config.textMargin; }
 
 	// access text (using UTF-8 encoded strings)
 	// (see note below on cursor and scroll manipulation after setting new text)
@@ -856,6 +862,9 @@ protected:
 		bool overwrite = false;
 		bool panMode = true;
 		bool showPanScrollIndicator = true;
+		size_t leftMargin = 1; // margins are expressed in number of glyphs
+		size_t decorationMargin = 1;
+		size_t textMargin = 2;
 
 		// language support
 		const Language* language = nullptr;
@@ -1647,10 +1656,6 @@ protected:
 
 	// rendering context
 	static constexpr size_t invalidLine = std::numeric_limits<size_t>::max();
-
-	static constexpr size_t leftMargin = 1; // margins are expressed in number of glyphs
-	static constexpr size_t decorationMargin = 1;
-	static constexpr size_t textMargin = 2;
 
 	bool editorVisible = false;
 	float cursorWidth;

@@ -135,10 +135,10 @@ public:
 	inline bool IsMiddleMousePanMode() const { return config.panMode; }
 	inline void SetLineNumberLeftMargin(size_t value) { config.leftMargin = value; } // margins are expressed in glyphs
 	inline size_t GetLineNumberLeftMargin() const { return config.leftMargin; }
-	inline void SetLineNumberDecorationMargin(size_t value) { config.decorationMargin = value; }
-	inline size_t GetDecorationMarginMargin() const { return config.decorationMargin; }
-	inline void SetTextMarginMargin(size_t value) { config.textMargin = value; }
-	inline size_t GetTextMarginMargin() const { return config.textMargin; }
+	inline void SetDecorationLeftMargin(size_t value) { config.decorationMargin = value; }
+	inline size_t GetDecorationLeftMargin() const { return config.decorationMargin; }
+	inline void SetTextLeftMargin(size_t value) { config.textMargin = value; }
+	inline size_t GetTextLeftMargin() const { return config.textMargin; }
 
 	// access text (using UTF-8 encoded strings)
 	// (see note below on cursor and scroll manipulation after setting new text)

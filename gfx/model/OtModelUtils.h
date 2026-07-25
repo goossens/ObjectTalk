@@ -12,7 +12,9 @@
 //	Include files
 //
 
-#include "assimp/scene.h"
+#include "assimp/matrix4x4.h"
+#include "assimp/quaternion.h"
+#include "assimp/vector3.h"
 #include "glm/glm.hpp"
 #include "glm/gtx/quaternion.hpp"
 

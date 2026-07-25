@@ -20,11 +20,9 @@
 #include "OtByteCode.h"
 #include "OtClass.h"
 #include "OtIdentifier.h"
-#include "OtModule.h"
 #include "OtOptimizer.h"
 #include "OtScanner.h"
 #include "OtSource.h"
-#include "OtStack.h"
 #include "OtSymbol.h"
 
 

@@ -12,13 +12,13 @@
 //	Include files
 //
 
-#include <algorithm>
 #include <limits>
 
 #include "imgui.h"
 
+#include "OtAudio.h"
+
 #include "OtEditorTask.h"
-#include "OtCircuit.h"
 
 
 //

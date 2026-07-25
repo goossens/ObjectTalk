@@ -14,7 +14,6 @@
 #include "OtArray.h"
 #include "OtClass.h"
 #include "OtFunction.h"
-#include "OtLog.h"
 #include "OtModule.h"
 #include "OtObject.h"
 #include "OtValue.h"

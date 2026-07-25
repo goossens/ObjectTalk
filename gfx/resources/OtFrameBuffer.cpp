@@ -9,6 +9,8 @@
 //	Include files
 //
 
+#include "OtLog.h"
+
 #include "OtFrameBuffer.h"
 #include "OtGpu.h"
 

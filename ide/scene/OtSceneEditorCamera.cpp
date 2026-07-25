@@ -11,13 +11,11 @@
 
 #include <algorithm>
 
-#include "glm/gtc/matrix_transform.hpp"
 #include <glm/gtc/quaternion.hpp>
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
 #include "OtGlm.h"
-#include "OtGpu.h"
 #include "OtUi.h"
 
 #include "OtSceneEditorCamera.h"

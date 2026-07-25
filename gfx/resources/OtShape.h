@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <cmath>
 #include <cstdint>
 #include <string>
 #include <utility>

@@ -14,7 +14,6 @@
 
 #include <array>
 #include <list>
-#include <string>
 #include <unordered_map>
 
 #include "OtAnalogVoice.h"

@@ -13,7 +13,6 @@
 #include <cstring>
 #include <functional>
 
-#include "imgui.h"
 #include "imgui_internal.h"
 #include "ImGuizmo.h"
 #include "glm/gtc/type_ptr.hpp"
@@ -24,7 +23,6 @@
 
 #include "OtSceneEditor.h"
 #include "OtTaskManager.h"
-#include "OtWorkspace.h"
 
 #include "OtEditPostProcessingTask.h"
 #include "OtSaveEditorCameraTask.h"

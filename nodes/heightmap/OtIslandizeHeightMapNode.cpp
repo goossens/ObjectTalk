@@ -10,8 +10,6 @@
 //
 
 #include <chrono>
-#include <cmath>
-#include <format>
 #include <future>
 
 #include "nlohmann/json.hpp"

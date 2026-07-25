@@ -63,7 +63,7 @@ if __name__ == "__main__":
 	append("FindReplace.cpp", 14)
 	append("MiniMap.cpp", 14)
 	append("LBC.h", 8)
-	append("LineBreakTables.h", 28)
+	append("LineBreakTables.h", 26)
 	append("LineBreak.cpp", 15)
 	append("LineFold.cpp", 15)
 	append("TypeSetter.cpp", 12)

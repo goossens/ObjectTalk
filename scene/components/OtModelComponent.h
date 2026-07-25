@@ -12,7 +12,6 @@
 //	Include files
 //
 
-
 #include <string>
 
 #include "nlohmann/json_fwd.hpp"

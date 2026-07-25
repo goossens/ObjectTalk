@@ -18,7 +18,6 @@
 #include "nlohmann/json_fwd.hpp"
 
 #include "OtMaterial.h"
-#include "OtTexture.h"
 
 
 //

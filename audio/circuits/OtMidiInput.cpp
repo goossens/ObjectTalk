@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include <algorithm>
 #include <array>
 #include <memory>
 #include <mutex>

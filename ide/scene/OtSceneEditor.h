@@ -17,10 +17,10 @@
 #include <string>
 
 #include "glm/glm.hpp"
+#include "imgui.h"
 #include "ImGuizmo.h"
 
 #include "OtScene.h"
-#include "OtSceneAsset.h"
 #include "OtSceneEditorCamera.h"
 #include "OtSceneRenderer.h"
 #include "OtSceneRendererDebug.h"

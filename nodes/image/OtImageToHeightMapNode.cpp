@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "OtTexture.h"
+#include "OtImage.h"
 
 #include "OtHeightMap.h"
 

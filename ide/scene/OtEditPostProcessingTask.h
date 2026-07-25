@@ -14,6 +14,8 @@
 
 #include <memory>
 
+#include "nlohmann/json.hpp"
+
 #include "OtEditorTask.h"
 #include "OtScene.h"
 

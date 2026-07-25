@@ -17,8 +17,6 @@
 #include "imgui.h"
 #include "SDL3/SDL.h"
 
-#include "OtLog.h"
-
 #include "OtRenderTarget.h"
 #include "OtTexture.h"
 

@@ -24,7 +24,6 @@
 #include "OtIcosahedronPrimitive.h"
 #include "OtOctahedronPrimitive.h"
 #include "OtPlanePrimitive.h"
-#include "OtPolyhedronPrimitive.h"
 #include "OtSpherePrimitive.h"
 #include "OtSphericalCubePrimitive.h"
 #include "OtTetrahedronPrimitive.h"

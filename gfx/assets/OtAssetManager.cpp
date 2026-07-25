@@ -9,13 +9,9 @@
 //	Include files
 //
 
-#include <algorithm>
-#include <cmath>
-
 #include "imgui.h"
 
 #include "OtAssert.h"
-#include "OtPath.h"
 
 #include "OtAssetManager.h"
 #include "OtThreadPool.h"

@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "OtClass.h"
-
 #include "OtGui.h"
 
 

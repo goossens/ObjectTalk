@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <algorithm>
 #include <chrono>
 #include <string>
 #include <string_view>

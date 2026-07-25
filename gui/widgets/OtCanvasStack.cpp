@@ -18,6 +18,7 @@
 #include "OtLog.h"
 #include "OtVM.h"
 
+#include "OtCanvasModule.h"
 #include "OtUi.h"
 
 #include "OtCanvasStack.h"

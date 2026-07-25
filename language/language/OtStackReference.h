@@ -15,7 +15,6 @@
 #include <string>
 
 #include "OtReference.h"
-#include "OtStack.h"
 
 
 //

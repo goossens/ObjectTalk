@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include <cmath>
-
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 

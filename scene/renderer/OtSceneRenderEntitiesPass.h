@@ -14,9 +14,7 @@
 
 #include <memory>
 
-#include "OtInstances.h"
 #include "OtMaterial.h"
-#include "OtTextureAsset.h"
 
 #include "OtGeometryRenderData.h"
 #include "OtGrassComponent.h"

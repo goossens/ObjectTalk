@@ -11,15 +11,10 @@
 
 #include <algorithm>
 #include <cmath>
-#include <numbers>
-#include <vector>
 
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtException.h"
-
-#include "OtFontAudio.h"
 #include "OtUi.h"
 
 #include "OtAudioUi.h"

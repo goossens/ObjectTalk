@@ -13,7 +13,6 @@
 //
 
 #include <cstddef>
-#include <memory>
 #include <vector>
 
 #include "SDL3/SDL.h"

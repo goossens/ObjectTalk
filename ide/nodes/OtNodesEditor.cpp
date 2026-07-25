@@ -9,11 +9,8 @@
 //	Include files
 //
 
-#include <algorithm>
-
 #include "imgui.h"
 #include "imgui_internal.h"
-#include "nlohmann/json.hpp"
 
 #include "OtUi.h"
 

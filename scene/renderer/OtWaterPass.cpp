@@ -11,8 +11,6 @@
 
 #include <cstdint>
 
-#include "imgui.h"
-
 #include "OtRenderPass.h"
 
 #include "OtShaders.h"

@@ -12,9 +12,10 @@
 //	Include files
 //
 
-#include "OtEditorTask.h"
 #include "OtEntity.h"
 #include "OtScene.h"
+
+#include "OtEditorTask.h"
 
 
 //

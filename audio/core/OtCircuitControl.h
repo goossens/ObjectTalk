@@ -14,7 +14,6 @@
 
 #include <string>
 
-#include "OtAudioUtilities.h"
 #include "OtAudioUi.h"
 #include "OtCircuitPin.h"
 

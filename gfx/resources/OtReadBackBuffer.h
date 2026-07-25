@@ -12,8 +12,6 @@
 //	Include files
 //
 
-#include <cstdint>
-
 #include "OtImage.h"
 #include "OtTexture.h"
 

@@ -12,8 +12,9 @@
 //	Include files
 //
 
-#include <memory>
 #include <string>
+
+#include "nlohmann/json.hpp"
 
 #include "OtEditorTask.h"
 #include "OtScene.h"

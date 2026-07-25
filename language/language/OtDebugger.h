@@ -14,8 +14,6 @@
 
 #include <string>
 
-#include "OtByteCode.h"
-#include "OtDebugState.h"
 #include "OtInternal.h"
 
 

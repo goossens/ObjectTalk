@@ -11,7 +11,6 @@
 
 #include "OtBoundFunction.h"
 #include "OtFunction.h"
-#include "OtStack.h"
 #include "OtVM.h"
 
 

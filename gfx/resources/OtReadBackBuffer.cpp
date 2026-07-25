@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include <algorithm>
 #include <cstdint>
 
 #include "SDL3/SDL.h"

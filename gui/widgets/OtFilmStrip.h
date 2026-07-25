@@ -16,6 +16,7 @@
 
 #include "OtCallback.h"
 
+#include "OtAsset.h"
 #include "OtTextureAsset.h"
 #include "OtUi.h"
 

@@ -15,8 +15,9 @@
 #include <string>
 #include <vector>
 
+#include "OtAudio.h"
+
 #include "OtEditorTask.h"
-#include "OtCircuit.h"
 
 
 //

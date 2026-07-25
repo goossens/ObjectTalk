@@ -15,7 +15,6 @@
 #include <cstdint>
 #include <functional>
 #include <string>
-#include <vector>
 
 #include "OtMembers.h"
 #include "OtObjectPointer.h"

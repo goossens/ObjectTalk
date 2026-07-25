@@ -13,8 +13,6 @@
 
 #include "nlohmann/json.hpp"
 
-#include "OtException.h"
-
 #include "OtCircuit.h"
 
 

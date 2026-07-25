@@ -15,6 +15,9 @@
 #include <string>
 
 #include "OtEditorTask.h"
+#include "OtScene.h"
+
+#include "OtEditorTask.h"
 
 
 //

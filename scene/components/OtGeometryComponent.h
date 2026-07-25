@@ -12,11 +12,11 @@
 //	Include files
 //
 
-#include <memory>
 #include <string>
 
 #include "nlohmann/json_fwd.hpp"
 
+#include "OtAsset.h"
 #include "OtGeometryAsset.h"
 
 

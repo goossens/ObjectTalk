@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include "OtAsset.h"
 #include "OtTextAsset.h"
 
 

@@ -15,6 +15,7 @@
 #include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
 
+#include "OtAsset.h"
 #include "OtTextureAsset.h"
 
 

@@ -9,6 +9,12 @@
 //	Include files
 //
 
+#include "SDL3_shadercross/SDL_shadercross.h"
+
+#include "OtLog.h"
+
+#include "OtGpu.h"
+
 #include "OtComputePipeline.h"
 
 

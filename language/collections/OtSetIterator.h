@@ -12,8 +12,6 @@
 //	Include files
 //
 
-#include <string>
-
 #include "OtSet.h"
 #include "OtIterator.h"
 

@@ -9,9 +9,7 @@
 //	Include files
 //
 
-#include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/quaternion.hpp"
-#include "imgui.h"
 #include "nlohmann/json.hpp"
 
 #include "OtGlm.h"

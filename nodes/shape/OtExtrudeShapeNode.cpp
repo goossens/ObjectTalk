@@ -12,7 +12,6 @@
 #include <algorithm>
 #include <memory>
 
-#include "imgui.h"
 #include "tesselator.h"
 
 #include "OtLog.h"

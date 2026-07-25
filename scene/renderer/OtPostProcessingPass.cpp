@@ -13,6 +13,7 @@
 
 #include "glm/glm.hpp"
 
+#include "OtBlitPass.h"
 #include "OtPostProcessingPass.h"
 
 

@@ -13,7 +13,6 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-
 #include "OtGlm.h"
 #include "OtUi.h"
 

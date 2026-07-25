@@ -12,12 +12,8 @@
 //	Include files
 //
 
-#include <string>
-#include <vector>
-
 #include "OtException.h"
 
-#include "OtAsset.h"
 #include "OtAssetBase.h"
 #include "OtModel.h"
 

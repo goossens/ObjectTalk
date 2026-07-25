@@ -15,7 +15,6 @@
 
 #include <ctime>
 
-#include "OtFunction.h"
 #include "OtRandom.h"
 
 #include "OtTron.h"

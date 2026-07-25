@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <memory>
 #include <vector>
 
 #include "OtMidiMessage.h"

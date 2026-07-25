@@ -16,6 +16,7 @@
 #include "OtText.h"
 
 #include "OtAssetManager.h"
+#include "OtUi.h"
 
 #include "OtEntityObject.h"
 #include "OtSceneRuntime.h"

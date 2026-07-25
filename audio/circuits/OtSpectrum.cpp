@@ -17,6 +17,7 @@
 #include "implot.h"
 
 #include "OtAudioSettings.h"
+#include "OtAudioUtilities.h"
 #include "OtCircuitFactory.h"
 #include "OtFft.h"
 #include "OtHammingWindow.h"

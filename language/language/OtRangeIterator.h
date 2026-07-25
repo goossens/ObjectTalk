@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include "OtInteger.h"
 #include "OtIterator.h"
 
 

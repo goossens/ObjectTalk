@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include "OtAudioSettings.h"
+#include <cstddef>
 
 
 //

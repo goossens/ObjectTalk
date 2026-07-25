@@ -12,10 +12,9 @@
 //	Include files
 //
 
-#include <vector>
+#include "OtNodes.h"
 
 #include "OtEditorTask.h"
-#include "OtNode.h"
 
 
 //

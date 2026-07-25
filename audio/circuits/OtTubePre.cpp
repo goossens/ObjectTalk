@@ -14,8 +14,6 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtAsset.h"
-
 #include "OtAudioSettings.h"
 #include "OtAudioUi.h"
 #include "OtCircuitFactory.h"

@@ -21,6 +21,7 @@
 #include "OtArray.h"
 #include "OtConfig.h"
 #include "OtDebugger.h"
+#include "OtDebugState.h"
 #include "OtDict.h"
 #include "OtFunction.h"
 #include "OtLog.h"

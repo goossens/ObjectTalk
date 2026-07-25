@@ -16,6 +16,7 @@
 
 #include "nlohmann/json_fwd.hpp"
 
+#include "OtAsset.h"
 #include "OtCubeMapAsset.h"
 
 

@@ -12,9 +12,6 @@
 //	Include files
 //
 
-#include <array>
-#include <cstdint>
-
 #include "imgui.h"
 
 #include "OtCubeMap.h"

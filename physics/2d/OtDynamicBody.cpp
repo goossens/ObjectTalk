@@ -10,7 +10,6 @@
 //
 
 #include "OtFunction.h"
-#include "OtLog.h"
 
 #include "OtDynamicBody.h"
 #include "OtWorld2d.h"

@@ -35,11 +35,10 @@ public:
 
 	// manipulate styles
 	inline void strokeColor(const std::string& color) { auto c = OtColorParser::toVec4(color); plutovg_canvas_set_rgba(canvas, c.r, c.g, c.b, c.a); }
-	inline void strokeColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) { plutovg_canvas_set_rgba(canvas, r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f); }
 	inline void strokeColor(float r, float g, float b, float a) { plutovg_canvas_set_rgba(canvas, r, g, b, a); }
 	inline void fillColor(const std::string& color) { auto c = OtColorParser::toVec4(color); plutovg_canvas_set_rgba(canvas, c.r, c.g, c.b, c.a); }
-	inline void fillColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) { plutovg_canvas_set_rgba(canvas, r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f); }
 	inline void fillColor(float r, float g, float b, float a) { plutovg_canvas_set_rgba(canvas, r, g, b, a); }
+	inline void lineWidth(float width) { plutovg_canvas_set_line_width(canvas, width); }
 
 	// manipulate transform
 	inline void translate(float x, float y) { plutovg_canvas_translate(canvas, x, y); }

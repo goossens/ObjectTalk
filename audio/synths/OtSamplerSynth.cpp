@@ -16,6 +16,8 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
+#include "OtUi.h"
+
 #include "OtSamplerSynth.h"
 
 

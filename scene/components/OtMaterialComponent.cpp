@@ -9,13 +9,8 @@
 //	Include files
 //
 
-#include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtGlm.h"
-#include "OtUi.h"
-
-#include "OtPath.h"
 #include "OtMaterialComponent.h"
 
 

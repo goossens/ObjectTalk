@@ -15,7 +15,6 @@
 #include <string>
 #include <vector>
 
-#include "assimp/scene.h"
 #include "glm/glm.hpp"
 #include "glm/gtx/quaternion.hpp"
 

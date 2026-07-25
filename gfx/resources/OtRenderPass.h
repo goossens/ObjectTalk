@@ -13,7 +13,6 @@
 //
 
 #include <cstdint>
-#include <vector>
 
 #include "glm/glm.hpp"
 #include "SDL3/SDL.h"

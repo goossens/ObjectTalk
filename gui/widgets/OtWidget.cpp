@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include <algorithm>
-
 #include "OtFunction.h"
 #include "OtLog.h"
 #include "OtVM.h"

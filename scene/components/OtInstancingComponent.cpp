@@ -12,7 +12,6 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-
 #include "OtInstancingComponent.h"
 
 

@@ -21,6 +21,8 @@
 #include "OtText.h"
 #include "OtVM.h"
 
+#include "OtUi.h"
+
 #include "OtShapeModule.h"
 #include "OtScriptAsset.h"
 

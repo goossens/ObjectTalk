@@ -12,7 +12,6 @@
 //	Include files
 //
 
-#include <cstdint>
 #include <vector>
 
 #include "OtByteCode.h"

@@ -14,7 +14,6 @@
 
 #include "OtException.h"
 
-#include "OtAsset.h"
 #include "OtAssetBase.h"
 #include "OtFont.h"
 

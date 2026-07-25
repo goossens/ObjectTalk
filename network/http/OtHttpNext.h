@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include "OtFunction.h"
+
 #include "OtHttpRequest.h"
 #include "OtHttpResponse.h"
 #include "OtHttpRouter.h"

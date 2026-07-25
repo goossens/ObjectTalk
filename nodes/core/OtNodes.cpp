@@ -18,7 +18,6 @@
 #include "OtLog.h"
 #include "OtNodes.h"
 #include "OtNodesPin.h"
-#include "OtNodesUtils.h"
 #include "OtPath.h"
 #include "OtText.h"
 

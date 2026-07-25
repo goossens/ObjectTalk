@@ -11,7 +11,6 @@
 
 #include "imgui.h"
 
-#include "OtGpu.h"
 #include "OtUi.h"
 
 #include "OtSceneApp.h"

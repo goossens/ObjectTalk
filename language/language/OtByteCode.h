@@ -12,13 +12,10 @@
 //	Include files
 //
 
-#include <algorithm>
 #include <cstdint>
 #include <string>
-#include <utility>
 #include <vector>
 
-#include "OtException.h"
 #include "OtIdentifier.h"
 #include "OtInternal.h"
 #include "OtObject.h"

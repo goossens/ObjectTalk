@@ -12,10 +12,9 @@
 //	Include files
 //
 
-#include <vector>
-
 #include "nlohmann/json_fwd.hpp"
 
+#include "OtAsset.h"
 #include "OtInstancesAsset.h"
 
 

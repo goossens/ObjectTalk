@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "imgui.h"
-
 #include "OtFunction.h"
 #include "OtLog.h"
 

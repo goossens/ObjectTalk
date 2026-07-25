@@ -587,10 +587,10 @@ void OtShape::toPaths(Clipper2Lib::Paths64& output) {
 void OtShape::fromPaths(Clipper2Lib::Paths64& input) {
 	clear();
 
-	for (auto& path : input) {
+	for (auto& path64 : input) {
 		auto first = true;
 
-		for (auto& point : path) {
+		for (auto& point : path64) {
 			auto current = convertPoint(point);
 
 			if (first) {

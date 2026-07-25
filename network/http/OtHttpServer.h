@@ -14,8 +14,6 @@
 
 #include "OtHttp.h"
 #include "OtHttpRouter.h"
-#include "OtHttpRequest.h"
-#include "OtHttpResponse.h"
 #include "OtHttpSession.h"
 #include "OtLibuv.h"
 

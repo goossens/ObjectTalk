@@ -13,10 +13,10 @@
 //
 
 #include <string>
-#include <vector>
+
+#include "OtAudio.h"
 
 #include "OtDeleteCircuitsTask.h"
-#include "OtCircuit.h"
 
 
 //

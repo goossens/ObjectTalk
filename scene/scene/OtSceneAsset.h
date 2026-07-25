@@ -14,7 +14,6 @@
 
 #include <memory>
 
-#include "OtAsset.h"
 #include "OtAssetBase.h"
 #include "OtScene.h"
 

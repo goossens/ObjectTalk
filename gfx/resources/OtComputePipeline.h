@@ -15,12 +15,7 @@
 #include <cstdint>
 #include <memory>
 
-#include "OtLog.h"
-
 #include "SDL3/SDL.h"
-#include "SDL3_shadercross/SDL_shadercross.h"
-
-#include "OtGpu.h"
 
 
 //

@@ -15,8 +15,6 @@
 #include <algorithm>
 #include <vector>
 
-#include "OtAssert.h"
-
 #include "OtAudioSettings.h"
 
 

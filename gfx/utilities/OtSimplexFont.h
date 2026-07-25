@@ -6,6 +6,13 @@
 
 
 //
+//	Include files
+//
+
+#include <cstdint>
+
+
+//
 //	The simplex font is derived from the Hershey Vector Font originally designed
 //	by Dr. A. V. Hershey while working at the U. S. National Bureau of Standards.
 //

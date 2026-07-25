@@ -9,9 +9,6 @@
 //	Include files
 //
 
-#include <algorithm>
-#include <cmath>
-
 #include "nlohmann/json.hpp"
 
 #include "OtUi.h"

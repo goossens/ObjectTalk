@@ -23,7 +23,6 @@
 #include "OtCubeMap.h"
 #include "OtRenderPass.h"
 #include "OtTexture.h"
-#include "OtVertex.h"
 
 #include "OtShaders.h"
 

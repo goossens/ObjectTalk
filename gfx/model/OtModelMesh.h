@@ -19,7 +19,6 @@
 #include <vector>
 
 #include "assimp/mesh.h"
-#include "assimp/scene.h"
 #include "glm/glm.hpp"
 
 #include "OtAABB.h"

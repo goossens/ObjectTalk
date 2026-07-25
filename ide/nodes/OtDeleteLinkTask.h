@@ -12,8 +12,9 @@
 //	Include files
 //
 
+#include "OtNodes.h"
+
 #include "OtEditorTask.h"
-#include "OtNode.h"
 
 
 //

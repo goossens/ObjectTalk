@@ -11,9 +11,6 @@
 
 #include <string>
 
-#include "imgui.h"
-#include "nlohmann/json.hpp"
-
 #include "OtShapeAsset.h"
 
 #include "OtNodesFactory.h"

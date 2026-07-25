@@ -10,7 +10,6 @@
 //
 
 #include <chrono>
-#include <cmath>
 #include <format>
 #include <future>
 

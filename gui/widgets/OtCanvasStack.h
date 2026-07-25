@@ -14,7 +14,6 @@
 
 #include <vector>
 
-#include "OtCanvasModule.h"
 #include "OtCompositingAlphaOver.h"
 #include "OtFlood.h"
 #include "OtFrameBuffer.h"

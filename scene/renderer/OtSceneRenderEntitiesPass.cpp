@@ -16,7 +16,6 @@
 
 #include "imgui.h"
 
-#include "OtGpu.h"
 #include "OtMaterial.h"
 
 #include "OtMaterialComponent.h"

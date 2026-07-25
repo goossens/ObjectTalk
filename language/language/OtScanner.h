@@ -18,7 +18,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include "OtException.h"
 #include "OtIdentifier.h"
 #include "OtSource.h"
 

@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include <cmath>
 #include <numbers>
 #include <vector>
 

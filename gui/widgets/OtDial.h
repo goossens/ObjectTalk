@@ -14,6 +14,7 @@
 
 #include <string>
 
+#include "OtAsset.h"
 #include "OtNeedle.h"
 #include "OtTexture.h"
 #include "OtTextureAsset.h"

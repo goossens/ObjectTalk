@@ -20,9 +20,7 @@
 #include "OtAsset.h"
 #include "OtCamera.h"
 #include "OtCascadedShadowMap.h"
-#include "OtGrass.h"
 #include "OtImageBasedLighting.h"
-#include "OtMaterial.h"
 #include "OtRenderPass.h"
 #include "OtTextureAsset.h"
 
@@ -31,7 +29,6 @@
 #include "OtModelRenderData.h"
 #include "OtSampler.h"
 #include "OtScene.h"
-#include "OtTerrain.h"
 
 
 //

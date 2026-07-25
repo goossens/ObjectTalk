@@ -9,12 +9,20 @@
 
 
 //
+//	Include files
+//
+
+#include <cstddef>
+
+
+//
 //	OtStatement
 //
 
 struct OtStatement {
 	// constructor
-	OtStatement(size_t ss, size_t se, size_t os, size_t oe) : sourceStart(ss), sourceEnd(se), opcodeStart(os), opcodeEnd(oe) {}
+	OtStatement(size_t sourceStart, size_t sourceEnd, size_t opcodeStart, size_t opcodeEnd) :
+		sourceStart(sourceStart), sourceEnd(sourceEnd), opcodeStart(opcodeStart), opcodeEnd(opcodeEnd) {}
 
 	// properties
 	size_t sourceStart;

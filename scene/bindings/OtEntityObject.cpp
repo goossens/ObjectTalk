@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include "OtClass.h"
 #include "OtFunction.h"
 
 #include "OtEntityObject.h"

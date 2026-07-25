@@ -15,7 +15,6 @@
 #include "OtFrameBuffer.h"
 #include "OtGbuffer.h"
 #include "OtIndexBuffer.h"
-#include "OtRenderPass.h"
 #include "OtRenderPipeline.h"
 #include "OtVertexBuffer.h"
 

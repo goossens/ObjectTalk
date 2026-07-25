@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include <iostream>
-
 #include "nlohmann/json.hpp"
 #include "OtException.h"
 #include "OtStderrMultiplexer.h"

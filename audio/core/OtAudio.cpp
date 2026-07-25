@@ -21,7 +21,6 @@
 
 #include "OtAudio.h"
 #include "OtCircuitPin.h"
-#include "OtCircuitUtils.h"
 
 
 //

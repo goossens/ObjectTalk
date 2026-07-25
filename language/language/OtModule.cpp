@@ -11,6 +11,7 @@
 
 #include "OtByteCode.h"
 #include "OtCompiler.h"
+#include "OtException.h"
 #include "OtLog.h"
 #include "OtModule.h"
 #include "OtPathObject.h"
@@ -18,7 +19,6 @@
 #include "OtRegistry.h"
 #include "OtSingleton.h"
 #include "OtSource.h"
-#include "OtString.h"
 #include "OtText.h"
 #include "OtVM.h"
 

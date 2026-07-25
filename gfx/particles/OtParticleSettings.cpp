@@ -12,10 +12,10 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-
 #include "ImGuiCurve.h"
 #include "ImGuiRangeSlider.h"
 
+#include "OtAsset.h"
 #include "OtUi.h"
 
 #include "OtParticleSettings.h"

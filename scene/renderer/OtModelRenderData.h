@@ -12,16 +12,11 @@
 //	Include files
 //
 
-#include <array>
-#include <vector>
-
 #include "glm/glm.hpp"
 
 #include "OtAABB.h"
 #include "OtCamera.h"
 #include "OtCascadedShadowMap.h"
-#include "OtFrustum.h"
-#include "OtInstances.h"
 #include "OtModel.h"
 
 #include "OtScene.h"

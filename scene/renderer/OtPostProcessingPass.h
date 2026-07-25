@@ -12,10 +12,7 @@
 //	Include files
 //
 
-#include <algorithm>
-
 #include "glm/glm.hpp"
-#include "imgui.h"
 
 #include "OtFrameBuffer.h"
 #include "OtPostProcessing.h"
@@ -24,7 +21,6 @@
 
 #include "OtSceneRendererContext.h"
 
-#include "OtBlitPass.h"
 #include "OtBloomDownSample.h"
 #include "OtBloomUpSample.h"
 #include "OtCompositingAdd.h"

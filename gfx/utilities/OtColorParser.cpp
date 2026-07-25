@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include <algorithm>
 #include <sstream>
 #include <string>
 #include <vector>

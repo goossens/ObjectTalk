@@ -15,8 +15,9 @@
 #include <string>
 #include <vector>
 
+#include "OtNodes.h"
+
 #include "OtEditorTask.h"
-#include "OtNode.h"
 
 
 //

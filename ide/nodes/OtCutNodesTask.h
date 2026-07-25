@@ -13,10 +13,10 @@
 //
 
 #include <string>
-#include <vector>
+
+#include "OtNodes.h"
 
 #include "OtDeleteNodesTask.h"
-#include "OtNode.h"
 
 
 //

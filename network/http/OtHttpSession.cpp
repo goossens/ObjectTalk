@@ -11,7 +11,6 @@
 
 #include <format>
 
-#include "OtFunction.h"
 #include "OtHttpNotFound.h"
 #include "OtHttpSession.h"
 #include "OtLibuv.h"

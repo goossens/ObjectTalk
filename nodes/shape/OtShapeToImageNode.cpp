@@ -9,10 +9,6 @@
 //	Include files
 //
 
-#include <algorithm>
-
-#include "imgui.h"
-
 #include "OtColor.h"
 #include "OtImage.h"
 #include "OtShape.h"

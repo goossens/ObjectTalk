@@ -15,8 +15,9 @@
 #include <string>
 
 #include "OtEntity.h"
-#include "OtDeleteEntityTask.h"
 #include "OtScene.h"
+
+#include "OtDeleteEntityTask.h"
 
 
 //

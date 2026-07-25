@@ -13,7 +13,6 @@
 #include "OtCompiler.h"
 #include "OtFunction.h"
 #include "OtIO.h"
-#include "OtLog.h"
 #include "OtSource.h"
 #include "OtString.h"
 #include "OtText.h"

@@ -18,14 +18,11 @@
 #include "imgui.h"
 
 #include "OtCamera.h"
-#include "OtCascadedShadowMap.h"
 #include "OtFrameBuffer.h"
 #include "OtGbuffer.h"
 
 #include "OtEntity.h"
 #include "OtScene.h"
-
-#include "OtImageBasedLighting.h"
 
 #include "OtBackgroundPass.h"
 #include "OtDeferredPass.h"

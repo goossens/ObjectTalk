@@ -13,12 +13,14 @@
 //
 
 #include <array>
+#include <string>
 
 #include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
 
 #include "ImGuiCurve.h"
 
+#include "OtAsset.h"
 #include "OtTextureAsset.h"
 
 

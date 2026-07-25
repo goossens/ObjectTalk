@@ -15,10 +15,7 @@
 #include <cstdint>
 #include <string>
 
-#include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
-
-#include "OtVertex.h"
 
 #include "OtCircuitControl.h"
 #include "OtCircuitPin.h"

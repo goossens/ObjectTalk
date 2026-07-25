@@ -10,13 +10,11 @@
 //
 
 #include "OtFunction.h"
-#include "OtLog.h"
 #include "OtModule.h"
 #include "OtVM.h"
 
 #include "OtApp.h"
 #include "OtFramework.h"
-#include "OtGui.h"
 
 
 //

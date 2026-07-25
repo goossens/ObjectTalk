@@ -36,11 +36,11 @@ public:
 	OtNoise() = default;
 	OtNoise(size_t o, float f, float l, float p) : octaves(o), frequency(f), lacunarity(l), persistence(p) {}
 
-	// get noise values
+	// get noise values (between -1.0 to 1.0)
 	float noise(float x, float y);
 	float noise(float x, float y, float z);
 
-	// get Fractional Brownian Motion (FBM) values
+	// get Fractional Brownian Motion (FBM) values (between -1.0 to 1.0)
 	float fbm(float x, float y);
 	float fbm(float x, float y, float z);
 

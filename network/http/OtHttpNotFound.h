@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include "OtFunction.h"
+
 #include "OtHttpResponse.h"
 #include "OtInternal.h"
 

@@ -14,7 +14,6 @@
 
 #include <cstdint>
 #include <memory>
-#include <vector>
 
 #include "SDL3/SDL.h"
 

@@ -11,7 +11,6 @@
 
 #include "nlohmann/json.hpp"
 
-#include "OtLog.h"
 #include "OtPath.h"
 #include "OtText.h"
 

@@ -12,7 +12,6 @@
 #include "nlohmann/json.hpp"
 
 #include "OtAudioSettings.h"
-#include "OtAudioUtilities.h"
 #include "OtAudioUi.h"
 #include "OtCircuitFactory.h"
 #include "OtLfo.h"

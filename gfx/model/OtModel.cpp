@@ -12,7 +12,6 @@
 #include <algorithm>
 #include <atomic>
 #include <cmath>
-#include <cstdint>
 #include <format>
 
 #include "assimp/Importer.hpp"

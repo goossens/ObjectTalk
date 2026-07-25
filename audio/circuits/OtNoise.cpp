@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include "nlohmann/json.hpp"
-
 #include "OtAudioSettings.h"
 #include "OtCircuitFactory.h"
 #include "OtAudioNoise.h"

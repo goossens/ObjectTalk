@@ -9,9 +9,7 @@
 //	Include files
 //
 
-#include "imgui.h"
-#include "nlohmann/json.hpp"
-
+#include "OtAsset.h"
 #include "OtTextureAsset.h"
 
 #include "OtNodesFactory.h"

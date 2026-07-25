@@ -18,7 +18,6 @@
 #include "OtByteCodeFunction.h"
 #include "OtIdentifier.h"
 #include "OtInternal.h"
-#include "OtStack.h"
 
 
 //

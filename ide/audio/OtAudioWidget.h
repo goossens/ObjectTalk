@@ -12,8 +12,6 @@
 //	Include files
 //
 
-#include <memory>
-
 #include "imgui.h"
 
 #include "OtAudio.h"

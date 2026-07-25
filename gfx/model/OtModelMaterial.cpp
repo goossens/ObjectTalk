@@ -12,11 +12,9 @@
 #include <cstring>
 #include <format>
 
-#include "assimp/texture.h"
 #include "glm/glm.hpp"
 
 #include "OtPath.h"
-#include "OtText.h"
 
 #include "OtModelMaterial.h"
 

@@ -13,7 +13,6 @@
 
 #include "OtCallback.h"
 #include "OtFunction.h"
-#include "OtLog.h"
 #include "OtVM.h"
 
 #include "OtBody.h"

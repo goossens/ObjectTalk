@@ -12,7 +12,7 @@
 #include "glm/gtx/quaternion.hpp"
 #include "nlohmann/json.hpp"
 
-#include "OtGlm.h"
+#include "OtGlm.h" // IWYU pragma: keep
 #include "OtUi.h"
 
 #include "OtTransformComponent.h"

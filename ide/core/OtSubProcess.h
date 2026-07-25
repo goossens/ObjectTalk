@@ -16,7 +16,7 @@
 #include <string>
 #include <vector>
 
-#include "OtLibuv.h"
+#include "OtLibuv.h" // IWYU pragma: keep
 
 
 //

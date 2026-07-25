@@ -12,9 +12,8 @@
 //	Include files
 //
 
-#include <string>
-
-#include "entt/entity/registry.hpp"
+#include "entt/entity/fwd.hpp"
+#include "entt/entity/entity.hpp"
 
 
 //
@@ -22,4 +21,4 @@
 //
 
 using OtEntity = entt::entity;
-#define OtEntityNull entt::null
+inline constexpr entt::null_t OtEntityNull{};

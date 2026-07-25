@@ -16,7 +16,7 @@
 
 #include "OtHttp.h"
 #include "OtHttpHeaders.h"
-#include "OtLibuv.h"
+#include "OtLibuv.h" // IWYU pragma: keep
 
 
 //

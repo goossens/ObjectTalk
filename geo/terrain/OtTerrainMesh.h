@@ -12,10 +12,10 @@
 //	Include files
 //
 
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 
 #include "OtAABB.h"
-#include "OtGlm.h"
+#include "OtGlm.h" // IWYU pragma: keep
 #include "OtTerrainTile.h"
 
 

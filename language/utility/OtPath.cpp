@@ -13,7 +13,7 @@
 #include <random>
 #include <sstream>
 
-#include "OtLibuv.h"
+#include "OtLibuv.h" // IWYU pragma: keep
 #include "OtPath.h"
 
 

@@ -17,7 +17,7 @@
 #include "OtArray.h"
 #include "OtFunction.h"
 #include "OtFS.h"
-#include "OtLibuv.h"
+#include "OtLibuv.h" // IWYU pragma: keep
 #include "OtLog.h"
 #include "OtPathObject.h"
 

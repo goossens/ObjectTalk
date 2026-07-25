@@ -9,12 +9,12 @@
 //	Include files
 //
 
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtGlm.h"
+#include "OtGlm.h" // IWYU pragma: keep
 #include "OtUi.h"
 
 #include "OtManifold.h"

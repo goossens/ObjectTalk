@@ -18,7 +18,7 @@
 #include <unordered_map>
 
 #include "assimp/scene.h"
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 #include "glm/gtx/quaternion.hpp"
 
 

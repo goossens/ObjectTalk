@@ -12,7 +12,7 @@
 #include <cstring>
 #include <format>
 
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 
 #include "OtPath.h"
 

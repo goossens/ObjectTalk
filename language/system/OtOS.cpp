@@ -22,7 +22,7 @@
 #include "OtArray.h"
 #include "OtDict.h"
 #include "OtFunction.h"
-#include "OtLibuv.h"
+#include "OtLibuv.h" // IWYU pragma: keep
 #include "OtOS.h"
 
 

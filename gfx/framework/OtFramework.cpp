@@ -29,7 +29,7 @@
 #include "OtConfig.h"
 #include "OtException.h"
 #include "OtFunction.h"
-#include "OtLibuv.h"
+#include "OtLibuv.h" // IWYU pragma: keep
 #include "OtLog.h"
 #include "OtMeasure.h"
 #include "OtStderrMultiplexer.h"

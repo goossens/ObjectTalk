@@ -14,7 +14,7 @@
 #include "imgui.h"
 #include "nlohmann/json.hpp"
 
-#include "OtGlm.h"
+#include "OtGlm.h" // IWYU pragma: keep
 #include "OtThreadPool.h"
 #include "OtUi.h"
 

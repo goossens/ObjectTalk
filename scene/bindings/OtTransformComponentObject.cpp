@@ -11,7 +11,7 @@
 
 #include "OtFunction.h"
 
-#include "OtMathModule.h"
+#include "OtMathModule.h" // IWYU pragma: keep
 
 #include "OtTransformComponentObject.h"
 

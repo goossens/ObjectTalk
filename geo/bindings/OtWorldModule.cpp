@@ -14,7 +14,7 @@
 #include "OtModule.h"
 #include "OtObject.h"
 
-#include "OtMathModule.h"
+#include "OtMathModule.h" // IWYU pragma: keep
 
 #include "OtWorld.h"
 #include "OtHeightMap.h"

@@ -15,10 +15,8 @@
 #include <string>
 #include <vector>
 
-#include "glm/glm.hpp"
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtAABB.h"
 #include "OtCamera.h"
 #include "OtIndexBuffer.h"
 #include "OtVertexBuffer.h"

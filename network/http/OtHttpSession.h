@@ -20,7 +20,7 @@
 #include "OtHttpRequest.h"
 #include "OtHttpResponse.h"
 #include "OtHttpRouter.h"
-#include "OtLibuv.h"
+#include "OtLibuv.h" // IWYU pragma: keep
 
 
 //

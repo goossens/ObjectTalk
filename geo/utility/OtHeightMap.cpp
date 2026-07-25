@@ -14,7 +14,6 @@
 #include <cstdio>
 #include <cstring>
 #include <limits>
-#include <numbers>
 
 #include "tiffio.h"
 

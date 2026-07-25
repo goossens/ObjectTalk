@@ -9,8 +9,8 @@
 //	Include files
 //
 
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
+#include "glm/gtc/matrix_transform.hpp" // IWYU pragma: keep
 #include "imgui.h"
 
 #include "OtFunction.h"
@@ -18,7 +18,6 @@
 
 #include "OtBlitPass.h"
 #include "OtUi.h"
-#include "OtVertex.h"
 
 #include "OtDial.h"
 

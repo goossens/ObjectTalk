@@ -12,9 +12,7 @@
 //	Include files
 //
 
-#include <cstdint>
-
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 
 #include "OtColor.h"
 #include "OtGenerator.h"

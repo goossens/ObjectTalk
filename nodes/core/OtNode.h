@@ -15,7 +15,7 @@
 #include <cstdint>
 #include <string>
 
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 #include "nlohmann/json_fwd.hpp"
 
 #include "OtVertex.h"

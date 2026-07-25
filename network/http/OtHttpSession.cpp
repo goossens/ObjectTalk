@@ -13,7 +13,7 @@
 
 #include "OtHttpNotFound.h"
 #include "OtHttpSession.h"
-#include "OtLibuv.h"
+#include "OtLibuv.h" // IWYU pragma: keep
 #include "OtLog.h"
 
 

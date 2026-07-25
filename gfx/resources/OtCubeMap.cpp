@@ -9,7 +9,6 @@
 //	Include files
 //
 
-#include <cstdint>
 #include <cstring>
 
 #include "nlohmann/json.hpp"

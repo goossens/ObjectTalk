@@ -17,8 +17,8 @@
 #include <utility>
 #include <vector>
 
-#include "clipper2/clipper.h"
-#include "glm/glm.hpp"
+#include "clipper2/clipper.h" // IWYU pragma: keep
+#include "glm/glm.hpp" // IWYU pragma: keep
 #include "plutovg.h"
 
 #include "OtColor.h"

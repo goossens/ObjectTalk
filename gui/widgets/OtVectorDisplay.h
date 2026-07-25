@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 
 #include "OtOscilloscope.h"
 #include "OtTexture.h"

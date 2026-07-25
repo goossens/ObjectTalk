@@ -16,7 +16,7 @@
 #include <string>
 
 #include "OtFileWatcher.h"
-#include "OtLibuv.h"
+#include "OtLibuv.h" // IWYU pragma: keep
 #include "OtPath.h"
 #include "OtPubSub.h"
 #include "OtText.h"

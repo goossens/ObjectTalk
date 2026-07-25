@@ -16,7 +16,6 @@
 #include <vector>
 
 #include "isocline.h"
-#include "nlohmann/json.hpp"
 
 #include "OtArray.h"
 #include "OtConfig.h"

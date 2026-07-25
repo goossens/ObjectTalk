@@ -17,9 +17,9 @@
 #include <string>
 
 #include "imgui.h"
-#include "SDL3/SDL.h"
+#include "SDL3/SDL.h" // IWYU pragma: keep
 
-#include "OtLibuv.h"
+#include "OtLibuv.h" // IWYU pragma: keep
 
 #include "OtGpu.h"
 #include "OtImage.h"

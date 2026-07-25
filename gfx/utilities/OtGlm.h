@@ -15,7 +15,7 @@
 #include <iostream>
 #include <numbers>
 
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 #include "glm/gtx/string_cast.hpp"
 #include "glm/gtx/quaternion.hpp"
 #include "nlohmann/json_fwd.hpp"

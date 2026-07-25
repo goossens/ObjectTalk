@@ -14,7 +14,7 @@
 
 #include <array>
 
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 
 #include "OtCamera.h"
 #include "OtFrameBuffer.h"

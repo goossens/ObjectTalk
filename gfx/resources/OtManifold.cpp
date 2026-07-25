@@ -16,6 +16,7 @@
 #include "assimp/material.h"
 #include "assimp/postprocess.h"
 #include "assimp/scene.h"
+#include "manifold/cross_section.h"
 
 #include "OtLog.h"
 #include "OtPath.h"

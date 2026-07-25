@@ -20,7 +20,7 @@
 
 #include "OtConfig.h"
 #include "OtException.h"
-#include "OtLibuv.h"
+#include "OtLibuv.h" // IWYU pragma: keep
 #include "OtPath.h"
 #include "OtStderrMultiplexer.h"
 #include "OtModule.h"

@@ -17,7 +17,7 @@
 #include <utility>
 #include <vector>
 
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 
 #if defined __clang__
 #pragma clang diagnostic push
@@ -31,7 +31,6 @@
 #endif
 
 #include "manifold/manifold.h"
-#include "manifold/cross_section.h"
 
 #if defined __clang__
 #pragma clang diagnostic pop

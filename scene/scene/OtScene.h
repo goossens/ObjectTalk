@@ -14,30 +14,30 @@
 
 #include <string>
 
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 
 #include "OtEcs.h"
 
-#include "OtBackgroundComponent.h"
-#include "OtCameraComponent.h"
-#include "OtDirectionalLightComponent.h"
-#include "OtGeometryComponent.h"
-#include "OtGrassComponent.h"
-#include "OtIblComponent.h"
-#include "OtInstancingComponent.h"
-#include "OtMaterialComponent.h"
-#include "OtMessageComponent.h"
-#include "OtModelComponent.h"
-#include "OtNodesComponent.h"
-#include "OtScriptComponent.h"
-#include "OtSkyBoxComponent.h"
-#include "OtPointLightComponent.h"
-#include "OtPostProcessingComponent.h"
-#include "OtSkyComponent.h"
-#include "OtParticlesComponent.h"
-#include "OtTerrainComponent.h"
-#include "OtTransformComponent.h"
-#include "OtWaterComponent.h"
+#include "OtBackgroundComponent.h" // IWYU pragma: keep
+#include "OtCameraComponent.h" // IWYU pragma: keep
+#include "OtDirectionalLightComponent.h" // IWYU pragma: keep
+#include "OtGeometryComponent.h" // IWYU pragma: keep
+#include "OtGrassComponent.h" // IWYU pragma: keep
+#include "OtIblComponent.h" // IWYU pragma: keep
+#include "OtInstancingComponent.h" // IWYU pragma: keep
+#include "OtMaterialComponent.h" // IWYU pragma: keep
+#include "OtMessageComponent.h" // IWYU pragma: keep
+#include "OtModelComponent.h" // IWYU pragma: keep
+#include "OtNodesComponent.h" // IWYU pragma: keep
+#include "OtScriptComponent.h" // IWYU pragma: keep
+#include "OtSkyBoxComponent.h" // IWYU pragma: keep
+#include "OtPointLightComponent.h" // IWYU pragma: keep
+#include "OtPostProcessingComponent.h" // IWYU pragma: keep
+#include "OtSkyComponent.h" // IWYU pragma: keep
+#include "OtParticlesComponent.h" // IWYU pragma: keep
+#include "OtTerrainComponent.h" // IWYU pragma: keep
+#include "OtTransformComponent.h" // IWYU pragma: keep
+#include "OtWaterComponent.h" // IWYU pragma: keep
 
 
 //

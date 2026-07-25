@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "SDL3/SDL.h"
+#include "SDL3/SDL.h" // IWYU pragma: keep
 
 #include "OtAudioUtilities.h"
 #include "OtSamplerVoice.h"

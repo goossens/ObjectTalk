@@ -18,7 +18,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 #include "nanovg.h"
 
 #include "OtColorParser.h"

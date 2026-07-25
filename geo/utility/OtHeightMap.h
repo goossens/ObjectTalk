@@ -13,11 +13,10 @@
 //
 
 #include <algorithm>
-#include <cmath>
 #include <memory>
 #include <string>
 
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 
 #include "OtImage.h"
 #include "OtTexture.h"

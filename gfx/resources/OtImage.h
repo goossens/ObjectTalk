@@ -15,8 +15,8 @@
 #include <memory>
 #include <string>
 
-#include "glm/glm.hpp"
-#include "SDL3/SDL.h"
+#include "glm/glm.hpp" // IWYU pragma: keep
+#include "SDL3/SDL.h" // IWYU pragma: keep
 
 
 //

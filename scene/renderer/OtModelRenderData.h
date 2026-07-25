@@ -12,7 +12,7 @@
 //	Include files
 //
 
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 
 #include "OtAABB.h"
 #include "OtCamera.h"

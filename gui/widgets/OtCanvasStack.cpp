@@ -11,7 +11,7 @@
 
 #include <algorithm>
 
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 #include "imgui.h"
 
 #include "OtFunction.h"

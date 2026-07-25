@@ -20,6 +20,7 @@
 #include "OtText.h"
 
 #include "OtAudio.h"
+#include "OtAudioSettings.h"
 #include "OtCircuitPin.h"
 
 
@@ -44,9 +45,6 @@ OtAudio::OtAudio() {
 void OtAudio::provideSignal(OtAudioBuffer& buffer) {
 	// thread safety
 	std::lock_guard<std::mutex> guard(mutex);
-
-	// measure processing time
-	OtMeasureStopWatch timer;
 
 	// see if resorting is required
 	if (needsSorting) {
@@ -121,14 +119,6 @@ void OtAudio::provideSignal(OtAudioBuffer& buffer) {
 	for (size_t i = 0; i < OtAudioSettings::bufferSize; i++) {
 		*output++ = *left++;
 		*output++ = *right++;
-	}
-
-	static int report = 0;
-
-	if (++report == 100) {
-		static constexpr float factor = OtAudioSettings::sampleRate / OtAudioSettings::bufferSize / 1000.0f * 100.0f;
-		processingTime += timer.elapsed() * factor;
-		report = 0;
 	}
 }
 

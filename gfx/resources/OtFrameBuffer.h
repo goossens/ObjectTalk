@@ -15,7 +15,7 @@
 #include <cstdint>
 
 #include "imgui.h"
-#include "SDL3/SDL.h"
+#include "SDL3/SDL.h" // IWYU pragma: keep
 
 #include "OtRenderTarget.h"
 #include "OtTexture.h"

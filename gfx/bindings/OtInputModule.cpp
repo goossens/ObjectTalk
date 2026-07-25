@@ -16,7 +16,7 @@
 #include "OtModule.h"
 #include "OtReal.h"
 
-#include "OtMathModule.h"
+#include "OtMathModule.h" // IWYU pragma: keep
 
 
 //

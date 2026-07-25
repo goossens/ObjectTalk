@@ -14,7 +14,7 @@
 
 #include <string>
 
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 
 #include "OtLatLon.h"
 #include "OtSlippyMap.h"

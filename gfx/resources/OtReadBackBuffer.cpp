@@ -11,7 +11,7 @@
 
 #include <cstdint>
 
-#include "SDL3/SDL.h"
+#include "SDL3/SDL.h" // IWYU pragma: keep
 
 #include "OtGpu.h"
 #include "OtReadBackBuffer.h"

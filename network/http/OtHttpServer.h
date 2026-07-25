@@ -15,7 +15,7 @@
 #include "OtHttp.h"
 #include "OtHttpRouter.h"
 #include "OtHttpSession.h"
-#include "OtLibuv.h"
+#include "OtLibuv.h" // IWYU pragma: keep
 
 
 //

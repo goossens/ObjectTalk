@@ -14,7 +14,7 @@
 
 #include <format>
 
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 #include "glm/gtc/matrix_access.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtx/quaternion.hpp"

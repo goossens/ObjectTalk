@@ -14,7 +14,7 @@
 
 #include "OtCallback.h"
 #include "OtInternal.h"
-#include "OtLibuv.h"
+#include "OtLibuv.h" // IWYU pragma: keep
 #include "OtVM.h"
 
 

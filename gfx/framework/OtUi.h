@@ -16,7 +16,7 @@
 #include <limits>
 #include <string>
 
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 #include "imgui.h"
 #include "nlohmann/json_fwd.hpp"
 

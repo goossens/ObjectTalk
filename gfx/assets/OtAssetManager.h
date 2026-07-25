@@ -18,7 +18,7 @@
 #include <unordered_map>
 
 #include "OtHash.h"
-#include "OtLibuv.h"
+#include "OtLibuv.h" // IWYU pragma: keep
 #include "OtLog.h"
 #include "OtSingleton.h"
 #include "OtText.h"

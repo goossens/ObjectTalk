@@ -16,8 +16,8 @@
 #include <memory>
 #include <string>
 
-#include "glm/glm.hpp"
-#include "imgui.h"
+#include "glm/glm.hpp" // IWYU pragma: keep
+#include "imgui.h" // IWYU pragma: keep
 #include "ImGuizmo.h"
 
 #include "OtScene.h"

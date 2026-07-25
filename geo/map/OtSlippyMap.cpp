@@ -9,9 +9,6 @@
 //	Include files
 //
 
-#include <list>
-#include <memory>
-
 #include "OtSlippyMap.h"
 
 

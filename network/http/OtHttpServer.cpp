@@ -10,7 +10,7 @@
 //
 
 #include "OtFunction.h"
-#include "OtLibuv.h"
+#include "OtLibuv.h" // IWYU pragma: keep
 #include "OtHttpServer.h"
 #include "OtHttpSession.h"
 

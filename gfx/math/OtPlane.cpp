@@ -9,7 +9,7 @@
 //	Include files
 //
 
-#include "OtGlm.h"
+#include "OtGlm.h" // IWYU pragma: keep
 #include "OtPlane.h"
 
 

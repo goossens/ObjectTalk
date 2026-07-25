@@ -10,7 +10,7 @@
 //
 
 #include "OtFrustum.h"
-#include "OtGlm.h"
+#include "OtGlm.h" // IWYU pragma: keep
 
 
 //

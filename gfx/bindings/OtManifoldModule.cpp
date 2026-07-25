@@ -9,14 +9,13 @@
 //	Include files
 //
 
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 
 #include "OtArray.h"
 #include "OtClass.h"
 #include "OtFunction.h"
 #include "OtModule.h"
 #include "OtObject.h"
-#include "OtValue.h"
 
 #include "OtManifoldModule.h"
 #include "OtShapeModule.h"

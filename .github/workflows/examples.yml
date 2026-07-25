@@ -1,0 +1,25 @@
+name: Examples
+
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v5
+
+    - name: Create Example Archives
+      run: |
+        tar cvfz examples.tgz examples
+        zip -r examples.zip examples
+
+    - name: Release Archives
+      uses: "svenstaro/upload-release-action@v2"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        tag: "development"
+        file: "examples.*"
+        file_glob: true
+        overwrite: true

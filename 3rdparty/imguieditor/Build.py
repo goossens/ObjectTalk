@@ -11,6 +11,20 @@ destination = "../../../ImGuiColorTextEdit/"
 
 
 #
+#	copyMain
+#
+
+def copyMain(src, dest):
+	with open(dest, "w") as output:
+		with open(src, "r") as input:
+			for line in input:
+				if (line == '#include <cmath>\n'):
+					output.write('#include <cstdint>\n#include <cmath>\n')
+				else:
+					output.write(line)
+
+
+#
 #	append
 #
 
@@ -53,7 +67,7 @@ if __name__ == "__main__":
 		sys.exit(1)
 
 	shutil.copyfile("TextEditor.h", destination + "TextEditor.h")
-	shutil.copyfile("TextEditor.cpp", destination + "TextEditor.cpp")
+	copyMain("TextEditor.cpp", destination + "TextEditor.cpp")
 
 	append("Cursors.cpp", 12)
 	append("Document.cpp", 12)

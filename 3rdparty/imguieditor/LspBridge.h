@@ -21,7 +21,7 @@
 #include <vector>
 
 #include "lsp/messagehandler.h"
-#include "lsp/messages.h"
+#include "lsp/types.h"
 #include "lsp/process.h"
 
 #include "TextEditor.h"

@@ -13,7 +13,7 @@
 #include <sstream>
 #include <utility>
 
-#include "lsp/io/stream.h"
+#include "lsp/messages.h"
 
 #include "LspBridge.h"
 

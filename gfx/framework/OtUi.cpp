@@ -15,7 +15,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <cstring>
 #include <format>
 #include <numbers>
 #include <string>
@@ -44,7 +43,7 @@ void OtUi::loadFonts() {
 	auto& io = ImGui::GetIO();
 
 	ImFontConfig textConfig{};
-	std::strncpy(textConfig.Name, "DejaVu", sizeof(textConfig.Name));
+	std::copy_n("DejaVu", sizeof("DejaVu"), textConfig.Name);
 	textConfig.FontLoaderFlags = ImGuiFreeTypeLoaderFlags_LightHinting;
 	textConfig.FontDataOwnedByAtlas = false;
 
@@ -55,7 +54,7 @@ void OtUi::loadFonts() {
 		&textConfig);
 
 	ImFontConfig boldConfig{};
-	std::strncpy(boldConfig.Name, "DejaVuBold", sizeof(textConfig.Name));
+	std::copy_n("DejaVuBold", sizeof("DejaVuBold"), boldConfig.Name);
 	boldConfig.FontLoaderFlags = ImGuiFreeTypeLoaderFlags_LightHinting;
 	boldConfig.FontDataOwnedByAtlas = false;
 
@@ -66,7 +65,7 @@ void OtUi::loadFonts() {
 		&boldConfig);
 
 	ImFontConfig audioConfig{};
-	std::strncpy(audioConfig.Name, "FontAudio", sizeof(audioConfig.Name));
+	std::copy_n("FontAudio", sizeof("FontAudio"), audioConfig.Name);
 	audioConfig.FontLoaderFlags = ImGuiFreeTypeLoaderFlags_LightHinting;
 	audioConfig.FontDataOwnedByAtlas = false;
 
@@ -77,7 +76,7 @@ void OtUi::loadFonts() {
 		&audioConfig);
 
 	ImFontConfig awesomeConfig{};
-	std::strncpy(awesomeConfig.Name, "FontAwesome", sizeof(awesomeConfig.Name));
+	std::copy_n("FontAwesome", sizeof("FontAwesome"), awesomeConfig.Name);
 	awesomeConfig.FontLoaderFlags = ImGuiFreeTypeLoaderFlags_LightHinting;
 	awesomeConfig.FontDataOwnedByAtlas = false;
 

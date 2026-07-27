@@ -142,9 +142,7 @@ void OtDebuggerUI::renderSourceCode() {
 		sourceCode.SetLanguage(OtObjectTalkLanguage::getDefinition());
 		sourceCode.SetText(OtText::load(currentDebuggable));
 
-		float width = ImGui::CalcTextSize("#").x;
-
-		sourceCode.SetLineDecorator(width, [this](TextEditor::Decorator& decorator) {
+		sourceCode.SetLineDecorator(1, [this](TextEditor::Decorator& decorator) {
 			renderDecorations(decorator);
 		});
 
@@ -169,7 +167,7 @@ void OtDebuggerUI::renderSourceCode() {
 
 void OtDebuggerUI::renderDecorations(TextEditor::Decorator& decorator) {
 	std::string decoration = (static_cast<size_t>(decorator.line) == stackFrame->line - 1) ? reinterpret_cast<const char*>(u8" \u25b7") : "  ";
-	OtUi::text(decoration);
+	ImGui::TextUnformatted(decoration.c_str());
 }
 
 

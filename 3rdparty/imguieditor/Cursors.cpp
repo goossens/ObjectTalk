@@ -330,8 +330,10 @@ void TextEditor::Cursors::update(const Document& document) {
 //	TextEditor::Cursors::adjustForInsert
 //
 
-void TextEditor::Cursors::adjustForInsert(iterator start, DocPos insertStart, DocPos insertEnd) {
-	for (auto cursor = start + 1; cursor < end(); cursor++) {
+void TextEditor::Cursors::adjustForInsert(iterator start, DocPos insertStart, DocPos insertEnd, bool includeCurrent) {
+	auto first = includeCurrent ? start : start + 1;
+
+	for (auto cursor = first; cursor < end(); cursor++) {
 		cursor->adjustForInsert(insertStart, insertEnd);
 	}
 }
@@ -341,8 +343,10 @@ void TextEditor::Cursors::adjustForInsert(iterator start, DocPos insertStart, Do
 //	TextEditor::Cursors::adjustForDelete
 //
 
-void TextEditor::Cursors::adjustForDelete(iterator start, DocPos deleteStart, DocPos deleteEnd) {
-	for (auto cursor = start + 1; cursor < end(); cursor++) {
+void TextEditor::Cursors::adjustForDelete(iterator start, DocPos deleteStart, DocPos deleteEnd, bool includeCurrent) {
+	auto first = includeCurrent ? start : start + 1;
+
+	for (auto cursor = first; cursor < end(); cursor++) {
 		cursor->adjustForDelete(deleteStart, deleteEnd);
 	}
 }

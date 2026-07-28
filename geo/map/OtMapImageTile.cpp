@@ -9,8 +9,6 @@
 //	Include files
 //
 
-#include <string>
-
 #include "OtMapImageTile.h"
 
 

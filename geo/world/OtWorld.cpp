@@ -5,35 +5,62 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
+//	Based on http://www-cs-students.stanford.edu/~amitp/game-programming/polygon-map-generation/
+
+
 //
 //	Include files
 //
 
 #include <algorithm>
 #include <cmath>
-#include <cstdint>
 #include <list>
-#include <numbers>
 #include <stack>
 
 #include "delaunator.h"
-#include "glm/gtc/matrix_transform.hpp"
 #include "nlohmann/json.hpp"
 
 #include "OtText.h"
 
-#include "OtGlm.h"
+#include "OtGlm.h" // IWYU pragma: keep
 #include "OtNoise.h"
-#include "OtImageCanvas.h"
 
 #include "OtWorld.h"
+
+
+//
+//	Biome rendering colors
+//
+
+static const char* colors[] = {
+	"#000000",
+	"#44447a",
+	"#336699",
+	"#2f6666",
+	"#99ffff",
+	"#a09077",
+	"#306090",
+	"#ffffff",
+	"#bbbbaa",
+	"#888888",
+	"#555555",
+	"#99aa77",
+	"#889977",
+	"#c9d29b",
+	"#448855",
+	"#679459",
+	"#88aa55",
+	"#d2b98b",
+	"#337755",
+	"#559944"
+};
 
 
 //
 //	Local 2D bounding box type
 //
 
-struct Bbox {
+struct BoundingBox {
 	inline void add(int x, int y) {
 		minX = std::min(minX, x);
 		minY = std::min(minY, y);
@@ -56,10 +83,10 @@ struct Bbox {
 
 
 //
-//	baryCentric
+//	barycentric
 //
 
-static glm::vec3 baryCentric(glm::vec2& a, glm::vec2& b, glm::vec2& c, glm::vec2& p) {
+static glm::vec3 barycentric(glm::vec2& a, glm::vec2& b, glm::vec2& c, glm::vec2& p) {
 	auto v0 = b - a;
 	auto v1 = c - a;
 	auto v2 = p - a;
@@ -124,89 +151,78 @@ void OtWorld::generate() {
 //
 
 void OtWorld::render(OtImage& image, int dimension, RenderType type) const {
-	static const char* colors[] = {
-		"#000000",
-		"#44447a",
-		"#336699",
-		"#2f6666",
-		"#99ffff",
-		"#a09077",
-		"#306090",
-		"#ffffff",
-		"#bbbbaa",
-		"#888888",
-		"#555555",
-		"#99aa77",
-		"#889977",
-		"#c9d29b",
-		"#448855",
-		"#679459",
-		"#88aa55",
-		"#d2b98b",
-		"#337755",
-		"#559944"
-	};
+	if (type == RenderType::regions) {
+		renderRegions(image, dimension);
 
-	// see if we need to render a heightmap
-	if (type == RenderType::heightMap) {
-		// create heightmap
-		OtHeightMap heightmap;
-		generateHeightMap(heightmap, dimension);
+	} else if (type == RenderType::biomes) {
+		renderColoredRegions(image, dimension, [](Region& region, OtImageCanvas& canvas) {
+			auto color = colors[static_cast<size_t>(region.biome)];
+			canvas.strokeColor(color);
+			canvas.fillColor(color);
+		});
 
-		float minElevation = heightmap.getMinElevation();
-		float maxElevation = heightmap.getMaxElevation();
-		float range = maxElevation - minElevation;
+	} else if (type == RenderType::distanceToWater) {
+		renderColoredRegions(image, dimension, [](Region& region, OtImageCanvas& canvas) {
+			if (region.ocean) {
+				auto red = 0.25f * (1.0f + region.elevation);
+				auto green = 0.25f * (1.0f + region.elevation);
+				auto blue = 0.5f * (1.0f + region.elevation);
+				canvas.strokeColor(red, green, blue, 1.0f);
+				canvas.fillColor(red, green, blue, 1.0f);
 
-		// get image ready
-		image.update(dimension, dimension, OtImage::Format::rgba32);
-		auto p = static_cast<float*>(image.getPixels());
-
-		for (int y = 0; y < dimension; y++) {
-			for (int x = 0; x < dimension; x++) {
-				auto elevation = heightmap.getElevation(x, y);
-				*p++ = (elevation - minElevation) / range;
-				*p++ = 0.0f;
-				*p++ = 0.0f;
-				*p++ = 1.0f;
-			}
-		}
-
-	} else {
-		// render the world
-		OtImageCanvas canvas(dimension, dimension);
-		auto scale = static_cast<float>(dimension) / static_cast<float>(world->size);
-		canvas.scale(scale, scale);
-
-		for (auto& region : world->regions) {
-			if (type == RenderType::biomes) {
+			} else if (region.water) {
 				auto color = colors[static_cast<size_t>(region.biome)];
 				canvas.strokeColor(color);
 				canvas.fillColor(color);
 
 			} else {
-				if (region.ocean) {
-					auto red = 0.25f * (1.0f + region.elevation);
-					auto green = 0.25f * (1.0f + region.elevation);
-					auto blue = 0.5f * (1.0f + region.elevation);
-					canvas.strokeColor(red, green, blue, 1.0f);
-					canvas.fillColor(red, green, blue, 1.0f);
-
-				} else if (region.water) {
-					auto color = colors[static_cast<size_t>(region.biome)];
-					canvas.strokeColor(color);
-					canvas.fillColor(color);
-
-				} else {
-					auto white = (1.0f - region.temperature) * (1.0f - region.temperature);
-					auto moisture = 1.0f - ((1.0f - region.moisture) * (1.0f - region.moisture));
-					auto red = white + (0.85f - 0.39f * moisture) * (1.0f - white);
-					auto green = white + (0.73f - 0.18f * moisture) * (1.0f - white);
-					auto blue = white + (0.55f - 0.18f * moisture) * (1.0f - white);
-					canvas.strokeColor(red, green, blue, 1.0f);
-					canvas.fillColor(red, green, blue, 1.0f);
-				}
+				auto white = (1.0f - region.temperature) * (1.0f - region.temperature);
+				auto moisture = 1.0f - ((1.0f - region.moisture) * (1.0f - region.moisture));
+				auto red = white + (0.85f - 0.39f * moisture) * (1.0f - white);
+				auto green = white + (0.73f - 0.18f * moisture) * (1.0f - white);
+				auto blue = white + (0.55f - 0.18f * moisture) * (1.0f - white);
+				canvas.strokeColor(red, green, blue, 1.0f);
+				canvas.fillColor(red, green, blue, 1.0f);
 			}
+		});
 
+	} else if (type == RenderType::heightMap) {
+		renderHeightMap(image, dimension);
+	}
+
+	image.incrementVersion();
+}
+
+
+//
+//	OtWorld::renderRegions
+//
+
+void OtWorld::renderRegions(OtImage& image, int dimension) const {
+	// render the world
+	OtImageCanvas canvas(dimension, dimension);
+	auto offset = static_cast<float>(ghostOffset + 1);
+	auto scale = static_cast<float>(dimension) / (static_cast<float>(world->size) + offset * 2.0f);
+	canvas.scale(scale, scale);
+	canvas.translate(offset, offset);
+
+	// render result of triangulation
+	canvas.strokeColor(0.4f, 0.4f, 0.4f, 1.0f);
+	canvas.lineWidth(1.0f / scale);
+
+	for (auto& region : world->regions) {
+		for (auto& index : region.neighbors) {
+			auto& neighbor = world->regions[index];
+			canvas.beginPath();
+			canvas.moveTo(region.center.x, region.center.y);
+			canvas.lineTo(neighbor.center.x, neighbor.center.y);
+			canvas.stroke();
+		}
+	}
+
+	// render region outlines
+	for (auto& region : world->regions) {
+		if (!region.ghost) {
 			canvas.beginPath();
 			canvas.moveTo(world->corners[region.corners[0]].position.x, world->corners[region.corners[0]].position.y);
 
@@ -215,13 +231,92 @@ void OtWorld::render(OtImage& image, int dimension, RenderType type) const {
 			}
 
 			canvas.closePath();
-			canvas.strokeAndFill();
+			canvas.strokeColor(0.0f, 0.7f, 0.0f, 1.0f);
+			canvas.stroke();
 		}
-
-		canvas.render(image);
 	}
 
-	image.incrementVersion();
+	// mark extend
+	canvas.beginPath();
+	canvas.moveTo(0.0f, 0.0f);
+	canvas.lineTo(0.0f, static_cast<float>(size));
+	canvas.lineTo(static_cast<float>(size), static_cast<float>(size));
+	canvas.lineTo(static_cast<float>(size), 0.0f);
+	canvas.closePath();
+	canvas.strokeColor(0.0f, 0.7f, 0.7f, 1.0f);
+	canvas.stroke();
+
+	// mark all region centers
+	for (auto& region : world->regions) {
+		canvas.beginPath();
+		canvas.circle(region.center.x, region.center.y, 3.0f / scale);
+
+		if (region.ghost) {
+			canvas.fillColor(0.0f, 0.0f, 0.7f, 1.0f);
+
+		} else {
+			canvas.fillColor(0.7f, 0.0f, 0.0f, 1.0f);
+		}
+
+		canvas.fill();
+	}
+
+	canvas.render(image);
+}
+
+
+//
+//	OtWorld::renderHeightMap
+//
+
+void OtWorld::renderHeightMap(OtImage& image, int dimension) const {
+	// create heightmap
+	OtHeightMap heightmap;
+	generateHeightMap(heightmap, dimension);
+
+	float minElevation = heightmap.getMinElevation();
+	float maxElevation = heightmap.getMaxElevation();
+	float range = maxElevation - minElevation;
+
+	// get image ready
+	image.update(dimension, dimension, OtImage::Format::rgba32);
+	auto p = static_cast<float*>(image.getPixels());
+
+	for (int y = 0; y < dimension; y++) {
+		for (int x = 0; x < dimension; x++) {
+			auto elevation = heightmap.getElevation(x, y);
+			*p++ = (elevation - minElevation) / range;
+			*p++ = 0.0f;
+			*p++ = 0.0f;
+			*p++ = 1.0f;
+		}
+	}
+}
+
+
+//
+//	OtWorld::renderColoredRegions
+//
+
+void OtWorld::renderColoredRegions(OtImage& image, int dimension, std::function<void(Region&, OtImageCanvas&)> setup) const {
+	OtImageCanvas canvas(dimension, dimension);
+	auto scale = static_cast<float>(dimension) / static_cast<float>(world->size);
+	canvas.scale(scale, scale);
+
+	for (auto& region : world->regions) {
+		canvas.beginPath();
+		canvas.moveTo(world->corners[region.corners[0]].position.x, world->corners[region.corners[0]].position.y);
+
+		for (size_t i = 1; i < region.corners.size(); i++) {
+			canvas.lineTo(world->corners[region.corners[i]].position.x, world->corners[region.corners[i]].position.y);
+		}
+
+		canvas.closePath();
+		setup(region, canvas);
+		canvas.strokeAndFill();
+	}
+
+	canvas.render(image);
 }
 
 
@@ -269,7 +364,7 @@ void OtWorld::generateHeightMap(OtHeightMap& heightmap, int dimension) const {
 		auto& v3 = vertices[indices[i + 2]];
 
 		// determine bounding box
-		Bbox bbox;
+		BoundingBox bbox;
 		bbox.add(static_cast<int>(v1.position.x), static_cast<int>(v1.position.y));
 		bbox.add(static_cast<int>(v2.position.x), static_cast<int>(v2.position.y));
 		bbox.add(static_cast<int>(v3.position.x), static_cast<int>(v3.position.y));
@@ -279,7 +374,7 @@ void OtWorld::generateHeightMap(OtHeightMap& heightmap, int dimension) const {
 		for (int y = bbox.minY; y <= bbox.maxY; y++) {
 			for (int x = bbox.minX; x <= bbox.maxX; x++) {
 				auto pixelCenter = glm::vec2(x + 0.5f, y + 0.5f);
-				auto bc = baryCentric(v1.position, v2.position, v3.position, pixelCenter);
+				auto bc = barycentric(v1.position, v2.position, v3.position, pixelCenter);
 
 				if (bc.x > 0.0f && bc.y >= 0.0f && bc.z >= 0.0f && !std::isnan(bc.x)) {
 					auto elevation = bc.x * v1.elevation + bc.y * v2.elevation + bc.z * v3.elevation;
@@ -497,14 +592,14 @@ void OtWorld::World::generateRegions() {
 	for (auto y = 1; y < size; y++) {
 		for (auto x = 1; x < size; x++) {
 			addRegion(
-				x + (noise.noise(
+				x + noise.noise(
 					static_cast<float>(x),
 					static_cast<float>(y),
-					static_cast<float>(seed + 1)) * 2.0f - 1.0f) * 0.49f,
-				y + (noise.noise(
+					static_cast<float>(seed + 1)) * 0.48f,
+				y + noise.noise(
 					static_cast<float>(x),
 					static_cast<float>(y),
-					static_cast<float>(seed + 2)) * 2.0f - 1.0f) * 0.49f);
+					static_cast<float>(seed + 2)) * 0.48f);
 		}
 	}
 
@@ -522,14 +617,14 @@ void OtWorld::World::generateRegions() {
 
 	// create ghost regions (top and bottom)
 	for (auto x = -1; x <= size + 1; x++) {
-		addGhostRegion(static_cast<float>(x), -10.0f);
-		addGhostRegion(static_cast<float>(x), static_cast<float>(size + 10.0f));
+		addGhostRegion(static_cast<float>(x), static_cast<float>(-ghostOffset));
+		addGhostRegion(static_cast<float>(x), static_cast<float>(size + ghostOffset));
 	}
 
 	// create ghost regions (left and right)
 	for (auto y = 0; y <= size; y++) {
-		addGhostRegion(-10.0f, static_cast<float>(y));
-		addGhostRegion(static_cast<float>(size + 10.0f), static_cast<float>(y));
+		addGhostRegion(static_cast<float>(-ghostOffset), static_cast<float>(y));
+		addGhostRegion(static_cast<float>(size + ghostOffset), static_cast<float>(y));
 	}
 
 	// perform Delaunay triangulation on regions

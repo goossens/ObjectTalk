@@ -143,15 +143,15 @@
 							0.32300883531570435,
 							0.09433001279830933
 						],
-						"bladeCurve": 0.6499999761581421,
+						"bladeCurve": 0.46000000834465027,
 						"bladeHeight": 0.4000000059604645,
 						"bladePointiness": 0.0,
 						"bladeSegments": 4,
-						"bladeWidth": 0.017000000923871994,
-						"blades": 10000,
+						"bladeWidth": 0.019999999552965164,
+						"blades": 50000,
 						"castShadow": true,
-						"colorVariation": 0.5600000023841858,
-						"heightVariation": 0.3499999940395355,
+						"colorVariation": 0.7699999809265137,
+						"heightVariation": 0.6000000238418579,
 						"patchDepth": 4.0,
 						"patchWidth": 4.0,
 						"tipColor": [
@@ -159,10 +159,10 @@
 							0.5265486836433411,
 							0.15377084910869598
 						],
-						"widthVariation": 0.33000001311302185,
+						"widthVariation": 1.0,
 						"windDirection": 90.0,
 						"windStrength": 0.15000000596046448,
-						"windVariation": 0.20000000298023224
+						"windVariation": 0.14000000059604645
 					}
 				}
 			]
@@ -199,6 +199,7 @@
 		"type": "scene"
 	},
 	"processing": {
+		"backgroundFogRatio": 1.0,
 		"bloom": true,
 		"bloomIntensity": 0.800000011920929,
 		"contrast": 1.0,

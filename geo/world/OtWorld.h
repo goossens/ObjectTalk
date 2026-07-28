@@ -12,17 +12,19 @@
 //	Include files
 //
 
+#include <functional>
 #include <limits>
 #include <memory>
 #include <set>
 #include <string>
 #include <vector>
 
-#include "glm/glm.hpp"
+#include "glm/glm.hpp" // IWYU pragma: keep
 #include "nlohmann/json_fwd.hpp"
 
 #include "OtHeightMap.h"
 #include "OtImage.h"
+#include "OtImageCanvas.h"
 
 
 //
@@ -57,12 +59,14 @@ public:
 
 	// render types
 	enum class RenderType {
+		regions,
 		biomes,
 		distanceToWater,
 		heightMap
 	};
 
 	static constexpr const char* renderTypes[] = {
+		"Regions",
 		"Biomes",
 		"Distance To Water",
 		"Height Map"
@@ -115,7 +119,7 @@ private:
 	struct Region {
 	public:
 		Region() = default;
-		Region(size_t i, glm::vec2 c) : id(i), center(c) {}
+		Region(size_t id, glm::vec2 center) : id(id), center(center) {}
 
 		nlohmann::json serialize();
 		void deserialize(nlohmann::json& data);
@@ -141,7 +145,7 @@ private:
 	struct Corner {
 	public:
 		Corner() = default;
-		Corner(size_t i, glm::vec2 p) : id(i), position(p) {}
+		Corner(size_t id, glm::vec2 position) : id(id), position(position) {}
 
 		nlohmann::json serialize();
 		void deserialize(nlohmann::json& data);
@@ -187,33 +191,38 @@ private:
 		std::set<size_t> oceanshores;
 		std::set<size_t> lakeshores;
 
-	inline void addRegion(float x, float y) { regions.emplace_back(regions.size(), glm::vec2(x, y)); }
+		inline void addRegion(float x, float y) { regions.emplace_back(regions.size(), glm::vec2(x, y)); }
 
-	inline void addBorderRegion(float x, float y) {
-		auto id = regions.size();
-		auto& region = regions.emplace_back(id, glm::vec2(x, y));
-		region.border = true;
-		region.water = true;
-		region.ocean = true;
-		borders.insert(id);
-		oceans.insert(id);
-	}
+		inline void addBorderRegion(float x, float y) {
+			auto id = regions.size();
+			auto& region = regions.emplace_back(id, glm::vec2(x, y));
+			region.border = true;
+			region.water = true;
+			region.ocean = true;
+			borders.insert(id);
+			oceans.insert(id);
+		}
 
-	inline void addGhostRegion(float x, float y) {
-		auto id = regions.size();
-		auto& region = regions.emplace_back(id, glm::vec2(x, y));
-		region.ghost = true;
-		region.water = true;
-		region.ocean = true;
-		oceans.insert(id);
-	}
+		inline void addGhostRegion(float x, float y) {
+			auto id = regions.size();
+			auto& region = regions.emplace_back(id, glm::vec2(x, y));
+			region.ghost = true;
+			region.water = true;
+			region.ocean = true;
+			oceans.insert(id);
+		}
 
-	inline void addCorner(glm::vec2 pos) { corners.emplace_back(corners.size(), pos); }
+		inline void addCorner(glm::vec2 pos) { corners.emplace_back(corners.size(), pos); }
 
-	inline size_t triangleOfEdge(size_t e) { return e / 3; }
-	inline size_t nextHalfEdge(size_t e) { return (e % 3 == 2) ? e - 2 : e + 1; }
-	inline size_t prevHalfEdge(size_t e) { return (e % 3 == 0) ? e + 2 : e - 1; }
-};
+		inline size_t triangleOfEdge(size_t e) { return e / 3; }
+		inline size_t nextHalfEdge(size_t e) { return (e % 3 == 2) ? e - 2 : e + 1; }
+		inline size_t prevHalfEdge(size_t e) { return (e % 3 == 0) ? e + 2 : e - 1; }
+	};
+
+	// rendering functions
+	void renderRegions(OtImage& image, int dimension) const;
+	void renderHeightMap(OtImage& image, int dimension) const;
+	void renderColoredRegions(OtImage& image, int dimension, std::function<void(Region&, OtImageCanvas&)> setup) const;
 
 	// properties
 	int size = 64;
@@ -225,4 +234,5 @@ private:
 
 	static constexpr size_t invalidIndex = std::numeric_limits<size_t>::max();
 	static constexpr float invalidValue = std::numeric_limits<float>::max();
+	static constexpr int ghostOffset = 1;
 };

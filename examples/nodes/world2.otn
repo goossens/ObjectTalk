@@ -11,11 +11,6 @@
 			"to": 3402575417
 		},
 		{
-			"from": 591397593,
-			"id": 303502022,
-			"to": 1852624315
-		},
-		{
 			"from": 800095462,
 			"id": 2232884649,
 			"to": 797304172
@@ -34,21 +29,6 @@
 			"from": 2865025510,
 			"id": 4002341040,
 			"to": 1557016206
-		},
-		{
-			"from": 2058357043,
-			"id": 3667428162,
-			"to": 3644423933
-		},
-		{
-			"from": 468368962,
-			"id": 1283815608,
-			"to": 564795910
-		},
-		{
-			"from": 599750789,
-			"id": 3613672735,
-			"to": 3791022720
 		}
 	],
 	"metadata": {},
@@ -60,7 +40,7 @@
 					"id": 3359103614,
 					"name": "Size",
 					"type": "int",
-					"value": 200
+					"value": 10
 				},
 				{
 					"id": 3612237621,
@@ -109,11 +89,11 @@
 					"type": "image"
 				}
 			],
-			"renderType": 2,
+			"renderType": 0,
 			"title": "World to Image",
 			"type": "World to Image",
-			"x": 320.5,
-			"y": 9.0
+			"x": 322.5,
+			"y": 181.0
 		},
 		{
 			"id": 3197117613,
@@ -125,10 +105,10 @@
 				}
 			],
 			"outputs": [],
-			"title": "Distance to Water",
+			"title": "Regions",
 			"type": "Image Probe",
-			"x": 766.0,
-			"y": 5.0
+			"x": 768.0,
+			"y": 177.0
 		},
 		{
 			"id": 2189420124,
@@ -155,107 +135,8 @@
 			"renderType": 3,
 			"title": "World to Image",
 			"type": "World to Image",
-			"x": 320.5,
-			"y": 390.0
-		},
-		{
-			"id": 2113648312,
-			"inputs": [
-				{
-					"id": 564795910,
-					"name": "World",
-					"type": "world"
-				},
-				{
-					"id": 3831320626,
-					"name": "Size",
-					"type": "int",
-					"value": 512
-				}
-			],
-			"outputs": [
-				{
-					"id": 599750789,
-					"name": "Height Map",
-					"type": "Heightmap"
-				}
-			],
-			"title": "World to Height Map",
-			"type": "World to Height Map",
-			"x": 330.0,
-			"y": 595.0
-		},
-		{
-			"id": 2359960004,
-			"inputs": [
-				{
-					"id": 3791022720,
-					"name": "Input",
-					"type": "Heightmap"
-				}
-			],
-			"outputs": [
-				{
-					"id": 591397593,
-					"name": "Output",
-					"type": "geometry"
-				}
-			],
-			"title": "Terrain Builder",
-			"type": "Terrain Builder",
-			"x": 623.0,
-			"y": 568.0
-		},
-		{
-			"id": 364438754,
-			"inputs": [
-				{
-					"id": 1852624315,
-					"name": "Input",
-					"type": "geometry"
-				},
-				{
-					"id": 642812204,
-					"name": "Translate",
-					"type": "vector3",
-					"value": [
-						0.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": 4199914809,
-					"name": "Rotate",
-					"type": "vector3",
-					"value": [
-						0.0,
-						0.0,
-						0.0
-					]
-				},
-				{
-					"id": 330560579,
-					"name": "Scale",
-					"type": "vector3",
-					"value": [
-						10.0,
-						3.0,
-						10.0
-					]
-				}
-			],
-			"outputs": [
-				{
-					"id": 2058357043,
-					"name": "Output",
-					"type": "geometry"
-				}
-			],
-			"title": "Geometry Transform",
-			"type": "Geometry Transform",
-			"x": 814.0,
-			"y": 543.0
+			"x": 322.5,
+			"y": 562.0
 		},
 		{
 			"id": 1962373291,
@@ -282,8 +163,8 @@
 			"renderType": 1,
 			"title": "World to Image",
 			"type": "World to Image",
-			"x": 320.5,
-			"y": 205.0
+			"x": 322.5,
+			"y": 377.0
 		},
 		{
 			"id": 1154274012,
@@ -297,8 +178,8 @@
 			"outputs": [],
 			"title": "Biomes",
 			"type": "Image Probe",
-			"x": 1023.0,
-			"y": 32.0
+			"x": 1025.0,
+			"y": 204.0
 		},
 		{
 			"id": 2401587037,
@@ -312,37 +193,8 @@
 			"outputs": [],
 			"title": "Height Map",
 			"type": "Image Probe",
-			"x": 598.0,
-			"y": 274.0
-		},
-		{
-			"azimuth": 19.5653076171875,
-			"elevation": 37.595115661621094,
-			"id": 1546965795,
-			"inputs": [
-				{
-					"id": 3644423933,
-					"name": "Geometry",
-					"type": "geometry"
-				}
-			],
-			"lightColor": [
-				1.0,
-				1.0,
-				1.0
-			],
-			"meshColor": [
-				1.0,
-				0.8500000238418579,
-				0.0
-			],
-			"outputs": [],
-			"title": "Geometry Probe",
-			"type": "Geometry Probe",
-			"wireframe": false,
-			"x": 1166.0,
-			"y": 305.0,
-			"zoom": 1.3976020812988281
+			"x": 600.0,
+			"y": 446.0
 		}
 	]
 }

@@ -57,6 +57,7 @@ In case User Interface (UI) modules are included, we also use:
 * The sky shader is based on [OpenGL Sky](https://github.com/shff/opengl_sky/tree/master) released under the [MIT License](https://opensource.org/licenses/MIT).
 * The water shader is based on a [YouTube tutorial series](https://www.youtube.com/watch?v=HusvGeEDU_U) by Karl Wimble also known as [ThinMatrix](https://www.youtube.com/@ThinMatrix).
 * Some shaders and shader ideas are based on [JungleIN](https://github.com/BKcore/JungleIN), an OpenGL jungle viewer written as part of a scholar project, released under the [MIT license](https://opensource.org/licenses/MIT).
+* Procedural world generation is based on blog posts by [Amit Patel](https://www.redblobgames.com) and the [associated JavaScript code](https://github.com/redblobgames/mapgen2) which is released under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
 ## Fonts
 

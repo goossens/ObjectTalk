@@ -97,7 +97,7 @@ public:
 	inline void clear() { world.clear(); }
 
 	// set properties
-	inline OtObject setSize(int value) { world.setSize(value); return OtWorldGeneratorObject(this); }
+	inline OtObject setRegionGridSize(int value) { world.setRegionGridSize(value); return OtWorldGeneratorObject(this); }
 	inline OtObject setSeed(int value) { world.setSeed(value); return OtWorldGeneratorObject(this); }
 	inline OtObject setRuggedness(float value) { world.setRuggedness(value); return OtWorldGeneratorObject(this); }
 
@@ -122,7 +122,7 @@ public:
 			type->set("save", OtFunction::create(&OtWorldGeneratorClass::save));
 			type->set("clear", OtFunction::create(&OtWorldGeneratorClass::clear));
 
-			type->set("setSize", OtFunction::create(&OtWorldGeneratorClass::setSize));
+			type->set("setRegionGridSize", OtFunction::create(&OtWorldGeneratorClass::setRegionGridSize));
 			type->set("setSeed", OtFunction::create(&OtWorldGeneratorClass::setSeed));
 			type->set("setRuggedness", OtFunction::create(&OtWorldGeneratorClass::setRuggedness));
 

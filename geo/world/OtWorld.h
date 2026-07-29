@@ -22,9 +22,11 @@
 #include "glm/glm.hpp" // IWYU pragma: keep
 #include "nlohmann/json_fwd.hpp"
 
-#include "OtHeightMap.h"
 #include "OtImage.h"
 #include "OtImageCanvas.h"
+#include "OtShape.h"
+
+#include "OtHeightMap.h"
 
 
 //
@@ -85,7 +87,7 @@ public:
 	inline bool isValid() { return world && world->regions.size(); }
 
 	// set properties
-	inline void setSize(int value) { size = value; }
+	inline void setRegionGridSize(int value) { regionGridSize = value; }
 	inline void setSeed(int value) { seed = value; }
 	inline void setRuggedness(float value) { ruggedness = value; }
 
@@ -121,9 +123,6 @@ private:
 		Region() = default;
 		Region(size_t id, glm::vec2 center) : id(id), center(center) {}
 
-		nlohmann::json serialize();
-		void deserialize(nlohmann::json& data);
-
 		size_t id = 0;
 		glm::vec2 center;
 		float distance = invalidValue;
@@ -140,15 +139,13 @@ private:
 		bool lakeshore = false;
 		std::vector<size_t> corners;
 		std::set<size_t> neighbors;
+		OtShape shape;
 	};
 
 	struct Corner {
 	public:
 		Corner() = default;
 		Corner(size_t id, glm::vec2 position) : id(id), position(position) {}
-
-		nlohmann::json serialize();
-		void deserialize(nlohmann::json& data);
 
 		size_t id = 0;
 		glm::vec2 position;
@@ -175,7 +172,7 @@ private:
 		void assignTemperature();
 		void assignBiome();
 
-		int size = 64;
+		int regionGridSize = 64;
 		int seed = 37;
 		float ruggedness = 0.4f;
 		float northBias = -0.2f;
@@ -225,7 +222,7 @@ private:
 	void renderColoredRegions(OtImage& image, int dimension, std::function<void(Region&, OtImageCanvas&)> setup) const;
 
 	// properties
-	int size = 64;
+	int regionGridSize = 64;
 	int seed = 37;
 	float ruggedness = 0.4f;
 

@@ -17,6 +17,7 @@
 
 #include "OtColorParser.h"
 #include "OtImage.h"
+#include "OtShape.h"
 
 
 //
@@ -66,6 +67,9 @@ public:
 	inline void stroke() { plutovg_canvas_stroke(canvas); }
 	inline void fill() { plutovg_canvas_fill(canvas); }
 	inline void strokeAndFill() { plutovg_canvas_stroke_preserve(canvas); plutovg_canvas_fill(canvas); }
+
+	// render shape
+	inline void addShape(const OtShape& shape) { plutovg_canvas_add_path(canvas, shape.path); }
 
 	// render canvas to image
 	void render(OtImage& image);

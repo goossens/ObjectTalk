@@ -37,10 +37,10 @@
 			"id": 1579014303,
 			"inputs": [
 				{
-					"id": 3359103614,
-					"name": "Size",
+					"id": 1416293889,
+					"name": "Region Grid Size",
 					"type": "int",
-					"value": 10
+					"value": 32
 				},
 				{
 					"id": 3612237621,

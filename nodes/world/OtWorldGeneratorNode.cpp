@@ -27,7 +27,7 @@ class OtWorldGeneratorNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
-		addInputPin("Size", size);
+		addInputPin("Region Grid Size", regionGridSize);
 		addInputPin("Seed", seed);
 		addInputPin("Ruggedness", ruggedness);
 		static constexpr const char* outputLabel = "World";
@@ -83,8 +83,8 @@ public:
 
 private:
 	// properties
+	int regionGridSize = 32;
 	int seed = 1;
-	int size = 32;
 	float ruggedness = 0.5f;
 
 	// world component
@@ -98,8 +98,8 @@ private:
 
 	// local functions
 	void scheduleGeneration() {
+		newWorld.setRegionGridSize(std::clamp(regionGridSize, 4, 4096));
 		newWorld.setSeed(std::clamp(seed, 1, 1024));
-		newWorld.setSize(std::clamp(size, 4, 4096));
 		newWorld.setRuggedness(std::clamp(ruggedness, 0.0f, 1.0f));
 
 		OtThreadPool::run([this]() {

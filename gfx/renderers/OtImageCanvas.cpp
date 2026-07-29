@@ -10,6 +10,7 @@
 //
 
 #include "OtImageCanvas.h"
+#include "plutovg.h"
 
 
 //

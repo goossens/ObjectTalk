@@ -16,18 +16,16 @@
 #include "OtWorldTileID.h"
 
 
-/*
-	world size:		2048 x 2048 meters
-	quad size:		128
-	tile size:		132
-	border size:	2
+	// world size:		2048 x 2048 meters
+	// quad size:		128
+	// tile size:		132
+	// border size:	2
 
-	level	spacing		tiles
-	0		8			4
-	1		4			16
-	2		2			64
-	3		1			256
-*/
+	// level	spacing		tiles
+	// 0		8			4
+	// 1		4			16
+	// 2		2			64
+	// 3		1			256
 
 
 //

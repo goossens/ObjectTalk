@@ -138,6 +138,7 @@ public:
 	}
 
 private:
+	friend class OtImageCanvas;
 	plutovg_path_t* path;
 	int version = 0;
 

@@ -114,11 +114,12 @@ void OtNodesWidget::render(OtNodes* n) {
 	ImGui::BeginChild("nodes", ImVec2(), ImGuiChildFlags_None, flags);
 
 	const auto& style = ImGui::GetStyle();
-	pinOffset = style.FramePadding.y + ImGui::GetFontBaked()->Ascent - pinRadius + 1.0f;
+	auto scale = style.FontScaleDpi;
+
+	pinOffset = style.FramePadding.y + (ImGui::GetFontBaked()->Ascent * scale) - pinRadius + 1.0f;
 	ImDrawList* drawlist = ImGui::GetWindowDrawList();
 	widgetOffset = ImGui::GetCursorScreenPos();
 
-	auto scale = style.FontScaleDpi;
 	gridSpacing = 64.0f * scale;
 	nodeRounding = 4.0f * scale;
 	fontSize = 15.0f;

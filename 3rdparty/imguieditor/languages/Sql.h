@@ -61,7 +61,7 @@ const TextEditor::Language* TextEditor::Language::Sql() {
 			"treat", "trigger", "trim", "trim_array", "true", "truncate", "uescape", "union", "unique", "unknown", "unnest",
 			"update", "upper", "user", "using", "value", "values", "value_of", "varbinary", "varchar", "varying", "var_pop",
 			"var_samp", "versioning", "when", "whenever", "where", "width_bucket", "window", "with", "within", "without", "year"
-	   };
+		};
 
 		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
 

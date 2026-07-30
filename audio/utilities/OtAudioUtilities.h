@@ -64,6 +64,6 @@ public:
 	}
 
 	static inline float differenceInCents(float frequency1, float frequency2) {
-	    return 1200.0f * std::log2(frequency2 / frequency1);
+		return 1200.0f * std::log2(frequency2 / frequency1);
 	}
 };

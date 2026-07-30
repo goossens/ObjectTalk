@@ -60,7 +60,7 @@ with all its greatness and flaws. ObjectTalk represents what I think
 is a well-balanced scripting language that is easy to learn and can make
 even a novice look good quickly. If you are interested in how I got
 to where we are today, please see the
-[history](https://goossens.github.io/ObjectTalk/tour.html#history)
+[history](https://goossens.github.io/ObjectTalk/language-tour.html#history)
 page for the story behind ObjectTalk.
 
 Full documentation for ObjectTalk can be found in

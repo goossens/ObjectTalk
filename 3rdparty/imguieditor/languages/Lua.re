@@ -28,8 +28,8 @@ static TextEditor::Iterator getLuaStyleNumber(TextEditor::Iterator start, TextEd
 	re2c:yyfill:enable = 0;
 	re2c:eof = 0;
 
-	digit        = [0-9];
-	hexDigit     = [0-9a-fA-F];
+	digit		= [0-9];
+	hexDigit	= [0-9a-fA-F];
 
 	digit*																{ return i; }		// decimal integer
 	("0x" | "0X") hexDigit+ ("." hexDigit*)? ([pP] [+-]? hexDigit*)?	{ return i; }		// hexadecimal integer

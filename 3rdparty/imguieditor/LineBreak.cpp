@@ -368,7 +368,7 @@ static inline TextEditor::BreakOption lb9(LineBreakState& state) {
 	static const std::unordered_set<LBC> BKCRLFNLSPZW = {LBC::bk, LBC::cr, LBC::lf, LBC::nl, LBC::sp, LBC::zw};
 
 	// treat X (CM | ZWJ)* as if it were X
-  	// where X is any line break class except BK, CR, LF, NL, SP, or ZW
+	// where X is any line break class except BK, CR, LF, NL, SP, or ZW
 	if (BKCRLFNLSPZW.find(state.current.cls) == BKCRLFNLSPZW.end() &&
 		(state.next.cls == LBC::cm || state.next.cls == LBC::zwj)) {
 
@@ -936,8 +936,8 @@ static inline TextEditor::BreakOption lb26(const LineBreakState& state) {
 			break;
 
 		default:
-		  return TextEditor::BreakOption::undefined;
-  	}
+			return TextEditor::BreakOption::undefined;
+	}
 
 	return TextEditor::BreakOption::undefined;
 }
@@ -969,7 +969,7 @@ static inline TextEditor::BreakOption lb27(const LineBreakState& state) {
 			break;
 
 		default:
-		  return TextEditor::BreakOption::undefined;
+			return TextEditor::BreakOption::undefined;
 	}
 
 	return TextEditor::BreakOption::undefined;
@@ -1101,14 +1101,14 @@ static inline TextEditor::BreakOption lb30b(const LineBreakState& state) {
 }
 
 
-#define RULE(r) 													\
+#define RULE(r)														\
 	result = r(state);												\
 																	\
 	if (result != TextEditor::BreakOption::undefined) {				\
 		return result;												\
 	}
 
-#define RULE2(r) 													\
+#define RULE2(r)													\
 	if (config.r) {													\
 		RULE(r)														\
 	}

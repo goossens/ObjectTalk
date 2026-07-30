@@ -236,7 +236,7 @@ void OtMarkdown::hBlock(const MD_BLOCK_H_DETAIL* detail, bool enter) {
 //
 
 void OtMarkdown::codeBlock([[maybe_unused]] const MD_BLOCK_CODE_DETAIL* detail, bool enter) {
-    if (enter) {
+	if (enter) {
 		auto font = getFont();
 		ImGui::PushFont(font.font, font.size);
 
@@ -779,11 +779,11 @@ void OtMarkdown::line(ImColor color, bool under) {
 
 ImVec4 OtMarkdown::admonitionColor(AdmonitionKind kind) {
 	switch (kind) {
-		case AdmonitionKind::Note:      return ImVec4(0.35f, 0.65f, 1.00f, 1.0f);
-		case AdmonitionKind::Tip:       return ImVec4(0.25f, 0.73f, 0.32f, 1.0f);
+		case AdmonitionKind::Note: return ImVec4(0.35f, 0.65f, 1.00f, 1.0f);
+		case AdmonitionKind::Tip: return ImVec4(0.25f, 0.73f, 0.32f, 1.0f);
 		case AdmonitionKind::Important: return ImVec4(0.82f, 0.60f, 0.97f, 1.0f);
-		case AdmonitionKind::Warning:   return ImVec4(0.95f, 0.75f, 0.22f, 1.0f);
-		case AdmonitionKind::Caution:   return ImVec4(0.97f, 0.32f, 0.29f, 1.0f);
+		case AdmonitionKind::Warning: return ImVec4(0.95f, 0.75f, 0.22f, 1.0f);
+		case AdmonitionKind::Caution: return ImVec4(0.97f, 0.32f, 0.29f, 1.0f);
 		default: return ImGui::GetStyle().Colors[ImGuiCol_TextDisabled];
 	}
 }
@@ -795,11 +795,11 @@ ImVec4 OtMarkdown::admonitionColor(AdmonitionKind kind) {
 
 const char* OtMarkdown::admonitionLabel(AdmonitionKind kind) {
 	switch (kind) {
-		case AdmonitionKind::Note:      return "NOTE";
-		case AdmonitionKind::Tip:       return "TIP";
+		case AdmonitionKind::Note: return "NOTE";
+		case AdmonitionKind::Tip: return "TIP";
 		case AdmonitionKind::Important: return "IMPORTANT";
-		case AdmonitionKind::Warning:   return "WARNING";
-		case AdmonitionKind::Caution:   return "CAUTION";
+		case AdmonitionKind::Warning: return "WARNING";
+		case AdmonitionKind::Caution: return "CAUTION";
 		default: return "";
 	}
 }
@@ -849,11 +849,11 @@ OtMarkdown::AdmonitionKind OtMarkdown::matchAdmonitionMarker(const char* start, 
 
 	AdmonitionKind kind = AdmonitionKind::None;
 
-	if      (eq(p, close, "NOTE"))      { kind = AdmonitionKind::Note; }
-	else if (eq(p, close, "TIP"))       { kind = AdmonitionKind::Tip; }
+	if (eq(p, close, "NOTE")) { kind = AdmonitionKind::Note; }
+	else if (eq(p, close, "TIP")) { kind = AdmonitionKind::Tip; }
 	else if (eq(p, close, "IMPORTANT")) { kind = AdmonitionKind::Important; }
-	else if (eq(p, close, "WARNING"))   { kind = AdmonitionKind::Warning; }
-	else if (eq(p, close, "CAUTION"))   { kind = AdmonitionKind::Caution; }
+	else if (eq(p, close, "WARNING")) { kind = AdmonitionKind::Warning; }
+	else if (eq(p, close, "CAUTION")) { kind = AdmonitionKind::Caution; }
 
 	if (kind != AdmonitionKind::None) {
 		markerEnd = close + 1;

@@ -981,7 +981,7 @@ void TextEditor::handleKeyboardInputs() {
 		auto ctrl = ImGui::IsKeyDown(ImGuiMod_Ctrl);
 		auto alt = ImGui::IsKeyDown(ImGuiMod_Alt);
 		auto super = ImGui::IsKeyDown(ImGuiMod_Super);
-	    auto meta = ImGui::GetIO().ConfigMacOSXBehaviors ? alt : ctrl;
+		auto meta = ImGui::GetIO().ConfigMacOSXBehaviors ? alt : ctrl;
 
 		auto isNoModifiers = !ctrl && !shift && !alt;
 		auto isShortcut = ctrl && !shift && !alt;
@@ -992,7 +992,7 @@ void TextEditor::handleKeyboardInputs() {
 		auto isOptionalShift = !ctrl && !alt;
 		auto isOptionalAlt = !ctrl && !shift;
 		auto isMetaShift = ImGui::GetIO().ConfigMacOSXBehaviors ? !ctrl && shift && !alt && super : !ctrl && shift && alt;
-    	auto isOptionalMetaShift = ImGui::GetIO().ConfigMacOSXBehaviors ? !ctrl : !alt;
+		auto isOptionalMetaShift = ImGui::GetIO().ConfigMacOSXBehaviors ? !ctrl : !alt;
 
 		// ignore specific keys when autocomplete is active, they will be handled later
 		if (autocomplete.isActive() && autocomplete.isSpecialKeyPressed()) {
@@ -2245,7 +2245,7 @@ void TextEditor::deindentLines() {
 void TextEditor::moveUpLines() {
 	// don't move up if first line is in one of the cursors
 	if (cursors[0].getSelectionStart().line != 0) {
- 		auto transaction = startTransaction();
+		auto transaction = startTransaction();
 
 		for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
 			auto start = cursor->getSelectionStart();

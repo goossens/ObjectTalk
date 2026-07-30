@@ -25,7 +25,7 @@ template<typename T, size_t N>
 class OtPitchYin {
 public:
 	// algorithm developed by A. de Cheveigné and H. Kawahara and published in:
- 	// de Cheveigné, A., Kawahara, H. (2002) "YIN, a fundamental frequency estimator for speech and music", J. Acoust. Soc. Am. 111, 1917-1930.
+	// de Cheveigné, A., Kawahara, H. (2002) "YIN, a fundamental frequency estimator for speech and music", J. Acoust. Soc. Am. 111, 1917-1930.
 	// see http://recherche.ircam.fr/equipes/pcm/pub/people/cheveign.html
 	inline T calculatePitch(const T* inputData) {
 		yin[0] = static_cast<T>(1);

@@ -128,7 +128,7 @@ private:
 	void line(ImColor color, bool under);
 
 	ImVec4 admonitionColor(AdmonitionKind kind);
- 	const char* admonitionLabel(AdmonitionKind kind);
+	const char* admonitionLabel(AdmonitionKind kind);
 	AdmonitionKind matchAdmonitionMarker(const char* start, const char* end, const char*& markerEnd);
 
 	FontInfo getFont();

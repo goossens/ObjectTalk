@@ -51,8 +51,9 @@ object-oriented and continued to add features. This was a really
 slow process as family and work demands did not allow a lot of time to
 work on this.
 
-Well, as you can read in my biography, I'm now retired and I've decided
-to dust a lot of this stuff off and make ObjectTalk available as Open Source.
+Well, as you can read in my [biography](), I'm now retired and I've decided
+to dust off a lot of this stuff and make ObjectTalk available as Open Source.
 These days, ObjectTalk goes far beyond just a scripting language as it
 offers an Integrated Development Environment (IDE) with support for
-GUIs, 3D scenes based on Entity Component Systems (ECS), node-based logic.
+GUIs, 2D graphics, 3D scenes based on Entity Component Systems (ECS),
+node-based logic and an audio engine.

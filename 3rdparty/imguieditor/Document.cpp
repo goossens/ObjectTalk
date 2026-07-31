@@ -269,6 +269,43 @@ ImWchar TextEditor::Document::getCodePoint(DocPos location) const {
 	}
 }
 
+
+//
+//	TextEditor::Document::iterateGlyphs
+//
+
+void TextEditor::Document::iterateGlyphs(DocPos start, DocPos end, std::function<void(Glyph&)> callback) {
+	if (start.line == end.line) {
+		// start and end are on same line
+		for (size_t i = start.index; i < end.index; i++) {
+			callback(at(start.line)[i]);
+		}
+
+	} else {
+		// process remainder of fist line
+		auto last = at(start.line).size();
+
+		for (size_t i = start.index; i < last; i++) {
+			callback(at(start.line)[i]);
+		}
+
+		// process all full lines
+		for (auto line = start.line + 1; line < end.line; line++) {
+			last = at(line).size();
+
+			for (size_t i = 0; i < last; i++) {
+				callback(at(line)[i]);
+			}
+		}
+
+		// process remainder on last line
+		for (size_t i = 0; i < end.index; i++) {
+			callback(at(end.line)[i]);
+		}
+	}
+}
+
+
 //
 //	TextEditor::Document::getColor
 //

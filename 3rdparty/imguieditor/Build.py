@@ -20,6 +20,7 @@ def copyMain(src, dest):
 			for line in input:
 				if (line == '#include <cmath>\n'):
 					output.write('#include <cstdint>\n#include <cmath>\n')
+
 				else:
 					output.write(line)
 
@@ -51,6 +52,7 @@ def copyExtras(filename):
 			for line in input:
 				if (line == '#include "TextEditor.h"\n'):
 					output.write('#include "../TextEditor.h"\n')
+
 				else:
 					output.write(line)
 

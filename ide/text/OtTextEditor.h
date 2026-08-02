@@ -54,6 +54,7 @@ protected:
 	float fontSize = 17.0f;
 	inline void zoomIn() { fontSize = std::clamp(fontSize + 1.0f, 8.0f, 24.0f); }
 	inline void zoomOut() { fontSize = std::clamp(fontSize - 1.0f, 8.0f, 24.0f); }
+	inline void resetZoom() { fontSize = 17.0f; }
 
 	// properties
 	size_t version = 0;

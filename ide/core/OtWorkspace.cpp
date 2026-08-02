@@ -562,13 +562,11 @@ void OtWorkspace::renderSplashScreen() {
 	ImGui::End();
 
 	// handle shortcuts
-	if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
-		if (ImGui::IsKeyPressed(ImGuiKey_N)) {
-			newFile();
+	if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_N, ImGuiInputFlags_RouteAlways)) {
+		newFile();
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_O)) {
-			openFile();
-		}
+	} else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_O, ImGuiInputFlags_RouteAlways)) {
+		openFile();
 	}
 }
 
@@ -766,7 +764,7 @@ void OtWorkspace::renderNewFileType() {
 
 		ImGui::SameLine(0.0f, ImGui::GetContentRegionAvail().x - buttonWidth);
 
-		if (ImGui::Button("Cancel", ImVec2(buttonWidth, 0.0f)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
+		if (ImGui::Button("Cancel", ImVec2(buttonWidth, 0.0f)) || ImGui::Shortcut(ImGuiKey_Escape)) {
 			state = editors.size() ? State::edit : State::splash;
 			ImGui::CloseCurrentPopup();
 		}
@@ -868,7 +866,7 @@ void OtWorkspace::renderConfirmClose() {
 
 		ImGui::SameLine();
 
-		if (ImGui::Button("Cancel", ImVec2(buttonWidth, 0.0f)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
+		if (ImGui::Button("Cancel", ImVec2(buttonWidth, 0.0f)) || ImGui::Shortcut(ImGuiKey_Escape)) {
 			state = State::edit;
 			ImGui::CloseCurrentPopup();
 		}
@@ -902,7 +900,7 @@ void OtWorkspace::renderConfirmQuit() {
 
 		ImGui::SameLine();
 
-		if (ImGui::Button("Cancel", ImVec2(buttonWidth, 0.0f)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
+		if (ImGui::Button("Cancel", ImVec2(buttonWidth, 0.0f)) || ImGui::Shortcut(ImGuiKey_Escape)) {
 			state = State::edit;
 			ImGui::CloseCurrentPopup();
 		}
@@ -928,7 +926,7 @@ void OtWorkspace::renderConfirmWarning() {
 		static constexpr float buttonWidth = 80.0f;
 		ImGui::SameLine(0.0f, ImGui::GetContentRegionAvail().x - buttonWidth);
 
-		if (ImGui::Button("OK", ImVec2(buttonWidth, 0.0f)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
+		if (ImGui::Button("OK", ImVec2(buttonWidth, 0.0f)) || ImGui::Shortcut(ImGuiKey_Escape)) {
 			state = editors.size() ? State::edit : State::splash;
 			ImGui::CloseCurrentPopup();
 		}
@@ -954,7 +952,7 @@ void OtWorkspace::renderConfirmError() {
 		static constexpr float buttonWidth = 80.0f;
 		ImGui::SameLine(0.0f, ImGui::GetContentRegionAvail().x - buttonWidth);
 
-		if (ImGui::Button("OK", ImVec2(buttonWidth, 0.0f)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
+		if (ImGui::Button("OK", ImVec2(buttonWidth, 0.0f)) || ImGui::Shortcut(ImGuiKey_Escape)) {
 			state = editors.size() ? State::edit : State::splash;
 			ImGui::CloseCurrentPopup();
 		}

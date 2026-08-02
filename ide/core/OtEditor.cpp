@@ -129,35 +129,31 @@ void OtEditor::renderMenuBar(bool canRun) {
 	}
 
 	// handle keyboard shortcuts
-	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && !ImGui::GetIO().WantCaptureKeyboard) {
-		if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
-			if (ImGui::IsKeyPressed(ImGuiKey_N)) {
-				OtMessageBus::send("new");
+	if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_N)) {
+		OtMessageBus::send("new");
 
-			} else if (ImGui::IsKeyPressed(ImGuiKey_O)) {
-				OtMessageBus::send("open");
+	} else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_O)) {
+		OtMessageBus::send("open");
 
-			} else if (ImGui::IsKeyPressed(ImGuiKey_S)) {
-				if (isDirty()) {
-					if (OtPath::isRegularFile(path)) {
-						OtMessageBus::send("save");
+	} else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_S)) {
+		if (isDirty()) {
+			if (OtPath::isRegularFile(path)) {
+				OtMessageBus::send("save");
 
-					} else {
-						OtMessageBus::send("saveas");
-					}
-				}
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_R) && runnable) {
-				OtMessageBus::send("run");
-
-			} else if (ImGui::IsKeyPressed(ImGuiKey_W)) {
-				OtMessageBus::send("close");
+			} else {
+				OtMessageBus::send("saveas");
 			}
 		}
 
-		// also let editor handle specific shortcuts
-		handleShortcuts();
+	} else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_R) && runnable) {
+		OtMessageBus::send("run");
+
+	} else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_W)) {
+		OtMessageBus::send("close");
 	}
+
+	// also let editor handle specific shortcuts
+	handleShortcuts();
 }
 
 

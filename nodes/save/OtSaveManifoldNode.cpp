@@ -86,7 +86,7 @@ public:
 				static constexpr float buttonWidth = 80.0f;
 				OtUi::hSpacer(ImGui::GetContentRegionAvail().x - buttonWidth);
 
-				if (ImGui::Button("OK", ImVec2(buttonWidth, 0.0f)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
+				if (ImGui::Button("OK", ImVec2(buttonWidth, 0.0f)) || ImGui::Shortcut(ImGuiKey_Escape)) {
 					ImGui::CloseCurrentPopup();
 				}
 

@@ -363,77 +363,70 @@ void OtSceneEditor::handleShortcuts() {
 	bool selected = scene.isValidEntity(selectedEntity);
 
 	// handle menu shortcuts
-	if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
-		if (ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsKeyPressed(ImGuiKey_Z, false)) {
-			if (taskManager.canRedo()) {
-				taskManager.redo();
-			}
+	if (taskManager.canRedo() && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Z)) {
+		taskManager.redo();
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_Z, false) && taskManager.canUndo()) {
-			// this is a hack as Dear ImGui's InputText keeps a private copy of its content
-			// ClearActiveID() takes the possible focus away and allows undo to work
-			// see ImGuiInputTextFlags_NoUndoRedo documentation in imgui.h
-			// so much for immediate mode :-)
-			ImGui::ClearActiveID();
-			taskManager.undo();
+	} else if (taskManager.canUndo() && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_Z)) {
+		// this is a hack as Dear ImGui's InputText keeps a private copy of its content
+		// ClearActiveID() takes the possible focus away and allows undo to work
+		// see ImGuiInputTextFlags_NoUndoRedo documentation in imgui.h
+		// so much for immediate mode :-)
+		ImGui::ClearActiveID();
+		taskManager.undo();
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_X, false) && selected) {
-			cutEntity();
+	} else if (selected && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_X)) {
+		cutEntity();
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_C, false) && selected) {
-			copyEntity();
+	} else if (selected && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_C)) {
+		copyEntity();
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && clipboard.size() > 0) {
-			pasteEntity();
+	} else if (clipboard.size() > 0 && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_V)) {
+		pasteEntity();
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {
-			duplicateEntity();
+	} else if (selected && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_D)) {
+		duplicateEntity();
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_G, false)) {
-			guizmoEnabled = !guizmoEnabled;
-		}
+	} else if (selected && (ImGui::Shortcut(ImGuiKey_Backspace) || ImGui::Shortcut(ImGuiKey_Delete))) {
+		deleteEntity();
+
+	} else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_G)) {
+		guizmoEnabled = !guizmoEnabled;
 
 	// handle camera switching shortcuts
-	} else if (ImGui::IsKeyDown(ImGuiMod_Alt)) {
-		if (ImGui::IsKeyPressed(ImGuiKey_0, false)) {
-			setSceneCamera(0);
+	} else if (ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_0)) {
+		setSceneCamera(0);
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_1, false)) {
-			setSceneCamera(1);
+	} else if (ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_1)) {
+		setSceneCamera(1);
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_1, false)) {
-			setSceneCamera(1);
+	} else if (ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_1)) {
+		setSceneCamera(1);
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_2, false)) {
-			setSceneCamera(2);
+	} else if (ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_2)) {
+		setSceneCamera(2);
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_3, false)) {
-			setSceneCamera(3);
+	} else if (ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_3)) {
+		setSceneCamera(3);
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_4, false)) {
-			setSceneCamera(4);
+	} else if (ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_4)) {
+		setSceneCamera(4);
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_5, false)) {
-			setSceneCamera(5);
+	} else if (ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_5)) {
+		setSceneCamera(5);
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_6, false)) {
-			setSceneCamera(6);
+	} else if (ImGui::Shortcut(ImGuiKey_6)) {
+		setSceneCamera(6);
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_7, false)) {
-			setSceneCamera(7);
+	} else if (ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_7)) {
+		setSceneCamera(7);
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_8, false)) {
-			setSceneCamera(8);
+	} else if (ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_8)) {
+		setSceneCamera(8);
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_9, false)) {
-			setSceneCamera(9);
-		}
+	} else if (ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_9)) {
+		setSceneCamera(9);
 
-	} else if ((ImGui::IsKeyPressed(ImGuiKey_Backspace, false) || ImGui::IsKeyPressed(ImGuiKey_Delete, false)) && selected) {
-		deleteEntity();
-	}
-
-	if (ImGui::IsKeyPressed(ImGuiKey_F19, false)) {
+	} else if (ImGui::Shortcut(ImGuiKey_F19, ImGuiInputFlags_RouteAlways)) {
 		toggleRendererDebug();
 	}
 }

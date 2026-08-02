@@ -89,14 +89,28 @@ void OtFramework::startFrameIMGUI() {
 
 void OtFramework::endFrameIMGUI() {
 	// render debug windows (if required)
-	if (ImGui::IsKeyPressed(ImGuiKey_F16)) {
+	if (ImGui::Shortcut(ImGuiKey_F16, ImGuiInputFlags_RouteAlways)) {
 		profiler = !profiler;
 
-	} else if (ImGui::IsKeyPressed(ImGuiKey_F17)) {
+	} else if (ImGui::Shortcut(ImGuiKey_F17, ImGuiInputFlags_RouteAlways)) {
 		metrics = !metrics;
 
-	} else if (ImGui::IsKeyPressed(ImGuiKey_F18)) {
+	} else if (ImGui::Shortcut(ImGuiKey_F18, ImGuiInputFlags_RouteAlways)) {
 		demo = !demo;
+	}
+
+	// (de)activate keyboard/gamepad navigation mode
+	if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiMod_Alt | ImGuiKey_N, ImGuiInputFlags_RouteAlways)) {
+		auto& io = ImGui::GetIO();
+
+		if (io.ConfigFlags & ImGuiConfigFlags_NavEnableKeyboard) {
+			io.ConfigFlags &= ~ImGuiConfigFlags_NavEnableKeyboard;
+			io.ConfigFlags &= ~ImGuiConfigFlags_NavEnableGamepad;
+
+		} else {
+			io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+			io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+		}
 	}
 
 	if (profiler) {

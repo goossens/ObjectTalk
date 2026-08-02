@@ -47,11 +47,6 @@
 		},
 		{
 			"from": 2550862960,
-			"id": 4075523104,
-			"to": 3129229881
-		},
-		{
-			"from": 2550862960,
 			"id": 1354971200,
 			"to": 3152811694
 		},
@@ -69,16 +64,6 @@
 			"from": 1665173662,
 			"id": 1100433188,
 			"to": 276718913
-		},
-		{
-			"from": 2998180272,
-			"id": 2571497274,
-			"to": 1535187009
-		},
-		{
-			"from": 3878442117,
-			"id": 3287349770,
-			"to": 279760242
 		}
 	],
 	"metadata": {},
@@ -269,27 +254,6 @@
 			"y": 41.0
 		},
 		{
-			"id": 2039127696,
-			"inputs": [
-				{
-					"id": 3129229881,
-					"name": "Input",
-					"type": "texture"
-				}
-			],
-			"outputs": [
-				{
-					"id": 2998180272,
-					"name": "Output",
-					"type": "texture"
-				}
-			],
-			"title": "HeightMap to NormalMap",
-			"type": "HeightMap to NormalMap",
-			"x": 755.0,
-			"y": 144.0
-		},
-		{
 			"id": 833814754,
 			"inputs": [
 				{
@@ -309,37 +273,6 @@
 			"type": "Texture to Image",
 			"x": 803.0,
 			"y": 17.0
-		},
-		{
-			"id": 2949711206,
-			"inputs": [],
-			"outputs": [
-				{
-					"id": 3878442117,
-					"name": "Texture",
-					"type": "texture"
-				}
-			],
-			"path": "virtual:normalmap",
-			"title": "Texture Input",
-			"type": "Texture Input",
-			"x": 29.0,
-			"y": 703.0
-		},
-		{
-			"id": 4016356840,
-			"inputs": [
-				{
-					"id": 279760242,
-					"name": "Texture",
-					"type": "texture"
-				}
-			],
-			"outputs": [],
-			"title": "Texture Probe",
-			"type": "Texture Probe",
-			"x": 748.0,
-			"y": 532.0
 		},
 		{
 			"id": 615521881,
@@ -413,27 +346,6 @@
 			"type": "Texture Probe",
 			"x": 749.0,
 			"y": 291.0
-		},
-		{
-			"id": 2220175463,
-			"inputs": [
-				{
-					"id": 1535187009,
-					"name": "Input",
-					"type": "texture"
-				},
-				{
-					"id": 348143700,
-					"name": "Name",
-					"type": "string",
-					"value": "normalmap"
-				}
-			],
-			"outputs": [],
-			"title": "Save Texture to Virtual",
-			"type": "Save Texture to Virtual",
-			"x": 1032.0,
-			"y": 144.0
 		}
 	]
 }

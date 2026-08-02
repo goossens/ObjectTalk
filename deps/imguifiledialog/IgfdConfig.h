@@ -1,11 +1,5 @@
 #define USE_STD_FILESYSTEM
 
-#define USE_EXPLORATION_BY_KEYS
-#define IGFD_KEY_UP ImGuiKey_UpArrow
-#define IGFD_KEY_DOWN ImGuiKey_DownArrow
-#define IGFD_KEY_ENTER ImGuiKey_Enter
-#define IGFD_KEY_BACKSPACE ImGuiKey_Backspace
-
 #define USE_DIALOG_EXIT_WITH_KEY
 #define IGFD_EXIT_KEY ImGuiKey_Escape
 

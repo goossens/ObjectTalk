@@ -186,11 +186,10 @@ void OtTextEditor::renderMenus() {
 //
 
 void OtTextEditor::handleShortcuts() {
-	if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
-		if (ImGui::IsKeyPressed(ImGuiKey_I)) { showDiff(); }
-		else if (ImGui::IsKeyPressed(ImGuiKey_Equal)) { zoomIn(); }
-		else if (ImGui::IsKeyPressed(ImGuiKey_Minus)) { zoomOut(); }
-	}
+	if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_I)) { showDiff(); }
+	else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_Equal)) { zoomIn(); }
+	else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_Minus)) { zoomOut(); }
+	else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_0)) { zoomOut(); }
 }
 
 
@@ -205,16 +204,22 @@ void OtTextEditor::renderEditor() {
 	ImGui::PopFont();
 
 	const ImGuiViewport* viewport = ImGui::GetMainViewport();
+	auto focusDiffWidget = false;
 
 	if (popupDiff) {
 		ImGui::OpenPopup("Changes since Opening File##diff");
 		ImGui::SetNextWindowPos(viewport->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
 		diff.SetText(originalText, editor.GetText());
 		popupDiff = false;
+		focusDiffWidget = true;
 	}
 
 	if (ImGui::BeginPopupModal("Changes since Opening File##diff", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+
+		if (focusDiffWidget) {
+			ImGui::SetNextWindowFocus();
+		}
+
 		diff.Render("diff", viewport->Size * 0.8f, ImGuiChildFlags_Borders);
 
 		ImGui::Separator();
@@ -236,7 +241,7 @@ void OtTextEditor::renderEditor() {
 		ImGui::SameLine();
 		ImGui::Indent(buttonOffset);
 
-		if (ImGui::Button("OK", ImVec2(buttonWidth, 0.0f)) || ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
+		if (ImGui::Button("OK", ImVec2(buttonWidth, 0.0f)) || ImGui::Shortcut(ImGuiKey_Escape)) {
 			ImGui::CloseCurrentPopup();
 		}
 

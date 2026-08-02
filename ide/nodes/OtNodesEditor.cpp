@@ -178,59 +178,57 @@ void OtNodesEditor::handleShortcuts() {
 	// get status
 	bool selected = nodes.hasSelected();
 
-	if (ImGui::IsKeyDown(ImGuiMod_Ctrl)) {
-		if (ImGui::IsKeyDown(ImGuiMod_Shift) && ImGui::IsKeyPressed(ImGuiKey_Z, false)) {
-			if (taskManager.canRedo()) {
-				taskManager.redo();
+	if (taskManager.canRedo() && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Z)) {
+		taskManager.redo();
+
+	} else if (taskManager.canUndo() && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_Z)) {
+		// this is a hack as Dear ImGui's InputText keeps a private copy of its content
+		// ClearActiveID() takes the possible focus away and allows undo to work
+		// see ImGuiInputTextFlags_NoUndoRedo documentation in imgui.h
+		// so much for immediate mode :-)
+		ImGui::ClearActiveID();
+		taskManager.undo();
+
+	} else if (selected && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_X)) {
+		cutSelectedNodes();
+
+	} else if (selected && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_C)) {
+		copySelectedNodes();
+
+	} else if (clipboard.size() > 0 && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_V)) {
+		pasteSelectedNodes();
+
+	} else if (selected && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_D)) {
+		duplicateSelectedNodes();
+
+	} else if (selected && (ImGui::Shortcut(ImGuiKey_Backspace) || ImGui::Shortcut(ImGuiKey_Delete))) {
+		deleteSelectedNodes();
+
+	} else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_A)) {
+		nodes.selectAll();
+
+	} else if (ImGui::Shortcut(ImGuiKey_Escape)) {
+		nodes.deselectAll();
+
+	} else {
+		static struct Move {
+			ImGuiKey key;
+			ImVec2 slow;
+			ImVec2 fast;
+		} moves[] = {
+			{ImGuiKey_LeftArrow, ImVec2(-1.0f, 0.0f), ImVec2(-10.0f, 0.0f)},
+			{ImGuiKey_RightArrow, ImVec2(1.0f, 0.0f), ImVec2(10.0f, 0.0f)},
+			{ImGuiKey_UpArrow, ImVec2(0.0f, -1.0f), ImVec2(0.0f, -10.0f)},
+			{ImGuiKey_DownArrow, ImVec2(0.0f, 1.0f), ImVec2(0.0f, 10.0f)}
+		};
+
+		for (auto& move : moves) {
+			if (ImGui::Shortcut(move.key)) {
+				nextTask = std::make_shared<OtMoveNodesTask>(&nodes, move.slow);
 			}
 
-		} else if (ImGui::IsKeyPressed(ImGuiKey_Z, false) && taskManager.canUndo()) {
-			// this is a hack as Dear ImGui's InputText keeps a private copy of its content
-			// ClearActiveID() takes the possible focus away and allows undo to work
-			// see ImGuiInputTextFlags_NoUndoRedo documentation in imgui.h
-			// so much for immediate mode :-)
-			ImGui::ClearActiveID();
-			taskManager.undo();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_X, false) && selected) {
-			cutSelectedNodes();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_C, false) && selected) {
-			copySelectedNodes();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_V, false) && clipboard.size() > 0) {
-			pasteSelectedNodes();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_D, false) && selected) {
-			duplicateSelectedNodes();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_A, false)) {
-			nodes.selectAll();
-		}
-
-	} else if (selected) {
-		if (ImGui::IsKeyPressed(ImGuiKey_Backspace, false) || ImGui::IsKeyPressed(ImGuiKey_Delete, false)) {
-			deleteSelectedNodes();
-
-		} else if (ImGui::IsKeyPressed(ImGuiKey_Escape, false)) {
-			nodes.deselectAll();
-
-		} else {
-			static struct Move {
-				ImGuiKey key;
-				ImVec2 slow;
-				ImVec2 fast;
-			} moves[] = {
-				{ImGuiKey_LeftArrow, ImVec2(-1.0f, 0.0f), ImVec2(-10.0f, 0.0f)},
-				{ImGuiKey_RightArrow, ImVec2(1.0f, 0.0f), ImVec2(10.0f, 0.0f)},
-				{ImGuiKey_UpArrow, ImVec2(0.0f, -1.0f), ImVec2(0.0f, -10.0f)},
-				{ImGuiKey_DownArrow, ImVec2(0.0f, 1.0f), ImVec2(0.0f, 10.0f)}
-			};
-
-			for (auto& move : moves) {
-				if (ImGui::IsKeyPressed(move.key)) {
-					nextTask = std::make_shared<OtMoveNodesTask>(&nodes, ImGui::IsKeyDown(ImGuiMod_Shift) ? move.fast : move.slow);
-				}
+			if (ImGui::Shortcut(ImGuiMod_Shift | move.key)) {
+				nextTask = std::make_shared<OtMoveNodesTask>(&nodes, move.fast);
 			}
 		}
 	}

@@ -465,7 +465,7 @@ bool OtUi::inputText(const char* label, std::string* value, ImGuiInputTextFlags 
 	inputString(label, value, flags);
 
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
-		if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+		if (ImGui::Shortcut(ImGuiKey_Escape)) {
 			return false;
 
 		} else {
@@ -497,7 +497,7 @@ bool OtUi::inputMultilineText(const char* label, std::string* value, const ImVec
 	}, value);
 
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
-		if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+		if (ImGui::Shortcut(ImGuiKey_Escape)) {
 			return false;
 
 		} else {
@@ -869,23 +869,14 @@ bool OtUi::splitter(bool vertical, float* size, float minSize, float maxSize) {
 	auto gap = OtUi::getSplitterGap();
 
 	ImGui::PushID(size);
-	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
-	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5f, 0.5f, 0.5f, 0.4f));
-	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.5f, 0.5f, 0.5f, 0.3f));
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2());
 
 	if (!vertical) {
 		ImGui::SameLine(0.0f, 0.0f);
 	}
 
-	ImGui::Button("##splitter", ImVec2(vertical ? -1.0f : gap, vertical ? gap : -1.0f));
-
-	if (!vertical) {
-		ImGui::SameLine(0.0f, 0.0f);
-	}
-
+	ImGui::InvisibleButton("##splitter", ImVec2(vertical ? -1.0f : gap, vertical ? gap : -1.0f));
 	ImGui::PopStyleVar();
-	ImGui::PopStyleColor(3);
 
 	if (ImGui::IsItemActive()) {
 		auto oldSize = *size;
@@ -897,7 +888,16 @@ bool OtUi::splitter(bool vertical, float* size, float minSize, float maxSize) {
 		}
 	}
 
+	if (ImGui::IsItemHovered()) {
+		ImGui::SetMouseCursor(vertical ? ImGuiMouseCursor_ResizeNS : ImGuiMouseCursor_ResizeEW);
+	}
+
 	ImGui::PopID();
+
+	if (!vertical) {
+		ImGui::SameLine(0.0f, 0.0f);
+	}
+
 	return result;
 }
 

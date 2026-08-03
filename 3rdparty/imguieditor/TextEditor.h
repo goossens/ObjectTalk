@@ -1575,6 +1575,7 @@ protected:
 	void growSelections();
 	void shrinkSelections();
 
+	// clipboard actions
 	void cut();
 	void copy() const;
 	void paste();

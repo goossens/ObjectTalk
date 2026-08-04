@@ -16,6 +16,7 @@
 
 #include "OtFramework.h"
 #include "OtGpu.h"
+#include "OtNotification.h"
 #include "OtUi.h"
 
 
@@ -106,10 +107,16 @@ void OtFramework::endFrameIMGUI() {
 		if (io.ConfigFlags & ImGuiConfigFlags_NavEnableKeyboard) {
 			io.ConfigFlags &= ~ImGuiConfigFlags_NavEnableKeyboard;
 			io.ConfigFlags &= ~ImGuiConfigFlags_NavEnableGamepad;
+			io.ConfigNavCursorVisibleAuto = true;
+			io.ConfigNavCursorVisibleAlways = false;
+			OtNotification::add(OtNotification::Type::info, "Keyboard/gamepad navigation mode deactivated");
 
 		} else {
 			io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 			io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+			io.ConfigNavCursorVisibleAuto = false;
+			io.ConfigNavCursorVisibleAlways = true;
+			OtNotification::add(OtNotification::Type::info, "Keyboard/gamepad navigation mode activated");
 		}
 	}
 

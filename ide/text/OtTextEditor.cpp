@@ -23,6 +23,7 @@
 //
 
 OtTextEditor::OtTextEditor() {
+	editor.SetFocus();
 	diff.SetSideBySideMode(true);
 }
 

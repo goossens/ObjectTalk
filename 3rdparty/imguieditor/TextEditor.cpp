@@ -79,13 +79,15 @@ bool TextEditor::render(const char* title, const ImVec2& size, ImGuiChildFlags c
 		focusOnEditor = false;
 	}
 
+	// track content state changes
+	bool documentChanged = false;
+
 	// start a new child window
 	ImGui::SetNextWindowContentSize(totalSize);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 	ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::ColorConvertU32ToFloat4(palette.get(Color::background)));
-	auto editorVisible = ImGui::BeginChild(title, size, childFlags, windowFlags);
 
-	if (editorVisible) {
+	if (ImGui::BeginChild(title, size, childFlags, windowFlags)) {
 		// make sure the focus is correct for navigation
 		if (firstFrame) {
 			firstFrame = false;
@@ -155,7 +157,7 @@ bool TextEditor::render(const char* title, const ImVec2& size, ImGuiChildFlags c
 
 		// handle keyboard inputs
 		handleKeyboardInputs();
-		updateState();
+		documentChanged = updateState();
 
 		// handle mouse inputs
 		handleMouseInteractions();
@@ -225,7 +227,7 @@ bool TextEditor::render(const char* title, const ImVec2& size, ImGuiChildFlags c
 		}
 	}
 
-	return editorVisible;
+	return documentChanged;
 }
 
 
@@ -1076,7 +1078,7 @@ void TextEditor::renderPopups() {
 //	TextEditor::updateState
 //
 
-void TextEditor::updateState() {
+bool TextEditor::updateState() {
 	// this function gets called to handle possible changes caused by the API or user interactions
 	// the overlays determine what they need to do to update their state (could be nothing)
 	colorizer.update(config, document);
@@ -1119,6 +1121,9 @@ void TextEditor::updateState() {
 		deletesHappened = false;
 	}
 
+	// remember if document was changed this frame
+	bool documentChanged = document.isUpdated();
+
 	// reset overlay "dirty" flags
 	document.resetUpdated();
 	bracketeer.resetUpdated();
@@ -1134,6 +1139,8 @@ void TextEditor::updateState() {
 
 	auto height = typeSetter.getRowCount() * glyphSize.y;
 	totalSize = ImVec2(width, height);
+
+	return documentChanged;
 }
 
 

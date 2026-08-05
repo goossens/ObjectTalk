@@ -44,7 +44,7 @@ void OtGpu::init(SDL_Window* win, int w, int h) {
 #endif
 	}
 
-	// create GPU device
+	// setup properties to create GPU device
 	SDL_PropertiesID props = SDL_CreateProperties();
 	SDL_SetStringProperty(props, SDL_PROP_GPU_DEVICE_CREATE_NAME_STRING, deviceName);
 	SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_SHADERS_MSL_BOOLEAN, true);
@@ -57,6 +57,7 @@ void OtGpu::init(SDL_Window* win, int w, int h) {
 	SDL_SetLogPriorities(SDL_LOG_PRIORITY_INFO);
 #endif
 
+	// create GPU device
 	device = SDL_CreateGPUDeviceWithProperties(props);
 	SDL_DestroyProperties(props);
 

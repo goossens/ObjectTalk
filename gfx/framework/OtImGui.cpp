@@ -89,17 +89,6 @@ void OtFramework::startFrameIMGUI() {
 //
 
 void OtFramework::endFrameIMGUI() {
-	// render debug windows (if required)
-	if (ImGui::Shortcut(ImGuiKey_F16, ImGuiInputFlags_RouteAlways)) {
-		profiler = !profiler;
-
-	} else if (ImGui::Shortcut(ImGuiKey_F17, ImGuiInputFlags_RouteAlways)) {
-		metrics = !metrics;
-
-	} else if (ImGui::Shortcut(ImGuiKey_F18, ImGuiInputFlags_RouteAlways)) {
-		demo = !demo;
-	}
-
 	// (de)activate keyboard/gamepad navigation mode
 	if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiMod_Alt | ImGuiKey_N, ImGuiInputFlags_RouteAlways)) {
 		auto& io = ImGui::GetIO();
@@ -118,6 +107,16 @@ void OtFramework::endFrameIMGUI() {
 			io.ConfigNavCursorVisibleAlways = true;
 			OtNotification::add(OtNotification::Type::info, "Keyboard/gamepad navigation mode activated");
 		}
+
+	// render debug windows (if required)
+	} else if (ImGui::Shortcut(ImGuiKey_F16, ImGuiInputFlags_RouteAlways)) {
+		profiler = !profiler;
+
+	} else if (ImGui::Shortcut(ImGuiKey_F17, ImGuiInputFlags_RouteAlways)) {
+		metrics = !metrics;
+
+	} else if (ImGui::Shortcut(ImGuiKey_F18, ImGuiInputFlags_RouteAlways)) {
+		demo = !demo;
 	}
 
 	if (profiler) {

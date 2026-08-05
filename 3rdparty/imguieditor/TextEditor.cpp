@@ -57,15 +57,12 @@ bool TextEditor::render(const char* title, const ImVec2& size, ImGuiChildFlags c
 		return false;
 	}
 
-	ImGui::BeginGroup();
-
 	// declare item bounding box for clipping and interaction
 	ImGuiContext& g = *GImGui;
 	ImGuiID id = parentWindow->GetID(title);
 	ImRect frameBB(parentWindow->DC.CursorPos, parentWindow->DC.CursorPos + size);
 
 	if (!ImGui::ItemAdd(frameBB, id)) {
-		ImGui::EndGroup();
 		return false;
 	}
 
@@ -219,7 +216,6 @@ bool TextEditor::render(const char* title, const ImVec2& size, ImGuiChildFlags c
 	ImGui::EndChild();
 	ImGui::PopStyleColor();
 	ImGui::PopStyleVar();
-	ImGui::EndGroup();
 
 	// handle change tracking if there is a callback in place
 	if (delayedChangeCallback && delayedChangeDetected) {

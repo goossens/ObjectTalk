@@ -129,13 +129,13 @@ void OtEditor::renderMenuBar(bool canRun) {
 	}
 
 	// handle keyboard shortcuts
-	if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_N)) {
+	if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_N, ImGuiInputFlags_RouteAlways)) {
 		OtMessageBus::send("new");
 
-	} else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_O)) {
+	} else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_O, ImGuiInputFlags_RouteAlways)) {
 		OtMessageBus::send("open");
 
-	} else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_S)) {
+	} else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_S, ImGuiInputFlags_RouteAlways)) {
 		if (isDirty()) {
 			if (OtPath::isRegularFile(path)) {
 				OtMessageBus::send("save");
@@ -145,10 +145,10 @@ void OtEditor::renderMenuBar(bool canRun) {
 			}
 		}
 
-	} else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_R) && runnable) {
+	} else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_R, ImGuiInputFlags_RouteAlways) && runnable) {
 		OtMessageBus::send("run");
 
-	} else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_W)) {
+	} else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_W, ImGuiInputFlags_RouteAlways)) {
 		OtMessageBus::send("close");
 	}
 

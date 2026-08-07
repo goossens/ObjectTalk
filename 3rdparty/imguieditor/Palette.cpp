@@ -17,17 +17,10 @@
 //
 
 void TextEditor::updatePalettes() {
-	// Update palette with the current alpha from the Dear ImGui style
-	paletteAlpha = ImGui::GetStyle().Alpha;
-
+	// update palette with the current alpha from the Dear ImGui style
 	for (size_t i = 0; i < static_cast<size_t>(Color::count); i++) {
-		auto color = ImGui::ColorConvertU32ToFloat4(paletteBase[i]);
-
-		color.w *= paletteAlpha;
-		palette[i] = ImGui::ColorConvertFloat4ToU32(color);
-
-		color.w *= miniMapAlpha;
-		miniMapPalette[i] = ImGui::ColorConvertFloat4ToU32(color);
+		palette[i] = ImGui::GetColorU32(paletteBase[i]);
+		miniMapPalette[i] = ImGui::GetColorU32(paletteBase[i], miniMapAlpha);
 	}
 }
 

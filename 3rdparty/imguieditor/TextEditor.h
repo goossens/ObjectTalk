@@ -1627,6 +1627,7 @@ protected:
 	void scrollToLine(size_t line, Scroll alignment, float fraction=0.0f);
 	void handlePossibleScrolling();
 	void makeCursorVisible();
+	void resetScrolling();
 
 	// find/replace support
 	void selectFirstOccurrenceOf(const std::string_view& text, bool caseSensitive, bool wholeWord);
@@ -1764,6 +1765,7 @@ protected:
 	Scroll scrollToAlignment = Scroll::alignMiddle;
 	float scrollToFraction = 0.0f;
 	DocPos ensureVisiblePos{invalidLine, 0};
+	bool resetDearImGuiScrolling = false;
 
 	size_t decoratorWidth = 0;
 	std::function<void(Decorator&)> decoratorCallback;

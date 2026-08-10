@@ -41,7 +41,7 @@ void TextEditor::setText(const std::string_view& text) {
 	cursors.clearAll();
 	clearMarkers();
 	clearSquiggles();
-	makeCursorVisible();
+	resetScrolling();
 }
 
 
@@ -53,10 +53,16 @@ bool TextEditor::render(const char* title, const ImVec2& size, ImGuiChildFlags c
 	// track content state changes
 	bool documentChanged = false;
 
-	// ensure editor has focus (if required)
-	if (!firstFrame && focusOnEditor) {
-		ImGui::SetNextWindowFocus();
-		focusOnEditor = false;
+	// special handling for first frame as we can't use SetNextWindowFocus during it
+	if (!firstFrame) {
+		// ensure editor has focus (if required)
+		if (focusOnEditor) {
+			ImGui::SetNextWindowFocus();
+			focusOnEditor = false;
+		}
+
+	} else {
+		firstFrame = false;
 	}
 
 	// start a new child window
@@ -65,9 +71,11 @@ bool TextEditor::render(const char* title, const ImVec2& size, ImGuiChildFlags c
 	ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::ColorConvertU32ToFloat4(palette.get(Color::background)));
 
 	if (ImGui::BeginChild(title, size, childFlags, windowFlags)) {
-		// make sure the focus is correct for navigation
-		if (firstFrame) {
-			firstFrame = false;
+		// perform last part of scrolling reset here (as it requires the correct Dear ImGui context)
+		if (resetDearImGuiScrolling) {
+			ImGui::SetScrollX(0.0f);
+			ImGui::SetScrollY(0.0f);
+			resetDearImGuiScrolling = false;
 		}
 
 		// get font information
@@ -75,7 +83,6 @@ bool TextEditor::render(const char* title, const ImVec2& size, ImGuiChildFlags c
 		fontSize = ImGui::GetFontSize();
 		auto& style = ImGui::GetStyle();
 		fontScaleDpi = style.FontScaleDpi;
-
 		glyphSize = ImVec2(ImGui::CalcTextSize("#").x, ImGui::GetTextLineHeightWithSpacing() * config.lineSpacing);
 
 		// determine current position and visible size
@@ -2069,6 +2076,26 @@ void TextEditor::makeCursorVisible() {
 	}
 
 	resetCursorAnimationTimer();
+}
+
+
+//
+//	TextEditor::resetScrolling
+//
+
+void TextEditor::resetScrolling() {
+	// reset state related parameters
+	ensureVisiblePos = DocPos(invalidLine, 0);
+	scrollToLineNumber = invalidLine;
+	firstVisibleRow = 0;
+	lastVisibleRow = 0;
+	firstVisibleColumn = 0;
+	lastVisibleColumn = 0;
+	resetCursorAnimationTimer();
+
+	// we can't reset the Dear ImGui scrolling here as we don't necessarily have the right context
+	// so we just set a flag and the render function will handle it
+	resetDearImGuiScrolling = true;
 }
 
 

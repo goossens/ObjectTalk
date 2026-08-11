@@ -58,6 +58,11 @@ static std::mutex oneTimersLock;
 //
 
 void OtFramework::run(OtFrameworkApp* targetApp) {
+	OtNotification::error("This is an error\nSecond line", 12.0f);
+	OtNotification::info("This is information", 8.0f);
+	OtNotification::success("This is success", 3.0f);
+	OtNotification::warning("This is a warning", 20.0f);
+
 	// save the app reference
 	app = targetApp;
 

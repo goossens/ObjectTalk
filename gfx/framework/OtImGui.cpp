@@ -98,14 +98,14 @@ void OtFramework::endFrameIMGUI() {
 			io.ConfigFlags &= ~ImGuiConfigFlags_NavEnableGamepad;
 			io.ConfigNavCursorVisibleAuto = true;
 			io.ConfigNavCursorVisibleAlways = false;
-			OtNotification::add(OtNotification::Type::info, "Keyboard/gamepad navigation mode deactivated");
+			OtNotification::info("Keyboard/gamepad navigation mode deactivated");
 
 		} else {
 			io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 			io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 			io.ConfigNavCursorVisibleAuto = false;
 			io.ConfigNavCursorVisibleAlways = true;
-			OtNotification::add(OtNotification::Type::info, "Keyboard/gamepad navigation mode activated");
+			OtNotification::info("Keyboard/gamepad navigation mode activated");
 		}
 
 	// render debug windows (if required)

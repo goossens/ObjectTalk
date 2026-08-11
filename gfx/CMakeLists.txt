@@ -43,6 +43,7 @@ target_link_libraries(gfx PUBLIC
 	imgui
 	imguifd
 	imguiknobs
+	imguitoastr
 	imguiwidgets
 	implot
 	tiff

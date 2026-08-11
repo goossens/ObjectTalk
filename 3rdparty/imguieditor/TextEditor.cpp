@@ -434,7 +434,7 @@ void TextEditor::renderMatchingBracketLines() {
 //	renderSquiggle
 //
 
-inline static void renderSquiggle(float left, float right, float top, float bottom, float thickness, ImU32 color, const char* tooltip) {
+static inline void renderSquiggle(float left, float right, float top, float bottom, float thickness, ImU32 color, const char* tooltip) {
 	auto drawList = ImGui::GetWindowDrawList();
 	auto height = bottom - top;
 	auto size = height * 0.2f;

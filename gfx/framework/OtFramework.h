@@ -64,6 +64,7 @@ private:
 
 	// window information
 	SDL_Window* window;
+	float mainScale;
 
 	// time tracking
 	std::chrono::time_point<std::chrono::high_resolution_clock> lastTime;

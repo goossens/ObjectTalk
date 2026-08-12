@@ -30,16 +30,11 @@ void OtFramework::initSDL() {
 	// determine best default window size
 	int width;
 	int height;
-	int numberOfDisplays;
-	SDL_DisplayID* displays = SDL_GetDisplays(&numberOfDisplays);
-
-	if (numberOfDisplays == 0) {
-		OtLogFatal("SDL library can't find any displays");
-	}
-
 	SDL_Rect rect;
-	SDL_GetDisplayBounds(displays[0], &rect);
-	SDL_free(displays);
+
+	auto primaryDisplayID = SDL_GetPrimaryDisplay();
+	SDL_GetDisplayBounds(primaryDisplayID, &rect);
+	mainScale = SDL_GetDisplayContentScale(primaryDisplayID);
 
 	if (rect.w >= 1600 && rect.h >= 900) {
 		width = 1600;

@@ -40,6 +40,10 @@ void OtFramework::initIMGUI() {
 	// tweak default style
 	ImGui::StyleColorsDark();
 	auto& style = ImGui::GetStyle();
+
+	style.ScaleAllSizes(mainScale);
+	style.FontScaleDpi = mainScale;
+
 	style.HoverDelayShort = 0.5f;
 	style.HoverDelayNormal = 1.0f;
 

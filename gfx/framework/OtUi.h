@@ -122,7 +122,6 @@ public:
 	}
 
 	// readonly fields
-
 	static void readonlyText(const char* label, const std::string& value);
 	static void readonlyBool(const char* label, bool value);
 	static void readonlyInt(const char* label, int value);

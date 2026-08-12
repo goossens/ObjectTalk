@@ -133,10 +133,12 @@ void OtFramework::run(OtFrameworkApp* targetApp) {
 			cpuTime = stopwatch.elapsed();
 		}
 
+		// render notifications (if required)
+		OtNotification::render();
+
 		// put results on screen
 		{
 			OtMeasureStopWatch stopwatch;
-			OtNotification::render();
 			endFrameIMGUI();
 			gpu.endFrame();
 			gpuTime = stopwatch.elapsed();

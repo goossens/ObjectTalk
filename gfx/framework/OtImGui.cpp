@@ -81,6 +81,7 @@ void OtFramework::startFrameIMGUI() {
 	ImGui_ImplSDLGPU3_NewFrame();
 	ImGui_ImplSDL3_NewFrame();
 	ImGui::NewFrame();
+	ImGui::PushFont(OtUi::getTextFont(), 0.0f);
 }
 
 
@@ -89,6 +90,8 @@ void OtFramework::startFrameIMGUI() {
 //
 
 void OtFramework::endFrameIMGUI() {
+	ImGui::PopFont();
+
 	// (de)activate keyboard/gamepad navigation mode
 	if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiMod_Alt | ImGuiKey_N, ImGuiInputFlags_RouteAlways)) {
 		auto& io = ImGui::GetIO();

@@ -41,6 +41,7 @@
 
 void OtUi::loadFonts() {
 	auto& io = ImGui::GetIO();
+	io.Fonts->ClearFonts();
 
 	ImFontConfig textConfig{};
 	std::copy_n("DejaVu", sizeof("DejaVu"), textConfig.Name);

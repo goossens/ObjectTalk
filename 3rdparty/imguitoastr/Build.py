@@ -7,7 +7,7 @@
 
 import os, shutil, sys
 
-destination = "../../../ImGuiColorToastr/"
+destination = "../../../ImGuiToastr/"
 
 
 #
@@ -21,4 +21,5 @@ if __name__ == "__main__":
 		print("Target path[" + destination +"] does not exist")
 		sys.exit(1)
 
+	shutil.copyfile("Toastr.cpp", destination + "Toastr.cpp")
 	shutil.copyfile("Toastr.h", destination + "Toastr.h")

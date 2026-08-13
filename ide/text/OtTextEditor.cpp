@@ -216,7 +216,6 @@ void OtTextEditor::renderEditor() {
 	}
 
 	if (ImGui::BeginPopupModal("Changes since Opening File##diff", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-
 		if (focusDiffWidget) {
 			ImGui::SetNextWindowFocus();
 		}

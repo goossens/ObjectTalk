@@ -204,6 +204,7 @@ public:
 
 	// get information at mouse position (e.g. from ImGui::GetMousePos())
 	inline bool IsMousePosOverGlyph(const ImVec2& mousePos) const { return isMousePosOverGlyph(mousePos); }
+	inline bool IsMousePosOverTextArea(const ImVec2& mousePos) const { return isMousePosOverTextArea(mousePos); }
 	inline DocPos GetDocPosAtMousePos(const ImVec2& mousePos) const {return  getDocPosAtMousePos(mousePos); }
 	inline std::string GetWordAtMousePos(const ImVec2& mousePos) const { return getWordAtMousePos(mousePos); }
 
@@ -253,6 +254,10 @@ public:
 
 	// see if a visual position covers a glyph
 	inline bool IsVisPosOverGlyph(VisPos pos) const { return typeSetter.isVisPosOverGlyph(normalizePos(pos)); }
+
+	// find start or end of word from provided position
+	inline DocPos FindWordStart(DocPos pos) const { return document.findWordStart(normalizePos(pos)); }
+	inline DocPos FindWordEnd(DocPos pos) const { return document.findWordEnd(normalizePos(pos)); }
 
 	// find/replace support
 	inline void SelectFirstOccurrenceOf(const std::string_view& text, bool caseSensitive=true, bool wholeWord=false) { selectFirstOccurrenceOf(text, caseSensitive, wholeWord); }
@@ -1619,6 +1624,7 @@ protected:
 
 	// get information at mouse position (e.g. from ImGui::GetMousePos())
 	bool isMousePosOverGlyph(const ImVec2& mousePos) const;
+	bool isMousePosOverTextArea(const ImVec2& mousePos) const;
 	DocPos getDocPosAtMousePos(const ImVec2& mousePos) const;
 	std::string getWordAtMousePos(const ImVec2& mousePos) const;
 
@@ -1775,7 +1781,7 @@ protected:
 	std::function<void(PopupData& data)> lineNumberContextMenuCallback;
 	std::function<void(PopupData& data)> textContextMenuCallback;
 	std::function<void(PopupData& data)> textHoverCallback;
-	ImVec2 popUpWindowPos;
+	ImVec2 popupWindowPos;
 	DocPos popupDocPos;
 
 	// find and replace context

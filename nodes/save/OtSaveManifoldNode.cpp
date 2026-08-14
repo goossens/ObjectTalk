@@ -79,7 +79,7 @@ public:
 				ImGuiFileDialog::Instance()->Close();
 			}
 
-			if (ImGui::BeginPopupModal("Save Manifold Error", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+			if (ImGui::BeginPopupModal("Save Manifold Error")) {
 				ImGui::Text("%s\n", errorMessage.c_str());
 				ImGui::Separator();
 

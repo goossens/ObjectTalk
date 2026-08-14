@@ -100,7 +100,7 @@ public:
 	inline void SetPalette(const Palette& newPalette) { ctx.palette = newPalette; }
 	inline const Palette& GetPalette() const { return ctx.palette; }
 
-	static const Palette& GetDefaultPalette();
+	static const Palette& GetDarkPalette();
 	static const Palette& GetSaturatedPalette();
 	static const Palette& GetPastelPalette();
 

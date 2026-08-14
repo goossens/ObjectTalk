@@ -539,7 +539,6 @@ void OtWorkspace::renderSplashScreen() {
 		"SplashScreen",
 		nullptr,
 		ImGuiWindowFlags_NoDecoration |
-			ImGuiWindowFlags_AlwaysAutoResize |
 			ImGuiWindowFlags_NoResize |
 			ImGuiWindowFlags_NoMove |
 			ImGuiWindowFlags_NoBringToFrontOnFocus |
@@ -745,7 +744,7 @@ void OtWorkspace::renderNewFileType() {
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 	ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
-	if (ImGui::BeginPopupModal("New File...", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+	if (ImGui::BeginPopupModal("New File...")) {
 		ImGui::Spacing();
 
 		static constexpr float buttonWidth = 120.0f;
@@ -851,7 +850,7 @@ void OtWorkspace::renderConfirmClose() {
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 	ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
-	if (ImGui::BeginPopupModal("Delete?", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+	if (ImGui::BeginPopupModal("Delete?")) {
 		ImGui::Text("This file has changed!\nDo you really want to delete it?\n\n");
 		ImGui::Separator();
 
@@ -885,7 +884,7 @@ void OtWorkspace::renderConfirmQuit() {
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 	ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
-	if (ImGui::BeginPopupModal("Quit Application?", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+	if (ImGui::BeginPopupModal("Quit Application?")) {
 		ImGui::Text("You have unsaved files!\nDo you really want to quit?\n\n");
 		ImGui::Separator();
 
@@ -919,7 +918,7 @@ void OtWorkspace::renderConfirmWarning() {
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 	ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
-	if (ImGui::BeginPopupModal("Warning", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+	if (ImGui::BeginPopupModal("Warning")) {
 		ImGui::Text("%s\n", message.c_str());
 		ImGui::Separator();
 
@@ -945,7 +944,7 @@ void OtWorkspace::renderConfirmError() {
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 	ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
-	if (ImGui::BeginPopupModal("Error", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+	if (ImGui::BeginPopupModal("Error")) {
 		ImGui::Text("%s\n", message.c_str());
 		ImGui::Separator();
 

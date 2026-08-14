@@ -184,7 +184,7 @@ void OtFramework::renderProfiler() {
 	auto labelWith = ImGui::CalcTextSize("                      ").x;
 
 	ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), ImGuiCond_Once);
-	ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
+	ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoCollapse);
 	ImGui::Text("Framerate:"); ImGui::SameLine(labelWith); ImGui::Text("%5.1f", 1000.0f / loopDuration);
 	ImGui::Text("CPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%5.2f", cpuTime);
 	ImGui::Text("GPU [ms per frame]:"); ImGui::SameLine(labelWith); ImGui::Text("%5.2f", gpuTime);

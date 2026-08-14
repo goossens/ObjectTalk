@@ -74,7 +74,6 @@ void OtSceneApp::renderSplashScreen() {
 		"SplashScreen",
 		nullptr,
 		ImGuiWindowFlags_NoDecoration |
-			ImGuiWindowFlags_AlwaysAutoResize |
 			ImGuiWindowFlags_NoResize |
 			ImGuiWindowFlags_NoMove |
 			ImGuiWindowFlags_NoBringToFrontOnFocus |

@@ -27,7 +27,7 @@
 //
 
 Toastr::Toastr() {
-	SetPalette(GetDefaultPalette());
+	SetPalette(GetDarkPalette());
 }
 
 
@@ -161,10 +161,7 @@ float Toastr::Notification::render(const Context& ctx, float offset) {
 			ImGuiWindowFlags_NoBringToFrontOnFocus |
 			ImGuiWindowFlags_NoFocusOnAppearing;
 
-		if (ctx.textWidth == 0) {
-			windowFlags |= ImGuiWindowFlags_AlwaysAutoResize;
-
-		} else {
+		if (ctx.textWidth) {
 			auto contentSize = ctx.buttonSize + ctx.itemSpacing.x + textSize.x;
 			ImGui::SetNextWindowSize(ImVec2(contentSize + ctx.windowPadding.x * 2.0f, 0.0f));
 		}
@@ -232,57 +229,53 @@ void Toastr::Notification::renderIcon(Context ctx) {
 
 	switch (type) {
 		case NotificationType::success: {
-				auto left = center - ImVec2(0.55f * radius, 0.0f);
-				auto bottom = center + ImVec2(-0.1f * radius, 0.5f * radius);
-				auto right = center + ImVec2(0.45f * radius, -0.4f * radius);
+			auto left = center - ImVec2(0.55f * radius, 0.0f);
+			auto bottom = center + ImVec2(-0.1f * radius, 0.5f * radius);
+			auto right = center + ImVec2(0.45f * radius, -0.4f * radius);
 
-				drawList->AddLine(left, bottom, color, width);
-				drawList->AddLine(bottom, right, color, width);
-			}
-
+			drawList->AddLine(left, bottom, color, width);
+			drawList->AddLine(bottom, right, color, width);
 			break;
+		}
 
 		case NotificationType::warning: {
-				auto left = center.x - 0.25f * width;
-				auto triangleTop = ImVec2(center.x, center.y - 0.6f * radius);
-				auto triangleLeft = ImVec2(center.x - 0.55f * radius, center.y + 0.5f * radius);
-				auto triangleRight = ImVec2(center.x + 0.55f * radius, center.y + 0.5f * radius);
-				auto startLine = ImVec2(left, center.y - 0.25f * radius);
-				auto endLine = ImVec2(left, center.y + 0.1f * radius);
-				auto startDot = ImVec2(left, center.y + 0.3f * radius);
-				auto endDot = startDot - ImVec2(0.0f, width);
+			auto left = center.x - 0.25f * width;
+			auto triangleTop = ImVec2(center.x, center.y - 0.6f * radius);
+			auto triangleLeft = ImVec2(center.x - 0.55f * radius, center.y + 0.5f * radius);
+			auto triangleRight = ImVec2(center.x + 0.55f * radius, center.y + 0.5f * radius);
+			auto startLine = ImVec2(left, center.y - 0.25f * radius);
+			auto endLine = ImVec2(left, center.y + 0.1f * radius);
+			auto startDot = ImVec2(left, center.y + 0.3f * radius);
+			auto endDot = startDot - ImVec2(0.0f, width);
 
-				drawList->AddTriangle(triangleLeft, triangleTop, triangleRight, color, width);
-				drawList->AddLine(startLine, endLine, color, width);
-				drawList->AddLine(startDot, endDot, color, width);
-			}
-
+			drawList->AddTriangle(triangleLeft, triangleTop, triangleRight, color, width);
+			drawList->AddLine(startLine, endLine, color, width);
+			drawList->AddLine(startDot, endDot, color, width);
 			break;
+		}
 
 		case NotificationType::error: {
-				auto offset = radius * 0.4f;
-				auto startLine = center - ImVec2(offset, offset);
-				auto endLine = center + ImVec2(offset, offset);
+			auto offset = radius * 0.4f;
+			auto startLine = center - ImVec2(offset, offset);
+			auto endLine = center + ImVec2(offset, offset);
 
-				drawList->AddCircle(center, radius * 0.6f, color, 0, width);
-				drawList->AddLine(startLine, endLine, color, width);
-			}
-
+			drawList->AddCircle(center, radius * 0.6f, color, 0, width);
+			drawList->AddLine(startLine, endLine, color, width);
 			break;
+		}
 
 		case NotificationType::info: {
-				auto left = center.x - 0.25f * width;
-				auto startDot = ImVec2(left, center.y - 0.35f * radius);
-				auto endDot = startDot + ImVec2(0.0f, width);
-				auto startI = ImVec2(left, center.y - 0.15f * radius);
-				auto endI = ImVec2(left, center.y + 0.3f * radius);
+			auto left = center.x - 0.25f * width;
+			auto startDot = ImVec2(left, center.y - 0.35f * radius);
+			auto endDot = startDot + ImVec2(0.0f, width);
+			auto startI = ImVec2(left, center.y - 0.15f * radius);
+			auto endI = ImVec2(left, center.y + 0.3f * radius);
 
-				drawList->AddCircle(center, radius * 0.6f, color, 0, width);
-				drawList->AddLine(startDot, endDot, color, width);
-				drawList->AddLine(startI, endI, color, width);
-			}
-
+			drawList->AddCircle(center, radius * 0.6f, color, 0, width);
+			drawList->AddLine(startDot, endDot, color, width);
+			drawList->AddLine(startI, endI, color, width);
 			break;
+		}
 	}
 }
 
@@ -390,10 +383,10 @@ ImU32 Toastr::Notification::getIconBackgroundColor(Context ctx) {
 
 
 //
-//	Toastr::GetDefaultPalette
+//	Toastr::GetDarkPalette
 //
 
-const Toastr::Palette& Toastr::GetDefaultPalette() {
+const Toastr::Palette& Toastr::GetDarkPalette() {
 	const static Palette palette = {{
 		IM_COL32( 40,  40,  30, 255),	// successBackground
 		IM_COL32( 50,  40,  30, 255),	// warningBackground

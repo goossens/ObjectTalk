@@ -114,7 +114,6 @@ void OtSceneRuntime::messages() {
 				"Message",
 				nullptr,
 				ImGuiWindowFlags_NoDecoration |
-					ImGuiWindowFlags_AlwaysAutoResize |
 					ImGuiWindowFlags_NoFocusOnAppearing |
 					ImGuiWindowFlags_NoNav);
 

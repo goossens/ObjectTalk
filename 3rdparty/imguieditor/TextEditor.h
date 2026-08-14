@@ -1056,6 +1056,8 @@ protected:
 		void iterateIdentifiers(std::function<void(const std::string& identifier)> callback) const;
 
 		// utility functions
+		bool isWordStart(DocPos pos) const;
+		bool isWordEnd(DocPos pos) const;
 		bool isWholeWord(DocPos start, DocPos end) const;
 		inline bool isEndOfLine(DocPos from) const { return from.index == at(from.line).size(); }
 		inline bool isLastLine(size_t line) const { return line == size() - 1; }

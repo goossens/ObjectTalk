@@ -650,6 +650,36 @@ void TextEditor::Document::iterateIdentifiers(std::function<void(const std::stri
 
 
 //
+//	TextEditor::Document::isWordStart
+//
+
+bool TextEditor::Document::isWordStart(DocPos pos) const {
+	if (isEndOfLine(pos)) {
+		return false;
+
+	} else {
+		auto wordStart = findWordStart(DocPos(pos.line, pos.index + 1));
+		return pos == wordStart;
+	}
+}
+
+
+//
+//	TextEditor::Document::isWordEnd
+//
+
+bool TextEditor::Document::isWordEnd(DocPos pos) const {
+	if (pos.index == 0) {
+		return false;
+
+	} else {
+		auto wordEnd = findWordEnd(DocPos(pos.line, pos.index - 1));
+		return pos == wordEnd;
+	}
+}
+
+
+//
 //	TextEditor::Document::isWholeWord
 //
 
@@ -658,9 +688,7 @@ bool TextEditor::Document::isWholeWord(DocPos start, DocPos end) const {
 		return false;
 
 	} else {
-		auto wordStart = findWordStart(DocPos(start.line, start.index + 1));
-		auto wordEnd = findWordEnd(DocPos(end.line, end.index - 1));
-		return start == wordStart && end == wordEnd;
+		return isWordStart(start) && isWordEnd(end);
 	}
 }
 

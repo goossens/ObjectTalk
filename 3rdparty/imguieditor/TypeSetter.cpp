@@ -345,7 +345,7 @@ TextEditor::DocPos TextEditor::TypeSetter::visPos2DocPos(const Document& documen
 //
 
 void TextEditor::TypeSetter::screenPos2DocPos(const Document& document, ImVec2 screenPos, DocPos& glyphPos, DocPos& cursorPos) const {
-	// the returned glyphPos addresses the glyph pointed to by the screenPos parameter (row and column in floating point format)
+	// the returned glyphPos addresses the glyph pointed to by the screenPos parameter
 	// the returned cursorPos returns the closest cursor position (which can be at the start or the end of the glyph)
 	size_t colNo = static_cast<size_t>(screenPos.x);
 	size_t rowNo = static_cast<size_t>(screenPos.y);

@@ -1554,9 +1554,15 @@ void TextEditor::handleMouseInteractions() {
 					// select "word" if it wasn't a bracketed section
 					// includes whitespace and operator sequences as well
 					if (!handled && !document.isEndOfLine(glyphPos)) {
-						auto start = document.findWordStart(glyphPos);
-						auto end = document.findWordEnd(glyphPos);
-						cursors.updateCurrentCursor(start, end);
+						if (document.isWordStart(glyphPos)) {
+							cursors.updateCurrentCursor(glyphPos, document.findWordEnd(glyphPos));
+
+						} else if (document.isWordEnd(glyphPos)) {
+							cursors.updateCurrentCursor(document.findWordStart(glyphPos), glyphPos);
+
+						} else {
+							cursors.updateCurrentCursor(document.findWordStart(glyphPos), document.findWordEnd(glyphPos));
+						}
 					}
 				}
 

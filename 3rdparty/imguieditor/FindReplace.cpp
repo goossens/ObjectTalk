@@ -287,8 +287,6 @@ void TextEditor::selectAllOccurrencesOf(const std::string_view& text, bool caseS
 			}
 		}
 
-		makeCursorVisible();
-
 	} else {
 		cursors.clearAdditional(true);
 	}

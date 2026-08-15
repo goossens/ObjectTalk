@@ -297,13 +297,13 @@ void TextEditor::selectAllOccurrencesOf(const std::string_view& text, bool caseS
 //	TextEditor::addNextOccurrence
 //
 
-void TextEditor::addNextOccurrence() {
+void TextEditor::addNextOccurrence(bool wholeWord) {
 
 	auto cursor = cursors.getCurrent();
 	auto text = document.getSectionText(cursor.getSelectionStart(), cursor.getSelectionEnd());
 	DocPos start, end;
 
-	if (document.findText(cursor.getSelectionEnd(), text, true, false, start, end)) {
+	if (document.findText(cursor.getSelectionEnd(), text, true, wholeWord, start, end)) {
 		cursors.addCursor(start, end);
 	}
 }
@@ -313,10 +313,10 @@ void TextEditor::addNextOccurrence() {
 //	TextEditor::selectAllOccurrences
 //
 
-void TextEditor::selectAllOccurrences() {
+void TextEditor::selectAllOccurrences(bool wholeWord) {
 	auto cursor = cursors.getCurrent();
 	auto text = document.getSectionText(cursor.getSelectionStart(), cursor.getSelectionEnd());
-	selectAllOccurrencesOf(text, true, false);
+	selectAllOccurrencesOf(text, true, wholeWord);
 }
 
 

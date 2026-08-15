@@ -1237,8 +1237,11 @@ void TextEditor::handleKeyboardInputs() {
 		else if (ImGui::Shortcut(ImGuiMod_Shift | ImGuiKey_End)) { moveToEndOfLine(true); }
 
 		else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_A)) { selectAll(); }
-		else if (cursors.currentCursorHasSelection() && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_D)) { addNextOccurrence(); }
-		else if (cursors.currentCursorHasSelection() && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_D)) { selectAllOccurrences(); }
+		else if (cursors.currentCursorHasSelection() && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_D)) { addNextOccurrence(false); }
+		else if (cursors.currentCursorHasSelection() && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiMod_Alt | ImGuiKey_D)) { addNextOccurrence(true); }
+		else if (cursors.currentCursorHasSelection() && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiMod_Alt | ImGuiKey_L)) { addNextOccurrence(true); }
+		else if (cursors.currentCursorHasSelection() && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_D)) { selectAllOccurrences(false); }
+		else if (cursors.currentCursorHasSelection() && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiMod_Alt | ImGuiMod_Shift | ImGuiKey_D)) { selectAllOccurrences(true); }
 
 		// clipboard operations
 		else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_X)) { cut(); }

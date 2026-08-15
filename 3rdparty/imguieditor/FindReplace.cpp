@@ -310,7 +310,7 @@ void TextEditor::addNextOccurrence() {
 
 
 //
-//	TextEditor::addNextOccurrences
+//	TextEditor::selectAllOccurrences
 //
 
 void TextEditor::selectAllOccurrences() {
@@ -384,12 +384,11 @@ void TextEditor::openFindReplace() {
 		}
 
 	} else {
-		// if cursor is inside "real" word, use that as the default
-		auto start = document.findWordStart(cursor.getSelectionStart(), true);
-		auto end = document.findWordEnd(cursor.getSelectionStart(), true);
+		// if cursor is inside a "real" word, use that as the default
+		auto selection = document.getWholeWord(cursor.getSelectionStart(), true);
 
-		if (start != end) {
-			findText = document.getSectionText(start, end);
+		if (selection.start != selection.end) {
+			findText = document.getSectionText(selection.start, selection.end);
 		}
 	}
 

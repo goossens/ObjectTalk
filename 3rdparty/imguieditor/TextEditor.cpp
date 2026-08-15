@@ -1552,16 +1552,12 @@ void TextEditor::handleMouseInteractions() {
 					}
 
 					// select "word" if it wasn't a bracketed section
-					// includes whitespace and operator sequences as well
+					// run of whitespaces are considered "words" as are operator sequences
 					if (!handled && !document.isEndOfLine(glyphPos)) {
-						if (document.isWordStart(glyphPos)) {
-							cursors.updateCurrentCursor(glyphPos, document.findWordEnd(glyphPos));
+						auto word = document.getWholeWord(glyphPos);
 
-						} else if (document.isWordEnd(glyphPos)) {
-							cursors.updateCurrentCursor(document.findWordStart(glyphPos), glyphPos);
-
-						} else {
-							cursors.updateCurrentCursor(document.findWordStart(glyphPos), document.findWordEnd(glyphPos));
+						if (word.start != word.end) {
+							cursors.updateCurrentCursor(word.start, word.end);
 						}
 					}
 				}
@@ -1982,12 +1978,11 @@ TextEditor::DocPos TextEditor::getDocPosAtMousePos(const ImVec2& mousePos) const
 std::string TextEditor::getWordAtMousePos(const ImVec2& mousePos) const {
 	if (IsMousePosOverGlyph(mousePos)) {
 		// convert to document position
-		DocPos docPos = GetDocPosAtMousePos(mousePos);
+		DocPos docPos = getDocPosAtMousePos(mousePos);
 
 		// Find word boundaries and extract text
-		auto start = document.findWordStart(docPos, true);
-		auto end = document.findWordEnd(start, true);
-		return document.getSectionText(start, end);
+		auto word = document.getWholeWord(docPos, true);
+		return document.getSectionText(word.start, word.end);
 
 	} else {
 		return "";

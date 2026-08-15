@@ -653,13 +653,36 @@ void TextEditor::Document::iterateIdentifiers(std::function<void(const std::stri
 //	TextEditor::Document::isWordStart
 //
 
-bool TextEditor::Document::isWordStart(DocPos pos) const {
+bool TextEditor::Document::isWordStart(DocPos pos, bool wordOnly) const {
+	auto& line = at(pos.line);
+
 	if (isEndOfLine(pos)) {
 		return false;
 
+	} else if (isStartOfLine(pos)) {
+		if (line.size() == 0) {
+			return false;
+
+		} else {
+			return !wordOnly || CodePoint::isWord(line[0].codepoint);
+		}
+
 	} else {
-		auto wordStart = findWordStart(DocPos(pos.line, pos.index + 1));
-		return pos == wordStart;
+		auto glyph1 = line[pos.index - 1].codepoint;
+		auto glyph2 = line[pos.index].codepoint;
+
+		if (wordOnly) {
+			return !CodePoint::isWord(glyph1) && CodePoint::isWord(glyph2);
+
+		} else if (CodePoint::isWord(glyph2)) {
+			return !CodePoint::isWord(glyph1);
+
+		} else if (CodePoint::isWhiteSpace(glyph2)) {
+			return !CodePoint::isWhiteSpace(glyph1);
+
+		} else {
+			return CodePoint::isWord(glyph1) || CodePoint::isWhiteSpace(glyph1);
+		}
 	}
 }
 
@@ -668,13 +691,36 @@ bool TextEditor::Document::isWordStart(DocPos pos) const {
 //	TextEditor::Document::isWordEnd
 //
 
-bool TextEditor::Document::isWordEnd(DocPos pos) const {
-	if (pos.index == 0) {
+bool TextEditor::Document::isWordEnd(DocPos pos, bool wordOnly) const {
+	auto& line = at(pos.line);
+
+	if (isStartOfLine(pos)) {
 		return false;
 
+	} else if (isEndOfLine(pos)) {
+		if (line.size() == 0) {
+			return false;
+
+		} else {
+			return !wordOnly || CodePoint::isWord(line[line.size() - 1].codepoint);
+		}
+
 	} else {
-		auto wordEnd = findWordEnd(DocPos(pos.line, pos.index - 1));
-		return pos == wordEnd;
+		auto glyph1 = line[pos.index - 1].codepoint;
+		auto glyph2 = line[pos.index].codepoint;
+
+		if (wordOnly) {
+			return CodePoint::isWord(glyph1) && !CodePoint::isWord(glyph2);
+
+		} else if (CodePoint::isWord(glyph1)) {
+			return !CodePoint::isWord(glyph2);
+
+		} else if (CodePoint::isWhiteSpace(glyph1)) {
+			return !CodePoint::isWhiteSpace(glyph2);
+
+		} else {
+			return CodePoint::isWord(glyph2) || CodePoint::isWhiteSpace(glyph2);
+		}
 	}
 }
 
@@ -683,12 +729,32 @@ bool TextEditor::Document::isWordEnd(DocPos pos) const {
 //	TextEditor::Document::isWholeWord
 //
 
-bool TextEditor::Document::isWholeWord(DocPos start, DocPos end) const {
-	if (start.line != end.line || end.index - start.index < 1) {
+bool TextEditor::Document::isWholeWord(DocPos start, DocPos end, bool wordOnly) const {
+	if (end <= start || start.line != end.line) {
 		return false;
 
 	} else {
-		return isWordStart(start) && isWordEnd(end);
+		return isWordStart(start, wordOnly) && isWordEnd(end, wordOnly);
+	}
+}
+
+
+//
+//	TextEditor::Document::getWholeWord
+//
+
+TextEditor::DocSelection TextEditor::Document::getWholeWord(DocPos pos, bool wordOnly) const {
+	if (wordOnly && !isStartOfLine(pos) && !isEndOfLine(pos) && !CodePoint::isWord(at(pos.line)[pos.index].codepoint)) {
+		return DocSelection(pos, pos);
+
+	} else if (isWordStart(pos, wordOnly)) {
+		return DocSelection(pos, findWordEnd(pos, wordOnly));
+
+	} else if (isWordEnd(pos, wordOnly)) {
+		return DocSelection(findWordStart(pos, wordOnly), pos);
+
+	} else {
+		return DocSelection(findWordStart(pos, wordOnly), findWordEnd(pos, wordOnly));
 	}
 }
 

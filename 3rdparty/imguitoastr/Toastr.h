@@ -37,20 +37,20 @@ public:
 	Toastr();
 
 	// add a notifications (by type)
-	inline void Success(const std::string_view& message, float dismissTime=4.0f) {
-		notifications.emplace_back(ctx, NotificationType::success, message, dismissTime);
+	inline void Success(const std::string_view& message, float displayTime=4.0f) {
+		notifications.emplace_back(ctx, NotificationType::success, message, displayTime);
 	}
 
-	inline void Warning(const std::string_view& message, float dismissTime=4.0f) {
-		notifications.emplace_back(ctx, NotificationType::warning, message, dismissTime);
+	inline void Warning(const std::string_view& message, float displayTime=4.0f) {
+		notifications.emplace_back(ctx, NotificationType::warning, message, displayTime);
 	}
 
-	inline void Error(const std::string_view& message, float dismissTime=4.0f) {
-		notifications.emplace_back(ctx, NotificationType::error, message, dismissTime);
+	inline void Error(const std::string_view& message, float displayTime=4.0f) {
+		notifications.emplace_back(ctx, NotificationType::error, message, displayTime);
 	}
 
-	inline void Info(const std::string_view& message, float dismissTime=4.0f) {
-		notifications.emplace_back(ctx, NotificationType::info, message, dismissTime);
+	inline void Info(const std::string_view& message, float displayTime=4.0f) {
+		notifications.emplace_back(ctx, NotificationType::info, message, displayTime);
 	}
 
 	// anchor types
@@ -95,6 +95,7 @@ public:
 
 	struct Palette : public std::array<ImU32, static_cast<size_t>(Color::count)> {
 		inline ImU32 get(Color color) const { return at(static_cast<size_t>(color)); }
+		inline void set(Color color, ImU32 code) { at(static_cast<size_t>(color)) = code; }
 	};
 
 	inline void SetPalette(const Palette& newPalette) { ctx.palette = newPalette; }
@@ -103,6 +104,12 @@ public:
 	static const Palette& GetDarkPalette();
 	static const Palette& GetSaturatedPalette();
 	static const Palette& GetPastelPalette();
+
+	// render a sample at the current position (only used in example application)
+	inline void RenderSuccessSample() { renderSample(NotificationType::success); }
+	inline void RenderWarningSample() { renderSample(NotificationType::warning); }
+	inline void RenderErrorSample() { renderSample(NotificationType::error); }
+	inline void RenderInfoSample() { renderSample(NotificationType::info); }
 
 private:
 	// context = configuration + per frame settings
@@ -140,11 +147,14 @@ private:
 		info
 	};
 
+	// render a sample notification
+	void renderSample(NotificationType type);
+
 	// a single notification
 	class Notification {
-public:
+	public:
 		// constructor
-		Notification(Context& ctx, NotificationType type, const std::string_view& message, float dismissTime);
+		Notification(Context& ctx, NotificationType type, const std::string_view& message, float displayTime);
 
 		// update the notification state
 		void update(const Context& ctx);
@@ -152,7 +162,7 @@ public:
 		// render a notification
 		float render(const Context& ctx, float offset);
 
-private:
+	private:
 		friend class Toastr;
 
 		// render functions
@@ -169,7 +179,7 @@ private:
 		// properties
 		enum class Phase : char {
 			fadeIn,
-			wait,
+			display,
 			fadeOut,
 			ghost,
 			expired
@@ -185,7 +195,7 @@ private:
 		float ghostHeight;
 
 		float fadeInStart;
-		float waitStart;
+		float displayStart;
 		float fadeOutStart;
 		float ghostStart;
 		float expiredStart;

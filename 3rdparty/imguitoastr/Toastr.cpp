@@ -77,7 +77,7 @@ void Toastr::Render(ImVec2 anchorPos, AnchorType anchorType) {
 //	Toastr::Notification::Notification
 //
 
-Toastr::Notification::Notification(Context& ctx, NotificationType type, const std::string_view& message, float dismissTime)
+Toastr::Notification::Notification(Context& ctx, NotificationType type, const std::string_view& message, float displayTime)
 	: type(type), message(message) {
 
 	std::stringstream ss;
@@ -85,8 +85,8 @@ Toastr::Notification::Notification(Context& ctx, NotificationType type, const st
 	name = ss.str();
 
 	fadeInStart = ctx.currentTime;
-	waitStart = fadeInStart + ctx.fadeInDuration;
-	fadeOutStart = waitStart + dismissTime;
+	displayStart = fadeInStart + ctx.fadeInDuration;
+	fadeOutStart = displayStart + displayTime;
 	ghostStart = fadeOutStart + ctx.fadeOutDuration;
 	expiredStart = ghostStart + ctx.ghostDuration;
 }
@@ -107,8 +107,8 @@ void Toastr::Notification::update(const Context& ctx) {
 	} else if (ctx.currentTime >= fadeOutStart) {
 		phase = Phase::fadeOut;
 
-	} else if (ctx.currentTime >= waitStart) {
-		phase = Phase::wait;
+	} else if (ctx.currentTime >= displayStart) {
+		phase = Phase::display;
 
 	} else {
 		phase = Phase::fadeIn;
@@ -118,7 +118,7 @@ void Toastr::Notification::update(const Context& ctx) {
 	if (phase == Phase::fadeIn) {
 		alpha = (ctx.currentTime - fadeInStart) / ctx.fadeInDuration;
 
-	} else if (phase == Phase::wait) {
+	} else if (phase == Phase::display) {
 		alpha = 1.0f;
 
 	} else if (phase == Phase::fadeOut) {
@@ -210,6 +210,61 @@ float Toastr::Notification::render(const Context& ctx, float offset) {
 
 	// return the offset for the next notification window
 	return offset;
+}
+
+
+//
+//	Toastr::renderSample
+//
+
+void Toastr::renderSample(NotificationType type) {
+	// update context
+	ctx.font = ImGui::GetFont();
+	ctx.glyphSize = ImGui::CalcTextSize("#");
+	auto& style = ImGui::GetStyle();
+	ctx.highDpiScale = style.FontScaleDpi;
+	ctx.itemSpacing = style.ItemSpacing;
+	ctx.framePadding = style.FramePadding;
+	ctx.windowPadding = style.WindowPadding;
+	ctx.buttonSize = ctx.glyphSize.y * 2.0f;
+
+	// determine message
+	std::string message;
+
+	switch (type) {
+		case NotificationType::success: message = "Success"; break;
+		case NotificationType::warning: message = "Warning"; break;
+		case NotificationType::error: message = "Error"; break;
+		case NotificationType::info: message = "Info"; break;
+	}
+
+	// create dummy notification
+	Notification notification{ctx, type, message, 1.0f};
+	notification.phase = Notification::Phase::display;
+	notification.alpha = 1.0f;
+
+	// render dummy notification
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, ctx.windowRounding);
+	ImGui::PushStyleColor(ImGuiCol_ChildBg, notification.getBackgroundColor(ctx));
+
+	ImGuiChildFlags flags =
+		ctx.windowBorder ? ImGuiChildFlags_Borders : ImGuiChildFlags_None |
+		ImGuiChildFlags_AlwaysUseWindowPadding;
+
+	size_t messageGlyphs = std::clamp(ctx.textWidth, static_cast<size_t>(11), static_cast<size_t>(30));
+	auto messageWidth = ctx.glyphSize.x * messageGlyphs;
+	auto contentHeight = ctx.buttonSize + ctx.windowPadding.x * 2.0f;
+	auto contentWidth = contentHeight + ctx.itemSpacing.x + messageWidth ;
+	ImGui::BeginChild(message.c_str(), ImVec2(contentWidth, contentHeight), flags);
+
+	notification.renderIcon(ctx);
+	ImGui::SameLine();
+	ImGui::SetCursorScreenPos(ImGui::GetCursorScreenPos() + ImVec2(0.0f, ctx.glyphSize.y * 0.5f));
+	notification.renderMessage(ctx, messageWidth);
+
+	ImGui::EndChild();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleVar();
 }
 
 
@@ -388,10 +443,10 @@ ImU32 Toastr::Notification::getIconBackgroundColor(Context ctx) {
 
 const Toastr::Palette& Toastr::GetDarkPalette() {
 	const static Palette palette = {{
-		IM_COL32( 40,  40,  30, 255),	// successBackground
-		IM_COL32( 50,  40,  30, 255),	// warningBackground
-		IM_COL32( 50,  20,  20, 255),	// errorBackground
-		IM_COL32( 20,  40,  60, 255),	// infoBackground
+		IM_COL32( 30,  60,  20, 255),	// successBackground
+		IM_COL32( 60,  50,  10, 255),	// warningBackground
+		IM_COL32( 80,  20,  20, 255),	// errorBackground
+		IM_COL32( 20,  40,  80, 255),	// infoBackground
 		IM_COL32(255, 255, 255, 255),	// messageColor
 		IM_COL32( 50, 200,  90, 255),	// successIcon
 		IM_COL32(255, 160,  10, 255),	// warningIcon

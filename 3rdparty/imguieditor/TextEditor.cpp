@@ -46,6 +46,21 @@ void TextEditor::setText(const std::string_view& text) {
 
 
 //
+//	TextEditor::setText
+//
+
+void TextEditor::setText(const std::vector<std::string_view>& lines) {
+	// load text into document and reset overlays
+	document.setText(config, lines);
+	transactions.reset();
+	cursors.clearAll();
+	clearMarkers();
+	clearSquiggles();
+	resetScrolling();
+}
+
+
+//
 //	TextEditor::render
 //
 

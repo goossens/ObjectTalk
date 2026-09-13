@@ -496,7 +496,6 @@ void TextEditor::renderSquiggles() {
 			// only process all visible columns
 			while (column < endColumn && column <= lastVisibleColumn) {
 				auto& glyph = line[index++];
-				auto codepoint = glyph.codepoint;
 				ImVec2 glyphPos(rowScreenPos.x + column * glyphSize.x, rowScreenPos.y);
 
 				// handle squiggles
@@ -526,14 +525,7 @@ void TextEditor::renderSquiggles() {
 					inSquiggle = false;
 				}
 
-				// handle tabs
-				if (codepoint == '\t') {
-					column += config.tabSize - (column % config.tabSize);
-
-				// handle regular glyphs
-				} else {
-					column++;
-				}
+				column += glyph.columns;
 			}
 
 			if (inSquiggle) {
@@ -602,8 +594,6 @@ void TextEditor::renderText() {
 					drawList->AddLine(p2, p4, palette.get(Color::whitespace));
 				}
 
-				column += config.tabSize - (column % config.tabSize);
-
 			// handle spaces
 			} else if (codepoint == ' ') {
 				if (config.showSpaces && column >= firstRenderableColumn) {
@@ -612,16 +602,14 @@ void TextEditor::renderText() {
 					drawList->AddCircleFilled(ImVec2(x, y), 1.5f, palette.get(Color::whitespace), 4);
 				}
 
-				column++;
-
 			// handle regular glyphs
 			} else {
 				if (column >= firstRenderableColumn) {
 					font->RenderChar(drawList, fontSize, glyphPos, palette.get(glyph.color), codepoint);
 				}
-
-				column++;
 			}
+
+			column += glyph.columns;
 		}
 
 		// draw ellipsis at the end of folded lines
@@ -2210,7 +2198,7 @@ void TextEditor::compressMarkers() {
 		}
 
 		// remove unused markers
-		size_t i = markers.size();
+		auto i = markers.size();
 
 		do {
 			i--;
@@ -2234,7 +2222,7 @@ void TextEditor::addSquiggle(DocPos start, DocPos end, size_t type, ImU32 color,
 		auto index = squiggles.size();
 
 		document.iterateGlyphs(start, end, [index](Glyph& glyph) {
-			glyph.squiggle = index;
+			glyph.squiggle = static_cast<uint32_t>(index);
 		});
 	}
 }
@@ -2329,7 +2317,7 @@ void TextEditor::compressSquiggles() {
 		}
 
 		// remove unused squiggles
-		size_t i = squiggles.size();
+		auto i = squiggles.size();
 
 		do {
 			i--;
@@ -2689,7 +2677,7 @@ void TextEditor::deindentLines() {
 				size_t index = 0;
 
 				while (column < config.tabSize && index < document[line].size() && std::isblank(document[line][index].codepoint)) {
-					column += document[line][index].codepoint == '\t' ? config.tabSize - (column % config.tabSize) : 1;
+					column += document[line][index].columns;
 					index++;
 				}
 
@@ -2991,21 +2979,21 @@ void TextEditor::tabsToSpaces() {
 		std::string output;
 		auto end = input.end();
 		auto i = input.begin();
-		size_t pos = 0;
+		size_t columns = 0;
 
 		while (i < end) {
 			ImWchar codepoint;
 			i = CodePoint::read(i, end, &codepoint);
 
 			if (codepoint == '\t') {
-				auto spaces = config.tabSize - (pos % config.tabSize);
+				auto spaces = config.tabSize - (columns % config.tabSize);
 				output.append(spaces, ' ');
-				pos += spaces;
+				columns += spaces;
 
 			} else {
 				char utf8[4];
 				output.append(utf8, CodePoint::write(utf8, codepoint));
-				pos++;
+				columns += CodePoint::getGlyphWidth(codepoint);
 			}
 		}
 
@@ -3023,7 +3011,7 @@ void TextEditor::spacesToTabs() {
 		std::string output;
 		auto end = input.end();
 		auto i = input.begin();
-		size_t pos = 0;
+		size_t columns = 0;
 		size_t spaces = 0;
 
 		while (i < end) {
@@ -3035,22 +3023,22 @@ void TextEditor::spacesToTabs() {
 
 			} else {
 				while (spaces) {
-					auto spacesUntilNextTab = config.tabSize - (pos % config.tabSize);
+					auto spacesUntilNextTab = config.tabSize - (columns % config.tabSize);
 
 					if (spacesUntilNextTab == 1) {
 						output += ' ';
-						pos++;
+						columns++;
 						spaces--;
 
 					} else if (spaces >= spacesUntilNextTab) {
 						output += '\t';
-						pos += spacesUntilNextTab;
+						columns += spacesUntilNextTab;
 						spaces -= spacesUntilNextTab;
 
 					} else if (codepoint != '\t')
 						while (spaces) {
 							output += ' ';
-							pos++;
+							columns++;
 							spaces--;
 						}
 
@@ -3061,12 +3049,12 @@ void TextEditor::spacesToTabs() {
 
 				if (codepoint == '\t') {
 					output += '\t';
-					pos += config.tabSize - (pos % config.tabSize);
+					columns += config.tabSize - (columns % config.tabSize);
 
 				} else {
 					char utf8[4];
 					output.append(utf8, CodePoint::write(utf8, codepoint));
-					pos++;
+					columns += CodePoint::getGlyphWidth(codepoint);
 				}
 			}
 		}

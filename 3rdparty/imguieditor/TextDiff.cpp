@@ -311,8 +311,6 @@ void TextDiff::IntegratedView::renderLine(float x, float y, const TextEditor::Li
 				drawList->AddLine(p2, p4, diff.palette.get(TextEditor::Color::whitespace));
 			}
 
-			column += diff.config.tabSize - (column % diff.config.tabSize);
-
 		// handle spaces
 		} else if (codepoint == ' ') {
 			if (diff.config.showSpaces && column >= firstRenderableColumn) {
@@ -321,16 +319,14 @@ void TextDiff::IntegratedView::renderLine(float x, float y, const TextEditor::Li
 				drawList->AddCircleFilled(ImVec2(x1, y1), 1.5f, diff.palette.get(TextEditor::Color::whitespace), 4);
 			}
 
-			column++;
-
 		// handle regular glyphs
 		} else {
 			if (column >= firstRenderableColumn) {
 				font->RenderChar(drawList, fontSize, glyphPos, diff.palette.get(glyph.color), codepoint);
 			}
-
-			column++;
 		}
+
+		column += glyph.columns;
 	}
 }
 
@@ -677,8 +673,6 @@ void TextDiff::SideBySideView::renderLine(float x, float y, const TextEditor::Li
 				drawList->AddLine(p2, p4, diff.palette.get(TextEditor::Color::whitespace));
 			}
 
-			column += diff.config.tabSize - (column % diff.config.tabSize);
-
 		// handle spaces
 		} else if (codepoint == ' ') {
 			if (diff.config.showSpaces && column >= firstRenderableColumn) {
@@ -687,16 +681,14 @@ void TextDiff::SideBySideView::renderLine(float x, float y, const TextEditor::Li
 				drawList->AddCircleFilled(ImVec2(x1, y1), 1.5f, diff.palette.get(TextEditor::Color::whitespace), 4);
 			}
 
-			column++;
-
 		// handle regular glyphs
 		} else {
 			if (column >= firstRenderableColumn) {
 				font->RenderChar(drawList, fontSize, glyphPos, diff.palette.get(glyph.color), codepoint);
 			}
-
-			column++;
 		}
+
+		column += glyph.columns;
 	}
 }
 

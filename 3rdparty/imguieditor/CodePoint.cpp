@@ -315,11 +315,11 @@ bool TextEditor::CodePoint::isUpper(ImWchar codepoint) {
 
 
 //
-//	eastAsianRangeFind
+//	rangeFind
 //
 
 template <typename T, typename C>
-bool eastAsianRangeFind(const T& table, C codepoint) {
+bool rangeFind(const T& table, C codepoint) {
 	auto low = std::begin(table);
 	auto high = std::end(table);
 
@@ -355,32 +355,59 @@ bool TextEditor::CodePoint::isEastAsian(ImWchar codepoint) {
 
 #if defined(IMGUI_USE_WCHAR32)
 	if (codepoint >= 0x10000) {
-		result = eastAsianRangeFind(eastAsian32, static_cast<char32_t>(codepoint));
+		result = rangeFind(eastAsian32, static_cast<char32_t>(codepoint));
 
 	} else
 #endif
 
 	{
-		result = eastAsianRangeFind(eastAsian16, static_cast<char16_t>(codepoint));
+		result = rangeFind(eastAsian16, static_cast<char16_t>(codepoint));
 	}
 
 	if (!result) {
 		if ((codepoint >= 0x3400 && codepoint <= 0x4DBF) ||
-			(codepoint >= 0x4E00 && codepoint <= 0x9FFF) ||
-			(codepoint >= 0xF900 && codepoint <= 0xFAFF)
-
-#if defined(IMGUI_USE_WCHAR32)
-			||
-			(codepoint >= 0x20000 && codepoint <= 0x2FFFD) ||
-			(codepoint >= 0x30000 && codepoint <= 0x3FFFD)
-#endif
-		) {
+			(codepoint >= 0x4E00 && codepoint <= 0x9FFF)) {
 
 			result = true;
 		}
 	}
 
 	return result;
+}
+
+
+//
+//	TextEditor::CodePoint::getGlyphWidth
+//
+
+size_t TextEditor::CodePoint::getGlyphWidth(ImWchar codepoint) {
+	// handle simple case
+	if (codepoint < 0x1100) {
+		return 1;
+	}
+
+	bool wide;
+
+#if defined(IMGUI_USE_WCHAR32)
+	if (codepoint >= 0x10000) {
+		wide = rangeFind(wideGlyph32, static_cast<char32_t>(codepoint));
+
+	} else
+#endif
+
+	{
+		wide = rangeFind(wideGlyph16, static_cast<char16_t>(codepoint));
+	}
+
+	if (!wide) {
+		if ((codepoint >= 0x3400 && codepoint <= 0x4DBF) ||
+			(codepoint >= 0x4E00 && codepoint <= 0x9FFF)) {
+
+			wide = true;
+		}
+	}
+
+	return wide ? 2 : 1;
 }
 
 

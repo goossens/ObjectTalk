@@ -12,7 +12,7 @@
 
 //
 //	Tables below are automatically generated from the unicode database version 17.0.0
-//	downloaded from http://www.unicode.org/Public/UNIDATA/ on Saturday, July 25, 2026
+//	downloaded from http://www.unicode.org/Public/UNIDATA/ on Sunday, September 13, 2026
 //	using the GenerateTables.py script.
 //
 

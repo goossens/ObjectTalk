@@ -52,7 +52,7 @@ bool TextEditor::MiniMap::update(const Config& config, const Document& document,
 				}
 
 				// process line
-				processLine(line, config, index, column, endColumn);
+				processLine(line, index, column, endColumn);
 			}
 		}
 	}
@@ -66,13 +66,7 @@ bool TextEditor::MiniMap::update(const Config& config, const Document& document,
 //	TextEditor::MiniMap::processLine
 //
 
-void TextEditor::MiniMap::processLine(
-	const Line& line,
-	const Config& config,
-	size_t index,
-	size_t column,
-	size_t endColumn) {
-
+void TextEditor::MiniMap::processLine(const Line& line, size_t index, size_t column, size_t endColumn) {
 	auto& row = rows.emplace_back();
 	auto start = column;
 	auto color = Color::background;
@@ -95,7 +89,7 @@ void TextEditor::MiniMap::processLine(
 		}
 
 		// update column number
-		column += (glyph.codepoint == '\t') ? (config.tabSize - (column % config.tabSize)) : 1;
+		column += glyph.columns;
 	}
 
 	// handle possible sections at the end of the row

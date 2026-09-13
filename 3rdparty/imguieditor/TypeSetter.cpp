@@ -54,13 +54,10 @@ void TextEditor::TypeSetter::wrapLine(Line& line) {
 			lastBreakableIndex = i + 1;
 
 		} else {
-			// get current codepoint
-			auto codepoint = line[i].codepoint;
-
 			// calculate first row indent (if required)
 			if (isAtBeginning) {
-				if (CodePoint::isWhiteSpace(codepoint)) {
-					indent = (codepoint == '\t') ? ((indent / tabSize) + 1) * tabSize : indent + 1;
+				if (CodePoint::isWhiteSpace(line[i].codepoint)) {
+					indent += line[i].columns;
 
 				} else {
 					isAtBeginning = false;
@@ -68,7 +65,7 @@ void TextEditor::TypeSetter::wrapLine(Line& line) {
 			}
 
 			// update column count
-			columns = (codepoint == '\t') ? ((columns / tabSize) + 1) * tabSize : columns + 1;
+			columns += line[i].columns;
 
 			if (columns < wordWrapColumns) {
 				// we're not at the end of the row yet so we have to track any break options
@@ -128,6 +125,20 @@ void TextEditor::TypeSetter::wrapLine(Line& line) {
 //
 
 void TextEditor::TypeSetter::updateLine(Line& line) {
+	// update glyph widths
+	size_t columns = 0;
+
+	for (auto& glyph : line) {
+		if (glyph.codepoint == '\t') {
+			glyph.columns = static_cast<uint8_t>(tabSize - (columns % tabSize));
+
+		} else {
+			glyph.columns = static_cast<uint8_t>(CodePoint::getGlyphWidth(glyph.codepoint));
+		}
+
+		columns += glyph.columns;
+	}
+
 	if (wordWrap) {
 		// classify all line break opportunities in line
 		lineBreak.classify(line);
@@ -136,17 +147,8 @@ void TextEditor::TypeSetter::updateLine(Line& line) {
 		wrapLine(line);
 
 	} else {
-		// text is always 1 row high without wrapping
 		line.rows = 1;
-
-		// determine the maximum column number for this line
-		line.columns = 0;
-
-		for (const auto& glyph : line) {
-			line.columns = (glyph.codepoint == '\t') ? ((line.columns / tabSize) + 1) * tabSize : line.columns + 1;
-		}
-
-		// reset multiline sections
+		line.columns = columns;
 		line.sections = nullptr;
 	}
 
@@ -258,7 +260,7 @@ TextEditor::VisPos TextEditor::TypeSetter::docPos2VisPos(const Document& documen
 				visPos.column = section.indent;
 
 				for (auto glyph = start; glyph < end; glyph++) {
-					visPos.column = (glyph->codepoint == '\t') ? ((visPos.column / tabSize) + 1) * tabSize : visPos.column + 1;
+					visPos.column += glyph->columns;
 				}
 
 				done = true;
@@ -269,11 +271,10 @@ TextEditor::VisPos TextEditor::TypeSetter::docPos2VisPos(const Document& documen
 		}
 
 	} else {
-		// for non-wrapped lines, just handle tabs
 		auto end = line.begin() + pos.index;
 
 		for (auto glyph = line.begin(); glyph < end; glyph++) {
-			visPos.column = (glyph->codepoint == '\t') ? ((visPos.column / tabSize) + 1) * tabSize : visPos.column + 1;
+			visPos.column += glyph->columns;
 		}
 	}
 
@@ -323,7 +324,7 @@ TextEditor::DocPos TextEditor::TypeSetter::visPos2DocPos(const Document& documen
 
 	for (auto glyph = start; rightColumn < pos.column && glyph < end; glyph++) {
 		leftColumn = rightColumn;
-		rightColumn = (glyph->codepoint == '\t') ? ((rightColumn / tabSize) + 1) * tabSize : rightColumn + 1;
+		rightColumn += glyph->columns;
 		index++;
 	}
 
@@ -406,7 +407,7 @@ void TextEditor::TypeSetter::screenPos2DocPos(const Document& document, ImVec2 s
 
 			for (auto glyph = start; static_cast<float>(rightColumn) < screenPos.x && glyph < end; glyph++) {
 				leftColumn = rightColumn;
-				rightColumn = (glyph->codepoint == '\t') ? ((rightColumn / tabSize) + 1) * tabSize : rightColumn + 1;
+				rightColumn += glyph->columns;
 				index++;
 			}
 

@@ -583,9 +583,10 @@ public:
 
 		// maintained by the TypeSetter overlay
 		BreakOption breakOption = BreakOption::undefined;
+		uint8_t columns = 1;
 
 		// squiggle reference
-		size_t squiggle = 0;
+		uint32_t squiggle = 0;
 	};
 
 	// iterator used in language-specific tokenizers
@@ -819,6 +820,7 @@ public:
 		static bool isLower(ImWchar codepoint);
 		static bool isUpper(ImWchar codepoint);
 		static bool isEastAsian(ImWchar codepoint);
+		static size_t getGlyphWidth(ImWchar codepoint);
 		static ImWchar toUpper(ImWchar codepoint);
 		static ImWchar toLower(ImWchar codepoint);
 
@@ -1106,7 +1108,7 @@ protected:
 					appendLine();
 
 				} else if (config.insertSpacesOnTabs && character == '\t') {
-					auto spaces = ((back().size() / config.tabSize) + 1) * config.tabSize - back().size();
+					auto spaces = getSpacesToTab(config, back(), back().size());
 
 					for (size_t s = 0; s < spaces; s++) {
 						back().emplace_back(Glyph(' ', Color::text));
@@ -1141,7 +1143,7 @@ protected:
 						i = CodePoint::read(i, end, &character);
 
 						if (config.insertSpacesOnTabs && character == '\t') {
-							auto spaces = ((back().size() / config.tabSize) + 1) * config.tabSize - back().size();
+							auto spaces = getSpacesToTab(config, back(), back().size());
 
 							for (size_t s = 0; s < spaces; s++) {
 								back().emplace_back(Glyph(' ', Color::text));
@@ -1176,7 +1178,7 @@ protected:
 					appendLine();
 
 				} else if (config.insertSpacesOnTabs && character == '\t') {
-					auto spaces = ((back().size() / config.tabSize) + 1) * config.tabSize - back().size();
+					auto spaces = getSpacesToTab(config, back(), back().size());
 
 					for (size_t s = 0; s < spaces; s++) {
 						back().emplace_back(Glyph(' ', Color::text));
@@ -1207,7 +1209,7 @@ protected:
 						auto character = static_cast<ImWchar>(*i);
 
 						if (config.insertSpacesOnTabs && character == '\t') {
-							auto spaces = ((back().size() / config.tabSize) + 1) * config.tabSize - back().size();
+							auto spaces = getSpacesToTab(config, back(), back().size());
 
 							for (size_t s = 0; s < spaces; s++) {
 								back().emplace_back(Glyph(' ', Color::text));
@@ -1347,6 +1349,7 @@ protected:
 		void deleteLines(size_t start, size_t end);
 		void clearDocument();
 		void updateIndents(const Config& config, size_t start, size_t end);
+		size_t getSpacesToTab(const Config& config, const Line& line, size_t index);
 	} document;
 
 	// a single cursor
@@ -1751,12 +1754,7 @@ protected:
 		bool showMiniMap = false;
 
 		// support functions
-		void processLine(
-			const Line& line,
-			const Config& config,
-			size_t index,
-			size_t column,
-			size_t endColumn);
+		void processLine(const Line& line, size_t index, size_t column, size_t endColumn);
 	} miniMap;
 
 	// list of text markers

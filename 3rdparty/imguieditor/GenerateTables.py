@@ -458,6 +458,10 @@ if __name__ == "__main__":
 		tables.write(printTable(eastAsian, "Range16", "eastAsian16", filter16, formatRange, False))
 		tables.write(printTable(eastAsian, "Range32", "eastAsian32", filter32, formatRange, True))
 
+		wideGlyph = compressRanges(buildRanges("EastAsianWidth.txt", lambda line : line[1] == "W"))
+		tables.write(printTable(wideGlyph, "Range16", "wideGlyph16", filter16, formatRange, False))
+		tables.write(printTable(wideGlyph, "Range32", "wideGlyph32", filter32, formatRange, True))
+
 		caseRanges = compressRanges(buildCaseRanges("UnicodeData.txt"))
 		tables.write(printTable(caseRanges, "CaseRange16", "case16", filter16, formatCase, False))
 		tables.write(printTable(caseRanges, "CaseRange32", "case32", filter32, formatCase, True))

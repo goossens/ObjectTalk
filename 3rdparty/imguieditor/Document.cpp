@@ -45,7 +45,7 @@ TextEditor::DocPos TextEditor::Document::insertText(const Config& config, DocPos
 			index = 0;
 
 		} else if (config.insertSpacesOnTabs && character == '\t') {
-			auto spaces = ((index / config.tabSize) + 1) * config.tabSize - index;
+			auto spaces = getSpacesToTab(config, *line, index);
 
 			for (size_t s = 0; s < spaces; s++) {
 				line->insert(line->begin() + (index++), Glyph(' ', Color::text));
@@ -853,4 +853,19 @@ void TextEditor::Document::updateIndents(const Config& config, size_t start, siz
 			}
 		}
 	}
+}
+
+
+//
+//	TextEditor::Document::getSpacesToTab
+//
+
+size_t TextEditor::Document::getSpacesToTab(const Config& config, const Line& line, size_t index) {
+	size_t columns = 0;
+
+	for (size_t i = 0; i < index; i++) {
+		columns += CodePoint::getGlyphWidth(line[i].codepoint);
+	}
+
+	return ((columns / config.tabSize) + 1) * config.tabSize - columns;
 }

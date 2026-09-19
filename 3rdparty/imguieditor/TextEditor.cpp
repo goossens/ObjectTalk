@@ -10,6 +10,7 @@
 //
 
 #include <cmath>
+#include <set>
 
 #ifndef IMGUI_DEFINE_MATH_OPERATORS
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -174,6 +175,7 @@ bool TextEditor::render(const char* title, const ImVec2& size, ImGuiChildFlags c
 			true);
 
 		// render parts in the text area
+		renderCurrentLineHighlight();
 		renderActiveBracketBackground();
 		renderSelections();
 		renderTextMarkers();
@@ -240,6 +242,33 @@ bool TextEditor::render(const char* title, const ImVec2& size, ImGuiChildFlags c
 	}
 
 	return documentChanged;
+}
+
+
+//
+//	TextEditor::renderCurrentLineHighlight
+//
+
+void TextEditor::renderCurrentLineHighlight() {
+	if (config.showCurrentLineHighlight && !cursors.anyHasSelection()) {
+		auto drawList = ImGui::GetWindowDrawList();
+		std::set<size_t> alreadyDrawn{};
+
+		for (const auto& cursor : cursors) {
+			const auto lineNumber = cursor.getInteractiveEnd().line;
+
+			if (!alreadyDrawn.contains(lineNumber)) {
+				alreadyDrawn.insert(lineNumber);
+
+				const auto& line = document[lineNumber];
+				const auto topLeft = ImVec2(textLeftOffset, cursorScreenPos.y + line.row * glyphSize.y);
+				const auto bottomRight = topLeft + ImVec2(textRightOffset, line.rows * glyphSize.y);
+
+				drawList->AddRectFilled(topLeft, bottomRight, palette.get(Color::currentLineHighlight));
+				drawList->AddRect(topLeft, bottomRight, palette.get(Color::currentLineHighlightBorder));
+			}
+		}
+	}
 }
 
 

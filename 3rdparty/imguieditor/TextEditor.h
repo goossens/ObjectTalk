@@ -121,6 +121,8 @@ public:
 	inline bool IsShowScrollbarMiniMapEnabled() const { return config.showScrollbarMiniMap; }
 	inline void SetShowPanScrollIndicatorEnabled(bool value) { config.showPanScrollIndicator = value; }
 	inline bool IsShowPanScrollIndicatorEnabled() const { return config.showPanScrollIndicator; }
+	inline void SetShowCurrentLineHighlightEnabled(bool value) { config.showCurrentLineHighlight = value; }
+	inline bool IsShowCurrentLineHighlightEnabled() const { return config.showCurrentLineHighlight; }
 	inline void SetShowMatchingBrackets(bool value) { config.showMatchingBrackets = value; if (!value) { config.lineFolding = false; } }
 	inline bool IsShowingMatchingBrackets() const { return config.showMatchingBrackets; }
 	inline void SetCompletePairedGlyphs(bool value) { config.completePairedGlyphs = value; }
@@ -544,6 +546,8 @@ public:
 		matchingBracketError,
 		lineNumber,
 		currentLineNumber,
+		currentLineHighlight,
+		currentLineHighlightBorder,
 		count
 	};
 
@@ -983,6 +987,7 @@ protected:
 		bool showMiniMap = false;
 		size_t miniMapColumns = 0;
 		bool showScrollbarMiniMap = true;
+		bool showCurrentLineHighlight = true;
 		bool showMatchingBrackets = true;
 		bool completePairedGlyphs = true;
 		bool lineFolding = false;
@@ -1835,6 +1840,7 @@ protected:
 
 	// render (parts of) the text editor
 	bool render(const char* title, const ImVec2& size, ImGuiChildFlags childFlags, ImGuiWindowFlags windowFlags);
+	void renderCurrentLineHighlight();
 	void renderActiveBracketBackground();
 	void renderSelections();
 	void renderTextMarkers();

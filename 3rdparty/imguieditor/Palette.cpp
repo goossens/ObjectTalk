@@ -53,6 +53,8 @@ const TextEditor::Palette& TextEditor::GetDarkPalette() {
 		IM_COL32(198,   8,  32, 255),	// matchingBracketError
 		IM_COL32(128, 128, 144, 255),	// line number
 		IM_COL32(224, 224, 240, 255),	// current line number
+		IM_COL32(255, 255, 255,   8),	// current line highlight
+		IM_COL32(255, 255, 255,  16)	// current line highlight border
 	}};
 
 	return palette;
@@ -82,6 +84,8 @@ const TextEditor::Palette& TextEditor::GetLightPalette() {
 		IM_COL32(198,   8,  32, 255),	// matchingBracketError
 		IM_COL32(  0,  80,  80, 255),	// line number
 		IM_COL32(  0,   0,   0, 255),	// current line number
+		IM_COL32(  0,   0,   0,   8),	// current line highlight
+		IM_COL32(  0,   0,   0,  16)	// current line highlight border
 	}};
 
 	return palette;

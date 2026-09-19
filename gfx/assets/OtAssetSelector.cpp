@@ -102,8 +102,7 @@ bool OtAssetSelector::renderUI(Info& info) {
 		// render path as a textfield
 		auto filename = OtText::from(info.path, 8);
 		ImGui::SetNextItemWidth(pathWidth);
-
-		auto backgroundColor = ImGui::ColorConvertFloat4ToU32(ImGui::GetStyle().Colors[ImGuiCol_FrameBg]);
+		auto backgroundColor = ImGui::GetColorU32(ImGuiCol_FrameBg);
 		ImGui::PushStyleColor(ImGuiCol_FrameBg, info.isMissing || info.isInvalid ? errorColor : backgroundColor);
 
 		if (OtUi::inputText("##virtualpath", &filename) && info.path != "virtual:" + filename) {
@@ -121,7 +120,7 @@ bool OtAssetSelector::renderUI(Info& info) {
 		// render path as a button
 		auto filename = OtPath::getFilename(info.path);
 		ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.0f, 0.5f));
-		auto buttonColor = ImGui::ColorConvertFloat4ToU32(ImGui::GetStyle().Colors[ImGuiCol_Button]);
+		auto buttonColor = ImGui::GetColorU32(ImGuiCol_Button);
 		ImGui::PushStyleColor(ImGuiCol_Button, info.isMissing || info.isInvalid ? errorColor : buttonColor);
 
 		if (ImGui::Button((filename + "##path").c_str(), ImVec2(pathWidth, itemHeight))) {

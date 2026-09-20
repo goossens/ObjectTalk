@@ -1605,8 +1605,8 @@ void TextEditor::handleMouseInteractions() {
 				auto extendCursor = ImGui::IsKeyDown(ImGuiMod_Shift);
 
 				auto addCursor = ImGui::GetIO().ConfigMacOSXBehaviors
-					? ImGui::IsKeyDown(ImGuiMod_Alt) :
-					ImGui::IsKeyDown(ImGuiMod_Ctrl);
+					? ImGui::IsKeyDown(ImGuiMod_Alt)
+					: ImGui::IsKeyDown(ImGuiMod_Ctrl);
 
 				if (overLineNumbers) {
 					// handle line number clicks

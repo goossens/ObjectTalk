@@ -276,6 +276,7 @@ void TextEditor::Cursors::update(const Document& document) {
 				auto previous = cursor + 1;
 
 				if (previous->getSelectionEnd() >= cursor->getSelectionEnd()) {
+					// handle case where one cursor completely contains another cursor
 					if (cursor->isMain()) {
 						previous->setMain(true);
 					}
@@ -284,7 +285,7 @@ void TextEditor::Cursors::update(const Document& document) {
 						previous->setCurrent(true);
 					}
 
-					erase((++cursor).base());
+					cursor = std::reverse_iterator(erase(previous.base()));
 
 				} else if (previous->getSelectionEnd() > cursor->getSelectionStart()) {
 					if (cursor->getInteractiveEnd() < cursor->getInteractiveStart()) {
@@ -302,7 +303,7 @@ void TextEditor::Cursors::update(const Document& document) {
 						previous->setCurrent(true);
 					}
 
-					erase((++cursor).base());
+					cursor = std::reverse_iterator(erase(previous.base()));
 
 				} else {
 					cursor++;

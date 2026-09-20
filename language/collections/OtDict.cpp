@@ -238,7 +238,7 @@ OtObject OtDictClass::keys() {
 	// create array of all keys in dictionary
 	auto array = OtArray::create();
 
-	for (auto const& entry : dict) {
+	for (const auto& entry : dict) {
 		array->append(OtString::create(entry.first));
 	}
 
@@ -254,7 +254,7 @@ OtObject OtDictClass::values() {
 	// create array of all values in dictionary
 	auto array = OtArray::create();
 
-	for (auto const& entry : dict) {
+	for (const auto& entry : dict) {
 		array->append(entry.second);
 	}
 

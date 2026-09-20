@@ -74,29 +74,29 @@ void TextEditor::renderFindReplace() {
 	// render find/replace window (if required)
 	if (findReplaceVisible) {
 		// save current screen position
-		auto currentScreenPosition = ImGui::GetCursorScreenPos();
+		const auto currentScreenPosition = ImGui::GetCursorScreenPos();
 
 		// calculate sizes
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6.0f, 4.0f));
 		const auto& style = ImGui::GetStyle();
-		auto fieldWidth = 250.0f * ImGui::GetStyle().FontScaleDpi;
+		const auto fieldWidth = 250.0f * ImGui::GetStyle().FontScaleDpi;
 
 		auto button1Width = ImGui::CalcTextSize(findButtonLabel.c_str()).x + style.ItemSpacing.x * 2.0f;
 		auto button2Width = ImGui::CalcTextSize(findAllButtonLabel.c_str()).x + style.ItemSpacing.x * 2.0f;
-		auto optionWidth = ImGui::CalcTextSize("Aa").x + style.ItemSpacing.x * 2.0f;
+		const auto optionWidth = ImGui::CalcTextSize("Aa").x + style.ItemSpacing.x * 2.0f;
 
 		if (!config.readOnly) {
 			button1Width = std::max(button1Width, ImGui::CalcTextSize(replaceButtonLabel.c_str()).x + style.ItemSpacing.x * 2.0f);
 			button2Width = std::max(button2Width, ImGui::CalcTextSize(replaceAllButtonLabel.c_str()).x + style.ItemSpacing.x * 2.0f);
 		}
 
-		auto windowHeight =
+		const auto windowHeight =
 			style.ChildBorderSize * 2.0f +
 			style.WindowPadding.y * 2.0f +
 			ImGui::GetFrameHeight() +
 			(config.readOnly ? 0.0f : (style.ItemSpacing.y + ImGui::GetFrameHeight()));
 
-		auto windowWidth =
+		const auto windowWidth =
 			style.ChildBorderSize * 2.0f +
 			style.WindowPadding.x * 2.0f +
 			fieldWidth + style.ItemSpacing.x +
@@ -105,7 +105,7 @@ void TextEditor::renderFindReplace() {
 			optionWidth * 3.0f + style.ItemSpacing.x * 2.0f;
 
 		// create window
-		auto availableSpace =
+		const auto availableSpace =
 			ImGui::GetWindowWidth() -
 			(config.showMiniMap ? miniMapWidth : 0.0f) -
 			(ImGui::GetCurrentWindow()->ScrollbarY ? ImGui::GetStyle().ScrollbarSize : 0.0f);
@@ -148,7 +148,7 @@ void TextEditor::renderFindReplace() {
 			}
 		}
 
-		bool disableFindButtons = !findText.size();
+		const bool disableFindButtons = !findText.size();
 
 		if (disableFindButtons) {
 			ImGui::BeginDisabled();
@@ -193,7 +193,7 @@ void TextEditor::renderFindReplace() {
 			inputString("###replace", &replaceText);
 			ImGui::SameLine();
 
-			bool disableReplaceButtons = !findText.size() || !replaceText.size();
+			const bool disableReplaceButtons = !findText.size() || !replaceText.size();
 
 			if (disableReplaceButtons) {
 				ImGui::BeginDisabled();
@@ -299,8 +299,8 @@ void TextEditor::selectAllOccurrencesOf(const std::string_view& text, bool caseS
 
 void TextEditor::addNextOccurrence(bool wholeWord) {
 
-	auto cursor = cursors.getCurrent();
-	auto text = document.getSectionText(cursor.getSelectionStart(), cursor.getSelectionEnd());
+	const auto cursor = cursors.getCurrent();
+	const auto text = document.getSectionText(cursor.getSelectionStart(), cursor.getSelectionEnd());
 	DocPos start, end;
 
 	if (document.findText(cursor.getSelectionEnd(), text, true, wholeWord, start, end)) {
@@ -314,8 +314,8 @@ void TextEditor::addNextOccurrence(bool wholeWord) {
 //
 
 void TextEditor::selectAllOccurrences(bool wholeWord) {
-	auto cursor = cursors.getCurrent();
-	auto text = document.getSectionText(cursor.getSelectionStart(), cursor.getSelectionEnd());
+	const auto cursor = cursors.getCurrent();
+	const auto text = document.getSectionText(cursor.getSelectionStart(), cursor.getSelectionEnd());
 	selectAllOccurrencesOf(text, true, wholeWord);
 }
 
@@ -325,17 +325,17 @@ void TextEditor::selectAllOccurrences(bool wholeWord) {
 //
 
 void TextEditor::replaceTextInCurrentCursor(const std::string_view& text) {
-	auto transaction = startTransaction();
+	const auto transaction = startTransaction();
 
 	// first delete old text
-	auto cursor = cursors.getCurrentAsIterator();
-	auto start = cursor->getSelectionStart();
-	auto end = cursor->getSelectionEnd();
+	const auto cursor = cursors.getCurrentAsIterator();
+	const auto start = cursor->getSelectionStart();
+	const auto end = cursor->getSelectionEnd();
 	deleteText(transaction, start, end);
 	cursors.adjustForDelete(cursor, start, end);
 
 	// now insert new text
-	DocPos newEnd = insertText(transaction, start, text);
+	const DocPos newEnd = insertText(transaction, start, text);
 	cursor->update(newEnd, false);
 	cursors.adjustForInsert(cursor, start, newEnd);
 
@@ -348,7 +348,7 @@ void TextEditor::replaceTextInCurrentCursor(const std::string_view& text) {
 //
 
 void TextEditor::replaceTextInAllCursors(const std::string_view& text) {
-	auto transaction = startTransaction();
+	const auto transaction = startTransaction();
 	insertTextIntoAllCursors(transaction, text);
 	endTransaction(transaction);
 }
@@ -359,9 +359,9 @@ void TextEditor::replaceTextInAllCursors(const std::string_view& text) {
 //
 
 void TextEditor::replaceSectionText(const DocPos& start, const DocPos& end, const std::string_view& text) {
-	auto transaction = startTransaction();
+	const auto transaction = startTransaction();
 	deleteText(transaction, start, end);
-	auto newEnd = insertText(transaction, start, text);
+	const auto newEnd = insertText(transaction, start, text);
 	cursors.clearAdditional();
 	cursors.getMain().update(newEnd, newEnd);
 	endTransaction(transaction);
@@ -374,7 +374,7 @@ void TextEditor::replaceSectionText(const DocPos& start, const DocPos& end, cons
 
 void TextEditor::openFindReplace() {
 	// get main cursor location
-	auto cursor = cursors.getMain();
+	const auto cursor = cursors.getMain();
 
 	// see if we have a current selection that's on one line
 	if (cursor.hasSelection()) {
@@ -385,7 +385,7 @@ void TextEditor::openFindReplace() {
 
 	} else {
 		// if cursor is inside a "real" word, use that as the default
-		auto selection = document.getWholeWord(cursor.getSelectionStart(), true);
+		const auto selection = document.getWholeWord(cursor.getSelectionStart(), true);
 
 		if (selection.start != selection.end) {
 			findText = document.getSectionText(selection.start, selection.end);

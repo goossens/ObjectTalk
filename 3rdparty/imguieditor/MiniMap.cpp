@@ -18,7 +18,7 @@
 
 bool TextEditor::MiniMap::update(const Config& config, const Document& document, const TypeSetter& typeSetter) {
 	// update all lines on configuration change
-	bool configChanged = showMiniMap != config.showMiniMap;
+	const bool configChanged = showMiniMap != config.showMiniMap;
 
 	if (configChanged) {
 		showMiniMap = config.showMiniMap;
@@ -26,12 +26,12 @@ bool TextEditor::MiniMap::update(const Config& config, const Document& document,
 
 	if (configChanged || typeSetter.isUpdated()) {
 		// reset state
-		auto rowCount = typeSetter.getRowCount();
+		const auto rowCount = typeSetter.getRowCount();
 		rows.clear();
 
 		// process all rows
 		for (size_t i = 0; i < rowCount; i++) {
-			auto& line = document[typeSetter[i].line];
+			const auto& line = document[typeSetter[i].line];
 
 			if (line.foldingState != FoldingState::hidden) {
 				size_t index;
@@ -73,7 +73,7 @@ void TextEditor::MiniMap::processLine(const Line& line, size_t index, size_t col
 
 	// process all
 	while (column < endColumn) {
-		auto& glyph = line[index++];
+		const auto& glyph = line[index++];
 
 		// detect end of section
 		if (glyph.color != color) {

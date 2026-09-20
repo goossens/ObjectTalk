@@ -36,7 +36,7 @@ void TextEditor::Transactions::add(std::shared_ptr<Transaction> transaction) {
 	if (callback) {
 		std::vector<Change> changes;
 
-		for (auto& action : *transaction) {
+		for (const auto& action : *transaction) {
 			auto& change = changes.emplace_back();
 			change.insert = action.type == Action::Type::insertText;
 			change.start = action.start;
@@ -54,7 +54,7 @@ void TextEditor::Transactions::add(std::shared_ptr<Transaction> transaction) {
 //
 
 void TextEditor::Transactions::undo(const Config& config, Document& document, Cursors& cursors) {
-	auto transaction = at(--undoIndex);
+	const auto transaction = at(--undoIndex);
 
 	for (auto action = transaction->rbegin(); action < transaction->rend(); action++) {
 		if (action->type == Action::Type::insertText) {
@@ -71,7 +71,7 @@ void TextEditor::Transactions::undo(const Config& config, Document& document, Cu
 	if (callback) {
 		std::vector<Change> changes;
 
-		for (auto& action : *transaction) {
+		for (const auto& action : *transaction) {
 			auto& change = changes.emplace_back();
 			change.insert = action.type == Action::Type::deleteText;
 			change.start = action.start;
@@ -89,7 +89,7 @@ void TextEditor::Transactions::undo(const Config& config, Document& document, Cu
 //
 
 void TextEditor::Transactions::redo(const Config& config, Document& document, Cursors& cursors) {
-	auto transaction = at(undoIndex++);
+	const auto transaction = at(undoIndex++);
 
 	for (auto action = transaction->begin(); action < transaction->end(); action++) {
 		if (action->type == Action::Type::insertText) {
@@ -106,7 +106,7 @@ void TextEditor::Transactions::redo(const Config& config, Document& document, Cu
 	if (callback) {
 		std::vector<Change> changes;
 
-		for (auto& action : *transaction) {
+		for (const auto& action : *transaction) {
 			auto& change = changes.emplace_back();
 			change.insert = action.type == Action::Type::insertText;
 			change.start = action.start;

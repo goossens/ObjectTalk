@@ -503,7 +503,7 @@ static inline TextEditor::BreakOption lb15b(const LineBreakState& state) {
 
 	// × [\p{Pf}&QU] ( SP | GL | WJ | CL | QU | CP | EX | IS | SY | BK | CR | LF | NL | ZW | eot)
 	if (isPf(state.next.codepoint) && state.next.cls == LBC::qu) {
-		auto after = state.getClass(state.next.pos + 1);
+		const auto after = state.getClass(state.next.pos + 1);
 
 		if (after == LBC::eot) {
 			return TextEditor::BreakOption::noBreak;
@@ -637,8 +637,8 @@ static inline TextEditor::BreakOption lb19a(const LineBreakState& state) {
 
 	// × QU ( [^$EastAsian] | eot )
 	if (state.next.cls == LBC::qu) {
-		auto afterCodepoint = state.getCodepoint(state.next.pos + 1);
-		auto afterCls = state.getClass(state.next.pos + 1);
+		const auto afterCodepoint = state.getCodepoint(state.next.pos + 1);
+		const auto afterCls = state.getClass(state.next.pos + 1);
 
 		if (afterCls == LBC::eot || !TextEditor::CodePoint::isEastAsian(afterCodepoint)) {
 			return TextEditor::BreakOption::noBreak;
@@ -869,14 +869,14 @@ static inline TextEditor::BreakOption lb25(const LineBreakState& state) {
 	// PR × NU
 	if ((state.current.cls == LBC::po) || ((state.current.cls == LBC::pr))) {
 		if (state.next.cls == LBC::op) {
-			auto after = state.getClass(state.next.pos + 1);
+			const auto after = state.getClass(state.next.pos + 1);
 
 			if (after != LBC::eot) {
 				if (after == LBC::nu) {
 					return TextEditor::BreakOption::noBreak;
 
 				} else if (after == LBC::is) {
-					auto afterAfter = state.getClass(state.next.pos + 2);
+					const auto afterAfter = state.getClass(state.next.pos + 2);
 
 					if (afterAfter == LBC::nu) {
 						return TextEditor::BreakOption::noBreak;
@@ -1114,7 +1114,7 @@ static inline TextEditor::BreakOption lb30b(const LineBreakState& state) {
 	}
 
 
-static inline TextEditor::BreakOption applyRules(TextEditor::LineBreakConfig& config, LineBreakState& state) {
+static inline TextEditor::BreakOption applyRules(const TextEditor::LineBreakConfig& config, LineBreakState& state) {
 	TextEditor::BreakOption result;
 	RULE2(lb2);
 	RULE2(lb3);
@@ -1173,7 +1173,7 @@ static inline TextEditor::BreakOption applyRules(TextEditor::LineBreakConfig& co
 
 void TextEditor::LineBreak::classify(Line& line) {
 	// handle easy cases
-	auto size = line.size();
+	const auto size = line.size();
 
 	if (size == 0) {
 		return;
@@ -1193,7 +1193,7 @@ void TextEditor::LineBreak::classify(Line& line) {
 		for (size_t i = 0; i < size; i++) {
 			const auto& glyph = line[i];
 			state.push(LineBreakGlyph(glyph.codepoint, getLineBreakClass(glyph.codepoint), i));
-			auto breakOption = applyRules(config, state);
+			const auto breakOption = applyRules(config, state);
 
 			if (i) {
 				line[i - 1].breakOption = breakOption;

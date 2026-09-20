@@ -22,7 +22,7 @@ TextEditor::DocPos TextEditor::Document::insertText(const Config& config, DocPos
 	auto lineNo = start.line;
 
 	// process input as UTF-8
-	auto endOfText = text.end();
+	const auto endOfText = text.end();
 	auto i = text.begin();
 
 	// process all codepoints
@@ -34,7 +34,7 @@ TextEditor::DocPos TextEditor::Document::insertText(const Config& config, DocPos
 			// split line
 			insertLine(lineNo + 1);
 			line = begin() + lineNo;
-			auto nextLine = begin() + ++lineNo;
+			const auto nextLine = begin() + ++lineNo;
 
 			for (auto j = line->begin() + index; j < line->end(); j++) {
 				nextLine->push_back(*j);
@@ -45,7 +45,7 @@ TextEditor::DocPos TextEditor::Document::insertText(const Config& config, DocPos
 			index = 0;
 
 		} else if (config.insertSpacesOnTabs && character == '\t') {
-			auto spaces = getSpacesToTab(config, *line, index);
+			const auto spaces = getSpacesToTab(config, *line, index);
 
 			for (size_t s = 0; s < spaces; s++) {
 				line->insert(line->begin() + (index++), Glyph(' ', Color::text));
@@ -58,7 +58,7 @@ TextEditor::DocPos TextEditor::Document::insertText(const Config& config, DocPos
 	}
 
 	// determine end of insert
-	auto end = DocPos(lineNo, index);
+	const auto end = DocPos(lineNo, index);
 
 	// mark affected lines as changed
 	for (auto j = start.line; j <= end.line; j++) {
@@ -79,9 +79,9 @@ TextEditor::DocPos TextEditor::Document::insertText(const Config& config, DocPos
 
 void TextEditor::Document::deleteText(const Config& config, DocPos start, DocPos end) {
 	auto& startLine = at(start.line);
-	auto startIndex = start.index;
 	auto& endLine = at(end.line);
-	auto endIndex = end.index;
+	const auto startIndex = start.index;
+	const auto endIndex = end.index;
 
 	// see if start and end are on the same line
 	if (start.line == end.line) {
@@ -127,7 +127,7 @@ std::string TextEditor::Document::getSectionText(DocPos start, DocPos end) const
 	char utf8[4];
 
 	while (lineNo < end.line || index < end.index) {
-		auto& line = at(lineNo);
+		const auto& line = at(lineNo);
 
 		if (index < line.size()) {
 			section.append(std::string_view(utf8, CodePoint::write(utf8, line[index].codepoint)));
@@ -276,7 +276,7 @@ TextEditor::DocPos TextEditor::Document::getTop() const {
 //
 
 TextEditor::DocPos TextEditor::Document::getBottom() const {
-	auto lastLine = size() - 1;
+	const auto lastLine = size() - 1;
 	return DocPos(lastLine, at(lastLine).size());
 }
 
@@ -305,14 +305,14 @@ TextEditor::DocPos TextEditor::Document::getEndOfLine(DocPos from) const {
 
 TextEditor::DocPos TextEditor::Document::findWordStart(DocPos from, bool wordOnly) const {
 	const auto& line = at(from.line);
-	auto lineSize = line.size();
+	const auto lineSize = line.size();
 
 	if (from.index == 0 || lineSize == 0) {
 		return from;
 
 	} else {
 		auto index = from.index;
-		auto firstCharacter = line[index - 1].codepoint;
+		const auto firstCharacter = line[index - 1].codepoint;
 
 		if (!wordOnly && CodePoint::isWhiteSpace(firstCharacter)) {
 			while (index > 0 && CodePoint::isWhiteSpace(line[index - 1].codepoint)) {
@@ -341,14 +341,14 @@ TextEditor::DocPos TextEditor::Document::findWordStart(DocPos from, bool wordOnl
 
 TextEditor::DocPos TextEditor::Document::findWordEnd(DocPos from, bool wordOnly) const {
 	const auto& line = at(from.line);
+	const auto size = line.size();
 	auto index = from.index;
-	auto size = line.size();
 
 	if (index >= size) {
 		return from;
 
 	} else {
-		auto firstCharacter = line[index].codepoint;
+		const auto firstCharacter = line[index].codepoint;
 
 		if (!wordOnly && CodePoint::isWhiteSpace(firstCharacter)) {
 			while (index < size && CodePoint::isWhiteSpace(line[index].codepoint)) {
@@ -378,7 +378,7 @@ TextEditor::DocPos TextEditor::Document::findWordEnd(DocPos from, bool wordOnly)
 bool TextEditor::Document::findText(DocPos from, const std::string_view& text, bool caseSensitive, bool wholeWord, DocPos& start, DocPos& end) const {
 	// convert input string to vector of codepoints
 	std::vector<ImWchar> search;
-	auto endOfText = text.end();
+	const auto endOfText = text.end();
 	auto i = text.begin();
 
 	while (i < endOfText) {
@@ -388,8 +388,8 @@ bool TextEditor::Document::findText(DocPos from, const std::string_view& text, b
 	}
 
 	// search document
-	auto startLine = from.line;
-	auto startIndex = from.index;
+	const auto startLine = from.line;
+	const auto startIndex = from.index;
 	auto searchLine = startLine;
 	auto searchIndex = startIndex;
 
@@ -515,7 +515,7 @@ static inline bool isIdentifier(TextEditor::Color color) {
 void TextEditor::Document::iterateIdentifiers(std::function<void(const std::string&)> callback) const {
 	for (size_t i = 0; i < size(); i++) {
 		auto p = at(i).begin();
-		auto end = at(i).end();
+		const auto end = at(i).end();
 		char utf8[4];
 
 		while (p < end) {
@@ -542,7 +542,7 @@ void TextEditor::Document::iterateIdentifiers(std::function<void(const std::stri
 //
 
 bool TextEditor::Document::isWordStart(DocPos pos, bool wordOnly) const {
-	auto& line = at(pos.line);
+	const auto& line = at(pos.line);
 
 	if (isEndOfLine(pos)) {
 		return false;
@@ -556,8 +556,8 @@ bool TextEditor::Document::isWordStart(DocPos pos, bool wordOnly) const {
 		}
 
 	} else {
-		auto glyph1 = line[pos.index - 1].codepoint;
-		auto glyph2 = line[pos.index].codepoint;
+		const auto glyph1 = line[pos.index - 1].codepoint;
+		const auto glyph2 = line[pos.index].codepoint;
 
 		if (wordOnly) {
 			return !CodePoint::isWord(glyph1) && CodePoint::isWord(glyph2);
@@ -580,7 +580,7 @@ bool TextEditor::Document::isWordStart(DocPos pos, bool wordOnly) const {
 //
 
 bool TextEditor::Document::isWordEnd(DocPos pos, bool wordOnly) const {
-	auto& line = at(pos.line);
+	const auto& line = at(pos.line);
 
 	if (isStartOfLine(pos)) {
 		return false;
@@ -594,8 +594,8 @@ bool TextEditor::Document::isWordEnd(DocPos pos, bool wordOnly) const {
 		}
 
 	} else {
-		auto glyph1 = line[pos.index - 1].codepoint;
-		auto glyph2 = line[pos.index].codepoint;
+		const auto glyph1 = line[pos.index - 1].codepoint;
+		const auto glyph2 = line[pos.index].codepoint;
 
 		if (wordOnly) {
 			return CodePoint::isWord(glyph1) && !CodePoint::isWord(glyph2);
@@ -793,7 +793,7 @@ void TextEditor::Document::appendLine() {
 //
 
 void TextEditor::Document::insertLine(size_t offset) {
-	auto line = insert(begin() + offset, Line());
+	const auto line = insert(begin() + offset, Line());
 
 	if (insertor) {
 		line->userData = insertor(offset);

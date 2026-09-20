@@ -74,10 +74,13 @@ bool TextEditor::render(const char* title, const ImVec2& size, ImGuiChildFlags c
 			resetDearImGuiScrolling = false;
 		}
 
+		// get drawList
+		drawList = ImGui::GetWindowDrawList();
+
 		// get font information
 		font = ImGui::GetFont();
 		fontSize = ImGui::GetFontSize();
-		auto& style = ImGui::GetStyle();
+		const auto& style = ImGui::GetStyle();
 		fontScaleDpi = style.FontScaleDpi;
 		glyphSize = ImVec2(ImGui::CalcTextSize("#").x, ImGui::GetTextLineHeightWithSpacing() * config.lineSpacing);
 
@@ -87,7 +90,7 @@ bool TextEditor::render(const char* title, const ImVec2& size, ImGuiChildFlags c
 
 		// determine horizontal offsets for line numbers, decorations and text
 		if (config.showLineNumbers) {
-			size_t digits = static_cast<size_t>(std::log10(static_cast<float>(document.size() + 1)) + 1.0f);
+			const auto digits = static_cast<size_t>(std::log10(static_cast<float>(document.size() + 1)) + 1.0f);
 			lineNumberLeftOffset = config.leftMargin * glyphSize.x;
 			lineNumberRightOffset = lineNumberLeftOffset + digits * glyphSize.x;
 
@@ -166,8 +169,7 @@ bool TextEditor::render(const char* title, const ImVec2& size, ImGuiChildFlags c
 #endif
 
 		// setup clipping over the text area
-		auto drawList = ImGui::GetWindowDrawList();
-		auto offset = ImGui::GetWindowPos().x;
+		const auto offset = ImGui::GetWindowPos().x;
 
 		drawList->PushClipRect(
 			ImVec2(offset + textLeftOffset - cursorWidth, drawList->GetClipRectMin().y),
@@ -251,7 +253,6 @@ bool TextEditor::render(const char* title, const ImVec2& size, ImGuiChildFlags c
 
 void TextEditor::renderCurrentLineHighlight() {
 	if (config.showCurrentLineHighlight && !cursors.anyHasSelection()) {
-		auto drawList = ImGui::GetWindowDrawList();
 		std::set<size_t> alreadyDrawn{};
 
 		for (const auto& cursor : cursors) {
@@ -278,18 +279,16 @@ void TextEditor::renderCurrentLineHighlight() {
 
 void TextEditor::renderActiveBracketBackground() {
 	if (config.showMatchingBrackets && bracketeer.size()) {
-		auto drawList = ImGui::GetWindowDrawList();
-
 		// render active bracket pair
-		auto active = bracketeer.getEnclosingBrackets(cursors.getMain().getInteractiveEnd());
+		const auto active = bracketeer.getEnclosingBrackets(cursors.getMain().getInteractiveEnd());
 
 		if (active != bracketeer.end() && active->visible) {
 			if (document[active->start.line].foldingState != FoldingState::hidden) {
-				auto startVis = docPos2VisPos(active->start);
+				const auto startVis = docPos2VisPos(active->start);
 
 				if (startVis.row >= firstVisibleRow && startVis.row <= lastVisibleRow) {
-					auto x = cursorScreenPos.x + textLeftOffset + startVis.column * glyphSize.x;
-					auto y = cursorScreenPos.y + startVis.row * glyphSize.y;
+					const auto x = cursorScreenPos.x + textLeftOffset + startVis.column * glyphSize.x;
+					const auto y = cursorScreenPos.y + startVis.row * glyphSize.y;
 
 					drawList->AddRectFilled(
 						ImVec2(x, y),
@@ -299,11 +298,11 @@ void TextEditor::renderActiveBracketBackground() {
 			}
 
 			if (document[active->end.line].foldingState != FoldingState::hidden) {
-				auto endVis = docPos2VisPos(active->end);
+				const auto endVis = docPos2VisPos(active->end);
 
 				if (endVis.row >= firstVisibleRow && endVis.row <= lastVisibleRow) {
-					auto x = cursorScreenPos.x + textLeftOffset + endVis.column * glyphSize.x;
-					auto y = cursorScreenPos.y + endVis.row * glyphSize.y;
+					const auto x = cursorScreenPos.x + textLeftOffset + endVis.column * glyphSize.x;
+					const auto y = cursorScreenPos.y + endVis.row * glyphSize.y;
 
 					drawList->AddRectFilled(
 						ImVec2(x, y),
@@ -321,13 +320,11 @@ void TextEditor::renderActiveBracketBackground() {
 //
 
 void TextEditor::renderSelections() {
-	auto drawList = ImGui::GetWindowDrawList();
-
 	// draw background for selections
-	for (auto& cursor : cursors) {
+	for (const auto& cursor : cursors) {
 		if (cursor.hasSelection()) {
-			auto begin = cursor.getSelectionStart();
-			auto end = cursor.getSelectionEnd();
+			const auto begin = cursor.getSelectionStart();
+			const auto end = cursor.getSelectionEnd();
 
 			for (size_t i = begin.line; i <= end.line; i++) {
 				const auto& line = document[i];
@@ -335,17 +332,17 @@ void TextEditor::renderSelections() {
 				if (line.foldingState != FoldingState::hidden) {
 					if (line.rows == 1) {
 						if (line.row >= firstVisibleRow && line.row <= lastVisibleRow) {
-							auto lineLeft = DocPos(i, 0);
-							auto lineRight =DocPos(i, line.size());
-							auto docLeft = begin <= lineLeft ? lineLeft : begin;
-							auto docRight = end > lineRight ? lineRight : end;
-							auto visLeft = docPos2VisPos(docLeft);
-							auto visRight = docPos2VisPos(docRight);
+							const auto lineLeft = DocPos(i, 0);
+							const auto lineRight =DocPos(i, line.size());
+							const auto docLeft = begin <= lineLeft ? lineLeft : begin;
+							const auto docRight = end > lineRight ? lineRight : end;
+							const auto visLeft = docPos2VisPos(docLeft);
+							const auto visRight = docPos2VisPos(docRight);
 
-							auto x = cursorScreenPos.x + textLeftOffset;
-							auto left = x + visLeft.column * glyphSize.x;
-							auto right = x + visRight.column * glyphSize.x;
-							auto y = cursorScreenPos.y + line.row * glyphSize.y;
+							const auto x = cursorScreenPos.x + textLeftOffset;
+							const auto left = x + visLeft.column * glyphSize.x;
+							const auto right = x + visRight.column * glyphSize.x;
+							const auto y = cursorScreenPos.y + line.row * glyphSize.y;
 
 							drawList->AddRectFilled(
 								ImVec2(left, y),
@@ -355,21 +352,21 @@ void TextEditor::renderSelections() {
 
 					} else {
 						for (size_t j = 0; j < line.rows; j++) {
-							auto& section = line.sections->at(j);
-							auto row = line.row + j;
+							const auto& section = line.sections->at(j);
+							const auto row = line.row + j;
 
 							if (row >= firstVisibleRow && row <= lastVisibleRow) {
-								auto sectionLeft = DocPos(i, section.startIndex);
-								auto sectionRight = DocPos(i, section.endIndex);
+								const auto sectionLeft = DocPos(i, section.startIndex);
+								const auto sectionRight = DocPos(i, section.endIndex);
 
 								if (begin < sectionRight && end > sectionLeft) {
-									auto visLeft = begin <= sectionLeft ? VisPos(row, 0) : docPos2VisPos(begin);
-									auto visRight = end > sectionRight ? VisPos(row, section.columns) : docPos2VisPos(end);
+									const auto visLeft = begin <= sectionLeft ? VisPos(row, 0) : docPos2VisPos(begin);
+									const auto visRight = end > sectionRight ? VisPos(row, section.columns) : docPos2VisPos(end);
 
-									auto x = cursorScreenPos.x + textLeftOffset;
-									auto left = x + visLeft.column * glyphSize.x;
-									auto right = x + visRight.column * glyphSize.x;
-									auto y = cursorScreenPos.y + row * glyphSize.y;
+									const auto x = cursorScreenPos.x + textLeftOffset;
+									const auto left = x + visLeft.column * glyphSize.x;
+									const auto right = x + visRight.column * glyphSize.x;
+									const auto y = cursorScreenPos.y + row * glyphSize.y;
 
 									drawList->AddRectFilled(
 										ImVec2(left, y),
@@ -392,20 +389,18 @@ void TextEditor::renderSelections() {
 
 void TextEditor::renderTextMarkers() {
 	if (markers.size()) {
-		auto drawList = ImGui::GetWindowDrawList();
-
 		for (size_t row = firstVisibleRow; row <= lastVisibleRow; row++) {
-			auto markerIndex = document[typeSetter[row].line].marker;
+			const auto markerIndex = document[typeSetter[row].line].marker;
 
 			if (markerIndex) {
 				const auto& marker = markers[markerIndex - 1];
-				auto y = cursorScreenPos.y + row * glyphSize.y;
+				const auto y = cursorScreenPos.y + row * glyphSize.y;
 
 				if (((marker.textColor >> IM_COL32_A_SHIFT) & 0xFF) != 0) {
-					auto left = cursorScreenPos.x + textLeftOffset;
-					auto right = left + lastVisibleColumn * glyphSize.x;
-					auto start = ImVec2(left, y);
-					auto end = ImVec2(right, y + glyphSize.y);
+					const auto left = cursorScreenPos.x + textLeftOffset;
+					const auto right = left + lastVisibleColumn * glyphSize.x;
+					const auto start = ImVec2(left, y);
+					const auto end = ImVec2(right, y + glyphSize.y);
 					drawList->AddRectFilled(start, end, marker.textColor);
 
 					if (marker.textTooltip.size() && ImGui::IsMouseHoveringRect(start, end)) {
@@ -429,23 +424,21 @@ void TextEditor::renderTextMarkers() {
 
 void TextEditor::renderMatchingBracketLines() {
 	if (config.showMatchingBrackets && bracketeer.size()) {
-		auto active = bracketeer.getEnclosingBrackets(cursors.getMain().getInteractiveEnd());
-		auto drawList = ImGui::GetWindowDrawList();
-
+		const auto active = bracketeer.getEnclosingBrackets(cursors.getMain().getInteractiveEnd());
 		// render bracket pair lines
 		for (auto bracket = bracketeer.begin(); bracket < bracketeer.end(); bracket++) {
 			if (bracket->visible && bracket->end.line - bracket->start.line > 1) {
-				auto column = std::min(docPos2VisPos(bracket->start).column, docPos2VisPos(bracket->end).column);
+				const auto column = std::min(docPos2VisPos(bracket->start).column, docPos2VisPos(bracket->end).column);
 
 				for (size_t i = bracket->start.line + 1; i < bracket->end.line; i++) {
 					const auto& line = document[i];
 
 					if (line.foldingState != FoldingState::hidden) {
-						auto lineX = cursorScreenPos.x + textLeftOffset + column * glyphSize.x;
-						auto startY = cursorScreenPos.y + line.row * glyphSize.y;
-						auto endY = startY +  line.rows * glyphSize.y;
+						const auto lineX = cursorScreenPos.x + textLeftOffset + column * glyphSize.x;
+						const auto startY = cursorScreenPos.y + line.row * glyphSize.y;
+						const auto endY = startY +  line.rows * glyphSize.y;
 
-						auto color = palette.get(bracket == active ? Color::matchingBracketActive : Color::whitespace);
+						const auto color = palette.get(bracket == active ? Color::matchingBracketActive : Color::whitespace);
 						drawList->AddLine(ImVec2(lineX, startY), ImVec2(lineX, endY), color);
 					}
 				}
@@ -458,20 +451,20 @@ void TextEditor::renderMatchingBracketLines() {
 //	renderSquiggle
 //
 
-static inline void renderSquiggle(float left, float right, float top, float bottom, float thickness, ImU32 color, const char* tooltip) {
-	auto drawList = ImGui::GetWindowDrawList();
-	auto height = bottom - top;
-	auto size = height * 0.2f;
-	auto offset = top + height * 0.8f;
+static inline void renderSquiggle(ImDrawList* drawList, float left, float right, float top, float bottom, float thickness, ImU32 color, const char* tooltip) {
+	const auto height = bottom - top;
+	const auto size = height * 0.2f;
+	const auto offset = top + height * 0.8f;
+
 	ImVec2 point(left, offset);
 	bool down = true;
 
-	ImVec2 topLeft{left, top};
-	ImVec2 bottomRight{right, bottom};
+	const ImVec2 topLeft{left, top};
+	const ImVec2 bottomRight{right, bottom};
 	drawList->PushClipRect(topLeft, bottomRight, true);
 
 	while (point.x < right) {
-		ImVec2 next{point.x + size, down ? offset + size : offset};
+		const ImVec2 next{point.x + size, down ? offset + size : offset};
 		drawList->AddLine(point, next, color, thickness);
 		point = next;
 		down = !down;
@@ -499,7 +492,7 @@ void TextEditor::renderSquiggles() {
 		// only process all visible rows
 		for (size_t i = firstVisibleRow; i <= lastVisibleRow; i++) {
 			// determine visible boundaries for this row
-			auto& line = document[typeSetter[i].line];
+			const auto& line = document[typeSetter[i].line];
 			size_t index;
 			size_t column;
 			size_t endColumn;
@@ -520,22 +513,22 @@ void TextEditor::renderSquiggles() {
 			bool inSquiggle = false;
 			size_t squiggleIndex = 0;
 			float squiggleLeft = 0.0f;
-			float thickness = 1.2f * fontScaleDpi;
+			const float thickness = 1.2f * fontScaleDpi;
 
 			// only process all visible columns
 			while (column < endColumn && column <= lastVisibleColumn) {
-				auto& glyph = line[index++];
-				ImVec2 glyphPos(rowScreenPos.x + column * glyphSize.x, rowScreenPos.y);
+				const auto& glyph = line[index++];
+				const ImVec2 glyphPos(rowScreenPos.x + column * glyphSize.x, rowScreenPos.y);
 
 				// handle squiggles
 				if (glyph.squiggle) {
-					auto nextIndex = glyph.squiggle - 1;
+					const auto nextIndex = glyph.squiggle - 1;
 
 					if (inSquiggle) {
 						if (squiggleIndex != nextIndex) {
 							// render squiggle and start new one
-							auto& squiggle = squiggles[squiggleIndex];
-							renderSquiggle(squiggleLeft, glyphPos.x, glyphPos.y, glyphPos.y + glyphSize.y, thickness, squiggle.color, squiggle.tooltip.c_str());
+							const auto& squiggle = squiggles[squiggleIndex];
+							renderSquiggle(drawList, squiggleLeft, glyphPos.x, glyphPos.y, glyphPos.y + glyphSize.y, thickness, squiggle.color, squiggle.tooltip.c_str());
 							squiggleIndex = nextIndex;
 							squiggleLeft = glyphPos.x;
 						}
@@ -549,8 +542,8 @@ void TextEditor::renderSquiggles() {
 
 				} else if (inSquiggle) {
 					// render squiggle
-					auto& squiggle = squiggles[squiggleIndex];
-					renderSquiggle(squiggleLeft, glyphPos.x, glyphPos.y, glyphPos.y + glyphSize.y, thickness, squiggle.color, squiggle.tooltip.c_str());
+					const auto& squiggle = squiggles[squiggleIndex];
+					renderSquiggle(drawList, squiggleLeft, glyphPos.x, glyphPos.y, glyphPos.y + glyphSize.y, thickness, squiggle.color, squiggle.tooltip.c_str());
 					inSquiggle = false;
 				}
 
@@ -559,9 +552,9 @@ void TextEditor::renderSquiggles() {
 
 			if (inSquiggle) {
 				// render last squiggle on line
-				auto& squiggle = squiggles[squiggleIndex];
-				auto glyphPos = cursorScreenPos + ImVec2(textLeftOffset + typeSetter[i].columns * glyphSize.x, i * glyphSize.y);
-				renderSquiggle(squiggleLeft, glyphPos.x, glyphPos.y, glyphPos.y + glyphSize.y, thickness, squiggle.color, squiggle.tooltip.c_str());
+				const auto& squiggle = squiggles[squiggleIndex];
+				const auto glyphPos = cursorScreenPos + ImVec2(textLeftOffset + typeSetter[i].columns * glyphSize.x, i * glyphSize.y);
+				renderSquiggle(drawList, squiggleLeft, glyphPos.x, glyphPos.y, glyphPos.y + glyphSize.y, thickness, squiggle.color, squiggle.tooltip.c_str());
 			}
 
 			rowScreenPos.y += glyphSize.y;
@@ -575,14 +568,13 @@ void TextEditor::renderSquiggles() {
 //
 
 void TextEditor::renderText() {
-	auto drawList = ImGui::GetWindowDrawList();
 	ImVec2 rowScreenPos = cursorScreenPos + ImVec2(textLeftOffset, firstVisibleRow * glyphSize.y);
-	auto firstRenderableColumn = (firstVisibleColumn / config.tabSize) * config.tabSize;
+	const auto firstRenderableColumn = (firstVisibleColumn / config.tabSize) * config.tabSize;
 
 	// only process all visible rows
 	for (size_t i = firstVisibleRow; i <= lastVisibleRow; i++) {
 		// determine visible boundaries for this row
-		auto& line = document[typeSetter[i].line];
+		const auto& line = document[typeSetter[i].line];
 		size_t index;
 		size_t column;
 		size_t endColumn;
@@ -601,9 +593,9 @@ void TextEditor::renderText() {
 
 		// only process all visible columns
 		while (column < endColumn && column <= lastVisibleColumn) {
-			auto& glyph = line[index++];
-			auto codepoint = glyph.codepoint;
-			ImVec2 glyphPos(rowScreenPos.x + column * glyphSize.x, rowScreenPos.y);
+			const auto& glyph = line[index++];
+			const auto codepoint = glyph.codepoint;
+			const ImVec2 glyphPos(rowScreenPos.x + column * glyphSize.x, rowScreenPos.y);
 
 			// handle tabs
 			if (codepoint == '\t') {
@@ -644,7 +636,7 @@ void TextEditor::renderText() {
 		// draw ellipsis at the end of folded lines
 		if (i == line.row + line.rows - 1) {
 			if (line.foldingState == FoldingState::folded) {
-				auto glyphPos = cursorScreenPos + ImVec2(textLeftOffset + typeSetter[i].columns * glyphSize.x, i * glyphSize.y);
+				const auto glyphPos = cursorScreenPos + ImVec2(textLeftOffset + typeSetter[i].columns * glyphSize.x, i * glyphSize.y);
 				font->RenderChar(drawList, fontSize, glyphPos, palette.get(Color::text), font->EllipsisChar);
 			}
 		}
@@ -660,22 +652,20 @@ void TextEditor::renderText() {
 
 void TextEditor::renderCursorCarets() {
 	if (config.caretsVisible && ImGui::IsWindowFocused()) {
-		auto& io = ImGui::GetIO();
+		const auto& io = ImGui::GetIO();
 		cursorAnimationTimer += io.DeltaTime;
-
-		auto drawList = ImGui::GetWindowDrawList();
 		size_t cursorIndex = 0;
 
-		for (auto& cursor : cursors) {
-			auto docPos = cursor.getInteractiveEnd();
+		for (const auto& cursor : cursors) {
+			const auto docPos = cursor.getInteractiveEnd();
 
 			if (document[docPos.line].foldingState != FoldingState::hidden) {
-				auto pos = docPos2VisPos(docPos);
+				const auto pos = docPos2VisPos(docPos);
 
 				if (pos.row >= firstVisibleRow && pos.row <= lastVisibleRow && pos.column >= firstVisibleColumn && pos.column <= lastVisibleColumn) {
-					auto caretVisible = !io.ConfigInputTextCursorBlink || cursorAnimationTimer <= 0.0f || std::fmod(cursorAnimationTimer, 1.2f) <= 0.8f;
-					auto x = cursorScreenPos.x + textLeftOffset + pos.column * glyphSize.x;
-					auto y = cursorScreenPos.y + pos.row * glyphSize.y;
+					const auto caretVisible = !io.ConfigInputTextCursorBlink || cursorAnimationTimer <= 0.0f || std::fmod(cursorAnimationTimer, 1.2f) <= 0.8f;
+					const auto x = cursorScreenPos.x + textLeftOffset + pos.column * glyphSize.x;
+					const auto y = cursorScreenPos.y + pos.row * glyphSize.y;
 
 					// handle custom caret renderer
 					if (customCaretCallback) {
@@ -709,20 +699,18 @@ void TextEditor::renderCursorCarets() {
 
 void TextEditor::renderLineNumberMarkers() {
 	if (markers.size()) {
-		auto drawList = ImGui::GetWindowDrawList();
-
 		for (size_t row = firstVisibleRow; row <= lastVisibleRow; row++) {
-			auto markerIndex = document[typeSetter[row].line].marker;
+			const auto markerIndex = document[typeSetter[row].line].marker;
 
 			if (markerIndex) {
 				const auto& marker = markers[markerIndex - 1];
-				auto y = cursorScreenPos.y + row * glyphSize.y;
+				const auto y = cursorScreenPos.y + row * glyphSize.y;
 
 				if (((marker.lineNumberColor >> IM_COL32_A_SHIFT) & 0xFF) != 0) {
-					auto left = cursorScreenPos.x + lineNumberLeftOffset;
-					auto right = cursorScreenPos.x + lineNumberRightOffset;
-					auto start = ImVec2(left, y);
-					auto end = ImVec2(right, y + glyphSize.y);
+					const auto left = cursorScreenPos.x + lineNumberLeftOffset;
+					const auto right = cursorScreenPos.x + lineNumberRightOffset;
+					const auto start = ImVec2(left, y);
+					const auto end = ImVec2(right, y + glyphSize.y);
 					drawList->AddRectFilled(start, end, marker.lineNumberColor);
 
 					if (marker.lineNumberTooltip.size() && ImGui::IsMouseHoveringRect(start, end)) {
@@ -747,12 +735,12 @@ void TextEditor::renderLineNumberMarkers() {
 void TextEditor::renderLineNumbers() {
 	if (config.showLineNumbers) {
 		if (customLineNumberCallback) {
-			auto position = ImVec2(ImGui::GetWindowPos().x + lineNumberLeftOffset, cursorScreenPos.y);
-			auto curserLine = cursors.getCurrent().getInteractiveEnd().line;
+			const auto position = ImVec2(ImGui::GetWindowPos().x + lineNumberLeftOffset, cursorScreenPos.y);
+			const auto curserLine = cursors.getCurrent().getInteractiveEnd().line;
 
 			CustomLineNumber data;
 			data.drawList = ImGui::GetWindowDrawList();
-			auto width = lineNumberRightOffset - lineNumberLeftOffset;
+			const auto width = lineNumberRightOffset - lineNumberLeftOffset;
 			data.size = data.pos + ImVec2(width, glyphSize.y);
 			data.digits = static_cast<size_t>(width / glyphSize.x);
 			data.cursorLineNumber = cursors.getCurrent().getInteractiveEnd().line;
@@ -761,23 +749,22 @@ void TextEditor::renderLineNumbers() {
 				if (typeSetter[i].section == 0) {
 					data.pos = position + ImVec2(0.0f, i * glyphSize.y);
 					data.lineNumber = typeSetter[i].line;
-					auto foreground = (data.lineNumber == curserLine) ? Color::currentLineNumber : Color::lineNumber;
+					const auto foreground = (data.lineNumber == curserLine) ? Color::currentLineNumber : Color::lineNumber;
 					data.color = palette.get(foreground);
 					customLineNumberCallback(data);
 				}
 			}
 
 		} else {
-			auto drawList = ImGui::GetWindowDrawList();
-			auto curserLine = cursors.getCurrent().getInteractiveEnd().line;
-			auto position = ImVec2(ImGui::GetWindowPos().x + lineNumberRightOffset, cursorScreenPos.y);
+			const auto curserLine = cursors.getCurrent().getInteractiveEnd().line;
+			const auto position = ImVec2(ImGui::GetWindowPos().x + lineNumberRightOffset, cursorScreenPos.y);
 
 			for (size_t i = firstVisibleRow; i <= lastVisibleRow; i++) {
 				if (typeSetter[i].section == 0) {
-					auto lineNo = typeSetter[i].line + 1;
-					auto width = static_cast<size_t>(std::log10(lineNo) + 1.0f) * glyphSize.x;
-					auto foreground = (typeSetter[i].line == curserLine) ? Color::currentLineNumber : Color::lineNumber;
-					auto number = std::to_string(lineNo);
+					const auto lineNo = typeSetter[i].line + 1;
+					const auto width = static_cast<size_t>(std::log10(lineNo) + 1.0f) * glyphSize.x;
+					const auto foreground = (typeSetter[i].line == curserLine) ? Color::currentLineNumber : Color::lineNumber;
+					const auto number = std::to_string(lineNo);
 					drawList->AddText(position + ImVec2(-width, i * glyphSize.y), palette.get(foreground), number.c_str());
 				}
 			}
@@ -793,7 +780,7 @@ void TextEditor::renderLineNumbers() {
 void TextEditor::renderDecorations() {
 	if (decoratorWidth && decoratorCallback) {
 		auto position = ImVec2(ImGui::GetWindowPos().x + decorationOffset, cursorScreenPos.y + glyphSize.y * firstVisibleRow);
-		auto widthInPixels = decoratorWidth * glyphSize.x;
+		const auto widthInPixels = decoratorWidth * glyphSize.x;
 		Decorator decorator{0, widthInPixels, glyphSize.y, glyphSize, nullptr};
 
 		for (size_t i = firstVisibleRow; i <= lastVisibleRow; i++) {
@@ -819,24 +806,23 @@ void TextEditor::renderDecorations() {
 
 void TextEditor::renderFoldIndicators() {
 	if (config.lineFolding) {
-		auto drawList = ImGui::GetWindowDrawList();
-		auto color = palette.get(Color::lineNumber);
-		auto hoveredColor = palette.get(Color::currentLineNumber);
-		auto size = fontSize * 0.25f;
+		const auto color = palette.get(Color::lineNumber);
+		const auto hoveredColor = palette.get(Color::currentLineNumber);
+		const auto size = fontSize * 0.25f;
 
 		for (size_t i = firstVisibleRow; i <= lastVisibleRow; i++) {
-			auto& line = document[typeSetter[i].line];
-			auto foldingState = line.foldingState;
+			const auto& line = document[typeSetter[i].line];
+			const auto foldingState = line.foldingState;
 
 			if (typeSetter[i].section == 0) {
 				if (foldingState == FoldingState::foldable || foldingState == FoldingState::folded) {
-					auto center = ImVec2(
+					const auto center = ImVec2(
 						ImGui::GetWindowPos().x + foldIndicatorOffset,
 						cursorScreenPos.y + glyphSize.y * i + fontSize / 2.0f);
 
-					auto topLeft = center - ImVec2(glyphSize.x / 2.0f, fontSize / 2.0f);
-					auto bottomRight = center + ImVec2(glyphSize.x / 2.0f, fontSize / 2.0f);
-					auto isHovered = ImGui::IsMouseHoveringRect(topLeft, bottomRight);
+					const auto topLeft = center - ImVec2(glyphSize.x / 2.0f, fontSize / 2.0f);
+					const auto bottomRight = center + ImVec2(glyphSize.x / 2.0f, fontSize / 2.0f);
+					const auto isHovered = ImGui::IsMouseHoveringRect(topLeft, bottomRight);
 
 					if (foldingState == FoldingState::foldable) {
 						drawList->AddLine(
@@ -885,9 +871,9 @@ void TextEditor::renderMiniMap() {
 		}
 
 		// color cursor lines
-		for (auto& cursor : cursors) {
-			auto begin = cursor.getSelectionStart();
-			auto end = cursor.getSelectionEnd();
+		for (const auto& cursor : cursors) {
+			const auto begin = cursor.getSelectionStart();
+			const auto end = cursor.getSelectionEnd();
 
 			for (size_t i = begin.line; i <= end.line; i++) {
 				const auto& line = document[i];
@@ -903,7 +889,7 @@ void TextEditor::renderMiniMap() {
 		// color marker lines
 		if (markers.size()) {
 			for (size_t row = 0; row < typeSetter.getRowCount(); row++) {
-				auto& line = document[typeSetter[row].line];
+				const auto& line = document[typeSetter[row].line];
 
 				if (line.marker) {
 					auto color = markers[line.marker - 1].textColor;
@@ -920,26 +906,25 @@ void TextEditor::renderMiniMap() {
 		}
 
 		// determine viewport information
-		auto totalMiniMapRows = miniMap.rows.size();
-		auto visibleMiniMapRows = (textSize.y / miniMapRowHeight);
+		const auto totalMiniMapRows = miniMap.rows.size();
+		const auto visibleMiniMapRows = (textSize.y / miniMapRowHeight);
 
 		if (totalMiniMapRows < visibleMiniMapRows) {
 			firstMiniMapRow = 0;
 			lastMiniMapRow = miniMap.rows.size();
 
 		} else {
-			auto scrollRatio = ImGui::GetScrollY() / ImGui::GetScrollMaxY();
+			const auto scrollRatio = ImGui::GetScrollY() / ImGui::GetScrollMaxY();
 			firstMiniMapRow = static_cast<size_t>(scrollRatio * (totalMiniMapRows - visibleMiniMapRows));
 			lastMiniMapRow = firstMiniMapRow + static_cast<size_t>(std::ceil(visibleMiniMapRows));
 			lastMiniMapRow = std::min(lastMiniMapRow, totalMiniMapRows);
 		}
 
 		// process all visible minimap rows
-		auto drawList = ImGui::GetWindowDrawList();
 		auto pos = ImGui::GetWindowPos() + ImVec2(miniMapOffset, 0.0f);
 
 		for (size_t i = firstMiniMapRow; i < lastMiniMapRow; i++) {
-			auto& row = miniMap.rows[i];
+			const auto& row = miniMap.rows[i];
 
 			// render line background
 			if (row.color) {
@@ -950,7 +935,7 @@ void TextEditor::renderMiniMap() {
 			}
 
 			// render text sections
-			for (auto& section : row.sections) {
+			for (const auto& section : row.sections) {
 				drawList->AddRectFilled(
 					pos + ImVec2(section.start * miniMapColumnWidth, 0.0f),
 					pos + ImVec2(section.end * miniMapColumnWidth, miniMapColumnHeight),
@@ -962,10 +947,10 @@ void TextEditor::renderMiniMap() {
 
 		// render viewport
 		if (totalSize.y > textSize.y) {
-			auto viewPortStart = (firstVisibleRow - firstMiniMapRow) * miniMapRowHeight;
-			auto viewportHeight = (lastVisibleRow - firstVisibleRow) * miniMapRowHeight;
-			auto ViewPortTopLeft = ImGui::GetWindowPos() + ImVec2(miniMapOffset, viewPortStart);
-			auto viewPortBottomRight = ViewPortTopLeft + ImVec2(miniMapWidth, viewportHeight);
+			const auto viewPortStart = (firstVisibleRow - firstMiniMapRow) * miniMapRowHeight;
+			const auto viewportHeight = (lastVisibleRow - firstVisibleRow) * miniMapRowHeight;
+			const auto ViewPortTopLeft = ImGui::GetWindowPos() + ImVec2(miniMapOffset, viewPortStart);
+			const auto viewPortBottomRight = ViewPortTopLeft + ImVec2(miniMapWidth, viewportHeight);
 
 			auto fColor = ImGui::ColorConvertU32ToFloat4(palette.get(Color::text));
 			fColor.w *= miniMapIsScrollbar ? miniMapViewPortActiveAlpha : miniMapViewPortAlpha;
@@ -982,29 +967,28 @@ void TextEditor::renderMiniMap() {
 void TextEditor::renderScrollbarMiniMap() {
 	if (config.showScrollbarMiniMap) {
 		// based on https://github.com/ocornut/imgui/issues/3114
-		auto window = ImGui::GetCurrentWindow();
+		const auto window = ImGui::GetCurrentWindow();
 
 		if (window->ScrollbarY) {
-			auto drawList = ImGui::GetWindowDrawList();
-			auto rect = ImGui::GetWindowScrollbarRect(window, ImGuiAxis_Y);
-			auto rowHeight = rect.GetHeight() / static_cast<float>(typeSetter.getRowCount());
-			auto offset = (rect.Max.x - rect.Min.x) * 0.3f;
-			auto left = rect.Min.x + offset;
-			auto right = rect.Max.x - offset;
+			const auto rect = ImGui::GetWindowScrollbarRect(window, ImGuiAxis_Y);
+			const auto rowHeight = rect.GetHeight() / static_cast<float>(typeSetter.getRowCount());
+			const auto offset = (rect.Max.x - rect.Min.x) * 0.3f;
+			const auto left = rect.Min.x + offset;
+			const auto right = rect.Max.x - offset;
 
 			drawList->PushClipRect(rect.Min, rect.Max, false);
 
 			// render cursor locations
-			for (auto& cursor : cursors) {
-				auto begin = cursor.getSelectionStart();
-				auto end = cursor.getSelectionEnd();
+			for (const auto& cursor : cursors) {
+				const auto begin = cursor.getSelectionStart();
+				const auto end = cursor.getSelectionEnd();
 
 				for (size_t i = begin.line; i <= end.line; i++) {
 					const auto& line = document[i];
 
 					if (line.foldingState != FoldingState::hidden) {
-						auto ly1 = std::round(rect.Min.y + line.row * rowHeight);
-						auto ly2 = std::round(rect.Min.y + (line.row + line.rows) * rowHeight);
+						const auto ly1 = std::round(rect.Min.y + line.row * rowHeight);
+						const auto ly2 = std::round(rect.Min.y + (line.row + line.rows) * rowHeight);
 
 						drawList->AddRectFilled(
 							ImVec2(left, ly1),
@@ -1017,7 +1001,7 @@ void TextEditor::renderScrollbarMiniMap() {
 			// render marker locations
 			if (markers.size()) {
 				for (size_t row = 0; row < typeSetter.getRowCount(); row++) {
-					auto& line = document[typeSetter[row].line];
+					const auto& line = document[typeSetter[row].line];
 
 					if (line.marker) {
 						auto color = markers[line.marker - 1].textColor;
@@ -1026,7 +1010,7 @@ void TextEditor::renderScrollbarMiniMap() {
 							color = markers[line.marker - 1].lineNumberColor;
 						}
 
-						auto ly = std::round(rect.Min.y + row * rowHeight);
+						const auto ly = std::round(rect.Min.y + row * rowHeight);
 						drawList->AddRectFilled(ImVec2(left, ly), ImVec2(right, ly + rowHeight), color);
 					}
 				}
@@ -1044,8 +1028,7 @@ void TextEditor::renderScrollbarMiniMap() {
 
 void TextEditor::renderPanScrollIndicator() {
 	if (config.showPanScrollIndicator && (panning || scrolling)) {
-		auto drawList = ImGui::GetWindowDrawList();
-		auto center = ImGui::GetWindowPos() + ImGui::GetWindowSize() / 2.0f;
+		const auto center = ImGui::GetWindowPos() + ImGui::GetWindowSize() / 2.0f;
 		static constexpr int alpha = 160;
 		drawList->AddCircleFilled(center, 20.0f, IM_COL32(255, 255, 255, alpha));
 		drawList->AddCircle(center, 5.0f, IM_COL32(0, 0, 0, alpha), 0, 2.0f);
@@ -1131,9 +1114,9 @@ void TextEditor::renderPopups() {
 	// render autocomplete popup
 	if (autocomplete.render(document, cursors, typeSetter, config.language, textLeftOffset, glyphSize)) {
 		// user picked a suggestion so insert it
-		auto start = autocomplete.getStart();
-		auto end = document.findWordEnd(start, true);
-		auto replacement = autocomplete.getReplacement();
+		const auto start = autocomplete.getStart();
+		const auto end = document.findWordEnd(start, true);
+		const auto replacement = autocomplete.getReplacement();
 		replaceSectionText(start, end, replacement);
 	}
 }
@@ -1152,8 +1135,8 @@ bool TextEditor::updateState() {
 	cursors.update(document);
 
 	float unused;
-	auto firstVisibleLineFraction = std::modf(ImGui::GetScrollY() / glyphSize.y, &unused);
-	auto previousFirstLine = visPos2DocPos(VisPos(firstVisibleRow, 0)).line;
+	const auto firstVisibleLineFraction = std::modf(ImGui::GetScrollY() / glyphSize.y, &unused);
+	const auto previousFirstLine = visPos2DocPos(VisPos(firstVisibleRow, 0)).line;
 
 	if (typeSetter.update(config, document, lineFold)) {
 		// see if we can scroll to preserve the first visible line
@@ -1187,7 +1170,7 @@ bool TextEditor::updateState() {
 	}
 
 	// remember if document was changed this frame
-	bool documentChanged = document.isUpdated();
+	const bool documentChanged = document.isUpdated();
 
 	// reset overlay "dirty" flags
 	document.resetUpdated();
@@ -1196,13 +1179,13 @@ bool TextEditor::updateState() {
 	typeSetter.resetUpdated();
 
 	// get "new" total editor size in pixels
-	auto width =
+	const auto width =
 		textLeftOffset +
 		typeSetter.getColumnCount() * glyphSize.x +
 		cursorWidth +
 		(config.showMiniMap ? miniMapWidth : 0.0f);
 
-	auto height = typeSetter.getRowCount() * glyphSize.y;
+	const auto height = typeSetter.getRowCount() * glyphSize.y;
 	totalSize = ImVec2(width, height);
 
 	return documentChanged;
@@ -1218,7 +1201,7 @@ void TextEditor::handleKeyboardInputs() {
 		auto& io = ImGui::GetIO();
 		io.WantCaptureKeyboard = true;
 		io.WantTextInput = true;
-		auto macOS = io.ConfigMacOSXBehaviors;
+		const auto macOS = io.ConfigMacOSXBehaviors;
 
 		// ignore specific keys when autocomplete is active, they will be handled later
 		if (autocomplete.isActive() && autocomplete.isSpecialKeyPressed()) {
@@ -1382,7 +1365,7 @@ void TextEditor::handleKeyboardInputs() {
 			// ignore Ctrl inputs, but need to allow Alt+Ctrl as some keyboards (e.g. German) use AltGR (which is Alt+Ctrl) to input certain characters
 			if (!(ImGui::IsKeyDown(ImGuiMod_Ctrl) && !ImGui::IsKeyDown(ImGuiMod_Alt)) && !config.readOnly) {
 				for (auto i = 0; i < io.InputQueueCharacters.size(); i++) {
-					auto character = io.InputQueueCharacters[i];
+					const auto character = io.InputQueueCharacters[i];
 
 					if (character == '\n' || character >= 32) {
 						handleCharacter(character);
@@ -1414,21 +1397,21 @@ void TextEditor::handleKeyboardInputs() {
 
 void TextEditor::handleMouseInteractions() {
 	auto io = ImGui::GetIO();
-	auto mousePos = ImGui::GetMousePos() - cursorScreenPos;
-	auto absoluteMousePos = ImGui::GetMousePos() - ImGui::GetWindowPos();
+	const auto mousePos = ImGui::GetMousePos() - cursorScreenPos;
+	const auto absoluteMousePos = ImGui::GetMousePos() - ImGui::GetWindowPos();
 
-	auto overLineNumbers =
+	const auto overLineNumbers =
 		config.showLineNumbers &&
 		(absoluteMousePos.x > lineNumberLeftOffset) &&
 		(absoluteMousePos.x < lineNumberRightOffset);
 
-	auto overText =
+	const auto overText =
 		mousePos.x - ImGui::GetScrollX() > textLeftOffset &&
 		mousePos.x - ImGui::GetScrollX() < textRightOffset &&
 		mousePos.y - ImGui::GetScrollY() >= 0 &&
 		mousePos.y - ImGui::GetScrollY() < textSize.y;
 
-	auto overMiniMap = config.showMiniMap && absoluteMousePos.x > miniMapOffset;
+	const auto overMiniMap = config.showMiniMap && absoluteMousePos.x > miniMapOffset;
 
 	DocPos glyphPos;
 	DocPos cursorPos;
@@ -1443,10 +1426,10 @@ void TextEditor::handleMouseInteractions() {
 
 	// handle middle mouse button panning
 	if (panning && ImGui::IsMouseDragging(ImGuiMouseButton_Middle)) {
-		auto windowSize = ImGui::GetWindowSize();
+		const auto windowSize = ImGui::GetWindowSize();
 		auto mouseDelta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Middle);
-		float dragFactor = ImGui::GetIO().DeltaTime * 15.0f;
-		ImVec2 autoPanMargin(glyphSize.x * 4.0f, glyphSize.y * 2.0f);
+		const float dragFactor = ImGui::GetIO().DeltaTime * 15.0f;
+		const ImVec2 autoPanMargin(glyphSize.x * 4.0f, glyphSize.y * 2.0f);
 
 		if (absoluteMousePos.x < textLeftOffset + autoPanMargin.x) {
 			mouseDelta.x = (absoluteMousePos.x - (textLeftOffset + autoPanMargin.x)) * dragFactor;
@@ -1468,12 +1451,12 @@ void TextEditor::handleMouseInteractions() {
 
 	// handle middle mouse button scrolling
 	} else if (scrolling) {
-		float deadzone = glyphSize.x;
+		const float deadzone = glyphSize.x;
 		auto offset = scrollStart - absoluteMousePos;
 		offset.x = (offset.x < 0.0f) ? std::min(offset.x + deadzone, 0.0f) : std::max(offset.x - deadzone, 0.0f);
 		offset.y = (offset.y < 0.0f) ? std::min(offset.y + deadzone, 0.0f) : std::max(offset.y - deadzone, 0.0f);
 
-		float scrollFactor = ImGui::GetIO().DeltaTime * 5.0f;
+		const float scrollFactor = ImGui::GetIO().DeltaTime * 5.0f;
 		offset *= scrollFactor;
 
 		ImGui::SetScrollX(ImGui::GetScrollX() - offset.x);
@@ -1492,16 +1475,16 @@ void TextEditor::handleMouseInteractions() {
 		io.WantCaptureMouse = true;
 
 		if (miniMapIsScrollbar) {
-			auto localOffset = absoluteMousePos.y - miniMapScrollStart;
-			auto documentOffset = localOffset * totalSize.y / textSize.y;
+			const auto localOffset = absoluteMousePos.y - miniMapScrollStart;
+			const auto documentOffset = localOffset * totalSize.y / textSize.y;
 			auto scrollY = miniMapScrollY + documentOffset;
 			scrollY = std::clamp(scrollY, 0.0f, totalSize.y - textSize.y);
 			ImGui::SetScrollY(scrollY);
 
 		} else if (selectingText && overLineNumbers) {
 			auto& cursor = cursors.getCurrent();
-			auto start = DocPos(cursorPos.line, 0);
-			auto end = normalizePos(DocPos(cursorPos.line + 1, 0));
+			const auto start = DocPos(cursorPos.line, 0);
+			const auto end = normalizePos(DocPos(cursorPos.line + 1, 0));
 			cursor.update(cursor.getInteractiveEnd() < cursor.getInteractiveStart() ? start : end);
 			makeCursorVisible();
 
@@ -1546,28 +1529,28 @@ void TextEditor::handleMouseInteractions() {
 		} else if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
 			// handle left mouse button actions
 			selectingText = overText || overLineNumbers;
-			auto doubleClick = ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left);
-			auto now = static_cast<float>(ImGui::GetTime());
-			auto tripleClick = !doubleClick && lastClickTime != -1.0f && (now - lastClickTime) < io.MouseDoubleClickTime;
+			const auto doubleClick = ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left);
+			const auto now = static_cast<float>(ImGui::GetTime());
+			const auto tripleClick = !doubleClick && lastClickTime != -1.0f && (now - lastClickTime) < io.MouseDoubleClickTime;
 			lastClickTime = tripleClick ? -1.0f : now;
 
 			if (tripleClick) {
 				// left mouse button triple click
 				if (overText) {
-					auto start = document.getStartOfLine(cursorPos);
-					auto end = normalizePos(DocPos(start.line + 1, 0));
+					const auto start = document.getStartOfLine(cursorPos);
+					const auto end = normalizePos(DocPos(start.line + 1, 0));
 					cursors.updateCurrentCursor(start, end);
 				}
 
 			} else if (doubleClick) {
 				// left mouse button double click
 				if (overText) {
-					auto codepoint = document.getCodePoint(glyphPos);
+					const auto codepoint = document.getCodePoint(glyphPos);
 					bool handled = false;
 
 					// select bracketed section (if required)
 					if (CodePoint::isBracketOpener(codepoint)) {
-						auto brackets = bracketeer.getEnclosingBrackets(document.getRight(glyphPos));
+						const auto brackets = bracketeer.getEnclosingBrackets(document.getRight(glyphPos));
 
 						if (brackets != bracketeer.end()) {
 							if (ImGui::IsKeyDown(ImGuiMod_Shift)) {
@@ -1581,7 +1564,7 @@ void TextEditor::handleMouseInteractions() {
 						}
 
 					} else if (CodePoint::isBracketCloser(codepoint)) {
-						auto brackets = bracketeer.getEnclosingBrackets(glyphPos);
+						const auto brackets = bracketeer.getEnclosingBrackets(glyphPos);
 
 						if (brackets != bracketeer.end()) {
 							cursors.setCursor(brackets->start, document.getRight(brackets->end));
@@ -1592,7 +1575,7 @@ void TextEditor::handleMouseInteractions() {
 					// select "word" if it wasn't a bracketed section
 					// run of whitespaces are considered "words" as are operator sequences
 					if (!handled && !document.isEndOfLine(glyphPos)) {
-						auto word = document.getWholeWord(glyphPos);
+						const auto word = document.getWholeWord(glyphPos);
 
 						if (word.start != word.end) {
 							cursors.updateCurrentCursor(word.start, word.end);
@@ -1602,16 +1585,16 @@ void TextEditor::handleMouseInteractions() {
 
 			} else {
 				// left mouse button single click
-				auto extendCursor = ImGui::IsKeyDown(ImGuiMod_Shift);
+				const auto extendCursor = ImGui::IsKeyDown(ImGuiMod_Shift);
 
-				auto addCursor = ImGui::GetIO().ConfigMacOSXBehaviors
+				const auto addCursor = ImGui::GetIO().ConfigMacOSXBehaviors
 					? ImGui::IsKeyDown(ImGuiMod_Alt)
 					: ImGui::IsKeyDown(ImGuiMod_Ctrl);
 
 				if (overLineNumbers) {
 					// handle line number clicks
-					auto start = DocPos(cursorPos.line, 0);
-					auto end = normalizePos(DocPos(cursorPos.line + 1, 0));
+					const auto start = DocPos(cursorPos.line, 0);
+					const auto end = normalizePos(DocPos(cursorPos.line + 1, 0));
 
 					if (extendCursor) {
 						auto& cursor = cursors.getCurrent();
@@ -1646,7 +1629,7 @@ void TextEditor::handleMouseInteractions() {
 
 				} else if (overMiniMap) {
 					if (ImGui::GetCurrentWindow()->ScrollbarY) {
-						auto clickedRow = firstMiniMapRow + static_cast<size_t>(absoluteMousePos.y / miniMapRowHeight);
+						const auto clickedRow = firstMiniMapRow + static_cast<size_t>(absoluteMousePos.y / miniMapRowHeight);
 
 						if (clickedRow < firstVisibleRow || clickedRow > lastVisibleRow) {
 							scrollToLine(visPos2DocPos(VisPos(clickedRow, 0)).line, Scroll::alignMiddle);
@@ -1663,7 +1646,7 @@ void TextEditor::handleMouseInteractions() {
 		} else if (textHoverCallback && IsMousePosOverGlyph(ImGui::GetMousePos())) {
 			// capture position for text hover popup
 			popupDocPos = document.findWordStart(glyphPos, true);
-			auto vizPos = docPos2VisPos(popupDocPos);
+			const auto vizPos = docPos2VisPos(popupDocPos);
 
 			popupWindowPos = ImVec2(
 				vizPos.column * glyphSize.x + textLeftOffset + cursorScreenPos.x,
@@ -1701,7 +1684,7 @@ bool TextEditor::isDocPosVisible(DocPos docPos) const {
 		return false;
 
 	} else {
-		auto visPos = docPos2VisPos(docPos);
+		const auto visPos = docPos2VisPos(docPos);
 
 		return
 			visPos.row >= firstVisibleRow && visPos.row < lastVisibleRow &&
@@ -1759,7 +1742,7 @@ void TextEditor::selectRegion(DocPos start, DocPos end) {
 
 void TextEditor::selectToBrackets(bool includeBrackets) {
 	for (auto& cursor : cursors) {
-		auto bracket = bracketeer.getEnclosingBrackets(cursor.getSelectionStart());
+		const auto bracket = bracketeer.getEnclosingBrackets(cursor.getSelectionStart());
 
 		if (bracket != bracketeer.end()) {
 			if (includeBrackets) {
@@ -1780,16 +1763,16 @@ void TextEditor::selectToBrackets(bool includeBrackets) {
 void TextEditor::growSelections() {
 	for (auto& cursor : cursors) {
 		if (cursor.hasSelection()) {
-			auto start = cursor.getSelectionStart();
-			auto end = cursor.getSelectionEnd();
-			auto startCodePoint = document.getCodePoint(document.getLeft(start));
-			auto endCodePoint = document.getCodePoint(end);
+			const auto start = cursor.getSelectionStart();
+			const auto end = cursor.getSelectionEnd();
+			const auto startCodePoint = document.getCodePoint(document.getLeft(start));
+			const auto endCodePoint = document.getCodePoint(end);
 
 			if (CodePoint::isBracketOpener(startCodePoint) && endCodePoint == CodePoint::toPairCloser(startCodePoint)) {
 				cursor.update(document.getLeft(start),document.getRight(end));
 
 			} else {
-				auto bracket = bracketeer.getEnclosingBrackets(start, end);
+				const auto bracket = bracketeer.getEnclosingBrackets(start, end);
 
 				if (bracket != bracketeer.end()) {
 					cursor.update(document.getRight(bracket->start), bracket->end);
@@ -1797,9 +1780,9 @@ void TextEditor::growSelections() {
 			}
 
 		} else {
-			auto pos = cursor.getSelectionEnd();
-			auto start = document.findWordStart(pos);
-			auto end = document.findWordEnd(pos);
+			const auto pos = cursor.getSelectionEnd();
+			const auto start = document.findWordStart(pos);
+			const auto end = document.findWordEnd(pos);
 			cursor.update(start, end);
 		}
 	}
@@ -1813,16 +1796,16 @@ void TextEditor::growSelections() {
 void TextEditor::shrinkSelections() {
 	for (auto& cursor : cursors) {
 		if (cursor.hasSelection()){
-			auto start = cursor.getSelectionStart();
-			auto end = cursor.getSelectionEnd();
-			auto startCodePoint = document.getCodePoint(start);
-			auto endCodePoint = document.getCodePoint(document.getLeft(end));
+			const auto start = cursor.getSelectionStart();
+			const auto end = cursor.getSelectionEnd();
+			const auto startCodePoint = document.getCodePoint(start);
+			const auto endCodePoint = document.getCodePoint(document.getLeft(end));
 
 			if (CodePoint::isBracketOpener(startCodePoint) && endCodePoint == CodePoint::toPairCloser(startCodePoint)) {
 				cursor.update(document.getRight(start),document.getLeft(end));
 
 			} else {
-				auto bracket = bracketeer.getInnerBrackets(start, end);
+				const auto bracket = bracketeer.getInnerBrackets(start, end);
 
 				if (bracket != bracketeer.end()) {
 					cursor.update(bracket->start, document.getRight(bracket->end));
@@ -1840,7 +1823,7 @@ void TextEditor::shrinkSelections() {
 void TextEditor::cut() {
 	// copy selections to clipboard and remove them
 	copy();
-	auto transaction = startTransaction();
+	const auto transaction = startTransaction();
 	deleteTextFromAllCursors(transaction);
 	cursors.getCurrent().resetToStart();
 	endTransaction(transaction);
@@ -1857,7 +1840,7 @@ void TextEditor::copy() const {
 	std::string text;
 
 	if (cursors.anyHasSelection()) {
-		for (auto& cursor : cursors) {
+		for (const auto& cursor : cursors) {
 			if (text.size()) {
 				text += "\n";
 			}
@@ -1871,7 +1854,7 @@ void TextEditor::copy() const {
 		}
 
 	} else {
-		for (auto& cursor : cursors) {
+		for (const auto& cursor : cursors) {
 			text += document.getLineText(cursor.getSelectionStart().line) + "\n";
 		}
 	}
@@ -1889,7 +1872,7 @@ void TextEditor::paste() {
 	auto clipboard = ImGui::GetClipboardText();
 
 	if (clipboard) {
-		auto transaction = startTransaction();
+		const auto transaction = startTransaction();
 		insertTextIntoAllCursors(transaction, clipboard);
 		endTransaction(transaction);
 	}
@@ -1936,8 +1919,8 @@ TextEditor::DocPos TextEditor::getCursorPosition(size_t cursor) const {
 
 TextEditor::DocSelection TextEditor::getCursorSelection(size_t cursor) const {
 	cursor = std::min(cursor, cursors.size() - 1);
-	auto start = cursors[cursor].getSelectionStart();
-	auto end = cursors[cursor].getSelectionEnd();
+	const auto start = cursors[cursor].getSelectionStart();
+	const auto end = cursors[cursor].getSelectionEnd();
 	return DocSelection(start, end);
 }
 
@@ -1952,7 +1935,7 @@ bool TextEditor::isMousePosOverGlyph(const ImVec2& mousePos) const {
 
 	} else {
 		// convert mouse position to screen coordinates
-		auto local = mousePos - cursorScreenPos;
+		const auto local = mousePos - cursorScreenPos;
 
 		// ignore negative coordinates
 		if (local.x < 0.0f || local.y < 0.0f) {
@@ -1960,7 +1943,7 @@ bool TextEditor::isMousePosOverGlyph(const ImVec2& mousePos) const {
 		}
 
 		// convert to visual position and check it
-		VisPos visPos(static_cast<size_t>(local.y / glyphSize.y), static_cast<size_t>((local.x - textLeftOffset) / glyphSize.x));
+		const VisPos visPos(static_cast<size_t>(local.y / glyphSize.y), static_cast<size_t>((local.x - textLeftOffset) / glyphSize.x));
 		return typeSetter.isVisPosOverGlyph(visPos);
 	}
 }
@@ -1976,7 +1959,7 @@ bool TextEditor::isMousePosOverTextArea(const ImVec2& mousePos) const {
 
 	} else {
 		// convert mouse position to screen coordinates
-		auto local = mousePos - cursorScreenPos;
+		const auto local = mousePos - cursorScreenPos;
 		return local.x > textLeftOffset && local.x < textRightOffset && local.y >= 0 && local.y < textSize.y;
 	}
 }
@@ -2003,7 +1986,7 @@ TextEditor::DocPos TextEditor::getDocPosAtMousePos(const ImVec2& mousePos) const
 		}
 
 		// convert to document position
-		VisPos visPos(static_cast<size_t>(local.y / glyphSize.y), static_cast<size_t>((local.x - textLeftOffset) / glyphSize.x));
+		const VisPos visPos(static_cast<size_t>(local.y / glyphSize.y), static_cast<size_t>((local.x - textLeftOffset) / glyphSize.x));
 		return visPos2DocPos(normalizePos(visPos));
 	}
 }
@@ -2016,10 +1999,10 @@ TextEditor::DocPos TextEditor::getDocPosAtMousePos(const ImVec2& mousePos) const
 std::string TextEditor::getWordAtMousePos(const ImVec2& mousePos) const {
 	if (IsMousePosOverGlyph(mousePos)) {
 		// convert to document position
-		DocPos docPos = getDocPosAtMousePos(mousePos);
+		const DocPos docPos = getDocPosAtMousePos(mousePos);
 
 		// Find word boundaries and extract text
-		auto word = document.getWholeWord(docPos, true);
+		const auto word = document.getWholeWord(docPos, true);
 		return document.getSectionText(word.start, word.end);
 
 	} else {
@@ -2075,7 +2058,7 @@ void TextEditor::handlePossibleScrolling() {
 			lastVisibleColumn = static_cast<size_t>(std::ceil(textSize.x / glyphSize.x));
 		}
 
-		auto pos = docPos2VisPos(ensureVisiblePos);
+		const auto pos = docPos2VisPos(ensureVisiblePos);
 
 		if (pos.row <= firstVisibleRow + 1) {
 			scrollY = std::max(0.0f, (pos.row - 2.0f) * glyphSize.y);
@@ -2096,8 +2079,8 @@ void TextEditor::handlePossibleScrolling() {
 
 	// scroll to specified line (if required)
 	if (scrollToLineNumber != invalidLine) {
-		auto row = static_cast<float>(docPos2VisPos(DocPos(scrollToLineNumber, 0)).row);
-		auto visibleRows = textSize.y / glyphSize.y;
+		const auto row = static_cast<float>(docPos2VisPos(DocPos(scrollToLineNumber, 0)).row);
+		const auto visibleRows = textSize.y / glyphSize.y;
 		scrollX = 0.0f;
 
 		switch (scrollToAlignment) {
@@ -2204,7 +2187,7 @@ void TextEditor::compressMarkers() {
 		std::vector<Reference> references(markers.size());
 
 		// determine markers still in use
-		for (auto& line : document) {
+		for (const auto& line : document) {
 			if (line.marker) {
 				references[line.marker - 1].used = true;
 			}
@@ -2248,7 +2231,7 @@ void TextEditor::compressMarkers() {
 void TextEditor::addSquiggle(DocPos start, DocPos end, size_t type, ImU32 color, const std::string_view& tooltip) {
 	if (start < end) {
 		squiggles.emplace_back(type, color, tooltip);
-		auto index = squiggles.size();
+		const auto index = squiggles.size();
 
 		document.iterateGlyphs(start, end, [index](Glyph& glyph) {
 			glyph.squiggle = static_cast<uint32_t>(index);
@@ -2319,8 +2302,8 @@ void TextEditor::compressSquiggles() {
 		std::vector<Reference> references(squiggles.size());
 
 		// determine squiggles still in use
-		for (auto& line : document) {
-			for (auto& glyph : line) {
+		for (const auto& line : document) {
+			for (const auto& glyph : line) {
 				if (glyph.squiggle) {
 					references[glyph.squiggle - 1].used = true;
 				}
@@ -2473,11 +2456,11 @@ void TextEditor::moveTo(DocPos coordinate, bool select) {
 //
 
 void TextEditor::handleCharacter(ImWchar character) {
-	auto transaction = startTransaction(false);
+	const auto transaction = startTransaction(false);
 
-	auto opener = character;
-	auto isPaired = !config.overwrite && config.completePairedGlyphs && CodePoint::isPairOpener(opener);
-	auto closer = CodePoint::toPairCloser(opener);
+	const auto opener = character;
+	const auto isPaired = !config.overwrite && config.completePairedGlyphs && CodePoint::isPairOpener(opener);
+	const auto closer = CodePoint::toPairCloser(opener);
 
 	// ignore input if it was the closing character for a pair that was automatically inserted
 	if (completePairCloser) {
@@ -2494,16 +2477,16 @@ void TextEditor::handleCharacter(ImWchar character) {
 		// encapsulate the current selections with the requested pairs
 		for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
 			if (cursor->hasSelection()) {
-				auto start = cursor->getSelectionStart();
-				auto end = cursor->getSelectionEnd();
+				const auto start = cursor->getSelectionStart();
+				const auto end = cursor->getSelectionEnd();
 
 				// insert the closing glyph
 				char utf8[4];
-				auto end1 = insertText(transaction, end, std::string_view(utf8, CodePoint::write(utf8, closer)));
+				const auto end1 = insertText(transaction, end, std::string_view(utf8, CodePoint::write(utf8, closer)));
 				cursors.adjustForInsert(cursor, start, end1);
 
 				// insert the opening glyph
-				auto end2 = insertText(transaction, start, std::string_view(utf8, CodePoint::write(utf8, opener)));
+				const auto end2 = insertText(transaction, start, std::string_view(utf8, CodePoint::write(utf8, opener)));
 				cursors.adjustForInsert(cursor, start, end2);
 
 				// update old selection
@@ -2516,11 +2499,11 @@ void TextEditor::handleCharacter(ImWchar character) {
 		char utf8[8];
 		auto size = CodePoint::write(utf8, opener);
 		size += CodePoint::write(utf8 + size, closer);
-		std::string_view pair(utf8, size);
+		const std::string_view pair(utf8, size);
 
 		for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
-			auto start = cursor->getSelectionStart();
-			auto end = insertText(transaction, start, pair);
+			const auto start = cursor->getSelectionStart();
+			const auto end = insertText(transaction, start, pair);
 			cursors.adjustForInsert(cursor, start, end);
 			cursor->update(document.getRight(start), false);
 		}
@@ -2538,10 +2521,10 @@ void TextEditor::handleCharacter(ImWchar character) {
 		if (config.overwrite) {
 			for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
 				if (!cursor->hasSelection()) {
-					auto start = cursor->getSelectionStart();
+					const auto start = cursor->getSelectionStart();
 
 					if (start != document.getEndOfLine(start)) {
-						auto end = document.getRight(start);
+						const auto end = document.getRight(start);
 						deleteText(transaction, start, end);
 						cursors.adjustForDelete(cursor, start, end);
 					}
@@ -2569,12 +2552,12 @@ void TextEditor::handleCharacter(ImWchar character) {
 //
 
 void TextEditor::handleBackspace(bool wordMode) {
-	auto transaction = startTransaction(false);
+	const auto transaction = startTransaction(false);
 
 	// remove selections or characters to the left of the cursor
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
-		auto start = cursor->hasSelection() ? cursor->getSelectionStart() : document.getLeft(cursor->getSelectionStart(), wordMode);
-		auto end = cursor->getSelectionEnd();
+		const auto start = cursor->hasSelection() ? cursor->getSelectionStart() : document.getLeft(cursor->getSelectionStart(), wordMode);
+		const auto end = cursor->getSelectionEnd();
 		deleteText(transaction, start, end);
 		cursor->update(start, false);
 		cursors.adjustForDelete(cursor, start, end);
@@ -2589,12 +2572,12 @@ void TextEditor::handleBackspace(bool wordMode) {
 //
 
 void TextEditor::handleDelete(bool wordMode) {
-	auto transaction = startTransaction(false);
+	const auto transaction = startTransaction(false);
 
 	// remove selections or characters to the right of the cursor
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
-		auto start = cursor->getSelectionStart();
-		auto end = cursor->hasSelection() ? cursor->getSelectionEnd() : document.getRight(cursor->getSelectionEnd(), wordMode);
+		const auto start = cursor->getSelectionStart();
+		const auto end = cursor->hasSelection() ? cursor->getSelectionEnd() : document.getRight(cursor->getSelectionEnd(), wordMode);
 		deleteText(transaction, start, end);
 		cursor->update(start, false);
 		cursors.adjustForDelete(cursor, start, end);
@@ -2609,10 +2592,10 @@ void TextEditor::handleDelete(bool wordMode) {
 //
 
 void TextEditor::removeSelectedLines() {
-	auto transaction = startTransaction();
+	const auto transaction = startTransaction();
 
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
-		auto start = document.getStartOfLine(cursor->getSelectionStart());
+		const auto start = document.getStartOfLine(cursor->getSelectionStart());
 		auto end = cursor->getSelectionEnd();
 		end = (end.index == 0) ? end : document.getNextLine(end);
 		deleteText(transaction, start, end);
@@ -2629,11 +2612,11 @@ void TextEditor::removeSelectedLines() {
 //
 
 void TextEditor::insertLineAbove() {
-	auto transaction = startTransaction();
+	const auto transaction = startTransaction();
 
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
-		auto start = document.getStartOfLine(cursor->getSelectionStart());
-		auto end = insertText(transaction, start, "\n");
+		const auto start = document.getStartOfLine(cursor->getSelectionStart());
+		const auto end = insertText(transaction, start, "\n");
 		cursor->update(start, false);
 		cursors.adjustForInsert(cursor, start, end);
 	}
@@ -2647,12 +2630,12 @@ void TextEditor::insertLineAbove() {
 //
 
 void TextEditor::insertLineBelow() {
-	auto transaction = startTransaction();
+	const auto transaction = startTransaction();
 
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
 		auto start = cursor->getSelectionEnd();
 		start = (start.index == 0) ? start : document.getNextLine(start);
-		auto end = insertText(transaction, start, "\n");
+		const auto end = insertText(transaction, start, "\n");
 		cursor->update(start, false);
 		cursors.adjustForInsert(cursor, start, end);
 	}
@@ -2666,18 +2649,18 @@ void TextEditor::insertLineBelow() {
 //
 
 void TextEditor::indentLines() {
-	auto transaction = startTransaction();
+	const auto transaction = startTransaction();
 
 	// process all cursors
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
-		auto cursorStart = cursor->getSelectionStart();
-		auto cursorEnd = cursor->getSelectionEnd();
+		const auto cursorStart = cursor->getSelectionStart();
+		const auto cursorEnd = cursor->getSelectionEnd();
 
 		// process all lines in this cursor
 		for (auto line = cursorStart.line; line <= cursorEnd.line; line++) {
 			if ((!cursor->hasSelection() || DocPos(line, 0) != cursorEnd) && document[line].size()) {
-				auto insertStart = DocPos(line, 0);
-				auto insertEnd = insertText(transaction, insertStart, "\t");
+				const auto insertStart = DocPos(line, 0);
+				const auto insertEnd = insertText(transaction, insertStart, "\t");
 				cursors.adjustForInsert(cursor, insertStart, insertEnd, true);
 			}
 		}
@@ -2692,12 +2675,12 @@ void TextEditor::indentLines() {
 //
 
 void TextEditor::deindentLines() {
-	auto transaction = startTransaction();
+	const auto transaction = startTransaction();
 
 	// process all cursors
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
-		auto cursorStart = cursor->getSelectionStart();
-		auto cursorEnd = cursor->getSelectionEnd();
+		const auto cursorStart = cursor->getSelectionStart();
+		const auto cursorEnd = cursor->getSelectionEnd();
 
 		for (auto line = cursorStart.line; line <= cursorEnd.line; line++) {
 			if ((!cursor->hasSelection() || DocPos(line, 0) != cursorEnd) && document[line].size()) {
@@ -2711,8 +2694,8 @@ void TextEditor::deindentLines() {
 				}
 
 				// delete that whitespace (if required)
-				DocPos deleteStart(line, 0);
-				DocPos deleteEnd(line, index);
+				const DocPos deleteStart(line, 0);
+				const DocPos deleteEnd(line, index);
 
 				if (deleteEnd != deleteStart) {
 					deleteText(transaction, deleteStart, deleteEnd);
@@ -2733,22 +2716,22 @@ void TextEditor::deindentLines() {
 void TextEditor::moveUpLines() {
 	// don't move up if first line is in one of the cursors
 	if (cursors[0].getSelectionStart().line != 0) {
-		auto transaction = startTransaction();
+		const auto transaction = startTransaction();
 
 		for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
-			auto start = cursor->getSelectionStart();
-			auto end = cursor->getSelectionEnd();
+			const auto start = cursor->getSelectionStart();
+			const auto end = cursor->getSelectionEnd();
 
 			// delete existing lines
-			auto deleteStart = document.getStartOfLine(start);
-			auto deleteEnd = (end.index == 0) ? end : document.getNextLine(end);
-			auto text = document.getSectionText(deleteStart, deleteEnd);
+			const auto deleteStart = document.getStartOfLine(start);
+			const auto deleteEnd = (end.index == 0) ? end : document.getNextLine(end);
+			const auto text = document.getSectionText(deleteStart, deleteEnd);
 			deleteText(transaction, deleteStart, deleteEnd);
 			cursors.adjustForDelete(cursor, deleteStart, deleteEnd);
 
 			// insert text one line up
-			DocPos insertStart(deleteStart.line - 1, 0);
-			auto insertEnd = insertText(transaction, insertStart, text);
+			const DocPos insertStart(deleteStart.line - 1, 0);
+			const auto insertEnd = insertText(transaction, insertStart, text);
 			cursors.adjustForInsert(cursor, insertStart, insertEnd);
 
 			// update cursor
@@ -2767,22 +2750,22 @@ void TextEditor::moveUpLines() {
 void TextEditor::moveDownLines() {
 	// don't move up if last line is in one of the cursors
 	if (!document.isLastLine(cursors[cursors.size() - 1].getSelectionStart().line)) {
-		auto transaction = startTransaction();
+		const auto transaction = startTransaction();
 
 		for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
-			auto start = cursor->getSelectionStart();
-			auto end = cursor->getSelectionEnd();
+			const auto start = cursor->getSelectionStart();
+			const auto end = cursor->getSelectionEnd();
 
 			// delete existing lines
-			auto deleteStart = document.getStartOfLine(start);
-			auto deleteEnd = (end.index == 0) ? end : document.getNextLine(end);
-			auto text = document.getSectionText(deleteStart, deleteEnd);
+			const auto deleteStart = document.getStartOfLine(start);
+			const auto deleteEnd = (end.index == 0) ? end : document.getNextLine(end);
+			const auto text = document.getSectionText(deleteStart, deleteEnd);
 			deleteText(transaction, deleteStart, deleteEnd);
 			cursors.adjustForDelete(cursor, deleteStart, deleteEnd);
 
 			// insert text one line down
-			auto insertStart = document.getNextLine(deleteStart);
-			auto insertEnd = insertText(transaction, insertStart, text);
+			const auto insertStart = document.getNextLine(deleteStart);
+			const auto insertEnd = insertText(transaction, insertStart, text);
 			cursors.adjustForInsert(cursor, insertStart, insertEnd);
 
 			// update cursor
@@ -2799,13 +2782,13 @@ void TextEditor::moveDownLines() {
 //
 
 void TextEditor::toggleComments() {
-	auto transaction = startTransaction();
-	auto comment = config.language->singleLineComment;
+	const auto transaction = startTransaction();
+	const auto comment = config.language->singleLineComment;
 
 	// process all cursors
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
-		auto cursorStart = cursor->getSelectionStart();
-		auto cursorEnd = cursor->getSelectionEnd();
+		const auto cursorStart = cursor->getSelectionStart();
+		const auto cursorEnd = cursor->getSelectionEnd();
 
 		// process all lines in this cursor
 		for (auto line = cursorStart.line; line <= cursorEnd.line; line++) {
@@ -2823,20 +2806,20 @@ void TextEditor::toggleComments() {
 				}
 
 				if (i == comment.size()) {
-					auto deleteStart = DocPos(line, start);
+					const auto deleteStart = DocPos(line, start);
 					auto endOfComment = start + i;
 
 					if (endOfComment < document[line].size() - 1 && document[line][endOfComment].codepoint == ' ') {
 						endOfComment++;
 					}
 
-					auto deleteEnd = DocPos(line, endOfComment);
+					const auto deleteEnd = DocPos(line, endOfComment);
 					deleteText(transaction, deleteStart, deleteEnd);
 					cursors.adjustForDelete(cursor, deleteStart, deleteEnd, true);
 
 				} else {
-					auto insertStart = DocPos(line, start);
-					auto insertEnd = insertText(transaction, insertStart, comment + " ");
+					const auto insertStart = DocPos(line, start);
+					const auto insertEnd = insertText(transaction, insertStart, comment + " ");
 					cursors.adjustForInsert(cursor, insertStart, insertEnd, true);
 				}
 			}
@@ -2852,25 +2835,25 @@ void TextEditor::toggleComments() {
 //
 
 void TextEditor::filterSelections(std::function<std::string(std::string_view)> filter) {
-	auto transaction = startTransaction();
+	const auto transaction = startTransaction();
 
 	// process all cursors
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
-		auto start = cursor->getSelectionStart();
-		auto end = cursor->getSelectionEnd();
+		const auto start = cursor->getSelectionStart();
+		const auto end = cursor->getSelectionEnd();
 
 		// process all lines in this cursor
 		for (auto line = start.line; line <= end.line; line++) {
 			if (DocPos(line, 0) != end && document[line].size()) {
 				// get original text and run it through filter
-				auto before = document.getSectionText(start, end);
-				std::string after = filter(before);
+				const auto before = document.getSectionText(start, end);
+				const std::string after = filter(before);
 
 				// update selection if anything changed
 				if (after != before) {
 					deleteText(transaction, start, end);
 					cursors.adjustForDelete(cursor, start, end);
-					auto newEnd = insertText(transaction, start, after);
+					const auto newEnd = insertText(transaction, start, after);
 					cursor->update(start, newEnd);
 					cursors.adjustForInsert(cursor, start, newEnd);
 				}
@@ -2889,7 +2872,7 @@ void TextEditor::filterSelections(std::function<std::string(std::string_view)> f
 void TextEditor::selectionToLowerCase() {
 	FilterSelections([](const std::string_view& text) {
 		std::string result;
-		auto end = text.end();
+		const auto end = text.end();
 		auto i = text.begin();
 		char utf8[4];
 
@@ -2911,7 +2894,7 @@ void TextEditor::selectionToLowerCase() {
 void TextEditor::selectionToUpperCase() {
 	FilterSelections([](const std::string_view& text) {
 		std::string result;
-		auto end = text.end();
+		const auto end = text.end();
 		auto i = text.begin();
 		char utf8[4];
 
@@ -2931,13 +2914,13 @@ void TextEditor::selectionToUpperCase() {
 //
 
 void TextEditor::stripTrailingWhitespaces() {
-	auto transaction = startTransaction();
+	const auto transaction = startTransaction();
 
 	// process all the lines
 	for (size_t i = 0; i < document.size(); i++) {
 		const auto& line = document[i];
-		size_t lineSize = line.size();
-		size_t whitespace = std::numeric_limits<size_t>::max();
+		const auto lineSize = line.size();
+		auto whitespace = std::numeric_limits<size_t>::max();
 
 		// look for first non-whitespace glyph at the end of the line
 		if (lineSize) {
@@ -2975,18 +2958,18 @@ void TextEditor::stripTrailingWhitespaces() {
 //
 
 void TextEditor::filterLines(std::function<std::string(std::string_view)> filter) {
-	auto transaction = startTransaction();
+	const auto transaction = startTransaction();
 
 	// process all the lines
 	for (size_t i = 0; i < document.size(); i++) {
 		// get original text and run it through filter
-		auto before = document.getLineText(i);
-		std::string after = filter(before);
+		const auto before = document.getLineText(i);
+		const auto after = filter(before);
 
 		// update line if anything changed
 		if (after != before) {
-			auto start = DocPos(i, 0);
-			auto end = document.getEndOfLine(start);
+			const auto start = DocPos(i, 0);
+			const auto end = document.getEndOfLine(start);
 			deleteText(transaction, start, end);
 			insertText(transaction, start, after);
 		}
@@ -3006,7 +2989,7 @@ void TextEditor::filterLines(std::function<std::string(std::string_view)> filter
 void TextEditor::tabsToSpaces() {
 	filterLines([this](const std::string_view& input) {
 		std::string output;
-		auto end = input.end();
+		const auto end = input.end();
 		auto i = input.begin();
 		size_t columns = 0;
 
@@ -3015,7 +2998,7 @@ void TextEditor::tabsToSpaces() {
 			i = CodePoint::read(i, end, &codepoint);
 
 			if (codepoint == '\t') {
-				auto spaces = config.tabSize - (columns % config.tabSize);
+				const auto spaces = config.tabSize - (columns % config.tabSize);
 				output.append(spaces, ' ');
 				columns += spaces;
 
@@ -3038,7 +3021,7 @@ void TextEditor::tabsToSpaces() {
 void TextEditor::spacesToTabs() {
 	FilterLines([this](const std::string_view& input) {
 		std::string output;
-		auto end = input.end();
+		const auto end = input.end();
 		auto i = input.begin();
 		size_t columns = 0;
 		size_t spaces = 0;
@@ -3052,7 +3035,7 @@ void TextEditor::spacesToTabs() {
 
 			} else {
 				while (spaces) {
-					auto spacesUntilNextTab = config.tabSize - (columns % config.tabSize);
+					const auto spacesUntilNextTab = config.tabSize - (columns % config.tabSize);
 
 					if (spacesUntilNextTab == 1) {
 						output += ' ';
@@ -3135,8 +3118,8 @@ void TextEditor::insertTextIntoAllCursors(std::shared_ptr<Transaction> transacti
 
 	// insert the text
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
-		auto start = cursor->getSelectionStart();
-		auto end = insertText(transaction, start, text);
+		const auto start = cursor->getSelectionStart();
+		const auto end = insertText(transaction, start, text);
 		cursor->update(end, false);
 		cursors.adjustForInsert(cursor, start, end);
 	}
@@ -3150,8 +3133,8 @@ void TextEditor::insertTextIntoAllCursors(std::shared_ptr<Transaction> transacti
 void TextEditor::deleteTextFromAllCursors(std::shared_ptr<Transaction> transaction) {
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
 		if (cursor->hasSelection()) {
-			auto start = cursor->getSelectionStart();
-			auto end = cursor->getSelectionEnd();
+			const auto start = cursor->getSelectionStart();
+			const auto end = cursor->getSelectionEnd();
 			deleteText(transaction, start, end);
 			cursor->update(start, false);
 			cursors.adjustForDelete(cursor, start, end);
@@ -3166,20 +3149,20 @@ void TextEditor::deleteTextFromAllCursors(std::shared_ptr<Transaction> transacti
 
 void TextEditor::autoIndentAllCursors(std::shared_ptr<Transaction> transaction) {
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
-		auto start = cursor->getSelectionStart();
+		const auto start = cursor->getSelectionStart();
 
 		// delete any selections
 		if (cursor->hasSelection()) {
-			auto end = cursor->getSelectionEnd();
+			const auto end = cursor->getSelectionEnd();
 			deleteText(transaction, start, end);
 			cursors.adjustForDelete(cursor, start, end);
 		}
 
 		// get previous and next character
 		auto index = start.index;
-		auto& line = document[start.line];
-		ImWchar previousChar = index > 0 ? line[index - 1].codepoint : 0;
-		ImWchar nextChar = index < line.size() ? line[index].codepoint : 0;
+		const auto& line = document[start.line];
+		const ImWchar previousChar = index > 0 ? line[index - 1].codepoint : 0;
+		const ImWchar nextChar = index < line.size() ? line[index].codepoint : 0;
 
 		// remove extra whitespaces if required
 		if (CodePoint::isWhiteSpace(nextChar)) {
@@ -3187,7 +3170,7 @@ void TextEditor::autoIndentAllCursors(std::shared_ptr<Transaction> transaction) 
 				index++;
 			}
 
-			auto end = DocPos(start.line, index);
+			const auto end = DocPos(start.line, index);
 			deleteText(transaction, start, end);
 			cursors.adjustForDelete(cursor, start, end);
 		}
@@ -3219,7 +3202,7 @@ void TextEditor::autoIndentAllCursors(std::shared_ptr<Transaction> transaction) 
 		}
 
 		// insert new text
-		auto end = insertText(transaction, start, insert);
+		const auto end = insertText(transaction, start, insert);
 		cursors.adjustForInsert(cursor, start, end);
 
 		// set new cursor location
@@ -3235,7 +3218,7 @@ void TextEditor::autoIndentAllCursors(std::shared_ptr<Transaction> transaction) 
 TextEditor::DocPos TextEditor::insertText(std::shared_ptr<Transaction> transaction, DocPos start, const std::string_view& text) {
 	// update document, add transaction and return position of end of insert
 	// this function does not change the cursors
-	auto end = document.insertText(config, start, text);
+	const auto end = document.insertText(config, start, text);
 	transaction->addInsert(start, end, text);
 	makeCursorVisible();
 	return end;
@@ -3249,7 +3232,7 @@ TextEditor::DocPos TextEditor::insertText(std::shared_ptr<Transaction> transacti
 void TextEditor::deleteText(std::shared_ptr<Transaction> transaction, DocPos start, DocPos end) {
 	// update document and add transaction
 	// this function does not change the cursors
-	auto text = document.getSectionText(start, end);
+	const auto text = document.getSectionText(start, end);
 	document.deleteText(config, start, end);
 	transaction->addDelete(start, end, text);
 	makeCursorVisible();

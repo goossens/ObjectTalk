@@ -23,7 +23,7 @@ OtObject OtClosureClass::capture() {
 	auto clone = OtClosure::create(function, captures);
 
 	// setup all captured variables
-	for (auto const& capture : captures) {
+	for (const auto& capture : captures) {
 		clone->set(capture.first, OtVM::getStack()->getFrameItem(capture.second.first, capture.second.second));
 	}
 

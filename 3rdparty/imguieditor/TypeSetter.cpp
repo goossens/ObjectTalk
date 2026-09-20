@@ -36,7 +36,7 @@ void TextEditor::TypeSetter::wrapLine(Line& line) {
 
 	// process all glyphs on line
 	size_t i = 0;
-	size_t size = line.size();
+	const size_t size = line.size();
 
 	while (i < size) {
 		// handle hard break
@@ -162,7 +162,7 @@ void TextEditor::TypeSetter::updateLine(Line& line) {
 
 bool TextEditor::TypeSetter::update(const Config& config, Document& document, const LineFold& lineFold) {
 	// see if the configuration changed
-	bool configChanged =
+	const bool configChanged =
 		tabSize != config.tabSize ||
 		wordWrap != config.wordWrap ||
 		(wordWrap && wordWrapColumns != config.wordWrapColumns);
@@ -252,11 +252,11 @@ TextEditor::VisPos TextEditor::TypeSetter::docPos2VisPos(const Document& documen
 		bool done = false;
 
 		for (size_t i = 0; !done && i < line.sections->size(); i++) {
-			auto& section = line.sections->at(i);
+			const auto& section = line.sections->at(i);
 
 			if (pos.index >= section.startIndex && pos.index <= section.endIndex) {
-				auto start = line.begin() + section.startIndex;
-				auto end = line.begin() + pos.index;
+				const auto start = line.begin() + section.startIndex;
+				const auto end = line.begin() + pos.index;
 				visPos.column = section.indent;
 
 				for (auto glyph = start; glyph < end; glyph++) {
@@ -271,7 +271,7 @@ TextEditor::VisPos TextEditor::TypeSetter::docPos2VisPos(const Document& documen
 		}
 
 	} else {
-		auto end = line.begin() + pos.index;
+		const auto end = line.begin() + pos.index;
 
 		for (auto glyph = line.begin(); glyph < end; glyph++) {
 			visPos.column += glyph->columns;
@@ -291,8 +291,8 @@ TextEditor::DocPos TextEditor::TypeSetter::visPos2DocPos(const Document& documen
 		return DocPos(0, 0);
 	}
 
-	auto& row = at(pos.row);
-	auto& line = document[row.line];
+	const auto& row = at(pos.row);
+	const auto& line = document[row.line];
 
 	DocPos docPos;
 	docPos.line = row.line;
@@ -332,8 +332,8 @@ TextEditor::DocPos TextEditor::TypeSetter::visPos2DocPos(const Document& documen
 		docPos.index = index;
 
 	} else {
-		auto leftDiff = pos.column - leftColumn;
-		auto rightDiff = rightColumn - pos.column;
+		const auto leftDiff = pos.column - leftColumn;
+		const auto rightDiff = rightColumn - pos.column;
 		docPos.index = leftDiff <= rightDiff ? index - 1 : index;
 	}
 
@@ -348,8 +348,8 @@ TextEditor::DocPos TextEditor::TypeSetter::visPos2DocPos(const Document& documen
 void TextEditor::TypeSetter::screenPos2DocPos(const Document& document, ImVec2 screenPos, DocPos& glyphPos, DocPos& cursorPos) const {
 	// the returned glyphPos addresses the glyph pointed to by the screenPos parameter
 	// the returned cursorPos returns the closest cursor position (which can be at the start or the end of the glyph)
-	size_t colNo = static_cast<size_t>(screenPos.x);
-	size_t rowNo = static_cast<size_t>(screenPos.y);
+	const size_t colNo = static_cast<size_t>(screenPos.x);
+	const size_t rowNo = static_cast<size_t>(screenPos.y);
 
 	if (screenPos.y <= 0.0f) {
 		glyphPos = DocPos(0, 0);
@@ -360,8 +360,8 @@ void TextEditor::TypeSetter::screenPos2DocPos(const Document& document, ImVec2 s
 		cursorPos = glyphPos;
 
 	} else {
-		auto& row = at(rowNo);
-		auto& line = document[row.line];
+		const auto& row = at(rowNo);
+		const auto& line = document[row.line];
 
 		if (screenPos.x <= 0.0f) {
 			glyphPos = DocPos(row.line, 0);
@@ -411,8 +411,8 @@ void TextEditor::TypeSetter::screenPos2DocPos(const Document& document, ImVec2 s
 				index++;
 			}
 
-			auto leftDiff = screenPos.x - static_cast<float>(leftColumn);
-			auto rightDiff = static_cast<float>(rightColumn) - screenPos.x;
+			const auto leftDiff = screenPos.x - static_cast<float>(leftColumn);
+			const auto rightDiff = static_cast<float>(rightColumn) - screenPos.x;
 
 			glyphPos = DocPos(row.line, leftColumn == rightColumn ? index : index - 1);
 			cursorPos = DocPos(row.line, leftDiff <= rightDiff ? index - 1 : index);
@@ -430,7 +430,7 @@ TextEditor::VisPos TextEditor::TypeSetter::normalizePos(VisPos pos) const {
 		return VisPos(0, 0);
 
 	} else if (pos.row >= totalRows) {
-		auto lastRow = totalRows - 1;
+		const auto lastRow = totalRows - 1;
 		return VisPos(lastRow, at(lastRow).columns);
 
 	} else if (pos.column > at(pos.row).columns) {

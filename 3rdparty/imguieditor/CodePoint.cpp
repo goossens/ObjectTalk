@@ -444,7 +444,7 @@ const CaseRange<C>* caseRangeFind(const T& table, C codepoint) {
 
 template <typename T, typename C>
 C caseRangeToUpper(const T& table, C codepoint) {
-	auto caseRange = caseRangeFind(table, codepoint);
+	const auto caseRange = caseRangeFind(table, codepoint);
 
 	if (!caseRange || caseRange->toUpper == 0) {
 		return codepoint;
@@ -464,7 +464,7 @@ C caseRangeToUpper(const T& table, C codepoint) {
 
 template <typename T, typename C>
 C caseRangeToLower(const T& table, C codepoint) {
-	auto caseRange = caseRangeFind(table, codepoint);
+	const auto caseRange = caseRangeFind(table, codepoint);
 
 	if (!caseRange || caseRange->toLower == 0) {
 		return codepoint;

@@ -83,7 +83,7 @@ bool OtSetClass::operator==(OtObject object) {
 	}
 
 	// compare all elements
-	for (auto const& entry : set) {
+	for (const auto& entry : set) {
 		if (!op->contains(entry)) {
 			return false;
 		}

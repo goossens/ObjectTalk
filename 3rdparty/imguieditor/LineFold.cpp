@@ -129,7 +129,7 @@ void TextEditor::LineFold::unfoldAroundLine(Document& document, size_t line) {
 
 void TextEditor::LineFold::toggleAtLine(Document& document, size_t lineNo) {
 	auto& line = document[lineNo];
-	auto state = line.foldingState;
+	const auto state = line.foldingState;
 
 	if (state == FoldingState::foldable) {
 		line.foldingState = FoldingState::folded;

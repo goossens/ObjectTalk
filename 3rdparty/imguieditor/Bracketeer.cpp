@@ -18,7 +18,7 @@
 
 void TextEditor::Bracketeer::update(const Config& config, Document& document) {
 	// see if the configuration changed
-	bool configChanged =
+	const bool configChanged =
 		showMatchingBrackets != config.showMatchingBrackets ||
 		language != config.language;
 
@@ -53,7 +53,7 @@ void TextEditor::Bracketeer::update(const Config& config, Document& document) {
 		};
 
 		// copy old list so we can see if things have changed
-		auto previous = *this;
+		const auto previous = *this;
 
 		// clear old list
 		clear();
@@ -114,13 +114,13 @@ void TextEditor::Bracketeer::update(const Config& config, Document& document) {
 		if (language && language->indentationForBlocks) {
 			for (size_t i = 0; i < document.size(); i++) {
 				if (document[i].size()) {
-					auto currentIndent = document[i].indent;
+					const auto currentIndent = document[i].indent;
 					auto endLine = i;
 					auto done = false;
 
 					for (size_t j = i + 1; j < document.size() && !done; j++) {
 						if (document[j].size()) {
-							auto nextIndent = document[j].indent;
+							const auto nextIndent = document[j].indent;
 
 							if (nextIndent > currentIndent) {
 								endLine = j;
@@ -202,7 +202,7 @@ TextEditor::Bracketeer::const_iterator TextEditor::Bracketeer::getEnclosingBrack
 
 TextEditor::Bracketeer::const_iterator TextEditor::Bracketeer::getInnerBrackets(DocPos first, DocPos last) const {
 	auto brackets = cend();
-	auto outer = getEnclosingBrackets(first, last);
+	const auto outer = getEnclosingBrackets(first, last);
 
 	if (outer != end()) {
 		bool done = false;

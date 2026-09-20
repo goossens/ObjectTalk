@@ -1611,7 +1611,7 @@ void OtCompiler::ifStatement(OtByteCode bytecode) {
 	}
 
 	// patch all jumps
-	for (auto const& patch : patches) {
+	for (const auto& patch : patches) {
 		bytecode->patchJump(patch);
 	}
 }

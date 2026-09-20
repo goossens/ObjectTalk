@@ -81,13 +81,13 @@ void TextEditor::AutoComplete::cancel() {
 static bool renderSuggestion(const std::string_view& suggestion, const std::string_view& searchTerm, float width, bool selected) {
 	// custom widget to render an autocomplete suggestion in the style of Visual Studio Code
 	auto glyphPos = ImGui::GetCursorScreenPos();
-	auto size = ImVec2(width, ImGui::GetFrameHeightWithSpacing());
-	auto clicked = ImGui::InvisibleButton("suggestion", size);
+	const auto size = ImVec2(width, ImGui::GetFrameHeightWithSpacing());
+	const auto clicked = ImGui::InvisibleButton("suggestion", size);
 
 	auto drawList = ImGui::GetWindowDrawList();
-	auto font = ImGui::GetFont();
-	auto fontSize = ImGui::GetFontSize();
-	auto glyphWidth = ImGui::CalcTextSize("#").x;
+	const auto font = ImGui::GetFont();
+	const auto fontSize = ImGui::GetFontSize();
+	const auto glyphWidth = ImGui::CalcTextSize("#").x;
 
 	// highlight selected item
 	if (selected) {
@@ -96,8 +96,8 @@ static bool renderSuggestion(const std::string_view& suggestion, const std::stri
 
 	// process all UTF-8 glyphs in suggestion
 	glyphPos += ImGui::GetStyle().FramePadding;
-	auto suggestionEnd = suggestion.end();
-	auto searchTermEnd = searchTerm.end();
+	const auto suggestionEnd = suggestion.end();
+	const auto searchTermEnd = searchTerm.end();
 	auto i = TextEditor::CodePoint::skipBOM(suggestion.begin(), suggestionEnd);
 	auto j = TextEditor::CodePoint::skipBOM(searchTerm.begin(), searchTermEnd);
 
@@ -111,7 +111,7 @@ static bool renderSuggestion(const std::string_view& suggestion, const std::stri
 
 		if (j < searchTermEnd) {
 			ImWchar searchCodePoint;
-			auto next = TextEditor::CodePoint::read(j, searchTermEnd, &searchCodePoint);
+			const auto next = TextEditor::CodePoint::read(j, searchTermEnd, &searchCodePoint);
 
 			if (TextEditor::CodePoint::toLower(searchCodePoint) == TextEditor::CodePoint::toLower(codepoint)) {
 				color = ImGui::GetColorU32(ImGuiCol_TextLink);
@@ -170,7 +170,7 @@ bool TextEditor::AutoComplete::render(Document& document, Cursors& cursors, Type
 	}
 
 	// see if cursor moved since last time
-	auto newLocation = cursors.getMain().getSelectionEnd();
+	const auto newLocation = cursors.getMain().getSelectionEnd();
 
 	if (newLocation != currentLocation) {
 		// see if we need to deactivate autocomplete because cursor is on new line
@@ -179,7 +179,7 @@ bool TextEditor::AutoComplete::render(Document& document, Cursors& cursors, Type
 
 		} else {
 			// see if cursor moved away from current word
-			auto newStart = document.findWordStart(newLocation, true);
+			const auto newStart = document.findWordStart(newLocation, true);
 
 			if (newStart == startLocation) {
 				currentLocation = newLocation;
@@ -201,25 +201,25 @@ bool TextEditor::AutoComplete::render(Document& document, Cursors& cursors, Type
 
 	// open popup window
 	bool result = false;
-	auto pos = typesetter.docPos2VisPos(document, currentLocation);
+	const auto pos = typesetter.docPos2VisPos(document, currentLocation);
 
 	ImGui::SetNextWindowPos(ImVec2(
 		ImGui::GetCursorScreenPos().x + textOffset + pos.column * glyphSize.x,
 		ImGui::GetCursorScreenPos().y + (pos.row + 1) * glyphSize.y));
 
-	auto suggestions = state.suggestions.size();
+	const auto suggestions = state.suggestions.size();
 
 	// an empty result while typing dismisses silently; only a manual trigger earns the "no suggestions" feedback
 	if (suggestions == 0 && !state.suggestionsPromise && !triggeredManually) {
 		requestDeactivation = true;
 	}
 
-	auto visibleSuggestions = (suggestions == 0) ? 1 : std::min(static_cast<size_t>(10), suggestions);
+	const auto visibleSuggestions = (suggestions == 0) ? 1 : std::min(static_cast<size_t>(10), suggestions);
 	const auto& style = ImGui::GetStyle();
-	auto height = ImGui::GetFrameHeightWithSpacing() * visibleSuggestions + style.WindowPadding.y * 2.0f;
+	const auto height = ImGui::GetFrameHeightWithSpacing() * visibleSuggestions + style.WindowPadding.y * 2.0f;
 	ImGui::SetNextWindowSize(ImVec2(configuration.suggestionWidth * glyphSize.x, height));
 
-	ImGuiWindowFlags flags =
+	const ImGuiWindowFlags flags =
 		ImGuiWindowFlags_NoFocusOnAppearing |
 		ImGuiWindowFlags_NoNav;
 
@@ -237,7 +237,7 @@ bool TextEditor::AutoComplete::render(Document& document, Cursors& cursors, Type
 		} else {
 			// do we have any suggestions
 			if (suggestions) {
-				auto items = state.suggestions.size();
+				const auto items = state.suggestions.size();
 				auto scroll = false;
 
 				// apply arrow keys to selected suggestion
@@ -277,7 +277,7 @@ bool TextEditor::AutoComplete::render(Document& document, Cursors& cursors, Type
 					ImGui::PushID(static_cast<int>(i));
 
 					// scroll list to selected item (if required)
-					auto selected = i == currentSelection;
+					const auto selected = i == currentSelection;
 
 					if (scroll && selected) {
 						ImGui::SetScrollHereY(0.5f);
@@ -324,7 +324,7 @@ void TextEditor::AutoComplete::setSuggestions(const std::vector<std::string>& su
 //
 
 bool TextEditor::AutoComplete::isSpecialKeyPressed() {
-	for (auto key : {ImGuiKey_Tab, ImGuiKey_Enter, ImGuiKey_KeypadEnter, ImGuiKey_UpArrow, ImGuiKey_DownArrow}) {
+	for (const auto key : {ImGuiKey_Tab, ImGuiKey_Enter, ImGuiKey_KeypadEnter, ImGuiKey_UpArrow, ImGuiKey_DownArrow}) {
 		if (ImGui::IsKeyPressed(key)) {
 			return true;
 		}
@@ -357,12 +357,12 @@ void TextEditor::AutoComplete::updateState(Document& document, const Language* l
 		state.inIdentifier = false;
 		state.inNumber = false;
 
-		auto lineState = document[currentLocation.line].state;
+		const auto lineState = document[currentLocation.line].state;
 		state.inComment = lineStateInComment(lineState);
 		state.inString = lineStateInString(lineState);
 
 	} else {
-		auto color = document.getColor(document.getLeft(currentLocation));
+		const auto color = document.getColor(document.getLeft(currentLocation));
 		state.inIdentifier = color == Color::identifier || color == Color::knownIdentifier;
 		state.inNumber = color == Color::number;
 		state.inComment = color == Color::comment;

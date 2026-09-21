@@ -34,11 +34,6 @@ if(OT_INCLUDE_UI)
 	target_link_libraries(imguiwidgets imgui)
 	set_target_properties(imguiwidgets PROPERTIES FOLDER 3rdParty)
 
-	add_library(imguitoastr STATIC imguitoastr/Toastr.cpp imguitoastr/Toastr.h)
-	target_include_directories(imguitoastr INTERFACE imguitoastr)
-	target_link_libraries(imguitoastr imgui)
-	set_target_properties(imguitoastr PROPERTIES FOLDER 3rdParty)
-
 	file(GLOB NANOVG_SOURCES CONFIGURE_DEPENDS nanovg/*.cpp nanovg/*.h)
 	add_library(nanovg STATIC ${NANOVG_SOURCES})
 	target_compile_options(nanovg PUBLIC $<$<COMPILE_LANG_AND_ID:CXX,AppleClang,Clang>:-Wno-gnu-anonymous-struct -Wno-nested-anon-types>)

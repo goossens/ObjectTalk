@@ -24,6 +24,7 @@ In case User Interface (UI) modules are included, we also use:
 * [Dear ImGui](https://github.com/ocornut/imgui) - graphical user interface library released under the [MIT license](https://opensource.org/licenses/MIT).
 * [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) - file selection dialog for Dear ImGui released under the [MIT license](https://opensource.org/licenses/MIT).
 * [ImGui Knobs](https://github.com/altschuler/imgui-knobs) - library for designing knobs for Dear ImGui released under the [MIT license](https://opensource.org/licenses/MIT).
+* [ImGui Toastr](https://github.com/goossens/ImGuiToastr) - library to show toast-like notifications for Dear ImGui released under the [MIT license](https://opensource.org/licenses/MIT).
 * [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) - gizmo to visually manipulate 4x4 matrices released under the [MIT license](https://opensource.org/licenses/MIT).
 * [ImPlot](https://github.com/epezent/implot) - an immediate mode, GPU accelerated plotting library for Dear ImGui released under the [MIT license](https://opensource.org/licenses/MIT).
 * [glm](https://github.com/g-truc/glm) - mathematics library for graphics software released under the [MIT license](https://opensource.org/licenses/MIT).

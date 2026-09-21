@@ -412,7 +412,7 @@ if __name__ == "__main__":
 	fetch("ReadMe.txt")
 
 	with open("ReadMe.txt") as readme:
-		version = re.search(r"for Version (\d+\.\d+\.\d+) of the Unicode", readme.read()).group(1)
+		version = re.search(r"for version (\d+\.\d+\.\d+) of the", readme.read()).group(1)
 
 	filter8 = lambda r : r[0] < 0x100
 	filter16 = lambda r : r[0] < 0x10000

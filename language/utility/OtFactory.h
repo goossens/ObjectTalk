@@ -44,7 +44,7 @@ public:
 	}
 
 	// create a new instance by name
-	inline std::shared_ptr<B> create(std::string_view name) {
+	inline std::shared_ptr<B> create(std::string_view name) const {
 		if (!exists(name)) {
 			OtLogError("Internal error: factory can't create instance of type [{}]", name);
 		}
@@ -53,12 +53,12 @@ public:
 	}
 
 	// see if a specified name can be instantiated
-	inline bool exists(std::string_view name) {
+	inline bool exists(std::string_view name) const {
 		return map.contains(name);
 	}
 
 	// iterate through the type names
-	inline void each(std::function<void(const char* name)> callback) {
+	inline void each(std::function<void(const char* name)> callback) const {
 		for(const auto& entry : list) {
 			callback(entry.data());
 		}

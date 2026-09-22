@@ -53,7 +53,7 @@ public:
 	inline const std::string& getLongErrorMessage() const { return longMessage; }
 
 	// (de)serializer
-	std::string serialize();
+	std::string serialize() const;
 	void deserialize(const std::string& string);
 
 private:

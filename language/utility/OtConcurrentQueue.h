@@ -39,13 +39,13 @@ public:
 	}
 
 	// return number of queue entries
-	inline size_t size() {
+	inline size_t size() const {
 		std::unique_lock<std::mutex> mlock(mutex);
 		return queue.size();
 	}
 
 	// see if queue has entries
-	inline bool empty() {
+	inline bool empty() const {
 		std::unique_lock<std::mutex> mlock(mutex);
 		return queue.empty();
 	}

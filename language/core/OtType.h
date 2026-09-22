@@ -35,12 +35,12 @@ public:
 	OtType(OtTypeClass* t) : type(t) {}
 
 	// pointer access
-	inline OtTypeClass* operator->() { return type; }
-	inline OtTypeClass& operator*() { return *type; }
-	inline OtTypeClass* raw() { return type; }
+	inline OtTypeClass* operator->() const { return type; }
+	inline OtTypeClass& operator*() const { return *type; }
+	inline OtTypeClass* raw() const { return type; }
 
 	// see if type is valid
-	inline operator bool() { return type != nullptr; }
+	inline operator bool() const { return type != nullptr; }
 
 	// see if types are equal
 	inline bool operator==(OtType other) const { return type == other.type; }
@@ -82,24 +82,24 @@ public:
 	void setParent(OtType p);
 
 	// see if type is kind of
-	bool isKindOf(OtID id);
-	bool isKindOf(const std::string& name);
+	bool isKindOf(OtID id) const;
+	bool isKindOf(const std::string& name) const;
 
 	// get information
-	inline OtID getID() { return typeID; }
-	inline OtType getParent() { return parent; }
-	inline std::string getName() { return std::string(OtIdentifier::name(typeID)); }
+	inline OtID getID() const { return typeID; }
+	inline OtType getParent() const { return parent; }
+	inline std::string getName() const { return std::string(OtIdentifier::name(typeID)); }
 
 	// member access
-	inline bool has(OtID id) { return members.has(id) != 0; }
+	inline bool has(OtID id) const { return members.has(id) != 0; }
 	OtObject set(OtID id, OtObject value);
 	OtObject set(const char* name, OtObject value);
-	inline OtObject get(OtID id) { return members.get(id); }
+	inline OtObject get(OtID id) const { return members.get(id); }
 	inline void unset(OtID id) { members.unset(id); }
 
 	// iterate through the members
-	inline void eachMember(std::function<void(OtID, OtObject object)> callback) { members.each(callback); }
-	inline void eachMemberID(std::function<void(OtID)> callback) { members.eachID(callback); }
+	inline void eachMember(std::function<void(OtID, OtObject object)> callback) const { members.each(callback); }
+	inline void eachMemberID(std::function<void(OtID)> callback) const { members.eachID(callback); }
 
 private:
 	// attributes

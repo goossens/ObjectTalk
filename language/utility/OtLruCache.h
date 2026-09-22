@@ -37,12 +37,12 @@ public:
 	}
 
 	// return the cache size
-	inline size_t getSize() {
+	inline size_t getSize() const {
 		return size;
 	}
 
 	// return number of cache entries
-	inline size_t getNumberOfEntries() {
+	inline size_t getNumberOfEntries() const {
 		return items.size();
 	}
 
@@ -86,7 +86,7 @@ public:
 	}
 
 	// see if entry is in cache
-	inline bool has(const K& key) {
+	inline bool has(const K& key) const {
 		return index.contains(key);
 	}
 

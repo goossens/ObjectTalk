@@ -127,13 +127,13 @@ public:
 
 	// see if pointer is "kind of"
 	template<typename Ts>
-	inline bool isKindOf() {
+	inline bool isKindOf() const {
 		return dynamic_cast<Ts*>(ptr);
 	}
 
 	// shortcut for isKindOf and OtLogError
 	template<typename Ts>
-	inline void expect(const char* className) {
+	inline void expect(const char* className) const {
 		if (!ptr) {
 			OtLogError("Expected an object derived from [{}], not [null]", className);
 
@@ -149,7 +149,7 @@ public:
 	inline const T& operator*() const { return *ptr; }
 
 	// access raw pointer
-	inline T* raw() { return ptr; }
+	inline T* raw() const { return ptr; }
 
 	// check validity of reference
 	inline operator bool() { return ptr != nullptr; }
@@ -164,10 +164,10 @@ public:
 	inline bool operator<(const OtObjectPointer<T>& ref) const { return ptr < ref.ptr; }
 
 	// get type name
-	inline std::string getTypeName() { return ptr ? ptr->getType()->getName() : ""; }
+	inline std::string getTypeName() const { return ptr ? ptr->getType()->getName() : ""; }
 
 	// get reference count
-	inline uint64_t getReferenceCount() { return ptr ? ptr->referenceCount : 0; }
+	inline uint64_t getReferenceCount() const { return ptr ? ptr->referenceCount : 0; }
 
 	// create a new object instance
 	template<typename... Args>

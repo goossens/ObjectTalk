@@ -40,14 +40,14 @@ class OtObjectClass {
 public:
 	// type access
 	inline void setType(OtType t) { type = t; }
-	inline OtType getType() { return type; }
-	inline std::string getTypeName() { return type->getName(); }
+	inline OtType getType() const { return type; }
+	inline std::string getTypeName() const { return type->getName(); }
 
 	// see if object "is kind of"
-	inline bool isKindOf(const std::string& className) { return type->isKindOf(className); }
+	inline bool isKindOf(const std::string& className) const { return type->isKindOf(className); }
 
 	// expect object "is kind of" (exception is raised in case it is not)
-	void expectKindOf(const std::string& className);
+	void expectKindOf(const std::string& className) const;
 
 	// default conversion operators
 	virtual inline operator bool() { return false; }

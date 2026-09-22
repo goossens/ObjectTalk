@@ -44,20 +44,20 @@ public:
 	OtMembers& operator=(OtMembers&&) = delete;
 
 	// access the members
-	inline bool has(OtID id) { return find(id) != nullptr; }
-	inline OtObject get(OtID id) { return find(id)->object; }
+	inline bool has(OtID id) const { return find(id) != nullptr; }
+	inline OtObject get(OtID id) const { return find(id)->object; }
 	inline void set(OtID id, OtObject member) { assign(id, member); }
 	inline void unset(OtID id) { erase(id); }
 	inline void unsetAll() { clear(); }
 
 	// iterate through the members
-	inline void each(std::function<void(OtID, OtObject object)> callback) {
+	inline void each(std::function<void(OtID, OtObject object)> callback) const {
 		for (auto i = begin(); i < end(); i++) {
 			callback(i->id, i->object);
 		}
 	}
 
-	inline void eachID(std::function<void(OtID)> callback) {
+	inline void eachID(std::function<void(OtID)> callback) const {
 		for (auto i = begin(); i < end(); i++) {
 			callback(i->id);
 		}
@@ -140,7 +140,7 @@ private:
 	}
 
 	// find an entry
-	Entry* find(OtID id) {
+	Entry* find(OtID id) const {
 		auto hash = id & (capacity - 1);
 		auto next = buckets[hash];
 

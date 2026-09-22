@@ -47,7 +47,7 @@ void OtTypeClass::setParent(OtType p) {
 //	OtTypeClass::isKindOf
 //
 
-bool OtTypeClass::isKindOf(OtID otherID) {
+bool OtTypeClass::isKindOf(OtID otherID) const {
 	for (auto p = this; p; p = p->parent.raw()) {
 		if (p->typeID == otherID) {
 			return true;
@@ -57,7 +57,7 @@ bool OtTypeClass::isKindOf(OtID otherID) {
 	return false;
 }
 
-bool OtTypeClass::isKindOf(const std::string& name) {
+bool OtTypeClass::isKindOf(const std::string& name) const {
 	return isKindOf(OtIdentifier::create(name));
 }
 

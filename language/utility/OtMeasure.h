@@ -26,9 +26,9 @@
 
 template<typename F, typename... Args>
 inline float OtMeasureFunction(F func, Args&&... args) {
-	auto start = std::chrono::high_resolution_clock::now();
+	const auto start = std::chrono::high_resolution_clock::now();
 	std::forward<decltype(func)>(func)(std::forward<decltype(args)>(args)...);
-	auto stop = std::chrono::high_resolution_clock::now();
+	const auto stop = std::chrono::high_resolution_clock::now();
 	return std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
 }
 
@@ -51,16 +51,16 @@ public:
 	}
 
 	// return elapsed time in milliseconds since start of stopwatch
-	inline float elapsed() {
-		auto now = std::chrono::high_resolution_clock::now();
-		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(now - startTime).count();
+	inline float elapsed() const {
+		const auto now = std::chrono::high_resolution_clock::now();
+		const auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(now - startTime).count();
 		return static_cast<float>(microseconds) / 1000.0f;
 	}
 
 	// return elapsed time in milliseconds since last "lap" call (or the start if this is the first call)
 	inline float lap() {
-		auto now = std::chrono::high_resolution_clock::now();
-		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(now - lapTime).count();
+		const auto now = std::chrono::high_resolution_clock::now();
+		const auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(now - lapTime).count();
 		lapTime = now;
 		return static_cast<float>(microseconds) / 1000.0f;
 	}

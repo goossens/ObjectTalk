@@ -141,7 +141,7 @@ static bool isvowel(char ch) {
 	return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u';
 }
 
-void OtObjectClass::expectKindOf(const std::string& className) {
+void OtObjectClass::expectKindOf(const std::string& className) const {
 	// ensure object is of the right kind
 	if (!isKindOf(className)) {
 		OtLogError("Expected {} [{}] instance, not a [{}]",

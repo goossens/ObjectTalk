@@ -18,7 +18,7 @@
 //	OtException::serialize
 //
 
-std::string OtException::serialize() {
+std::string OtException::serialize() const {
 	auto data = nlohmann::json::object();
 	data["module"] = module;
 	data["lineNumber"] = lineNumber;

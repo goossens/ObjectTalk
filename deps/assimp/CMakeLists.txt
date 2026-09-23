@@ -25,3 +25,8 @@ FetchContent_Declare(assimp QUIET GIT_REPOSITORY "https://github.com/assimp/assi
 FetchContent_MakeAvailable(assimp)
 
 set_target_properties(assimp PROPERTIES FOLDER deps)
+
+if(WIN32)
+set_target_properties(zlibstatic PROPERTIES FOLDER deps/assimp)
+set_target_properties(UpdateAssimpLibsDebugSymbolsAndDLLs PROPERTIES FOLDER deps/assimp)
+endif()

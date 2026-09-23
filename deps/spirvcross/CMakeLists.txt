@@ -6,9 +6,14 @@
 
 set(SPIRV_CROSS_ENABLE_TESTS OFF CACHE BOOL "" FORCE)
 set(SPIRV_CROSS_ENABLE_GLSL ON CACHE BOOL "" FORCE)
-set(SPIRV_CROSS_ENABLE_HLSL OFF CACHE BOOL "" FORCE)
 set(SPIRV_CROSS_ENABLE_CPP OFF CACHE BOOL "" FORCE)
 set(SPIRV_CROSS_CLI OFF CACHE BOOL "" FORCE)
+
+if(WIN32)
+set(SPIRV_CROSS_ENABLE_HLSL ON CACHE BOOL "" FORCE)
+else()
+set(SPIRV_CROSS_ENABLE_HLSL OFF CACHE BOOL "" FORCE)
+endif()
 
 FetchContent_Populate(spirvcross QUIET GIT_REPOSITORY "https://github.com/KhronosGroup/SPIRV-Cross" GIT_TAG "main")
 add_subdirectory(${spirvcross_SOURCE_DIR} ${spirvcross_BINARY_DIR} EXCLUDE_FROM_ALL)
@@ -19,3 +24,7 @@ set_target_properties(spirv-cross-glsl PROPERTIES FOLDER deps/spirvcross)
 set_target_properties(spirv-cross-msl PROPERTIES FOLDER deps/spirvcross)
 set_target_properties(spirv-cross-reflect PROPERTIES FOLDER deps/spirvcross)
 set_target_properties(spirv-cross-util PROPERTIES FOLDER deps/spirvcross)
+
+if(WIN32)
+set_target_properties(spirv-cross-hlsl PROPERTIES FOLDER deps/spirvcross)
+endif()

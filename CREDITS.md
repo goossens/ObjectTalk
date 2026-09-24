@@ -22,7 +22,7 @@ In case User Interface (UI) modules are included, we also use:
 * [SDL_shadercross](https://github.com/libsdl-org/SDL_shadercross) - a library for translating shaders to different formats released under the [zlib license](https://opensource.org/licenses/Zlib).
 * [SPIRV-Cross](https://github.com/KhronosGroup/SPIRV-Cross) - a tool designed for parsing and converting SPIR-V to other shader languages released under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 * [Dear ImGui](https://github.com/ocornut/imgui) - graphical user interface library released under the [MIT license](https://opensource.org/licenses/MIT).
-* [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) - file selection dialog for Dear ImGui released under the [MIT license](https://opensource.org/licenses/MIT).
+* [ImGui File Selector](https://github.com/goossens/ImGuiFileSelector) - libary providing a file selector dialog for Dear ImGui with MacOS layout and Dear ImGui look and feel released under the [MIT license](https://opensource.org/licenses/MIT).
 * [ImGui Knobs](https://github.com/altschuler/imgui-knobs) - library for designing knobs for Dear ImGui released under the [MIT license](https://opensource.org/licenses/MIT).
 * [ImGui Toastr](https://github.com/goossens/ImGuiToastr) - library to show toast-like notifications for Dear ImGui released under the [MIT license](https://opensource.org/licenses/MIT).
 * [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) - gizmo to visually manipulate 4x4 matrices released under the [MIT license](https://opensource.org/licenses/MIT).

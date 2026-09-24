@@ -9,10 +9,8 @@
 //	Include files
 //
 
-#include <format>
-
 #include "imgui.h"
-#include "ImGuiFileDialog.h"
+#include "FileSelector.h"
 
 #include "OtPath.h"
 
@@ -35,17 +33,11 @@ public:
 				ImGui::BeginDisabled();
 			}
 
-			auto dialogID = std::format("instances-save-as-{}", id);
+			auto& dialog = FileSelector::Instance();
 
 			if (ImGui::Button("Save As...", ImVec2(width, 0.0f))) {
-				IGFD::FileDialogConfig config;
-				config.countSelectionMax = 1;
-
-				config.flags = ImGuiFileDialogFlags_Modal |
-						ImGuiFileDialogFlags_DontShowHiddenFiles |
-						ImGuiFileDialogFlags_ConfirmOverwrite;
-
-				ImGuiFileDialog::Instance()->OpenDialog(dialogID, "Save Instances as...", ".oti", config);
+				dialog.SaveAs();
+				selectorOpen = true;
 			}
 
 			if (!instances.isValid()) {
@@ -53,21 +45,15 @@ public:
 			}
 
 			// handle save as dialog
-			ImVec2 maxSize = ImGui::GetMainViewport()->Size;
-			ImVec2 minSize = ImVec2(maxSize.x * 0.5f, maxSize.y * 0.5f);
-
-			if (ImGuiFileDialog::Instance()->Display(dialogID, ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
+			if (selectorOpen && dialog.Render()) {
 				// save file (if required)
-				if (ImGuiFileDialog::Instance()->IsOk()) {
-					auto dialog = ImGuiFileDialog::Instance();
-					auto path = OtPath::join(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
+				if (dialog.SelectedSaveAs()) {
+					auto path = OtPath::toString(dialog.GetSelectedPath());
 					path = OtPath::replaceExtension(path, ".oti");
-					OtPath::changeDirectory(OtPath::getParent(path));
 					instances.save(path);
 				}
 
-				// close dialog
-				ImGuiFileDialog::Instance()->Close();
+				selectorOpen = false;
 			}
 		});
 	}
@@ -79,6 +65,7 @@ public:
 private:
 	// properties
 	OtInstances instances;
+	bool selectorOpen = false;
 };
 
 static OtNodesFactoryRegister<OtSaveInstancesNode> registration;

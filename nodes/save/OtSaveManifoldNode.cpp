@@ -9,11 +9,10 @@
 //	Include files
 //
 
-#include <format>
 #include <string>
 
 #include "imgui.h"
-#include "ImGuiFileDialog.h"
+#include "FileSelector.h"
 
 #include "OtException.h"
 #include "OtPath.h"
@@ -38,17 +37,11 @@ public:
 				ImGui::BeginDisabled();
 			}
 
-			auto dialogID = std::format("shape-manifold-as-{}", id);
+			auto& dialog = FileSelector::Instance();
 
 			if (ImGui::Button("Save As...", ImVec2(width, 0.0f))) {
-				IGFD::FileDialogConfig config;
-				config.countSelectionMax = 1;
-
-				config.flags = ImGuiFileDialogFlags_Modal |
-						ImGuiFileDialogFlags_DontShowHiddenFiles |
-						ImGuiFileDialogFlags_ConfirmOverwrite;
-
-				ImGuiFileDialog::Instance()->OpenDialog(dialogID, "Save Manifold as...", ".stl,.gltf,.obj", config);
+				dialog.SaveAs();
+				selectorOpen = true;
 			}
 
 			if (!manifold.isValid()) {
@@ -56,15 +49,10 @@ public:
 			}
 
 			// handle save as dialog
-			ImVec2 maxSize = ImGui::GetMainViewport()->Size;
-			ImVec2 minSize = ImVec2(maxSize.x * 0.5f, maxSize.y * 0.5f);
-
-			if (ImGuiFileDialog::Instance()->Display(dialogID, ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
+			if (selectorOpen && dialog.Render()) {
 				// save file (if required)
-				if (ImGuiFileDialog::Instance()->IsOk()) {
-					auto dialog = ImGuiFileDialog::Instance();
-					auto path = OtPath::join(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
-					OtPath::changeDirectory(OtPath::getParent(path));
+				if (dialog.SelectedSaveAs()) {
+					auto path = OtPath::toString(dialog.GetSelectedPath());
 
 					try {
 						manifold.save(path);
@@ -75,8 +63,7 @@ public:
 					}
 				}
 
-				// close dialog
-				ImGuiFileDialog::Instance()->Close();
+				selectorOpen = false;
 			}
 
 			if (ImGui::BeginPopupModal("Save Manifold Error")) {
@@ -103,6 +90,7 @@ private:
 	// properties
 	OtManifold manifold;
 	std::string errorMessage;
+	bool selectorOpen = false;
 };
 
 static OtNodesFactoryRegister<OtSaveManifoldNode> registration;

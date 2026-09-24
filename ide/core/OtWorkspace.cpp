@@ -13,8 +13,8 @@
 #include <format>
 #include <string>
 
+#include "FileSelector.h"
 #include "imgui.h"
-#include "ImGuiFileDialog.h"
 
 #include "OtAssert.h"
 #include "OtStderrMultiplexer.h"
@@ -55,23 +55,13 @@ OtWorkspace::OtWorkspace() {
 //
 
 void OtWorkspace::onSetup() {
-	// set the current directory to examples if we are in development mode
-	// set it to documents or home directory otherwise
-	auto home = OtPath::getHomeDirectory();
-	auto examples = OtPath::join(OtPath::join(home, "ObjectTalk"), "examples");
+	// add examples directory to file selector's favorites if we are in development mode
+	auto examples = OtPath::join(OtPath::join(OtPath::getHomeDirectory(), "ObjectTalk"), "examples");
 
 	if (OtPath::isDirectory(examples)) {
-		OtPath::changeDirectory(examples);
-
-	} else {
-		auto documents = OtPath::getDocumentsDirectory();
-
-		if (OtPath::isDirectory(documents)) {
-			OtPath::changeDirectory(documents);
-
-		} else if (OtPath::isDirectory(home)) {
-			OtPath::changeDirectory(home);
-		}
+		auto& dialog = FileSelector::Instance();
+		dialog.AddFavorite("Examples", examples);
+		dialog.SetCurrentPath(examples);
 	}
 
 	// listen for message bus events
@@ -300,16 +290,7 @@ void OtWorkspace::newFile(const std::string& extension) {
 //
 
 void OtWorkspace::openFile() {
-	IGFD::FileDialogConfig config;
-	config.path = OtPath::getCWD();
-	config.countSelectionMax = 1;
-
-	config.flags =
-		ImGuiFileDialogFlags_Modal |
-		ImGuiFileDialogFlags_DontShowHiddenFiles |
-		ImGuiFileDialogFlags_ReadOnlyFileNameField;
-
-	ImGuiFileDialog::Instance()->OpenDialog("workspace-open", "Select File to Open...", ".*", config);
+	FileSelector::Instance().OpenFile();
 	state = State::openFile;
 }
 
@@ -362,21 +343,7 @@ void OtWorkspace::saveFile() {
 //
 
 void OtWorkspace::saveAsFile() {
-	IGFD::FileDialogConfig config;
-	config.path = OtPath::getCWD();
-	config.countSelectionMax = 1;
-
-	config.flags =
-		ImGuiFileDialogFlags_Modal |
-		ImGuiFileDialogFlags_DontShowHiddenFiles |
-		ImGuiFileDialogFlags_ConfirmOverwrite;
-
-	ImGuiFileDialog::Instance()->OpenDialog(
-		"workspace-saveas",
-		"Save File as...",
-		activeEditor->getExtension().c_str(),
-		config);
-
+	FileSelector::Instance().SaveAs();
 	state = State::saveFileAs;
 }
 
@@ -779,31 +746,21 @@ void OtWorkspace::renderNewFileType() {
 
 void OtWorkspace::renderFileOpen() {
 	// handle file open dialog
-	ImVec2 maxSize = ImGui::GetMainViewport()->Size;
-	ImVec2 minSize = maxSize * 0.5f;
-	auto dialog = ImGuiFileDialog::Instance();
+	auto& dialog = FileSelector::Instance();
 
-	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-	ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-
-	if (dialog->Display("workspace-open", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
+	if (dialog.Render()) {
 		// open selected file if required
-		if (dialog->IsOk()) {
-			auto path = OtPath::join(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
+		if (dialog.SelectedOpenFile()) {
+			auto path = OtPath::toString(dialog.GetSelectedPath());
 			openFile(path, OtEditor::VisualState::inTab);
 
 			if (state != State::confirmError) {
 				state = State::edit;
 			}
 
-			OtPath::changeDirectory(OtPath::getParent(path));
-
 		} else {
 			state = editors.size() ? State::edit : State::splash;
 		}
-
-		// close dialog
-		dialog->Close();
 	}
 }
 
@@ -814,29 +771,19 @@ void OtWorkspace::renderFileOpen() {
 
 void OtWorkspace::renderSaveAs() {
 	// handle saveas dialog
-	ImVec2 maxSize = ImGui::GetMainViewport()->Size;
-	ImVec2 minSize = maxSize * 0.5f;
-	auto dialog = ImGuiFileDialog::Instance();
+	auto& dialog = FileSelector::Instance();
 
-	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-	ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-
-	if (dialog->Display("workspace-saveas", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
+	if (dialog.Render()) {
 		// open selected file if required
-		if (dialog->IsOk()) {
-			auto path = OtPath::join(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
+		if (dialog.SelectedSaveAs()) {
+			auto path = OtPath::toString(dialog.GetSelectedPath());
 			path = OtPath::replaceExtension(path, activeEditor->getExtension());
 			activeEditor->saveAsFile(path);
 			state = State::edit;
 
-			OtPath::changeDirectory(OtPath::getParent(path));
-
 		} else {
 			state = editors.size() ? State::edit : State::splash;
 		}
-
-		// close dialog
-		dialog->Close();
 	}
 }
 

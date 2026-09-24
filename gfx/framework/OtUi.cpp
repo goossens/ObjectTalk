@@ -22,7 +22,6 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui_internal.h"
 #include "imgui_freetype.h"
-#include "ImGuiFileDialog.h"
 #include "nlohmann/json.hpp"
 
 #include "OtPath.h"
@@ -763,92 +762,6 @@ bool OtUi::editVec3(const char* label, glm::vec3* vector, float minv, float maxv
 
 bool OtUi::editVec4(const char* label, glm::vec4* vector, float minv, float maxv) {
 	return editVecX(label, glm::value_ptr(*vector), 4, minv, maxv);
-}
-
-
-//
-//	OtUi::fileSelector
-//
-
-bool OtUi::fileSelector(const char* label, std::string* path, const char* filter) {
-	// determine button status
-	bool showClearButton = !path->empty();
-
-	// determine number of buttons
-	int buttons = showClearButton ? 1 : 0;
-
-	// calculate component sizes
-	float itemWidth = ImGui::CalcItemWidth();
-	float itemHeight = ImGui::GetFrameHeight();
-	float spacing = ImGui::GetStyle().ItemInnerSpacing.x;
-	float buttonWidth = itemHeight + spacing;
-	float pathWidth = itemWidth - buttonWidth * buttons;
-
-	// determine real label and ID
-	std::string realLabel;
-	std::string id;
-	splitLabel(label, realLabel, id);
-
-	// get file dialog information
-	auto dialog = ImGuiFileDialog::Instance();
-	auto dialogID = std::string("select-file-") + id;
-
-	// render widgets
-	ImGui::PushID(id.c_str());
-	auto changed = false;
-
-	// get the filename without the path
-	auto filename = OtPath::getFilename(*path);
-
-	// render path as a button
-	ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.0f, 0.5f));
-
-	if (ImGui::Button((filename + "##path").c_str(), ImVec2(pathWidth, itemHeight))) {
-		IGFD::FileDialogConfig config;
-		config.filePathName = *path;
-		config.countSelectionMax = 1;
-
-		config.flags = ImGuiFileDialogFlags_Modal |
-				ImGuiFileDialogFlags_DontShowHiddenFiles |
-				ImGuiFileDialogFlags_ReadOnlyFileNameField;
-
-		dialog->OpenDialog(dialogID.c_str(), "Select file...", filter, config);
-	}
-
-	ImGui::PopStyleVar();
-
-	// render clear button (if required)
-	if (showClearButton) {
-		ImGui::SameLine(0.0f, spacing);
-
-		if (ImGui::Button("x", ImVec2(itemHeight, itemHeight))) {
-			path->clear();
-			changed = true;
-		}
-	}
-
-	// render label (if required)
-	if (realLabel.size()) {
-		ImGui::SameLine(0.0f, spacing);
-		ImGui::TextUnformatted(realLabel.c_str());
-	}
-
-	// show file selector (if required)
-	ImVec2 maxSize = ImGui::GetMainViewport()->Size;
-	ImVec2 minSize = ImVec2(maxSize.x * 0.5f, maxSize.y * 0.5f);
-
-	if (dialog->Display(dialogID.c_str(), ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
-		if (dialog->IsOk()) {
-			*path = ImGuiFileDialog::Instance()->GetFilePathName();
-			OtPath::changeDirectory(OtPath::getParent(*path));
-			changed = true;
-		}
-
-		dialog->Close();
-	}
-
-	ImGui::PopID();
-	return changed;
 }
 
 

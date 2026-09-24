@@ -13,7 +13,7 @@
 #include <vector>
 
 #include "imgui.h"
-#include "ImGuiFileDialog.h"
+#include "FileSelector.h"
 
 #include "OtText.h"
 
@@ -84,19 +84,14 @@ bool OtAssetSelector::renderUI(Info& info) {
 	std::string id;
 	OtUi::splitLabel(info.label, realLabel, id);
 
-	// get file dialog information
-	auto dialog = ImGuiFileDialog::Instance();
-	auto dialogID = std::format("select-file-{}", info.id);
-	std::string filter = info.supportedFileTypes;
-
-	if (filter.find(',') != std::string::npos) {
-		filter = "*{" + filter + "}," + filter;
-	}
+	// get file selector information
+	auto& dialog = FileSelector::Instance();
 
 	// render widgets
 	ImGui::PushID(id.c_str());
 	auto changed = false;
 	static bool creating = false;
+	static bool selectorOpen = false;
 
 	if (info.virtualMode && *info.virtualMode) {
 		// render path as a textfield
@@ -126,15 +121,9 @@ bool OtAssetSelector::renderUI(Info& info) {
 		if (ImGui::Button((filename + "##path").c_str(), ImVec2(pathWidth, itemHeight))) {
 			ImGui::PopStyleColor();
 
-			IGFD::FileDialogConfig config;
-			config.filePathName = info.path;
-			config.countSelectionMax = 1;
-
-			config.flags = ImGuiFileDialogFlags_Modal |
-					ImGuiFileDialogFlags_DontShowHiddenFiles |
-					ImGuiFileDialogFlags_ReadOnlyFileNameField;
-
-			dialog->OpenDialog(dialogID.c_str(), "Select file...", filter.c_str(), config);
+			dialog.SetCurrentPath(OtPath::getParent(info.path));
+			dialog.OpenFile(info.supportedFileTypes);
+			selectorOpen = true;
 
 		} else {
 			ImGui::PopStyleColor();
@@ -184,15 +173,8 @@ bool OtAssetSelector::renderUI(Info& info) {
 		ImGui::SameLine(0.0f, spacing);
 
 		if (ImGui::Button("+", ImVec2(itemHeight, itemHeight))) {
-			IGFD::FileDialogConfig config;
-			config.path = ".";
-			config.countSelectionMax = 1;
-
-			config.flags = ImGuiFileDialogFlags_Modal |
-					ImGuiFileDialogFlags_DontShowHiddenFiles |
-					ImGuiFileDialogFlags_ConfirmOverwrite;
-
-			dialog->OpenDialog(dialogID.c_str(), "Create file...", filter.c_str(), config);
+			dialog.SaveAs();
+			selectorOpen = true;
 			creating = true;
 		}
 	}
@@ -213,13 +195,9 @@ bool OtAssetSelector::renderUI(Info& info) {
 	}
 
 	// show file selector (if required)
-	ImVec2 maxSize = ImGui::GetMainViewport()->Size;
-	ImVec2 minSize = ImVec2(maxSize.x * 0.5f, maxSize.y * 0.5f);
-
-	if (dialog->Display(dialogID.c_str(), ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
-		if (dialog->IsOk()) {
-			info.path = OtPath::join(dialog->GetCurrentPath(), dialog->GetCurrentFileName());
-			OtPath::changeDirectory(OtPath::getParent(info.path));
+	if (selectorOpen && dialog.Render()) {
+		if (dialog.SelectedOpenFile() || dialog.SelectedSaveAs()) {
+			info.path = OtPath::toString(dialog.GetSelectedPath());
 			changed = true;
 
 			if (creating) {
@@ -232,10 +210,11 @@ bool OtAssetSelector::renderUI(Info& info) {
 				info.creator(info.path);
 				OtMessageBus::send("openinwindow " + info.path);
 			}
+
+			selectorOpen = false;
 		}
 
 		creating = false;
-		dialog->Close();
 	}
 
 	ImGui::PopID();

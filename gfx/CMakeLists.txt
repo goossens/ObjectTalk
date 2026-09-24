@@ -41,7 +41,7 @@ target_link_libraries(gfx PUBLIC
 	SDL3::SDL3
 	shadercross
 	imgui
-	imguifd
+	imguifileselector
 	imguiknobs
 	imguitoastr
 	imguiwidgets

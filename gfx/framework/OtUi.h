@@ -128,7 +128,7 @@ public:
 	static void readonlySizeT(const char* label, size_t value);
 	static void readonlyFloat(const char* label, float value, const char* format=nullptr);
 
-	// field based on a std::string
+	// text field based on a std::string
 	static inline bool inputString(const char* label, std::string* value, ImGuiInputTextFlags flags=ImGuiInputTextFlags_None) {
 		flags |=
 			ImGuiInputTextFlags_NoUndoRedo |
@@ -163,9 +163,6 @@ public:
 	static bool editVec2(const char* label, glm::vec2* vector, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
 	static bool editVec3(const char* label, glm::vec3* vector, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
 	static bool editVec4(const char* label, glm::vec4* vector, float minv=std::numeric_limits<float>::lowest(), float maxv=std::numeric_limits<float>::max());
-
-	// file path field with file selector popup
-	static bool fileSelector(const char* label, std::string* path, const char* filter);
 
 	// splitter widgets
 	static float getSplitterGap();

@@ -18,13 +18,45 @@
 
 
 //
+//	OtPath::toString
+//
+
+std::string OtPath::toString(const std::filesystem::path& path) {
+#if (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L) || (__cplusplus >= 202002L)
+	auto u8Str = path.generic_u8string();
+	std::string str(u8Str.begin(), u8Str.end());
+	return str;
+
+#else
+	return path.u8string();
+#endif
+}
+
+
+//
+//	OtPath::toPath
+//
+
+std::filesystem::path OtPath::toPath(const std::string& string) {
+#if (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L) || (__cplusplus >= 202002L)
+	return std::filesystem::path(
+		reinterpret_cast<const char8_t*>(string.data()),
+		reinterpret_cast<const char8_t*>(string.data() + string.size()));
+
+#else
+	return std::filesystem::u8path(string);
+#endif
+}
+
+
+//
 //	OtPath::replaceExtension
 //
 
 std::string OtPath::replaceExtension(const std::string& path, const std::string& extension) {
-	auto work = std::filesystem::path(path);
+	auto work = toPath(path);
 	work.replace_extension(extension);
-	return work.string();
+	return toString(work);
 }
 
 
@@ -128,7 +160,7 @@ std::string OtPath::getTmpFilename() {
 		}
 	}
 
-	return path.string();
+	return toString(path);
 }
 
 
@@ -143,11 +175,8 @@ std::string OtPath::getRelative(const std::string& path, std::string* basedir) {
 			return path;
 
 		} else {
-			auto relative = std::filesystem::relative(
-				std::filesystem::path(path),
-				std::filesystem::path(*basedir));
-
-			return relative == "." ? std::string() : relative.string();
+			auto relative = std::filesystem::relative(toPath(path), toPath(*basedir));
+			return relative == "." ? std::string() : toString(relative);
 		}
 
 	} else {
@@ -164,13 +193,13 @@ std::string OtPath::getAbsolute(const std::string& path, std::string* basedir) {
 	// make a path absolute based on a provided base directory
 	if (path.size()) {
 		if (basedir) {
-			auto fullPath = std::filesystem::path(*basedir) / std::filesystem::path(path);
+			auto fullPath = toPath(*basedir) / toPath(path);
 
 			if (std::filesystem::exists(fullPath)) {
-				return std::filesystem::canonical(fullPath).string();
+				return toString(std::filesystem::canonical(fullPath));
 
 			} else {
-				return fullPath.string();
+				return toString(fullPath);
 			}
 
 		} else {

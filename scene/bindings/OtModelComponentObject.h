@@ -50,7 +50,7 @@ protected:
 	// constructor
 	friend class OtObjectPointer<OtModelComponentObjectClass>;
 	OtModelComponentObjectClass() = default;
-	OtModelComponentObjectClass(OtModelComponent* component) : model(component) {}
+	OtModelComponentObjectClass(OtModelComponent* model) : model(model) {}
 
 private:
 	// connection to component

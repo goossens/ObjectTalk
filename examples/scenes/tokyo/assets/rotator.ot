@@ -8,10 +8,11 @@ var animation = import("animation");
 var math = import("math");
 var scene = import("scene");
 
-class rotator : scene.Entity {
+class rotator : scene.ScriptComponent {
 	function create(this) {
-		var model = this.getModelComponent();
-		var transform = this.getTransformComponent();
+		var entity = this.getEntity();
+		var model = entity.getModelComponent();
+		var transform = entity.getTransformComponent();
 
 		model.startAnimation("Take 001");
 

@@ -23,12 +23,6 @@
 
 class OtScriptAsset : public OtTextAsset {
 public:
-	// compile the script (text) into a module
-	inline void compile() {
-		module = OtModule::create();
-		module->load(path);
-	}
-
 	// access the script module
 	OtModule& getModule() { return module; }
 
@@ -37,6 +31,12 @@ public:
 	static constexpr bool canHandleVirtual = false;
 	static constexpr const char* supportedFileTypes = ".ot";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
+
+protected:
+	void postProcess() override  {
+		module = OtModule::create();
+		module->load(path);
+	};
 
 private:
 	// the compiled module

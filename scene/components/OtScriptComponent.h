@@ -18,6 +18,7 @@
 
 #include "OtIdentifier.h"
 
+#include "OtEntity.h"
 #include "OtScriptAsset.h"
 
 
@@ -25,17 +26,15 @@
 //	OtScriptComponent
 //
 
+class OtScene;
+
 class OtScriptComponent {
 public:
 	// UI to change component properties
 	bool renderUI();
 
-	// load and compile the script
-	void process();
-
 	// runtime methods
-	void create();
-	void update();
+	void update(OtScene* scene, OtEntity entity);
 
 	// (de)serialize component
 	nlohmann::json serialize(std::string* basedir);
@@ -51,6 +50,7 @@ public:
 	OtObject instance;
 	bool hasCreateMethod;
 	bool hasUpdateMethod;
+	bool initialized = false;
 
 	OtID createSymbol = OtIdentifier::create("create");
 	OtID updateSymbol = OtIdentifier::create("update");

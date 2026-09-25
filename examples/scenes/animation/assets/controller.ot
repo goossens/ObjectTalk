@@ -9,13 +9,14 @@ var input = import("input");
 var math = import("math");
 var scene = import("scene");
 
-class controller : scene.Entity {
+class controller : scene.ScriptComponent {
 	function create(this) {
 		this.state = "Idle";
 		this.rotation = 0.0;
 		this.degreesPerSecond = 120.0;
 
-		this.model = this.getModelComponent();
+		this.entity = this.getEntity();
+		this.model = this.entity.getModelComponent();
 
 		this.floor = this.getScene().getEntity("Floor").getMaterialComponent();
 		this.floorOffsetX = 0.0;
@@ -79,7 +80,7 @@ class controller : scene.Entity {
 								this.rotation = angle;
 							}
 
-							this.getTransformComponent().setRotation(math.Vec3(0.0, this.rotation, 0.0));
+							this.entity.getTransformComponent().setRotation(math.Vec3(0.0, this.rotation, 0.0));
 						})
 						.start();
 				}

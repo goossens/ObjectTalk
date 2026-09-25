@@ -13,6 +13,7 @@
 #include "OtModule.h"
 
 #include "OtEntityObject.h"
+#include "OtScriptComponentObject.h"
 
 
 //
@@ -21,4 +22,5 @@
 
 static OtModuleRegistration registration{"scene", [](OtModule module) {
 	module->set("Entity", OtClass::create(OtEntityObjectClass::getMeta()));
+	module->set("ScriptComponent", OtClass::create(OtScriptComponentObjectClass::getMeta()));
 }};

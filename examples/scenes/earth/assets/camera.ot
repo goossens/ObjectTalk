@@ -8,7 +8,7 @@ var input = import("input");
 var math = import("math");
 var scene = import("scene");
 
-class camera : scene.Entity {
+class camera : scene.ScriptComponent {
 	function create(this) {
 		this.radius = 4.0;
 		this.pitch = 0.0;
@@ -32,7 +32,7 @@ class camera : scene.Entity {
 					this.radius * pitchRad.cos() * yawRad.cos()
 				);
 
-				var transform = this.getTransformComponent();
+				var transform = this.getEntity().getTransformComponent();
 				transform.setTranslation(position);
 				transform.setRotation(math.Vec3(-this.pitch, this.yaw, 0.0));
 			}

@@ -109,7 +109,6 @@ public:
 
 		if (script.isReady()) {
 			try {
-				script->compile();
 				auto path = script.getPath();
 				auto module = script->getModule();
 

@@ -8,9 +8,9 @@ var animation = import("animation");
 var math = import("math");
 var scene = import("scene");
 
-class rotator : scene.Entity {
+class rotator : scene.ScriptComponent {
 	function create(this) {
-		var transform = this.getTransformComponent();
+		var transform = this.getEntity().getTransformComponent();
 
 		animation.Animation()
 			.from(0.0)

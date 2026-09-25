@@ -18,14 +18,15 @@
 #include "OtFrameworkApp.h"
 #include "OtLogo.h"
 
-#include "OtSceneRuntime.h"
+#include "OtScene.h"
+#include "OtSceneViewer.h"
 
 
 //
 //	OtSceneApp
 //
 
-class OtSceneApp : public OtSceneRuntime, public OtFrameworkApp {
+class OtSceneApp : public OtFrameworkApp {
 public:
 	// constructor
 	OtSceneApp(std::string path) : scenePath(path) {}
@@ -42,6 +43,11 @@ private:
 
 	// the scene we are running
 	std::string scenePath;
+	OtScene scene;
+	bool ready = false;
+
+	// the scene viewer
+	OtSceneViewer viewer;
 
 	// the logo for the splash screen
 	std::shared_ptr<OtLogo> logo;

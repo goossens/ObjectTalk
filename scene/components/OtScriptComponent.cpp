@@ -12,14 +12,14 @@
 #include "nlohmann/json.hpp"
 
 #include "OtClass.h"
+#include "OtException.h"
 #include "OtLog.h"
+#include "OtPath.h"
+#include "OtText.h"
 #include "OtVM.h"
 
-#include "OtText.h"
-
-#include "OtPath.h"
-#include "OtEntityObject.h"
 #include "OtScriptComponent.h"
+#include "OtScriptComponentObject.h"
 
 
 //
@@ -29,7 +29,7 @@
 static const char* scriptTemplate = "\
 var scene = import(\"scene\");\n\
 \n\
-class $ : scene.Entity {\n\
+class $ : scene.ScriptComponent {\n\
 	function create(this) {\n\
 	}\n\
 \n\
@@ -54,15 +54,12 @@ bool OtScriptComponent::renderUI() {
 
 
 //
-//	OtScriptComponent::process
+//	OtScriptComponent::update
 //
 
-void OtScriptComponent::process() {
-	// ensure asset is ready
-	if (script.isReady()) {
-		// load the script and compile it
-		script->compile();
-
+void OtScriptComponent::update(OtScene* scene, OtEntity entity) {
+	// ensure script asset is ready and initialized
+	if (!initialized && script.isReady()) {
 		// see if the module has the right class definition
 		auto path = script.getPath();
 		auto className = OtPath::getStem(path);
@@ -76,13 +73,13 @@ void OtScriptComponent::process() {
 				// create instance of class
 				instance = OtClass(classObject)->instantiate();
 
-				// ensure the class is derived from Entity
-				if (instance.isKindOf<OtEntityObjectClass>()) {
+				// ensure the class is derived from ScriptComponent
+				if (instance.isKindOf<OtScriptComponentObjectClass>()) {
 					hasCreateMethod = instance->has(createSymbol);
 					hasUpdateMethod = instance->has(updateSymbol);
 
 				} else {
-					OtLogError("Class [{}] in script [{}] is not derived from [Entity]", className, path);
+					OtLogError("Class [{}] in script [{}] is not derived from [ScriptComponent]", className, path);
 				}
 
 			} else {
@@ -92,26 +89,22 @@ void OtScriptComponent::process() {
 		} else {
 			OtLogError("Script [{}] does not contain class [{}]", path, className);
 		}
+
+		auto object = OtScriptComponentObject(instance);
+		object->scene = scene;
+		object->entity = entity;
+		object->script = this;
+
+		if (hasCreateMethod) {
+			OtVM::callMemberFunction(instance, createSymbol);
+		}
+
+		initialized = true;
+
+	} else if (script.isInvalid() || script.isMissing()) {
+		throw OtException(script.getErrorMessage());
 	}
-}
 
-
-//
-//	OtScriptComponent::create
-//
-
-void OtScriptComponent::create() {
-	if (hasCreateMethod) {
-		OtVM::callMemberFunction(instance, createSymbol);
-	}
-}
-
-
-//
-//	OtScriptComponent::update
-//
-
-void OtScriptComponent::update() {
 	if (hasUpdateMethod) {
 		OtVM::callMemberFunction(instance, updateSymbol);
 	}

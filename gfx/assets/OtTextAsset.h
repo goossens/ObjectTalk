@@ -25,8 +25,7 @@
 class OtTextAsset : public OtAssetBase {
 public:
 	// access the text
-	inline std::string& getText() { return text; }
-	inline void setText(const std::string& t) { text = t; }
+	inline const std::string& getText() { return text; }
 
 	// asset properties
 	static constexpr bool hasEditor = false;
@@ -40,6 +39,7 @@ protected:
 		try {
 			// try to load the text
 			OtText::load(path, text);
+			postProcess();
 			return State::ready;
 
 		} catch (const OtException& exception) {
@@ -47,6 +47,9 @@ protected:
 			return State::invalid;
 		}
 	}
+
+	// postprocess text (if required)
+	virtual void postProcess() {};
 
 	// the actual text
 	std::string text;

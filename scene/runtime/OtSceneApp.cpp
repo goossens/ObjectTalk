@@ -11,6 +11,7 @@
 
 #include "imgui.h"
 
+#include "OtAssetManager.h"
 #include "OtUi.h"
 
 #include "OtSceneApp.h"
@@ -21,8 +22,8 @@
 //
 
 void OtSceneApp::onSetup() {
-	// pass to runtime
-	setup(scenePath);
+	// load scene
+	scene.load(scenePath);
 }
 
 
@@ -32,13 +33,14 @@ void OtSceneApp::onSetup() {
 
 void OtSceneApp::onRender() {
 	// are we loaded yet?
-	if (isReady()) {
+	if (ready) {
 		// yes, render viewport
 		renderViewPort();
 
 	} else {
 		// no, show the splash screen for now
 		renderSplashScreen();
+		ready = !OtAssetManager::isLoading();
 	}
 }
 
@@ -48,10 +50,9 @@ void OtSceneApp::onRender() {
 //
 
 void OtSceneApp::onTerminate() {
-	// pass to runtime
-	terminate();
-
-	// release resources
+	// release all resources
+	viewer.clear();
+	scene.clear();
 	logo = nullptr;
 }
 
@@ -96,24 +97,12 @@ void OtSceneApp::renderViewPort() {
 	ImGui::SetNextWindowPos(ImVec2());
 	ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-
-	ImGui::Begin(
-		"Scene",
-		nullptr,
-		ImGuiWindowFlags_NoDecoration |
-		ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_NoBringToFrontOnFocus);
+	ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize);
 
 	// render the scene
-	auto size = ImGui::GetContentRegionAvail();
-	auto textureID = static_cast<ImTextureID>(render(static_cast<int>(size.x), static_cast<int>(size.y)));
+	viewer.render(&scene);
 
-	// show it on the screen
-	ImGui::Image(textureID, size);
-
+	// cleanup
 	ImGui::End();
 	ImGui::PopStyleVar();
-
-	// render messages
-	messages();
 }

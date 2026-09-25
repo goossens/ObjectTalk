@@ -53,7 +53,7 @@ protected:
 	// constructors
 	friend class OtObjectPointer<OtEntityObjectClass>;
 	OtEntityObjectClass() = default;
-	OtEntityObjectClass(OtScene* s, OtEntity e) : scene(s), entity(e) {}
+	OtEntityObjectClass(OtScene* scene, OtEntity entity) : scene(scene), entity(entity) {}
 
 private:
 	// connection to ECS

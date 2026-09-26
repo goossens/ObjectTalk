@@ -90,10 +90,8 @@ void OtScriptComponent::update(OtScene* scene, OtEntity entity) {
 			OtLogError("Script [{}] does not contain class [{}]", path, className);
 		}
 
-		auto object = OtScriptComponentObject(instance);
-		object->scene = scene;
-		object->entity = entity;
-		object->script = this;
+		// this is a hack because we need to connect the component to the ECS
+		OtScriptComponentObject(instance)->setEcsReferences(scene, entity);
 
 		if (hasCreateMethod) {
 			OtVM::callMemberFunction(instance, createSymbol);

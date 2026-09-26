@@ -27,24 +27,29 @@ using OtEntityObject = OtObjectPointer<OtEntityObjectClass>;
 
 class OtEntityObjectClass : public OtObjectClass {
 public:
-	// link object to ECS
-	void linkToECS(OtScene* scene, OtEntity entity);
-
 	// get parent scene
 	OtObject getScene();
 
 	// access components
 	bool hasModelComponent();
 	OtObject getModelComponent();
+	OtObject addModelComponent();
 
 	bool hasTransformComponent();
 	OtObject getTransformComponent();
+	OtObject addTransformComponent();
 
 	bool hasMaterialComponent();
 	OtObject getMaterialComponent();
+	OtObject addMaterialComponent();
+
+	bool hasScriptComponent();
+	OtObject getScriptComponent();
+	OtObject addScriptComponent();
 
 	bool hasMessageComponent();
 	OtObject getMessageComponent();
+	OtObject addMessageComponent();
 
 	// get type definition
 	static OtType getMeta();
@@ -57,6 +62,7 @@ protected:
 
 private:
 	// connection to ECS
+	friend class OtSceneObjectClass;
 	OtScene* scene;
 	OtEntity entity;
 };

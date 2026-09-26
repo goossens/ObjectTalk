@@ -24,7 +24,7 @@ OtType OtMaterialComponentObjectClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtType::create<OtMaterialComponentObjectClass>("MaterialComponent", OtObjectClass::getMeta());
+		type = OtType::create<OtMaterialComponentObjectClass>("MaterialComponent", OtComponentObjectClass::getMeta());
 
 		type->set("setAlbedo", OtFunction::create(&OtMaterialComponentObjectClass::setAlbedo));
 		type->set("setMetallic", OtFunction::create(&OtMaterialComponentObjectClass::setMetallic));

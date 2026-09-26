@@ -12,8 +12,7 @@
 //	Include files
 //
 
-#include "OtObject.h"
-
+#include "OtComponentObject.h"
 #include "OtTransformComponent.h"
 
 
@@ -24,16 +23,16 @@
 class OtTransformComponentObjectClass;
 using OtTransformComponentObject = OtObjectPointer<OtTransformComponentObjectClass>;
 
-class OtTransformComponentObjectClass : public OtObjectClass {
+class OtTransformComponentObjectClass : public OtComponentObjectClass {
 public:
 	// access transform parts
-	inline void setTranslation(glm::vec3 translation) { transform->translation = translation; }
-	inline void setRotation(glm::vec3 rotation) { transform->rotation = rotation; }
-	inline void setScale(glm::vec3 scale) { transform->scale = scale; }
+	inline void setTranslation(glm::vec3 translation) { component().translation = translation; }
+	inline void setRotation(glm::vec3 rotation) { component().rotation = rotation; }
+	inline void setScale(glm::vec3 scale) { component().scale = scale; }
 
-	inline glm::vec3 getTranslation() { return transform->translation; }
-	inline glm::vec3 getRotation() { return transform->rotation; }
-	inline glm::vec3 getScale() { return transform->scale; }
+	inline glm::vec3 getTranslation() { return component().translation; }
+	inline glm::vec3 getRotation() { return component().rotation; }
+	inline glm::vec3 getScale() { return component().scale; }
 
 	// get type definition
 	static OtType getMeta();
@@ -42,9 +41,9 @@ protected:
 	// constructor
 	friend class OtObjectPointer<OtTransformComponentObjectClass>;
 	OtTransformComponentObjectClass() = default;
-	OtTransformComponentObjectClass(OtTransformComponent* component) : transform(component) {}
+	OtTransformComponentObjectClass(OtScene* scene, OtEntity entity) { setEcsReferences(scene, entity); }
 
 private:
-	// connection to component
-	OtTransformComponent* transform;
+	// get component reference
+	inline OtTransformComponent& component() { return OtComponentObjectClass::component<OtTransformComponent>(scene, entity); }
 };

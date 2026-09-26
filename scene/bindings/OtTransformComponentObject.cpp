@@ -24,7 +24,7 @@ OtType OtTransformComponentObjectClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtType::create<OtTransformComponentObjectClass>("TransformComponent", OtObjectClass::getMeta());
+		type = OtType::create<OtTransformComponentObjectClass>("TransformComponent", OtComponentObjectClass::getMeta());
 
 		type->set("setTranslation", OtFunction::create(&OtTransformComponentObjectClass::setTranslation));
 		type->set("setRotation", OtFunction::create(&OtTransformComponentObjectClass::setRotation));

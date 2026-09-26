@@ -12,8 +12,7 @@
 //	Include files
 //
 
-#include "OtObject.h"
-
+#include "OtComponentObject.h"
 #include "OtModelComponent.h"
 
 
@@ -24,10 +23,10 @@
 class OtModelComponentObjectClass;
 using OtModelComponentObject = OtObjectPointer<OtModelComponentObjectClass>;
 
-class OtModelComponentObjectClass : public OtObjectClass {
+class OtModelComponentObjectClass : public OtComponentObjectClass {
 public:
 	// see if model is ready
-	inline bool isReady() { return model->asset->isReady(); }
+	inline bool isReady() { return component().asset->isReady(); }
 
 	// access animations
 	bool hasAnimation(const std::string& name);
@@ -50,9 +49,9 @@ protected:
 	// constructor
 	friend class OtObjectPointer<OtModelComponentObjectClass>;
 	OtModelComponentObjectClass() = default;
-	OtModelComponentObjectClass(OtModelComponent* model) : model(model) {}
+	OtModelComponentObjectClass(OtScene* scene, OtEntity entity) { setEcsReferences(scene, entity); }
 
 private:
-	// connection to component
-	OtModelComponent* model;
+	// get component reference
+	inline OtModelComponent& component() { return OtComponentObjectClass::component<OtModelComponent>(scene, entity); }
 };

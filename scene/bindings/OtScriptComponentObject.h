@@ -12,9 +12,7 @@
 //	Include files
 //
 
-#include "OtObject.h"
-
-#include "OtEntityObject.h"
+#include "OtComponentObject.h"
 #include "OtScriptComponent.h"
 
 
@@ -25,30 +23,24 @@
 class OtScriptComponentObjectClass;
 using OtScriptComponentObject = OtObjectPointer<OtScriptComponentObjectClass>;
 
-class OtScriptComponentObjectClass : public OtObjectClass {
+class OtScriptComponentObjectClass : public OtComponentObjectClass {
 public:
-	// get scene and entity
-	OtObject getScene();
-	OtObject getEntity();
-
 	// get type definition
 	static OtType getMeta();
 
 protected:
+	// return class name
+	inline const char* getClassName() override {return "ScriptComponent"; }
+
 	// constructor
 	friend class OtObjectPointer<OtScriptComponentObjectClass>;
 	OtScriptComponentObjectClass() = default;
-
-	OtScriptComponentObjectClass(OtScene* scene, OtEntity entity, OtScriptComponent* script) :
-		scene(scene), entity(entity), script(script) {}
+	OtScriptComponentObjectClass(OtScene* scene, OtEntity entity) { setEcsReferences(scene, entity); }
 
 private:
 	// connection to component
 	friend class OtScriptComponent;
-	OtScene* scene;
-	OtEntity entity;
-	OtScriptComponent* script;
 
-	// function to stop direct instantiation
-	static void invalidConstructor(size_t count, OtObject* parameters);
+	// get component reference
+	inline OtScriptComponent& component() { return OtComponentObjectClass::component<OtScriptComponent>(scene, entity); }
 };

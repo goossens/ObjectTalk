@@ -16,8 +16,7 @@
 
 #include "glm/glm.hpp" // IWYU pragma: keep
 
-#include "OtObject.h"
-
+#include "OtComponentObject.h"
 #include "OtMaterialComponent.h"
 
 
@@ -28,34 +27,37 @@
 class OtMaterialComponentObjectClass;
 using OtMaterialComponentObject = OtObjectPointer<OtMaterialComponentObjectClass>;
 
-class OtMaterialComponentObjectClass : public OtObjectClass {
+class OtMaterialComponentObjectClass : public OtComponentObjectClass {
 public:
 	// set the properties
-	inline void setAlbedo(glm::vec4 albedo) { material->material->setAlbedo(albedo); }
-	inline void setMetallic(float metallic) { material->material->setMetallic(metallic); }
-	inline void setRoughness(float roughness) { material->material->setRoughness(roughness); }
-	inline void setEmissive(glm::vec3 emissive) { material->material->setEmissive(emissive); }
-	inline void setAo(float ao) { material->material->setAo(ao); }
-	inline void setTextureOffset(glm::vec2 offset) { material->material->setTextureOffset(offset); }
-	inline void setTextureScale(float scale) { material->material->setTextureScale(scale); }
+	inline void setAlbedo(glm::vec4 albedo) { component().material->setAlbedo(albedo); }
+	inline void setMetallic(float metallic) { component().material->setMetallic(metallic); }
+	inline void setRoughness(float roughness) { component().material->setRoughness(roughness); }
+	inline void setEmissive(glm::vec3 emissive) { component().material->setEmissive(emissive); }
+	inline void setAo(float ao) { component().material->setAo(ao); }
+	inline void setTextureOffset(glm::vec2 offset) { component().material->setTextureOffset(offset); }
+	inline void setTextureScale(float scale) { component().material->setTextureScale(scale); }
 
 	// set the textures
-	inline void setAlbedoTexture(const std::string& path) { material->material->setAlbedoTexture(path); }
-	inline void setNormalTexture(const std::string& path) { material->material->setNormalTexture(path); }
-	inline void setMetallicRoughnessTexture(const std::string& path) { material->material->setMetallicRoughnessTexture(path); }
-	inline void setEmissiveTexture(const std::string& path) { material->material->setEmissiveTexture(path); }
-	inline void setAoTexture(const std::string& path) { material->material->setAoTexture(path); }
+	inline void setAlbedoTexture(const std::string& path) { component().material->setAlbedoTexture(path); }
+	inline void setNormalTexture(const std::string& path) { component().material->setNormalTexture(path); }
+	inline void setMetallicRoughnessTexture(const std::string& path) { component().material->setMetallicRoughnessTexture(path); }
+	inline void setEmissiveTexture(const std::string& path) { component().material->setEmissiveTexture(path); }
+	inline void setAoTexture(const std::string& path) { component().material->setAoTexture(path); }
 
 	// get type definition
 	static OtType getMeta();
 
 protected:
+	// return class name
+	inline const char* getClassName() override {return "MaterialComponent"; }
+
 	// constructor
 	friend class OtObjectPointer<OtMaterialComponentObjectClass>;
 	OtMaterialComponentObjectClass() = default;
-	OtMaterialComponentObjectClass(OtMaterialComponent* component) : material(component) {}
+	OtMaterialComponentObjectClass(OtScene* scene, OtEntity entity) { setEcsReferences(scene, entity); }
 
 private:
-	// connection to component
-	OtMaterialComponent* material;
+	// get component reference
+	inline OtMaterialComponent& component() { return OtComponentObjectClass::component<OtMaterialComponent>(scene, entity); }
 };

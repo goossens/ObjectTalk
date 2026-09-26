@@ -22,8 +22,7 @@ OtType OtMessageComponentObjectClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtType::create<OtMessageComponentObjectClass>("MessageComponent", OtObjectClass::getMeta());
-
+		type = OtType::create<OtMessageComponentObjectClass>("MessageComponent", OtComponentObjectClass::getMeta());
 		type->set("show", OtFunction::create(&OtMessageComponentObjectClass::show));
 		type->set("hide", OtFunction::create(&OtMessageComponentObjectClass::hide));
 	}

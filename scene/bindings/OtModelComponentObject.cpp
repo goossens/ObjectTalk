@@ -21,8 +21,8 @@
 //
 
 bool OtModelComponentObjectClass::hasAnimation(const std::string& name) {
-	if (model->asset->isReady()) {
-		return model->asset->getModel().hasAnimation(name);
+	if (component().asset->isReady()) {
+		return component().asset->getModel().hasAnimation(name);
 
 	} else {
 		return false;
@@ -35,8 +35,8 @@ bool OtModelComponentObjectClass::hasAnimation(const std::string& name) {
 //
 
 size_t OtModelComponentObjectClass::getAnimationCount() {
-	if (model->asset->isReady()) {
-		return model->asset->getModel().getAnimationCount();
+	if (component().asset->isReady()) {
+		return component().asset->getModel().getAnimationCount();
 
 	} else {
 		return 0;
@@ -49,9 +49,9 @@ size_t OtModelComponentObjectClass::getAnimationCount() {
 //
 
 std::string OtModelComponentObjectClass::getAnimationName(size_t index) {
-	if (model->asset->isReady()) {
-		if (index < model->asset->getModel().getAnimationCount()) {
-			return model->asset->getModel().getAnimationName(index);
+	if (component().asset->isReady()) {
+		if (index < component().asset->getModel().getAnimationCount()) {
+			return component().asset->getModel().getAnimationName(index);
 
 		} else {
 			OtLogError("Invalid animation index");
@@ -72,11 +72,11 @@ std::string OtModelComponentObjectClass::getAnimationName(size_t index) {
 OtObject OtModelComponentObjectClass::getAnimations() {
 	OtArray result = OtArray::create();
 
-	if (model->asset->isReady()) {
-		auto models = model->asset->getModel().getAnimationCount();
+	if (component().asset->isReady()) {
+		auto models = component().asset->getModel().getAnimationCount();
 
 		for (size_t i = 0; i < models; i++) {
-			result->append(OtString::create(model->asset->getModel().getAnimationName(i)));
+			result->append(OtString::create(component().asset->getModel().getAnimationName(i)));
 		}
 	}
 
@@ -89,8 +89,8 @@ OtObject OtModelComponentObjectClass::getAnimations() {
 //
 
 void OtModelComponentObjectClass::startAnimation(const std::string& name) {
-	if (model->asset->isReady()) {
-		model->asset->getModel().startAnimation(name);
+	if (component().asset->isReady()) {
+		component().asset->getModel().startAnimation(name);
 
 	} else {
 		OtLogError("Can't animate model that is not ready");
@@ -103,8 +103,8 @@ void OtModelComponentObjectClass::startAnimation(const std::string& name) {
 //
 
 void OtModelComponentObjectClass::fadeToAnimation(const std::string& name, float duration) {
-	if (model->asset->isReady()) {
-		model->asset->getModel().fadeToAnimation(name, duration);
+	if (component().asset->isReady()) {
+		component().asset->getModel().fadeToAnimation(name, duration);
 
 	} else {
 		OtLogError("Can't animate model that is not ready");
@@ -117,8 +117,8 @@ void OtModelComponentObjectClass::fadeToAnimation(const std::string& name, float
 //
 
 void OtModelComponentObjectClass::stopAnimation() {
-	if (model->asset->isReady()) {
-		model->asset->getModel().stopAnimation();
+	if (component().asset->isReady()) {
+		component().asset->getModel().stopAnimation();
 	}
 }
 
@@ -128,8 +128,8 @@ void OtModelComponentObjectClass::stopAnimation() {
 //
 
 bool OtModelComponentObjectClass::isAnimating() {
-	if (model->asset->isReady()) {
-		return model->asset->getModel().isAnimating();
+	if (component().asset->isReady()) {
+		return component().asset->getModel().isAnimating();
 
 	} else {
 		return false;
@@ -142,8 +142,8 @@ bool OtModelComponentObjectClass::isAnimating() {
 //
 
 void OtModelComponentObjectClass::setAnimationSpeed(const std::string& name, float speed) {
-	if (model->asset->isReady()) {
-		model->asset->getModel().setAnimationSpeed(name, speed);
+	if (component().asset->isReady()) {
+		component().asset->getModel().setAnimationSpeed(name, speed);
 	}
 }
 
@@ -153,8 +153,8 @@ void OtModelComponentObjectClass::setAnimationSpeed(const std::string& name, flo
 //
 
 float OtModelComponentObjectClass::getAnimationSpeed() {
-	if (model->asset->isReady()) {
-		return model->asset->getModel().getAnimationSpeed();
+	if (component().asset->isReady()) {
+		return component().asset->getModel().getAnimationSpeed();
 
 	} else {
 		return 0.0f;
@@ -171,7 +171,7 @@ OtType OtModelComponentObjectClass::getMeta() {
 	static OtType type = nullptr;
 
 	if (!type) {
-		type = OtType::create<OtModelComponentObjectClass>("ModelComponent", OtObjectClass::getMeta());
+		type = OtType::create<OtModelComponentObjectClass>("ModelComponent", OtComponentObjectClass::getMeta());
 
 		type->set("isReady", OtFunction::create(&OtModelComponentObjectClass::isReady));
 

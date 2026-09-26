@@ -12,6 +12,8 @@
 //	Include files
 //
 
+#include <memory>
+
 #include "OtObject.h"
 
 #include "OtScene.h"
@@ -26,9 +28,12 @@ using OtSceneObject = OtObjectPointer<OtSceneObjectClass>;
 
 class OtSceneObjectClass : public OtObjectClass {
 public:
-	// find entities
+	// handle entities
 	bool hasEntity(const std::string& tag);
 	OtObject getEntity(const std::string& tag);
+	OtObject addEntity(const std::string& tag);
+	void deleteEntity(OtObject object);
+	OtObject getRootEntity();
 
 	// get type definition
 	static OtType getMeta();
@@ -36,10 +41,18 @@ public:
 protected:
 	// constructors
 	friend class OtObjectPointer<OtSceneObjectClass>;
-	OtSceneObjectClass() = default;
+
+	OtSceneObjectClass() {
+		privateScene = std::make_shared<OtScene>();
+		scene = privateScene.get();
+	}
+
 	OtSceneObjectClass(OtScene* scene) : scene(scene) {}
 
 private:
 	// connection to ECS
 	OtScene* scene;
+
+	// privately owned scene for those cases that a scene object was constructed directly
+	std::shared_ptr<OtScene> privateScene;
 };

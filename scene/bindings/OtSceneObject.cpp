@@ -10,6 +10,7 @@
 //
 
 #include "OtFunction.h"
+#include "OtLog.h"
 
 #include "OtEntityObject.h"
 #include "OtSceneObject.h"
@@ -45,6 +46,39 @@ OtObject OtSceneObjectClass::getEntity(const std::string& tag) {
 
 
 //
+//	OtSceneObjectClass::addEntity
+//
+
+OtObject OtSceneObjectClass::addEntity(const std::string& tag) {
+	if (hasEntity(tag)) {
+		OtLogError("Entity with tag [{}] already exists in scene", tag);
+	}
+
+	return OtEntityObject::create(scene, scene->createEntity(0, tag));
+}
+
+
+//
+//	OtSceneObjectClass::deleteEntity
+//
+
+void OtSceneObjectClass::deleteEntity(OtObject object) {
+	object.expect<OtEntityObjectClass>("Entity");
+	scene->removeEntity(OtEntityObject(object)->entity);
+
+}
+
+
+//
+//	OtSceneObjectClass::getRootEntity
+//
+
+OtObject OtSceneObjectClass::getRootEntity() {
+	return OtEntityObject::create(scene, scene->getRootEntity());
+}
+
+
+//
 //	OtSceneObjectClass::getMeta
 //
 
@@ -57,6 +91,10 @@ OtType OtSceneObjectClass::getMeta()
 
 		type->set("hasEntity", OtFunction::create(&OtSceneObjectClass::hasEntity));
 		type->set("getEntity", OtFunction::create(&OtSceneObjectClass::getEntity));
+		type->set("addEntity", OtFunction::create(&OtSceneObjectClass::addEntity));
+		type->set("deleteEntity", OtFunction::create(&OtSceneObjectClass::deleteEntity));
+
+		type->set("getRootEntity", OtFunction::create(&OtSceneObjectClass::getRootEntity));
 	}
 
 	return type;

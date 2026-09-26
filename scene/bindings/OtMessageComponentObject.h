@@ -12,8 +12,7 @@
 //	Include files
 //
 
-#include "OtObject.h"
-
+#include "OtComponentObject.h"
 #include "OtMessageComponent.h"
 
 
@@ -24,11 +23,11 @@
 class OtMessageComponentObjectClass;
 using OtMessageComponentObject = OtObjectPointer<OtMessageComponentObjectClass>;
 
-class OtMessageComponentObjectClass : public OtObjectClass {
+class OtMessageComponentObjectClass : public OtComponentObjectClass {
 public:
 	// manage message
-	inline void show(const std::string& msg, float visible, float fade) { message->show(msg, visible, fade); }
-	inline void hide() { message->hide(); }
+	inline void show(const std::string& msg, float visible, float fade) { component().show(msg, visible, fade); }
+	inline void hide() { component().hide(); }
 
 	// get type definition
 	static OtType getMeta();
@@ -37,9 +36,9 @@ protected:
 	// constructor
 	friend class OtObjectPointer<OtMessageComponentObjectClass>;
 	OtMessageComponentObjectClass() = default;
-	OtMessageComponentObjectClass(OtMessageComponent* component) : message(component) {}
+	OtMessageComponentObjectClass(OtScene* scene, OtEntity entity) { setEcsReferences(scene, entity); }
 
 private:
-	// connection to component
-	OtMessageComponent* message;
+	// get component reference
+	inline OtMessageComponent& component() { return OtComponentObjectClass::component<OtMessageComponent>(scene, entity); }
 };

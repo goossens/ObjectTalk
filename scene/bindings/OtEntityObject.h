@@ -30,6 +30,19 @@ public:
 	// get parent scene
 	OtObject getScene();
 
+	// access entity hierarchy
+	inline void moveBefore(OtObject sibling) { scene->moveEntityBefore(toEntity(sibling), entity); }
+	inline void moveTo(OtObject parent) { scene->moveEntityTo(toEntity(parent), entity); }
+
+	inline bool hasChildren() { return scene->hasChildren(entity); }
+	inline std::string getTag() { return scene->getTag(entity); }
+
+	inline OtObject getParent() { return toObject(scene->getParent(entity)); }
+	inline OtObject getFirstChild() { return toObject(scene->getFirstChild(entity)); }
+	inline OtObject getLastChild() { return toObject(scene->getLastChild(entity)); }
+	inline OtObject getPreviousSibling() { return toObject(scene->getPreviousSibling(entity)); }
+	inline OtObject getNextSibling() { return toObject(scene->getNextSibling(entity)); }
+
 	// access components
 	bool hasModelComponent();
 	OtObject getModelComponent();
@@ -65,4 +78,8 @@ private:
 	friend class OtSceneObjectClass;
 	OtScene* scene;
 	OtEntity entity;
+
+	// helper functions
+	OtEntity toEntity(OtObject object);
+	OtObject toObject(OtEntity entity);
 };

@@ -28,11 +28,17 @@ using OtSceneObject = OtObjectPointer<OtSceneObjectClass>;
 
 class OtSceneObjectClass : public OtObjectClass {
 public:
+	// load/save scene
+	inline void load(const std::string& path) { scene->load(path); }
+	inline void save(const std::string& path) { scene->save(path); }
+
 	// handle entities
-	bool hasEntity(const std::string& tag);
+	inline bool hasEntity(const std::string& tag) {	return scene->hasEntity(tag); }
 	OtObject getEntity(const std::string& tag);
 	OtObject addEntity(const std::string& tag);
 	void deleteEntity(OtObject object);
+
+	// support entity hierarchy
 	OtObject getRootEntity();
 
 	// get type definition
@@ -55,4 +61,7 @@ private:
 
 	// privately owned scene for those cases that a scene object was constructed directly
 	std::shared_ptr<OtScene> privateScene;
+
+	// helper functions
+	OtEntity toEntity(OtObject object);
 };

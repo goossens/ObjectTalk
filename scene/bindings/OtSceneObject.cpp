@@ -17,15 +17,6 @@
 
 
 //
-//	OtSceneObjectClass::hasEntity
-//
-
-bool OtSceneObjectClass::hasEntity(const std::string& tag) {
-	return scene->hasEntity(tag);
-}
-
-
-//
 //	OtSceneObjectClass::getEntity
 //
 
@@ -63,9 +54,7 @@ OtObject OtSceneObjectClass::addEntity(const std::string& tag) {
 //
 
 void OtSceneObjectClass::deleteEntity(OtObject object) {
-	object.expect<OtEntityObjectClass>("Entity");
-	scene->removeEntity(OtEntityObject(object)->entity);
-
+	scene->removeEntity(toEntity(object));
 }
 
 
@@ -79,6 +68,39 @@ OtObject OtSceneObjectClass::getRootEntity() {
 
 
 //
+//	OtSceneObjectClass::toEntity
+//
+
+OtEntity OtSceneObjectClass::toEntity(OtObject object) {
+	if (object->isKindOf("Entity")) {
+		auto entity = OtEntityObject(object)->entity;
+
+		if (scene->isValidEntity(entity)) {
+			return entity;
+
+		} else {
+			OtLogError("Entity not found in scene");
+		}
+
+	} else if (object->isKindOf("String")) {
+		auto tag = object->operator std::string();
+
+		if (scene->hasEntity(tag)) {
+			return scene->getEntity(tag);
+
+		} else {
+			OtLogError("No entity found in scene with tag [{}]", tag);
+		}
+
+	} else {
+		OtLogError("Object of class [{}] can't be used to reference a scene entity", object->getTypeName());
+	}
+
+	return OtEntityNull;
+}
+
+
+//
 //	OtSceneObjectClass::getMeta
 //
 
@@ -88,6 +110,8 @@ OtType OtSceneObjectClass::getMeta()
 
 	if (!type) {
 		type = OtType::create<OtSceneObjectClass>("Scene", OtObjectClass::getMeta());
+		type->set("load", OtFunction::create(&OtSceneObjectClass::load));
+		type->set("save", OtFunction::create(&OtSceneObjectClass::save));
 
 		type->set("hasEntity", OtFunction::create(&OtSceneObjectClass::hasEntity));
 		type->set("getEntity", OtFunction::create(&OtSceneObjectClass::getEntity));

@@ -257,7 +257,7 @@ void TextEditor::renderCurrentLineHighlight() {
 
 		for (const auto& cursor : cursors) {
 			const auto lineNumber = cursor.getInteractiveEnd().line;
-			auto [iterator, inserted] = alreadyDrawn.insert(lineNumber);
+			const auto [iterator, inserted] = alreadyDrawn.insert(lineNumber);
 
 			if (inserted) {
 				const auto& line = document[lineNumber];

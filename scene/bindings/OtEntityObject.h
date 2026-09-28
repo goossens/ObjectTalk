@@ -44,25 +44,17 @@ public:
 	inline OtObject getNextSibling() { return toObject(scene->getNextSibling(entity)); }
 
 	// access components
-	bool hasModelComponent();
-	OtObject getModelComponent();
-	OtObject addModelComponent();
+#define declareComponent(t)				\
+	bool has ## t ## Component();		\
+	OtObject get ## t ## Component();	\
+	OtObject add ## t ## Component();
 
-	bool hasTransformComponent();
-	OtObject getTransformComponent();
-	OtObject addTransformComponent();
-
-	bool hasMaterialComponent();
-	OtObject getMaterialComponent();
-	OtObject addMaterialComponent();
-
-	bool hasScriptComponent();
-	OtObject getScriptComponent();
-	OtObject addScriptComponent();
-
-	bool hasMessageComponent();
-	OtObject getMessageComponent();
-	OtObject addMessageComponent();
+	declareComponent(Camera)
+	declareComponent(Material)
+	declareComponent(Message)
+	declareComponent(Model)
+	declareComponent(Script)
+	declareComponent(Transform)
 
 	// get type definition
 	static OtType getMeta();

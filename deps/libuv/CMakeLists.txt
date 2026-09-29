@@ -12,7 +12,7 @@ set(ENABLE_CLANG_TIDY OFF CACHE BOOL "" FORCE)
 # this hack uses a CMake internal property to stop generating test targets in IDEs
 set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)
 
-FetchContent_Populate(libuv QUIET GIT_REPOSITORY "https://github.com/libuv/libuv" GIT_TAG "v1.52.1")
+FetchContent_Populate(libuv QUIET GIT_REPOSITORY "https://github.com/libuv/libuv" GIT_TAG "v1.53.0")
 add_subdirectory(${libuv_SOURCE_DIR} ${libuv_BINARY_DIR} EXCLUDE_FROM_ALL)
 
 target_compile_options(uv_a PRIVATE

@@ -12,6 +12,7 @@
 //	Include files
 //
 
+#include "OtFunction.h"
 #include "OtLog.h"
 
 #include "OtEntityObject.h"
@@ -28,7 +29,17 @@ using OtComponentObject = OtObjectPointer<OtComponentObjectClass>;
 class OtComponentObjectClass : public OtObjectClass {
 public:
 	// get type definition
-	static OtType getMeta();
+	inline static OtType getMeta() {
+		static OtType type = nullptr;
+
+		if (!type) {
+			type = OtType::create<OtComponentObjectClass>("Component", OtObjectClass::getMeta());
+			type->set("getScene", OtFunction::create(&OtComponentObjectClass::getScene));
+			type->set("getEntity", OtFunction::create(&OtComponentObjectClass::getEntity));
+		}
+
+		return type;
+	}
 
 protected:
 	// derived classes must override this method

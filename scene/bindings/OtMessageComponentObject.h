@@ -30,7 +30,17 @@ public:
 	inline void hide() { component().hide(); }
 
 	// get type definition
-	static OtType getMeta();
+	inline static OtType getMeta() {
+		static OtType type = nullptr;
+
+		if (!type) {
+			type = OtType::create<OtMessageComponentObjectClass>("MessageComponent", OtComponentObjectClass::getMeta());
+			type->set("show", OtFunction::create(&OtMessageComponentObjectClass::show));
+			type->set("hide", OtFunction::create(&OtMessageComponentObjectClass::hide));
+		}
+
+		return type;
+	}
 
 protected:
 	// constructor

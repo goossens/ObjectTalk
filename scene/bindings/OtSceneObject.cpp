@@ -13,7 +13,7 @@
 #include "OtLog.h"
 
 #include "OtEntityObject.h"
-#include "OtSceneObject.h"
+#include "OtComponentObject.h"
 
 
 //

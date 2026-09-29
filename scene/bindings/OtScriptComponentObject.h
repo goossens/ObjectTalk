@@ -26,7 +26,15 @@ using OtScriptComponentObject = OtObjectPointer<OtScriptComponentObjectClass>;
 class OtScriptComponentObjectClass : public OtComponentObjectClass {
 public:
 	// get type definition
-	static OtType getMeta();
+	inline static OtType getMeta() {
+		static OtType type = nullptr;
+
+		if (!type) {
+			type = OtType::create<OtScriptComponentObjectClass>("ScriptComponent", OtComponentObjectClass::getMeta());
+		}
+
+		return type;
+	}
 
 protected:
 	// return class name

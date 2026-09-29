@@ -12,10 +12,6 @@
 //	Include files
 //
 
-#include <string>
-
-#include "glm/glm.hpp" // IWYU pragma: keep
-
 #include "OtComponentObject.h"
 #include "OtMaterialComponent.h"
 
@@ -46,7 +42,29 @@ public:
 	inline void setAoTexture(const std::string& path) { component().material->setAoTexture(path); }
 
 	// get type definition
-	static OtType getMeta();
+	inline static OtType getMeta() {
+		static OtType type = nullptr;
+
+		if (!type) {
+			type = OtType::create<OtMaterialComponentObjectClass>("MaterialComponent", OtComponentObjectClass::getMeta());
+
+			type->set("setAlbedo", OtFunction::create(&OtMaterialComponentObjectClass::setAlbedo));
+			type->set("setMetallic", OtFunction::create(&OtMaterialComponentObjectClass::setMetallic));
+			type->set("setRoughness", OtFunction::create(&OtMaterialComponentObjectClass::setRoughness));
+			type->set("setEmissive", OtFunction::create(&OtMaterialComponentObjectClass::setEmissive));
+			type->set("setAo", OtFunction::create(&OtMaterialComponentObjectClass::setAo));
+			type->set("setTextureOffset", OtFunction::create(&OtMaterialComponentObjectClass::setTextureOffset));
+			type->set("setTextureScale", OtFunction::create(&OtMaterialComponentObjectClass::setTextureScale));
+
+			type->set("setAlbedoTexture", OtFunction::create(&OtMaterialComponentObjectClass::setAlbedoTexture));
+			type->set("setNormalTexture", OtFunction::create(&OtMaterialComponentObjectClass::setNormalTexture));
+			type->set("setMetallicRoughnessTexture", OtFunction::create(&OtMaterialComponentObjectClass::setMetallicRoughnessTexture));
+			type->set("setEmissiveTexture", OtFunction::create(&OtMaterialComponentObjectClass::setEmissiveTexture));
+			type->set("setAoTexture", OtFunction::create(&OtMaterialComponentObjectClass::setAoTexture));
+		}
+
+		return type;
+	}
 
 protected:
 	// return class name

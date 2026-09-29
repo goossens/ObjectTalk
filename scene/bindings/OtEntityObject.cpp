@@ -12,7 +12,11 @@
 #include "OtFunction.h"
 #include "OtLog.h"
 
+#include "OtMathModule.h" // IWYU pragma: keep
+
 #include "OtEntityObject.h"
+#include "OtComponentObject.h"
+
 #include "OtCameraComponentObject.h"
 #include "OtMaterialComponentObject.h"
 #include "OtMessageComponentObject.h"
@@ -33,6 +37,7 @@ OtObject OtEntityObjectClass::getScene() {
 
 //
 //	Implement component methods
+//
 
 #define implementComponent(t)									\
 bool OtEntityObjectClass::has ## t ## Component() { 			\

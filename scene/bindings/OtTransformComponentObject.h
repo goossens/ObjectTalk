@@ -25,14 +25,10 @@ using OtTransformComponentObject = OtObjectPointer<OtTransformComponentObjectCla
 
 class OtTransformComponentObjectClass : public OtComponentObjectClass {
 public:
-	// access transform parts
-	inline void setTranslation(glm::vec3 translation) { component().translation = translation; }
-	inline void setRotation(glm::vec3 rotation) { component().rotation = rotation; }
-	inline void setScale(glm::vec3 scale) { component().scale = scale; }
-
-	inline glm::vec3 getTranslation() { return component().translation; }
-	inline glm::vec3 getRotation() { return component().rotation; }
-	inline glm::vec3 getScale() { return component().scale; }
+	// access properties
+	declareProperty(glm::vec3, translation, Translation)
+	declareProperty(glm::vec3, rotation, Rotation)
+	declareProperty(glm::vec3, scale, Scale)
 
 	// get type definition
 	inline static OtType getMeta() {
@@ -40,14 +36,9 @@ public:
 
 		if (!type) {
 			type = OtType::create<OtTransformComponentObjectClass>("TransformComponent", OtComponentObjectClass::getMeta());
-
-			type->set("setTranslation", OtFunction::create(&OtTransformComponentObjectClass::setTranslation));
-			type->set("setRotation", OtFunction::create(&OtTransformComponentObjectClass::setRotation));
-			type->set("setScale", OtFunction::create(&OtTransformComponentObjectClass::setScale));
-
-			type->set("getTranslation", OtFunction::create(&OtTransformComponentObjectClass::getTranslation));
-			type->set("getRotation", OtFunction::create(&OtTransformComponentObjectClass::getRotation));
-			type->set("getScale", OtFunction::create(&OtTransformComponentObjectClass::getScale));
+			metaProperty(Transform, Translation)
+			metaProperty(Transform, Rotation)
+			metaProperty(Transform, Scale)
 		}
 
 		return type;

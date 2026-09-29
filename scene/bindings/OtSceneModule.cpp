@@ -19,6 +19,8 @@
 #include "OtEntityObject.h"
 #include "OtComponentObject.h"
 
+#include "OtBackgroundComponentObject.h"
+#include "OtDirectionalLightComponentObject.h"
 #include "OtCameraComponentObject.h"
 #include "OtMaterialComponentObject.h"
 #include "OtMessageComponentObject.h"
@@ -34,7 +36,10 @@ static OtModuleRegistration registration{"scene", [](OtModule module) {
 	module->set("Scene", OtClass::create(OtSceneObjectClass::getMeta()));
 	module->set("Entity", OtClass::create(OtEntityObjectClass::getMeta()));
 	module->set("Component", OtClass::create(OtComponentObjectClass::getMeta()));
+
+	module->set("BackgroundComponent", OtClass::create(OtBackgroundComponentObjectClass::getMeta()));
 	module->set("CameraComponent", OtClass::create(OtCameraComponentObjectClass::getMeta()));
+	module->set("DirectionalLightComponent", OtClass::create(OtDirectionalLightComponentObjectClass::getMeta()));
 	module->set("MaterialComponent", OtClass::create(OtMaterialComponentObjectClass::getMeta()));
 	module->set("MessageComponent", OtClass::create(OtMessageComponentObjectClass::getMeta()));
 	module->set("ScriptComponent", OtClass::create(OtScriptComponentObjectClass::getMeta()));

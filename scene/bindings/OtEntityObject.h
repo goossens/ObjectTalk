@@ -19,6 +19,39 @@
 
 
 //
+//	Helper macros
+//
+
+#define declareComponent(T)																			\
+	bool has##T##Component();																		\
+	OtObject get##T##Component();																	\
+	OtObject add##T##Component();
+
+#define implementComponent(T)																		\
+bool OtEntityObjectClass::has##T##Component() { 													\
+	return scene->hasComponent<Ot##T##Component>(entity);											\
+}																									\
+																									\
+OtObject OtEntityObjectClass::get##T##Component() {													\
+	return Ot##T##ComponentObject::create(scene, entity);											\
+}																									\
+																									\
+OtObject OtEntityObjectClass::add##T##Component() {													\
+	if (has##T##Component()) {																		\
+		OtLogError("Entity already has a "#T"Component]");											\
+	}																								\
+																									\
+	scene->addComponent<Ot##T##Component>(entity);													\
+	return Ot##T##ComponentObject::create(scene, entity);											\
+}
+
+#define metaComponent(T)																			\
+	type->set("has"#T"Component", OtFunction::create(&OtEntityObjectClass::has##T## Component));	\
+	type->set("get"#T"Component", OtFunction::create(&OtEntityObjectClass::get##T## Component));	\
+	type->set("add"#T"Component", OtFunction::create(&OtEntityObjectClass::add##T## Component));
+
+
+//
 //	OtEntityObjectClass
 //
 
@@ -44,12 +77,9 @@ public:
 	inline OtObject getNextSibling() { return toObject(scene->getNextSibling(entity)); }
 
 	// access components
-#define declareComponent(t)				\
-	bool has ## t ## Component();		\
-	OtObject get ## t ## Component();	\
-	OtObject add ## t ## Component();
-
+	declareComponent(Background)
 	declareComponent(Camera)
+	declareComponent(DirectionalLight)
 	declareComponent(Material)
 	declareComponent(Message)
 	declareComponent(Model)

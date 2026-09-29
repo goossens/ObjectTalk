@@ -20,6 +20,19 @@
 
 
 //
+//	Helper macros
+//
+
+#define declareProperty(T, P, N)													\
+	inline void set##N(T value) { component().P = value; }							\
+	inline T get##N() { return component().P; }
+
+#define metaProperty(T, N)															\
+	type->set("set"#T"", OtFunction::create(&Ot##T##ComponentObjectClass::set##N));	\
+	type->set("get"#T"", OtFunction::create(&Ot##T##ComponentObjectClass::get##N));
+
+
+//
 //	OtComponentObject
 //
 

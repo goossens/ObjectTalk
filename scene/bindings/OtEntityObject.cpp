@@ -17,7 +17,9 @@
 #include "OtEntityObject.h"
 #include "OtComponentObject.h"
 
+#include "OtBackgroundComponentObject.h"
 #include "OtCameraComponentObject.h"
+#include "OtDirectionalLightComponentObject.h"
 #include "OtMaterialComponentObject.h"
 #include "OtMessageComponentObject.h"
 #include "OtModelComponentObject.h"
@@ -39,25 +41,9 @@ OtObject OtEntityObjectClass::getScene() {
 //	Implement component methods
 //
 
-#define implementComponent(t)									\
-bool OtEntityObjectClass::has ## t ## Component() { 			\
-	return scene->hasComponent<Ot ## t ## Component>(entity);	\
-}																\
-																\
-OtObject OtEntityObjectClass::get ## t ## Component() {			\
-	return Ot ## t ## ComponentObject::create(scene, entity);	\
-}																\
-																\
-OtObject OtEntityObjectClass::add ## t ## Component() {			\
-	if (has ## t ## Component()) {								\
-		OtLogError("Entity already has a " #t "Component]");	\
-	}															\
-																\
-	scene->addComponent<Ot ## t ## Component>(entity);			\
-	return Ot ## t ## ComponentObject::create(scene, entity);	\
-}
-
+implementComponent(Background)
 implementComponent(Camera)
+implementComponent(DirectionalLight)
 implementComponent(Material)
 implementComponent(Message)
 implementComponent(Model)
@@ -111,11 +97,6 @@ OtObject OtEntityObjectClass::toObject(OtEntity targetEntity) {
 //	OtEntityObjectClass::getMeta
 //
 
-#define metaComponent(t)																					\
-		type->set("has" #t "Component", OtFunction::create(&OtEntityObjectClass::has## t ## Component));	\
-		type->set("get" #t "Component", OtFunction::create(&OtEntityObjectClass::get## t ## Component));	\
-		type->set("add" #t "Component", OtFunction::create(&OtEntityObjectClass::add## t ## Component));
-
 OtType OtEntityObjectClass::getMeta() {
 	static OtType type = nullptr;
 
@@ -135,7 +116,9 @@ OtType OtEntityObjectClass::getMeta() {
 		type->set("getPreviousSibling", OtFunction::create(&OtEntityObjectClass::getPreviousSibling));
 		type->set("getNextSibling", OtFunction::create(&OtEntityObjectClass::getNextSibling));
 
+		metaComponent(Background)
 		metaComponent(Camera)
+		metaComponent(DirectionalLight)
 		metaComponent(Material)
 		metaComponent(Message)
 		metaComponent(Model)

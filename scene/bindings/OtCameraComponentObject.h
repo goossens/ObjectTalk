@@ -25,33 +25,22 @@ using OtCameraComponentObject = OtObjectPointer<OtCameraComponentObjectClass>;
 
 class OtCameraComponentObjectClass : public OtComponentObjectClass {
 public:
-	// access camera parts
-	inline void setMainCamera(bool value) { component().mainCamera = value; }
-	inline void setFOV(float value) { component().fov = value; }
-	inline void setNearPlane(float value) { component().nearPlane = value; }
-	inline void setFarPlane(float value) { component().farPlane = value; }
-
-	inline bool isMainCamera() { return component().mainCamera; }
-	inline float getFOV() { return component().fov; }
-	inline float getNearPlane() { return component().nearPlane; }
-	inline float getFarPlane() { return component().farPlane; }
+	// access properties
+	declareProperty(bool, mainCamera, MainCamera)
+	declareProperty(float, fov, FOV)
+	declareProperty(float, nearPlane, NearPlane)
+	declareProperty(float, farPlane, FarPlane)
 
 	// get type definition
 	inline static OtType getMeta()  {
 		static OtType type = nullptr;
 
 		if (!type) {
-			type = OtType::create<OtCameraComponentObjectClass>("CameraComponent", OtCameraComponentObjectClass::getMeta());
-
-			type->set("setMainCamera", OtFunction::create(&OtCameraComponentObjectClass::setMainCamera));
-			type->set("setFOV", OtFunction::create(&OtCameraComponentObjectClass::setFOV));
-			type->set("setNearPlane", OtFunction::create(&OtCameraComponentObjectClass::setNearPlane));
-			type->set("setFarPlane", OtFunction::create(&OtCameraComponentObjectClass::setFarPlane));
-
-			type->set("isMainCamera", OtFunction::create(&OtCameraComponentObjectClass::isMainCamera));
-			type->set("getFOV", OtFunction::create(&OtCameraComponentObjectClass::getFOV));
-			type->set("getNearPlane", OtFunction::create(&OtCameraComponentObjectClass::getNearPlane));
-			type->set("getFarPlane", OtFunction::create(&OtCameraComponentObjectClass::getFarPlane));
+			type = OtType::create<OtCameraComponentObjectClass>("CameraComponent", OtComponentObjectClass::getMeta());
+			metaProperty(Camera, MainCamera)
+			metaProperty(Camera, FOV)
+			metaProperty(Camera, NearPlane)
+			metaProperty(Camera, FarPlane)
 		}
 
 		return type;

@@ -50,6 +50,7 @@ target_link_libraries(gfx PUBLIC
 	glm
 	delaunator
 	tess2
+	meshoptimizer
 	manifold
 	nanovg
 	plutovg

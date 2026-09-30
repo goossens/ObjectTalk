@@ -44,10 +44,23 @@ public:
 		incrementVersion();
 	}
 
-	inline OtMesh& getMesh() { return* mesh.get(); }
+	inline OtMesh& getMesh() { return *mesh.get(); }
 
-	void cloneFrom(const OtGeometry& geometry) {
+	// clone the mesh from another geometry
+	inline void cloneFrom(const OtGeometry& geometry) {
 		mesh = std::make_shared<OtMesh>(*geometry.mesh);
+		incrementVersion();
+	}
+
+	// add mesh from another geometry
+	inline void add(const OtGeometry& geometry) {
+		mesh->add(*geometry.mesh);
+		incrementVersion();
+	}
+
+	// optimize geometries mesh
+	inline void optimize() {
+		mesh->optimize();
 		incrementVersion();
 	}
 
@@ -56,7 +69,7 @@ public:
 	inline void save(const std::string& path) { mesh->save(path); }
 
 	// access bounding box
-	OtAABB& getAABB() { return mesh->getAABB(); }
+	inline OtAABB& getAABB() { return mesh->getAABB(); }
 
 	// version management
 	inline void setVersion(int v) { version = v; }

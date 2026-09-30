@@ -55,7 +55,7 @@ public:
 	}
 
 	// quick way to add complete faces
-	void addFace(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c) {
+	inline void addFace(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c) {
 		auto n = glm::normalize(glm::cross(c - b, a - b));
 		auto offset = static_cast<uint32_t>(vertices.size());
 
@@ -66,7 +66,7 @@ public:
 		addTriangle(offset, offset + 1, offset + 2);
 	}
 
-	void addFace(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c, const glm::vec3& d) {
+	inline void addFace(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c, const glm::vec3& d) {
 		auto n = glm::normalize(glm::cross(c - b, a - b));
 		auto offset = static_cast<uint32_t>(vertices.size());
 
@@ -79,10 +79,16 @@ public:
 		addTriangle(offset, offset + 2, offset + 3);
 	}
 
+	// add another mesh
+	void add(const OtMesh& mesh);
+
+	// optimize the mesh
+	void optimize();
+
 	// get counts
-	size_t getVertexCount() { return vertices.size(); }
-	size_t getTriangleCount() { return indices.size() / 3; }
-	size_t getIndexCount() { return indices.size(); }
+	inline size_t getVertexCount() { return vertices.size(); }
+	inline size_t getTriangleCount() { return indices.size() / 3; }
+	inline size_t getIndexCount() { return indices.size(); }
 
 	// generate AABB, normals and tangents
 	void generateAABB();
@@ -98,7 +104,7 @@ public:
 	inline std::vector<uint32_t>& getIndices() { return indices; }
 
 	// get the AABB
-	OtAABB& getAABB() { return aabb; }
+	inline OtAABB& getAABB() { return aabb; }
 
 private:
 	// geometry data

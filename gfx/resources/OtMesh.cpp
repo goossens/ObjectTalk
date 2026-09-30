@@ -15,6 +15,7 @@
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
+#include "meshoptimizer.h"
 
 #include "OtLog.h"
 
@@ -151,6 +152,107 @@ void OtMesh::save(const std::string& path) {
 	}
 
 	stream.close();
+}
+
+
+//
+//	OtMesh::add
+//
+
+void OtMesh::add(const OtMesh& mesh) {
+	// determine offset
+	auto offset = vertices.size();
+
+	// make room for new vertices and indices
+	vertices.reserve(vertices.size() + mesh.vertices.size());
+	indices.reserve(indices.size() + mesh.indices.size());
+
+	// copy vertices
+	for (auto& vertex : mesh.vertices) {
+		vertices.emplace_back(vertex);
+	}
+
+	// copy indices and adjust by offset
+	for (auto index : mesh.indices) {
+		indices.emplace_back(index + offset);
+	}
+
+	// set flag to refresh GPU buffers
+	refreshBuffers = true;
+}
+
+
+//
+//	OtMesh::optimize
+//
+
+void OtMesh::optimize() {
+	// create index buffer for optimizer
+	std::vector<unsigned int> indexBuffer(indices.size());
+	indexBuffer.reserve(indices.size());
+
+	for (auto index : indices) {
+		indexBuffer.emplace_back(static_cast<unsigned int>(index));
+	}
+
+	// allocate space for the remap table
+	std::vector<unsigned int> remap(indices.size());
+
+	// generate the remap table and buffers
+	size_t uniqueVertexCount = meshopt_generateVertexRemap(
+		remap.data(),
+		indexBuffer.data(),
+		indices.size(),
+		vertices.data(),
+		vertices.size(),
+		sizeof(OtVertex));
+
+	std::vector<unsigned int> optimizedIndices(indices.size());
+	std::vector<OtVertex> optimizedVertices(uniqueVertexCount);
+
+	meshopt_remapIndexBuffer(optimizedIndices.data(), indices.data(), indices.size(), remap.data());
+	meshopt_remapVertexBuffer(optimizedVertices.data(), indices.data(), vertices.size(), sizeof(OtVertex), remap.data());
+
+	// vertex cache optimization
+	 meshopt_optimizeVertexCache(
+		optimizedIndices.data(),
+		optimizedIndices.data(),
+		indices.size(),
+		uniqueVertexCount
+	);
+
+	// overdraw optimization
+	meshopt_optimizeOverdraw(
+		optimizedIndices.data(),
+		optimizedIndices.data(),
+		indices.size(),
+		&optimizedVertices[0].position.x,
+		uniqueVertexCount,
+		sizeof(OtVertex),
+		1.05f
+	);
+
+	//	vertex fetch optimization
+	meshopt_optimizeVertexFetch(
+		optimizedVertices.data(),
+		optimizedIndices.data(),
+		indices.size(),
+		optimizedVertices.data(),
+		uniqueVertexCount,
+		sizeof(OtVertex)
+	);
+
+	// store new vertices and indices
+	vertices = optimizedVertices;
+	indices.clear();
+	indices.reserve(optimizedIndices.size());
+
+	for (auto index : optimizedIndices) {
+		indices.emplace_back(static_cast<uint32_t>(index));
+	}
+
+	// set flag to refresh GPU buffers
+	refreshBuffers = true;
 }
 
 

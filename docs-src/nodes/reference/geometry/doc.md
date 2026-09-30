@@ -15,6 +15,38 @@ Spherical cube.
 
 * Geometry - The specified geometry.
 
+#### Geometry Merge
+
+![screenshot](img/geometry-merge.png#right)
+
+The Geometry Merge Node merges the meshes of up to 4 geometries into a single one. Input that are not connect are
+ignored. If no inputs are provided an empty geometry is the result.
+
+**Inputs**
+
+* Input 1 - The input geometries.
+* Input 2 - The input geometries.
+* Input 3 - The input geometries.
+* Input 4 - The input geometries.
+
+**Outputs**
+
+* Output - The u geometry.
+
+#### Geometry Optimize
+
+![screenshot](img/geometry-optimize.png#right)
+
+The Geometry Optimize Node optimizes the mesh of the input geometry and send it to the output geometry.
+
+**Inputs**
+
+* Input - The input geometry.
+
+**Outputs**
+
+* Output - The resulting geometry.
+
 #### Geometry Transform
 
 ![screenshot](img/geometry-transform.png#right)

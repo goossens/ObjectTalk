@@ -244,25 +244,61 @@
 			"y": 293.0
 		},
 		{
-			"id": 1532857196,
+			"id": 2714471597,
 			"inputs": [
 				{
-					"id": 2367113270,
+					"id": 961705398,
 					"name": "Input",
-					"type": "image"
+					"type": "geometry"
 				}
 			],
 			"outputs": [
 				{
-					"id": 2957609625,
+					"id": 557913971,
 					"name": "Output",
 					"type": "geometry"
 				}
 			],
-			"title": "Terrain Builder",
-			"type": "Terrain Builder",
-			"x": 113.0,
-			"y": 606.0
+			"title": "Geometry Optimize",
+			"type": "Geometry Optimize",
+			"x": 460.0,
+			"y": 577.0
+		},
+		{
+			"id": 2204621049,
+			"inputs": [
+				{
+					"id": 829593582,
+					"name": "Input 1",
+					"type": "geometry"
+				},
+				{
+					"id": 1298416799,
+					"name": "Input 2",
+					"type": "geometry"
+				},
+				{
+					"id": 483575582,
+					"name": "Input 3",
+					"type": "geometry"
+				},
+				{
+					"id": 1524573689,
+					"name": "Input 4",
+					"type": "geometry"
+				}
+			],
+			"outputs": [
+				{
+					"id": 1743830643,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Geometry Merge",
+			"type": "Geometry Merge",
+			"x": 236.0,
+			"y": 576.0
 		}
 	]
 }

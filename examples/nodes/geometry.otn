@@ -6,9 +6,29 @@
 			"to": 1631888896
 		},
 		{
+			"from": 3565635485,
+			"id": 1957424180,
+			"to": 1770826691
+		},
+		{
 			"from": 4042769463,
-			"id": 1769493129,
+			"id": 431968159,
+			"to": 980095767
+		},
+		{
+			"from": 2831056231,
+			"id": 2015966184,
 			"to": 1588825036
+		},
+		{
+			"from": 2000687327,
+			"id": 3175865988,
+			"to": 3016687546
+		},
+		{
+			"from": 2831056231,
+			"id": 2482492804,
+			"to": 2904553437
 		}
 	],
 	"metadata": {},
@@ -24,20 +44,18 @@
 				}
 			],
 			"primitive": {
-				"radialLength": 360.0,
-				"radialSegments": 32,
-				"radialStart": 0.0,
-				"radius": 1.0,
-				"tubeRadius": 0.5,
-				"tubularLength": 360.0,
-				"tubularSegments": 16,
-				"tubularStart": 0.0,
-				"type": "Torus"
+				"phiLength": 360.0,
+				"phiSegments": 8,
+				"phiStart": 0.0,
+				"thetaLength": 90.0,
+				"thetaSegments": 16,
+				"thetaStart": 0.0,
+				"type": "Sphere"
 			},
 			"title": "Geometry Generator",
 			"type": "Geometry Generator",
-			"x": 325.0,
-			"y": 322.0
+			"x": 131.0,
+			"y": 366.0
 		},
 		{
 			"id": 3423983873,
@@ -53,7 +71,7 @@
 					"type": "vector3",
 					"value": [
 						0.0,
-						0.0,
+						1.2999999523162842,
 						0.0
 					]
 				},
@@ -72,9 +90,9 @@
 					"name": "Scale",
 					"type": "vector3",
 					"value": [
-						1.0,
-						1.0,
-						1.0
+						0.5,
+						0.5,
+						0.5
 					]
 				}
 			],
@@ -87,12 +105,95 @@
 			],
 			"title": "Geometry Transform",
 			"type": "Geometry Transform",
-			"x": 586.0,
-			"y": 302.0
+			"x": 358.0,
+			"y": 340.0
 		},
 		{
-			"azimuth": -24.649860382080078,
-			"elevation": 33.14503479003906,
+			"id": 1376684884,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 2000687327,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"primitive": {
+				"radialLength": 360.0,
+				"radialSegments": 32,
+				"radialStart": 0.0,
+				"radius": 1.0,
+				"tubeRadius": 0.5,
+				"tubularLength": 360.0,
+				"tubularSegments": 16,
+				"tubularStart": 0.0,
+				"type": "Torus"
+			},
+			"title": "Geometry Generator",
+			"type": "Geometry Generator",
+			"x": 131.0,
+			"y": 124.0
+		},
+		{
+			"id": 2299665690,
+			"inputs": [
+				{
+					"id": 3016687546,
+					"name": "Input 1",
+					"type": "geometry"
+				},
+				{
+					"id": 980095767,
+					"name": "Input 2",
+					"type": "geometry"
+				},
+				{
+					"id": 35273101,
+					"name": "Input 3",
+					"type": "geometry"
+				},
+				{
+					"id": 3214517231,
+					"name": "Input 4",
+					"type": "geometry"
+				}
+			],
+			"outputs": [
+				{
+					"id": 3565635485,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Geometry Merge",
+			"type": "Geometry Merge",
+			"x": 704.0,
+			"y": 257.0
+		},
+		{
+			"id": 2355030309,
+			"inputs": [
+				{
+					"id": 1770826691,
+					"name": "Input",
+					"type": "geometry"
+				}
+			],
+			"outputs": [
+				{
+					"id": 2831056231,
+					"name": "Output",
+					"type": "geometry"
+				}
+			],
+			"title": "Geometry Optimize",
+			"type": "Geometry Optimize",
+			"x": 875.0,
+			"y": 232.0
+		},
+		{
+			"azimuth": -11.052024841308594,
+			"elevation": 26.89430046081543,
 			"id": 3927789743,
 			"inputs": [
 				{
@@ -115,9 +216,24 @@
 			"title": "Geometry Probe",
 			"type": "Geometry Probe",
 			"wireframe": true,
-			"x": 1016.0,
-			"y": 250.0,
+			"x": 1068.0,
+			"y": 57.0,
 			"zoom": 0.949999988079071
+		},
+		{
+			"id": 2582342893,
+			"inputs": [
+				{
+					"id": 2904553437,
+					"name": "Input",
+					"type": "geometry"
+				}
+			],
+			"outputs": [],
+			"title": "Save Geometry to File",
+			"type": "Save Geometry to File",
+			"x": 1065.0,
+			"y": 347.0
 		}
 	]
 }

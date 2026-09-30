@@ -177,6 +177,9 @@ void OtMesh::add(const OtMesh& mesh) {
 		indices.emplace_back(index + offset);
 	}
 
+	// regenerate bounding box
+	generateAABB();
+
 	// set flag to refresh GPU buffers
 	refreshBuffers = true;
 }
@@ -188,11 +191,11 @@ void OtMesh::add(const OtMesh& mesh) {
 
 void OtMesh::optimize() {
 	// create index buffer for optimizer
-	std::vector<unsigned int> indexBuffer(indices.size());
-	indexBuffer.reserve(indices.size());
+	std::vector<unsigned int> tmpBuffer;
+	tmpBuffer.reserve(indices.size());
 
 	for (auto index : indices) {
-		indexBuffer.emplace_back(static_cast<unsigned int>(index));
+		tmpBuffer.emplace_back(static_cast<unsigned int>(index));
 	}
 
 	// allocate space for the remap table
@@ -201,7 +204,7 @@ void OtMesh::optimize() {
 	// generate the remap table and buffers
 	size_t uniqueVertexCount = meshopt_generateVertexRemap(
 		remap.data(),
-		indexBuffer.data(),
+		tmpBuffer.data(),
 		indices.size(),
 		vertices.data(),
 		vertices.size(),
@@ -211,7 +214,7 @@ void OtMesh::optimize() {
 	std::vector<OtVertex> optimizedVertices(uniqueVertexCount);
 
 	meshopt_remapIndexBuffer(optimizedIndices.data(), indices.data(), indices.size(), remap.data());
-	meshopt_remapVertexBuffer(optimizedVertices.data(), indices.data(), vertices.size(), sizeof(OtVertex), remap.data());
+	meshopt_remapVertexBuffer(optimizedVertices.data(), vertices.data(), vertices.size(), sizeof(OtVertex), remap.data());
 
 	// vertex cache optimization
 	 meshopt_optimizeVertexCache(

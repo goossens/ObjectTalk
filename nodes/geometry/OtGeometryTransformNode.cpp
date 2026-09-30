@@ -18,10 +18,10 @@
 
 
 //
-//	OtGeometryTransform
+//	OtGeometryTransformNode
 //
 
-class OtGeometryTransform : public OtNodeClass {
+class OtGeometryTransformNode : public OtNodeClass {
 public:
 	// configure node
 	inline void configure() override {
@@ -97,4 +97,4 @@ private:
 	glm::vec3 scale{1.0f};
 };
 
-static OtNodesFactoryRegister<OtGeometryTransform> registration;
+static OtNodesFactoryRegister<OtGeometryTransformNode> registration;

@@ -23,7 +23,7 @@
 
 class OtPlanePrimitive : public OtPrimitiveBase {
 public:
-	// acces properties
+	// access properties
 	inline void setWidthSegments(int ws) { widthSegments = ws; }
 	inline void setHeightSegments(int hs) { heightSegments = hs; }
 

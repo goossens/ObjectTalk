@@ -23,7 +23,7 @@
 
 class OtGridPrimitive : public OtPrimitiveBase {
 public:
-	// acces properties
+	// access properties
 	inline void setWidthSegments(int ws) { widthSegments = ws; }
 	inline void setDepthSegments(int ds) { depthSegments = ds; }
 

@@ -33,7 +33,7 @@ public:
 	declareProperty(float, castShadow, CastShadow)
 
 	// get type definition
-	inline static OtType getMeta()  {
+	static inline OtType getMeta()  {
 		static OtType type = nullptr;
 
 		if (!type) {

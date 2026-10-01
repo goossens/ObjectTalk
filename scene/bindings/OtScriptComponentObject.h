@@ -26,7 +26,7 @@ using OtScriptComponentObject = OtObjectPointer<OtScriptComponentObjectClass>;
 class OtScriptComponentObjectClass : public OtComponentObjectClass {
 public:
 	// get type definition
-	inline static OtType getMeta() {
+	static inline OtType getMeta() {
 		static OtType type = nullptr;
 
 		if (!type) {

@@ -42,7 +42,7 @@ using OtComponentObject = OtObjectPointer<OtComponentObjectClass>;
 class OtComponentObjectClass : public OtObjectClass {
 public:
 	// get type definition
-	inline static OtType getMeta() {
+	static inline OtType getMeta() {
 		static OtType type = nullptr;
 
 		if (!type) {

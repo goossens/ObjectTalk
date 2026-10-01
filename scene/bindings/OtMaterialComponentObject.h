@@ -42,7 +42,7 @@ public:
 	inline void setAoTexture(const std::string& path) { component().material->setAoTexture(path); }
 
 	// get type definition
-	inline static OtType getMeta() {
+	static inline OtType getMeta() {
 		static OtType type = nullptr;
 
 		if (!type) {

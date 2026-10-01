@@ -29,7 +29,7 @@ public:
 	declareProperty(glm::vec3, color, Color)
 
 	// get type definition
-	inline static OtType getMeta()  {
+	static inline OtType getMeta()  {
 		static OtType type = nullptr;
 
 		if (!type) {

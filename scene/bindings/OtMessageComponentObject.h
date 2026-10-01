@@ -30,7 +30,7 @@ public:
 	inline void hide() { component().hide(); }
 
 	// get type definition
-	inline static OtType getMeta() {
+	static inline OtType getMeta() {
 		static OtType type = nullptr;
 
 		if (!type) {

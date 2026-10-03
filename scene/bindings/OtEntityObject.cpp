@@ -57,10 +57,10 @@ implementComponent(Transform)
 
 OtEntity OtEntityObjectClass::toEntity(OtObject object) {
 	if (object->isKindOf("Entity")) {
-		auto entity = OtEntityObject(object)->entity;
+		auto objectEntity = OtEntityObject(object)->entity;
 
-		if (scene->isValidEntity(entity)) {
-			return entity;
+		if (scene->isValidEntity(objectEntity)) {
+			return objectEntity;
 
 		} else {
 			OtLogError("Entity not found in scene");

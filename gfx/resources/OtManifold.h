@@ -19,12 +19,7 @@
 
 #include "glm/glm.hpp" // IWYU pragma: keep
 
-#if defined __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-parameter"
-#pragma clang diagnostic ignored "-Wshorten-64-to-32"
-
-#elif defined _MSC_VER
+#if defined _MSC_VER
 #pragma warning(push)
 #pragma warning(disable:4244)
 #pragma warning(disable:4267)
@@ -33,10 +28,7 @@
 #include "manifold/manifold.h"
 #include "manifold/cross_section.h" // IWYU pragma: keep
 
-#if defined __clang__
-#pragma clang diagnostic pop
-
-#elif defined _MSC_VER
+#if defined _MSC_VER
 #pragma warning(pop)
 #endif
 

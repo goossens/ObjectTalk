@@ -518,6 +518,10 @@ int OtMarkdown::block(MD_BLOCKTYPE type, void* data, bool enter) {
 		case MD_BLOCK_TR: trBlock(enter); break;
 		case MD_BLOCK_TH: thBlock((MD_BLOCK_TD_DETAIL*) data, enter); break;
 		case MD_BLOCK_TD: tdBlock((MD_BLOCK_TD_DETAIL*) data, enter); break;
+		case MD_BLOCK_FOOTNOTE_DEF_SECTION: break;
+		case MD_BLOCK_FOOTNOTE_DEF: break;
+		case MD_BLOCK_ADMONITION: break;
+		case MD_BLOCK_BLANK: break;
 	}
 
 	return 0;
@@ -532,6 +536,7 @@ int OtMarkdown::span(MD_SPANTYPE type, void* data, bool enter) {
 	switch (type) {
 		case MD_SPAN_EM: emSpan(enter); break;
 		case MD_SPAN_STRONG: strongSpan(enter); break;
+		case MD_SPAN_INS: break;
 		case MD_SPAN_DEL: delSpan(enter); break;
 		case MD_SPAN_A: aSpan((MD_SPAN_A_DETAIL*) data, enter); break;
 		case MD_SPAN_IMG: imgSpan((MD_SPAN_IMG_DETAIL*) data, enter); break;
@@ -540,6 +545,11 @@ int OtMarkdown::span(MD_SPANTYPE type, void* data, bool enter) {
 		case MD_SPAN_LATEXMATH_DISPLAY: latexMathDisplaySpan(enter); break;
 		case MD_SPAN_WIKILINK: wikiLinkSpan((MD_SPAN_WIKILINK_DETAIL*) data, enter); break;
 		case MD_SPAN_U: uSpan(enter); break;
+		case MD_SPAN_SPOILER: break;
+		case MD_SPAN_SUPERSCRIPT: break;
+		case MD_SPAN_SUBSCRIPT: break;
+		case MD_SPAN_FOOTNOTE_REF: break;
+		case MD_SPAN_MARK: break;
 	}
 
 	return 0;

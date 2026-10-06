@@ -37,10 +37,39 @@ public:
 				ImGui::BeginDisabled();
 			}
 
-			auto& dialog = FileSelector::Instance();
+			auto& selector = FileSelector::Instance();
 
 			if (ImGui::Button("Save As...", ImVec2(width, 0.0f))) {
-				dialog.SaveAs();
+				selector.SaveAs({}, [&]() {
+					auto pos = ImGui::GetCursorScreenPos();
+					auto glyphWidth = ImGui::CalcTextSize("#").y;
+					auto selectorWidth = glyphWidth * 5.0f;
+					auto totalWidth = (7.0f * glyphWidth) + ImGui::GetStyle().ItemSpacing.x + selectorWidth;
+					ImGui::SetCursorScreenPos(ImVec2(pos.x + (ImGui::GetContentRegionAvail().x - totalWidth) * 0.5f, pos.y));
+					ImGui::AlignTextToFramePadding();
+					ImGui::TextUnformatted("Format:");
+					ImGui::SameLine();
+					ImGui::SetNextItemWidth(selectorWidth);
+
+					if (ImGui::BeginCombo("###format", formats[selectedFormat])) {
+						for (size_t i = 0; i < formatCount; i++) {
+							const auto isSelected = (selectedFormat == i);
+
+							if (ImGui::Selectable(formats[i], isSelected)) {
+								selectedFormat = i;
+								selector.SetSelectedExtension(formatExtensions[i]);
+							}
+
+							if (isSelected) {
+								ImGui::SetItemDefaultFocus();
+							}
+						}
+
+						ImGui::EndCombo();
+					}
+
+				}, ImGui::GetFrameHeight());
+
 				selectorOpen = true;
 			}
 
@@ -48,11 +77,12 @@ public:
 				ImGui::EndDisabled();
 			}
 
-			// handle save as dialog
-			if (selectorOpen && dialog.Render()) {
+			// handle save as selector
+			if (selectorOpen && selector.Render()) {
 				// save file (if required)
-				if (dialog.SelectedSaveAs()) {
-					auto path = OtPath::toString(dialog.GetSelectedPath());
+				if (selector.SelectedSaveAs()) {
+					auto path = OtPath::toString(selector.GetSelectedPath());
+					path = OtPath::replaceExtension(path, formatExtensions[selectedFormat]);
 
 					try {
 						manifold.save(path);
@@ -91,6 +121,11 @@ private:
 	OtManifold manifold;
 	std::string errorMessage;
 	bool selectorOpen = false;
+
+	static constexpr const char* formats[] = { "GLTF", "OBJ", "STL", "FBX" };
+	static constexpr const char* formatExtensions[] = { ".gltf", ".obj", ".stl", ".fbx" };
+	static constexpr size_t formatCount = sizeof(formats) / sizeof(formats[0]);
+	size_t selectedFormat = 0;
 };
 
 static OtNodesFactoryRegister<OtSaveManifoldNode> registration;

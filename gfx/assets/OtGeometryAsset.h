@@ -32,7 +32,7 @@ public:
 	// asset properties
 	static constexpr bool hasEditor = false;
 	static constexpr bool canHandleVirtual = true;
-	static constexpr const char* supportedFileTypes = ".blend,.fbx,.glb,.gltf,.obj";
+	static constexpr const char* supportedFileTypes = ".fbx,.glb,.gltf,.obj,.stl";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
 
 protected:

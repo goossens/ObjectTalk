@@ -50,10 +50,6 @@ void OtManifold::clear() {
 //
 
 void OtManifold::load(const std::string& filepath) {
-	// determine coordinate system
-	auto ext = OtPath::getExtension(filepath);
-	bool isYup = ext == ".obj" || ext == ".gltf";
-
 	// configure importer
 	Assimp::Importer importer;
 
@@ -81,6 +77,8 @@ void OtManifold::load(const std::string& filepath) {
 		aiProcess_PreTransformVertices |
 		aiProcess_SortByPType;
 
+	auto ext = OtPath::getExtension(filepath);
+
 	if (ext == ".stl") {
 		flags |=
 			aiProcess_JoinIdenticalVertices |
@@ -104,13 +102,7 @@ void OtManifold::load(const std::string& filepath) {
 
 		for (size_t j = 0; j < aMash->mNumVertices; j++) {
 			aiVector3D vert = aMash->mVertices[j];
-
-			if (isYup) {
-				mesh.vertProperties.insert(mesh.vertProperties.end(), {vert.x, vert.z, -vert.y});
-
-			} else {
-				mesh.vertProperties.insert(mesh.vertProperties.end(), {vert.x, vert.y, vert.z});
-			}
+			mesh.vertProperties.insert(mesh.vertProperties.end(), {vert.x, vert.z, -vert.y});
 		}
 
 		for (size_t j = 0; j < aMash->mNumFaces; j++) {
@@ -137,79 +129,9 @@ void OtManifold::load(const std::string& filepath) {
 
 void OtManifold::save(const std::string& filepath) {
 	// create mesh from manifold
-	auto mesh = manifold->GetMeshGL();
-
-	// sanity check
-	if (mesh.triVerts.size() == 0) {
-		OtLogError("Can't save empty manifold");
-	}
-
-	// determine coordinate system
-	auto ext = OtPath::getExtension(filepath);
-	bool isYup = ext == ".obj" || ext == ".gltf";
-
-	// create an assimp scene
-	aiScene* scene =  new aiScene();
-
-	scene->mNumMaterials = 1;
-	scene->mMaterials = new aiMaterial*[scene->mNumMaterials];
-	scene->mMaterials[0] = new aiMaterial();
-
-	aiMaterial* material = scene->mMaterials[0];
-	float roughness = 0.2f;
-	float metalness = 1.0f;
-	aiColor4D baseColor(1.0f, 1.0f, 1.0f, 1.0f);
-	material->AddProperty(&roughness, 1, AI_MATKEY_ROUGHNESS_FACTOR);
-	material->AddProperty(&metalness, 1, AI_MATKEY_METALLIC_FACTOR);
-	material->AddProperty(&baseColor, 1, AI_MATKEY_COLOR_DIFFUSE);
-
-	scene->mNumMeshes = 1;
-	scene->mMeshes = new aiMesh*[scene->mNumMeshes];
-	scene->mMeshes[0] = new aiMesh();
-	scene->mMeshes[0]->mMaterialIndex = 0;
-
-	scene->mRootNode = new aiNode();
-	scene->mRootNode->mNumMeshes = 1;
-	scene->mRootNode->mMeshes = new uint32_t[scene->mRootNode->mNumMeshes];
-	scene->mRootNode->mMeshes[0] = 0;
-
-	scene->mMeshes[0]->mPrimitiveTypes = aiPrimitiveType_TRIANGLE;
-
-	// create an assimp mesh
-	aiMesh* aMash = scene->mMeshes[0];
-	aMash->mNumVertices = mesh.NumVert();
-	aMash->mVertices = new aiVector3D[aMash->mNumVertices];
-	aMash->mNormals = new aiVector3D[aMash->mNumVertices];
-
-	for (size_t i = 0; i < static_cast<size_t>(aMash->mNumVertices); i++) {
-		auto x = mesh.vertProperties[i * mesh.numProp + 0];
-		auto y = mesh.vertProperties[i * mesh.numProp + 1];
-		auto z = mesh.vertProperties[i * mesh.numProp + 2];
-		aMash->mVertices[i] = isYup ? aiVector3D(x, z, -y) : aiVector3D(x, y, z);
-		aMash->mNormals[i] = isYup ? aiVector3D(x, z, -y) : aiVector3D(x, y, z);
-	}
-
-	aMash->mNumFaces = mesh.NumTri();
-	aMash->mFaces = new aiFace[aMash->mNumFaces];
-
-	for (size_t i = 0; i < static_cast<size_t>(aMash->mNumFaces); ++i) {
-		aiFace& face = aMash->mFaces[i];
-		face.mNumIndices = 3;
-		face.mIndices = new uint32_t[face.mNumIndices];
-		face.mIndices[0] = mesh.triVerts[3 * i + 0];
-		face.mIndices[1] = mesh.triVerts[3 * i + 1];
-		face.mIndices[2] = mesh.triVerts[3 * i + 2];
-	}
-
-	// export the mesh
-	Assimp::Exporter exporter;
-	auto result = exporter.Export(scene, OtText::mid(ext, 1, ext.size() - 1), filepath);
-	delete scene;
-
-	// sanity check
-	if (result != AI_SUCCESS) {
-		OtLogError("Can't save manifold to [{}], error: {}", filepath, exporter.GetErrorString());
-	}
+	OtMesh mesh;
+	createMesh(mesh);
+	mesh.save(filepath);
 }
 
 

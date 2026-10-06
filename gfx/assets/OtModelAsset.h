@@ -29,7 +29,7 @@ public:
 	// asset properties
 	static constexpr bool hasEditor = false;
 	static constexpr bool canHandleVirtual = false;
-	static constexpr const char* supportedFileTypes = ".fbx,.glb,.gltf,.json,.md5mesh,.obj";
+	static constexpr const char* supportedFileTypes = ".fbx,.glb,.gltf,.json,.md5mesh,.obj,.stl";
 	inline const char* getSupportedFileTypes() override { return supportedFileTypes; }
 
 protected:

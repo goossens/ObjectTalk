@@ -337,8 +337,15 @@ public:
 	// access squiggly underlines
 	// squiggles are attached to glyphs and are not effected  by inserts or deletes before that glyph
 	// if a glyph with a squiggle is deleted, undo doesn't restore it
+	// a squiggle is drawn as a wavy underline or as a background behind the text (e.g. to highlight search results)
 	// tooltips must be UTF-8 encoded
-	inline void AddSquiggle(DocPos start, DocPos end, size_t type, ImU32 color, const std::string_view& tooltip = std::string_view()) { addSquiggle(normalizePos(start), normalizePos(end), type, color, tooltip); }
+
+	enum class SquiggleStyle {
+		wave,
+		background
+	};
+
+	inline void AddSquiggle(DocPos start, DocPos end, size_t type, ImU32 color, const std::string_view& tooltip = std::string_view(), SquiggleStyle style = SquiggleStyle::wave) { addSquiggle(normalizePos(start), normalizePos(end), type, color, tooltip, style); }
 	inline void ClearSquiggles(DocPos start, DocPos end) { clearSquiggles(normalizePos(start), normalizePos(end)); }
 	inline void ClearSquiggles(size_t type) { clearSquiggles(type); }
 	inline void ClearSquiggles() { clearSquiggles(); }
@@ -1783,10 +1790,11 @@ protected:
 
 	// list of squiggles
 	struct Squiggle {
-		Squiggle(size_t type, ImU32 color, const std::string_view& tooltip) : type(type), color(color), tooltip(tooltip) {}
+		Squiggle(size_t type, ImU32 color, const std::string_view& tooltip, SquiggleStyle style) : type(type), color(color), tooltip(tooltip), style(style) {}
 		size_t type;
 		ImU32 color;
 		std::string tooltip;
+		SquiggleStyle style;
 	};
 
 	using Squiggles = std::vector<Squiggle>;
@@ -1939,7 +1947,7 @@ protected:
 	void compressMarkers();
 
 	// squiggle support
-	void addSquiggle(DocPos start, DocPos end, size_t type, ImU32 color, const std::string_view& tooltip);
+	void addSquiggle(DocPos start, DocPos end, size_t type, ImU32 color, const std::string_view& tooltip, SquiggleStyle style);
 	void clearSquiggles(size_t type);
 	void clearSquiggles(DocPos start, DocPos end);
 	void clearSquiggles();

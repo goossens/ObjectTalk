@@ -402,9 +402,11 @@ void TextEditor::openFindReplace() {
 //
 
 void TextEditor::closeFindReplace() {
-	findReplaceVisible = false;
-	focusOnEditor = true;
-	focusOnFind = false;
+	if (findReplaceVisible) {
+		findReplaceVisible = false;
+		focusOnEditor = true;
+		focusOnFind = false;
+	}
 }
 
 

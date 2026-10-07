@@ -1300,7 +1300,7 @@ void TextEditor::handleKeyboardInputs() {
 		else if (!config.readOnly && config.language && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_L)) { toggleComments(); }
 
 		// find/replace support
-		else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_F)) {
+		else if (config.findReplaceEnabled && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_F)) {
 			if (autocomplete.isActive()) {
 				autocomplete.cancel();
 				findCancelledAutocomplete = true;
@@ -1309,8 +1309,8 @@ void TextEditor::handleKeyboardInputs() {
 			openFindReplace();
 		}
 
-		else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_F)) { findAll(); }
-		else if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_G, ImGuiInputFlags_Repeat)) { findNext(); }
+		else if (config.findReplaceEnabled && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_F)) { findAll(); }
+		else if (config.findReplaceEnabled && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_G, ImGuiInputFlags_Repeat)) { findNext(); }
 
 		// autocomplete support
 		else if (!config.readOnly && ImGui::Shortcut(autocomplete.getTriggerShortcut())) {

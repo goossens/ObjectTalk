@@ -127,7 +127,7 @@ void OtTextEditor::renderMenus() {
 		ImGui::EndMenu();
 	}
 
-	if (ImGui::BeginMenu("Find")) {
+	if (ImGui::BeginMenu("Find", editor.IsFindReplaceEnabled())) {
 		if (ImGui::MenuItem("Find", " " OT_UI_SHORTCUT "F")) { editor.OpenFindReplaceWindow(); }
 		if (ImGui::MenuItem("Find Next", " " OT_UI_SHORTCUT "G", nullptr, editor.HasFindString())) { editor.FindNext(); }
 		if (ImGui::MenuItem("Find All", "^" OT_UI_SHORTCUT "G", nullptr, editor.HasFindString())) { editor.FindAll(); }
@@ -178,6 +178,7 @@ void OtTextEditor::renderMenus() {
 		flag = editor.IsShowScrollbarMiniMapEnabled(); if (ImGui::MenuItem("Show Scrollbar Mini Map", nullptr, &flag)) { editor.SetShowScrollbarMiniMapEnabled(flag); };
 		flag = editor.IsShowPanScrollIndicatorEnabled(); if (ImGui::MenuItem("Show Pan/Scroll Indicator", nullptr, &flag)) { editor.SetShowPanScrollIndicatorEnabled(flag); };
 		flag = editor.IsMiddleMousePanMode(); if (ImGui::MenuItem("Middle Mouse Pan Mode", nullptr, &flag)) { if (flag) editor.SetMiddleMousePanMode(); else editor.SetMiddleMouseScrollMode(); };
+		flag = editor.IsFindReplaceEnabled(); if (ImGui::MenuItem("Find/Replace Enabled", nullptr, &flag)) { editor.SetFindReplaceEnabled(flag); };
 		ImGui::EndMenu();
 	}
 }

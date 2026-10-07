@@ -101,6 +101,8 @@ public:
 	inline bool IsWordWrapEnabled() const { return config.wordWrap; }
 	inline void SetReadOnlyEnabled(bool value) { config.readOnly = value; }
 	inline bool IsReadOnlyEnabled() const { return config.readOnly; }
+	inline void SetFindReplaceEnabled(bool value) { config.findReplaceEnabled = value; if (!value) { closeFindReplace(); } }
+	inline bool IsFindReplaceEnabled() const { return config.findReplaceEnabled; }
 	inline void SetCaretsVisible(bool value) { config.caretsVisible = value; }
 	inline bool IsCaretsVisible() const { return config.caretsVisible; }
 	inline void SetAutoIndentEnabled(bool value) { config.autoIndent = value; }
@@ -310,8 +312,10 @@ public:
 	inline void ReplaceTextInCurrentCursor(const std::string_view& text) { if (!config.readOnly) replaceTextInCurrentCursor(text); }
 	inline void ReplaceTextInAllCursors(const std::string_view& text) { if (!config.readOnly) replaceTextInAllCursors(text); }
 
-	inline void OpenFindReplaceWindow() { openFindReplace(); }
-	inline void CloseFindReplaceWindow() { closeFindReplace(); }
+	// the built-in find/replace window can be disabled (see SetFindReplaceEnabled) when the application provides its own search
+	// the editor then ignores Ctrl+F, Ctrl+Shift+F and Ctrl+G, so they reach the application's windows
+	inline void OpenFindReplaceWindow() { if (config.findReplaceEnabled) { openFindReplace(); } }
+	inline void CloseFindReplaceWindow() { if (config.findReplaceEnabled) { closeFindReplace(); } }
 	inline bool HasFindString() const { return findText.size(); }
 	inline void FindNext() { findNext(); }
 	inline void FindAll() { findAll(); }
@@ -994,6 +998,7 @@ protected:
 		bool overwrite = false;
 		bool panMode = true;
 		bool showPanScrollIndicator = true;
+		bool findReplaceEnabled = true;
 		size_t leftMargin = 1; // margins are expressed in number of glyphs
 		size_t decorationMargin = 1;
 		size_t textMargin = 2;

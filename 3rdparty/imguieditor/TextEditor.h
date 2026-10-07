@@ -295,6 +295,10 @@ public:
 	inline VisPos DocPos2VisPos(DocPos pos) const { return docPos2VisPos(normalizePos(pos)); }
 	inline DocPos VisPos2DocPos(VisPos pos) const { return visPos2DocPos(normalizePos(pos)); }
 
+	// get the screen position of the top left corner of a glyph
+	// only valid after a call to Render that drew the editor (its window was visible: see ImGui::IsItemVisible)
+	inline ImVec2 DocPos2ScreenPos(DocPos pos) const { return visPos2ScreenPos(docPos2VisPos(normalizePos(pos))); }
+
 	// see if a specified document location is visible (not folded and currently on screen)
 	inline bool IsDocPosVisible(DocPos pos) const { return isDocPosVisible(normalizePos(pos)); }
 
@@ -1884,6 +1888,7 @@ protected:
 	// coordinate transformation/normalization
 	inline VisPos docPos2VisPos(DocPos pos) const { return typeSetter.docPos2VisPos(document, pos); }
 	inline DocPos visPos2DocPos(VisPos pos) const { return typeSetter.visPos2DocPos(document, pos); }
+	inline ImVec2 visPos2ScreenPos(VisPos pos) const { return ImVec2(cursorScreenPos.x + textLeftOffset + pos.column * glyphSize.x, cursorScreenPos.y + pos.row * glyphSize.y); }
 
 	inline size_t normalizeLine(size_t line) const { return document.normalizeLine(line); }
 	inline DocPos normalizePos(DocPos pos) const { return document.normalizePos(pos); }

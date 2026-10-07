@@ -59,6 +59,11 @@
 			"from": 4026487469,
 			"id": 3051358240,
 			"to": 3611879913
+		},
+		{
+			"from": 556969473,
+			"id": 2077175003,
+			"to": 1627399801
 		}
 	],
 	"metadata": {},
@@ -341,7 +346,7 @@
 			"title": "Manifold Probe",
 			"type": "Manifold Probe",
 			"wireframe": false,
-			"x": 1133.0,
+			"x": 1130.0,
 			"y": 337.0,
 			"zoom": 0.949999988079071
 		},
@@ -496,8 +501,23 @@
 			"outputs": [],
 			"title": "Save Manifold to File",
 			"type": "Save Manifold to File",
-			"x": 1131.0,
+			"x": 1130.0,
 			"y": 264.0
+		},
+		{
+			"id": 2466050507,
+			"inputs": [
+				{
+					"id": 1627399801,
+					"name": "Input",
+					"type": "manifold"
+				}
+			],
+			"outputs": [],
+			"title": "Save Manifold to File",
+			"type": "Save Manifold to File",
+			"x": 1130.0,
+			"y": 619.0
 		}
 	]
 }

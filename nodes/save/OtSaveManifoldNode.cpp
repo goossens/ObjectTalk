@@ -122,8 +122,8 @@ private:
 	std::string errorMessage;
 	bool selectorOpen = false;
 
-	static constexpr const char* formats[] = { "GLTF", "OBJ", "STL", "FBX" };
-	static constexpr const char* formatExtensions[] = { ".gltf", ".obj", ".stl", ".fbx" };
+	static constexpr const char* formats[] = { "GLB", "GLTF", "OBJ", "STL" };
+	static constexpr const char* formatExtensions[] = { ".glb", ".gltf", ".obj", ".stl" };
 	static constexpr size_t formatCount = sizeof(formats) / sizeof(formats[0]);
 	size_t selectedFormat = 0;
 };

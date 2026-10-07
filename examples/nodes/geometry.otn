@@ -29,6 +29,11 @@
 			"from": 2831056231,
 			"id": 2482492804,
 			"to": 2904553437
+		},
+		{
+			"from": 3837619651,
+			"id": 2223130036,
+			"to": 245946732
 		}
 	],
 	"metadata": {},
@@ -216,7 +221,7 @@
 			"title": "Geometry Probe",
 			"type": "Geometry Probe",
 			"wireframe": true,
-			"x": 1068.0,
+			"x": 1077.0,
 			"y": 57.0,
 			"zoom": 0.949999988079071
 		},
@@ -232,8 +237,53 @@
 			"outputs": [],
 			"title": "Save Geometry to File",
 			"type": "Save Geometry to File",
-			"x": 1065.0,
+			"x": 1077.0,
 			"y": 347.0
+		},
+		{
+			"id": 1293065144,
+			"inputs": [],
+			"outputs": [
+				{
+					"id": 3837619651,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"path": "",
+			"title": "Geometry Input",
+			"type": "Geometry Input",
+			"x": 704.0,
+			"y": 502.0
+		},
+		{
+			"azimuth": -1.3541195392608643,
+			"elevation": 16.582733154296875,
+			"id": 2706823131,
+			"inputs": [
+				{
+					"id": 245946732,
+					"name": "Geometry",
+					"type": "geometry"
+				}
+			],
+			"lightColor": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"meshColor": [
+				1.0,
+				0.8500000238418579,
+				0.0
+			],
+			"outputs": [],
+			"title": "Geometry Probe",
+			"type": "Geometry Probe",
+			"wireframe": false,
+			"x": 1077.0,
+			"y": 477.0,
+			"zoom": 0.949999988079071
 		}
 	]
 }

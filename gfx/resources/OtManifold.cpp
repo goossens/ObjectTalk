@@ -128,10 +128,10 @@ void OtManifold::load(const std::string& filepath) {
 //
 
 void OtManifold::save(const std::string& filepath) {
-	// create mesh from manifold
+	// create mesh from manifold and save it
 	OtMesh mesh;
 	createMesh(mesh);
-	mesh.save(filepath);
+	mesh.save(filepath, false, false, false);
 }
 
 

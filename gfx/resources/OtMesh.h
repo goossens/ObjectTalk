@@ -38,7 +38,7 @@ public:
 
 	// load/save a mesh
 	void load(const std::string& path);
-	void save(const std::string& path);
+	void save(const std::string& path, bool tangent=true, bool bitangent=true, bool uv=true);
 
 	// add vertices/indices to the mesh
 	inline void addVertex(const OtVertex& vertex) {

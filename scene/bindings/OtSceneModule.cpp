@@ -11,6 +11,7 @@
 
 #include "OtClass.h"
 #include "OtFunction.h"
+#include "OtInteger.h"
 #include "OtModule.h"
 
 #include "OtMathModule.h" // IWYU pragma: keep
@@ -26,6 +27,8 @@
 #include "OtMessageComponentObject.h"
 #include "OtScriptComponentObject.h"
 #include "OtTransformComponentObject.h"
+
+#include "OtPostProcessingObject.h"
 
 
 //
@@ -44,4 +47,14 @@ static OtModuleRegistration registration{"scene", [](OtModule module) {
 	module->set("MessageComponent", OtClass::create(OtMessageComponentObjectClass::getMeta()));
 	module->set("ScriptComponent", OtClass::create(OtScriptComponentObjectClass::getMeta()));
 	module->set("TransformComponent", OtClass::create(OtTransformComponentObjectClass::getMeta()));
+
+	module->set("PostProcessing", OtClass::create(OtPostProcessingObjectClass::getMeta()));
+
+	module->set("reinhardSimpleTonemap", OtInteger::create(static_cast<int>(OtPostProcessing::Tonemap::reinhardSimple)));
+	module->set("reinhardExtendedTonemap", OtInteger::create(static_cast<int>(OtPostProcessing::Tonemap::reinhardExtended)));
+	module->set("filmicTonemap", OtInteger::create(static_cast<int>(OtPostProcessing::Tonemap::filmic)));
+	module->set("acesFilmicTonemap", OtInteger::create(static_cast<int>(OtPostProcessing::Tonemap::acesFilmic)));
+	module->set("uncharted2Tonemap", OtInteger::create(static_cast<int>(OtPostProcessing::Tonemap::uncharted2)));
+	module->set("lottesTonemap", OtInteger::create(static_cast<int>(OtPostProcessing::Tonemap::lottes)));
+	module->set("uchimuraTonemap", OtInteger::create(static_cast<int>(OtPostProcessing::Tonemap::uchimura)));
 }};

@@ -41,9 +41,6 @@ public:
 	}
 
 protected:
-	// return class name
-	inline const char* getClassName() override { return "BackgroundComponent"; }
-
 	// constructor
 	friend class OtObjectPointer<OtBackgroundComponentObjectClass>;
 	OtBackgroundComponentObjectClass() = default;

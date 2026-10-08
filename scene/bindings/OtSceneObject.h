@@ -41,6 +41,9 @@ public:
 	// support entity hierarchy
 	OtObject getRootEntity();
 
+	// get the post processing settings
+	OtObject getPostProcessing();
+
 	// get type definition
 	static OtType getMeta();
 

@@ -67,9 +67,6 @@ public:
 	}
 
 protected:
-	// return class name
-	inline const char* getClassName() override { return "MaterialComponent"; }
-
 	// constructor
 	friend class OtObjectPointer<OtMaterialComponentObjectClass>;
 	OtMaterialComponentObjectClass() = default;

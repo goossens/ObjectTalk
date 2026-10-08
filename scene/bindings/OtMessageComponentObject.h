@@ -43,9 +43,6 @@ public:
 	}
 
 protected:
-	// return class name
-	inline const char* getClassName() override { return "MessageComponent"; }
-
 	// constructor
 	friend class OtObjectPointer<OtMessageComponentObjectClass>;
 	OtMessageComponentObjectClass() = default;

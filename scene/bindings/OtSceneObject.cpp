@@ -14,6 +14,8 @@
 
 #include "OtEntityObject.h"
 #include "OtComponentObject.h"
+#include "OtPostProcessingObject.h"
+#include "OtSceneObject.h"
 
 
 //
@@ -64,6 +66,15 @@ void OtSceneObjectClass::deleteEntity(OtObject object) {
 
 OtObject OtSceneObjectClass::getRootEntity() {
 	return OtEntityObject::create(scene, scene->getRootEntity());
+}
+
+
+//
+//	OtSceneObjectClass::getPostProcessing
+//
+
+OtObject OtSceneObjectClass::getPostProcessing() {
+	return OtPostProcessingObject::create(scene);
 }
 
 
@@ -119,6 +130,8 @@ OtType OtSceneObjectClass::getMeta()
 		type->set("deleteEntity", OtFunction::create(&OtSceneObjectClass::deleteEntity));
 
 		type->set("getRootEntity", OtFunction::create(&OtSceneObjectClass::getRootEntity));
+
+		type->set("getPostProcessing", OtFunction::create(&OtSceneObjectClass::getPostProcessing));
 	}
 
 	return type;

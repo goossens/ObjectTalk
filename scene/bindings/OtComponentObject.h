@@ -28,8 +28,8 @@
 	inline T get##N() { return component().P; }
 
 #define metaProperty(T, N)															\
-	type->set("set"#T"", OtFunction::create(&Ot##T##ComponentObjectClass::set##N));	\
-	type->set("get"#T"", OtFunction::create(&Ot##T##ComponentObjectClass::get##N));
+	type->set("set"#N"", OtFunction::create(&Ot##T##ComponentObjectClass::set##N));	\
+	type->set("get"#N"", OtFunction::create(&Ot##T##ComponentObjectClass::get##N));
 
 
 //
@@ -55,9 +55,6 @@ public:
 	}
 
 protected:
-	// derived classes must override this method
-	virtual const char* getClassName() { return ""; }
-
 	// set scene and entity reference
 	void setEcsReferences(OtScene* s, OtEntity e) {
 		scene = s;
@@ -76,20 +73,20 @@ protected:
 	template<typename T>
 	T& component(OtScene* scene, OtEntity entity) {
 		if (!scene) {
-			OtLogError("Class [{}] can't be directly instantiated, create component via [Entity] class instead", getClassName());
+			OtLogError("Class [{}] can't be directly instantiated, create component via [Entity] class instead", getTypeName());
 		}
 
 		if (!scene->isValidEntity(entity)) {
-			OtLogError("Invalid entity reference in [{}] class", getClassName());
+			OtLogError("Invalid entity reference in [{}] class", getTypeName());
 		}
 
 		if (!scene->hasComponent<T>(entity)) {
-			OtLogError("Entity does not have a [{}]", getClassName());
+			OtLogError("Entity does not have a [{}]", getTypeName());
 		}
 
 		return scene->getComponent<T>(entity);
 	}
 
-	OtScene* scene;
-	OtEntity entity;
+	OtScene* scene = nullptr;
+	OtEntity entity = OtEntityNull;
 };

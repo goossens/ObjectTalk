@@ -47,6 +47,9 @@ public:
 	}
 
 protected:
+	// return class name
+	inline const char* getClassName() override { return "CameraComponent"; }
+
 	// constructor
 	friend class OtObjectPointer<OtCameraComponentObjectClass>;
 	OtCameraComponentObjectClass() = default;

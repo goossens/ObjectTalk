@@ -37,7 +37,7 @@ public:
 	inline operator size_t() override { return static_cast<size_t>(value); }
 	inline operator float() override { return static_cast<float>(value); }
 	inline operator double() override { return value; }
-	inline operator std::string() override {return std::to_string(value); }
+	inline operator std::string() override { return std::to_string(value); }
 
 	// debugging support
 	inline std::string describe() override { return operator std::string(); }

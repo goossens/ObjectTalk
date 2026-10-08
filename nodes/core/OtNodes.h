@@ -62,7 +62,7 @@ public:
 	inline void deleteNode(uint32_t id) { deleteNode(nodeIndex[id]); }
 	void deleteNode(OtNode node);
 	void deleteNodes(const std::vector<uint32_t>& nodeIDs);
-	inline size_t getNodeCount() {return nodes.size(); }
+	inline size_t getNodeCount() { return nodes.size(); }
 
 	// check links
 	inline bool causesCycle(uint32_t from, uint32_t to) { return causesCycle(pinIndex[from], pinIndex[to]); }

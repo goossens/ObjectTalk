@@ -45,6 +45,9 @@ public:
 	}
 
 protected:
+	// return class name
+	inline const char* getClassName() override { return "TransformComponent"; }
+
 	// constructor
 	friend class OtObjectPointer<OtTransformComponentObjectClass>;
 	OtTransformComponentObjectClass() = default;

@@ -49,6 +49,9 @@ public:
 	}
 
 protected:
+	// return class name
+	inline const char* getClassName() override { return "DirectionalLightComponent"; }
+
 	// constructor
 	friend class OtObjectPointer<OtDirectionalLightComponentObjectClass>;
 	OtDirectionalLightComponentObjectClass() = default;

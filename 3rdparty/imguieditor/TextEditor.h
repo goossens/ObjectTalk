@@ -251,7 +251,7 @@ public:
 	// get information at mouse position (e.g. from ImGui::GetMousePos())
 	inline bool IsMousePosOverGlyph(const ImVec2& mousePos) const { return isMousePosOverGlyph(mousePos); }
 	inline bool IsMousePosOverTextArea(const ImVec2& mousePos) const { return isMousePosOverTextArea(mousePos); }
-	inline DocPos GetDocPosAtMousePos(const ImVec2& mousePos) const {return  getDocPosAtMousePos(mousePos); }
+	inline DocPos GetDocPosAtMousePos(const ImVec2& mousePos) const { return  getDocPosAtMousePos(mousePos); }
 	inline std::string GetWordAtMousePos(const ImVec2& mousePos) const { return getWordAtMousePos(mousePos); }
 
 	// scrolling support
@@ -343,7 +343,6 @@ public:
 	// if a glyph with a squiggle is deleted, undo doesn't restore it
 	// a squiggle is drawn as a wavy underline or as a background behind the text (e.g. to highlight search results)
 	// tooltips must be UTF-8 encoded
-
 	enum class SquiggleStyle {
 		wave,
 		background
@@ -1664,10 +1663,10 @@ protected:
 		void toggleAtLine(Document& document, size_t line);
 		void unfoldAll(Document& document);
 
-		static inline bool isFoldable(const Document& document, size_t line) {return document[line].foldingState == FoldingState::foldable; }
-		static inline bool isFolded(const Document& document, size_t line) {return document[line].foldingState == FoldingState::folded; }
-		static inline bool isVisible(const Document& document, size_t line) {return document[line].foldingState == FoldingState::visible; }
-		static inline bool isHidden(const Document& document, size_t line) {return document[line].foldingState == FoldingState::hidden; }
+		static inline bool isFoldable(const Document& document, size_t line) { return document[line].foldingState == FoldingState::foldable; }
+		static inline bool isFolded(const Document& document, size_t line) { return document[line].foldingState == FoldingState::folded; }
+		static inline bool isVisible(const Document& document, size_t line) { return document[line].foldingState == FoldingState::visible; }
+		static inline bool isHidden(const Document& document, size_t line) { return document[line].foldingState == FoldingState::hidden; }
 
 		// see if line folding was updated this frame
 		inline bool isUpdated() const { return updated; }

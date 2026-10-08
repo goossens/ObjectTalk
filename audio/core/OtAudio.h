@@ -69,7 +69,7 @@ public:
 	inline void deleteCircuit(uint32_t id) { deleteCircuit(circuitIndex[id]); }
 	void deleteCircuit(OtCircuit circuit);
 	void deleteCircuits(const std::vector<uint32_t>& circuitIDs);
-	inline size_t getCircuitCount() {return circuits.size(); }
+	inline size_t getCircuitCount() { return circuits.size(); }
 
 	// check wires
 	inline bool causesCycle(uint32_t from, uint32_t to) { return causesCycle(pinIndex[from], pinIndex[to]); }

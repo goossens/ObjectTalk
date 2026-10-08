@@ -38,7 +38,7 @@ public:
 
 protected:
 	// return class name
-	inline const char* getClassName() override {return "ScriptComponent"; }
+	inline const char* getClassName() override { return "ScriptComponent"; }
 
 	// constructor
 	friend class OtObjectPointer<OtScriptComponentObjectClass>;

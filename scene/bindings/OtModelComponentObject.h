@@ -155,6 +155,9 @@ public:
 	}
 
 protected:
+	// return class name
+	inline const char* getClassName() override { return "ModelComponent"; }
+
 	// constructor
 	friend class OtObjectPointer<OtModelComponentObjectClass>;
 	OtModelComponentObjectClass() = default;

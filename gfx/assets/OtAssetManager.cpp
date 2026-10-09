@@ -19,16 +19,6 @@
 
 
 //
-//	OtAssetManager::~OtAssetManager
-//
-
-OtAssetManager::~OtAssetManager() {
-	// sanity check
-	OtAssert(assets.size() == 0);
-}
-
-
-//
 //	OtAssetManager::startManager
 //
 

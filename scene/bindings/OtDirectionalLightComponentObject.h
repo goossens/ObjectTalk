@@ -28,7 +28,7 @@ public:
 	// access properties
 	declareProperty(float, elevation, Elevation)
 	declareProperty(float, azimuth, Azimuth)
-	declareProperty(glm::vec3, color, Color)
+	declareVectorProperty(3, color, Color)
 	declareProperty(float, ambient, Ambient)
 	declareProperty(float, castShadow, CastShadow)
 

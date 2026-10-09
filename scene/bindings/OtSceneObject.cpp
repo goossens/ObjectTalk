@@ -14,8 +14,9 @@
 
 #include "OtEntityObject.h"
 #include "OtComponentObject.h"
-#include "OtPostProcessingObject.h"
 #include "OtSceneObject.h"
+
+#include "OtPostProcessingComponentObject.h"
 
 
 //
@@ -42,12 +43,14 @@ OtObject OtSceneObjectClass::getEntity(const std::string& tag) {
 //	OtSceneObjectClass::addEntity
 //
 
-OtObject OtSceneObjectClass::addEntity(const std::string& tag) {
+OtObject OtSceneObjectClass::addEntity(const std::string& tag, OtObject parent) {
 	if (hasEntity(tag)) {
 		OtLogError("Entity with tag [{}] already exists in scene", tag);
 	}
 
-	return OtEntityObject::create(scene, scene->createEntity(0, tag));
+	auto entity = scene->createEntity(0, tag);
+	scene->moveEntityTo(toEntity(parent), entity);
+	return OtEntityObject::create(scene, entity);
 }
 
 
@@ -74,7 +77,7 @@ OtObject OtSceneObjectClass::getRootEntity() {
 //
 
 OtObject OtSceneObjectClass::getPostProcessing() {
-	return OtPostProcessingObject::create(scene);
+	return OtPostProcessingComponentObject::create(scene);
 }
 
 

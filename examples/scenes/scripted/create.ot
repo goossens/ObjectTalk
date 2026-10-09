@@ -1,0 +1,68 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2026 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+
+// create a sphere geometry and save it as an asset
+var sphere = import("geometry").sphere();
+
+var assetsPath = Path(__DIR__, "assets");
+var spherePath = Path(assetsPath, "sphere.glb");
+
+if (!assetsPath.exists()) {
+	fs.mkdirs(assetsPath);
+}
+
+sphere.save(spherePath);
+
+// create a new scene
+var scene = import("scene").Scene();
+
+// get the root entity
+var rootEntity = scene.getRootEntity();
+
+// add a camera
+var cameraEntity = scene.addEntity("Camera", rootEntity);
+var cameraComponent = cameraEntity.addCameraComponent();
+cameraComponent.setMainCamera(true);
+
+var cameraTransform = cameraEntity.addTransformComponent();
+cameraTransform.setTranslation(0, 0, 15);
+
+// add a light
+var lightEntity = scene.addEntity("Light", rootEntity);
+var lightComponent = lightEntity.addDirectionalLightComponent();
+lightComponent.setElevation(0.0);
+
+// create group
+var spheres = scene.addEntity("Spheres", rootEntity);
+
+// generate all spheres
+for y in range(-2, 2) {
+	for x in range(-2, 2) {
+		// create the sphere's entity'
+		var sphereEntity = scene.addEntity("Sphere%d%d".format(x + 2, y + 2), spheres);
+
+		// add the geometry
+		var geometry = sphereEntity.addGeometryComponent();
+		geometry.setAsset(spherePath);
+
+		// add a transform to it
+		var transform = sphereEntity.addTransformComponent();
+		transform.setTranslation(x * 3, y * 3, 0);
+
+		// add material to it
+		var material = sphereEntity.addMaterialComponent();
+		material.setMetallic(0.25 * (x + 2));
+		material.setRoughness(0.25 * (y + 2));
+	}
+}
+
+// setup the post processing filters
+var postProcessing = scene.getPostProcessing();
+postProcessing.setFog(true);
+
+// save the scene
+scene.save(Path(__DIR__, "scripted.ots"));

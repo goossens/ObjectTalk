@@ -12,14 +12,13 @@
 #include "OtFunction.h"
 #include "OtLog.h"
 
-#include "OtMathModule.h" // IWYU pragma: keep
-
 #include "OtEntityObject.h"
 #include "OtComponentObject.h"
 
 #include "OtBackgroundComponentObject.h"
 #include "OtCameraComponentObject.h"
 #include "OtDirectionalLightComponentObject.h"
+#include "OtGeometryComponentObject.h"
 #include "OtMaterialComponentObject.h"
 #include "OtMessageComponentObject.h"
 #include "OtModelComponentObject.h"
@@ -44,6 +43,7 @@ OtObject OtEntityObjectClass::getScene() {
 implementComponent(Background)
 implementComponent(Camera)
 implementComponent(DirectionalLight)
+implementComponent(Geometry)
 implementComponent(Material)
 implementComponent(Message)
 implementComponent(Model)
@@ -119,6 +119,7 @@ OtType OtEntityObjectClass::getMeta() {
 		metaComponent(Background)
 		metaComponent(Camera)
 		metaComponent(DirectionalLight)
+		metaComponent(Geometry)
 		metaComponent(Material)
 		metaComponent(Message)
 		metaComponent(Model)

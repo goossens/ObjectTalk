@@ -17,6 +17,22 @@
 
 
 //
+//	Helper macros
+//
+
+#define declareMaterialProperty(T, N)												\
+	inline void set##N(T value) { component().material->set##N(value); }			\
+	inline T get##N() { return component().material->get##N(); }
+
+#define declareMaterialVectorProperty(D, N)											\
+	inline void set##N(size_t count, OtObject* parameters) {						\
+		component().material->set##N(toVec##D(count, parameters));					\
+	}																				\
+																					\
+	inline glm::vec##D get##N() { return component().material->get##N(); }
+
+
+//
 //	OtMaterialComponentObjectClass
 //
 
@@ -25,21 +41,20 @@ using OtMaterialComponentObject = OtObjectPointer<OtMaterialComponentObjectClass
 
 class OtMaterialComponentObjectClass : public OtComponentObjectClass {
 public:
-	// set the properties
-	inline void setAlbedo(glm::vec4 albedo) { component().material->setAlbedo(albedo); }
-	inline void setMetallic(float metallic) { component().material->setMetallic(metallic); }
-	inline void setRoughness(float roughness) { component().material->setRoughness(roughness); }
-	inline void setEmissive(glm::vec3 emissive) { component().material->setEmissive(emissive); }
-	inline void setAo(float ao) { component().material->setAo(ao); }
-	inline void setTextureOffset(glm::vec2 offset) { component().material->setTextureOffset(offset); }
-	inline void setTextureScale(float scale) { component().material->setTextureScale(scale); }
+	// access the properties
+	declareMaterialVectorProperty(4, Albedo)
+	declareMaterialProperty(float, Metallic)
+	declareMaterialProperty(float, Roughness)
+	declareMaterialVectorProperty(3, Emissive)
+	declareMaterialProperty(float, Ao)
+	declareMaterialVectorProperty(2, TextureOffset)
+	declareMaterialProperty(float, TextureScale)
 
-	// set the textures
-	inline void setAlbedoTexture(const std::string& path) { component().material->setAlbedoTexture(path); }
-	inline void setNormalTexture(const std::string& path) { component().material->setNormalTexture(path); }
-	inline void setMetallicRoughnessTexture(const std::string& path) { component().material->setMetallicRoughnessTexture(path); }
-	inline void setEmissiveTexture(const std::string& path) { component().material->setEmissiveTexture(path); }
-	inline void setAoTexture(const std::string& path) { component().material->setAoTexture(path); }
+	declareMaterialProperty(std::string, AlbedoTexture)
+	declareMaterialProperty(std::string, NormalTexture)
+	declareMaterialProperty(std::string, MetallicRoughnessTexture)
+	declareMaterialProperty(std::string, EmissiveTexture)
+	declareMaterialProperty(std::string, AoTexture)
 
 	// get type definition
 	static inline OtType getMeta() {
@@ -48,19 +63,18 @@ public:
 		if (!type) {
 			type = OtType::create<OtMaterialComponentObjectClass>("MaterialComponent", OtComponentObjectClass::getMeta());
 
-			type->set("setAlbedo", OtFunction::create(&OtMaterialComponentObjectClass::setAlbedo));
-			type->set("setMetallic", OtFunction::create(&OtMaterialComponentObjectClass::setMetallic));
-			type->set("setRoughness", OtFunction::create(&OtMaterialComponentObjectClass::setRoughness));
-			type->set("setEmissive", OtFunction::create(&OtMaterialComponentObjectClass::setEmissive));
-			type->set("setAo", OtFunction::create(&OtMaterialComponentObjectClass::setAo));
-			type->set("setTextureOffset", OtFunction::create(&OtMaterialComponentObjectClass::setTextureOffset));
-			type->set("setTextureScale", OtFunction::create(&OtMaterialComponentObjectClass::setTextureScale));
+			metaProperty(Material, Metallic)
+			metaProperty(Material, Roughness)
+			metaProperty(Material, Emissive)
+			metaProperty(Material, Ao)
+			metaProperty(Material, TextureOffset)
+			metaProperty(Material, TextureScale)
 
-			type->set("setAlbedoTexture", OtFunction::create(&OtMaterialComponentObjectClass::setAlbedoTexture));
-			type->set("setNormalTexture", OtFunction::create(&OtMaterialComponentObjectClass::setNormalTexture));
-			type->set("setMetallicRoughnessTexture", OtFunction::create(&OtMaterialComponentObjectClass::setMetallicRoughnessTexture));
-			type->set("setEmissiveTexture", OtFunction::create(&OtMaterialComponentObjectClass::setEmissiveTexture));
-			type->set("setAoTexture", OtFunction::create(&OtMaterialComponentObjectClass::setAoTexture));
+			metaProperty(Material, AlbedoTexture)
+			metaProperty(Material, NormalTexture)
+			metaProperty(Material, MetallicRoughnessTexture)
+			metaProperty(Material, EmissiveTexture)
+			metaProperty(Material, AoTexture)
 		}
 
 		return type;

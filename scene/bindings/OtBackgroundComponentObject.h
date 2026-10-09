@@ -26,7 +26,7 @@ using OtBackgroundComponentObject = OtObjectPointer<OtBackgroundComponentObjectC
 class OtBackgroundComponentObjectClass : public OtComponentObjectClass {
 public:
 	// access properties
-	declareProperty(glm::vec3, color, Color)
+	declareVectorProperty(3, color, Color)
 
 	// get type definition
 	static inline OtType getMeta()  {

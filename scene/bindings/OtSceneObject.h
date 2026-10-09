@@ -35,7 +35,7 @@ public:
 	// handle entities
 	inline bool hasEntity(const std::string& tag) {	return scene->hasEntity(tag); }
 	OtObject getEntity(const std::string& tag);
-	OtObject addEntity(const std::string& tag);
+	OtObject addEntity(const std::string& tag, OtObject parent);
 	void deleteEntity(OtObject object);
 
 	// support entity hierarchy

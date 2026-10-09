@@ -80,6 +80,7 @@ public:
 	declareComponent(Background)
 	declareComponent(Camera)
 	declareComponent(DirectionalLight)
+	declareComponent(Geometry)
 	declareComponent(Material)
 	declareComponent(Message)
 	declareComponent(Model)

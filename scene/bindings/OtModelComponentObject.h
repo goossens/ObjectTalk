@@ -28,6 +28,10 @@ using OtModelComponentObject = OtObjectPointer<OtModelComponentObjectClass>;
 
 class OtModelComponentObjectClass : public OtComponentObjectClass {
 public:
+	// access properties
+	declareAssetProperty(asset, Asset)
+	declareProperty(bool, castShadow, CastShadow)
+
 	// see if model is ready
 	inline bool isReady() { return component().asset->isReady(); }
 
@@ -134,6 +138,9 @@ public:
 
 		if (!type) {
 			type = OtType::create<OtModelComponentObjectClass>("ModelComponent", OtComponentObjectClass::getMeta());
+
+			metaProperty(Model, Asset)
+			metaProperty(Model, CastShadow)
 
 			type->set("isReady", OtFunction::create(&OtModelComponentObjectClass::isReady));
 

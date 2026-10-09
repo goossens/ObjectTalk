@@ -34,14 +34,22 @@ public:
 	nlohmann::json serialize(std::string* basedir);
 	void deserialize(nlohmann::json& data, std::string* basedir);
 
-	// set the properties
-	inline void setAlbedo(const glm::vec4& a) { albedo = a; }
-	inline void setMetallic(float m) { metallic = m; }
-	inline void setRoughness(float r) { roughness = r; }
-	inline void setEmissive(const glm::vec3& e) { emissive = e; }
-	inline void setAo(float a) { ao = a; }
-	inline void setTextureOffset(const glm::vec2& o) { offset = o; }
-	inline void setTextureScale(float s) { scale = s; }
+	// access the properties
+	inline void setAlbedo(const glm::vec4& value) { albedo = value; }
+	inline void setMetallic(float value) { metallic = value; }
+	inline void setRoughness(float value) { roughness = value; }
+	inline void setEmissive(const glm::vec3& value) { emissive = value; }
+	inline void setAo(float value) { ao = value; }
+	inline void setTextureOffset(const glm::vec2& value) { offset = value; }
+	inline void setTextureScale(float value) { scale = value; }
+
+	inline glm::vec4 getAlbedo() { return albedo; }
+	inline float getMetallic() { return metallic; }
+	inline float getRoughness() { return roughness; }
+	inline glm::vec3 getEmissive() { return emissive; }
+	inline float getAo() { return ao; }
+	inline glm::vec2 getTextureOffset() { return offset; }
+	inline float getTextureScale() { return scale; }
 
 	// set the textures
 	inline void setAlbedoTexture(const std::string& path) { albedoTexture = path; }
@@ -49,6 +57,12 @@ public:
 	inline void setMetallicRoughnessTexture(const std::string& path) { metallicRoughnessTexture = path; }
 	inline void setEmissiveTexture(const std::string& path) { emissiveTexture = path; }
 	inline void setAoTexture(const std::string& path) { aoTexture = path; }
+
+	inline std::string getAlbedoTexture() { return albedoTexture.getPath(); }
+	inline std::string getNormalTexture() { return normalTexture.getPath(); }
+	inline std::string getMetallicRoughnessTexture() { return metallicRoughnessTexture.getPath(); }
+	inline std::string getEmissiveTexture() { return emissiveTexture.getPath(); }
+	inline std::string getAoTexture() { return aoTexture.getPath(); }
 
 private:
 	// the scene renderer needs access to our properties

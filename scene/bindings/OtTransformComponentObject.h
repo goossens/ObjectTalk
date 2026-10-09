@@ -26,9 +26,9 @@ using OtTransformComponentObject = OtObjectPointer<OtTransformComponentObjectCla
 class OtTransformComponentObjectClass : public OtComponentObjectClass {
 public:
 	// access properties
-	declareProperty(glm::vec3, translation, Translation)
-	declareProperty(glm::vec3, rotation, Rotation)
-	declareProperty(glm::vec3, scale, Scale)
+	declareVectorProperty(3, translation, Translation)
+	declareVectorProperty(3, rotation, Rotation)
+	declareVectorProperty(3, scale, Scale)
 
 	// get type definition
 	static inline OtType getMeta() {

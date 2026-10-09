@@ -98,6 +98,28 @@ void OtSceneEditor::processMetaData() {
 	// process metadata and set editor properties
 	if (metadata.contains("camera")) {
 		editorCamera.deserialize(metadata["camera"], nullptr);
+
+	} else {
+		// if there is no editor camera metadata, we'll try to use the first camera (if that exists)
+		OtEntity firstCamera = OtEntityNull;
+		OtEntity mainCamera = OtEntityNull;
+
+		for (auto&& [entity, component] : scene.view<OtCameraComponent>().each()) {
+			if (!scene.isValidEntity(firstCamera)) {
+				firstCamera = entity;
+			}
+
+			if (!scene.isValidEntity(mainCamera) && component.mainCamera) {
+				mainCamera = entity;
+			}
+		}
+
+		if (scene.isValidEntity(mainCamera)) {
+			loadEditorCamera(mainCamera);
+
+		} else if (scene.isValidEntity(firstCamera)) {
+			loadEditorCamera(firstCamera);
+		}
 	}
 
 	if (metadata.contains("grid")) {

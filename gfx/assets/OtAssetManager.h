@@ -34,9 +34,6 @@
 
 class OtAssetManager : OtSingleton<OtAssetManager> {
 public:
-	// destructor
-	~OtAssetManager();
-
 	// start/stop the asset manager
 	static inline void start() { instance().startManager(); }
 	static inline void stop() { instance().stopManager(); }

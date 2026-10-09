@@ -192,7 +192,7 @@ void OtMesh::save(const std::string& path, bool tangent, bool bitangent, bool uv
 		i++;
 	}
 
-	aMash->mNumFaces = indices.size() / 3;
+	aMash->mNumFaces = static_cast<unsigned int>(indices.size() / 3);
 	aMash->mFaces = new aiFace[aMash->mNumFaces];
 
 	for (size_t i = 0; i < static_cast<size_t>(aMash->mNumFaces); i++) {

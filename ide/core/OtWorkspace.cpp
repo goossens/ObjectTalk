@@ -61,7 +61,7 @@ void OtWorkspace::onSetup() {
 	if (OtPath::isDirectory(examples)) {
 		auto& dialog = FileSelector::Instance();
 		dialog.AddFavorite("Examples", examples);
-		dialog.SetCurrentPath(examples);
+		dialog.ResetCurrentPath(examples);
 	}
 
 	// listen for message bus events

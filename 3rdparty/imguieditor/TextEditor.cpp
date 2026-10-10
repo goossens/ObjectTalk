@@ -1155,8 +1155,8 @@ bool TextEditor::updateState() {
 
 	if (typeSetter.update(config, document, lineFold)) {
 		// see if we can scroll to preserve the first visible line
-		// but we don't overrule an API scroll request
-		if (scrollToLineNumber == invalidLine) {
+		// but we don't overrule outstanding requests
+		if (scrollToLineNumber == invalidLine && ensureVisiblePos.line == invalidLine) {
 			scrollToLine(previousFirstLine, Scroll::alignTop, firstVisibleLineFraction);
 		}
 	}
@@ -2135,7 +2135,7 @@ void TextEditor::makeCursorVisible() {
 	scrollToLineNumber = invalidLine;
 
 	if (config.lineFolding) {
-		lineFold.unfoldAroundLine(document, cursors.getCurrent().getInteractiveEnd().line);
+		lineFold.unfoldAroundLine(document, ensureVisiblePos.line);
 	}
 
 	resetCursorAnimationTimer();

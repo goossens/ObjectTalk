@@ -68,7 +68,6 @@ void OtEditor::saveAsFile(const std::string& p) {
 //	OtEditor::renderMenuBar
 //
 
-
 void OtEditor::renderMenuBar(bool canRun) {
 	// determine if this editor's contents is "runnable"
 	bool runnable = canRun && isRunnable() && !isDirty() && OtPath::isRegularFile(path);

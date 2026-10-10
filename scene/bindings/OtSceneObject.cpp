@@ -86,7 +86,7 @@ OtObject OtSceneObjectClass::getPostProcessing() {
 //
 
 OtEntity OtSceneObjectClass::toEntity(OtObject object) {
-	if (object->isKindOf("Entity")) {
+	if (object.isKindOf<OtEntityObjectClass>()) {
 		auto entity = OtEntityObject(object)->entity;
 
 		if (scene->isValidEntity(entity)) {
@@ -96,7 +96,7 @@ OtEntity OtSceneObjectClass::toEntity(OtObject object) {
 			OtLogError("Entity not found in scene");
 		}
 
-	} else if (object->isKindOf("String")) {
+	} else if (object.isKindOf<OtStringClass>()) {
 		auto tag = object->operator std::string();
 
 		if (scene->hasEntity(tag)) {

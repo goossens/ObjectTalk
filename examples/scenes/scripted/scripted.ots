@@ -6,7 +6,7 @@
 				{
 					"component": "Core",
 					"tag": "Camera",
-					"uuid": 2015205294
+					"uuid": 3624339900
 				},
 				{
 					"component": "Transform",
@@ -41,7 +41,7 @@
 				{
 					"component": "Core",
 					"tag": "Light",
-					"uuid": 885088655
+					"uuid": 4105550038
 				},
 				{
 					"ambient": 0.05000000074505806,
@@ -65,7 +65,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere00",
-							"uuid": 1383440407
+							"uuid": 292098847
 						},
 						{
 							"castShadow": true,
@@ -130,7 +130,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere10",
-							"uuid": 580385700
+							"uuid": 2027998102
 						},
 						{
 							"castShadow": true,
@@ -195,7 +195,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere20",
-							"uuid": 2687925958
+							"uuid": 2179059412
 						},
 						{
 							"castShadow": true,
@@ -260,7 +260,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere30",
-							"uuid": 3594932826
+							"uuid": 3984501513
 						},
 						{
 							"castShadow": true,
@@ -325,7 +325,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere40",
-							"uuid": 1366911016
+							"uuid": 4209024302
 						},
 						{
 							"castShadow": true,
@@ -390,7 +390,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere01",
-							"uuid": 2239194352
+							"uuid": 4025368148
 						},
 						{
 							"castShadow": true,
@@ -455,7 +455,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere11",
-							"uuid": 2407461619
+							"uuid": 4244047508
 						},
 						{
 							"castShadow": true,
@@ -520,7 +520,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere21",
-							"uuid": 1889064454
+							"uuid": 1882795557
 						},
 						{
 							"castShadow": true,
@@ -585,7 +585,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere31",
-							"uuid": 2890095125
+							"uuid": 2106966807
 						},
 						{
 							"castShadow": true,
@@ -650,7 +650,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere41",
-							"uuid": 4166288168
+							"uuid": 2008454349
 						},
 						{
 							"castShadow": true,
@@ -715,7 +715,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere02",
-							"uuid": 513777734
+							"uuid": 4205327273
 						},
 						{
 							"castShadow": true,
@@ -780,7 +780,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere12",
-							"uuid": 2037367256
+							"uuid": 1330865952
 						},
 						{
 							"castShadow": true,
@@ -845,7 +845,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere22",
-							"uuid": 722345491
+							"uuid": 984544690
 						},
 						{
 							"castShadow": true,
@@ -910,7 +910,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere32",
-							"uuid": 2136856527
+							"uuid": 2459647114
 						},
 						{
 							"castShadow": true,
@@ -975,7 +975,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere42",
-							"uuid": 2106147299
+							"uuid": 1878682955
 						},
 						{
 							"castShadow": true,
@@ -1040,7 +1040,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere03",
-							"uuid": 3995298994
+							"uuid": 3558838155
 						},
 						{
 							"castShadow": true,
@@ -1105,7 +1105,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere13",
-							"uuid": 1345961263
+							"uuid": 1972003747
 						},
 						{
 							"castShadow": true,
@@ -1170,7 +1170,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere23",
-							"uuid": 3495629079
+							"uuid": 1330998175
 						},
 						{
 							"castShadow": true,
@@ -1235,7 +1235,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere33",
-							"uuid": 448703795
+							"uuid": 4245293774
 						},
 						{
 							"castShadow": true,
@@ -1300,7 +1300,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere43",
-							"uuid": 2932331108
+							"uuid": 1771480368
 						},
 						{
 							"castShadow": true,
@@ -1365,7 +1365,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere04",
-							"uuid": 1898174287
+							"uuid": 1292902992
 						},
 						{
 							"castShadow": true,
@@ -1430,7 +1430,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere14",
-							"uuid": 2147306017
+							"uuid": 1376452998
 						},
 						{
 							"castShadow": true,
@@ -1495,7 +1495,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere24",
-							"uuid": 4240531034
+							"uuid": 3240011970
 						},
 						{
 							"castShadow": true,
@@ -1560,7 +1560,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere34",
-							"uuid": 1266428683
+							"uuid": 3567392826
 						},
 						{
 							"castShadow": true,
@@ -1625,7 +1625,7 @@
 						{
 							"component": "Core",
 							"tag": "Sphere44",
-							"uuid": 2036391234
+							"uuid": 1266675435
 						},
 						{
 							"castShadow": true,
@@ -1689,7 +1689,23 @@
 				{
 					"component": "Core",
 					"tag": "Spheres",
-					"uuid": 941673878
+					"uuid": 2784528661
+				}
+			]
+		},
+		{
+			"children": [],
+			"components": [
+				{
+					"component": "Core",
+					"tag": "Message",
+					"uuid": 52775352
+				},
+				{
+					"component": "Message",
+					"fadeTime": 1.5,
+					"message": "This scene was created with an ObjectTalk script\nHorizontal >metallic, vertical >roughness",
+					"visibleTime": 5.0
 				}
 			]
 		}

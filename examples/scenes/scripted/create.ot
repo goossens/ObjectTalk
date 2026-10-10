@@ -60,9 +60,15 @@ for y in range(-2, 2) {
 	}
 }
 
+// add a message
+var message = scene.addEntity("Message", rootEntity).addMessageComponent();
+message.show("This scene was created with an ObjectTalk script\nHorizontal >metallic, vertical >roughness", 5, 1.5);
+
 // setup the post processing filters
 var postProcessing = scene.getPostProcessing();
 postProcessing.setFog(true);
 
 // save the scene
-scene.save(Path(__DIR__, "scripted.ots"));
+var target = Path(__DIR__, "scripted.ots");
+scene.save(target);
+print("New scene saved to [%s]".format(target));

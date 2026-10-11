@@ -632,7 +632,10 @@ void OtWorkspace::renderTabbedEditors() {
 					}
 
 					ImGui::BeginChild("editor", ImVec2(), ImGuiChildFlags_Borders, ImGuiWindowFlags_MenuBar);
-					editor->renderMenuBar(!subprocess.isRunning());
+					if (editor->renderMenuBar(!subprocess.isRunning())) {
+						ImGui::SetNextWindowFocus();
+					}
+
 					editor->renderEditor();
 					ImGui::EndChild();
 
@@ -684,7 +687,11 @@ void OtWorkspace::renderWindowedEditors() {
 			// render editor in separate window
 			bool open = true;
 			ImGui::Begin(OtPath::getFilename(editor->getPath()).c_str(), &open, flags);
-			editor->renderMenuBar(!subprocess.isRunning());
+
+			if (editor->renderMenuBar(!subprocess.isRunning())) {
+				ImGui::SetNextWindowFocus();
+			}
+
 			editor->renderEditor();
 
 			if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows)) {

@@ -64,7 +64,7 @@ OtMarkdown::OtMarkdown() {
 
 void OtMarkdown::render(const std::string& markdown) {
 	fontSize = ImGui::GetStyle().FontSizeBase;
-	md_parse(markdown.c_str(), MD_SIZE(markdown.size()), &md, this);
+	md_parse(markdown.c_str(), static_cast<MD_SIZE>(markdown.size()), &md, this);
 }
 
 

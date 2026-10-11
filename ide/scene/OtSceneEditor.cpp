@@ -206,11 +206,13 @@ void OtSceneEditor::setSceneCamera(int cameraNumber) {
 //	OtSceneEditor::renderMenus
 //
 
-void OtSceneEditor::renderMenus() {
+bool OtSceneEditor::renderMenus() {
 	// get status
 	bool selected = scene.isValidEntity(selectedEntity);
+	bool isMenuOpen = false;
 
 	if (ImGui::BeginMenu("Edit")) {
+		isMenuOpen |= true;
 		if (ImGui::MenuItem("Undo", OT_UI_SHORTCUT "Z", nullptr, taskManager.canUndo())) { taskManager.undo(); }
 #if __APPLE__
 		if (ImGui::MenuItem("Redo", "^" OT_UI_SHORTCUT "Z", nullptr, taskManager.canRedo())) { taskManager.redo(); }
@@ -227,6 +229,7 @@ void OtSceneEditor::renderMenus() {
 	}
 
 	if (ImGui::BeginMenu("View")) {
+		isMenuOpen |= true;
 		if (ImGui::MenuItem("Toggle Debug")) { toggleRendererDebug(); }
 		ImGui::Separator();
 
@@ -360,6 +363,7 @@ void OtSceneEditor::renderMenus() {
 
 	// render post processing menu
 	if (ImGui::BeginMenu("Processing")) {
+		isMenuOpen |= true;
 		auto& processor = scene.getPostProcessing();
 		auto oldValue = processor.serialize(nullptr).dump();
 
@@ -373,6 +377,8 @@ void OtSceneEditor::renderMenus() {
 
 		ImGui::EndMenu();
 	}
+
+	return isMenuOpen;
 }
 
 

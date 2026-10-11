@@ -72,8 +72,11 @@ void OtTextEditor::save() {
 //	OtTextEditor::renderMenus
 //
 
-void OtTextEditor::renderMenus() {
+bool OtTextEditor::renderMenus() {
+	bool isMenuOpen = false;
+
 	if (ImGui::BeginMenu("Edit")) {
+		isMenuOpen |= true;
 		if (ImGui::MenuItem("Undo", " " OT_UI_SHORTCUT "Z", nullptr, editor.CanUndo())) { editor.Undo(); }
 #if __APPLE__
 		if (ImGui::MenuItem("Redo", "^" OT_UI_SHORTCUT "Z", nullptr, editor.CanRedo())) { editor.Redo(); }
@@ -95,6 +98,7 @@ void OtTextEditor::renderMenus() {
 	}
 
 	if (ImGui::BeginMenu("Selection")) {
+		isMenuOpen |= true;
 		if (ImGui::MenuItem("Select All", " " OT_UI_SHORTCUT "A", nullptr, !editor.IsEmpty())) { editor.SelectAll(); }
 		ImGui::Separator();
 
@@ -116,6 +120,7 @@ void OtTextEditor::renderMenus() {
 	}
 
 	if (ImGui::BeginMenu("View")) {
+		isMenuOpen |= true;
 		if (ImGui::MenuItem("Zoom In", " " OT_UI_SHORTCUT "+")) { zoomIn(); }
 		if (ImGui::MenuItem("Zoom Out", " " OT_UI_SHORTCUT "-")) { zoomOut(); }
 		ImGui::Separator();
@@ -128,6 +133,7 @@ void OtTextEditor::renderMenus() {
 	}
 
 	if (ImGui::BeginMenu("Find", editor.IsFindReplaceEnabled())) {
+		isMenuOpen |= true;
 		if (ImGui::MenuItem("Find", " " OT_UI_SHORTCUT "F")) { editor.OpenFindReplaceWindow(); }
 		if (ImGui::MenuItem("Find Next", " " OT_UI_SHORTCUT "G", nullptr, editor.HasFindString())) { editor.FindNext(); }
 		if (ImGui::MenuItem("Find All", "^" OT_UI_SHORTCUT "G", nullptr, editor.HasFindString())) { editor.FindAll(); }
@@ -136,6 +142,8 @@ void OtTextEditor::renderMenus() {
 	}
 
 	if (ImGui::BeginMenu("Options")) {
+		isMenuOpen |= true;
+
 		if (ImGui::BeginMenu("Tab Size")) {
 			if (ImGui::MenuItem("1")) { editor.SetTabSize(1); }
 			if (ImGui::MenuItem("2")) { editor.SetTabSize(2); }
@@ -182,6 +190,8 @@ void OtTextEditor::renderMenus() {
 		flag = editor.IsFindReplaceEnabled(); if (ImGui::MenuItem("Find/Replace Enabled", nullptr, &flag)) { editor.SetFindReplaceEnabled(flag); };
 		ImGui::EndMenu();
 	}
+
+	return isMenuOpen;
 }
 
 

@@ -181,15 +181,13 @@ void OtMesh::save(const std::string& path, bool tangent, bool bitangent, bool uv
 		aMash->mNumUVComponents[0] = 2;
 	}
 
-	size_t i = 0;
-
-	for (auto& vertex : vertices) {
+	for (size_t i = 0; i < vertices.size(); i++) {
+		auto& vertex = vertices[i];
 		aMash->mVertices[i] = aiVector3D(vertex.position.x, vertex.position.y, vertex.position.z);
 		aMash->mNormals[i] = aiVector3D(vertex.normal.x, vertex.normal.y, vertex.normal.z);
 		if (tangent) { aMash->mTangents[i] = aiVector3D(vertex.tangent.x, vertex.tangent.y, vertex.tangent.z); }
 		if (bitangent) { aMash->mBitangents[i] = aiVector3D(vertex.bitangent.x, vertex.bitangent.y, vertex.bitangent.z); }
 		if (uv) { aMash->mTextureCoords[0][i] = aiVector3D(vertex.uv.x, vertex.uv.y, 0.0f); }
-		i++;
 	}
 
 	aMash->mNumFaces = static_cast<unsigned int>(indices.size() / 3);

@@ -123,12 +123,14 @@ void OtAudioEditor::alignSelectedCircuits(OtAlignCircuitsTask::Alignment alignme
 //	OtAudioEditor::renderMenus
 //
 
-void OtAudioEditor::renderMenus() {
+bool OtAudioEditor::renderMenus() {
 	// get status
+	bool isMenuOpen = false;
 	bool selected = audio.hasSelected();
 	bool multipleSelected = audio.hasMultipleSelected();
 
 	if (ImGui::BeginMenu("Edit")) {
+		isMenuOpen |= true;
 		if (ImGui::MenuItem("Undo", OT_UI_SHORTCUT "Z", nullptr, taskManager.canUndo())) { taskManager.undo(); }
 #if __APPLE__
 		if (ImGui::MenuItem("Redo", "^" OT_UI_SHORTCUT "Z", nullptr, taskManager.canRedo())) { taskManager.redo(); }
@@ -146,18 +148,21 @@ void OtAudioEditor::renderMenus() {
 	}
 
 	if (ImGui::BeginMenu("Selection")) {
+		isMenuOpen |= true;
 		if (ImGui::MenuItem("Select All", OT_UI_SHORTCUT "A")) { audio.selectAll(); }
 		if (ImGui::MenuItem("Clear Selection")) { audio.deselectAll(); }
 		ImGui::EndMenu();
 	}
 
 	if (ImGui::BeginMenu("View")) {
+		isMenuOpen |= true;
 		bool flag;
 		flag = widget.isRenderingGrid(); if (ImGui::MenuItem("Show Grid", nullptr, &flag)) { widget.setGridRendering(flag); };
 		ImGui::EndMenu();
 	}
 
 	if (ImGui::BeginMenu("Align")) {
+		isMenuOpen |= true;
 		if (ImGui::MenuItem("Left", nullptr, nullptr, multipleSelected)) { alignSelectedCircuits(OtAlignCircuitsTask::Alignment::left); }
 		if (ImGui::MenuItem("Center", nullptr, nullptr, multipleSelected)) { alignSelectedCircuits(OtAlignCircuitsTask::Alignment::center); }
 		if (ImGui::MenuItem("Right", nullptr, nullptr, multipleSelected)) { alignSelectedCircuits(OtAlignCircuitsTask::Alignment::right); }
@@ -167,6 +172,8 @@ void OtAudioEditor::renderMenus() {
 		if (ImGui::MenuItem("Bottom", nullptr, nullptr, multipleSelected)) { alignSelectedCircuits(OtAlignCircuitsTask::Alignment::bottom); }
 		ImGui::EndMenu();
 	}
+
+	return isMenuOpen;
 }
 
 

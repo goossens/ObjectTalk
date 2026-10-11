@@ -41,8 +41,8 @@ public:
 	const std::string& getPath() { return path; }
 
 	// render the editor parts
-	void renderMenuBar(bool canRun);
-	virtual inline void renderMenus() {}
+	bool renderMenuBar(bool canRun);
+	virtual inline bool renderMenus() { return false; }
 	virtual inline void handleShortcuts() {}
 	virtual inline void renderEditor() {}
 
@@ -73,4 +73,5 @@ protected:
 	std::string path;
 	OtFileWatcher watcher;
 	VisualState visualState = VisualState::inTab;
+	bool wasMenuOpen = false;
 };

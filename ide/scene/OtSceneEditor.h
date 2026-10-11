@@ -65,7 +65,7 @@ private:
 	void setSceneCamera(int cameraNumber);
 
 	// render the parts
-	void renderMenus() override;
+	bool renderMenus() override;
 	void handleShortcuts() override;
 	void renderEditor() override;
 	void renderPanels();

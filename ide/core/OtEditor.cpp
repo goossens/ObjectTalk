@@ -68,9 +68,12 @@ void OtEditor::saveAsFile(const std::string& p) {
 //	OtEditor::renderMenuBar
 //
 
-void OtEditor::renderMenuBar(bool canRun) {
+bool OtEditor::renderMenuBar(bool canRun) {
 	// determine if this editor's contents is "runnable"
 	bool runnable = canRun && isRunnable() && !isDirty() && OtPath::isRegularFile(path);
+
+	// track if any menus are open
+	bool isMenuOpen = false;
 
 	// create menubar
 	if (ImGui::BeginMenuBar()) {
@@ -78,6 +81,7 @@ void OtEditor::renderMenuBar(bool canRun) {
 
 		// create file menu
 		if (ImGui::BeginMenu("File")) {
+			isMenuOpen |= true;
 			if (ImGui::MenuItem("New", OT_UI_SHORTCUT "N")) { OtMessageBus::send("new"); }
 			if (ImGui::MenuItem("Open...", OT_UI_SHORTCUT "O")) { OtMessageBus::send("open"); }
 			ImGui::Separator();
@@ -100,10 +104,11 @@ void OtEditor::renderMenuBar(bool canRun) {
 		}
 
 		// let editor render specific menus
-		renderMenus();
+		isMenuOpen |= renderMenus();
 
 		// create window menu
 		if (ImGui::BeginMenu("Window")) {
+			isMenuOpen |= true;
 			if (ImGui::MenuItem("Toggle Console")) { OtMessageBus::send("toggleconsole"); }
 			ImGui::Separator();
 			if (ImGui::MenuItem("Move to Window", nullptr, nullptr, isRenderedInTab())) { setVisualState(VisualState::inWindow); }
@@ -153,6 +158,11 @@ void OtEditor::renderMenuBar(bool canRun) {
 
 	// also let editor handle specific shortcuts
 	handleShortcuts();
+
+	// see if menu was closed this frame
+	auto menuClosed = wasMenuOpen && !isMenuOpen;
+	wasMenuOpen = isMenuOpen;
+	return menuClosed;
 }
 
 

@@ -68,7 +68,7 @@ void OtSceneRendererContext::initialize(OtScene* s, OtCamera c) {
 	scene->eachEntityBreadthFirst([&](OtEntity entity) {
 		// process image based lighting
 		if (scene->hasComponent<OtIblComponent>(entity)) {
-			hasImageBasedLighting |= scene->getComponent<OtIblComponent>(entity).cubemap.isReady();
+			hasImageBasedLighting |= scene->getComponent<OtIblComponent>(entity).asset.isReady();
 			iblEntity = entity;
 		}
 

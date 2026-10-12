@@ -81,11 +81,21 @@ public:
 	declareComponent(Camera)
 	declareComponent(DirectionalLight)
 	declareComponent(Geometry)
+	declareComponent(Grass)
+	declareComponent(Ibl)
+	declareComponent(Instancing)
 	declareComponent(Material)
 	declareComponent(Message)
 	declareComponent(Model)
+	declareComponent(Nodes)
+	declareComponent(Particles)
+	declareComponent(PointLight)
 	declareComponent(Script)
+	declareComponent(Sky)
+	declareComponent(SkyBox)
+	declareComponent(Terrain)
 	declareComponent(Transform)
+	declareComponent(Water)
 
 	// get type definition
 	static OtType getMeta();

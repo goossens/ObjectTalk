@@ -24,7 +24,7 @@
 
 void OtImageBasedLighting::update(OtIblComponent& component) {
 	// see if the cubemap has changed
-	OtCubeMap& cubemap = component.cubemap->getCubeMap();
+	OtCubeMap& cubemap = component.asset->getCubeMap();
 
 	if (cubemap.getVersion() != iblSkyMapVersion) {
 		// initialize resources (if required)

@@ -19,11 +19,22 @@
 #include "OtCameraComponentObject.h"
 #include "OtDirectionalLightComponentObject.h"
 #include "OtGeometryComponentObject.h"
+#include "OtGrassComponentObject.h"
+#include "OtIblComponentObject.h"
+#include "OtInstancingComponentObject.h"
 #include "OtMaterialComponentObject.h"
 #include "OtMessageComponentObject.h"
 #include "OtModelComponentObject.h"
+#include "OtNodesComponentObject.h"
+#include "OtParticlesComponentObject.h"
+#include "OtPointLightComponentObject.h"
 #include "OtScriptComponentObject.h"
+#include "OtSkyComponentObject.h"
+#include "OtSkyBoxComponentObject.h"
+#include "OtTerrainComponentObject.h"
 #include "OtTransformComponentObject.h"
+#include "OtWaterComponentObject.h"
+
 #include "OtSceneObject.h"
 
 
@@ -44,11 +55,21 @@ implementComponent(Background)
 implementComponent(Camera)
 implementComponent(DirectionalLight)
 implementComponent(Geometry)
+implementComponent(Grass)
+implementComponent(Ibl)
+implementComponent(Instancing)
 implementComponent(Material)
 implementComponent(Message)
 implementComponent(Model)
+implementComponent(Nodes)
+implementComponent(Particles)
+implementComponent(PointLight)
 implementComponent(Script)
+implementComponent(Sky)
+implementComponent(SkyBox)
+implementComponent(Terrain)
 implementComponent(Transform)
+implementComponent(Water)
 
 
 //
@@ -120,11 +141,21 @@ OtType OtEntityObjectClass::getMeta() {
 		metaComponent(Camera)
 		metaComponent(DirectionalLight)
 		metaComponent(Geometry)
+		metaComponent(Grass)
+		metaComponent(Ibl)
+		metaComponent(Instancing)
 		metaComponent(Material)
 		metaComponent(Message)
 		metaComponent(Model)
+		metaComponent(Nodes)
+		metaComponent(Particles)
+		metaComponent(PointLight)
 		metaComponent(Script)
+		metaComponent(Sky)
+		metaComponent(SkyBox)
+		metaComponent(Terrain)
 		metaComponent(Transform)
+		metaComponent(Water)
 	}
 
 	return type;

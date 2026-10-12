@@ -23,7 +23,7 @@
 
 bool OtSkyBoxComponent::renderUI() {
 	auto changed = false;
-	changed |= cubemap.renderUI("Cube Map");
+	changed |= asset.renderUI("Cube Map");
 	changed |= OtUi::dragFloat("Brightness", &brightness, 0.1f, 4.0f);
 	changed |= OtUi::dragFloat("Gamma", &gamma, 0.1f, 4.0f);
 	return changed;
@@ -36,7 +36,7 @@ bool OtSkyBoxComponent::renderUI() {
 
 nlohmann::json OtSkyBoxComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
-	data["cubemap"] = OtAssetSerialize(cubemap.getPath(), basedir);
+	data["asset"] = OtAssetSerialize(asset.getPath(), basedir);
 	data["brightness"] = brightness;
 	data["gamma"] = gamma;
 	return data;
@@ -48,7 +48,7 @@ nlohmann::json OtSkyBoxComponent::serialize(std::string* basedir) {
 //
 
 void OtSkyBoxComponent::deserialize(nlohmann::json& data, std::string* basedir) {
-	cubemap = OtAssetDeserialize(&data, "cubemap", basedir);
+	asset = OtAssetDeserialize(&data, "asset", basedir);
 	brightness = data.value("brightness", 1.0f);
 	gamma = data.value("gamma", 2.2f);
 }

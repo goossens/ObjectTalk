@@ -54,7 +54,7 @@ void OtSceneRenderEntitiesPass::renderEntities(OtSceneRendererContext& ctx) {
 		// render terrain
 		if (ctx.hasTerrainEntities) {
 			ctx.scene->view<OtTerrainComponent>().each([&](auto entity, auto& terrain) {
-				if (!ctx.renderingShadow || terrain.terrain->isCastingShadow()) {
+				if (!ctx.renderingShadow || terrain.terrain->getCastShadow()) {
 					renderTerrain(ctx, entity, terrain);
 				}
 			});
@@ -118,7 +118,7 @@ void OtSceneRenderEntitiesPass::renderEntity(OtSceneRendererContext& ctx, OtEnti
 	if (ctx.scene->hasComponent<OtTerrainComponent>(entity)) {
 		auto& terrain = ctx.scene->getComponent<OtTerrainComponent>(entity);
 
-		if (!ctx.renderingShadow || terrain.terrain->isCastingShadow()) {
+		if (!ctx.renderingShadow || terrain.terrain->getCastShadow()) {
 			renderTerrain(ctx, entity, terrain);
 		}
 	}
@@ -293,7 +293,7 @@ void OtSceneRenderEntitiesPass::renderTerrainHelper(
 	OtTerrainMaterial& material = terrain.material;
 
 	// setup pipeline
-	ctx.pass->bindPipeline(terrain.isWireframe() ? linesPipeline : cullingPipeline);
+	ctx.pass->bindPipeline(terrain.getWireframe() ? linesPipeline : cullingPipeline);
 
 	// set (per terrain) vertex uniforms
 	struct TerrainVertexUniforms {

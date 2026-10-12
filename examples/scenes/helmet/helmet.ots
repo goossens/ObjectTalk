@@ -45,12 +45,12 @@
 				},
 				{
 					"component": "Image Based Lighting (IBL)",
-					"cubemap": "assets/sunset.hdr"
+					"asset": "assets/sunset.hdr"
 				},
 				{
 					"brightness": 0.8199999928474426,
 					"component": "Sky Box",
-					"cubemap": "assets/sunset.hdr",
+					"asset": "assets/sunset.hdr",
 					"gamma": 2.200000047683716
 				}
 			]

@@ -37,5 +37,5 @@ public:
 	static constexpr char const* name = "Image Based Lighting (IBL)";
 
 	// stored properties
-	OtAsset<OtCubeMapAsset> cubemap;
+	OtAsset<OtCubeMapAsset> asset;
 };

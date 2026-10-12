@@ -88,7 +88,7 @@
 				{
 					"brightness": 0.5,
 					"component": "Sky Box",
-					"cubemap": "assets/space.json",
+					"asset": "assets/space.json",
 					"gamma": 2.200000047683716
 				}
 			]

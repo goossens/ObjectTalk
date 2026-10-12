@@ -57,7 +57,7 @@ void OtSkyPass::render(OtSceneRendererContext& ctx) {
 
 	// see if we have any sky boxes
 	for (auto&& [entity, component] : ctx.scene->view<OtSkyBoxComponent>().each()) {
-		if (component.cubemap.isReady()) {
+		if (component.asset.isReady()) {
 			renderSkyBox(ctx, component);
 		}
 	};
@@ -120,7 +120,7 @@ void OtSkyPass::renderSkyBox(OtSceneRendererContext& ctx, OtSkyBoxComponent& sky
 	ctx.pass->bindFragmentUniforms(0, &uniforms, sizeof(uniforms));
 
 	// submit texture via sampler
-	ctx.pass->bindFragmentSampler(0, ctx.cubemapSampler, skybox.cubemap->getCubeMap());
+	ctx.pass->bindFragmentSampler(0, ctx.cubemapSampler, skybox.asset->getCubeMap());
 
 	// render sky
 	ctx.pass->render(3);

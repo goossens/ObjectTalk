@@ -19,7 +19,7 @@
 //
 
 bool OtIblComponent::renderUI() {
-	return cubemap.renderUI("Cube Map");
+	return asset.renderUI("Cube Map");
 }
 
 
@@ -29,7 +29,7 @@ bool OtIblComponent::renderUI() {
 
 nlohmann::json OtIblComponent::serialize(std::string* basedir) {
 	auto data = nlohmann::json::object();
-	data["cubemap"] = OtAssetSerialize(cubemap.getPath(), basedir);
+	data["asset"] = OtAssetSerialize(asset.getPath(), basedir);
 	return data;
 }
 
@@ -39,5 +39,5 @@ nlohmann::json OtIblComponent::serialize(std::string* basedir) {
 //
 
 void OtIblComponent::deserialize(nlohmann::json& data, std::string* basedir) {
-	cubemap = OtAssetDeserialize(&data, "cubemap", basedir);
+	asset = OtAssetDeserialize(&data, "asset", basedir);
 }

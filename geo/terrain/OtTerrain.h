@@ -46,11 +46,22 @@ public:
 	// access the meshes
 	inline std::vector<OtTerrainMesh>& getMeshes() { return meshes; }
 
-	// are we rendering a wireframe
-	inline bool isWireframe() { return wireframe; }
+	// access properties
+	inline void setTileSize(int value) { tileSize = value; }
+	inline void setLOD(int value) { lod = value; }
+	inline void setHorizontalScale(float value) { hScale = value; }
+	inline void setVerticalScale(float value) { vScale = value; }
+	inline void setVerticalOffset(float value) { vOffset = value; }
+	inline void setCastShadow(bool value) { castShadow = value; }
+	inline void setWireframe(bool value) { wireframe = value; }
 
-	// is the terrain casting a shadow
-	inline bool isCastingShadow() { return castShadow; }
+	inline int getTileSize() { return tileSize; }
+	inline int getLOD() { return lod; }
+	inline float getHorizontalScale() { return hScale; }
+	inline float getVerticalScale() { return vScale; }
+	inline float getVerticalOffset() { return vOffset; }
+	inline bool getCastShadow() { return castShadow; }
+	inline bool getWireframe() { return wireframe; }
 
 private:
 	// the scene renderer needs access to our properties
@@ -93,6 +104,7 @@ private:
 	static constexpr int bottomDegenerate = 4;
 	static constexpr int rightDegenerate = 8;
 
+	// support functions
 	void initialize();
 	void clear();
 	void createVertices();

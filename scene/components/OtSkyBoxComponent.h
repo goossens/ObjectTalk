@@ -37,7 +37,7 @@ public:
 	static constexpr char const* name = "Sky Box";
 
 	// stored properties
-	OtAsset<OtCubeMapAsset> cubemap;
+	OtAsset<OtCubeMapAsset> asset;
 	float brightness = 1.0f;
 	float gamma = 2.2f;
 };

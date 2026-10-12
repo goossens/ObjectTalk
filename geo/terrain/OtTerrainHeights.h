@@ -35,10 +35,52 @@ public:
 	nlohmann::json serialize(std::string* basedir);
 	void deserialize(nlohmann::json& data, std::string* basedir);
 
-	// properties
-	int heightMapSize = 256;
-	float heightMapDensity = 1.0f;
-	float normalStrength = 10.0f;
+	// access properties
+	inline void setMapSize(int value) { heightMapSize = value; }
+	inline void setMapDensity(float value) { heightMapDensity = value; }
+	inline void setNormalStrength(float value) { normalStrength = value; }
+
+	inline int getMapSize() { return heightMapSize; }
+	inline float getMapDensity() { return heightMapDensity; }
+	inline float getNormalStrength() { return normalStrength; }
+
+	inline void setNoiseFrequency(int value) { noise.frequency = value; }
+	inline void setNoiseLacunarity(int value) { noise.lacunarity = value; }
+	inline void setNoiseAmplitude(float value) { noise.amplitude = value; }
+	inline void setNoisePersistence(float value) { noise.persistence = value; }
+	inline void setNoiseOctaves(int value) { noise.octaves = value; }
+
+	inline int getNoiseFrequency() { return noise.frequency; }
+	inline float getNoiseLacunarity() { return noise.lacunarity; }
+	inline float getNoiseAmplitude() { return noise.amplitude; }
+	inline int getNoisePersistence() { return noise.persistence; }
+	inline int getNoiseOctaves() { return noise.octaves; }
+
+	inline void setErosionRounding(glm::vec4 value) { erosion.rounding = value; }
+	inline void setErosionOnset(glm::vec4 value) { erosion.onset = value; }
+	inline void setErosionAssumedSlope(glm::vec2 value) { erosion.assumedSlope = value; }
+	inline void setErosionScale(float value) { erosion.scale = value; }
+	inline void setErosionStrength(float value) { erosion.strength = value; }
+	inline void setErosionGullyWeight(float value) { erosion.gullyWeight = value; }
+	inline void setErosionDetail(float value) { erosion.detail = value; }
+	inline void setErosionCellScale(float value) { erosion.cellScale = value; }
+	inline void setErosionGain(float value) { erosion.gain = value; }
+	inline void setErosionLacunarity(float value) { erosion.lacunarity = value; }
+	inline void setErosionNormalization(float value) { erosion.normalization = value; }
+	inline void setErosionOctaves(int value) { erosion.octaves = value; }
+
+	inline glm::vec4 getErosionRounding() { return erosion.rounding; }
+	inline glm::vec4 getErosionOnset() { return erosion.onset; }
+	inline glm::vec2 getErosionAssumedSlope() { return erosion.assumedSlope; }
+	inline float getErosionScale() { return erosion.scale; }
+	inline float getErosionStrength() { return erosion.strength; }
+	inline float getErosionGullyWeight() { return erosion.gullyWeight; }
+	inline float getErosionDetail() { return erosion.detail; }
+	inline float getErosionCellScale() { return erosion.cellScale; }
+	inline float getErosionGain() { return erosion.gain; }
+	inline float getErosionLacunarity() { return erosion.lacunarity; }
+	inline float getErosionNormalization() { return erosion.normalization; }
+	inline int getErosionOctaves() { return erosion.octaves; }
 
 	// rendering tools
 	bool textureDirty = true;
@@ -56,6 +98,13 @@ public:
 	void update();
 
 private:
+	friend class OtSceneRenderEntitiesPass;
+
+	// properties
+	int heightMapSize = 256;
+	float heightMapDensity = 1.0f;
+	float normalStrength = 10.0f;
+
 	// generators/filters
 	struct Noise : public OtGenerator {
 		// configure the compute pass

@@ -63,6 +63,9 @@ public:
 	inline bool getCastShadow() { return castShadow; }
 	inline bool getWireframe() { return wireframe; }
 
+	inline OtTerrainHeights& getHeights() { return heights; }
+	inline OtTerrainMaterial& getMaterial() { return material; }
+
 private:
 	// the scene renderer needs access to our properties
 	friend class OtSceneRenderEntitiesPass;

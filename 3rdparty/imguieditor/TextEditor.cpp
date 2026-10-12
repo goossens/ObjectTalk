@@ -1396,8 +1396,11 @@ void TextEditor::handleKeyboardInputs() {
 			auto context = ImGui::GetCurrentContext();
 			context->PlatformImeData.WantVisible = true;
 			context->PlatformImeData.WantTextInput = true;
-			context->PlatformImeData.InputPos = ImVec2(cursorScreenPos.x - 1.0f, cursorScreenPos.y - context->FontSize);
-			context->PlatformImeData.InputLineHeight = context->FontSize;
+
+			// at the main cursor: the top left of its line (as in Dear ImGui's InputText)
+			const auto cursorPos = visPos2ScreenPos(docPos2VisPos(getCursorPosition(cursors.getMainIndex())));
+			context->PlatformImeData.InputPos = ImVec2(cursorPos.x - 1.0f, cursorPos.y);
+			context->PlatformImeData.InputLineHeight = glyphSize.y;
 			context->PlatformImeData.ViewportId = ImGui::GetCurrentWindow()->Viewport->ID;
 		}
 	}

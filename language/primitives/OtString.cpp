@@ -336,7 +336,7 @@ OtType OtStringClass::getMeta() {
 
 		type->set("casecmp", OtFunction::create(&OtStringClass::casecmp));
 
-		type->set("", OtFunction::create(&OtStringClass::index));
+		type->set("__index__", OtFunction::create(&OtStringClass::index));
 		type->set("__iter__", OtFunction::create(&OtStringClass::iterate));
 		type->set("__add__", OtFunction::create(&OtStringClass::add));
 

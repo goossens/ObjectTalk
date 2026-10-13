@@ -51,9 +51,9 @@ public:
 	inline void setNoiseOctaves(int value) { noise.octaves = value; }
 
 	inline int getNoiseFrequency() { return noise.frequency; }
-	inline float getNoiseLacunarity() { return noise.lacunarity; }
+	inline int getNoiseLacunarity() { return noise.lacunarity; }
 	inline float getNoiseAmplitude() { return noise.amplitude; }
-	inline int getNoisePersistence() { return noise.persistence; }
+	inline float getNoisePersistence() { return noise.persistence; }
 	inline int getNoiseOctaves() { return noise.octaves; }
 
 	inline void setErosionRounding(glm::vec4 value) { erosion.rounding = value; }

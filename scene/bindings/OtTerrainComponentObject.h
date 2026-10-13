@@ -77,9 +77,9 @@ public:
 	declareHeightsProperty(float, NormalStrength)
 
 	declareHeightsProperty(int, NoiseFrequency)
-	declareHeightsProperty(float, NoiseLacunarity)
+	declareHeightsProperty(int, NoiseLacunarity)
 	declareHeightsProperty(float, NoiseAmplitude)
-	declareHeightsProperty(int, NoisePersistence)
+	declareHeightsProperty(float, NoisePersistence)
 	declareHeightsProperty(int, NoiseOctaves)
 
 	declareHeightsVectorProperty(4, ErosionRounding)
@@ -93,7 +93,7 @@ public:
 	declareHeightsProperty(float, ErosionGain)
 	declareHeightsProperty(float, ErosionLacunarity)
 	declareHeightsProperty(float, ErosionNormalization)
-	declareHeightsProperty(float, ErosionOctaves)
+	declareHeightsProperty(int, ErosionOctaves)
 
 	declareHeightsMaterialVectorProperty(3, region1Color, Region1Color)
 	declareHeightsMaterialVectorProperty(3, region2Color, Region2Color)

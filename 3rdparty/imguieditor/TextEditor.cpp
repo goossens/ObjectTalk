@@ -1403,6 +1403,9 @@ void TextEditor::handleKeyboardInputs() {
 			context->PlatformImeData.InputLineHeight = glyphSize.y;
 			context->PlatformImeData.ViewportId = ImGui::GetCurrentWindow()->Viewport->ID;
 		}
+
+		// tell app to ignore keyboard inputs
+		ImGui::SetNextFrameWantCaptureKeyboard(true);
 	}
 }
 

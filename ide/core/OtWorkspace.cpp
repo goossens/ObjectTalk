@@ -759,7 +759,13 @@ void OtWorkspace::renderFileOpen() {
 		// open selected file if required
 		if (dialog.SelectedOpenFile()) {
 			auto path = OtPath::toString(dialog.GetSelectedPath());
-			openFile(path, OtEditor::VisualState::inTab);
+
+			if (activeEditor && activeEditor->isRenderedInWindow()) {
+				openFile(path, OtEditor::VisualState::inWindow);
+
+			} else {
+				openFile(path, OtEditor::VisualState::inTab);
+			}
 
 			if (state != State::confirmError) {
 				state = State::edit;

@@ -43,16 +43,16 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness) {
 // Normal Distribution Function (NDF)
 float distributionGGX(vec3 N, vec3 H, float roughness) {
 	float a = roughness * roughness;
-	float a2 = a * a;
+	float aSquare = a * a;
 	float NdotH = max(dot(N, H), 0.0);
-	float NdotH2 = NdotH * NdotH;
-	float denominator = max(NdotH2 * (a2 - 1.0) + 1.0, 0.0001);
-	return a2 / (PI * denominator * denominator);
+	float NdotHSquare = NdotH * NdotH;
+	float denominator = NdotHSquare * (aSquare - 1.0) + 1.0;
+	return aSquare / (PI * denominator * denominator);
 }
 
 // geometry function
 float geometrySchlickGGX(float NdotV, float roughness) {
-	float r = (roughness + 1.0);
+	float r = roughness + 1.0;
 	float k = (r * r) / 8.0;
 	return NdotV / (NdotV * (1.0 - k) + k);
 }

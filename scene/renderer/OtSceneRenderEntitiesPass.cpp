@@ -502,7 +502,7 @@ void OtSceneRenderEntitiesPass::setMaterialUniforms(
 		material->scale,
 		material->offset,
 		material->metallic,
-		material->roughness,
+		std::max(material->roughness, 0.02f),
 		material->ao,
 		static_cast<uint32_t>(material->albedoTexture.isReady()),
 		static_cast<uint32_t>(material->metallicRoughnessTexture.isReady()),

@@ -1156,7 +1156,7 @@ bool TextEditor::updateState() {
 	if (typeSetter.update(config, document, lineFold)) {
 		// see if we can scroll to preserve the first visible line
 		// but we don't overrule outstanding requests
-		if (scrollToLineNumber == invalidLine && ensureVisiblePos.line == invalidLine) {
+		if (scrollToLineNumber == invalidLine && scrollToDocPos.line == invalidLine) {
 			scrollToLine(previousFirstLine, Scroll::alignTop, firstVisibleLineFraction);
 		}
 	}
@@ -2035,11 +2035,11 @@ std::string TextEditor::getWordAtMousePos(const ImVec2& mousePos) const {
 //
 
 void TextEditor::setCursor(DocPos pos) {
-	ensureVisiblePos = normalizePos(pos);
-	cursors.setCursor(ensureVisiblePos);
+	scrollToDocPos = normalizePos(pos);
+	cursors.setCursor(scrollToDocPos);
 
 	if (config.lineFolding) {
-		lineFold.unfoldAroundLine(document, ensureVisiblePos.line);
+		lineFold.unfoldAroundLine(document, scrollToDocPos.line);
 	}
 }
 
@@ -2049,8 +2049,8 @@ void TextEditor::setCursor(DocPos pos) {
 //
 
 void TextEditor::scrollToLine(size_t line, Scroll alignment, float fraction) {
-	ensureVisiblePos = DocPos(invalidLine, 0);
-	scrollToLineNumber = std::min(line, document.size());
+	scrollToDocPos = DocPos(invalidLine, 0);
+	scrollToLineNumber = normalizeLine(line);
 	scrollToAlignment = alignment;
 	scrollToFraction = fraction;
 
@@ -2070,14 +2070,14 @@ void TextEditor::handlePossibleScrolling() {
 	float scrollY = -1.0f;
 
 	// do we need to make a certain position visible
-	if (ensureVisiblePos.line != invalidLine) {
+	if (scrollToDocPos.line != invalidLine) {
 		if (lastVisibleRow == 0 && lastVisibleColumn == 0) {
 			// this is a hack to handle a chicken and egg issue when the user called SetCursor before the first frame
 			lastVisibleRow = std::min(static_cast<size_t>(std::ceil(textSize.y / glyphSize.y)), typeSetter.getRowCount() - 1);
 			lastVisibleColumn = static_cast<size_t>(std::ceil(textSize.x / glyphSize.x));
 		}
 
-		const auto pos = docPos2VisPos(ensureVisiblePos);
+		const auto pos = docPos2VisPos(normalizePos(scrollToDocPos));
 
 		if (pos.row <= firstVisibleRow + 1) {
 			scrollY = std::max(0.0f, (pos.row - 2.0f) * glyphSize.y);
@@ -2093,12 +2093,12 @@ void TextEditor::handlePossibleScrolling() {
 			scrollX = std::max(0.0f, (pos.column + 2.0f) * glyphSize.x - textSize.x);
 		}
 
-		ensureVisiblePos.line = invalidLine;
+		scrollToDocPos.line = invalidLine;
 	}
 
 	// scroll to specified line (if required)
 	if (scrollToLineNumber != invalidLine) {
-		const auto row = static_cast<float>(docPos2VisPos(DocPos(scrollToLineNumber, 0)).row);
+		const auto row = static_cast<float>(docPos2VisPos(DocPos(normalizeLine(scrollToLineNumber), 0)).row);
 		const auto visibleRows = textSize.y / glyphSize.y;
 		scrollX = 0.0f;
 
@@ -2135,11 +2135,11 @@ void TextEditor::handlePossibleScrolling() {
 //
 
 void TextEditor::makeCursorVisible() {
-	ensureVisiblePos = cursors.getCurrent().getInteractiveEnd();
+	scrollToDocPos = cursors.getCurrent().getInteractiveEnd();
 	scrollToLineNumber = invalidLine;
 
 	if (config.lineFolding) {
-		lineFold.unfoldAroundLine(document, ensureVisiblePos.line);
+		lineFold.unfoldAroundLine(document, scrollToDocPos.line);
 	}
 
 	resetCursorAnimationTimer();
@@ -2152,7 +2152,7 @@ void TextEditor::makeCursorVisible() {
 
 void TextEditor::resetScrolling() {
 	// reset state related parameters
-	ensureVisiblePos = DocPos(invalidLine, 0);
+	scrollToDocPos = DocPos(invalidLine, 0);
 	scrollToLineNumber = invalidLine;
 	firstVisibleRow = 0;
 	lastVisibleRow = 0;

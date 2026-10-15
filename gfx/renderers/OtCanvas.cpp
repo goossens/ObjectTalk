@@ -635,7 +635,7 @@ void OtCanvas::renderFill(NVGpaint* paint, NVGcompositeOperationState, NVGscisso
 
 	call.strokeCount = indices.size() - call.strokeOffset;
 
-	// deter shader type and convert paint to uniforms
+	// determine shader type and convert paint to uniforms
 	int shaderType = paint->image ? fillTextureShader : fillGradientShader;
 	call.uniformOffset = paintToUniforms(paint, scissor, fringe, fringe, -1.0f, shaderType);
 

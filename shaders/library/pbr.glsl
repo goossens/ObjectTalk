@@ -31,7 +31,7 @@ vec4 toLinear(vec4 color) {
 	return vec4(toLinear(color.rgb), color.a);
 }
 
-// fresnel equations
+// specular reflection according to Cook-Torrance
 vec3 fresnelSchlick(float cosTheta, vec3 F0) {
 	return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
@@ -50,13 +50,14 @@ float distributionGGX(vec3 N, vec3 H, float roughness) {
 	return aSquare / (PI * denominator * denominator);
 }
 
-// geometry function
+// geometric attenuation function using Schlick GGX
 float geometrySchlickGGX(float NdotV, float roughness) {
 	float r = roughness + 1.0;
 	float k = (r * r) / 8.0;
 	return NdotV / (NdotV * (1.0 - k) + k);
 }
 
+// Smith's method for Schlick GGX
 float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
 	float NdotV = max(dot(N, V), 0.0);
 	float NdotL = max(dot(N, L), 0.0);

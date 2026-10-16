@@ -348,8 +348,7 @@ void TextDiff::IntegratedView::renderScrollbar() {
 			ImGuiAxis_X,
 			&scroll,
 			static_cast<ImS64>(textColumnWidth),
-			static_cast<ImS64>(maxColumnsWidth),
-			ImDrawFlags_RoundCornersAll)) {
+			static_cast<ImS64>(maxColumnsWidth))) {
 
 			textScroll = static_cast<float>(scroll);
 		}
@@ -705,8 +704,7 @@ void TextDiff::SideBySideView::renderScrollbars() {
 			ImGuiAxis_X,
 			&scroll,
 			static_cast<ImS64>(textColumnWidth),
-			static_cast<ImS64>(maxColumnsWidth),
-			ImDrawFlags_RoundCornersAll)) {
+			static_cast<ImS64>(maxColumnsWidth))) {
 
 			textScroll = static_cast<float>(scroll);
 		}
@@ -717,8 +715,7 @@ void TextDiff::SideBySideView::renderScrollbars() {
 			ImGuiAxis_X,
 			&scroll,
 			static_cast<ImS64>(textColumnWidth),
-			static_cast<ImS64>(maxColumnsWidth),
-			ImDrawFlags_RoundCornersAll)) {
+			static_cast<ImS64>(maxColumnsWidth))) {
 
 			textScroll = static_cast<float>(scroll);
 		}

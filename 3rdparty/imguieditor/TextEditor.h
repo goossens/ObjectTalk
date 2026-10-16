@@ -278,9 +278,9 @@ public:
 	// as a result, SetCursor or ScrollToLine just mark the request and let Render execute it
 	//
 	// the order of the calls is therefore important as they can interfere with each other
-	// so if you call SetText, SetCursor and/or ScrollToLine before Render, the order should be:
+	// so if you call any API that changes the text, SetCursor and/or ScrollToLine before Render, the order should be:
 	//
-	// * call SetText first as it resets the entire editor state including cursors and scrolling
+	// * call text changing APIs first as they update the editor state including cursors and scrolling
 	// * then call SetCursor as it sets the cursor and requests that we make the cursor visible (i.e. scroll to it)
 	// * then call ScrollToLine to mark the exact scroll location (it cancels the possible SetCursor scroll request)
 	// * call Render to properly update the entire state

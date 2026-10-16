@@ -2069,6 +2069,10 @@ void TextEditor::handlePossibleScrolling() {
 	float scrollX = -1.0f;
 	float scrollY = -1.0f;
 
+	// when some API calls are made, requests are stored since the Dear ImGui context is only valid during rendering
+	// a user could change text after scrolling (in the same frame) which could make the position invalid
+	// this is why the document positions are normalized again here
+
 	// do we need to make a certain position visible
 	if (scrollToDocPos.line != invalidLine) {
 		if (lastVisibleRow == 0 && lastVisibleColumn == 0) {

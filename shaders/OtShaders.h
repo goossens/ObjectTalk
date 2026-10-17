@@ -162,6 +162,8 @@ extern const uint32_t OtSkyFrag[];
 extern const size_t OtSkyFragSize;
 extern const uint32_t OtSkyVert[];
 extern const size_t OtSkyVertSize;
+extern const uint32_t OtSmartDeNoiseComp[];
+extern const size_t OtSmartDeNoiseCompSize;
 extern const uint32_t OtTerrainErosionComp[];
 extern const size_t OtTerrainErosionCompSize;
 extern const uint32_t OtTerrainFrag[];

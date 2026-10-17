@@ -1,0 +1,66 @@
+//	ObjectTalk Scripting Language
+//	Copyright (c) 1993-2026 Johan A. Goossens. All rights reserved.
+//
+//	This work is licensed under the terms of the MIT license.
+//	For a copy, see <https://opensource.org/licenses/MIT>.
+
+//	Based on https://github.com/BrutPitt/glslSmartDeNoise
+
+#version 450 core
+#extension GL_GOOGLE_include_directive : require
+
+#include "constants.glsl"
+
+layout(local_size_x=16, local_size_y=16, local_size_z=1) in;
+
+layout(set=0, binding=0) uniform sampler2D inTexture;
+layout(set=1, binding=0, rgba8) uniform writeonly image2D outTexture;
+
+layout(std140, set=2, binding=0) uniform UBO {
+	vec2 texelSize;
+	float sigma;
+	float kSigma;
+	float threshold;
+};
+
+void main() {
+	ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = imageSize(outTexture);
+
+	if (coord.x >= size.x || coord.y >= size.y) {
+		return;
+	}
+
+	vec2 uv = (vec2(coord) + 0.5) / vec2(size);
+	vec4 centrPx = texture(inTexture, uv);
+
+	float radius = round(kSigma*sigma);
+	float radQ = radius * radius;
+
+	float invSigmaQx2 = .5 / (sigma * sigma);
+	float invSigmaQx2PI = INV_PI * invSigmaQx2;
+
+	float invThresholdSqx2 = .5 / (threshold * threshold);
+	float invThresholdSqrt2PI = INV_SQRT_OF_2PI / threshold;
+
+	float zBuff = 0.0;
+	vec4 aBuff = vec4(0.0);
+	vec2 d;
+
+	for (d.x = -radius; d.x <= radius; d.x++) {
+		float pt = sqrt(radQ - d.x * d.x);
+
+		for (d.y=-pt; d.y <= pt; d.y++) {
+			float blurFactor = exp(-dot(d , d) * invSigmaQx2 ) * invSigmaQx2PI;
+
+			vec4 walkPx =  texture(inTexture, uv + d * texelSize);
+			vec4 dC = walkPx - centrPx;
+			float deltaFactor = exp(-dot(dC, dC) * invThresholdSqx2) * invThresholdSqrt2PI * blurFactor;
+
+			zBuff += deltaFactor;
+			aBuff += deltaFactor * walkPx;
+		}
+	}
+
+	imageStore(outTexture, coord, aBuff / zBuff);
+}

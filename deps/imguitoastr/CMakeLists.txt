@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Populate(imguitoastr QUIET GIT_REPOSITORY "https://github.com/goossens/ImGuiToastr" GIT_TAG "main")
+FetchContent_Populate(imguitoastr QUIET GIT_REPOSITORY "https://github.com/goossens/ImGuiToastr" GIT_TAG "v1.93.0")
 
 set(IMGUITOASTR_SOURCES
 	${imguitoastr_SOURCE_DIR}/Toastr.h

@@ -40,6 +40,16 @@ void OtFramework::initIMGUI() {
 	// tweak default style
 	ImGui::StyleColorsDark();
 	auto& style = ImGui::GetStyle();
+	auto colors = style.Colors;
+
+	colors[ImGuiCol_TextDisabled] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
+	colors[ImGuiCol_WindowBg] = ImVec4(0.06f, 0.06f, 0.06f, 0.94f);
+	colors[ImGuiCol_FrameBg] = ImVec4(0.16f, 0.29f, 0.48f, 0.54f);
+	colors[ImGuiCol_FrameBgActive] = ImVec4(0.26f, 0.59f, 0.98f, 0.67f);
+	colors[ImGuiCol_FrameBgHovered] = ImVec4(0.26f, 0.59f, 0.98f, 0.40f);
+	colors[ImGuiCol_TableHeaderBg] = ImVec4(0.19f, 0.19f, 0.20f, 1.00f);
+	colors[ImGuiCol_TableBorderStrong] = ImVec4(0.31f, 0.31f, 0.35f, 1.00f);
+	colors[ImGuiCol_TableBorderLight] = ImVec4(0.23f, 0.23f, 0.25f, 1.00f);
 
 	style.ScaleAllSizes(mainScale);
 	style.FontScaleDpi = mainScale;
@@ -181,7 +191,7 @@ void OtFramework::endIMGUI() {
 
 void OtFramework::renderProfiler() {
 	auto& gpu = OtGpu::instance();
-	auto labelWith = ImGui::CalcTextSize("                      ").x;
+	auto labelWith = ImGui::CalcTextSize("					  ").x;
 
 	ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), ImGuiCond_Once);
 	ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_NoCollapse);

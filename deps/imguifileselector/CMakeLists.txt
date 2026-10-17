@@ -4,7 +4,7 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-FetchContent_Populate(imguifileselector QUIET GIT_REPOSITORY "https://github.com/goossens/ImGuiFileSelector" GIT_TAG "main")
+FetchContent_Populate(imguifileselector QUIET GIT_REPOSITORY "https://github.com/goossens/ImGuiFileSelector" GIT_TAG "v1.93.0")
 
 set(IMGUITOASTR_SOURCES
 	${imguifileselector_SOURCE_DIR}/FileSelector.h

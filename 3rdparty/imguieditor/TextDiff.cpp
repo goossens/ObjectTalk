@@ -342,13 +342,16 @@ void TextDiff::IntegratedView::renderScrollbar() {
 		const ImRect scrollbarFrame(textPos, scrollbarTop, textEnd, scrollbarTop + scrollbarSize);
 		ImS64 scroll = static_cast<ImS64>(textScroll);
 
+		auto corners = ImGui::CalcRoundingFlagsForRectInRect(scrollbarFrame, outerRect, ImGui::GetStyle().WindowBorderSize);
+
 		if (ImGui::ScrollbarEx(
 			scrollbarFrame,
 			ImGui::GetID("textScroll"),
 			ImGuiAxis_X,
 			&scroll,
 			static_cast<ImS64>(textColumnWidth),
-			static_cast<ImS64>(maxColumnsWidth))) {
+			static_cast<ImS64>(maxColumnsWidth),
+			corners)) {
 
 			textScroll = static_cast<float>(scroll);
 		}
@@ -698,13 +701,18 @@ void TextDiff::SideBySideView::renderScrollbars() {
 		const ImRect rightScrollbarFrame(rightTextPos, scrollbarTop, rightTextEnd, scrollbarTop + scrollbarSize);
 		ImS64 scroll = static_cast<ImS64>(textScroll);
 
+		auto windowBorderSize = ImGui::GetStyle().WindowBorderSize;
+		auto leftCorners = ImGui::CalcRoundingFlagsForRectInRect(leftScrollbarFrame, outerRect, windowBorderSize);
+		auto rightCorners = ImGui::CalcRoundingFlagsForRectInRect(rightScrollbarFrame, outerRect, windowBorderSize);
+
 		if (ImGui::ScrollbarEx(
 			leftScrollbarFrame,
 			ImGui::GetID("leftTextScroll"),
 			ImGuiAxis_X,
 			&scroll,
 			static_cast<ImS64>(textColumnWidth),
-			static_cast<ImS64>(maxColumnsWidth))) {
+			static_cast<ImS64>(maxColumnsWidth),
+			leftCorners)) {
 
 			textScroll = static_cast<float>(scroll);
 		}
@@ -715,7 +723,8 @@ void TextDiff::SideBySideView::renderScrollbars() {
 			ImGuiAxis_X,
 			&scroll,
 			static_cast<ImS64>(textColumnWidth),
-			static_cast<ImS64>(maxColumnsWidth))) {
+			static_cast<ImS64>(maxColumnsWidth),
+			rightCorners)) {
 
 			textScroll = static_cast<float>(scroll);
 		}

@@ -1,5 +1,5 @@
-**Overview**
-* [Introduction](#overview)
+**Nodes**
+* [Overview](#overview)
 * [Node Anatomy](#node-anatomy)
 * [Node Categories](#node-categories)
 * [Node Pins](#node-pins)

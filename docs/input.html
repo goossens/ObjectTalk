@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Input Module</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/theme.css" />
+  </head>
+  <body id="page-top">
+    <div
+      class="container-fluid d-flex flex-column flex-grow-1 vh-100 overflow-hidden"
+    >
+      <nav
+        class="navbar navbar-expand px-0 pt-1 pb-0 flex-shrink-0 manual-header"
+      >
+        <a class="navbar-brand" href="index.html"
+          ><img src="img/icon.png" height="40" alt="" /><span class="ml-2"
+            >Documentation</span
+          ></a
+        ><button
+          class="navbar-toggler navbar-toggler-right"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          type="button"
+          data-toogle="collapse"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="General"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >General</a
+              >
+              <div class="dropdown-menu" aria-labelledby="General">
+                <a class="nav-link page-scroll" href="index.html"
+                  >Introduction</a
+                ><a class="nav-link page-scroll" href="architecture.html"
+                  >Architecture</a
+                ><a class="nav-link page-scroll" href="installation.html"
+                  >Installation</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Language"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Language</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Language">
+                <a class="nav-link page-scroll" href="language-tour.html"
+                  >Tour</a
+                ><a class="nav-link page-scroll" href="language-guide.html"
+                  >Guide</a
+                ><a class="nav-link page-scroll" href="language-reference.html"
+                  >Reference</a
+                ><a class="nav-link page-scroll" href="language-classes.html"
+                  >Core Classes</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Modules"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Modules</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Modules">
+                <a class="nav-link page-scroll" href="http.html">HTTP</a
+                ><a class="nav-link page-scroll" href="input.html">Input</a
+                ><a class="nav-link page-scroll" href="manifold.html"
+                  >Manifold</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Nodes"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Nodes</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Nodes">
+                <a class="nav-link page-scroll" href="nodes-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="nodes-reference.html"
+                  >Reference</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Scenes"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Scenes</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Scenes">
+                <a class="nav-link page-scroll" href="scenes-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="scenes-reference.html"
+                  >Reference</a
+                >
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="Audio"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Audio</a
+              >
+              <div class="dropdown-menu" aria-labelledby="Audio">
+                <a class="nav-link page-scroll" href="audio-overview.html"
+                  >Overview</a
+                ><a class="nav-link page-scroll" href="audio-reference.html"
+                  >Reference</a
+                >
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link page-scroll" href="ide.html">IDE</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div class="row flex-grow-1 overflow-hidden vh-100">
+        <div class="col-2 mh-100 overflow-auto py-2 manual-toc">
+          <p><strong>Input Module</strong></p>
+          <ul>
+            <li><a class="page-scroll" href="#overview">Overview</a></li>
+            <li><a class="page-scroll" href="#functions">Functions</a></li>
+            <li><a class="page-scroll" href="#constants">Constants</a></li>
+          </ul>
+        </div>
+        <div class="col mh-100 overflow-auto py-2 manual-content">
+          <div id="overview">
+            <h1 class="pb-2">Input Module</h1>
+            <p>
+              The input module provides functions and constants to query the
+              keyboard, mouse or gamepad. It also provides functions to get
+              frame-related timing data.
+            </p>
+          </div>
+          <div id="functions">
+            <h1 class="pb-2">Functions</h1>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>getDeltaTime()</td>
+                  <td>
+                    Return the time elapsed since the last frame in
+                    milliseconds.
+                  </td>
+                </tr>
+                <tr>
+                  <td>getFrameRate()</td>
+                  <td>Return the current GPU frame rate.</td>
+                </tr>
+                <tr>
+                  <td>getMouseDrag()</td>
+                  <td>
+                    Return the amount the mouse has moved since the last frame
+                    as a Vec2.
+                  </td>
+                </tr>
+                <tr>
+                  <td>getMousePos()</td>
+                  <td>Return the current mouse position as a Vec2.</td>
+                </tr>
+                <tr>
+                  <td>getTime()</td>
+                  <td>
+                    Return the number of milliseconds since the start of the
+                    program.
+                  </td>
+                </tr>
+                <tr>
+                  <td>hasMouseMoved()</td>
+                  <td>See if the mouse moved in the last frame.</td>
+                </tr>
+                <tr>
+                  <td>isButtonDown()</td>
+                  <td>
+                    See if a keyboard, mouse or gamepad button is down (use the
+                    enum below to address to query specific button).
+                  </td>
+                </tr>
+                <tr>
+                  <td>isButtonPressed()</td>
+                  <td>
+                    See if a keyboard, mouse or gamepad button was pressed (use
+                    the enum below to address to query specific button).
+                  </td>
+                </tr>
+                <tr>
+                  <td>isButtonReleased()</td>
+                  <td>
+                    See if a keyboard, mouse or gamepad button was released (use
+                    the enum below to address to query specific button).
+                  </td>
+                </tr>
+                <tr>
+                  <td>isDoubleClicked()</td>
+                  <td>
+                    See if a keyboard, mouse or gamepad button was double
+                    clicked (use the enum below to address to query specific
+                    button).
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="constants">
+            <h1 class="pb-2">Constants</h1>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Constants</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>gamepad buttons</td>
+                  <td>
+                    gamepadBack, gamepadDpadDown, gamepadDpadLeft,
+                    gamepadDpadRight, gamepadDpadUp, gamepadFaceDown,
+                    gamepadFaceLeft, gamepadFaceRight, gamepadFaceUp, gamepadL1,
+                    gamepadL2, gamepadL3, gamepadLStickDown, gamepadLStickLeft,
+                    gamepadLStickRight, gamepadLStickUp, gamepadR1, gamepadR2,
+                    gamepadR3, gamepadRStickDown, gamepadRStickLeft,
+                    gamepadRStickRight, gamepadRStickUp, gamepadStart
+                  </td>
+                </tr>
+                <tr>
+                  <td>keyboard buttons</td>
+                  <td>
+                    key0, key1, key2, key3, key4, key5, key6, key7, key8, key9,
+                    keyA, keyApostrophe, keyB, keyBackslash, keyBackspace, keyC,
+                    keyCapsLock, keyComma, keyD, keyDelete, keyDownArrow, keyE,
+                    keyEnd, keyEnter, keyEqual, keyEscape, keyF, keyF1, keyF10,
+                    keyF11, keyF12, keyF2, keyF3, keyF4, keyF5, keyF6, keyF7,
+                    keyF8, keyF9, keyG, keyGraveAccent, keyH, keyHome, keyI,
+                    keyInsert, keyJ, keyK, keyKeypad0, keyKeypad1, keyKeypad2,
+                    keyKeypad3, keyKeypad4, keyKeypad5, keyKeypad6, keyKeypad7,
+                    keyKeypad8, keyKeypad9, keyKeypadAdd, keyKeypadDecimal,
+                    keyKeypadDivide, keyKeypadEnter, keyKeypadEqual,
+                    keyKeypadMultiply, keyKeypadSubtract, keyL, keyLeftAlt,
+                    keyLeftArrow, keyLeftBracket, keyLeftCtrl, keyLeftShift,
+                    keyLeftSuper, keyM, keyMenu, keyMinus, keyN, keyNumLock,
+                    keyO, keyP, keyPageDown, keyPageUp, keyPause, keyPeriod,
+                    keyPrintScreen, keyQ, keyR, keyRightAlt, keyRightArrow,
+                    keyRightBracket, keyRightCtrl, keyRightShift, keyRightSuper,
+                    keyS, keyScrollLock, keySemicolon, keySlash, keySpace, keyT,
+                    keyTab, keyU, keyUpArrow, keyV, keyW, keyX, keyY, keyZ,
+                    modAlt, modCtrl, modShift, modSuper
+                  </td>
+                </tr>
+                <tr>
+                  <td>mouse buttons</td>
+                  <td>
+                    mouseLeft, mouseMiddle, mouseRight, mouseWheelX,
+                    mouseWheelY, mouseX1, mouseX2
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="row flex-shrink-0 py-1 manual-footer" id="copyright">
+        <p class="mx-auto py-0 my-0 small">
+          Copyright (c) 1993-2026 Johan A. Goossens. All rights reserved.
+        </p>
+      </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/theme.js"></script>
+  </body>
+</html>

@@ -1,0 +1,21 @@
+include /manual.pug
+
++page("Input Module")
+	+manual()
+		include common/header.pug
+
+		+manual-body()
+			+manual-toc()
+				include:markdown modules/input/toc.md
+
+			+manual-content()
+				+manual-chapter("overview", "Input Module")
+					include:markdown modules/input/overview.md
+
+				+manual-chapter("functions", "Functions")
+					include:markdown modules/input/functions.md
+
+				+manual-chapter("constants", "Constants")
+					include:markdown modules/input/constants.md
+
+		include common/footer.pug

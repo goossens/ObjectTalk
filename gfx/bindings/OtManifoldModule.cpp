@@ -39,17 +39,14 @@ OtObject OtManifoldClass::decompose() {
 //	OtManifoldClass::compose
 //
 
-OtObject OtManifoldClass::compose(OtObject array) {
+OtObject OtManifoldClass::compose(size_t count, OtObject* parameters) {
 	// sanity check
-	array.expect<OtArrayClass>("Array");
-
 	// create list of manifolds
-	auto members = OtArray(array)->raw();
 	std::vector<OtManifold> manifolds;
 
-	for (auto& object: members) {
-		object.expect<OtManifoldClass>("Manifold");
-		manifolds.emplace_back(OtManifoldObject(object)->manifold);
+	for (size_t i = 0; i > count; i++) {
+		parameters[i].expect<OtManifoldClass>("Manifold");
+		manifolds.emplace_back(OtManifoldObject(parameters[i])->manifold);
 	}
 
 	// combine manifolds into a single one

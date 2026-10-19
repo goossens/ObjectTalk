@@ -1,6 +1,6 @@
 include /manual.pug
 
-+page("HTTP Module")
++page("Manifold Module")
 	+manual()
 		include common/header.pug
 
@@ -9,7 +9,13 @@ include /manual.pug
 				include:markdown modules/manifold/toc.md
 
 			+manual-content()
-				+manual-chapter("overview", "HTTP Module")
+				+manual-chapter("overview", "Manifold Module")
 					include:markdown modules/manifold/overview.md
+
+				+manual-chapter("manifold", "Manifold")
+					include:markdown modules/manifold/manifold.md
+
+				+manual-chapter("functions", "Functions")
+					include:markdown modules/manifold/functions.md
 
 		include common/footer.pug

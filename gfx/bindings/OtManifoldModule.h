@@ -48,7 +48,7 @@ public:
 	}
 
 	OtObject decompose();
-	static OtObject compose(OtObject array);
+	static OtObject compose(size_t count, OtObject* parameters);
 
 	static inline OtObject extrude(OtShape shape, float height, int divisions, float twistDegrees, float scaleTop, float tolerance) {
 		return OtManifoldObject::create(OtManifold::extrude(shape, height, divisions, twistDegrees, scaleTop, tolerance));

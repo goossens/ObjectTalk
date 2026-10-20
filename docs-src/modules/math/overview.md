@@ -1,0 +1,1 @@
+The math module provides classes for linear algebra. Functions that are typically found in math libraries (e.g. trigonometry) are member functions on primitive classes like Integers and Reals.

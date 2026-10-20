@@ -1,0 +1,27 @@
+include /manual.pug
+
++page("Math Module")
+	+manual()
+		include common/header.pug
+
+		+manual-body()
+			+manual-toc()
+				include:markdown modules/math/toc.md
+
+			+manual-content()
+				+manual-chapter("overview", "Math Module")
+					include:markdown modules/math/overview.md
+
+				+manual-chapter("vec2", "Vec2")
+					include:markdown modules/math/vec2.md
+
+				+manual-chapter("vec3", "Vec3")
+					include:markdown modules/math/vec3.md
+
+				+manual-chapter("vec4", "Vec4")
+					include:markdown modules/math/vec4.md
+
+				+manual-chapter("mat4", "Mat4")
+					include:markdown modules/math/mat4.md
+
+		include common/footer.pug

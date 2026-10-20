@@ -101,6 +101,8 @@ public:
 	inline float length() { return glm::length(value); }
 	inline float distance(glm::vec2 operand) { return glm::distance(value, operand); }
 
+	inline float dot(glm::vec2 operand) { return glm::dot(value, operand); }
+
 	inline glm::vec2 min(glm::vec2 operand) { return glm::min(value, operand); }
 	inline glm::vec2 max(glm::vec2 operand) { return glm::max(value, operand); }
 
@@ -116,18 +118,7 @@ public:
 	inline glm::vec2 clamp(glm::vec2 low, glm::vec2 high) { return glm::clamp(value, low, high); }
 	inline glm::vec2 smoothstep(glm::vec2 operand, float x) { return glm::mix(value, operand, x); }
 	inline glm::vec2 step(glm::vec2 operand) { return glm::step(value, operand); }
-
-	inline glm::vec2 lerp(glm::vec2 operand, float delta) {
-		if (delta < 0.0f) {
-			return value;
-
-		} else if (delta > 1.0f) {
-			return operand;
-
-		} else {
-			return value + ((operand - value) * delta);
-		}
-	}
+	inline glm::vec2 mix(glm::vec2 operand, float interpolate) { return glm::mix(value, operand, interpolate); }
 
 	// get type definition
 	static OtType getMeta();
@@ -253,18 +244,7 @@ public:
 	inline glm::vec3 clamp(glm::vec3 low, glm::vec3 high) { return glm::clamp(value, low, high); }
 	inline glm::vec3 smoothstep(glm::vec3 operand, float x) { return glm::mix(value, operand, x); }
 	inline glm::vec3 step(glm::vec3 operand) { return glm::step(value, operand); }
-
-	inline glm::vec3 lerp(glm::vec3 operand, float delta) {
-		if (delta < 0.0f) {
-			return value;
-
-		} else if (delta > 1.0f) {
-			return operand;
-
-		} else {
-			return value + ((operand - value) * delta);
-		}
-	}
+	inline glm::vec3 mix(glm::vec3 operand, float interpolate) { return glm::mix(value, operand, interpolate); }
 
 	// get type definition
 	static OtType getMeta();
@@ -383,6 +363,8 @@ public:
 	inline float distance(glm::vec4 operand) { return glm::distance(value, operand); }
 	inline glm::vec4 homogenize() { return glm::vec4(value.x / value.w, value.y / value.w, value.z / value.w, 1.0f); }
 
+	inline float dot(glm::vec4 operand) { return glm::dot(value, operand); }
+
 	inline glm::vec4 min(glm::vec4 operand) { return glm::min(value, operand); }
 	inline glm::vec4 max(glm::vec4 operand) { return glm::max(value, operand); }
 
@@ -398,18 +380,7 @@ public:
 	inline glm::vec4 clamp(glm::vec4 low, glm::vec4 high) { return glm::clamp(value, low, high); }
 	inline glm::vec4 smoothstep(glm::vec4 operand, float x) { return glm::mix(value, operand, x); }
 	inline glm::vec4 step(glm::vec4 operand) { return glm::step(value, operand); }
-
-	inline glm::vec4 lerp(glm::vec4 operand, float delta) {
-		if (delta < 0.0f) {
-			return value;
-
-		} else if (delta > 1.0f) {
-			return operand;
-
-		} else {
-			return value + ((operand - value) * delta);
-		}
-	}
+	inline glm::vec4 mix(glm::vec4 operand, float interpolate) { return glm::mix(value, operand, interpolate); }
 
 	// get type definition
 	static OtType getMeta();

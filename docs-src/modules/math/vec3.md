@@ -1,15 +1,15 @@
-A Vec3 is a 3-component (Real values) vector class.
+A Vec3 is a 3-component ([Real](language-classes.html#real) values) vector class. Components can be accessed with the x, y and z shortcuts like var x = vector.x; or vector.z = 0.0;
 
 **Member Functions**
 
 | Function | Description |
 | ------ | ----------- |
-| \_\_init__() | Constructor. When called without parameters, all components are set to 0.0. When called with 1 parameter, it is evaluated as a Real and assigned to all components. When called with 4 parameters, the components is set to the evaluated Reals. |
+| \_\_init__() | Constructor. When called without parameters, all components are set to 0.0. When called with 1 parameter, it is evaluated as a [Real](language-classes.html#real) and assigned to all components. When called with 3 parameters, the components are set to the evaluated Reals. |
 | \_\_add__(vector) | Add vector to object's value and return result. This member function is called when you use the **add** (+) operator. |
 | \_\_div__(vector) | Divide object's value by vector and return result. This member function is called when you use the **divide** (/) operator. |
 | \_\_mod__(vector) | Divide object's value by vector and return leftover. This member function is called when you use the **modulo** (%) operator. |
 | \_\_mul__(vector) | Multiple vector with object's value and return result. This member function is called when you use the **multiply** (*) operator. |
-| \_\_sub__(vector) | Subtract revectorl from object's value and return result. This member function is called when you use the **subtract** (-) operator. |
+| \_\_sub__(vector) | Subtract vector from object's value and return result. This member function is called when you use the **subtract** (-) operator. |
 | abs() | Returns a new vector with each component being the absolute value. |
 | ceil() | Returns a new vector with each component being the nearest integer that is greater than or equal. |
 | clamp(min, max) | Returns a new vector with each component constrained to the range min to max. |

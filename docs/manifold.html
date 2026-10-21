@@ -175,20 +175,17 @@
         <div class="col mh-100 overflow-auto py-2 manual-content">
           <div id="overview">
             <h1 class="pb-2">Manifold Module</h1>
-            <p>The manifold module provides ...</p>
-          </div>
-          <div id="manifold">
-            <h1 class="pb-2">Manifold</h1>
             <p>
-              Manifolds are specializations of Geometries. A manifold mesh is
-              watertight and contains no holes or missing faces that would cause
-              leaks into the interior of the shape's volume. For a mesh to be
-              manifold, every edge must have exactly two adjacent faces.
-              Geometries do not have this constraint.
+              The manifold module provides support for manifold geometries which
+              are specializations of geometries. A manifold mesh is watertight
+              and contains no holes or missing faces that would cause leaks into
+              the interior of the shape's volume. For a mesh to be manifold,
+              every edge must have exactly two adjacent faces. Geometries do not
+              have this constraint.
             </p>
             <p>
               Manifolds are often used in CAD applications to create 3D models
-              through Constructive Solid Geometry. You can combined or subtract
+              through Constructive Solid Geometry. You can combine or subtract
               solid shapes, transform them, extrude them from 2d paths or slice
               3D models back into 2D paths.
             </p>
@@ -208,6 +205,13 @@
               Z-up coordinate system. When converting to a Mesh or Geometry,
               this class automatically converts the vertex coordinates to the
               right-handed Y-up coordinate system.
+            </p>
+          </div>
+          <div id="manifold">
+            <h1 class="pb-2">Manifold</h1>
+            <p>
+              The Manifold class stores manifold information and provides a wide
+              variety of member functions to manipulate manifolds.
             </p>
             <p><strong>Member Functions</strong></p>
             <table class="table table-striped">

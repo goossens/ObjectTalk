@@ -505,7 +505,10 @@ public:
 		} else if (count == 1) {
 			value = glm::mat4(parameters[0]->operator float());
 
-		} else if (count != 0) {
+		} else if (count == 0) {
+			value = glm::mat4(1.0f);
+
+		} else {
 			OtLogError("[Mat4] constructor expects 0, 1 or 16 arguments (not {})", count);
 		}
 	}
@@ -540,33 +543,42 @@ public:
 		if (v.isKindOf<OtVec4Class>()) {
 			auto data = OtVec4(v)->operator glm::vec4();
 
-			if (id == row1ID) {
-				value = glm::row(value, 0, data);
+			if (id == row1ID) {	value = glm::row(value, 0, data); }
+			else if (id == row2ID) { value = glm::row(value, 1, data); }
+			else if (id == row3ID) { value = glm::row(value, 2, data); }
+			else if (id == row4ID) { value = glm::row(value, 3, data); }
 
-			} else if (id == row2ID) {
-				value = glm::row(value, 1, data);
+			else if (id == column1ID) { value = glm::column(value, 0, data); }
+			else if (id == column2ID) { value = glm::column(value, 1, data); }
+			else if (id == column3ID) { value = glm::column(value, 2, data); }
+			else if (id == column4ID) { value = glm::column(value, 3, data); }
 
-			} else if (id == row3ID) {
-				value = glm::row(value, 2, data);
+			else { OtObjectClass::set(id, v); }
 
-			} else if (id == row4ID) {
-				value = glm::row(value, 3, data);
+		} else if (v.isKindOf<OtRealClass>()) {
+			auto data = OtReal(v)->operator float();
 
-			} else if (id == column1ID) {
-				value = glm::column(value, 0, data);
+			if (id == value00ID) { value[0][0] = data; }
+			else if (id == value01ID) { value[0][1] = data; }
+			else if (id == value02ID) { value[0][2] = data; }
+			else if (id == value03ID) { value[0][3] = data; }
 
-			} else if (id == column2ID) {
-				value = glm::column(value, 1, data);
+			else if (id == value10ID) { value[1][0] = data; }
+			else if (id == value11ID) { value[1][1] = data; }
+			else if (id == value12ID) { value[1][2] = data; }
+			else if (id == value13ID) { value[1][3] = data; }
 
-			} else if (id == column3ID) {
-				value = glm::column(value, 2, data);
+			else if (id == value20ID) { value[2][0] = data; }
+			else if (id == value21ID) { value[2][1] = data; }
+			else if (id == value22ID) { value[2][2] = data; }
+			else if (id == value23ID) { value[2][3] = data; }
 
-			} else if (id == column4ID) {
-				value = glm::column(value, 3, data);
+			else if (id == value30ID) { value[3][0] = data; }
+			else if (id == value31ID) { value[3][1] = data; }
+			else if (id == value32ID) { value[3][2] = data; }
+			else if (id == value33ID) { value[3][3] = data; }
 
-			} else {
-				OtObjectClass::set(id, v);
-			}
+			else { OtObjectClass::set(id, v); }
 
 		} else {
 			OtLogError("Expected a [Vec4], not a [{}]", v.getTypeName());
@@ -576,33 +588,37 @@ public:
 	}
 
 	inline OtObject get(OtID id) override {
-		if (id == row1ID) {
-			return OtVec4::create(glm::row(value, 0));
+		if (id == row1ID) { return OtVec4::create(glm::row(value, 0)); }
+		else if (id == row2ID) { return OtVec4::create(glm::row(value, 1)); }
+		else if (id == row3ID) { return OtVec4::create(glm::row(value, 2)); }
+		else if (id == row4ID) { return OtVec4::create(glm::row(value, 3)); }
 
-		} else if (id == row2ID) {
-			return OtVec4::create(glm::row(value, 1));
+		else if (id == column1ID) { return OtVec4::create(glm::column(value, 0)); }
+		else if (id == column2ID) { return OtVec4::create(glm::column(value, 1)); }
+		else if (id == column3ID) { return OtVec4::create(glm::column(value, 2)); }
+		else if (id == column4ID) { return OtVec4::create(glm::column(value, 3)); }
 
-		} else if (id == row3ID) {
-			return OtVec4::create(glm::row(value, 2));
+		else if (id == value00ID) { return OtReal::create(value[0][0]); }
+		else if (id == value01ID) { return OtReal::create(value[0][1]); }
+		else if (id == value02ID) { return OtReal::create(value[0][2]); }
+		else if (id == value03ID) { return OtReal::create(value[0][3]); }
 
-		} else if (id == row4ID) {
-			return OtVec4::create(glm::row(value, 3));
+		else if (id == value10ID) { return OtReal::create(value[1][0]); }
+		else if (id == value11ID) { return OtReal::create(value[1][1]); }
+		else if (id == value12ID) { return OtReal::create(value[1][2]); }
+		else if (id == value13ID) { return OtReal::create(value[1][3]); }
 
-		} else if (id == column1ID) {
-			return OtVec4::create(glm::column(value, 0));
+		else if (id == value20ID) { return OtReal::create(value[2][0]); }
+		else if (id == value21ID) { return OtReal::create(value[2][1]); }
+		else if (id == value22ID) { return OtReal::create(value[2][2]); }
+		else if (id == value23ID) { return OtReal::create(value[2][3]); }
 
-		} else if (id == column2ID) {
-			return OtVec4::create(glm::column(value, 1));
+		else if (id == value30ID) { return OtReal::create(value[3][0]); }
+		else if (id == value31ID) { return OtReal::create(value[3][1]); }
+		else if (id == value32ID) { return OtReal::create(value[3][2]); }
+		else if (id == value33ID) { return OtReal::create(value[3][3]); }
 
-		} else if (id == column3ID) {
-			return OtVec4::create(glm::column(value, 2));
-
-		} else if (id == column4ID) {
-			return OtVec4::create(glm::column(value, 3));
-
-		} else {
-			return OtObjectClass::get(id);
-		}
+		else { return OtObjectClass::get(id); }
 	}
 
 	// matrix arithmetic
@@ -656,6 +672,26 @@ private:
 	static inline OtID column2ID = OtIdentifier::create("column2");
 	static inline OtID column3ID = OtIdentifier::create("column3");
 	static inline OtID column4ID = OtIdentifier::create("column4");
+
+	static inline OtID value00ID = OtIdentifier::create("value00");
+	static inline OtID value01ID = OtIdentifier::create("value01");
+	static inline OtID value02ID = OtIdentifier::create("value02");
+	static inline OtID value03ID = OtIdentifier::create("value03");
+
+	static inline OtID value10ID = OtIdentifier::create("value10");
+	static inline OtID value11ID = OtIdentifier::create("value11");
+	static inline OtID value12ID = OtIdentifier::create("value12");
+	static inline OtID value13ID = OtIdentifier::create("value13");
+
+	static inline OtID value20ID = OtIdentifier::create("value20");
+	static inline OtID value21ID = OtIdentifier::create("value21");
+	static inline OtID value22ID = OtIdentifier::create("value22");
+	static inline OtID value23ID = OtIdentifier::create("value23");
+
+	static inline OtID value30ID = OtIdentifier::create("value30");
+	static inline OtID value31ID = OtIdentifier::create("value31");
+	static inline OtID value32ID = OtIdentifier::create("value32");
+	static inline OtID value33ID = OtIdentifier::create("value33");
 };
 
 

@@ -185,7 +185,13 @@
           </div>
           <div id="vec2">
             <h1 class="pb-2">Vec2</h1>
-            <p>A Vec2 is a 2-component (Real values) vector class.</p>
+            <p>
+              A Vec2 is a 2-component (<a href="language-classes.html#real"
+                >Real</a
+              >
+              values) vector class. Components can be accessed with the x and y
+              shortcuts like var x = vector.x; or vector.y = 0.0;
+            </p>
             <p><strong>Member Functions</strong></p>
             <table class="table table-striped">
               <thead>
@@ -200,9 +206,10 @@
                   <td>
                     Constructor. When called without parameters, all components
                     are set to 0.0. When called with 1 parameter, it is
-                    evaluated as a Real and assigned to all components. When
-                    called with 4 parameters, the components is set to the
-                    evaluated Reals.
+                    evaluated as a
+                    <a href="language-classes.html#real">Real</a> and assigned
+                    to all components. When called with 2 parameters, the
+                    components are set to the evaluated Reals.
                   </td>
                 </tr>
                 <tr>
@@ -240,8 +247,8 @@
                 <tr>
                   <td>__sub__(vector)</td>
                   <td>
-                    Subtract revectorl from object's value and return result.
-                    This member function is called when you use the
+                    Subtract vector from object's value and return result. This
+                    member function is called when you use the
                     <strong>subtract</strong> (-) operator.
                   </td>
                 </tr>
@@ -378,7 +385,13 @@
           </div>
           <div id="vec3">
             <h1 class="pb-2">Vec3</h1>
-            <p>A Vec3 is a 3-component (Real values) vector class.</p>
+            <p>
+              A Vec3 is a 3-component (<a href="language-classes.html#real"
+                >Real</a
+              >
+              values) vector class. Components can be accessed with the x, y and
+              z shortcuts like var x = vector.x; or vector.z = 0.0;
+            </p>
             <p><strong>Member Functions</strong></p>
             <table class="table table-striped">
               <thead>
@@ -393,9 +406,10 @@
                   <td>
                     Constructor. When called without parameters, all components
                     are set to 0.0. When called with 1 parameter, it is
-                    evaluated as a Real and assigned to all components. When
-                    called with 4 parameters, the components is set to the
-                    evaluated Reals.
+                    evaluated as a
+                    <a href="language-classes.html#real">Real</a> and assigned
+                    to all components. When called with 3 parameters, the
+                    components are set to the evaluated Reals.
                   </td>
                 </tr>
                 <tr>
@@ -433,8 +447,8 @@
                 <tr>
                   <td>__sub__(vector)</td>
                   <td>
-                    Subtract revectorl from object's value and return result.
-                    This member function is called when you use the
+                    Subtract vector from object's value and return result. This
+                    member function is called when you use the
                     <strong>subtract</strong> (-) operator.
                   </td>
                 </tr>
@@ -578,7 +592,13 @@
           </div>
           <div id="vec4">
             <h1 class="pb-2">Vec4</h1>
-            <p>A Vec4 is a 4-component (Real values) vector class.</p>
+            <p>
+              A Vec4 is a 4-component (<a href="language-classes.html#real"
+                >Real</a
+              >
+              values) vector class. Components can be accessed with the x, y, z
+              and w shortcuts like var y = vector.y; or vector.w = 1.0;
+            </p>
             <p><strong>Member Functions</strong></p>
             <table class="table table-striped">
               <thead>
@@ -593,9 +613,10 @@
                   <td>
                     Constructor. When called without parameters, all components
                     are set to 0.0. When called with 1 parameter, it is
-                    evaluated as a Real and assigned to all components. When
-                    called with 4 parameters, the components is set to the
-                    evaluated Reals.
+                    evaluated as a
+                    <a href="language-classes.html#real">Real</a> and assigned
+                    to all components. When called with 4 parameters, the
+                    components are set to the evaluated Reals.
                   </td>
                 </tr>
                 <tr>
@@ -633,8 +654,8 @@
                 <tr>
                   <td>__sub__(vector)</td>
                   <td>
-                    Subtract revectorl from object's value and return result.
-                    This member function is called when you use the
+                    Subtract vector from object's value and return result. This
+                    member function is called when you use the
                     <strong>subtract</strong> (-) operator.
                   </td>
                 </tr>
@@ -783,7 +804,16 @@
             <p>
               A Mat4 is a 4x4 floating-point matrix commonly used for 3D
               graphics transformations like scaling, rotation, translation, and
-              projection.
+              projection. Matrix values are stored in column-major order and can
+              be accessed using the valueCR shortcut where C is a zero-based
+              column number and R is a zero-based row number (e.g. var cell =
+              matrix.value12; or matrix.value30 = 0.1);
+            </p>
+            <p>
+              Rows and columns can be accessed with the rowR and columnC where R
+              and C are the same zero-based numbers mentioned above. Rows and
+              columns are <a class="page-scroll" href="#vec4">Vec4</a> objects
+              (e.g. var row = matrix.row2; or matrix.column3 = Vec4(0.0));
             </p>
             <p><strong>Member Functions</strong></p>
             <table class="table table-striped">
@@ -796,106 +826,82 @@
               <tbody>
                 <tr>
                   <td>__init__()</td>
-                  <td></td>
+                  <td>
+                    Constructor. When called without parameters, the matrix is
+                    set to identity. When called with 1 parameter, it is
+                    evaluated as a
+                    <a href="language-classes.html#real">Real</a> and assigned
+                    to all cells. When called with 16 parameters, the cells are
+                    set to the evaluated Reals in column-major order (value00,
+                    value01, value02, value03, value10, etc).
+                  </td>
                 </tr>
                 <tr>
-                  <td>__add__()</td>
-                  <td></td>
+                  <td>__add__(matrix)</td>
+                  <td>
+                    Add matrix to object's value and return result. This member
+                    function is called when you use the <strong>add</strong> (+)
+                    operator.
+                  </td>
                 </tr>
                 <tr>
-                  <td>__div__()</td>
-                  <td></td>
+                  <td>__mul__(operand)</td>
+                  <td>
+                    Multiple operand with object's value and return result.
+                    Operand can be a Mat4 or a
+                    <a class="page-scroll" href="#vec4">Vec4</a>. This member
+                    function is called when you use the
+                    <strong>multiply</strong> (*) operator.
+                  </td>
                 </tr>
                 <tr>
-                  <td>__eq__()</td>
-                  <td></td>
+                  <td>__sub__(matrix)</td>
+                  <td>
+                    Subtract matrix from object's value and return result. This
+                    member function is called when you use the
+                    <strong>subtract</strong> (-) operator.
+                  </td>
                 </tr>
                 <tr>
-                  <td>__mod__()</td>
-                  <td></td>
+                  <td>inverse()</td>
+                  <td>Returns the inverse of the matrix.</td>
                 </tr>
                 <tr>
-                  <td>__mul__()</td>
-                  <td></td>
+                  <td>rotate(vector)</td>
+                  <td>
+                    Create a rotation matrix based on provided vector, apply to
+                    object's value and return new matrix.
+                  </td>
                 </tr>
                 <tr>
-                  <td>__ne__()</td>
-                  <td></td>
+                  <td>scale(vector)</td>
+                  <td>
+                    Create a scaling matrix based on provided vector, apply to
+                    object's value and return new matrix.
+                  </td>
                 </tr>
                 <tr>
-                  <td>__sub__()</td>
-                  <td></td>
+                  <td>translate(vector)</td>
+                  <td>
+                    Create a translation matrix based on provided vector, apply
+                    to object's value and return new matrix.
+                  </td>
                 </tr>
                 <tr>
-                  <td>abs()</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>ceil()</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>clamp()</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>distance()</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>dot()</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>floor()</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>fract()</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>length()</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>max()</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>min()</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>mix()</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>normalize()</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>round()</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>sign()</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>smoothstep()</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>step()</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>trunc()</td>
-                  <td></td>
+                  <td>transpose()</td>
+                  <td>Return a new matrix with rows and columns swapped.</td>
                 </tr>
               </tbody>
             </table>
+            <p><strong>Overrides</strong></p>
+            <p>
+              The Mat4 class overrides the following member functions from the
+              Object class:
+            </p>
+            <ul>
+              <li>__eq__</li>
+              <li>__ne__</li>
+            </ul>
           </div>
         </div>
       </div>

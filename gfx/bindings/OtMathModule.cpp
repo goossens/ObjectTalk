@@ -200,5 +200,5 @@ static OtModuleRegistration registration{"math", [](OtModule module) {
 	module->set("Vec2", OtClass::create(OtVec2Class::getMeta()));
 	module->set("Vec3", OtClass::create(OtVec3Class::getMeta()));
 	module->set("Vec4", OtClass::create(OtVec4Class::getMeta()));
-	module->set("Mat4", OtClass::create(OtVec4Class::getMeta()));
+	module->set("Mat4", OtClass::create(OtMat4Class::getMeta()));
 }};

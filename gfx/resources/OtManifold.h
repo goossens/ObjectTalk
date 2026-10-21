@@ -53,7 +53,7 @@
 //	this constraint.
 //
 //	Manifolds are often used in CAD applications to create 3D models through Constructive Solid Geometry.
-//	You can combined or subtract solid shapes, transform them, extrude them from 2d paths or slice 3D
+//	You can combine or subtract solid shapes, transform them, extrude them from 2d paths or slice 3D
 //	models back into 2D paths.
 //
 //	Another difference between Manifolds and Geometries is their coordinate system. In ObjectTalk,

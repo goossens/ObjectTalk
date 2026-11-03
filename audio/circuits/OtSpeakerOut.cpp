@@ -31,4 +31,4 @@ private:
 	OtCircuitPin input;
 };
 
-static OtCircuitFactoryRegister<OtSpeakerOut> registration;
+static OtCircuitFactoryRegistration<OtSpeakerOut> registration;

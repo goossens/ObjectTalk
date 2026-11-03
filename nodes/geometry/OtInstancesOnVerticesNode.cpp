@@ -100,4 +100,4 @@ protected:
 	glm::vec3 scale{1.0f};
 };
 
-static OtNodesFactoryRegister<OtInstancesOnVerticesNode> registration;
+static OtNodesFactoryRegistration<OtInstancesOnVerticesNode> registration;

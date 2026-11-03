@@ -90,4 +90,4 @@ private:
 	float frequency = 440.0f;
 };
 
-static OtCircuitFactoryRegister<OtLfoCircuit> registration;
+static OtCircuitFactoryRegistration<OtLfoCircuit> registration;

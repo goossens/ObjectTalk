@@ -64,4 +64,4 @@ private:
 	int value = 0;
 };
 
-static OtNodesFactoryRegister<OtIntegerInputNode> registration;
+static OtNodesFactoryRegistration<OtIntegerInputNode> registration;

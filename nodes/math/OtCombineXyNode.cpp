@@ -43,4 +43,4 @@ private:
 	glm::vec2 value{0.0f};
 };
 
-static OtNodesFactoryRegister<OtCombineXyNode> registration;
+static OtNodesFactoryRegistration<OtCombineXyNode> registration;

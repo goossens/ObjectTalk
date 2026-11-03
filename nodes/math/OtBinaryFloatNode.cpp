@@ -108,4 +108,4 @@ private:
 	float result = 0.0f;
 };
 
-static OtNodesFactoryRegister<OtBinaryFloatNode> registration;
+static OtNodesFactoryRegistration<OtBinaryFloatNode> registration;

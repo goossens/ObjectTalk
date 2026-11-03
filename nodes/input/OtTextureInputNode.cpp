@@ -101,4 +101,4 @@ private:
 	OtTexture texture;
 };
 
-static OtNodesFactoryRegister<OtTextureInputNode> registration;
+static OtNodesFactoryRegistration<OtTextureInputNode> registration;

@@ -48,4 +48,4 @@ private:
 	OtManifold manifold;
 };
 
-static OtNodesFactoryRegister<OtSphereManifoldNode> registration;
+static OtNodesFactoryRegistration<OtSphereManifoldNode> registration;

@@ -50,4 +50,4 @@ private:
 	float w{0.0f};
 };
 
-static OtNodesFactoryRegister<OtSeparateXyzwNode> registration;
+static OtNodesFactoryRegistration<OtSeparateXyzwNode> registration;

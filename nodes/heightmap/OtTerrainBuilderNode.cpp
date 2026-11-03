@@ -120,4 +120,4 @@ private:
 	int depth = 0;
 };
 
-static OtNodesFactoryRegister<OtTerrainBuilderNode> registration;
+static OtNodesFactoryRegistration<OtTerrainBuilderNode> registration;

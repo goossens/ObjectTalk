@@ -43,4 +43,4 @@ private:
 	int size = 5;
 };
 
-static OtNodesFactoryRegister<OtPixelateNode> registration;
+static OtNodesFactoryRegistration<OtPixelateNode> registration;

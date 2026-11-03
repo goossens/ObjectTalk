@@ -68,4 +68,4 @@ private:
 	bool selectorOpen = false;
 };
 
-static OtNodesFactoryRegister<OtSaveInstancesNode> registration;
+static OtNodesFactoryRegistration<OtSaveInstancesNode> registration;

@@ -172,4 +172,4 @@ private:
 	bool hasRenderMethod = false;
 };
 
-static OtNodesFactoryRegister<OtShapeGeneratorNode> registration;
+static OtNodesFactoryRegistration<OtShapeGeneratorNode> registration;

@@ -53,4 +53,4 @@ private:
 	OtManifold manifold;
 };
 
-static OtNodesFactoryRegister<OtCubeManifoldNode> registration;
+static OtNodesFactoryRegistration<OtCubeManifoldNode> registration;

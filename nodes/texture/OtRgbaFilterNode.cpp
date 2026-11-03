@@ -55,4 +55,4 @@ private:
 	float alpha = 1.0f;
 };
 
-static OtNodesFactoryRegister<OtRgbaNode> registration;
+static OtNodesFactoryRegistration<OtRgbaNode> registration;

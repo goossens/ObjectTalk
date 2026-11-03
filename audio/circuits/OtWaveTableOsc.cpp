@@ -136,4 +136,4 @@ private:
 	float phase = 0.0f;
 };
 
-static OtCircuitFactoryRegister<OtWaveTableOsc> registration;
+static OtCircuitFactoryRegistration<OtWaveTableOsc> registration;

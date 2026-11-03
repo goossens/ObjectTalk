@@ -128,4 +128,4 @@ private:
 	size_t selectedFormat = 0;
 };
 
-static OtNodesFactoryRegister<OtSaveManifoldNode> registration;
+static OtNodesFactoryRegistration<OtSaveManifoldNode> registration;

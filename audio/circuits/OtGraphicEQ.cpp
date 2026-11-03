@@ -59,4 +59,4 @@ public:
 	static inline float getSliderSpacing() { return OtUi::size(0.25f); }
 };
 
-static OtCircuitFactoryRegister<OtGraphicEqCircuit> registration;
+static OtCircuitFactoryRegistration<OtGraphicEqCircuit> registration;

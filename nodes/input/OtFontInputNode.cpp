@@ -100,4 +100,4 @@ private:
 	OtFont font;
 };
 
-static OtNodesFactoryRegister<OtFontInputNode> registration;
+static OtNodesFactoryRegistration<OtFontInputNode> registration;

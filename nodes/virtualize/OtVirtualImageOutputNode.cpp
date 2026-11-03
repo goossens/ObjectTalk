@@ -56,4 +56,4 @@ private:
 	OtAsset<OtImageAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualImageOutputNode> registration;
+static OtNodesFactoryRegistration<OtVirtualImageOutputNode> registration;

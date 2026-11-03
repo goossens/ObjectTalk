@@ -59,4 +59,4 @@ private:
 	OtImage image;
 };
 
-static OtNodesFactoryRegister<OtShapeToImageNode> registration;
+static OtNodesFactoryRegistration<OtShapeToImageNode> registration;

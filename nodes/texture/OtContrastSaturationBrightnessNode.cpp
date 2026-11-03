@@ -49,4 +49,4 @@ private:
 	float brightness = 1.0f;
 };
 
-static OtNodesFactoryRegister<OtContrastSaturationBrightnessNode> registration;
+static OtNodesFactoryRegistration<OtContrastSaturationBrightnessNode> registration;

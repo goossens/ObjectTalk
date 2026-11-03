@@ -44,4 +44,4 @@ private:
 	float y{0.0f};
 };
 
-static OtNodesFactoryRegister<OtSeparateXyNode> registration;
+static OtNodesFactoryRegistration<OtSeparateXyNode> registration;

@@ -110,4 +110,4 @@ private:
 };
 
 
-static OtNodesFactoryRegister<OtWorldGeneratorNode> registration;
+static OtNodesFactoryRegistration<OtWorldGeneratorNode> registration;

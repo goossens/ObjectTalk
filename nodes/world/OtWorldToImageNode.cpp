@@ -140,4 +140,4 @@ private:
 };
 
 
-static OtNodesFactoryRegister<OtWorldToImageNode> registration;
+static OtNodesFactoryRegistration<OtWorldToImageNode> registration;

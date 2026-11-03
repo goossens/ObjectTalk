@@ -114,17 +114,17 @@ private:
 
 
 //
-//	OtCircuitFactoryRegister
+//	OtCircuitFactoryRegistration
 //
 
 template <typename T>
-class OtCircuitFactoryRegister {
+class OtCircuitFactoryRegistration {
 public:
 	// sanity check
 	static_assert(std::is_base_of<OtCircuitClass, T>::value, "Class is not derived from OtCircuitClass");
 
 	// constructor
-	OtCircuitFactoryRegister() {
+	OtCircuitFactoryRegistration() {
 		OtCircuitFactory::registerType(OtCircuitClass::categoryNames[static_cast<int>(T::circuitCategory)], T::circuitName, []() {
 			auto circuit = std::make_shared<T>();
 			circuit->type = T::circuitName;

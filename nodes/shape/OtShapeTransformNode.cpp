@@ -58,4 +58,4 @@ private:
 	glm::vec2 scale{1.0f};
 };
 
-static OtNodesFactoryRegister<OtShapeTransformNode> registration;
+static OtNodesFactoryRegistration<OtShapeTransformNode> registration;

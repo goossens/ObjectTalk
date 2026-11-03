@@ -135,4 +135,4 @@ private:
 	float customH;
 };
 
-static OtNodesFactoryRegister<OtManifoldProbeNode> registration;
+static OtNodesFactoryRegistration<OtManifoldProbeNode> registration;

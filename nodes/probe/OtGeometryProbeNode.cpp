@@ -130,4 +130,4 @@ private:
 	float customH;
 };
 
-static OtNodesFactoryRegister<OtGeometryProbeNode> registration;
+static OtNodesFactoryRegistration<OtGeometryProbeNode> registration;

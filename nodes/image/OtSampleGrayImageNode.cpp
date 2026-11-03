@@ -48,4 +48,4 @@ private:
 	float gray{0.0f};
 };
 
-static OtNodesFactoryRegister<OtSampleGrayImageNode> registration;
+static OtNodesFactoryRegistration<OtSampleGrayImageNode> registration;

@@ -47,4 +47,4 @@ private:
 	OtTexture texture;
 };
 
-static OtNodesFactoryRegister<OtImageToTextureNode> registration;
+static OtNodesFactoryRegistration<OtImageToTextureNode> registration;

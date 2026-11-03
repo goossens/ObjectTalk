@@ -64,4 +64,4 @@ private:
 	OtTexture temp2;
 };
 
-static OtNodesFactoryRegister<OtGaussianBlurNode> registration;
+static OtNodesFactoryRegistration<OtGaussianBlurNode> registration;

@@ -88,4 +88,4 @@ private:
 	OtCircuitPin audioOutput;
 };
 
-static OtCircuitFactoryRegister<OtPolyphonicSynth> registration;
+static OtCircuitFactoryRegistration<OtPolyphonicSynth> registration;

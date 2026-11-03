@@ -47,4 +47,4 @@ private:
 	OtCompositingAlphaOver alphaOver;
 };
 
-static OtNodesFactoryRegister<OtAlphaOverNode> registration;
+static OtNodesFactoryRegistration<OtAlphaOverNode> registration;

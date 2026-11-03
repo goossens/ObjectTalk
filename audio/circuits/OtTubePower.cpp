@@ -174,4 +174,4 @@ private:
 	OtPushPull6L6 pushPull6L6;
 };
 
-static OtCircuitFactoryRegister<OtTubePowerCircuit> registration;
+static OtCircuitFactoryRegistration<OtTubePowerCircuit> registration;

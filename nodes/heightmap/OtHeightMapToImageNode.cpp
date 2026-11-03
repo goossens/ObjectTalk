@@ -48,4 +48,4 @@ private:
 	OtImage image;
 };
 
-static OtNodesFactoryRegister<OtHeightMapToImageNode> registration;
+static OtNodesFactoryRegistration<OtHeightMapToImageNode> registration;

@@ -41,4 +41,4 @@ private:
 };
 
 
-static OtNodesFactoryRegister<OtVector3ProbeNode> registration;
+static OtNodesFactoryRegistration<OtVector3ProbeNode> registration;

@@ -96,4 +96,4 @@ private:
 	int version = 1;
 };
 
-static OtNodesFactoryRegister<OtNoiseMapGeneratorNode> registration;
+static OtNodesFactoryRegistration<OtNoiseMapGeneratorNode> registration;

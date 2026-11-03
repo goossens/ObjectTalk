@@ -230,4 +230,4 @@ private:
 	OtToneStackVox vox;
 };
 
-static OtCircuitFactoryRegister<OtToneStackCircuit> registration;
+static OtCircuitFactoryRegistration<OtToneStackCircuit> registration;

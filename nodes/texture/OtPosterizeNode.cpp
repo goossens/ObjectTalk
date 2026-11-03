@@ -43,4 +43,4 @@ private:
 	int levels = 10;
 };
 
-static OtNodesFactoryRegister<OtPosterizeNode> registration;
+static OtNodesFactoryRegistration<OtPosterizeNode> registration;

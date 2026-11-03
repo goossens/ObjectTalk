@@ -99,4 +99,4 @@ private:
 	OtShape shape;
 };
 
-static OtNodesFactoryRegister<OtShapeInputNode> registration;
+static OtNodesFactoryRegistration<OtShapeInputNode> registration;

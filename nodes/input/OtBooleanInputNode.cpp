@@ -64,4 +64,4 @@ private:
 	bool value = false;
 };
 
-static OtNodesFactoryRegister<OtBooleanInputNode> registration;
+static OtNodesFactoryRegistration<OtBooleanInputNode> registration;

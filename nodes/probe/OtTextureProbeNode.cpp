@@ -89,4 +89,4 @@ private:
 	float customH;
 };
 
-static OtNodesFactoryRegister<OtTextureProbeNode> registration;
+static OtNodesFactoryRegistration<OtTextureProbeNode> registration;

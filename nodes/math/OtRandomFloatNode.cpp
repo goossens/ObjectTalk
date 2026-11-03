@@ -68,4 +68,4 @@ private:
 	OtNodesPin outputPin;
 };
 
-static OtNodesFactoryRegister<OtRandomNode> registration;
+static OtNodesFactoryRegistration<OtRandomNode> registration;

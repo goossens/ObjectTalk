@@ -59,4 +59,4 @@ private:
 	OtCircuitPin output4;
 };
 
-static OtCircuitFactoryRegister<OtTransposer> registration;
+static OtCircuitFactoryRegistration<OtTransposer> registration;

@@ -24,4 +24,4 @@ public:
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::effect;
 };
 
-static OtCircuitFactoryRegister<OtFlangerCircuit> registration;
+static OtCircuitFactoryRegistration<OtFlangerCircuit> registration;

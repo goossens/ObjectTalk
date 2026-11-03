@@ -56,4 +56,4 @@ private:
 	OtSmartDeNoise denoise;
 };
 
-static OtNodesFactoryRegister<OtSmartDeNoiseNode> registration;
+static OtNodesFactoryRegistration<OtSmartDeNoiseNode> registration;

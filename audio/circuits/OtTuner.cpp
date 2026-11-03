@@ -114,4 +114,4 @@ private:
 	float inputBuffer[N];
 };
 
-static OtCircuitFactoryRegister<OtTuner> registration;
+static OtCircuitFactoryRegistration<OtTuner> registration;

@@ -155,4 +155,4 @@ private:
 	OtTubePre12AY7 tube12ay7;
 };
 
-static OtCircuitFactoryRegister<OtTubePreCircuit> registration;
+static OtCircuitFactoryRegistration<OtTubePreCircuit> registration;

@@ -168,4 +168,4 @@ private:
 	bool hasRenderMethod = false;
 };
 
-static OtNodesFactoryRegister<OtManifoldGeneratorNode> registration;
+static OtNodesFactoryRegistration<OtManifoldGeneratorNode> registration;

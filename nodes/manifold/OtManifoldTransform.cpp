@@ -56,4 +56,4 @@ private:
 	glm::vec3 scale{1.0f};
 };
 
-static OtNodesFactoryRegister<OtManifoldTransformNode> registration;
+static OtNodesFactoryRegistration<OtManifoldTransformNode> registration;

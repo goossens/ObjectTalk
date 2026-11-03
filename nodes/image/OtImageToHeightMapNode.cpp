@@ -48,4 +48,4 @@ private:
 	OtHeightMap heightMap;
 };
 
-static OtNodesFactoryRegister<OtImageToHeightMapNode> registration;
+static OtNodesFactoryRegistration<OtImageToHeightMapNode> registration;

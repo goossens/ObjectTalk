@@ -66,4 +66,4 @@ private:
 	OtAudioUi::dbfsState rightState;
 };
 
-static OtCircuitFactoryRegister<OtVuMeter> registration;
+static OtCircuitFactoryRegistration<OtVuMeter> registration;

@@ -114,4 +114,4 @@ private:
 };
 
 
-static OtNodesFactoryRegister<OtWorldToHeightMapNode> registration;
+static OtNodesFactoryRegistration<OtWorldToHeightMapNode> registration;

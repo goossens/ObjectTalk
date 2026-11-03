@@ -37,4 +37,4 @@ private:
 	int index = 0;
 };
 
-static OtNodesFactoryRegister<OtIndexFieldNode> registration;
+static OtNodesFactoryRegistration<OtIndexFieldNode> registration;

@@ -34,4 +34,4 @@ private:
 	OtColorWheel colorwheel;
 };
 
-static OtNodesFactoryRegister<OtColorWheelGeneratorNode> registration;
+static OtNodesFactoryRegistration<OtColorWheelGeneratorNode> registration;

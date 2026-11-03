@@ -128,4 +128,4 @@ private:
 	size_t selectedFormat = 0;
 };
 
-static OtNodesFactoryRegister<OtSaveGeometryNode> registration;
+static OtNodesFactoryRegistration<OtSaveGeometryNode> registration;

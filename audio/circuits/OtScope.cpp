@@ -109,4 +109,4 @@ private:
 	OtCircularBuffer<float, N> data;
 };
 
-static OtCircuitFactoryRegister<OtScope> registration;
+static OtCircuitFactoryRegistration<OtScope> registration;

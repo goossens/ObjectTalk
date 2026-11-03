@@ -108,4 +108,4 @@ private:
 	OtDelay<float, OtAudioSettings::sampleRate / 10> rightDelay;
 };
 
-static OtCircuitFactoryRegister<OtMonoToStereo> registration;
+static OtCircuitFactoryRegistration<OtMonoToStereo> registration;

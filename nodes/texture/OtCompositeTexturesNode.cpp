@@ -94,4 +94,4 @@ private:
 	int version = 1;
 };
 
-static OtNodesFactoryRegister<OtCompositeTexturesNode> registration;
+static OtNodesFactoryRegistration<OtCompositeTexturesNode> registration;

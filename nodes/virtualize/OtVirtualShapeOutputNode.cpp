@@ -57,4 +57,4 @@ private:
 	OtAsset<OtShapeAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualShapeOutputNode> registration;
+static OtNodesFactoryRegistration<OtVirtualShapeOutputNode> registration;

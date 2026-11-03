@@ -53,4 +53,4 @@ private:
 	OtShape shape;
 };
 
-static OtNodesFactoryRegister<OtTextToShapeNode> registration;
+static OtNodesFactoryRegistration<OtTextToShapeNode> registration;

@@ -178,4 +178,4 @@ private:
 	OtFrameBuffer framebuffer{OtTexture::Format::rgba8, OtTexture::Format::d32s8};
 };
 
-static OtNodesFactoryRegister<OtCanvasGeneratorNode> registration;
+static OtNodesFactoryRegistration<OtCanvasGeneratorNode> registration;

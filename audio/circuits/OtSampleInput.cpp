@@ -149,4 +149,4 @@ private:
 	size_t sampleLocation;
 };
 
-static OtCircuitFactoryRegister<OtSampleInputCircuit> registration;
+static OtCircuitFactoryRegistration<OtSampleInputCircuit> registration;

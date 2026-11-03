@@ -48,4 +48,4 @@ private:
 	OtGeometry output;
 };
 
-static OtNodesFactoryRegister<OtGeometryOptimizeNode> registration;
+static OtNodesFactoryRegistration<OtGeometryOptimizeNode> registration;

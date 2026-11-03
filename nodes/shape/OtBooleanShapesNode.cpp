@@ -97,4 +97,4 @@ private:
 	OtShape result;
 };
 
-static OtNodesFactoryRegister<OtBooleanShapesNode> registration;
+static OtNodesFactoryRegistration<OtBooleanShapesNode> registration;

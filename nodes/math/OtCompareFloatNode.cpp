@@ -97,4 +97,4 @@ private:
 	bool result = false;
 };
 
-static OtNodesFactoryRegister<OtCompareNode> registration;
+static OtNodesFactoryRegistration<OtCompareNode> registration;

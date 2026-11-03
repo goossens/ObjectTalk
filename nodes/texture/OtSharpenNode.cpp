@@ -43,4 +43,4 @@ private:
 	float strength = 1.0f;
 };
 
-static OtNodesFactoryRegister<OtSharpenNode> registration;
+static OtNodesFactoryRegistration<OtSharpenNode> registration;

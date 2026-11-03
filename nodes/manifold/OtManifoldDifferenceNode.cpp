@@ -48,4 +48,4 @@ private:
 	OtManifold result;
 };
 
-static OtNodesFactoryRegister<OtManifoldDifferenceNode> registration;
+static OtNodesFactoryRegistration<OtManifoldDifferenceNode> registration;

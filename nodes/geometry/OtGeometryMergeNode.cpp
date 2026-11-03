@@ -51,4 +51,4 @@ private:
 	OtGeometry output;
 };
 
-static OtNodesFactoryRegister<OtGeometryMergeNode> registration;
+static OtNodesFactoryRegistration<OtGeometryMergeNode> registration;

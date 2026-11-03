@@ -75,4 +75,4 @@ private:
 	std::string value = "";
 };
 
-static OtNodesFactoryRegister<OtStringInputNode> registration;
+static OtNodesFactoryRegistration<OtStringInputNode> registration;

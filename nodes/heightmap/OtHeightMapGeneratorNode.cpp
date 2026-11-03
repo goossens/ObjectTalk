@@ -228,4 +228,4 @@ private:
 	}
 };
 
-static OtNodesFactoryRegister<OtHeightMapGeneratorNode> registration;
+static OtNodesFactoryRegistration<OtHeightMapGeneratorNode> registration;

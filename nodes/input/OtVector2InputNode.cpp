@@ -65,4 +65,4 @@ private:
 	glm::vec2 value{0.0f};
 };
 
-static OtNodesFactoryRegister<OtVector2InputNode> registration;
+static OtNodesFactoryRegistration<OtVector2InputNode> registration;

@@ -58,4 +58,4 @@ private:
 	OtAsset<OtInstancesAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualInstancesOutputNode> registration;
+static OtNodesFactoryRegistration<OtVirtualInstancesOutputNode> registration;

@@ -122,4 +122,4 @@ private:
 	float offset;
 };
 
-static OtCircuitFactoryRegister<OtMonophonicSampler> registration;
+static OtCircuitFactoryRegistration<OtMonophonicSampler> registration;

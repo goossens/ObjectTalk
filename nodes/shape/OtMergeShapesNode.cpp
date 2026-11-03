@@ -47,4 +47,4 @@ private:
 	OtShape output;
 };
 
-static OtNodesFactoryRegister<OtMergeShapesNode> registration;
+static OtNodesFactoryRegistration<OtMergeShapesNode> registration;

@@ -42,4 +42,4 @@ private:
 	float v = 0.0f;
 };
 
-static OtNodesFactoryRegister<OtUvFieldNode> registration;
+static OtNodesFactoryRegistration<OtUvFieldNode> registration;

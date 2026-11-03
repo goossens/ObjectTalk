@@ -82,4 +82,4 @@ private:
 	glm::vec3 scale{1.0f};
 };
 
-static OtNodesFactoryRegister<OtTransformInstancesNode> registration;
+static OtNodesFactoryRegistration<OtTransformInstancesNode> registration;

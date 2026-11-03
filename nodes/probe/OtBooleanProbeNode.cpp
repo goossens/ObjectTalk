@@ -40,4 +40,4 @@ private:
 };
 
 
-static OtNodesFactoryRegister<OtBooleanProbeNode> registration;
+static OtNodesFactoryRegistration<OtBooleanProbeNode> registration;

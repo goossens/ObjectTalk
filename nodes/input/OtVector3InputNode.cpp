@@ -65,4 +65,4 @@ private:
 	glm::vec3 value{0.0f};
 };
 
-static OtNodesFactoryRegister<OtVector3InputNode> registration;
+static OtNodesFactoryRegistration<OtVector3InputNode> registration;

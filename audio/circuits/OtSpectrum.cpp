@@ -155,4 +155,4 @@ private:
 	float magnitudes[N / 2] = {};
 };
 
-static OtCircuitFactoryRegister<OtSpectrum> registration;
+static OtCircuitFactoryRegistration<OtSpectrum> registration;

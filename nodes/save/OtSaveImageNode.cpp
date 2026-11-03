@@ -68,4 +68,4 @@ private:
 	bool selectorOpen = false;
 };
 
-static OtNodesFactoryRegister<OtSaveImageNode> registration;
+static OtNodesFactoryRegistration<OtSaveImageNode> registration;

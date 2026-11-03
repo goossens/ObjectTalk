@@ -68,4 +68,4 @@ private:
 	bool selectorOpen = false;
 };
 
-static OtNodesFactoryRegister<OtSaveHeightMapNode> registration;
+static OtNodesFactoryRegistration<OtSaveHeightMapNode> registration;

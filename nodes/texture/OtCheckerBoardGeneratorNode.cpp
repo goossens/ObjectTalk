@@ -49,4 +49,4 @@ private:
 	OtCheckerBoard checkerboard;
 };
 
-static OtNodesFactoryRegister<OtCheckerBoardGeneratorNode> registration;
+static OtNodesFactoryRegistration<OtCheckerBoardGeneratorNode> registration;

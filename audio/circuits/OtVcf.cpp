@@ -70,4 +70,4 @@ private:
 	OtCircuitPin signalOutput;
 };
 
-static OtCircuitFactoryRegister<OtVcfCircuit> registration;
+static OtCircuitFactoryRegistration<OtVcfCircuit> registration;

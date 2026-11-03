@@ -158,4 +158,4 @@ private:
 };
 
 
-static OtNodesFactoryRegister<OtErodeHeightMapNode> registration;
+static OtNodesFactoryRegistration<OtErodeHeightMapNode> registration;

@@ -64,4 +64,4 @@ private:
 	OtIslandizer::DistanceFunction distance = OtIslandizer::DistanceFunction::squareBump;
 };
 
-static OtNodesFactoryRegister<OtIslandizerNode> registration;
+static OtNodesFactoryRegistration<OtIslandizerNode> registration;

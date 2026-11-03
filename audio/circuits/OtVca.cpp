@@ -55,4 +55,4 @@ private:
 	OtCircuitPin audioOutput;
 };
 
-static OtCircuitFactoryRegister<OtVca> registration;
+static OtCircuitFactoryRegistration<OtVca> registration;

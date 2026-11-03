@@ -144,4 +144,4 @@ private:
 };
 
 
-static OtNodesFactoryRegister<OtIslandizeHeightMapNode> registration;
+static OtNodesFactoryRegistration<OtIslandizeHeightMapNode> registration;

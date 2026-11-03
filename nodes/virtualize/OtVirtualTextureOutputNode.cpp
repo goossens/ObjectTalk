@@ -56,4 +56,4 @@ private:
 	OtAsset<OtTextureAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualTextureOutputNode> registration;
+static OtNodesFactoryRegistration<OtVirtualTextureOutputNode> registration;

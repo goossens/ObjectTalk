@@ -45,4 +45,4 @@ private:
 	float z = 0.0f;
 };
 
-static OtNodesFactoryRegister<OtNormalFieldNode> registration;
+static OtNodesFactoryRegistration<OtNormalFieldNode> registration;

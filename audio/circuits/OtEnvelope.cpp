@@ -88,4 +88,4 @@ private:
 	static inline float getEnvelopeHeight() { return OtUi::size(5.0f); }
 };
 
-static OtCircuitFactoryRegister<OtEnvelopeCircuit> registration;
+static OtCircuitFactoryRegistration<OtEnvelopeCircuit> registration;

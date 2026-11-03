@@ -45,4 +45,4 @@ private:
 	glm::vec3 value{0.0f};
 };
 
-static OtNodesFactoryRegister<OtCombineXyzNode> registration;
+static OtNodesFactoryRegistration<OtCombineXyzNode> registration;

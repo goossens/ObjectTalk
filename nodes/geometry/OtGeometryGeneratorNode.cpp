@@ -111,4 +111,4 @@ private:
 	OtPrimitiveFactory factory;
 };
 
-static OtNodesFactoryRegister<OtGeometryGeneratorNode> registration;
+static OtNodesFactoryRegistration<OtGeometryGeneratorNode> registration;

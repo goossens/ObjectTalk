@@ -53,4 +53,4 @@ private:
 	float tolerance = 0.25f;
 };
 
-static OtNodesFactoryRegister<OtManifoldRevolveNode> registration;
+static OtNodesFactoryRegistration<OtManifoldRevolveNode> registration;

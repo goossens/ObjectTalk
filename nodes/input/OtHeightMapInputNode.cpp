@@ -100,4 +100,4 @@ private:
 	OtHeightMap heightMap;
 };
 
-static OtNodesFactoryRegister<OtHeightMapInputNode> registration;
+static OtNodesFactoryRegistration<OtHeightMapInputNode> registration;

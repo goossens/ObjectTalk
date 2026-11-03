@@ -48,4 +48,4 @@ private:
 	OtManifold result;
 };
 
-static OtNodesFactoryRegister<OtManifoldUnionNode> registration;
+static OtNodesFactoryRegistration<OtManifoldUnionNode> registration;

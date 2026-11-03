@@ -64,4 +64,4 @@ private:
 	float value = 0.0f;
 };
 
-static OtNodesFactoryRegister<OtFloatInputNode> registration;
+static OtNodesFactoryRegistration<OtFloatInputNode> registration;

@@ -129,4 +129,4 @@ private:
 	}
 };
 
-static OtCircuitFactoryRegister<OtSpeakerCabinetCircuit> registration;
+static OtCircuitFactoryRegistration<OtSpeakerCabinetCircuit> registration;

@@ -65,4 +65,4 @@ private:
 	glm::vec4 value{0.0f};
 };
 
-static OtNodesFactoryRegister<OtVector4InputNode> registration;
+static OtNodesFactoryRegistration<OtVector4InputNode> registration;

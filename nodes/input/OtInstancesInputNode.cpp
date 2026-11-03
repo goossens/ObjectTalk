@@ -100,4 +100,4 @@ private:
 	OtInstances instances;
 };
 
-static OtNodesFactoryRegister<OtInstancesInputNode> registration;
+static OtNodesFactoryRegistration<OtInstancesInputNode> registration;

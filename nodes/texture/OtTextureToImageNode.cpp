@@ -48,4 +48,4 @@ private:
 	OtReadBackBuffer buffer;
 };
 
-static OtNodesFactoryRegister<OtTextureToImageNode> registration;
+static OtNodesFactoryRegistration<OtTextureToImageNode> registration;

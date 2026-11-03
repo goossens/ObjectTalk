@@ -35,4 +35,4 @@ private:
 	OtSeamlessTile tiler;
 };
 
-static OtNodesFactoryRegister<OtSeamlessTilerNode> registration;
+static OtNodesFactoryRegistration<OtSeamlessTilerNode> registration;

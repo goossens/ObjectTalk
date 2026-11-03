@@ -147,4 +147,4 @@ private:
 	float result = 0.0f;
 };
 
-static OtNodesFactoryRegister<OtUnaryFloatNode> registration;
+static OtNodesFactoryRegistration<OtUnaryFloatNode> registration;

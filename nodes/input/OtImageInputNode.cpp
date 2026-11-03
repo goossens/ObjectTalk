@@ -100,4 +100,4 @@ private:
 	OtImage image;
 };
 
-static OtNodesFactoryRegister<OtImageInputNode> registration;
+static OtNodesFactoryRegistration<OtImageInputNode> registration;

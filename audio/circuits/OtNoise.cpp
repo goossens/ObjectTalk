@@ -46,4 +46,4 @@ private:
 	OtCircuitPin signalOutput;
 };
 
-static OtCircuitFactoryRegister<OtNoiseCircuit> registration;
+static OtCircuitFactoryRegistration<OtNoiseCircuit> registration;

@@ -122,4 +122,4 @@ private:
 	OtRgbaCurve rgbCurve;
 };
 
-static OtNodesFactoryRegister<OtRbgCurvesNode> registration;
+static OtNodesFactoryRegistration<OtRbgCurvesNode> registration;

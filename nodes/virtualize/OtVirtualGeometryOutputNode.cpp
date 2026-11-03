@@ -56,4 +56,4 @@ private:
 	OtAsset<OtGeometryAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualGeometryOutputNode> registration;
+static OtNodesFactoryRegistration<OtVirtualGeometryOutputNode> registration;

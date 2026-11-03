@@ -140,4 +140,4 @@ private:
 	OtGeometry geometry;
 };
 
-static OtNodesFactoryRegister<OtExtrudeShapeNode> registration;
+static OtNodesFactoryRegistration<OtExtrudeShapeNode> registration;

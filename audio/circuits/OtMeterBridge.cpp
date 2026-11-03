@@ -45,4 +45,4 @@ private:
 	OtCircuitPin input8;
 };
 
-static OtCircuitFactoryRegister<OtMeterBridge> registration;
+static OtCircuitFactoryRegistration<OtMeterBridge> registration;

@@ -114,17 +114,17 @@ private:
 
 
 //
-//	OtNodesFactoryRegister
+//	OtNodesFactoryRegistration
 //
 
 template <typename T>
-class OtNodesFactoryRegister {
+class OtNodesFactoryRegistration {
 public:
 	// sanity check
 	static_assert(std::is_base_of<OtNodeClass, T>::value, "Class is not derived from OtNodeClass");
 
 	// constructor
-	OtNodesFactoryRegister() {
+	OtNodesFactoryRegistration() {
 		OtNodesFactory::registerType(OtNodeClass::categoryNames[static_cast<int>(T::nodeCategory)], T::nodeName, []() {
 			auto node = std::make_shared<T>();
 			node->type = T::nodeName;

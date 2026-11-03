@@ -61,4 +61,4 @@ private:
 	float a{0.0f};
 };
 
-static OtNodesFactoryRegister<OtSampleRgbaImageNode> registration;
+static OtNodesFactoryRegistration<OtSampleRgbaImageNode> registration;

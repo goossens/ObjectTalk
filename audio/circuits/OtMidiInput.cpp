@@ -325,4 +325,4 @@ private:
 	OtCircuitPin gateOutput;
 };
 
-static OtCircuitFactoryRegister<OtMidiInputCircuit> registration;
+static OtCircuitFactoryRegistration<OtMidiInputCircuit> registration;

@@ -56,4 +56,4 @@ private:
 	float tolerance = 0.25f;
 };
 
-static OtNodesFactoryRegister<OtManifoldExtrudeNode> registration;
+static OtNodesFactoryRegistration<OtManifoldExtrudeNode> registration;

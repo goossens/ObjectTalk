@@ -48,4 +48,4 @@ private:
 	OtTexture texture;
 };
 
-static OtNodesFactoryRegister<OtHeightMapToTextureNode> registration;
+static OtNodesFactoryRegistration<OtHeightMapToTextureNode> registration;

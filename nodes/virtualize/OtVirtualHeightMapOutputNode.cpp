@@ -56,4 +56,4 @@ private:
 	OtAsset<OtHeightMapAsset> asset;
 };
 
-static OtNodesFactoryRegister<OtVirtualHeightMapOutputNode> registration;
+static OtNodesFactoryRegistration<OtVirtualHeightMapOutputNode> registration;

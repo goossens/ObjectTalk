@@ -24,4 +24,4 @@ public:
 	static constexpr OtCircuitClass::Category circuitCategory = OtCircuitClass::Category::equalizer;
 };
 
-static OtCircuitFactoryRegister<OtParametricEqCircuit> registration;
+static OtCircuitFactoryRegistration<OtParametricEqCircuit> registration;

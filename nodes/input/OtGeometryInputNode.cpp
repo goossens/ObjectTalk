@@ -101,4 +101,4 @@ private:
 	OtGeometry geometry;
 };
 
-static OtNodesFactoryRegister<OtGeometryInputNode> registration;
+static OtNodesFactoryRegistration<OtGeometryInputNode> registration;

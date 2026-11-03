@@ -58,4 +58,4 @@ private:
 	OtCircuitPin output;
 };
 
-static OtCircuitFactoryRegister<OtMixer4> registration;
+static OtCircuitFactoryRegistration<OtMixer4> registration;

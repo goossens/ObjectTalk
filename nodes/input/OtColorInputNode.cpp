@@ -70,4 +70,4 @@ private:
 	OtColor value{0.0f};
 };
 
-static OtNodesFactoryRegister<OtColorInputNode> registration;
+static OtNodesFactoryRegistration<OtColorInputNode> registration;

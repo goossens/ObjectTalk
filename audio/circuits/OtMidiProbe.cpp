@@ -123,4 +123,4 @@ private:
 	float customH;
 };
 
-static OtCircuitFactoryRegister<OtMidiProbe> registration;
+static OtCircuitFactoryRegistration<OtMidiProbe> registration;

@@ -40,4 +40,4 @@ private:
 };
 
 
-static OtNodesFactoryRegister<OtIntegerProbeNode> registration;
+static OtNodesFactoryRegistration<OtIntegerProbeNode> registration;

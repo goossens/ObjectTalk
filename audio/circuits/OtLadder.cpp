@@ -77,4 +77,4 @@ private:
 	OtCircuitPin ladderOutput;
 };
 
-static OtCircuitFactoryRegister<OtLadderCircuit> registration;
+static OtCircuitFactoryRegistration<OtLadderCircuit> registration;

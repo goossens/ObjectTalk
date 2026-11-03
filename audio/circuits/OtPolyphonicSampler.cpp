@@ -77,4 +77,4 @@ private:
 	OtCircuitPin audioOutput;
 };
 
-static OtCircuitFactoryRegister<OtPolyphonicSampler> registration;
+static OtCircuitFactoryRegistration<OtPolyphonicSampler> registration;

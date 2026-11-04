@@ -43,6 +43,18 @@ def append(filename, skip):
 
 
 #
+#	appendLanguage
+#
+
+def appendLanguage(filename, skip, name):
+	with open(destination + "TextEditor.cpp", "a") as output:
+		open(destination + "TextEditor.cpp", "a").write("\n\n#if defined(TEXTEDITOR_INCLUDE_{0})\n".format(name))
+		append(filename, skip)
+		open(destination + "TextEditor.cpp", "a").write("#endif\n")
+
+
+
+#
 #	copyExtras
 #
 
@@ -88,17 +100,17 @@ if __name__ == "__main__":
 	append("CodePoint.cpp", 17)
 	append("Palette.cpp", 12)
 
-	append("languages/C.h", 9)
-	append("languages/Cpp.h", 5)
-	append("languages/Cs.h", 9)
-	append("languages/AngelScript.h", 5)
-	append("languages/Lua.h", 9)
-	append("languages/Python.h", 9)
-	append("languages/Glsl.h", 5)
-	append("languages/Hlsl.h", 5)
-	append("languages/Json.h", 9)
-	append("languages/Markdown.h", 9)
-	append("languages/Sql.h", 5)
+	appendLanguage("languages/C.h", 11, "C")
+	appendLanguage("languages/Cpp.h", 7, "CPP")
+	appendLanguage("languages/Cs.h", 11, "CS")
+	appendLanguage("languages/AngelScript.h", 7, "ANGELSCRIPT")
+	appendLanguage("languages/Lua.h", 11, "LUA")
+	appendLanguage("languages/Python.h", 11, "PYTHON")
+	appendLanguage("languages/Glsl.h", 7, "GLSL")
+	appendLanguage("languages/Hlsl.h", 7, "HLSL")
+	appendLanguage("languages/Json.h", 11, "JSON")
+	appendLanguage("languages/Markdown.h", 11, "MARKDOWN")
+	appendLanguage("languages/Sql.h", 7, "SQL")
 
 	shutil.copyfile("dtl.h", destination + "dtl.h")
 	shutil.copyfile("TextDiff.h", destination + "TextDiff.h")

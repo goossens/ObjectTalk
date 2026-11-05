@@ -58,10 +58,10 @@ static TextEditor::Iterator getPythonStyleNumber(TextEditor::Iterator start, Tex
 
 
 //
-//	TextEditor::Language::Python
+//	GetLanguageDefinitionPython
 //
 
-const TextEditor::Language* TextEditor::Language::Python() {
+static const TextEditor::Language* GetLanguageDefinitionPython() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 

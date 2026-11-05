@@ -84,7 +84,7 @@ public:
 	inline void setTextLeftMargin(size_t value) { editor.SetTextLeftMargin(value); }
 	inline size_t getTextLeftMargin() { return editor.GetTextLeftMargin(); }
 
-	void setLanguage(const std::string& text);
+	void setLanguage(const std::string& name);
 	inline std::string getLanguage() { return editor.GetLanguageName(); }
 
 	// access text (using UTF-8 encoded strings)

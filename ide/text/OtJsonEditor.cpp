@@ -18,8 +18,9 @@
 
 OtJsonEditor::OtJsonEditor() {
 	// configure language
-	editor.SetLanguage(TextEditor::Language::Json());
-	diff.SetLanguage(TextEditor::Language::Json());
+	auto language = TextEditor::LookupLanguage("JSON");
+	editor.SetLanguage(language);
+	diff.SetLanguage(language);
 
 	// configure editor options
 	editor.SetShowMiniMapEnabled(true);

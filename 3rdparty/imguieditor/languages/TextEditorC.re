@@ -9,15 +9,35 @@
 
 
 //
+//	isCStylePunctuation
+//
+
+static bool isCStylePunctuation(ImWchar character) {
+	static const bool punctuation[128] = {
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false,  true, false, false, false,  true,  true, false,  true,  true,  true,  true,  true,  true,  true,  true,
+		false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true,  true,  true,
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false, false, false, false, false, false, false, false, false, false, false,  true, false,  true,  true, false,
+		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+		false, false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true, false,
+	};
+
+	return character < 127 ? punctuation[character] : false;
+}
+
+
+//
 //	getCStyleIdentifier
 //
 
 static TextEditor::Iterator getCStyleIdentifier(TextEditor::Iterator start, TextEditor::Iterator end) {
 	if (start < end && TextEditor::CodePoint::isXidStart(*start)) {
-		++start;
+		start++;
 
 		while (start < end && TextEditor::CodePoint::isXidContinue(*start)) {
-			++start;
+			start++;
 		}
 	}
 
@@ -77,30 +97,10 @@ static TextEditor::Iterator getCStyleNumber(TextEditor::Iterator start, TextEdit
 
 
 //
-//	isCStylePunctuation
+//	GetLanguageDefinitionC
 //
 
-static bool isCStylePunctuation(ImWchar character) {
-	static const bool punctuation[128] = {
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false,  true, false, false, false,  true,  true, false,  true,  true,  true,  true,  true,  true,  true,  true,
-		false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true,  true,  true,
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false, false, false, false, false, false, false, false, false, false, false,  true, false,  true,  true, false,
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false, false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true, false,
-	};
-
-	return character < 127 ? punctuation[character] : false;
-}
-
-
-//
-//	TextEditor::Language::C
-//
-
-const TextEditor::Language* TextEditor::Language::C() {
+static const TextEditor::Language* GetLanguageDefinitionC() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 

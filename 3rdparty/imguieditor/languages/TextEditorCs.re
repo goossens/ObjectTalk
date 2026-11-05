@@ -53,10 +53,10 @@ static TextEditor::Iterator getCsStyleNumber(TextEditor::Iterator start, TextEdi
 
 
 //
-//	TextEditor::Language::Cs
+//	GetLanguageDefinitionCs
 //
 
-const TextEditor::Language* TextEditor::Language::Cs() {
+static const TextEditor::Language* GetLanguageDefinitionCs() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 

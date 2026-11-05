@@ -6,10 +6,10 @@
 
 
 //
-//	TextEditor::Language::Sql
+//	GetLanguageDefinitionSql
 //
 
-const TextEditor::Language* TextEditor::Language::Sql() {
+static const TextEditor::Language* GetLanguageDefinitionSql() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 

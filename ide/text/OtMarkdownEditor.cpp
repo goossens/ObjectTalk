@@ -17,7 +17,8 @@
 //
 
 OtMarkdownEditor::OtMarkdownEditor() {
-	editor.SetLanguage(TextEditor::Language::Markdown());
+	auto language = TextEditor::LookupLanguage("Markdown");
+	editor.SetLanguage(language);
 	editor.SetShowMatchingBrackets(false);
-	diff.SetLanguage(TextEditor::Language::Markdown());
+	diff.SetLanguage(language);
 }

@@ -98,7 +98,7 @@ TextEditor::Language* OtObjectTalkLanguage::getDefinition() {
 
 	if (!initialized) {
 		// inherit from the C language
-		language = *TextEditor::Language::C();
+		language = *TextEditor::LookupLanguage("C");
 
 		// set ObjectTalk unique features
 		language.name = "ObjectTalk";

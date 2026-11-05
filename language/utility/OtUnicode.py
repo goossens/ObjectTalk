@@ -5,7 +5,7 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
-import datetime, fileinput, glob, os, re, sys
+import datetime, fileinput, glob, os, re, subprocess, sys
 
 
 rangePattern = re.compile(r"([0-9A-F]+)\.\.([0-9A-F]+)")
@@ -160,7 +160,7 @@ C caseRangeToLower(const T& table, C codepoint) {
 
 def fetch(f):
 	if not os.path.exists(os.path.basename(f)):
-		os.system("curl -O http://www.unicode.org/Public/UNIDATA/%s" % f)
+		subprocess.run(["curl", "-O", "http://www.unicode.org/Public/UNIDATA/%s" % f])
 
 	if not os.path.exists(os.path.basename(f)):
 		sys.stderr.write("cannot load %s" % f)

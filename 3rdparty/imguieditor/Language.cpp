@@ -11,14 +11,90 @@
 
 #include "TextEditor.h"
 
-#include "languages/C.h"
-#include "languages/Cpp.h"
-#include "languages/Cs.h"
-#include "languages/AngelScript.h"
-#include "languages/Lua.h"
-#include "languages/Python.h"
-#include "languages/Glsl.h"
-#include "languages/Hlsl.h"
-#include "languages/Json.h"
-#include "languages/Markdown.h"
-#include "languages/Sql.h"
+
+//
+//	TextEditor::SetLanguage
+//
+
+void TextEditor::SetLanguage(const Language* language) {
+	config.language = language;
+
+	if (languageChangeCallback) {
+		languageChangeCallback();
+	}
+}
+
+
+//
+//	TextEditor::RegisterLanguage
+//
+
+void TextEditor::RegisterLanguage(const std::string name, std::function<const Language*()> creator, const std::vector<std::string> extensions) {
+	builtinLanguages.emplace_back(name);
+	builtinLanguagesIndex.emplace(name);
+	std::sort(builtinLanguages.begin(), builtinLanguages.end());
+	builtinLanguageCreators[name] = creator;
+
+	for (auto& extension : extensions) {
+		builtinLanguageExtensions[extension] = creator;
+	}
+}
+
+
+//
+//	TextEditor::LookupLanguage
+//
+
+const TextEditor::Language* TextEditor::LookupLanguage(const std::string& name) {
+	if (!languagesRegistered) {
+		registerLanguages();
+		languagesRegistered = true;
+	}
+
+	if (builtinLanguagesIndex.find(name) == builtinLanguagesIndex.end()) {
+		return nullptr;
+
+	} else {
+		return builtinLanguageCreators[name]();
+	}
+}
+
+
+//
+//	TextEditor::LookupLanguageByExtension
+//
+
+const TextEditor::Language* TextEditor::LookupLanguageByExtension(const std::string& extension) {
+	if (!languagesRegistered) {
+		registerLanguages();
+		languagesRegistered = true;
+	}
+
+	if (builtinLanguageExtensions.find(extension) == builtinLanguageExtensions.end()) {
+		return nullptr;
+
+	} else {
+		return builtinLanguageExtensions[extension]();
+	}
+}
+
+
+//
+//	TextEditor::GetRegisteredLanguages
+//
+
+const std::vector<std::string> TextEditor::GetRegisteredLanguages() {
+	if (!languagesRegistered) {
+		registerLanguages();
+		languagesRegistered = true;
+	}
+
+	return builtinLanguages;
+}
+
+
+//
+//	Include language definitions
+//
+
+#include "TextEditorLanguages.h"

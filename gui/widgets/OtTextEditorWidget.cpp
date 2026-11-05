@@ -44,43 +44,8 @@ void OtTextEditorWidgetClass::init(size_t count, OtObject* parameters) {
 //	OtTextEditorWidgetClass::setLanguage
 //
 
-void OtTextEditorWidgetClass::setLanguage(const std::string& text) {
-	if (text == "C") {
-		editor.SetLanguage(TextEditor::Language::C());
-
-	} else if (text == "C++") {
-		editor.SetLanguage(TextEditor::Language::Cpp());
-
-	} else if (text == "C#") {
-		editor.SetLanguage(TextEditor::Language::Cs());
-
-	} else if (text == "AngelScript") {
-		editor.SetLanguage(TextEditor::Language::AngelScript());
-
-	} else if (text == "Lua") {
-		editor.SetLanguage(TextEditor::Language::Lua());
-
-	} else if (text == "Python") {
-		editor.SetLanguage(TextEditor::Language::Python());
-
-	} else if (text == "GLSL") {
-		editor.SetLanguage(TextEditor::Language::Glsl());
-
-	} else if (text == "HLSL") {
-		editor.SetLanguage(TextEditor::Language::Hlsl());
-
-	} else if (text == "JSON") {
-		editor.SetLanguage(TextEditor::Language::Json());
-
-	} else if (text == "Markdown") {
-		editor.SetLanguage(TextEditor::Language::Markdown());
-
-	} else if (text == "SQL") {
-		editor.SetLanguage(TextEditor::Language::Sql());
-
-	} else {
-		OtLogError("Unknown language [{}], should be C, C++, C#, AngelScript, Lua, Python, GLSL, HLSL, JSON, Markdown or SQL", text);
-	}
+void OtTextEditorWidgetClass::setLanguage(const std::string& name) {
+	editor.SetLanguage(TextEditor::LookupLanguage(name));
 }
 
 

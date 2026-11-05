@@ -6,10 +6,10 @@
 
 
 //
-//	TextEditor::Language::Cpp
+//	GetLanguageDefinitionCpp
 //
 
-const TextEditor::Language* TextEditor::Language::Cpp() {
+static const TextEditor::Language* GetLanguageDefinitionCpp() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 

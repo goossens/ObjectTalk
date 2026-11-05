@@ -5,9 +5,10 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
-import os, shutil, sys
+import glob, os, shutil, sys
 
 destination = "../../../ImGuiColorTextEdit/"
+languagesDestination = destination + "languages/"
 
 
 #
@@ -43,18 +44,6 @@ def append(filename, skip):
 
 
 #
-#	appendLanguage
-#
-
-def appendLanguage(filename, skip, name):
-	with open(destination + "TextEditor.cpp", "a") as output:
-		open(destination + "TextEditor.cpp", "a").write("\n\n#if defined(TEXTEDITOR_INCLUDE_{0})\n".format(name))
-		append(filename, skip)
-		open(destination + "TextEditor.cpp", "a").write("#endif\n")
-
-
-
-#
 #	copyExtras
 #
 
@@ -81,6 +70,7 @@ if __name__ == "__main__":
 		sys.exit(1)
 
 	shutil.copyfile("TextEditor.h", destination + "TextEditor.h")
+	shutil.copyfile("TextEditorLanguages.h", destination + "TextEditorLanguages.h")
 	copyMain("TextEditor.cpp", destination + "TextEditor.cpp")
 
 	append("Cursors.cpp", 12)
@@ -99,18 +89,13 @@ if __name__ == "__main__":
 	append("CodePointTables.h", 26)
 	append("CodePoint.cpp", 17)
 	append("Palette.cpp", 12)
+	append("Language.cpp", 12)
 
-	appendLanguage("languages/C.h", 11, "C")
-	appendLanguage("languages/Cpp.h", 7, "CPP")
-	appendLanguage("languages/Cs.h", 11, "CS")
-	appendLanguage("languages/AngelScript.h", 7, "ANGELSCRIPT")
-	appendLanguage("languages/Lua.h", 11, "LUA")
-	appendLanguage("languages/Python.h", 11, "PYTHON")
-	appendLanguage("languages/Glsl.h", 7, "GLSL")
-	appendLanguage("languages/Hlsl.h", 7, "HLSL")
-	appendLanguage("languages/Json.h", 11, "JSON")
-	appendLanguage("languages/Markdown.h", 11, "MARKDOWN")
-	appendLanguage("languages/Sql.h", 7, "SQL")
+	if not os.path.exists(languagesDestination):
+		os.makedirs(languagesDestination)
+
+	for language in glob.iglob("languages/*.h"):
+		shutil.copyfile(language, languagesDestination + os.path.basename(language))
 
 	shutil.copyfile("dtl.h", destination + "dtl.h")
 	shutil.copyfile("TextDiff.h", destination + "TextDiff.h")

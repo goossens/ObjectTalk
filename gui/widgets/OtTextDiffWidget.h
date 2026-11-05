@@ -44,7 +44,7 @@ public:
 	inline void setSideBySideMode(float value) { diff.SetSideBySideMode(value); }
 	inline float getSideBySideMode() { return diff.GetSideBySideMode(); }
 
-	void setLanguage(const std::string& text);
+	void setLanguage(const std::string& name);
 	inline std::string getLanguage() { return diff.GetLanguage()->name; }
 
 	// access text (using UTF-8 encoded strings)

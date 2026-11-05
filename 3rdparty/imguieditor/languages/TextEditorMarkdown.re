@@ -82,10 +82,10 @@ static TextEditor::Iterator tokenizeMarkdown(TextEditor::Iterator start, TextEdi
 
 
 //
-//	TextEditor::Language::Markdown
+//	GetLanguageDefinitionMarkdown
 //
 
-const TextEditor::Language* TextEditor::Language::Markdown() {
+static const TextEditor::Language* GetLanguageDefinitionMarkdown() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 

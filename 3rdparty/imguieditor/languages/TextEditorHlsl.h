@@ -6,10 +6,10 @@
 
 
 //
-//	TextEditor::Language::Hlsl
+//	GetLanguageDefinitionHlsl
 //
 
-const TextEditor::Language* TextEditor::Language::Hlsl() {
+static const TextEditor::Language* GetLanguageDefinitionHlsl() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 

@@ -5,7 +5,7 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
-import glob, os
+import glob, os, subprocess
 
 
 #
@@ -19,6 +19,12 @@ if __name__ == "__main__":
 		hPath = os.path.splitext(rePath)[0] + ".h"
 
 		if not os.path.exists(hPath) or os.path.getmtime(rePath) > os.path.getmtime(hPath):
-			command = f"re2c -i -o {hPath} {rePath}"
-			print(command)
-			os.system(command)
+			command = [
+				"re2c",
+				 "-i",
+				 "-o", hPath,
+				 rePath
+			]
+
+			print(" ".join(command))
+			subprocess.run(command)

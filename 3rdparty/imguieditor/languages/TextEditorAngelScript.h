@@ -6,10 +6,10 @@
 
 
 //
-//	TextEditor::Language::AngelScript
+//	GetLanguageDefinitionAngelScript
 //
 
-const TextEditor::Language* TextEditor::Language::AngelScript() {
+static const TextEditor::Language* GetLanguageDefinitionAngelScript() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 

@@ -186,10 +186,10 @@ static TextEditor::Iterator luaStringLevelEnd(TextEditor::Iterator start, TextEd
 
 
 //
-//	TextEditor::Language::Lua
+//	GetLanguageDefinitionLua
 //
 
-const TextEditor::Language* TextEditor::Language::Lua() {
+static const TextEditor::Language* GetLanguageDefinitionLua() {
 	static bool initialized = false;
 	static TextEditor::Language language;
 

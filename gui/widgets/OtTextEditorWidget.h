@@ -77,8 +77,8 @@ public:
 	inline void setMiddleMousePanMode() { editor.SetMiddleMousePanMode(); }
 	inline void setMiddleMouseScrollMode() { editor.SetMiddleMouseScrollMode(); }
 	inline bool isMiddleMousePanMode() { return editor.IsMiddleMousePanMode(); }
-	inline void setLineNumberLeftMargin(size_t value) { editor.SetLineNumberLeftMargin(value); }
-	inline size_t getLineNumberLeftMargin() { return editor.GetLineNumberLeftMargin(); }
+	inline void setLeftMargin(size_t value) { editor.SetLeftMargin(value); }
+	inline size_t getLeftMargin() { return editor.GetLeftMargin(); }
 	inline void setDecorationLeftMargin(size_t value) { editor.SetDecorationLeftMargin(value); }
 	inline size_t getDecorationLeftMargin() { return editor.GetDecorationLeftMargin(); }
 	inline void setTextLeftMargin(size_t value) { editor.SetTextLeftMargin(value); }

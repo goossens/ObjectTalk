@@ -117,8 +117,8 @@ OtType OtTextEditorWidgetClass::getMeta() {
 		type->set("setMiddleMousePanMode", OtFunction::create(&OtTextEditorWidgetClass::setMiddleMousePanMode));
 		type->set("setMiddleMouseScrollMode", OtFunction::create(&OtTextEditorWidgetClass::setMiddleMouseScrollMode));
 		type->set("isMiddleMousePanMode", OtFunction::create(&OtTextEditorWidgetClass::isMiddleMousePanMode));
-		type->set("setLineNumberLeftMargin", OtFunction::create(&OtTextEditorWidgetClass::setLineNumberLeftMargin));
-		type->set("getLineNumberLeftMargin", OtFunction::create(&OtTextEditorWidgetClass::getLineNumberLeftMargin));
+		type->set("setLineNumberLeftMargin", OtFunction::create(&OtTextEditorWidgetClass::setLeftMargin));
+		type->set("getLineNumberLeftMargin", OtFunction::create(&OtTextEditorWidgetClass::getLeftMargin));
 		type->set("setDecorationLeftMargin", OtFunction::create(&OtTextEditorWidgetClass::setDecorationLeftMargin));
 		type->set("getDecorationLeftMargin", OtFunction::create(&OtTextEditorWidgetClass::getDecorationLeftMargin));
 		type->set("setTextLeftMargin", OtFunction::create(&OtTextEditorWidgetClass::setTextLeftMargin));

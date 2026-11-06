@@ -66,7 +66,7 @@ if __name__ == "__main__":
 	os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 	if not os.path.isdir(destination):
-		print("Target path[" + destination +"] does not exist")
+		print("Target path[" + destination + "] does not exist")
 		sys.exit(1)
 
 	shutil.copyfile("TextEditor.h", destination + "TextEditor.h")

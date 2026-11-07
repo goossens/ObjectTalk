@@ -2587,10 +2587,8 @@ void TextEditor::handleCharacter(ImWchar character) {
 
 	endTransaction(transaction);
 
-	if (CodePoint::isWord(character) || autocomplete.isTriggerCharacter(character)) {
-		if (!cursors.hasMultiple() && autocomplete.startTyping(cursors, character)) {
-			makeCursorVisible();
-		}
+	if (!cursors.hasMultiple() && autocomplete.startTyping(cursors, character)) {
+		makeCursorVisible();
 	}
 }
 

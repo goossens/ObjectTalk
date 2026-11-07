@@ -1288,11 +1288,11 @@ void TextEditor::handleKeyboardInputs() {
 		// remove text
 		else if (!config.readOnly && ImGui::Shortcut(ImGuiKey_Delete, ImGuiInputFlags_Repeat)) { handleDelete(false); }
 		else if (!config.readOnly && ImGui::Shortcut(ImGuiMod_Shift | ImGuiKey_Delete, ImGuiInputFlags_Repeat)) { handleDelete(false); }
-		else if (!config.readOnly && ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_Delete, ImGuiInputFlags_Repeat)) { handleDelete(true); }
+		else if (!config.readOnly && ImGui::Shortcut((macOS ? ImGuiMod_Alt : ImGuiMod_Ctrl) | ImGuiKey_Delete, ImGuiInputFlags_Repeat)) { handleDelete(true); }
 
 		else if (!config.readOnly && ImGui::Shortcut(ImGuiKey_Backspace, ImGuiInputFlags_Repeat)) { handleBackspace(false); }
 		else if (!config.readOnly && ImGui::Shortcut(ImGuiMod_Shift | ImGuiKey_Backspace, ImGuiInputFlags_Repeat)) { handleBackspace(false); }
-		else if (!config.readOnly && ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_Backspace, ImGuiInputFlags_Repeat)) { handleBackspace(true); }
+		else if (!config.readOnly && ImGui::Shortcut((macOS ? ImGuiMod_Alt : ImGuiMod_Ctrl) | ImGuiKey_Backspace, ImGuiInputFlags_Repeat)) { handleBackspace(true); }
 
 		else if (!config.readOnly && ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_K)) { removeSelectedLines(); }
 

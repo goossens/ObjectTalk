@@ -1126,8 +1126,8 @@ void TextEditor::renderPopups() {
 	// render autocomplete popup
 	if (autocomplete.render(document, cursors, typeSetter, config.language, textLeftOffset, glyphSize)) {
 		// user picked a suggestion so insert it
-		const auto start = autocomplete.getStart();
-		const auto end = document.findWordEnd(start, true);
+		const auto start = autocomplete.getReplacementStart();
+		const auto end = autocomplete.getReplacementEnd(document);
 		const auto replacement = autocomplete.getReplacement();
 		replaceSectionText(start, end, replacement);
 	}
@@ -2587,8 +2587,8 @@ void TextEditor::handleCharacter(ImWchar character) {
 
 	endTransaction(transaction);
 
-	if (CodePoint::isWord(character)) {
-		if (!cursors.hasMultiple() && autocomplete.startTyping(cursors)) {
+	if (CodePoint::isWord(character) || autocomplete.isTriggerCharacter(character)) {
+		if (!cursors.hasMultiple() && autocomplete.startTyping(cursors, character)) {
 			makeCursorVisible();
 		}
 	}

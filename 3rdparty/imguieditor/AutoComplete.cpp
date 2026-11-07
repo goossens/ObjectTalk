@@ -15,12 +15,26 @@
 
 
 //
-//	TextEditor::setAutoCompleteConfig
+//	TextEditor::AutoComplete::setConfig
 //
 
 void TextEditor::AutoComplete::setConfig(const AutoCompleteConfig* config) {
 	if (config) {
 		configuration = *config;
+
+		// decode extra trigger and word characters
+		auto decode = [](const std::string_view& text, std::vector<ImWchar>& codepoints) {
+			codepoints.clear();
+
+			for (auto i = text.begin(); i < text.end();) {
+				ImWchar codepoint;
+				i = CodePoint::read(i, text.end(), &codepoint);
+				codepoints.emplace_back(codepoint);
+			}
+		};
+
+		decode(configuration.triggerCharacters, triggerCodepoints);
+		decode(configuration.wordCharacters, wordCodepoints);
 		configured = true;
 
 	} else {
@@ -35,9 +49,13 @@ void TextEditor::AutoComplete::setConfig(const AutoCompleteConfig* config) {
 //	TextEditor::AutoComplete::startTyping
 //
 
-bool TextEditor::AutoComplete::startTyping(Cursors& cursors) {
-	if (!active && !requestActivation && configured && configuration.triggerOnTyping) {
+bool TextEditor::AutoComplete::startTyping(Cursors& cursors, ImWchar character) {
+	// a trigger character that isn't part of the search term ends the active session, so start a new one
+	const auto restart = active && isTriggerCharacter(character) && !isWordCharacter(character);
+
+	if ((!active || restart) && !requestActivation && configured && configuration.triggerOnTyping) {
 		triggeredManually = false;
+		cancel();
 		start(cursors);
 		return true;
 
@@ -133,15 +151,15 @@ static bool renderSuggestion(const std::string_view& suggestion, const std::stri
 //
 
 bool TextEditor::AutoComplete::render(Document& document, Cursors& cursors, TypeSetter& typesetter, const Language* language, float textOffset, ImVec2 glyphSize) {
-	// see if we need to activate autocomplete mode
-	if (requestActivation) {
+	// see if we need to activate autocomplete mode (after a previous session is closed)
+	if (requestActivation && !active) {
 		// apply popup delay
 		if (std::chrono::system_clock::now() > activationTime) {
 			// reset activation flag
 			requestActivation = false;
 
 			// capture locations
-			startLocation = document.findWordStart(currentLocation, true);
+			startLocation = findWordStart(document, currentLocation);
 
 			// update the autocomplete state
 			updateState(document, language);
@@ -179,7 +197,7 @@ bool TextEditor::AutoComplete::render(Document& document, Cursors& cursors, Type
 
 		} else {
 			// see if cursor moved away from current word
-			const auto newStart = document.findWordStart(newLocation, true);
+			const auto newStart = findWordStart(document, newLocation);
 
 			if (newStart == startLocation) {
 				currentLocation = newLocation;
@@ -271,7 +289,12 @@ bool TextEditor::AutoComplete::render(Document& document, Cursors& cursors, Type
 					result = true;
 				}
 
-				// render suggestions
+				// render suggestions (or their labels)
+				const auto& texts = state.labels.size() == items ? state.labels : state.suggestions;
+
+				// highlight the text that will be replaced (the callback could have moved its start)
+				const auto highlightTerm = document.getSectionText(getReplacementStart(), currentLocation);
+
 				for (size_t i = 0; i < items; i++) {
 					// ensure unique ID
 					ImGui::PushID(static_cast<int>(i));
@@ -283,7 +306,7 @@ bool TextEditor::AutoComplete::render(Document& document, Cursors& cursors, Type
 						ImGui::SetScrollHereY(0.5f);
 					}
 
-					if (renderSuggestion(state.suggestions[i].c_str(), state.searchTerm, ImGui::GetContentRegionAvail().x, selected)) {
+					if (renderSuggestion(texts[i], highlightTerm, ImGui::GetContentRegionAvail().x, selected)) {
 						// user clicked on a suggestion, use it
 						currentSelection = i;
 						requestDeactivation = true;
@@ -313,9 +336,53 @@ bool TextEditor::AutoComplete::render(Document& document, Cursors& cursors, Type
 //	TextEditor::AutoComplete::setSuggestions
 //
 
-void TextEditor::AutoComplete::setSuggestions(const std::vector<std::string>& suggestions) {
+void TextEditor::AutoComplete::setSuggestions(const std::vector<std::string>& suggestions, const std::vector<std::string>& labels) {
 	state.suggestions = suggestions;
+	state.labels = labels;
 	currentSelection = 0;
+}
+
+
+//
+//	TextEditor::AutoComplete::isTriggerCharacter
+//
+
+bool TextEditor::AutoComplete::isTriggerCharacter(ImWchar codepoint) const {
+	return std::find(triggerCodepoints.begin(), triggerCodepoints.end(), codepoint) != triggerCodepoints.end();
+}
+
+
+//
+//	TextEditor::AutoComplete::getReplacementStart
+//
+
+TextEditor::DocPos TextEditor::AutoComplete::getReplacementStart() const {
+	// use the replacement start (which could have been changed by the callback) if it is valid
+	const auto start = state.replacementStart;
+
+	if (start.line == currentLocation.line && start.index <= currentLocation.index) {
+		return start;
+
+	} else {
+		return startLocation;
+	}
+}
+
+
+//
+//	TextEditor::AutoComplete::getReplacementEnd
+//
+
+TextEditor::DocPos TextEditor::AutoComplete::getReplacementEnd(const Document& document) const {
+	// use the replacement end (which could have been changed by the callback) if it is valid
+	const auto end = state.replacementEnd;
+
+	if (end.line == currentLocation.line && end.index >= currentLocation.index && end.index <= document[end.line].size()) {
+		return end;
+
+	} else {
+		return findWordEnd(document, currentLocation);
+	}
 }
 
 
@@ -371,6 +438,8 @@ void TextEditor::AutoComplete::updateState(Document& document, const Language* l
 
 	state.searchTermStart = startLocation;
 	state.searchTermEnd = currentLocation;
+	state.replacementStart = startLocation;
+	state.replacementEnd = findWordEnd(document, currentLocation);
 
 	state.language = language;
 	state.userData = configuration.userData;
@@ -382,6 +451,9 @@ void TextEditor::AutoComplete::updateState(Document& document, const Language* l
 //
 
 void TextEditor::AutoComplete::refreshSuggestions() {
+	// labels only apply to the suggestions from the call that set them
+	state.labels.clear();
+
 	// populate suggestion list through callback (or clear it if there is none)
 	if (configuration.callback) {
 		configuration.callback(state);
@@ -391,4 +463,47 @@ void TextEditor::AutoComplete::refreshSuggestions() {
 	}
 
 	currentSelection = 0;
+}
+
+
+//
+//	TextEditor::AutoComplete::isWordCharacter
+//
+
+bool TextEditor::AutoComplete::isWordCharacter(ImWchar codepoint) const {
+	return CodePoint::isWord(codepoint) || std::find(wordCodepoints.begin(), wordCodepoints.end(), codepoint) != wordCodepoints.end();
+}
+
+
+//
+//	TextEditor::AutoComplete::findWordStart
+//
+
+TextEditor::DocPos TextEditor::AutoComplete::findWordStart(const Document& document, DocPos from) const {
+	// like Document::findWordStart but with the extra word characters
+	const auto& line = document[from.line];
+	auto index = from.index;
+
+	while (index > 0 && isWordCharacter(line[index - 1].codepoint)) {
+		index--;
+	}
+
+	return DocPos(from.line, index);
+}
+
+
+//
+//	TextEditor::AutoComplete::findWordEnd
+//
+
+TextEditor::DocPos TextEditor::AutoComplete::findWordEnd(const Document& document, DocPos from) const {
+	// like Document::findWordEnd but with the extra word characters
+	const auto& line = document[from.line];
+	auto index = from.index;
+
+	while (index < line.size() && isWordCharacter(line[index].codepoint)) {
+		index++;
+	}
+
+	return DocPos(from.line, index);
 }

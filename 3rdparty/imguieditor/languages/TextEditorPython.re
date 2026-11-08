@@ -8,89 +8,96 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
+#pragma once
+
+
 //
-//	getPythonStyleNumber
+//	Include files
 //
 
-static TextEditor::Iterator getPythonStyleNumber(TextEditor::Iterator start, TextEditor::Iterator end) {
-	TextEditor::Iterator i = start;
-	TextEditor::Iterator marker;
+#include "TextEditorC.h"
 
-/*!re2c
-	re2c:api = custom;
-	re2c:api:style = free-form;
-	re2c:define:YYCTYPE = ImWchar;
-	re2c:define:YYPEEK = "i < end ? *i : 0";
-	re2c:define:YYSKIP = "++i;";
-	re2c:define:YYBACKUP = "marker = i;";
-	re2c:define:YYRESTORE = "i = marker;";
-	re2c:define:YYLESSTHAN = "i >= end";
-	re2c:yyfill:enable = 0;
-	re2c:eof = 0;
 
-	digit        = [0-9];
-	decDigit     = [0-9_];
-	binDigit     = [01_];
-	octDigit     = [0-7_];
-	hexDigit     = [0-9a-fA-F_];
+//
+//	TextEditorPython
+//
 
-	decInteger   = digit decDigit*;
-	binInteger   = ("0b" | "0B") binDigit+;
-	octInteger   = ("0o" | "0O") octDigit+;
-	hexInteger   = ("0x" | "0X") hexDigit+;
+struct TextEditorPython {
+	static TextEditor::Iterator getNumber(TextEditor::Iterator start, TextEditor::Iterator end) {
+		TextEditor::Iterator i = start;
+		TextEditor::Iterator marker;
 
-	digitPart    = digit decDigit*;
-	fraction     = "." digitPart;
-	exponent     = [eE+-] digitPart;
-	imaginary    = [jJ];
+	/*!re2c
+		re2c:api = custom;
+		re2c:api:style = free-form;
+		re2c:define:YYCTYPE = ImWchar;
+		re2c:define:YYPEEK = "i < end ? *i : 0";
+		re2c:define:YYSKIP = "++i;";
+		re2c:define:YYBACKUP = "marker = i;";
+		re2c:define:YYRESTORE = "i = marker;";
+		re2c:define:YYLESSTHAN = "i >= end";
+		re2c:yyfill:enable = 0;
+		re2c:eof = 0;
 
-	float        = digitPart fraction? exponent? imaginary?;
-	number       = decInteger | binInteger | octInteger | hexInteger | float;
+		digit        = [0-9];
+		decDigit     = [0-9_];
+		binDigit     = [01_];
+		octDigit     = [0-7_];
+		hexDigit     = [0-9a-fA-F_];
 
-	number {
-		return i;
+		decInteger   = digit decDigit*;
+		binInteger   = ("0b" | "0B") binDigit+;
+		octInteger   = ("0o" | "0O") octDigit+;
+		hexInteger   = ("0x" | "0X") hexDigit+;
+
+		digitPart    = digit decDigit*;
+		fraction     = "." digitPart;
+		exponent     = [eE+-] digitPart;
+		imaginary    = [jJ];
+
+		float        = digitPart fraction? exponent? imaginary?;
+		number       = decInteger | binInteger | octInteger | hexInteger | float;
+
+		number {
+			return i;
+		}
+
+		$ { return start; }
+		* { return start; }
+	*/
 	}
 
-	$ { return start; }
-	* { return start; }
-*/
-}
+	static const TextEditor::Language* getDefinition() {
+		static bool initialized = false;
+		static TextEditor::Language language;
 
+		if (!initialized) {
+			language.name = "Python";
+			language.singleLineComment = "#";
+			language.hasSingleQuotedStrings = true;
+			language.hasDoubleQuotedStrings = true;
+			language.otherStringStart = "\"\"\"";
+			language.otherStringEnd = "\"\"\"";
+			language.otherStringAltStart = "'''";
+			language.otherStringAltEnd = "'''";
+			language.stringEscape = '\\';
+			language.indentationForBlocks = true;
 
-//
-//	GetLanguageDefinitionPython
-//
+			static const char* const keywords[] = {
+				"False", "await", "else", "import", "pass", "None", "break", "except", "in", "raise", "True",
+				"class", "finally", "is", "return", "and", "continue", "for", "lambda", "try", "as", "def",
+				"from", "nonlocal", "while", "assert", "del", "global", "not", "with", "async", "elif",
+				"if", "or", "yield"
+			};
 
-static const TextEditor::Language* GetLanguageDefinitionPython() {
-	static bool initialized = false;
-	static TextEditor::Language language;
+			for (auto& keyword : keywords) { language.keywords.insert(keyword); }
 
-	if (!initialized) {
-		language.name = "Python";
-		language.singleLineComment = "#";
-		language.hasSingleQuotedStrings = true;
-		language.hasDoubleQuotedStrings = true;
-		language.otherStringStart = "\"\"\"";
-		language.otherStringEnd = "\"\"\"";
-		language.otherStringAltStart = "'''";
-		language.otherStringAltEnd = "'''";
-		language.stringEscape = '\\';
-		language.indentationForBlocks = true;
+			language.isPunctuation = TextEditorC::isPunctuation;
+			language.getIdentifier = TextEditorC::getIdentifier;
+			language.getNumber = getNumber;
+			initialized = true;
+		}
 
-		static const char* const keywords[] = {
-			"False", "await", "else", "import", "pass", "None", "break", "except", "in", "raise", "True",
-			"class", "finally", "is", "return", "and", "continue", "for", "lambda", "try", "as", "def",
-			"from", "nonlocal", "while", "assert", "del", "global", "not", "with", "async", "elif",
-			"if", "or", "yield"
-		};
-
-		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
-
-		language.isPunctuation = isCStylePunctuation;
-		language.getIdentifier = getCStyleIdentifier;
-		language.getNumber = getPythonStyleNumber;
-		initialized = true;
+		return &language;
 	}
-
-	return &language;
-}
+};

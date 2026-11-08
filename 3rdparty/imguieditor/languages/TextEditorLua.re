@@ -8,230 +8,213 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
-//
-//	getLuaStyleNumber
-//
-
-static TextEditor::Iterator getLuaStyleNumber(TextEditor::Iterator start, TextEditor::Iterator end) {
-	TextEditor::Iterator i = start;
-	TextEditor::Iterator marker;
-
-/*!re2c
-	re2c:api = custom;
-	re2c:api:style = free-form;
-	re2c:define:YYCTYPE = ImWchar;
-	re2c:define:YYPEEK = "i < end ? *i : 0";
-	re2c:define:YYSKIP = "++i;";
-	re2c:define:YYBACKUP = "marker = i;";
-	re2c:define:YYRESTORE = "i = marker;";
-	re2c:define:YYLESSTHAN = "i >= end";
-	re2c:yyfill:enable = 0;
-	re2c:eof = 0;
-
-	digit		= [0-9];
-	hexDigit	= [0-9a-fA-F];
-
-	digit*																{ return i; }		// decimal integer
-	("0x" | "0X") hexDigit+ ("." hexDigit*)? ([pP] [+-]? hexDigit*)?	{ return i; }		// hexadecimal integer
-	(digit* "." digit+ | digit+ "." digit*) ([eE] [+-]? digit+)?		{ return i; }		// float
-
-	* { return start; }
-*/
-}
+#pragma once
 
 
 //
-//	isLuaStylePunctuation
-//	[]{}!%#^&*()-+=~|<>?:/;,.
+//	Include files
 //
 
-static bool isLuaStylePunctuation(ImWchar character) {
-	static const bool punctuation[128] = {
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false,  true, false,  true, false,  true,  true, false,  true,  true,  true,  true,  true,  true,  true,  true,
-		false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true,  true,  true,
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false, false, false, false, false, false, false, false, false, false, false,  true, false,  true,  true, false,
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false, false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true, false,
-	};
-
-	return character < 127 ? punctuation[character] : false;
-}
+#include "TextEditorC.h"
 
 
 //
-//	luaCommentLevelStart
+//	TextEditorLua
 //
 
-static TextEditor::Iterator luaCommentLevelStart(TextEditor::Iterator start, TextEditor::Iterator end, size_t& level) {
-	TextEditor::Iterator i = start;
-	TextEditor::Iterator marker;
+struct TextEditorLua {
+	static TextEditor::Iterator getNumber(TextEditor::Iterator start, TextEditor::Iterator end) {
+		TextEditor::Iterator i = start;
+		TextEditor::Iterator marker;
 
-/*!re2c
-	re2c:api = custom;
-	re2c:api:style = free-form;
-	re2c:define:YYCTYPE = ImWchar;
-	re2c:define:YYPEEK = "i < end ? *i : 0";
-	re2c:define:YYSKIP = "++i;";
-	re2c:define:YYBACKUP = "marker = i;";
-	re2c:define:YYRESTORE = "i = marker;";
-	re2c:define:YYLESSTHAN = "i >= end";
-	re2c:yyfill:enable = 0;
-	re2c:eof = 0;
+	/*!re2c
+		re2c:api = custom;
+		re2c:api:style = free-form;
+		re2c:define:YYCTYPE = ImWchar;
+		re2c:define:YYPEEK = "i < end ? *i : 0";
+		re2c:define:YYSKIP = "++i;";
+		re2c:define:YYBACKUP = "marker = i;";
+		re2c:define:YYRESTORE = "i = marker;";
+		re2c:define:YYLESSTHAN = "i >= end";
+		re2c:yyfill:enable = 0;
+		re2c:eof = 0;
 
-	"--[" "="* "[" {
-		level = i - start - 4;
-		return i;
+		digit		= [0-9];
+		hexDigit	= [0-9a-fA-F];
+
+		digit*																{ return i; }		// decimal integer
+		("0x" | "0X") hexDigit+ ("." hexDigit*)? ([pP] [+-]? hexDigit*)?	{ return i; }		// hexadecimal integer
+		(digit* "." digit+ | digit+ "." digit*) ([eE] [+-]? digit+)?		{ return i; }		// float
+
+		* { return start; }
+	*/
 	}
 
-	$ { return start; }
-	* { return start; }
-*/
-}
-
-
-//
-//	luaCommentLevelEnd
-//
-
-static TextEditor::Iterator luaCommentLevelEnd(TextEditor::Iterator start, TextEditor::Iterator end, size_t& level) {
-	TextEditor::Iterator i = start;
-	TextEditor::Iterator marker;
-
-/*!re2c
-	re2c:api = custom;
-	re2c:api:style = free-form;
-	re2c:define:YYCTYPE = ImWchar;
-	re2c:define:YYPEEK = "i < end ? *i : 0";
-	re2c:define:YYSKIP = "++i;";
-	re2c:define:YYBACKUP = "marker = i;";
-	re2c:define:YYRESTORE = "i = marker;";
-	re2c:define:YYLESSTHAN = "i >= end";
-	re2c:yyfill:enable = 0;
-	re2c:eof = 0;
-
-	"]" "="* "]" {
-		level = i - start - 2;
-		return i;
-	}
-
-	$ { return start; }
-	* { return start; }
-*/
-}
-
-
-//
-//	luaStringLevelStart
-//
-
-static TextEditor::Iterator luaStringLevelStart(TextEditor::Iterator start, TextEditor::Iterator end, size_t& level) {
-	TextEditor::Iterator i = start;
-	TextEditor::Iterator marker;
-
-/*!re2c
-	re2c:api = custom;
-	re2c:api:style = free-form;
-	re2c:define:YYCTYPE = ImWchar;
-	re2c:define:YYPEEK = "i < end ? *i : 0";
-	re2c:define:YYSKIP = "++i;";
-	re2c:define:YYBACKUP = "marker = i;";
-	re2c:define:YYRESTORE = "i = marker;";
-	re2c:define:YYLESSTHAN = "i >= end";
-	re2c:yyfill:enable = 0;
-	re2c:eof = 0;
-
-	"[" "="* "[" {
-		level = i - start - 2;
-		return i;
-	}
-
-	$ { return start; }
-	* { return start; }
-*/
-}
-
-
-//
-//	luaStringLevelEnd
-//
-
-static TextEditor::Iterator luaStringLevelEnd(TextEditor::Iterator start, TextEditor::Iterator end, size_t& level) {
-	TextEditor::Iterator i = start;
-	TextEditor::Iterator marker;
-
-/*!re2c
-	re2c:api = custom;
-	re2c:api:style = free-form;
-	re2c:define:YYCTYPE = ImWchar;
-	re2c:define:YYPEEK = "i < end ? *i : 0";
-	re2c:define:YYSKIP = "++i;";
-	re2c:define:YYBACKUP = "marker = i;";
-	re2c:define:YYRESTORE = "i = marker;";
-	re2c:define:YYLESSTHAN = "i >= end";
-	re2c:yyfill:enable = 0;
-	re2c:eof = 0;
-
-	"]" "="* "]" {
-		level = i - start - 2;
-		return i;
-	}
-
-	$ { return start; }
-	* { return start; }
-*/
-}
-
-
-//
-//	GetLanguageDefinitionLua
-//
-
-static const TextEditor::Language* GetLanguageDefinitionLua() {
-	static bool initialized = false;
-	static TextEditor::Language language;
-
-	if (!initialized) {
-		language.name = "Lua";
-		language.singleLineComment = "--";
-		language.commentLevelStart = luaCommentLevelStart;
-		language.commentLevelEnd = luaCommentLevelEnd;
-		language.hasSingleQuotedStrings = true;
-		language.hasDoubleQuotedStrings = true;
-		language.stringLevelStart = luaStringLevelStart;
-		language.stringLevelEnd = luaStringLevelEnd;
-		language.stringEscape = '\\';
-
-		static const char* const keywords[] = {
-			"and", "break", "do", "else", "elseif", "end", "false", "for", "function", "goto", "if", "in", "local", "nil",
-			"not", "or", "repeat", "return", "then", "true", "until", "while"
+	static bool isPunctuation(ImWchar character) {
+		// []{}!%#^&*()-+=~|<>?:/;,.
+		static const bool punctuation[128] = {
+			false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+			false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+			false,  true, false,  true, false,  true,  true, false,  true,  true,  true,  true,  true,  true,  true,  true,
+			false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true,  true,  true,
+			false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+			false, false, false, false, false, false, false, false, false, false, false,  true, false,  true,  true, false,
+			false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+			false, false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true, false,
 		};
 
-		static const char* const identifiers[] = {
-			"_G", "_VERSION", "abs", "acos", "asin", "assert", "atan", "atan2", "byte", "ceil", "char", "clock", "close",
-			"collectgarbage", "concat", "coroutine", "cos", "cosh", "cpath", "create", "date", "debug", "deg", "difftime",
-			"dofile", "dump", "error", "execute", "exit", "exp", "find", "floor", "flush", "fmod", "format", "frexp", "getenv",
-			"getfenv", "gethook", "getinfo", "getlocal", "getmetatable", "getregistry", "getupvalue", "gmatch", "gsub", "huge",
-			"input", "insert", "io", "ipairs", "ldexp", "len", "lines", "load", "loaded", "loaders", "loadfile", "loadlib",
-			"loadstring", "log", "log10", "lower", "match", "math", "max", "maxn", "min", "modf", "module", "next", "open",
-			"os", "output", "package", "pairs", "path", "pcall", "pi", "popen", "pow", "preload", "print", "rad", "random",
-			"randomseed", "rawequal", "rawget", "rawset", "read", "remove", "rename", "rep", "require", "resume", "reverse",
-			"running", "seeall", "seek", "select", "setfenv", "sethook", "setlocal", "setlocale", "setmetatable", "setupvalue",
-			"setvbuf", "sin", "sinh", "sort", "sqrt", "status", "stderr", "stdin", "stdout", "string", "sub", "table", "tan",
-			"tanh", "time", "tmpfile", "tmpname", "tonumber", "tostring", "traceback", "type", "unpack", "upper", "wrap",
-			"write", "xpcall", "yield"
-		};
-
-		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
-		for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
-
-		language.isPunctuation = isLuaStylePunctuation;
-		language.getIdentifier = getCStyleIdentifier;
-		language.getNumber = getLuaStyleNumber;
-		initialized = true;
+		return character < 127 ? punctuation[character] : false;
 	}
 
-	return &language;
-}
+
+	static TextEditor::Iterator commentLevelStart(TextEditor::Iterator start, TextEditor::Iterator end, size_t& level) {
+		TextEditor::Iterator i = start;
+		TextEditor::Iterator marker;
+
+	/*!re2c
+		re2c:api = custom;
+		re2c:api:style = free-form;
+		re2c:define:YYCTYPE = ImWchar;
+		re2c:define:YYPEEK = "i < end ? *i : 0";
+		re2c:define:YYSKIP = "++i;";
+		re2c:define:YYBACKUP = "marker = i;";
+		re2c:define:YYRESTORE = "i = marker;";
+		re2c:define:YYLESSTHAN = "i >= end";
+		re2c:yyfill:enable = 0;
+		re2c:eof = 0;
+
+		"--[" "="* "[" {
+			level = i - start - 4;
+			return i;
+		}
+
+		$ { return start; }
+		* { return start; }
+	*/
+	}
+
+	static TextEditor::Iterator commentLevelEnd(TextEditor::Iterator start, TextEditor::Iterator end, size_t& level) {
+		TextEditor::Iterator i = start;
+		TextEditor::Iterator marker;
+
+	/*!re2c
+		re2c:api = custom;
+		re2c:api:style = free-form;
+		re2c:define:YYCTYPE = ImWchar;
+		re2c:define:YYPEEK = "i < end ? *i : 0";
+		re2c:define:YYSKIP = "++i;";
+		re2c:define:YYBACKUP = "marker = i;";
+		re2c:define:YYRESTORE = "i = marker;";
+		re2c:define:YYLESSTHAN = "i >= end";
+		re2c:yyfill:enable = 0;
+		re2c:eof = 0;
+
+		"]" "="* "]" {
+			level = i - start - 2;
+			return i;
+		}
+
+		$ { return start; }
+		* { return start; }
+	*/
+	}
+
+	static TextEditor::Iterator stringLevelStart(TextEditor::Iterator start, TextEditor::Iterator end, size_t& level) {
+		TextEditor::Iterator i = start;
+		TextEditor::Iterator marker;
+
+	/*!re2c
+		re2c:api = custom;
+		re2c:api:style = free-form;
+		re2c:define:YYCTYPE = ImWchar;
+		re2c:define:YYPEEK = "i < end ? *i : 0";
+		re2c:define:YYSKIP = "++i;";
+		re2c:define:YYBACKUP = "marker = i;";
+		re2c:define:YYRESTORE = "i = marker;";
+		re2c:define:YYLESSTHAN = "i >= end";
+		re2c:yyfill:enable = 0;
+		re2c:eof = 0;
+
+		"[" "="* "[" {
+			level = i - start - 2;
+			return i;
+		}
+
+		$ { return start; }
+		* { return start; }
+	*/
+	}
+
+	static TextEditor::Iterator stringLevelEnd(TextEditor::Iterator start, TextEditor::Iterator end, size_t& level) {
+		TextEditor::Iterator i = start;
+		TextEditor::Iterator marker;
+
+	/*!re2c
+		re2c:api = custom;
+		re2c:api:style = free-form;
+		re2c:define:YYCTYPE = ImWchar;
+		re2c:define:YYPEEK = "i < end ? *i : 0";
+		re2c:define:YYSKIP = "++i;";
+		re2c:define:YYBACKUP = "marker = i;";
+		re2c:define:YYRESTORE = "i = marker;";
+		re2c:define:YYLESSTHAN = "i >= end";
+		re2c:yyfill:enable = 0;
+		re2c:eof = 0;
+
+		"]" "="* "]" {
+			level = i - start - 2;
+			return i;
+		}
+
+		$ { return start; }
+		* { return start; }
+	*/
+	}
+
+	static const TextEditor::Language* getDefinition() {
+		static bool initialized = false;
+		static TextEditor::Language language;
+
+		if (!initialized) {
+			language.name = "Lua";
+			language.singleLineComment = "--";
+			language.commentLevelStart = commentLevelStart;
+			language.commentLevelEnd = commentLevelEnd;
+			language.hasSingleQuotedStrings = true;
+			language.hasDoubleQuotedStrings = true;
+			language.stringLevelStart = stringLevelStart;
+			language.stringLevelEnd = stringLevelEnd;
+			language.stringEscape = '\\';
+
+			static const char* const keywords[] = {
+				"and", "break", "do", "else", "elseif", "end", "false", "for", "function", "goto", "if", "in", "local", "nil",
+				"not", "or", "repeat", "return", "then", "true", "until", "while"
+			};
+
+			static const char* const identifiers[] = {
+				"_G", "_VERSION", "abs", "acos", "asin", "assert", "atan", "atan2", "byte", "ceil", "char", "clock", "close",
+				"collectgarbage", "concat", "coroutine", "cos", "cosh", "cpath", "create", "date", "debug", "deg", "difftime",
+				"dofile", "dump", "error", "execute", "exit", "exp", "find", "floor", "flush", "fmod", "format", "frexp", "getenv",
+				"getfenv", "gethook", "getinfo", "getlocal", "getmetatable", "getregistry", "getupvalue", "gmatch", "gsub", "huge",
+				"input", "insert", "io", "ipairs", "ldexp", "len", "lines", "load", "loaded", "loaders", "loadfile", "loadlib",
+				"loadstring", "log", "log10", "lower", "match", "math", "max", "maxn", "min", "modf", "module", "next", "open",
+				"os", "output", "package", "pairs", "path", "pcall", "pi", "popen", "pow", "preload", "print", "rad", "random",
+				"randomseed", "rawequal", "rawget", "rawset", "read", "remove", "rename", "rep", "require", "resume", "reverse",
+				"running", "seeall", "seek", "select", "setfenv", "sethook", "setlocal", "setlocale", "setmetatable", "setupvalue",
+				"setvbuf", "sin", "sinh", "sort", "sqrt", "status", "stderr", "stdin", "stdout", "string", "sub", "table", "tan",
+				"tanh", "time", "tmpfile", "tmpname", "tonumber", "tostring", "traceback", "type", "unpack", "upper", "wrap",
+				"write", "xpcall", "yield"
+			};
+
+			for (auto& keyword : keywords) { language.keywords.insert(keyword); }
+			for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
+
+			language.isPunctuation = TextEditorC::isPunctuation;
+			language.getIdentifier = TextEditorC::getIdentifier;
+			language.getNumber = getNumber;
+			initialized = true;
+		}
+
+		return &language;
+	}
+};

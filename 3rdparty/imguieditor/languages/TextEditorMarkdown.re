@@ -8,95 +8,95 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
-//
-//	tokenizeMarkdown
-//
-
-static TextEditor::Iterator tokenizeMarkdown(TextEditor::Iterator start, TextEditor::Iterator end, TextEditor::Color& color) {
-	TextEditor::Iterator i = start;
-	TextEditor::Iterator marker;
-
-/*!re2c
-	re2c:api = custom;
-	re2c:api:style = free-form;
-	re2c:define:YYCTYPE = ImWchar;
-	re2c:define:YYPEEK = "i < end ? *i : 0";
-	re2c:define:YYSKIP = "++i;";
-	re2c:define:YYBACKUP = "marker = i;";
-	re2c:define:YYRESTORE = "i = marker;";
-	re2c:define:YYLESSTHAN = "i >= end";
-	re2c:yyfill:enable = 0;
-	re2c:eof = 0;
-
-	header = "#"+.*;
-
-	header {
-		color = TextEditor::Color::declaration;
-		return i;
-	}
-
-	punctuation = [|\-:];
-	ol = [0-9]+". ";
-	ul = [*+\-]" ";
-
-	punctuation | ol | ul {
-		color = TextEditor::Color::punctuation;
-		return i;
-	}
-
-	bold = "**"[^*]+"**";
-	italic = "*"[^ *]+"*";
-	strikethrough = "~~"[^~]+"~~";
-
-	bold | italic | strikethrough {
-		color = TextEditor::Color::number;
-		return i;
-	}
-
-	image = "![" [^\]]*"](" [^)]* ")";
-	link = "[" [^\]]*"](" [^)]* ")";
-
-	image | link {
-		color = TextEditor::Color::identifier;
-		return i;
-	}
-
-	inline = "`"[^`]*"`";
-
-	inline {
-		color = TextEditor::Color::string;
-		return i;
-	}
-
-	html = "<"[a-zA-Z]+">";
-
-	html {
-		color = TextEditor::Color::keyword;
-		return i;
-	}
-
-	$ { return start; }
-	* { return start; }
-*/
-}
+#pragma once
 
 
 //
-//	GetLanguageDefinitionMarkdown
+//	TextEditorMarkdown
 //
 
-static const TextEditor::Language* GetLanguageDefinitionMarkdown() {
-	static bool initialized = false;
-	static TextEditor::Language language;
+struct TextEditorMarkdown {
+	static TextEditor::Iterator tokenize(TextEditor::Iterator start, TextEditor::Iterator end, TextEditor::Color& color) {
+		TextEditor::Iterator i = start;
+		TextEditor::Iterator marker;
 
-	if (!initialized) {
-		language.name = "Markdown";
-		language.commentStart = "<!--";
-		language.commentEnd = "-->";
+	/*!re2c
+		re2c:api = custom;
+		re2c:api:style = free-form;
+		re2c:define:YYCTYPE = ImWchar;
+		re2c:define:YYPEEK = "i < end ? *i : 0";
+		re2c:define:YYSKIP = "++i;";
+		re2c:define:YYBACKUP = "marker = i;";
+		re2c:define:YYRESTORE = "i = marker;";
+		re2c:define:YYLESSTHAN = "i >= end";
+		re2c:yyfill:enable = 0;
+		re2c:eof = 0;
 
-		language.customTokenizer = tokenizeMarkdown;
-		initialized = true;
+		header = "#"+.*;
+
+		header {
+			color = TextEditor::Color::declaration;
+			return i;
+		}
+
+		punctuation = [|\-:];
+		ol = [0-9]+". ";
+		ul = [*+\-]" ";
+
+		punctuation | ol | ul {
+			color = TextEditor::Color::punctuation;
+			return i;
+		}
+
+		bold = "**"[^*]+"**";
+		italic = "*"[^ *]+"*";
+		strikethrough = "~~"[^~]+"~~";
+
+		bold | italic | strikethrough {
+			color = TextEditor::Color::number;
+			return i;
+		}
+
+		image = "![" [^\]]*"](" [^)]* ")";
+		link = "[" [^\]]*"](" [^)]* ")";
+
+		image | link {
+			color = TextEditor::Color::identifier;
+			return i;
+		}
+
+		inline = "`"[^`]*"`";
+
+		inline {
+			color = TextEditor::Color::string;
+			return i;
+		}
+
+		html = "<"[a-zA-Z]+">";
+
+		html {
+			color = TextEditor::Color::keyword;
+			return i;
+		}
+
+		$ { return start; }
+		* { return start; }
+	*/
 	}
 
-	return &language;
-}
+	static const TextEditor::Language* getDefinition() {
+		static bool initialized = false;
+		static TextEditor::Language language;
+
+		if (!initialized) {
+			language.name = "Markdown";
+			language.commentStart = "<!--";
+			language.commentEnd = "-->";
+
+			language.customTokenizer = tokenize;
+			initialized = true;
+		}
+
+		return &language;
+	}
+};

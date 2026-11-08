@@ -13,6 +13,13 @@
 
 
 //
+//	Include language definitions
+//
+
+#include "TextEditorLanguages.h"
+
+
+//
 //	TextEditor::SetLanguage
 //
 
@@ -47,7 +54,7 @@ void TextEditor::RegisterLanguage(const std::string name, std::function<const La
 
 const TextEditor::Language* TextEditor::LookupLanguage(const std::string& name) {
 	if (!languagesRegistered) {
-		registerLanguages();
+		TextEditorLanguages::registerLanguages();
 		languagesRegistered = true;
 	}
 
@@ -66,7 +73,7 @@ const TextEditor::Language* TextEditor::LookupLanguage(const std::string& name) 
 
 const TextEditor::Language* TextEditor::LookupLanguageByExtension(const std::string& extension) {
 	if (!languagesRegistered) {
-		registerLanguages();
+		TextEditorLanguages::registerLanguages();
 		languagesRegistered = true;
 	}
 
@@ -85,16 +92,9 @@ const TextEditor::Language* TextEditor::LookupLanguageByExtension(const std::str
 
 const std::vector<std::string> TextEditor::GetRegisteredLanguages() {
 	if (!languagesRegistered) {
-		registerLanguages();
+		TextEditorLanguages::registerLanguages();
 		languagesRegistered = true;
 	}
 
 	return builtinLanguages;
 }
-
-
-//
-//	Include language definitions
-//
-
-#include "TextEditorLanguages.h"

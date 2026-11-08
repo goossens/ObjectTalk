@@ -8,96 +8,96 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
-//
-//	tokenizeJson
-//
-
-static TextEditor::Iterator tokenizeJson(TextEditor::Iterator start, TextEditor::Iterator end, TextEditor::Color& color) {
-	TextEditor::Iterator i = start;
-	TextEditor::Iterator marker;
-
-/*!re2c
-	re2c:api = custom;
-	re2c:api:style = free-form;
-	re2c:define:YYCTYPE = ImWchar;
-	re2c:define:YYPEEK = "i < end ? *i : 0";
-	re2c:define:YYSKIP = "++i;";
-	re2c:define:YYBACKUP = "marker = i;";
-	re2c:define:YYRESTORE = "i = marker;";
-	re2c:define:YYLESSTHAN = "i >= end";
-	re2c:yyfill:enable = 0;
-	re2c:eof = 0;
-
-	key = "\"" [^"]* "\"" [\t\v\b\f ]* ":";
-
-	key {
-		color = TextEditor::Color::identifier;
-		return i;
-	}
-
-	string = "\"" [^"]* "\"";
-
-	string {
-		color = TextEditor::Color::string;
-		return i;
-	}
-
-	punctuation = [[\]{},];
-
-	punctuation {
-		color = TextEditor::Color::punctuation;
-		return i;
-	}
-
-	identifiers = "null" | "true" | "false";
-
-	identifiers {
-		color = TextEditor::Color::knownIdentifier;
-		return i;
-	}
-
-	digit         = [0-9];
-	nonZeroDigit  = [1-9];
-	e             = "e" | "E";
-	minus         = "-";
-	plus          = "+";
-	zero          = "0";
-	exp           = e (minus | plus)? digit+;
-	frac          = "." digit+;
-	int           = zero | (nonZeroDigit digit*);
-	number        = minus? int frac? exp?;
-
-	number {
-		color = TextEditor::Color::number;
-		return i;
-	}
-
-	$ { return start; }
-	* { return start; }
-*/
-}
+#pragma once
 
 
 //
-//	GetLanguageDefinitionLua
+//	TextEditorJson
 //
 
-static const TextEditor::Language* GetLanguageDefinitionJson() {
-	static bool initialized = false;
-	static TextEditor::Language language;
+struct TextEditorJson {
+	static TextEditor::Iterator tokenize(TextEditor::Iterator start, TextEditor::Iterator end, TextEditor::Color& color) {
+		TextEditor::Iterator i = start;
+		TextEditor::Iterator marker;
 
-	if (!initialized) {
-		language.name = "JSON";
+	/*!re2c
+		re2c:api = custom;
+		re2c:api:style = free-form;
+		re2c:define:YYCTYPE = ImWchar;
+		re2c:define:YYPEEK = "i < end ? *i : 0";
+		re2c:define:YYSKIP = "++i;";
+		re2c:define:YYBACKUP = "marker = i;";
+		re2c:define:YYRESTORE = "i = marker;";
+		re2c:define:YYLESSTHAN = "i >= end";
+		re2c:yyfill:enable = 0;
+		re2c:eof = 0;
 
-		static const char* const keywords[] = {
-			"false", "null", "true"
-		};
+		key = "\"" [^"]* "\"" [\t\v\b\f ]* ":";
 
-		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
+		key {
+			color = TextEditor::Color::identifier;
+			return i;
+		}
 
-		language.customTokenizer = tokenizeJson;
-		initialized = true;
+		string = "\"" [^"]* "\"";
+
+		string {
+			color = TextEditor::Color::string;
+			return i;
+		}
+
+		punctuation = [[\]{},];
+
+		punctuation {
+			color = TextEditor::Color::punctuation;
+			return i;
+		}
+
+		identifiers = "null" | "true" | "false";
+
+		identifiers {
+			color = TextEditor::Color::knownIdentifier;
+			return i;
+		}
+
+		digit         = [0-9];
+		nonZeroDigit  = [1-9];
+		e             = "e" | "E";
+		minus         = "-";
+		plus          = "+";
+		zero          = "0";
+		exp           = e (minus | plus)? digit+;
+		frac          = "." digit+;
+		int           = zero | (nonZeroDigit digit*);
+		number        = minus? int frac? exp?;
+
+		number {
+			color = TextEditor::Color::number;
+			return i;
+		}
+
+		$ { return start; }
+		* { return start; }
+	*/
 	}
 
-	return &language;
-}
+	static const TextEditor::Language* getDefinition() {
+		static bool initialized = false;
+		static TextEditor::Language language;
+
+		if (!initialized) {
+			language.name = "JSON";
+
+			static const char* const keywords[] = {
+				"false", "null", "true"
+			};
+
+			for (auto& keyword : keywords) { language.keywords.insert(keyword); }
+
+			language.customTokenizer = tokenize;
+			initialized = true;
+		}
+
+		return &language;
+	}
+};

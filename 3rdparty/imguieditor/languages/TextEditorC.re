@@ -8,131 +8,121 @@
 //	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
-//
-//	isCStylePunctuation
-//
-
-static bool isCStylePunctuation(ImWchar character) {
-	static const bool punctuation[128] = {
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false,  true, false, false, false,  true,  true, false,  true,  true,  true,  true,  true,  true,  true,  true,
-		false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true,  true,  true,
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false, false, false, false, false, false, false, false, false, false, false,  true, false,  true,  true, false,
-		false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-		false, false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true, false,
-	};
-
-	return character < 127 ? punctuation[character] : false;
-}
+#pragma once
 
 
 //
-//	getCStyleIdentifier
+//	TextEditorC
 //
 
-static TextEditor::Iterator getCStyleIdentifier(TextEditor::Iterator start, TextEditor::Iterator end) {
-	if (start < end && TextEditor::CodePoint::isXidStart(*start)) {
-		start++;
+struct TextEditorC {
+	static bool isPunctuation(ImWchar character) {
+		static const bool punctuation[128] = {
+			false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+			false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+			false,  true, false, false, false,  true,  true, false,  true,  true,  true,  true,  true,  true,  true,  true,
+			false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true,  true,  true,
+			false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+			false, false, false, false, false, false, false, false, false, false, false,  true, false,  true,  true, false,
+			false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+			false, false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true, false,
+		};
 
-		while (start < end && TextEditor::CodePoint::isXidContinue(*start)) {
+		return character < 127 ? punctuation[character] : false;
+	}
+
+	static TextEditor::Iterator getIdentifier(TextEditor::Iterator start, TextEditor::Iterator end) {
+		if (start < end && TextEditor::CodePoint::isXidStart(*start)) {
 			start++;
+
+			while (start < end && TextEditor::CodePoint::isXidContinue(*start)) {
+				start++;
+			}
 		}
+
+		return start;
 	}
 
-	return start;
-}
+	static TextEditor::Iterator getNumber(TextEditor::Iterator start, TextEditor::Iterator end) {
+		TextEditor::Iterator i = start;
+		TextEditor::Iterator marker;
 
+	/*!re2c
+		re2c:api = custom;
+		re2c:api:style = free-form;
+		re2c:define:YYCTYPE = ImWchar;
+		re2c:define:YYPEEK = "i < end ? *i : 0";
+		re2c:define:YYSKIP = "++i;";
+		re2c:define:YYBACKUP = "marker = i;";
+		re2c:define:YYRESTORE = "i = marker;";
+		re2c:define:YYLESSTHAN = "i >= end";
+		re2c:yyfill:enable = 0;
+		re2c:eof = 0;
 
-//
-//	getCStyleNumber
-//
+		D    = [0-9];						// decimal digit
+		NZ   = [1-9];						// non-zero digit
+		B    = [01];						// binary digit
+		O    = [0-7];						// octal digit
+		H    = [a-fA-F0-9];					// hexadecimal digit
+		BP   = "0"[bB];						// binary integer prefix
+		HP   = "0"[xX];						// hexadecimal integer prefix
+		E    = [Ee][+-]?D+;					// decimal exponent
+		P    = [Pp][+-]?D+;					// hexadecimal exponent
+		FS   = [fFlL];						// float suffixes
+		IS   = [uU]("l"|"L"|"ll"|"LL")? | ("l"|"L"|"ll"|"LL")[uU]?;
 
-static TextEditor::Iterator getCStyleNumber(TextEditor::Iterator start, TextEditor::Iterator end) {
-	TextEditor::Iterator i = start;
-	TextEditor::Iterator marker;
+		NZ D* IS?           { return i; }	// decimal integer
+		BP B+ IS?           { return i; }	// binary integer
+		HP H+ IS?           { return i; }	// hexadecimal integer
+		"0" O* IS?          { return i; }	// octal integer
 
-/*!re2c
-	re2c:api = custom;
-	re2c:api:style = free-form;
-	re2c:define:YYCTYPE = ImWchar;
-	re2c:define:YYPEEK = "i < end ? *i : 0";
-	re2c:define:YYSKIP = "++i;";
-	re2c:define:YYBACKUP = "marker = i;";
-	re2c:define:YYRESTORE = "i = marker;";
-	re2c:define:YYLESSTHAN = "i >= end";
-	re2c:yyfill:enable = 0;
-	re2c:eof = 0;
+		D+ E FS?            { return i; }	// floats
+		D* "." D+ E? FS?    { return i; }
+		D+ "." E? FS?       { return i; }
 
-	D    = [0-9];						// decimal digit
-	NZ   = [1-9];						// non-zero digit
-	B    = [01];						// binary digit
-	O    = [0-7];						// octal digit
-	H    = [a-fA-F0-9];					// hexadecimal digit
-	BP   = "0"[bB];						// binary integer prefix
-	HP   = "0"[xX];						// hexadecimal integer prefix
-	E    = [Ee][+-]?D+;					// decimal exponent
-	P    = [Pp][+-]?D+;					// hexadecimal exponent
-	FS   = [fFlL];						// float suffixes
-	IS   = [uU]("l"|"L"|"ll"|"LL")? | ("l"|"L"|"ll"|"LL")[uU]?;
+		HP H+ P FS?         { return i; }	// hexadecimal float
+		HP H* "." H+ P FS?  { return i; }
+		HP H+ "." P FS?     { return i; }
 
-	NZ D* IS?           { return i; }	// decimal integer
-	BP B+ IS?           { return i; }	// binary integer
-	HP H+ IS?           { return i; }	// hexadecimal integer
-	"0" O* IS?          { return i; }	// octal integer
-
-	D+ E FS?            { return i; }	// floats
-	D* "." D+ E? FS?    { return i; }
-	D+ "." E? FS?       { return i; }
-
-	HP H+ P FS?         { return i; }	// hexadecimal float
-	HP H* "." H+ P FS?  { return i; }
-	HP H+ "." P FS?     { return i; }
-
-	$ { return start; }
-	* { return start; }
-*/
-}
-
-
-//
-//	GetLanguageDefinitionC
-//
-
-static const TextEditor::Language* GetLanguageDefinitionC() {
-	static bool initialized = false;
-	static TextEditor::Language language;
-
-	if (!initialized) {
-		language.name = "C";
-		language.preprocess = '#';
-		language.singleLineComment = "//";
-		language.commentStart = "/*";
-		language.commentEnd = "*/";
-		language.hasSingleQuotedStrings = true;
-		language.hasDoubleQuotedStrings = true;
-		language.stringEscape = '\\';
-
-		static const char* const keywords[] = {
-			"break", "case", "continue", "default", "do", "else", "for", "goto", "if", "return", "sizeof",
-			"switch", "while", "_Alignas", "_Alignof", "_Atomic", "_Bool", "_Complex", "_Generic",
-			"_Imaginary", "_Noreturn", "_Static_assert", "_Thread_local"
-		};
-
-		static const char* const declarations[] = {
-			"auto", "char", "const", "double", "enum", "extern", "float", "inline", "int", "long", "register",
-			"restrict", "short", "signed", "static", "struct", "typedef", "union", "unsigned", "void", "volatile"
-		};
-
-		for (auto& keyword : keywords) { language.keywords.insert(keyword); }
-		for (auto& declaration : declarations) { language.declarations.insert(declaration); }
-
-		language.isPunctuation = isCStylePunctuation;
-		language.getIdentifier = getCStyleIdentifier;
-		language.getNumber = getCStyleNumber;
-		initialized = true;
+		$ { return start; }
+		* { return start; }
+	*/
 	}
 
-	return &language;
-}
+	static const TextEditor::Language* getDefinition() {
+		static bool initialized = false;
+		static TextEditor::Language language;
+
+		if (!initialized) {
+			language.name = "C";
+			language.preprocess = '#';
+			language.singleLineComment = "//";
+			language.commentStart = "/*";
+			language.commentEnd = "*/";
+			language.hasSingleQuotedStrings = true;
+			language.hasDoubleQuotedStrings = true;
+			language.stringEscape = '\\';
+
+			static const char* const keywords[] = {
+				"break", "case", "continue", "default", "do", "else", "for", "goto", "if", "return", "sizeof",
+				"switch", "while", "_Alignas", "_Alignof", "_Atomic", "_Bool", "_Complex", "_Generic",
+				"_Imaginary", "_Noreturn", "_Static_assert", "_Thread_local"
+			};
+
+			static const char* const declarations[] = {
+				"auto", "char", "const", "double", "enum", "extern", "float", "inline", "int", "long", "register",
+				"restrict", "short", "signed", "static", "struct", "typedef", "union", "unsigned", "void", "volatile"
+			};
+
+			for (auto& keyword : keywords) { language.keywords.insert(keyword); }
+			for (auto& declaration : declarations) { language.declarations.insert(declaration); }
+
+			language.isPunctuation = isPunctuation;
+			language.getIdentifier = getIdentifier;
+			language.getNumber = getNumber;
+			initialized = true;
+		}
+
+		return &language;
+	}
+};

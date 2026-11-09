@@ -10,6 +10,7 @@ add_subdirectory(multipart)
 
 if(OT_INCLUDE_UI)
 	add_subdirectory(imguieditor)
+	add_subdirectory(imguifileselector)
 	add_subdirectory(imguiwidgets)
 	add_subdirectory(nanovg)
 	add_subdirectory(pffft)

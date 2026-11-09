@@ -122,7 +122,8 @@ bool OtAssetSelector::renderUI(Info& info) {
 			ImGui::PopStyleColor();
 
 			dialog.SetCurrentPath(OtPath::getParent(info.path));
-			dialog.OpenFile(info.supportedFileTypes);
+			dialog.SetExtensionFilter(info.supportedFileTypes);
+			dialog.OpenFile();
 			selectorOpen = true;
 
 		} else {

@@ -26,10 +26,7 @@ GLYPHS
 //	Icons as embedded data
 //
 
-static constexpr size_t iconSize = SIZE;
-
 DATA
-
 
 //
 //	FileSelector::renderFile
@@ -99,7 +96,7 @@ void FileSelector::renderIcon(ImDrawList* drawList, ImVec2 pos, float scale, Cod
 
 		font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(
 			static_cast<void*>(iconData),
-			static_cast<int>(iconSize),
+			static_cast<int>(sizeof(iconData)),
 			0.0f,
 			&config);
 	}

@@ -38,8 +38,6 @@ static constexpr FileSelector::CodePoint fileChart = u8"\uf10d";
 //	Icons as embedded data
 //
 
-static constexpr size_t iconSize = 2992;
-
 static uint8_t iconData[2992] = {
 	0x00, 0x01, 0x00, 0x00, 0x00, 0x0b, 0x00, 0x80, 0x00, 0x03, 0x00, 0x30, 0x47, 0x53, 0x55, 0x42,
 	0x20, 0x8b, 0x25, 0x7a, 0x00, 0x00, 0x01, 0x38, 0x00, 0x00, 0x00, 0x54, 0x4f, 0x53, 0x2f, 0x32,
@@ -231,7 +229,6 @@ static uint8_t iconData[2992] = {
 };
 
 
-
 //
 //	FileSelector::renderFile
 //
@@ -300,7 +297,7 @@ void FileSelector::renderIcon(ImDrawList* drawList, ImVec2 pos, float scale, Cod
 
 		font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(
 			static_cast<void*>(iconData),
-			static_cast<int>(iconSize),
+			static_cast<int>(sizeof(iconData)),
 			0.0f,
 			&config);
 	}

@@ -4,11 +4,25 @@
 #	This work is licensed under the terms of the MIT license.
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
-import json, os
+import json, os, subprocess
 
 # switch directory to script location
 scriptPath = os.path.abspath(__file__)
 os.chdir(os.path.dirname(scriptPath))
+
+# create the icon font from the svg sources
+command = [
+	"fantasticon",
+	"svg",
+	"-o", ".",
+	"-t", "ttf",
+	"-g", "json",
+	"-h", "24"
+]
+
+print("Creating truetype font from icon svg files...")
+print(" ".join(command))
+subprocess.run(command)
 
 # read glyph data
 with open("icons.json", "r") as file:
@@ -34,7 +48,9 @@ for name, code in jsonData.items():
 	unicode = f"u8\"\\u{code:04x}\""
 	glyphs.append(f"static constexpr FileSelector::CodePoint {cppName} = {unicode};")
 
-# convert font to C++ data
+# convert font to C++
+print("Converting font data to C++ files...")
+
 with open("icons.ttf", "rb") as input:
 	contents = bytearray(input.read())
 
@@ -65,6 +81,6 @@ source = source.replace("GLYPHS", "\n".join(glyphs))
 source = source.replace("SIZE", str(size))
 source = source.replace("DATA", data)
 
-## write results
-with open("../../Icons.cpp", "w") as output:
+# write results
+with open("../Icons.cpp", "w") as output:
 	output.write(source)

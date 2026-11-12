@@ -518,10 +518,6 @@ private:
 	void renderEntryContextMenu(Entry& entry);
 	void renderActionButtons();
 
-	static void renderFile(ImDrawList* drawList, ImVec2 pos, float scale, const std::string& extension);
-	static void renderFolder(ImDrawList* drawList, ImVec2 pos, float scale);
-	static void renderIcon(ImDrawList* drawList, ImVec2 pos, float scale, CodePoint codepoint);
-
 	void renderPopups();
 	void renderOverWritePopup();
 	void renderNewFolderPopup();
@@ -546,6 +542,10 @@ private:
 	static bool inputPath(const char* label, std::string* value);
 	void permissionsButton(const std::string& label, std::filesystem::perms mask);
 	void permissionCheckBox(const std::string& label, std::filesystem::perms mask);
+
+	static void renderFile(ImDrawList* drawList, ImVec2 pos, float scale, const std::string& extension);
+	static void renderFolder(ImDrawList* drawList, ImVec2 pos, float scale);
+	static void renderIcon(ImDrawList* drawList, ImVec2 pos, float scale, CodePoint codepoint);
 
 	std::filesystem::path getDuplicatePathName(const std::filesystem::path& path);
 

@@ -20,6 +20,7 @@
 #include <locale>
 #include <regex>
 #include <sstream>
+#include <unordered_map>
 
 #include "FileSelector.h"
 

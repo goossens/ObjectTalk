@@ -114,6 +114,8 @@ public:
 	inline bool IsShowSpacesEnabled() const { return config.showSpaces; }
 	inline void SetShowTabsEnabled(bool value) { config.showTabs = value; }
 	inline bool IsShowTabsEnabled() const { return config.showTabs; }
+	inline void SetShortTabsEnabled(bool value) { config.showShortTabs = value; }
+	inline bool IsShortTabsEnabled() const { return config.showShortTabs; }
 	inline void SetShowLineNumbersEnabled(bool value) { config.showLineNumbers = value; }
 	inline bool IsShowLineNumbersEnabled() const { return config.showLineNumbers; }
 	inline void SetShowMiniMapEnabled(bool value) { config.showMiniMap = value; }
@@ -1043,6 +1045,7 @@ protected:
 		bool autoIndent = true;
 		bool showSpaces = true;
 		bool showTabs = true;
+		bool showShortTabs = true;
 		bool showLineNumbers = true;
 		bool showMiniMap = false;
 		size_t miniMapColumns = 0;

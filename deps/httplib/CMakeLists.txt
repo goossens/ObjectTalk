@@ -8,6 +8,7 @@ FetchContent_Populate(httplib QUIET GIT_REPOSITORY "https://github.com/yhirose/c
 
 add_library(httplib INTERFACE)
 target_include_directories(httplib INTERFACE ${httplib_SOURCE_DIR})
+target_compile_options(httplib INTERFACE $<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/wd4702>)
 
 file(GLOB HTTPLIB_SOURCES ${httplib_SOURCE_DIR}/httplib.h)
 add_custom_target(httplib_src SOURCES ${httplib_SOURCE_DIR})

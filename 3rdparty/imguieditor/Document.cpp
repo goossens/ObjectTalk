@@ -229,8 +229,8 @@ TextEditor::Color TextEditor::Document::getColor(DocPos location)  const {
 //	TextEditor::Document::getLeft
 //
 
-TextEditor::DocPos TextEditor::Document::getLeft(DocPos from, bool wordMode) const {
-	if (wordMode) {
+TextEditor::DocPos TextEditor::Document::getLeft(DocPos from, bool fast) const {
+	if (fast) {
 		// move to the end of the previous line if we're at the start of a line
 		if (from.index == 0) {
 			from = getLeft(from);
@@ -240,7 +240,34 @@ TextEditor::DocPos TextEditor::Document::getLeft(DocPos from, bool wordMode) con
 		from = findPreviousNonWhiteSpace(from, false);
 
 		// find the start of the current word
-		return findWordStart(from);
+		const auto& line = at(from.line);
+		const auto lineSize = line.size();
+
+		if (from.index == 0 || lineSize == 0) {
+			return from;
+
+		} else {
+			auto index = from.index;
+			const auto firstCharacter = line[index - 1].codepoint;
+
+			if (CodePoint::isWhiteSpace(firstCharacter)) {
+				while (index > 0 && CodePoint::isWhiteSpace(line[index - 1].codepoint)) {
+					index--;
+				}
+
+			} else if (isWord(firstCharacter)) {
+				while (index > 0 && isWord(line[index - 1].codepoint)) {
+					index--;
+				}
+
+			} else {
+				while (index > 0 && !isWord(line[index - 1].codepoint) && !CodePoint::isWhiteSpace(line[index - 1].codepoint)) {
+					index--;
+				}
+			}
+
+			return DocPos(from.line, index);
+		}
 
 	} else {
 		// calculate position of previous glyph (could be on previous line)
@@ -258,8 +285,8 @@ TextEditor::DocPos TextEditor::Document::getLeft(DocPos from, bool wordMode) con
 //	TextEditor::Document::getRight
 //
 
-TextEditor::DocPos TextEditor::Document::getRight(DocPos from, bool wordMode) const {
-	if (wordMode) {
+TextEditor::DocPos TextEditor::Document::getRight(DocPos from, bool fast) const {
+	if (fast) {
 		// move to the start of the next line if we're at the end of a line
 		if (from.index == at(from.line).size()) {
 			from = getRight(from);
@@ -269,7 +296,34 @@ TextEditor::DocPos TextEditor::Document::getRight(DocPos from, bool wordMode) co
 		from = findNextNonWhiteSpace(from, false);
 
 		// find the end of the current word
-		return findWordEnd(from);
+		const auto& line = at(from.line);
+		const auto size = line.size();
+		auto index = from.index;
+
+		if (index >= size) {
+			return from;
+
+		} else {
+			const auto firstCharacter = line[index].codepoint;
+
+			if (CodePoint::isWhiteSpace(firstCharacter)) {
+				while (index < size && CodePoint::isWhiteSpace(line[index].codepoint)) {
+					index++;
+				}
+
+			} else if (isWord(firstCharacter)) {
+				while (index < size && isWord(line[index].codepoint)) {
+					index++;
+				}
+
+			} else {
+				while (index < size && !isWord(line[index].codepoint) && !CodePoint::isWhiteSpace(line[index].codepoint)) {
+					index++;
+				}
+			}
+		}
+
+		return DocPos(from.line, index);
 
 	} else {
 		// calculate pos of next glyph (could be on next line)
@@ -324,7 +378,7 @@ TextEditor::DocPos TextEditor::Document::getEndOfLine(DocPos from) const {
 //	TextEditor::Document::findWordStart
 //
 
-TextEditor::DocPos TextEditor::Document::findWordStart(DocPos from, bool wordOnly) const {
+TextEditor::DocPos TextEditor::Document::findWordStart(DocPos from) const {
 	const auto& line = at(from.line);
 	const auto lineSize = line.size();
 
@@ -333,22 +387,9 @@ TextEditor::DocPos TextEditor::Document::findWordStart(DocPos from, bool wordOnl
 
 	} else {
 		auto index = from.index;
-		const auto firstCharacter = line[index - 1].codepoint;
 
-		if (!wordOnly && CodePoint::isWhiteSpace(firstCharacter)) {
-			while (index > 0 && CodePoint::isWhiteSpace(line[index - 1].codepoint)) {
-				index--;
-			}
-
-		} else if (CodePoint::isWord(firstCharacter)) {
-			while (index > 0 && CodePoint::isWord(line[index - 1].codepoint)) {
-				index--;
-			}
-
-		} else {
-			while (!wordOnly && index > 0 && !CodePoint::isWord(line[index - 1].codepoint) && !CodePoint::isWhiteSpace(line[index - 1].codepoint)) {
-				index--;
-			}
+		while (index > 0 && isWord(line[index - 1].codepoint)) {
+			index--;
 		}
 
 		return DocPos(from.line, index);
@@ -360,7 +401,7 @@ TextEditor::DocPos TextEditor::Document::findWordStart(DocPos from, bool wordOnl
 //	TextEditor::Document::findWordEnd
 //
 
-TextEditor::DocPos TextEditor::Document::findWordEnd(DocPos from, bool wordOnly) const {
+TextEditor::DocPos TextEditor::Document::findWordEnd(DocPos from) const {
 	const auto& line = at(from.line);
 	const auto size = line.size();
 	auto index = from.index;
@@ -369,22 +410,8 @@ TextEditor::DocPos TextEditor::Document::findWordEnd(DocPos from, bool wordOnly)
 		return from;
 
 	} else {
-		const auto firstCharacter = line[index].codepoint;
-
-		if (!wordOnly && CodePoint::isWhiteSpace(firstCharacter)) {
-			while (index < size && CodePoint::isWhiteSpace(line[index].codepoint)) {
-				index++;
-			}
-
-		} else if (CodePoint::isWord(firstCharacter)) {
-			while (index < size && CodePoint::isWord(line[index].codepoint)) {
-				index++;
-			}
-
-		} else {
-			while (!wordOnly && index < size && !CodePoint::isWord(line[index].codepoint) && !CodePoint::isWhiteSpace(line[index].codepoint)) {
-				index++;
-			}
+		while (index < size && isWord(line[index].codepoint)) {
+			index++;
 		}
 	}
 
@@ -519,17 +546,6 @@ void TextEditor::Document::iterateUserData(std::function<void(size_t line, void*
 
 
 //
-//	isIdentifier
-//
-
-static inline bool isIdentifier(TextEditor::Color color) {
-	return
-		color == TextEditor::Color::identifier ||
-		color == TextEditor::Color::knownIdentifier;
-}
-
-
-//
 //	TextEditor::Document::iterateIdentifiers
 //
 
@@ -540,10 +556,10 @@ void TextEditor::Document::iterateIdentifiers(std::function<void(const std::stri
 		char utf8[4];
 
 		while (p < end) {
-			if (isIdentifier(p->color)) {
+			if (p->color == TextEditor::Color::identifier) {
 				std::string identifier;
 
-				while (p < end && isIdentifier(p->color)) {
+				while (p < end && p->color== TextEditor::Color::identifier) {
 					identifier.append(std::string_view(utf8, CodePoint::write(utf8, p->codepoint)));
 					p++;
 				}
@@ -559,10 +575,19 @@ void TextEditor::Document::iterateIdentifiers(std::function<void(const std::stri
 
 
 //
+//	TextEditor::Document::isWord
+//
+
+bool TextEditor::Document::isWord(ImWchar codepoint) const {
+	return wordCodePointValidator ? wordCodePointValidator(codepoint) : TextEditor::CodePoint::isWord(codepoint);
+}
+
+
+//
 //	TextEditor::Document::isWordStart
 //
 
-bool TextEditor::Document::isWordStart(DocPos pos, bool wordOnly) const {
+bool TextEditor::Document::isWordStart(DocPos pos) const {
 	const auto& line = at(pos.line);
 
 	if (isEndOfLine(pos)) {
@@ -573,25 +598,13 @@ bool TextEditor::Document::isWordStart(DocPos pos, bool wordOnly) const {
 			return false;
 
 		} else {
-			return !wordOnly || CodePoint::isWord(line[0].codepoint);
+			return isWord(line[0].codepoint);
 		}
 
 	} else {
 		const auto glyph1 = line[pos.index - 1].codepoint;
 		const auto glyph2 = line[pos.index].codepoint;
-
-		if (wordOnly) {
-			return !CodePoint::isWord(glyph1) && CodePoint::isWord(glyph2);
-
-		} else if (CodePoint::isWord(glyph2)) {
-			return !CodePoint::isWord(glyph1);
-
-		} else if (CodePoint::isWhiteSpace(glyph2)) {
-			return !CodePoint::isWhiteSpace(glyph1);
-
-		} else {
-			return CodePoint::isWord(glyph1) || CodePoint::isWhiteSpace(glyph1);
-		}
+		return !isWord(glyph1) && isWord(glyph2);
 	}
 }
 
@@ -600,7 +613,7 @@ bool TextEditor::Document::isWordStart(DocPos pos, bool wordOnly) const {
 //	TextEditor::Document::isWordEnd
 //
 
-bool TextEditor::Document::isWordEnd(DocPos pos, bool wordOnly) const {
+bool TextEditor::Document::isWordEnd(DocPos pos) const {
 	const auto& line = at(pos.line);
 
 	if (isStartOfLine(pos)) {
@@ -611,25 +624,13 @@ bool TextEditor::Document::isWordEnd(DocPos pos, bool wordOnly) const {
 			return false;
 
 		} else {
-			return !wordOnly || CodePoint::isWord(line[line.size() - 1].codepoint);
+			return isWord(line[line.size() - 1].codepoint);
 		}
 
 	} else {
 		const auto glyph1 = line[pos.index - 1].codepoint;
 		const auto glyph2 = line[pos.index].codepoint;
-
-		if (wordOnly) {
-			return CodePoint::isWord(glyph1) && !CodePoint::isWord(glyph2);
-
-		} else if (CodePoint::isWord(glyph1)) {
-			return !CodePoint::isWord(glyph2);
-
-		} else if (CodePoint::isWhiteSpace(glyph1)) {
-			return !CodePoint::isWhiteSpace(glyph2);
-
-		} else {
-			return CodePoint::isWord(glyph2) || CodePoint::isWhiteSpace(glyph2);
-		}
+		return isWord(glyph1) && !isWord(glyph2);
 	}
 }
 
@@ -638,12 +639,12 @@ bool TextEditor::Document::isWordEnd(DocPos pos, bool wordOnly) const {
 //	TextEditor::Document::isWholeWord
 //
 
-bool TextEditor::Document::isWholeWord(DocPos start, DocPos end, bool wordOnly) const {
+bool TextEditor::Document::isWholeWord(DocPos start, DocPos end) const {
 	if (end <= start || start.line != end.line) {
 		return false;
 
 	} else {
-		return isWordStart(start, wordOnly) && isWordEnd(end, wordOnly);
+		return isWordStart(start) && isWordEnd(end);
 	}
 }
 
@@ -652,18 +653,120 @@ bool TextEditor::Document::isWholeWord(DocPos start, DocPos end, bool wordOnly) 
 //	TextEditor::Document::getWholeWord
 //
 
-TextEditor::DocSelection TextEditor::Document::getWholeWord(DocPos pos, bool wordOnly) const {
-	if (wordOnly && !isStartOfLine(pos) && !isEndOfLine(pos) && !CodePoint::isWord(at(pos.line)[pos.index].codepoint)) {
-		return DocSelection(pos, pos);
-
-	} else if (isWordStart(pos, wordOnly)) {
-		return DocSelection(pos, findWordEnd(pos, wordOnly));
-
-	} else if (isWordEnd(pos, wordOnly)) {
-		return DocSelection(findWordStart(pos, wordOnly), pos);
+TextEditor::DocSelection TextEditor::Document::getWholeWord(DocPos pos) const {
+	if (!isEndOfLine(pos) && isWord(at(pos.line)[pos.index].codepoint)) {
+		return DocSelection(findWordStart(pos), findWordEnd(pos));
 
 	} else {
-		return DocSelection(findWordStart(pos, wordOnly), findWordEnd(pos, wordOnly));
+		return DocSelection(pos, pos);
+	}
+}
+
+
+//
+//	TextEditor::Document::getGlyphRangeByCategory
+//
+
+TextEditor::DocSelection TextEditor::Document::getGlyphRangeByCategory(DocPos pos) const {
+	if (isEndOfLine(pos)) {
+		return DocSelection(pos, pos);
+	}
+
+	const auto& line = at(pos.line);
+	const auto codepoint = line[pos.index].codepoint;
+
+	if (isWord(codepoint)) {
+		return DocSelection(findWordStart(pos), findWordEnd(pos));
+
+	} else if (CodePoint::isWhiteSpace(codepoint)) {
+		const auto size = line.size();
+		DocPos start = pos;
+		DocPos end = pos;
+
+		while (start.index > 0 && CodePoint::isWhiteSpace(line[start.index - 1].codepoint)) {
+			start.index--;
+		}
+
+		while (end.index < size && CodePoint::isWhiteSpace(line[end.index].codepoint)) {
+			end.index++;
+		}
+
+		return DocSelection(start, end);
+
+	} else {
+		const auto size = line.size();
+		DocPos start = pos;
+		DocPos end = pos;
+
+		while (start.index > 0 && !isWord(line[start.index - 1].codepoint) && !CodePoint::isWhiteSpace(line[start.index - 1].codepoint)) {
+			start.index--;
+		}
+
+		while (end.index < size && !isWord(line[end.index].codepoint) && !CodePoint::isWhiteSpace(line[end.index].codepoint)) {
+			end.index++;
+		}
+
+		return DocSelection(start, end);
+	}
+}
+
+
+//
+//	TextEditor::Document::getTextByLanguageToken
+//
+
+std::string TextEditor::Document::getTextByLanguageToken(DocPos pos, Color color) const {
+	const auto& line = at(pos.line);
+
+	if (!isEndOfLine(pos) && line[pos.index].color == color) {
+		const auto size = line.size();
+		DocPos start = pos;
+		DocPos end = pos;
+
+		while (start.index > 0 && line[start.index - 1].color == color) {
+			start.index--;
+		}
+
+		while (end.index < size && line[end.index].color == color) {
+			end.index++;
+		}
+
+		return getSectionText(start, end);
+
+	} else {
+		return std::string();
+	}
+}
+
+
+//
+//	TextEditor::Document::getQualifiedName
+//
+
+std::string TextEditor::Document::getQualifiedName(DocPos pos) const {
+	const auto isQualifiedName = [](Color color) {
+		return color == Color::identifier || color == Color::qualifiedSeparator;
+	};
+
+	const auto& line = at(pos.line);
+
+	if (!isEndOfLine(pos) && isQualifiedName(line[pos.index].color)) {
+		const auto size = line.size();
+		DocPos start = pos;
+		DocPos end = pos;
+
+		while (start.index > 0 && isQualifiedName(line[start.index - 1].color)) {
+			start.index--;
+		}
+
+		while (end.index < size && isQualifiedName(line[end.index].color)) {
+			end.index++;
+		}
+
+		return getSectionText(start, end);
+
+	} else {
+		return std::string();
 	}
 }
 
@@ -754,31 +857,6 @@ TextEditor::DocPos TextEditor::Document::normalizePos(DocPos pos) const {
 	} else {
 		return pos;
 	}
-}
-
-
-//
-//	TextEditor::Document::getContext
-//
-
-std::string TextEditor::Document::getContext(DocPos pos, std::function<bool(ImWchar)> isContext) const {
-	const auto& line = at(pos.line);
-	auto start = pos;
-	auto end = pos;
-
-	if (isContext(line[end.index].codepoint)) {
-		end.index++;
-
-		while (end.index < line.size() && isContext(line[end.index].codepoint)) {
-			end.index++;
-		}
-
-		while (start.index > 0 && isContext(line[start.index - 1].codepoint)) {
-			start.index--;
-		}
-	}
-
-	return (start == end) ? "" : getSectionText(start, end);
 }
 
 
@@ -889,10 +967,12 @@ void TextEditor::Document::updateIndents(const Config& config, size_t start, siz
 		bool done = false;
 
 		for (size_t j = 0; j < line.size() && !done; j++) {
-			if (line[j].codepoint == ' ') {
+			const auto codepoint = line[j].codepoint;
+
+			if (codepoint == ' ') {
 				line.indent++;
 
-			} else if (line[j].codepoint == '\t') {
+			} else if (codepoint == '\t') {
 				line.indent += config.tabSize - (line.indent % config.tabSize);
 
 			} else {

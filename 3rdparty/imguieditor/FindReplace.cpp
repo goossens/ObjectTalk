@@ -402,11 +402,15 @@ void TextEditor::openFindReplace() {
 		}
 
 	} else {
-		// if cursor is inside a "real" word, use that as the default
-		const auto selection = document.getWholeWord(cursor.getSelectionStart(), true);
+		// if cursor is inside a word, use that as the default
+		const auto pos = cursor.getSelectionStart();
 
-		if (selection.start != selection.end) {
-			findText = document.getSectionText(selection.start, selection.end);
+		if (document.isWord(document.getCodePoint(pos))) {
+			const auto selection = document.getWholeWord(pos);
+
+			if (selection.start != selection.end) {
+				findText = document.getSectionText(selection.start, selection.end);
+			}
 		}
 	}
 

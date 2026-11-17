@@ -176,7 +176,7 @@ TextEditor::LineState TextEditor::Colorizer::updateLine(Line& line) {
 						color = Color::declaration;
 
 					} else if (language->identifiers.find(identifier) != language->identifiers.end()) {
-						color = Color::knownIdentifier;
+						color = Color::identifier;
 					}
 
 					// colorize identifier and move on
@@ -187,6 +187,12 @@ TextEditor::LineState TextEditor::Colorizer::updateLine(Line& line) {
 				} else if (language->getNumber && (tokenEnd = language->getNumber(tokenStart, lineEnd)) != tokenStart) {
 					const auto size = tokenEnd - tokenStart;
 					setColor(glyph, glyph + size, Color::number);
+					glyph += size;
+
+				// do we have a qualified separator
+				} else if (language->getQualifiedSeparator && (tokenEnd = language->getQualifiedSeparator(tokenStart, lineEnd)) != tokenStart) {
+					const auto size = tokenEnd - tokenStart;
+					setColor(glyph, glyph + size, Color::qualifiedSeparator);
 					glyph += size;
 
 				// is this punctuation

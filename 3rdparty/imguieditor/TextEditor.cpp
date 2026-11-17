@@ -1598,13 +1598,12 @@ void TextEditor::handleMouseInteractions() {
 						}
 					}
 
-					// select "word" if it wasn't a bracketed section
-					// run of whitespaces are considered "words" as are operator sequences
+					// select range of glyphs by category if it wasn't a bracketed section
 					if (!handled && !document.isEndOfLine(glyphPos)) {
-						const auto word = document.getWholeWord(glyphPos);
+						const auto range = document.getGlyphRangeByCategory(glyphPos);
 
-						if (word.start != word.end) {
-							cursors.updateCurrentCursor(word.start, word.end);
+						if (range.start != range.end) {
+							cursors.updateCurrentCursor(range.start, range.end);
 						}
 					}
 				}
@@ -1669,9 +1668,9 @@ void TextEditor::handleMouseInteractions() {
 				}
 			}
 
-		} else if (textHoverCallback && IsMousePosOverGlyph(ImGui::GetMousePos())) {
+		} else if (textHoverCallback && getWordAtMousePos(ImGui::GetMousePos()).size()) {
 			// capture position for text hover popup
-			popupDocPos = document.findWordStart(glyphPos, true);
+			popupDocPos = document.findWordStart(glyphPos);
 			const auto vizPos = docPos2VisPos(popupDocPos);
 
 			popupWindowPos = ImVec2(
@@ -1809,7 +1808,17 @@ void TextEditor::growSelections() {
 			const auto pos = cursor.getSelectionEnd();
 			const auto start = document.findWordStart(pos);
 			const auto end = document.findWordEnd(pos);
-			cursor.update(start, end);
+
+			if (start != end) {
+				cursor.update(start, end);
+
+			} else {
+				const auto bracket = bracketeer.getEnclosingBrackets(pos, pos);
+
+				if (bracket != bracketeer.end()) {
+					cursor.update(document.getRight(bracket->start), bracket->end);
+				}
+			}
 		}
 	}
 }
@@ -2028,7 +2037,7 @@ std::string TextEditor::getWordAtMousePos(const ImVec2& mousePos) const {
 		const DocPos docPos = getDocPosAtMousePos(mousePos);
 
 		// Find word boundaries and extract text
-		const auto word = document.getWholeWord(docPos, true);
+		const auto word = document.getWholeWord(docPos);
 		return document.getSectionText(word.start, word.end);
 
 	} else {
@@ -2461,13 +2470,13 @@ void TextEditor::moveDown(size_t rows, bool select) {
 //	TextEditor::moveLeft
 //
 
-void TextEditor::moveLeft(bool select, bool wordMode) {
+void TextEditor::moveLeft(bool select, bool fast) {
 	for (auto& cursor : cursors) {
-		if (cursor.hasSelection() && !select && !wordMode) {
+		if (cursor.hasSelection() && !select && !fast) {
 			cursor.resetToStart();
 
 		} else {
-			cursor.update(document.getLeft(cursor.getInteractiveEnd(), wordMode), select);
+			cursor.update(document.getLeft(cursor.getInteractiveEnd(), fast), select);
 		}
 	}
 
@@ -2480,13 +2489,13 @@ void TextEditor::moveLeft(bool select, bool wordMode) {
 //	TextEditor::moveRight
 //
 
-void TextEditor::moveRight(bool select, bool wordMode) {
+void TextEditor::moveRight(bool select, bool fast) {
 	for (auto& cursor : cursors) {
-		if (cursor.hasSelection() && !select && !wordMode) {
+		if (cursor.hasSelection() && !select && !fast) {
 			cursor.resetToEnd();
 
 		} else {
-			cursor.update(document.getRight(cursor.getInteractiveEnd(), wordMode), select);
+			cursor.update(document.getRight(cursor.getInteractiveEnd(), fast), select);
 		}
 	}
 

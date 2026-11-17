@@ -56,7 +56,7 @@ struct TextEditorJson {
 		identifiers = "null" | "true" | "false";
 
 		identifiers {
-			color = TextEditor::Color::knownIdentifier;
+			color = TextEditor::Color::identifier;
 			return i;
 		}
 

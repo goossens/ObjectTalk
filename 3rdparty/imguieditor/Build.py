@@ -5,7 +5,7 @@
 #	For a copy, see <https://opensource.org/licenses/MIT>.
 
 
-import glob, os, shutil, sys
+import glob, os, shutil, subprocess, sys
 
 destination = "../../../ImGuiColorTextEdit/"
 languagesDestination = destination + "languages/"
@@ -68,6 +68,8 @@ if __name__ == "__main__":
 	if not os.path.isdir(destination):
 		print("Target path[" + destination + "] does not exist")
 		sys.exit(1)
+
+	subprocess.run(["python", "languages/Build.py"])
 
 	shutil.copyfile("TextEditor.h", destination + "TextEditor.h")
 	shutil.copyfile("TextEditorLanguages.h", destination + "TextEditorLanguages.h")

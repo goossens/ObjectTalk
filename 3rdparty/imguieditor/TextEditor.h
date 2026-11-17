@@ -199,9 +199,10 @@ public:
 
 	// get part of text from editor as UTF-8 encoded strings
  	inline std::string GetSectionText(DocPos start, DocPos end) const { return document.getSectionText(normalizePos(start), normalizePos(end)); }
-	inline std::string GetSectionText(const DocSelection& selection) const { return GetSectionText(selection.start, selection.end); }
+	inline std::string GetSectionText(const DocSelection& selection) const { return document.getSectionText(selection); }
 	inline std::string GetCursorText(size_t cursor) const { return cursor < cursors.size() ? document.getSectionText(cursors[cursor].getSelectionStart(), cursors[cursor].getSelectionEnd()) : ""; }
 	inline std::string GetLineText(size_t line) const { return line < document.size() ? document.getSectionText(DocPos(line, 0), document.getEndOfLine(DocPos(line, 0))) : ""; }
+	inline ImWchar GetCodePoint(DocPos pos) const { return document.getCodePoint(normalizePos(pos)); }
 	inline std::vector<ImWchar> GetLineCodePoints(size_t line) const { return line < document.size() ? document.getLineCodePoints(line) : std::vector<ImWchar>(); }
 
 	// replace text in editor (new text must be UTF-8 encoded)
@@ -270,6 +271,28 @@ public:
 	inline DocPos GetDocPosAtMousePos(const ImVec2& mousePos) const { return  getDocPosAtMousePos(mousePos); }
 	inline std::string GetWordAtMousePos(const ImVec2& mousePos) const { return getWordAtMousePos(mousePos); }
 
+	// get information about a codepoint at a specified location (as determined by the current language definition)
+	inline bool IsWord(DocPos pos) const { return document.isWord(document.getCodePoint(normalizePos(pos))); }
+	inline bool IsKeyword(DocPos pos) const { return document.getColor(normalizePos(pos)) == Color::keyword; }
+	inline bool IsDeclaration(DocPos pos) const { return document.getColor(normalizePos(pos)) == Color::declaration; }
+	inline bool IsIdentifier(DocPos pos) const { return document.getColor(normalizePos(pos)) == Color::identifier; }
+	inline bool IsNumber(DocPos pos) const { return document.getColor(normalizePos(pos)) == Color::number; }
+	inline bool IsString(DocPos pos) const { return document.getColor(normalizePos(pos)) == Color::string; }
+	inline bool IsPunctuation(DocPos pos) const { return document.getColor(normalizePos(pos)) == Color::punctuation; }
+	inline bool IsComment(DocPos pos) const { return document.getColor(normalizePos(pos)) == Color::comment; }
+
+	// get text at specified location based on category
+	// returns empty string if codepoint at location is of different category or if language is not specified
+	inline std::string GetWord(DocPos pos) const { return document.getSectionText(document.getWholeWord(normalizePos(pos))); }
+	inline std::string Getkeyword(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::keyword); }
+	inline std::string GetDeclaration(DocPos pos) const  { return document.getTextByLanguageToken(normalizePos(pos), Color::keyword); }
+	inline std::string GetIdentifier(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::keyword); }
+	inline std::string GetNumber(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::keyword); }
+	inline std::string GetString(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::keyword); }
+	inline std::string GetPunctuation(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::keyword); }
+	inline std::string GetComment(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::keyword); }
+	inline std::string GetQualifiedName(DocPos pos) const { return document.getQualifiedName(normalizePos(pos)); }
+
 	// scrolling support
 	enum class Scroll {
 		alignTop,
@@ -323,14 +346,8 @@ public:
 	inline bool IsVisPosOverGlyph(VisPos pos) const { return typeSetter.isVisPosOverGlyph(normalizePos(pos)); }
 
 	// find start or end of word from provided position
-	// if wordOnly = true, it only looks for sequences of glyphs that can make up words/symbols (letter and numbers)
-	// if wordOnly = false, it also recognizes whitespace sequences or non-word sequences
-	inline DocPos FindWordStart(DocPos pos, bool wordOnly=false) const { return document.findWordStart(normalizePos(pos), wordOnly); }
-	inline DocPos FindWordEnd(DocPos pos, bool wordOnly=false) const { return document.findWordEnd(normalizePos(pos), wordOnly); }
-
-	// given a specified document location, match codepoints left and right on that line and return discovered context as a string
-	// a callback function must be provided that determines if a codepoint meets the intended context requirements
-	inline std::string GetContext(DocPos pos, std::function<bool(ImWchar)> isContext) const { return document.getContext(normalizePos(pos), isContext); }
+	inline DocPos FindWordStart(DocPos pos) const { return document.findWordStart(normalizePos(pos)); }
+	inline DocPos FindWordEnd(DocPos pos) const { return document.findWordEnd(normalizePos(pos)); }
 
 	// find/replace support (strings must be UTF-8 encoded)
 	inline void SelectFirstOccurrenceOf(const std::string_view& text, bool caseSensitive=true, bool wholeWord=false) { selectFirstOccurrenceOf(text, caseSensitive, wholeWord); }
@@ -340,7 +357,7 @@ public:
 	inline void ReplaceTextInAllCursors(const std::string_view& text) { if (!config.readOnly) replaceTextInAllCursors(text); }
 
 	// the built-in find/replace window can be disabled (see SetFindReplaceEnabled) when the application provides its own search
-	// the editor then ignores Ctrl+F, Ctrl+Shift+F and Ctrl+G, so they reach the application's windows
+	// the editor then ignores Ctrl-F, Ctrl-Shift-F and Ctrl-G, so they reach the application's windows
 	inline void OpenFindReplaceWindow() { if (config.findReplaceEnabled) { openFindReplace(); } }
 	inline void CloseFindReplaceWindow() { if (config.findReplaceEnabled) { closeFindReplace(); } }
 	inline bool HasFindString() const { return findText.size(); }
@@ -572,7 +589,7 @@ public:
 		punctuation,
 		preprocessor,
 		identifier,
-		knownIdentifier,
+		qualifiedSeparator,
 		comment,
 		background,
 		cursor,
@@ -611,6 +628,8 @@ public:
 
 	static const Palette& GetDarkPalette();
 	static const Palette& GetLightPalette();
+
+	inline Color GetColor(DocPos pos) const { return document.getColor(normalizePos(pos)); }
 
 	// line break options
 	enum class BreakOption : char {
@@ -690,13 +709,13 @@ public:
 		// the character that starts a preprocessor directive (can be 0 if language doesn't have this feature)
 		ImWchar preprocess = 0;
 
-		// a character sequence that start a single line comment (can be blank if language doesn't have this feature)
+		// a character sequence that starts a single line comment (can be empty if language doesn't have this feature)
 		std::string singleLineComment;
 
-		// an alternate single line comment character sequence (can be blank if language doesn't have this feature)
+		// an alternate single line comment character sequence (can be empty if language doesn't have this feature)
 		std::string singleLineCommentAlt;
 
-		// the start and end character sequence for multiline comments (can be blank language doesn't have this feature)
+		// the start and end character sequence for multiline comments (can be empty language doesn't have this feature)
 		std::string commentStart;
 		std::string commentEnd;
 
@@ -742,20 +761,28 @@ public:
 		// 1. these categories refer to different colors in the color palette
 		// 2. keywords are typically used to highlight control/reserved words in a language (palette color keyword)
 		// 3. declarations are used in strongly typed languages to highlight builtin types or the keywords to create a type (palette color declaration)
-		// 4. identifiers are used to color the language predefined variables  (palette color knownIdentifier) differently from the user variables (palette color identifier)
+		// 4. identifiers are used to color variables (palette color identifier)
 		std::unordered_set<std::string> keywords;
 		std::unordered_set<std::string> declarations;
 		std::unordered_set<std::string> identifiers;
+		std::unordered_set<std::string> qualifiedSeparators;
 
-		// function to determine if specified character in considered punctuation
+		// function to determine if a specified codepoint is part of a word
+		// this is not used coloring but for editor actions like select word on double click
+		// if this is not specified, the default rule applies: a word is a sequence of letter, numbers and undescores
+		std::function<bool(ImWchar)> isWord;
+
+		// function to determine if a specified codepoint is considered punctuation
 		std::function<bool(ImWchar)> isPunctuation;
 
 		// functions to tokenize identifiers and numbers (can be nullptr if language doesn't have this feature)
 		// start and end refer to the characters being tokenized
 		// functions should return an iterator to the character after the detected token
 		// returning start means no token was found
+		// note: qualified separators generate fully qualified names (e.g. operators like  namespace(::), member(.) and pointer(->) in C++)
 		std::function<Iterator(Iterator start, Iterator end)> getIdentifier;
 		std::function<Iterator(Iterator start, Iterator end)> getNumber;
+		std::function<Iterator(Iterator start, Iterator end)> getQualifiedSeparator;
 
 		// function to implement custom tokenizer (can be nullptr if language doesn't have this feature)
 		// if a token is found, function should return an iterator to the character after the token and set the color
@@ -843,7 +870,7 @@ public:
 		// characters (UTF-8) that are part of a search term in addition to word characters (e.g. "\\^:" for LaTeX-like completions)
 		std::string wordCharacters;
 
-		// manual trigger key sequence (default is Ctrl+space on all platforms, even MacOS)
+		// manual trigger key sequence (default is Ctrl-space on all platforms, even MacOS)
 		// remember Dear ImGui reverses Ctrl and Command on MacOS
 		#if __APPLE__
 			ImGuiKeyChord triggerShortcut = ImGuiMod_Super | ImGuiKey_Space;
@@ -1041,6 +1068,8 @@ protected:
 	// below is the private API
 	// private members (functions and variables) start with a lowercase character
 	// private type names start with a uppercase character
+	//
+	// although items below are called "private", they are actually define "protected" so derived classes have access
 	//
 
 	// everybody needs a friend
@@ -1359,6 +1388,7 @@ protected:
 
 		// get part of document text (returned strings are UTF-8 encoded)
 		std::string getSectionText(DocPos start, DocPos end) const;
+		inline std::string getSectionText(DocSelection selection) const { return getSectionText(selection.start, selection.end); }
 		inline std::string getLineText(size_t line) const { return getSectionText(DocPos(line, 0), DocPos(line, at(line).size())); }
 		std::vector<ImWchar> getLineCodePoints(size_t line) const;
 		ImWchar getCodePoint(DocPos location) const;
@@ -1374,8 +1404,8 @@ protected:
 		inline bool isEmpty() const { return size() == 1 && at(0).size() == 0; }
 
 		// coordinate operations in context of document
-		DocPos getLeft(DocPos from, bool wordMode=false) const;
-		DocPos getRight(DocPos from, bool wordMode=false) const;
+		DocPos getLeft(DocPos from, bool fast=false) const;
+		DocPos getRight(DocPos from, bool fast=false) const;
 		DocPos getTop() const;
 		DocPos getBottom() const;
 		DocPos getStartOfLine(DocPos from) const;
@@ -1383,13 +1413,16 @@ protected:
 		inline DocPos getNextLine(DocPos from) const { return getRight(getEndOfLine(from)); }
 
 		// search in document
-		DocPos findWordStart(DocPos from, bool wordOnly=false) const;
-		DocPos findWordEnd(DocPos from, bool wordOnly=false) const;
+		DocPos findWordStart(DocPos from) const;
+		DocPos findWordEnd(DocPos from) const;
 		bool findText(DocPos from, const std::string_view& text, bool caseSensitive, bool wholeWord, DocPos& start, DocPos& end) const;
 
 		// see if document was updated this frame
 		inline bool isUpdated() const { return updated; }
 		inline void resetUpdated() { updated = false; }
+
+		// set word codepoint validator callback
+		inline void setWordCodePointValidator(std::function<bool(ImWchar codepoint)> callback) { wordCodePointValidator = callback; }
 
 		// line-based callbacks
 		inline void setInsertor(std::function<void*(size_t line)> callback) { insertor = callback; }
@@ -1407,10 +1440,14 @@ protected:
 		void iterateIdentifiers(std::function<void(const std::string& identifier)> callback) const;
 
 		// utility functions
-		bool isWordStart(DocPos pos, bool wordOnly=false) const;
-		bool isWordEnd(DocPos pos, bool wordOnly=false) const;
-		bool isWholeWord(DocPos start, DocPos end, bool wordOnly=false) const;
-		DocSelection getWholeWord(DocPos pos, bool wordOnly=false) const;
+		bool isWord(ImWchar codepoint) const;
+		bool isWordStart(DocPos pos) const;
+		bool isWordEnd(DocPos pos) const;
+		bool isWholeWord(DocPos start, DocPos end) const;
+		DocSelection getWholeWord(DocPos pos) const;
+		DocSelection getGlyphRangeByCategory(DocPos pos) const;
+		std::string getTextByLanguageToken(DocPos pos, Color color) const;
+		std::string getQualifiedName(DocPos pos) const;
 		inline bool isStartOfLine(DocPos from) const { return from.index == 0; }
 		inline bool isEndOfLine(DocPos from) const { return from.index == at(from.line).size(); }
 		inline bool isLastLine(size_t line) const { return line == size() - 1; }
@@ -1419,14 +1456,13 @@ protected:
 		DocPos normalizePos(DocPos pos) const;
 		inline size_t normalizeLine(size_t line) const { return line >= size() ? size() - 1 : line; }
 
-		std::string getContext(DocPos pos, std::function<bool(ImWchar)> isContext) const;
-
 		DocPos getLeftBeforeHiddenLines(DocPos pos) const;
 		DocPos getRightAfterHiddenLines(DocPos pos) const;
 
 	private:
 		bool updated = false;
 
+		std::function<bool(ImWchar)> wordCodePointValidator;
 		std::function<void*(size_t)> insertor;
 		std::function<void(size_t, void*)> deletor;
 
@@ -1873,7 +1909,7 @@ protected:
 	class AutoComplete {
 	public:
 		// set the autocomplete configuration
-		void setConfig(const AutoCompleteConfig* c);
+		void setConfig(const AutoCompleteConfig* config);
 
 		// request autocomplete mode based on triggers (and if allowed by current state)
 		// return value indicates whether autocomplete was initiated
@@ -1920,8 +1956,8 @@ protected:
 		void updateState(Document& document, const Language* language);
 		void refreshSuggestions();
 		bool isWordCharacter(ImWchar codepoint) const;
-		DocPos findWordStart(const Document& document, DocPos from) const;
-		DocPos findWordEnd(const Document& document, DocPos from) const;
+		DocPos findStart(const Document& document, DocPos from) const;
+		DocPos findEnd(const Document& document, DocPos from) const;
 	} autocomplete;
 
 	// reset the editor's state
@@ -2034,8 +2070,8 @@ protected:
 	// cursor/selection functions
 	void moveUp(size_t rows, bool select);
 	void moveDown(size_t rows, bool select);
-	void moveLeft(bool select, bool wordMode);
-	void moveRight(bool select, bool wordMode);
+	void moveLeft(bool select, bool fast);
+	void moveRight(bool select, bool fast);
 	inline void moveToTop(bool select) { moveTo(document.getTop(), select); }
 	inline void moveToBottom(bool select) { moveTo(document.getBottom(), select); }
 	inline void moveToStartOfLine(bool select) { moveTo(document.getStartOfLine(cursors.getCurrent().getInteractiveEnd()), select); }

@@ -25,6 +25,7 @@
 
 void TextEditor::SetLanguage(const Language* language) {
 	config.language = language;
+	document.setWordCodePointValidator(language->isWord);
 
 	if (languageChangeCallback) {
 		languageChangeCallback();

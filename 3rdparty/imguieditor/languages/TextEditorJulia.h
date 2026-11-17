@@ -409,6 +409,7 @@ struct TextEditorJulia {
 			for (auto& declaration : declarations) { language.declarations.insert(declaration); }
 			for (auto& identifier : identifiers) { language.identifiers.insert(identifier); }
 
+			language.isWord = isIdentifierChar;
 			language.isPunctuation = isPunctuation;
 			language.getIdentifier = getIdentifier;
 			language.getNumber = getNumber;

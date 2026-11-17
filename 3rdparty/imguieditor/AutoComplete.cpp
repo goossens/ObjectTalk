@@ -175,7 +175,7 @@ bool TextEditor::AutoComplete::render(Document& document, Cursors& cursors, Type
 			requestActivation = false;
 
 			// capture locations
-			startLocation = findWordStart(document, currentLocation);
+			startLocation = findStart(document, currentLocation);
 
 			// update the autocomplete state
 			updateState(document, language);
@@ -213,7 +213,7 @@ bool TextEditor::AutoComplete::render(Document& document, Cursors& cursors, Type
 
 		} else {
 			// see if cursor moved away from current word
-			const auto newStart = findWordStart(document, newLocation);
+			const auto newStart = findStart(document, newLocation);
 
 			if (newStart == startLocation) {
 				currentLocation = newLocation;
@@ -397,7 +397,7 @@ TextEditor::DocPos TextEditor::AutoComplete::getReplacementEnd(const Document& d
 		return end;
 
 	} else {
-		return findWordEnd(document, currentLocation);
+		return findEnd(document, currentLocation);
 	}
 }
 
@@ -446,7 +446,7 @@ void TextEditor::AutoComplete::updateState(Document& document, const Language* l
 
 	} else {
 		const auto color = document.getColor(document.getLeft(currentLocation));
-		state.inIdentifier = color == Color::identifier || color == Color::knownIdentifier;
+		state.inIdentifier = color == Color::identifier;
 		state.inNumber = color == Color::number;
 		state.inComment = color == Color::comment;
 		state.inString = color == Color::string;
@@ -455,7 +455,7 @@ void TextEditor::AutoComplete::updateState(Document& document, const Language* l
 	state.searchTermStart = startLocation;
 	state.searchTermEnd = currentLocation;
 	state.replacementStart = startLocation;
-	state.replacementEnd = findWordEnd(document, currentLocation);
+	state.replacementEnd = findEnd(document, currentLocation);
 
 	state.language = language;
 	state.userData = configuration.userData;
@@ -492,11 +492,10 @@ bool TextEditor::AutoComplete::isWordCharacter(ImWchar codepoint) const {
 
 
 //
-//	TextEditor::AutoComplete::findWordStart
+//	TextEditor::AutoComplete::findStart
 //
 
-TextEditor::DocPos TextEditor::AutoComplete::findWordStart(const Document& document, DocPos from) const {
-	// like Document::findWordStart but with the extra word characters
+TextEditor::DocPos TextEditor::AutoComplete::findStart(const Document& document, DocPos from) const {
 	const auto& line = document[from.line];
 	auto index = from.index;
 
@@ -509,11 +508,10 @@ TextEditor::DocPos TextEditor::AutoComplete::findWordStart(const Document& docum
 
 
 //
-//	TextEditor::AutoComplete::findWordEnd
+//	TextEditor::AutoComplete::findEnd
 //
 
-TextEditor::DocPos TextEditor::AutoComplete::findWordEnd(const Document& document, DocPos from) const {
-	// like Document::findWordEnd but with the extra word characters
+TextEditor::DocPos TextEditor::AutoComplete::findEnd(const Document& document, DocPos from) const {
 	const auto& line = document[from.line];
 	auto index = from.index;
 

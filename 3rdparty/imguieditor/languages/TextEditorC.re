@@ -89,6 +89,30 @@ struct TextEditorC {
 	*/
 	}
 
+	static TextEditor::Iterator getQualifiedSeparator(TextEditor::Iterator start, TextEditor::Iterator end) {
+		TextEditor::Iterator i = start;
+		TextEditor::Iterator marker;
+
+	/*!re2c
+		re2c:api = custom;
+		re2c:api:style = free-form;
+		re2c:define:YYCTYPE = ImWchar;
+		re2c:define:YYPEEK = "i < end ? *i : 0";
+		re2c:define:YYSKIP = "++i;";
+		re2c:define:YYBACKUP = "marker = i;";
+		re2c:define:YYRESTORE = "i = marker;";
+		re2c:define:YYLESSTHAN = "i >= end";
+		re2c:yyfill:enable = 0;
+		re2c:eof = 0;
+
+		"." { return i; }
+		"->" { return i; }
+
+		$ { return start; }
+		* { return start; }
+	*/
+	}
+
 	static const TextEditor::Language* getDefinition() {
 		static bool initialized = false;
 		static TextEditor::Language language;
@@ -120,6 +144,7 @@ struct TextEditorC {
 			language.isPunctuation = isPunctuation;
 			language.getIdentifier = getIdentifier;
 			language.getNumber = getNumber;
+			language.getQualifiedSeparator = getQualifiedSeparator;
 			initialized = true;
 		}
 

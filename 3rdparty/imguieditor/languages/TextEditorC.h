@@ -17,7 +17,7 @@
 //
 
 struct TextEditorC {
-	static bool isPunctuation(ImWchar character) {
+	static bool isPunctuation(ImWchar codepoint) {
 		static const bool punctuation[128] = {
 			false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
 			false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
@@ -29,7 +29,7 @@ struct TextEditorC {
 			false, false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true, false,
 		};
 
-		return character < 127 ? punctuation[character] : false;
+		return codepoint < 127 ? punctuation[codepoint] : false;
 	}
 
 	static TextEditor::Iterator getIdentifier(TextEditor::Iterator start, TextEditor::Iterator end) {
@@ -48,7 +48,7 @@ struct TextEditorC {
 		TextEditor::Iterator i = start;
 		TextEditor::Iterator marker;
 
-	
+
 {
 	ImWchar yych;
 	unsigned int yyaccept = 0;
@@ -940,7 +940,7 @@ yy82:
 		TextEditor::Iterator i = start;
 		TextEditor::Iterator marker;
 
-	
+
 {
 	ImWchar yych;
 	yych = i < end ? *i : 0;

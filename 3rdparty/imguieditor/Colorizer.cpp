@@ -90,7 +90,7 @@ TextEditor::LineState TextEditor::Colorizer::updateLine(Line& line) {
 			}
 
 			if (glyph == start) {
-				// mark whitespace characters
+				// mark whitespaces
 				if (CodePoint::isWhiteSpace(glyph->codepoint)) {
 					(glyph++)->color = Color::whitespace;
 
@@ -200,7 +200,7 @@ TextEditor::LineState TextEditor::Colorizer::updateLine(Line& line) {
 					(glyph++)->color = Color::punctuation;
 
 				} else {
-					// I guess we don't know what this character is
+					// I guess we don't know what this codepoint is
 					(glyph++)->color = Color::text;
 				}
 			}

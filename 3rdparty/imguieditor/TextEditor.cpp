@@ -1382,13 +1382,13 @@ void TextEditor::handleKeyboardInputs() {
 
 		// handle regular text
 		if (!io.InputQueueCharacters.empty()) {
-			// ignore Ctrl inputs, but need to allow Alt+Ctrl as some keyboards (e.g. German) use AltGR (which is Alt+Ctrl) to input certain characters
+			// ignore Ctrl inputs, but need to allow Alt+Ctrl as some keyboards (e.g. German) use AltGR (which is Alt+Ctrl) to input certain glyphs
 			if (!(ImGui::IsKeyDown(ImGuiMod_Ctrl) && !ImGui::IsKeyDown(ImGuiMod_Alt)) && !config.readOnly) {
 				for (auto i = 0; i < io.InputQueueCharacters.size(); i++) {
-					const auto character = io.InputQueueCharacters[i];
+					const auto codepoint = io.InputQueueCharacters[i];
 
-					if (character == '\n' || character >= 32) {
-						handleCharacter(character);
+					if (codepoint == '\n' || codepoint >= 32) {
+						handleCharacter(codepoint);
 					}
 				}
 			}
@@ -2517,19 +2517,19 @@ void TextEditor::moveTo(DocPos coordinate, bool select) {
 
 
 //
-//	TextEditor::handleCharacter
+//	TextEditor::handlecodepoint
 //
 
-void TextEditor::handleCharacter(ImWchar character) {
+void TextEditor::handleCharacter(ImWchar codepoint) {
 	const auto transaction = startTransaction(false);
 
-	const auto opener = character;
+	const auto opener = codepoint;
 	const auto isPaired = !config.overwrite && config.completePairedGlyphs && CodePoint::isPairOpener(opener);
 	const auto closer = CodePoint::toPairCloser(opener);
 
-	// ignore input if it was the closing character for a pair that was automatically inserted
+	// ignore input if it was the closing codepoint for a pair that was automatically inserted
 	if (completePairCloser) {
-		if (completePairCloser == character && completePairLocation == cursors.getCurrent().getSelectionEnd()) {
+		if (completePairCloser == codepoint && completePairLocation == cursors.getCurrent().getSelectionEnd()) {
 			completePairCloser = 0;
 			moveRight(false, false);
 			return;
@@ -2577,7 +2577,7 @@ void TextEditor::handleCharacter(ImWchar character) {
 		completePairCloser = closer;
 		completePairLocation = cursors.getCurrent().getSelectionEnd();
 
-	} else if (!config.overwrite && config.autoIndent && character == '\n') {
+	} else if (!config.overwrite && config.autoIndent && codepoint == '\n') {
 		// handle auto indent case
 		autoIndentAllCursors(transaction);
 
@@ -2597,14 +2597,14 @@ void TextEditor::handleCharacter(ImWchar character) {
 			}
 		}
 
-		// just insert a regular character
+		// just insert a regular codepoint
 		char utf8[4];
-		insertTextIntoAllCursors(transaction, std::string_view(utf8, CodePoint::write(utf8, character)));
+		insertTextIntoAllCursors(transaction, std::string_view(utf8, CodePoint::write(utf8, codepoint)));
 	}
 
 	endTransaction(transaction);
 
-	if (!cursors.hasMultiple() && autocomplete.startTyping(cursors, character)) {
+	if (!cursors.hasMultiple() && autocomplete.startTyping(cursors, codepoint)) {
 		makeCursorVisible();
 	}
 }
@@ -2617,7 +2617,7 @@ void TextEditor::handleCharacter(ImWchar character) {
 void TextEditor::handleBackspace(bool wordMode) {
 	const auto transaction = startTransaction(false);
 
-	// remove selections or characters to the left of the cursor
+	// remove selections or glyphs to the left of the cursor
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
 		const auto start = cursor->hasSelection() ? cursor->getSelectionStart() : document.getLeft(cursor->getSelectionStart(), wordMode);
 		const auto end = cursor->getSelectionEnd();
@@ -2637,7 +2637,7 @@ void TextEditor::handleBackspace(bool wordMode) {
 void TextEditor::handleDelete(bool wordMode) {
 	const auto transaction = startTransaction(false);
 
-	// remove selections or characters to the right of the cursor
+	// remove selections or glyphs to the right of the cursor
 	for (auto cursor = cursors.begin(); cursor < cursors.end(); cursor++) {
 		const auto start = cursor->getSelectionStart();
 		const auto end = cursor->hasSelection() ? cursor->getSelectionEnd() : document.getRight(cursor->getSelectionEnd(), wordMode);
@@ -3221,7 +3221,7 @@ void TextEditor::autoIndentAllCursors(std::shared_ptr<Transaction> transaction) 
 			cursors.adjustForDelete(cursor, start, end);
 		}
 
-		// get previous and next character
+		// get previous and next codepoint
 		auto index = start.index;
 		const auto& line = document[start.line];
 		const ImWchar previousChar = index > 0 ? line[index - 1].codepoint : 0;

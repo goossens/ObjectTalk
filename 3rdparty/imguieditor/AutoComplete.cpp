@@ -22,7 +22,7 @@ void TextEditor::AutoComplete::setConfig(const AutoCompleteConfig* config) {
 	if (config) {
 		configuration = *config;
 
-		// decode extra trigger and word characters
+		// decode extra trigger and word codepoints
 		auto decode = [](const std::string_view& text, std::vector<ImWchar>& codepoints) {
 			codepoints.clear();
 
@@ -49,22 +49,22 @@ void TextEditor::AutoComplete::setConfig(const AutoCompleteConfig* config) {
 //	TextEditor::AutoComplete::startTyping
 //
 
-bool TextEditor::AutoComplete::startTyping(Cursors& cursors, ImWchar character) {
-	const auto trigger = isTriggerCharacter(character);
+bool TextEditor::AutoComplete::startTyping(Cursors& cursors, ImWchar codepoint) {
+	const auto trigger = isTriggerCodePoint(codepoint);
 
 	// a pending activation follows typing that continues the search term
 	if (requestActivation) {
-		if (trigger || isWordCharacter(character)) {
+		if (trigger || isWord(codepoint)) {
 			currentLocation = cursors.getMain().getSelectionEnd();
 		}
 
 		return false;
 	}
 
-	// a trigger character that isn't part of the search term ends the active session, so start a new one
-	const auto restart = active && trigger && !isWordCharacter(character);
+	// a trigger codepoint that isn't part of the search term ends the active session, so start a new one
+	const auto restart = active && trigger && !isWord(codepoint);
 
-	if ((!active || restart) && (trigger || CodePoint::isWord(character)) && configured && configuration.triggerOnTyping) {
+	if ((!active || restart) && (trigger || CodePoint::isWord(codepoint)) && configured && configuration.triggerOnTyping) {
 		triggeredManually = false;
 		cancel();
 		start(cursors);
@@ -360,10 +360,10 @@ void TextEditor::AutoComplete::setSuggestions(const std::vector<std::string>& su
 
 
 //
-//	TextEditor::AutoComplete::isTriggerCharacter
+//	TextEditor::AutoComplete::isTriggerCodePoint
 //
 
-bool TextEditor::AutoComplete::isTriggerCharacter(ImWchar codepoint) const {
+bool TextEditor::AutoComplete::isTriggerCodePoint(ImWchar codepoint) const {
 	return std::find(triggerCodepoints.begin(), triggerCodepoints.end(), codepoint) != triggerCodepoints.end();
 }
 
@@ -483,10 +483,10 @@ void TextEditor::AutoComplete::refreshSuggestions() {
 
 
 //
-//	TextEditor::AutoComplete::isWordCharacter
+//	TextEditor::AutoComplete::isWord
 //
 
-bool TextEditor::AutoComplete::isWordCharacter(ImWchar codepoint) const {
+bool TextEditor::AutoComplete::isWord(ImWchar codepoint) const {
 	return CodePoint::isWord(codepoint) || std::find(wordCodepoints.begin(), wordCodepoints.end(), codepoint) != wordCodepoints.end();
 }
 
@@ -499,7 +499,7 @@ TextEditor::DocPos TextEditor::AutoComplete::findStart(const Document& document,
 	const auto& line = document[from.line];
 	auto index = from.index;
 
-	while (index > 0 && isWordCharacter(line[index - 1].codepoint)) {
+	while (index > 0 && isWord(line[index - 1].codepoint)) {
 		index--;
 	}
 
@@ -515,7 +515,7 @@ TextEditor::DocPos TextEditor::AutoComplete::findEnd(const Document& document, D
 	const auto& line = document[from.line];
 	auto index = from.index;
 
-	while (index < line.size() && isWordCharacter(line[index].codepoint)) {
+	while (index < line.size() && isWord(line[index].codepoint)) {
 		index++;
 	}
 

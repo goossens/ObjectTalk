@@ -27,10 +27,10 @@ TextEditor::DocPos TextEditor::Document::insertText(const Config& config, DocPos
 
 	// process all codepoints
 	while (i < endOfText) {
-		ImWchar character;
-		i = CodePoint::read(i, endOfText, &character);
+		ImWchar codepoint;
+		i = CodePoint::read(i, endOfText, &codepoint);
 
-		if (character == '\n') {
+		if (codepoint == '\n') {
 			// split line
 			insertLine(lineNo + 1);
 			line = begin() + lineNo;
@@ -44,16 +44,16 @@ TextEditor::DocPos TextEditor::Document::insertText(const Config& config, DocPos
 			line = nextLine;
 			index = 0;
 
-		} else if (config.insertSpacesOnTabs && character == '\t') {
+		} else if (config.insertSpacesOnTabs && codepoint == '\t') {
 			const auto spaces = getSpacesToTab(config, *line, index);
 
 			for (size_t s = 0; s < spaces; s++) {
 				line->insert(line->begin() + (index++), Glyph(' ', Color::text));
 			}
 
-		} else if (character != '\r') {
+		} else if (codepoint != '\r') {
 			// insert next glyph
-			line->insert(line->begin() + (index++), Glyph(character, Color::text));
+			line->insert(line->begin() + (index++), Glyph(codepoint, Color::text));
 		}
 	}
 
@@ -208,6 +208,23 @@ void TextEditor::Document::iterateGlyphs(DocPos start, DocPos end, std::function
 			callback(at(end.line)[i]);
 		}
 	}
+}
+
+
+//
+//	TextEditor::Document::getLineColors
+//
+
+std::vector<TextEditor::Color> TextEditor::Document::getLineColors(size_t lineNo) const {
+	auto& line = at(lineNo);
+	std::vector<Color> result;
+	result.reserve(line.size());
+
+	for (auto& glyph : line) {
+		result.emplace_back(glyph.color);
+	}
+
+	return result;
 }
 
 
@@ -430,9 +447,9 @@ bool TextEditor::Document::findText(DocPos from, const std::string_view& text, b
 	auto i = text.begin();
 
 	while (i < endOfText) {
-		ImWchar character;
-		i = CodePoint::read(i, endOfText, &character);
-		search.emplace_back(caseSensitive ? character : CodePoint::toLower(character));
+		ImWchar codepoint;
+		i = CodePoint::read(i, endOfText, &codepoint);
+		search.emplace_back(caseSensitive ? codepoint : CodePoint::toLower(codepoint));
 	}
 
 	// search document
@@ -740,26 +757,26 @@ std::string TextEditor::Document::getTextByLanguageToken(DocPos pos, Color color
 
 
 //
-//	TextEditor::Document::getQualifiedName
+//	TextEditor::Document::getQualifiedIdentifier
 //
 
-std::string TextEditor::Document::getQualifiedName(DocPos pos) const {
-	const auto isQualifiedName = [](Color color) {
+std::string TextEditor::Document::getQualifiedIdentifier(DocPos pos) const {
+	const auto isQualifiedIdentifier = [](Color color) {
 		return color == Color::identifier || color == Color::qualifiedSeparator;
 	};
 
 	const auto& line = at(pos.line);
 
-	if (!isEndOfLine(pos) && isQualifiedName(line[pos.index].color)) {
+	if (!isEndOfLine(pos) && isQualifiedIdentifier(line[pos.index].color)) {
 		const auto size = line.size();
 		DocPos start = pos;
 		DocPos end = pos;
 
-		while (start.index > 0 && isQualifiedName(line[start.index - 1].color)) {
+		while (start.index > 0 && isQualifiedIdentifier(line[start.index - 1].color)) {
 			start.index--;
 		}
 
-		while (end.index < size && isQualifiedName(line[end.index].color)) {
+		while (end.index < size && isQualifiedIdentifier(line[end.index].color)) {
 			end.index++;
 		}
 

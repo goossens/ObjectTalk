@@ -43,7 +43,7 @@ public:
 
 	//
 	// Below is the public API
-	// Public member functions start with an uppercase character to be consistent with Dear ImGui
+	// Public member functions start with an uppercase letter to be consistent with Dear ImGui
 	//
 
 	struct DocPos {
@@ -202,8 +202,8 @@ public:
 	inline std::string GetSectionText(const DocSelection& selection) const { return document.getSectionText(selection); }
 	inline std::string GetCursorText(size_t cursor) const { return cursor < cursors.size() ? document.getSectionText(cursors[cursor].getSelectionStart(), cursors[cursor].getSelectionEnd()) : ""; }
 	inline std::string GetLineText(size_t line) const { return line < document.size() ? document.getSectionText(DocPos(line, 0), document.getEndOfLine(DocPos(line, 0))) : ""; }
-	inline ImWchar GetCodePoint(DocPos pos) const { return document.getCodePoint(normalizePos(pos)); }
 	inline std::vector<ImWchar> GetLineCodePoints(size_t line) const { return line < document.size() ? document.getLineCodePoints(line) : std::vector<ImWchar>(); }
+	inline ImWchar GetCodePoint(DocPos pos) const { return document.getCodePoint(normalizePos(pos)); }
 
 	// replace text in editor (new text must be UTF-8 encoded)
 	// replace functions do create undoable transactions and execute configured callbacks
@@ -278,20 +278,22 @@ public:
 	inline bool IsIdentifier(DocPos pos) const { return document.getColor(normalizePos(pos)) == Color::identifier; }
 	inline bool IsNumber(DocPos pos) const { return document.getColor(normalizePos(pos)) == Color::number; }
 	inline bool IsString(DocPos pos) const { return document.getColor(normalizePos(pos)) == Color::string; }
+	inline bool IsWhiteSpace(DocPos pos) const { return document.getColor(normalizePos(pos)) == Color::whitespace; }
 	inline bool IsPunctuation(DocPos pos) const { return document.getColor(normalizePos(pos)) == Color::punctuation; }
 	inline bool IsComment(DocPos pos) const { return document.getColor(normalizePos(pos)) == Color::comment; }
 
 	// get text at specified location based on category
 	// returns empty string if codepoint at location is of different category or if language is not specified
 	inline std::string GetWord(DocPos pos) const { return document.getSectionText(document.getWholeWord(normalizePos(pos))); }
-	inline std::string Getkeyword(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::keyword); }
-	inline std::string GetDeclaration(DocPos pos) const  { return document.getTextByLanguageToken(normalizePos(pos), Color::keyword); }
-	inline std::string GetIdentifier(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::keyword); }
-	inline std::string GetNumber(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::keyword); }
-	inline std::string GetString(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::keyword); }
-	inline std::string GetPunctuation(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::keyword); }
-	inline std::string GetComment(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::keyword); }
-	inline std::string GetQualifiedName(DocPos pos) const { return document.getQualifiedName(normalizePos(pos)); }
+	inline std::string GetKeyword(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::keyword); }
+	inline std::string GetDeclaration(DocPos pos) const  { return document.getTextByLanguageToken(normalizePos(pos), Color::declaration); }
+	inline std::string GetIdentifier(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::identifier); }
+	inline std::string GetNumber(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::number); }
+	inline std::string GetString(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::string); }
+	inline std::string GetWhiteSpace(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::whitespace); }
+	inline std::string GetPunctuation(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::punctuation); }
+	inline std::string GetComment(DocPos pos) const { return document.getTextByLanguageToken(normalizePos(pos), Color::comment); }
+	inline std::string GetQualifiedIdentifier(DocPos pos) const { return document.getQualifiedIdentifier(normalizePos(pos)); }
 
 	// scrolling support
 	enum class Scroll {
@@ -629,6 +631,7 @@ public:
 	static const Palette& GetDarkPalette();
 	static const Palette& GetLightPalette();
 
+	inline std::vector<Color> GetLineColors(size_t line) const { return line < document.size() ? document.getLineColors(line) : std::vector<Color>(); }
 	inline Color GetColor(DocPos pos) const { return document.getColor(normalizePos(pos)); }
 
 	// line break options
@@ -706,16 +709,16 @@ public:
 		// flag to describe if keywords and identifiers are case sensitive (which is the default)
 		bool caseSensitive = true;
 
-		// the character that starts a preprocessor directive (can be 0 if language doesn't have this feature)
+		// the codepoint that starts a preprocessor directive (can be 0 if language doesn't have this feature)
 		ImWchar preprocess = 0;
 
-		// a character sequence that starts a single line comment (can be empty if language doesn't have this feature)
+		// a codepoint sequence that starts a single line comment (can be empty if language doesn't have this feature)
 		std::string singleLineComment;
 
-		// an alternate single line comment character sequence (can be empty if language doesn't have this feature)
+		// an alternate single line comment codepoint sequence (can be empty if language doesn't have this feature)
 		std::string singleLineCommentAlt;
 
-		// the start and end character sequence for multiline comments (can be empty language doesn't have this feature)
+		// the start and end codepoint sequence for multiline comments (can be empty language doesn't have this feature)
 		std::string commentStart;
 		std::string commentEnd;
 
@@ -723,8 +726,8 @@ public:
 		bool nestedComments = false;
 
 		// functions to help tokenize multilevel, multiline comments (can be nullptr if language doesn't have this feature)
-		// start and end refer to the characters being tokenized
-		// functions should return an iterator to the character after the detected token and set level
+		// start and end refer to the codepoints being tokenized
+		// functions should return an iterator to the codepoint after the detected token and set level
 		// returning start means no token was found
 		std::function<Iterator(Iterator start, Iterator end, size_t& level)> commentLevelStart;
 		std::function<Iterator(Iterator start, Iterator end, size_t& level)> commentLevelEnd;
@@ -733,20 +736,20 @@ public:
 		bool hasSingleQuotedStrings = false;
 		bool hasDoubleQuotedStrings = false;
 
-		// other character sequences that start and end strings (can be blank if language doesn't have this feature)
+		// other codepoint sequences that start and end strings (can be blank if language doesn't have this feature)
 		std::string otherStringStart;
 		std::string otherStringEnd;
 
-		// alternate character sequences that start and end strings (can be blank if language doesn't have this feature)
+		// alternate codepoint sequences that start and end strings (can be blank if language doesn't have this feature)
 		std::string otherStringAltStart;
 		std::string otherStringAltEnd;
 
-		// character inside string used to escape the next character (can be 0 if language doesn't have this feature)
+		// codepoint inside string used to escape the next codepoint (can be 0 if language doesn't have this feature)
 		ImWchar stringEscape = 0;
 
 		// functions to help tokenize multilevel, multiline strings (can be nullptr if language doesn't have this feature)
-		// start and end refer to the characters being tokenized
-		// functions should return an iterator to the character after the detected token and set level
+		// start and end refer to the codepoints being tokenized
+		// functions should return an iterator to the codepoints after the detected token and set level
 		// returning start means no token was found
 		std::function<Iterator(Iterator start, Iterator end, size_t& level)> stringLevelStart;
 		std::function<Iterator(Iterator start, Iterator end, size_t& level)> stringLevelEnd;
@@ -765,7 +768,6 @@ public:
 		std::unordered_set<std::string> keywords;
 		std::unordered_set<std::string> declarations;
 		std::unordered_set<std::string> identifiers;
-		std::unordered_set<std::string> qualifiedSeparators;
 
 		// function to determine if a specified codepoint is part of a word
 		// this is not used coloring but for editor actions like select word on double click
@@ -776,8 +778,8 @@ public:
 		std::function<bool(ImWchar)> isPunctuation;
 
 		// functions to tokenize identifiers and numbers (can be nullptr if language doesn't have this feature)
-		// start and end refer to the characters being tokenized
-		// functions should return an iterator to the character after the detected token
+		// start and end refer to the codepoints being tokenized
+		// functions should return an iterator to the codepoint after the detected token
 		// returning start means no token was found
 		// note: qualified separators generate fully qualified names (e.g. operators like  namespace(::), member(.) and pointer(->) in C++)
 		std::function<Iterator(Iterator start, Iterator end)> getIdentifier;
@@ -785,7 +787,7 @@ public:
 		std::function<Iterator(Iterator start, Iterator end)> getQualifiedSeparator;
 
 		// function to implement custom tokenizer (can be nullptr if language doesn't have this feature)
-		// if a token is found, function should return an iterator to the character after the token and set the color
+		// if a token is found, function should return an iterator to the codepoint after the token and set the color
 		std::function<Iterator(Iterator start, Iterator end, Color& color)> customTokenizer;
 	};
 
@@ -864,10 +866,10 @@ public:
 		bool triggerInComments = false;
 		bool triggerInStrings = false;
 
-		// characters (UTF-8) that trigger autocomplete when typed in addition to word characters (e.g. "\\" or ".")
+		// codepoints (UTF-8) that trigger autocomplete when typed in addition to word codepoints (e.g. "\\" or ".")
 		std::string triggerCharacters;
 
-		// characters (UTF-8) that are part of a search term in addition to word characters (e.g. "\\^:" for LaTeX-like completions)
+		// codepoints (UTF-8) that are part of a search term in addition to word codepoints (e.g. "\\^:" for LaTeX-like completions)
 		std::string wordCharacters;
 
 		// manual trigger key sequence (default is Ctrl-space on all platforms, even MacOS)
@@ -916,7 +918,7 @@ public:
 	struct CodePoint {
 		static std::string_view::const_iterator skipBOM(std::string_view::const_iterator i, std::string_view::const_iterator end);
 		static std::string_view::const_iterator read(std::string_view::const_iterator i, std::string_view::const_iterator end, ImWchar* codepoint);
-		static size_t write(char* i, ImWchar codepoint); // must point to buffer of 4 characters (returns number of characters written)
+		static size_t write(char* i, ImWchar codepoint); // must point to buffer of 4 bytes (returns number of bytes written)
 		static bool isLetter(ImWchar codepoint);
 		static bool isNumber(ImWchar codepoint);
 		static bool isWord(ImWchar codepoint);
@@ -1066,8 +1068,8 @@ public:
 protected:
 	//
 	// below is the private API
-	// private members (functions and variables) start with a lowercase character
-	// private type names start with a uppercase character
+	// private members (functions and variables) start with a lowercase letters
+	// private type names start with a uppercase letters
 	//
 	// although items below are called "private", they are actually define "protected" so derived classes have access
 	//
@@ -1213,21 +1215,21 @@ protected:
 			const auto end = sv.end();
 
 			while (i < end) {
-				ImWchar character;
-				i = CodePoint::read(i, end, &character);
+				ImWchar codepoint;
+				i = CodePoint::read(i, end, &codepoint);
 
-				if (character == '\n') {
+				if (codepoint == '\n') {
 					appendLine();
 
-				} else if (config.insertSpacesOnTabs && character == '\t') {
+				} else if (config.insertSpacesOnTabs && codepoint == '\t') {
 					const auto spaces = getSpacesToTab(config, back(), back().size());
 
 					for (size_t s = 0; s < spaces; s++) {
 						back().emplace_back(Glyph(' ', Color::text));
 					}
 
-				} else if (character != '\r') {
-					back().emplace_back(Glyph(character, Color::text));
+				} else if (codepoint != '\r') {
+					back().emplace_back(Glyph(codepoint, Color::text));
 				}
 			}
 
@@ -1251,18 +1253,18 @@ protected:
 					const auto end = sv.end();
 
 					while (i < end) {
-						ImWchar character;
-						i = CodePoint::read(i, end, &character);
+						ImWchar codepoint;
+						i = CodePoint::read(i, end, &codepoint);
 
-						if (config.insertSpacesOnTabs && character == '\t') {
+						if (config.insertSpacesOnTabs && codepoint == '\t') {
 							const auto spaces = getSpacesToTab(config, back(), back().size());
 
 							for (size_t s = 0; s < spaces; s++) {
 								back().emplace_back(Glyph(' ', Color::text));
 							}
 
-						} else if (character != '\r') {
-							back().emplace_back(Glyph(character, Color::text));
+						} else if (codepoint != '\r') {
+							back().emplace_back(Glyph(codepoint, Color::text));
 						}
 					}
 				}
@@ -1284,20 +1286,20 @@ protected:
 
 			// process all glyphs
 			for (auto i = text.begin(); i < text.end(); i++) {
-				const auto character = static_cast<ImWchar>(*i);
+				const auto codepoint = static_cast<ImWchar>(*i);
 
-				if (character == '\n') {
+				if (codepoint == '\n') {
 					appendLine();
 
-				} else if (config.insertSpacesOnTabs && character == '\t') {
+				} else if (config.insertSpacesOnTabs && codepoint == '\t') {
 					const auto spaces = getSpacesToTab(config, back(), back().size());
 
 					for (size_t s = 0; s < spaces; s++) {
 						back().emplace_back(Glyph(' ', Color::text));
 					}
 
-				} else if (character != '\r') {
-					back().emplace_back(Glyph(character, Color::text));
+				} else if (codepoint != '\r') {
+					back().emplace_back(Glyph(codepoint, Color::text));
 				}
 			}
 
@@ -1318,17 +1320,17 @@ protected:
 
 					// process all glyphs
 					for (auto i = line.begin(); i < line.end(); i++) {
-						const auto character = static_cast<ImWchar>(*i);
+						const auto codepoint = static_cast<ImWchar>(*i);
 
-						if (config.insertSpacesOnTabs && character == '\t') {
+						if (config.insertSpacesOnTabs && codepoint == '\t') {
 							const auto spaces = getSpacesToTab(config, back(), back().size());
 
 							for (size_t s = 0; s < spaces; s++) {
 								back().emplace_back(Glyph(' ', Color::text));
 							}
 
-						} else if (character != '\r') {
-							back().emplace_back(Glyph(character, Color::text));
+						} else if (codepoint != '\r') {
+							back().emplace_back(Glyph(codepoint, Color::text));
 						}
 					}
 				}
@@ -1398,6 +1400,7 @@ protected:
 
 		// get line or color state
 		inline LineState getLineState(size_t line) const { return at(line).state; }
+		std::vector<Color> getLineColors(size_t line) const;
 		Color getColor(DocPos location) const;
 
 		// see if document is empty
@@ -1447,7 +1450,7 @@ protected:
 		DocSelection getWholeWord(DocPos pos) const;
 		DocSelection getGlyphRangeByCategory(DocPos pos) const;
 		std::string getTextByLanguageToken(DocPos pos, Color color) const;
-		std::string getQualifiedName(DocPos pos) const;
+		std::string getQualifiedIdentifier(DocPos pos) const;
 		inline bool isStartOfLine(DocPos from) const { return from.index == 0; }
 		inline bool isEndOfLine(DocPos from) const { return from.index == at(from.line).size(); }
 		inline bool isLastLine(size_t line) const { return line == size() - 1; }
@@ -1913,7 +1916,7 @@ protected:
 
 		// request autocomplete mode based on triggers (and if allowed by current state)
 		// return value indicates whether autocomplete was initiated
-		bool startTyping(Cursors& cursors, ImWchar character);
+		bool startTyping(Cursors& cursors, ImWchar codepoint);
 		bool startShortcut(Cursors& cursors);
 
 		// cancel autocomplete mode (if required)
@@ -1930,7 +1933,7 @@ protected:
 		inline bool hasSuggestions() const { return state.suggestions.size() > 0 || state.suggestionsPromise; }
 		static bool isSpecialKeyPressed();
 		inline ImGuiKeyChord getTriggerShortcut() const { return configuration.triggerShortcut; }
-		bool isTriggerCharacter(ImWchar codepoint) const;
+		bool isTriggerCodePoint(ImWchar codepoint) const;
 		DocPos getReplacementStart() const;
 		DocPos getReplacementEnd(const Document& document) const;
 		inline std::string getReplacement() { return currentSelection < state.suggestions.size() ? state.suggestions[currentSelection] : ""; }
@@ -1955,7 +1958,7 @@ protected:
 		void start(Cursors& cursors);
 		void updateState(Document& document, const Language* language);
 		void refreshSuggestions();
-		bool isWordCharacter(ImWchar codepoint) const;
+		bool isWord(ImWchar codepoint) const;
 		DocPos findStart(const Document& document, DocPos from) const;
 		DocPos findEnd(const Document& document, DocPos from) const;
 	} autocomplete;
@@ -2079,7 +2082,7 @@ protected:
 	void moveTo(DocPos coordinate, bool select);
 
 	// add/delete characters
-	void handleCharacter(ImWchar character);
+	void handleCharacter(ImWchar codepoint);
 	void handleBackspace(bool wordMode);
 	void handleDelete(bool wordMode);
 

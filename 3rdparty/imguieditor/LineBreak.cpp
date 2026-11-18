@@ -1238,8 +1238,8 @@ void TextEditor::LineBreak::updateSet(std::unordered_set<ImWchar>& set, std::str
 	auto i = CodePoint::skipBOM(text.begin(), end);
 
 	while (i < end) {
-		ImWchar character;
-		i = CodePoint::read(i, end, &character);
-		set.insert(character);
+		ImWchar codepoint;
+		i = CodePoint::read(i, end, &codepoint);
+		set.insert(codepoint);
 	}
 }

@@ -56,15 +56,15 @@ const TextEditor::Palette& TextEditor::GetDarkPalette() {
 		IM_COL32(255, 255, 255,   8),	// current line highlight
 		IM_COL32(255, 255, 255,  16),	// current line highlight border
 
-		IM_COL32(255,   0,   0, 255),	// custom color 1
-		IM_COL32(245, 140,   0, 255),	// custom color 2
-		IM_COL32(255, 255,  40, 255),	// custom color 3
+		IM_COL32(255,  64,  64, 255),	// custom color 1
+		IM_COL32(255, 144,   0, 255),	// custom color 2
+		IM_COL32(255, 255,  32, 255),	// custom color 3
 		IM_COL32(  0, 255,   0, 255),	// custom color 4
-		IM_COL32( 63, 255, 205, 255),	// custom color 5
-		IM_COL32( 70, 240, 240, 255),	// custom color 6
-		IM_COL32(  0,   0, 255, 255),	// custom color 7
-		IM_COL32(145,   0, 224, 255),	// custom color 8
-		IM_COL32(240,  50, 230, 255)	// custom color 9
+		IM_COL32( 88, 255, 208, 255),	// custom color 5
+		IM_COL32( 64, 240, 255, 255),	// custom color 6
+		IM_COL32(112, 112, 255, 255),	// custom color 7
+		IM_COL32(160, 150, 255, 255),	// custom color 8
+		IM_COL32(255, 160, 255, 255)	// custom color 9
 }};
 
 	return palette;
@@ -97,15 +97,15 @@ const TextEditor::Palette& TextEditor::GetLightPalette() {
 		IM_COL32(  0,   0,   0,   8),	// current line highlight
 		IM_COL32(  0,   0,   0,  16),	// current line highlight border
 
-		IM_COL32(255,   0,   0, 255),	// custom color 1
-		IM_COL32(245, 140,   0, 255),	// custom color 2
-		IM_COL32(255, 255,  40, 255),	// custom color 3
-		IM_COL32(  0, 255,   0, 255),	// custom color 4
-		IM_COL32( 63, 255, 205, 255),	// custom color 5
-		IM_COL32( 70, 240, 240, 255),	// custom color 6
-		IM_COL32(  0,   0, 255, 255),	// custom color 7
-		IM_COL32(145,   0, 224, 255),	// custom color 8
-		IM_COL32(240,  50, 230, 255)	// custom color 9
+		IM_COL32(255,  64,  64, 255),	// custom color 1
+		IM_COL32(255, 144,   0, 255),	// custom color 2
+		IM_COL32(224, 224,   0, 255),	// custom color 3
+		IM_COL32(  0, 192,   0, 255),	// custom color 4
+		IM_COL32( 72, 248, 200, 255),	// custom color 5
+		IM_COL32(  0, 216, 248, 255),	// custom color 6
+		IM_COL32( 32,  32, 255, 255),	// custom color 7
+		IM_COL32(152, 128, 255, 255),	// custom color 8
+		IM_COL32(255, 144, 255, 255)	// custom color 9
 	}};
 
 	return palette;

@@ -547,6 +547,10 @@ private:
 	static void renderFolder(ImDrawList* drawList, ImVec2 pos, float scale);
 	static void renderIcon(ImDrawList* drawList, ImVec2 pos, float scale, CodePoint codepoint);
 
+	void selectEntry(Entry& entry);
+	void unSelectEntry(Entry& entry);
+	void toggleEntrySelection(Entry& entry);
+
 	std::filesystem::path getDuplicatePathName(const std::filesystem::path& path);
 
 	// OS-specific local functions

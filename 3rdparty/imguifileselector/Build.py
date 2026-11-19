@@ -11,6 +11,21 @@ destination = "../../../ImGuiFileSelector/"
 
 
 #
+#	copyMain
+#
+
+def copyMain(src, dest):
+	with open(dest, "w") as output:
+		with open(src, "r") as input:
+			for line in input:
+				if (line == '#include <regex>\n'):
+					output.write('#include <regex>\n#include <sstream>\n')
+
+				else:
+					output.write(line)
+
+
+#
 #	append
 #
 
@@ -39,6 +54,7 @@ if __name__ == "__main__":
 		sys.exit(1)
 
 	shutil.copyfile("FileSelector.h", destination + "FileSelector.h")
-	shutil.copyfile("FileSelector.cpp", destination + "FileSelector.cpp")
+	copyMain("FileSelector.cpp", destination + "FileSelector.cpp")
 
+	append("OperatingSystem.cpp", 14)
 	append("Icons.cpp", 15)

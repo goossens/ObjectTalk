@@ -77,6 +77,8 @@ public:
 	inline SortOrder GetSortOrder() const { return state.sortOrder; }
 	inline void SetSideBarWidthInGlyphs(size_t glyphs) { state.sizeBarWidthInGlyphs = glyphs; }
 	inline size_t GetSideBarWidthInGlyphs() const { return state.sizeBarWidthInGlyphs; }
+	inline void SetColumnWidthInGlyphs(size_t glyphs) { state.columnWidthInGlyphs = glyphs; }
+	inline size_t GetColumnWidthInGlyphs() const { return state.columnWidthInGlyphs; }
 	inline void SetIconScale(float value) { state.iconScale = value; }
 	inline float GetIconScale() const { return state.iconScale; }
 
@@ -192,6 +194,7 @@ public:
 		SortColumn sortColumn = SortColumn::name;
 		SortOrder sortOrder = SortOrder::ascending;
 		size_t sizeBarWidthInGlyphs = 25;
+		size_t columnWidthInGlyphs = 25;
 		float iconScale = 4.0f;
 	};
 
@@ -378,9 +381,17 @@ private:
 	// a named path
 	struct NamedPath {
 		NamedPath() = default;
-		NamedPath(std::string name, std::filesystem::path path) : name(name), path(path) {}
+		NamedPath(std::string name, std::filesystem::path path) : name(name), path(path) {
+			isDirectory = std::filesystem::is_directory(path);
+			isHidden = isPathHidden(path);
+			extension = isDirectory ? "" : pathToString(path.extension());
+		}
+
 		std::string name;
 		std::filesystem::path path;
+		bool isDirectory = false;
+		bool isHidden = false;
+		std::string extension;
 	};
 
 	// parts of the current path in reverse order
@@ -410,8 +421,7 @@ private:
 	class Listing : public std::vector<Entry> {
 	public:
 		// load a specified path
-		bool load(const std::filesystem::path& path, const State& state, const Labels& labels);
-		inline bool reload(const State& state, const Labels& labels) { return load(currentPath, state, labels); }
+		bool load(const std::filesystem::path& targetPath, const State& state, const Labels& labels);
 
 		// iterate through listing
 		void forEach(const State& state, std::function<void(Entry&)> callback);
@@ -422,14 +432,43 @@ private:
 		// (re)sort entries
 		void sort(const State& state);
 
-		private:
+		// get the listing's path
+		inline const std::filesystem::path& getPath() const { return path; }
+
+	private:
 		// properties
-		std::filesystem::path currentPath;
+		std::filesystem::path path;
 		std::filesystem::file_time_type lastWriteTime;
 
 		// support functions
 		bool filter(const State& state, const Entry& entry);
 	} listing;
+
+	// a parent directory for column view
+	class Column : public std::vector<NamedPath> {
+	public:
+		// load a specified path
+		bool load(const std::filesystem::path& targetPath, const std::string& child);
+
+		// iterate through listing
+		void forEach(const State& state, std::function<void(NamedPath&)> callback);
+
+		// get information about the column
+		inline const std::filesystem::path& getPath() const { return path; }
+		inline const std::string& getSelectedChild() const { return selectedChild; }
+
+	private:
+		// properties
+		std::string selectedChild;
+		std::filesystem::path path;
+		std::filesystem::file_time_type lastWriteTime;
+
+		// support functions
+		bool filter(const State& state, const NamedPath& entry);
+	};
+
+	// listings for column view
+	std::vector<Column> columns;
 
 	// known user directory types
 	enum class KnownDirectory {
@@ -501,11 +540,13 @@ private:
 	std::string saveAsString;
 	std::string filterString;
 	std::filesystem::path nextPath;
-	bool refreshListing = false;
+	bool refreshListings = false;
+	bool scrollToRight = false;
 
 	// local functions
 	bool openDialog(Mode mode, std::function<void()> accessoryView, float avHeight);
 	bool setCurrentPath(const std::filesystem::path path, bool addHistory=true);
+	void setView(View view);
 
 	void renderFileDialog();
 	void renderSideBar();
@@ -529,6 +570,8 @@ private:
 	void addDefaultClouds();
 	void addDefaultLocations();
 	void addDefaultMedia();
+
+	void updateListings();
 
 	void handleEntrySelection(Entry& entry);
 	bool isOkAvailable();
@@ -555,7 +598,7 @@ private:
 
 	// OS-specific local functions
 	static std::filesystem::path getHome();
-	static bool isHidden(const std::filesystem::path& path);
+	static bool isPathHidden(const std::filesystem::path& path);
 	static bool isAccessible(const std::filesystem::path& path);
 	static void getKnownDirectoryInfo(KnownDirectory type, std::string& label, std::filesystem::path& path);
 	static void forEachKnownLocation(std::function<void(const std::string& name, const std::filesystem::path& path)> callback);

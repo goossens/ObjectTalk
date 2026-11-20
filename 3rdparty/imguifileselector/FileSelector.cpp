@@ -178,7 +178,7 @@ bool FileSelector::openDialog(Mode openMode, std::function<void()> av, float avH
 		accessoryViewHeight = avHeight;
 		selectedPath.clear();
 		selectedPaths.clear();
-		refreshListing = true;
+		refreshListings = true;
 		requestOpen = true;
 		return true;
 
@@ -307,7 +307,7 @@ void FileSelector::SetState(const State& newState) {
 
 void FileSelector::SetLabels(Labels& newLabels) {
 	labels = newLabels;
-	refreshListing = true;
+	refreshListings = true;
 }
 
 
@@ -331,11 +331,6 @@ bool FileSelector::setCurrentPath(const std::filesystem::path path, bool addHist
 
 	// ignore request if we already are looking at this place
 	if (path == state.currentPath) {
-		return false;
-	}
-
-	// try to reload the directory listing and check for errors
-	if (!listing.load(path, state, labels)) {
 		return false;
 	}
 
@@ -370,7 +365,23 @@ bool FileSelector::setCurrentPath(const std::filesystem::path path, bool addHist
 		historyIndex++;
 	}
 
+	refreshListings = true;
 	return true;
+}
+
+
+//
+//	FileSelector::setView
+//
+
+void FileSelector::setView(View view) {
+	if (state.view != view) {
+		if (state.view == View::columns || view == View::columns) {
+			refreshListings = true;
+		}
+
+		state.view = view;
+	}
 }
 
 
@@ -383,13 +394,12 @@ void FileSelector::renderFileDialog() {
 	if (!nextPath.empty()) {
 		setCurrentPath(nextPath, true);
 		nextPath.clear();
-		refreshListing = false;
 	}
 
 	// refresh directory lists (if required)
-	if (refreshListing) {
-		listing.reload(state, labels);
-		refreshListing = false;
+	if (refreshListings) {
+		updateListings();
+		refreshListings = false;
 	}
 
 	// get reusable values
@@ -548,9 +558,9 @@ void FileSelector::renderHeader() {
 		ImGui::Separator();
 		ImGui::TextDisabled("%s", labels.showItemsAs.c_str());
 		bool selected;
-		selected = state.view == View::icons; if (ImGui::MenuItem(labels.icons.c_str(), nullptr, selected)) { state.view = View::icons; }
-		selected = state.view == View::list; if (ImGui::MenuItem(labels.list.c_str(), nullptr, selected)) { state.view = View::list; }
-		selected = state.view == View::columns; if (ImGui::MenuItem(labels.columns.c_str(), nullptr, selected)) { state.view = View::columns; }
+		selected = state.view == View::icons; if (ImGui::MenuItem(labels.icons.c_str(), nullptr, selected)) { setView(View::icons); }
+		selected = state.view == View::list; if (ImGui::MenuItem(labels.list.c_str(), nullptr, selected)) { setView(View::list); }
+		selected = state.view == View::columns; if (ImGui::MenuItem(labels.columns.c_str(), nullptr, selected)) { setView(View::columns); }
 		ImGui::EndCombo();
 	}
 
@@ -803,13 +813,14 @@ void FileSelector::renderListView(ImVec2 size) {
 			ImGui::TableSetColumnIndex(0);
 
 			// render the icon
+			auto drawList = ImGui::GetWindowDrawList();
 			const auto iconSize = ImVec2(glyphSize.y, glyphSize.y);
 
 			IconData iconData{
 				ImGui::GetCursorScreenPos(),
 				1.0f,
 				iconSize,
-				ImGui::GetWindowDrawList(),
+				drawList,
 				entry.isDirectory,
 				entry.extension
 			};
@@ -818,7 +829,7 @@ void FileSelector::renderListView(ImVec2 size) {
 			ImGui::Dummy(iconSize);
 			ImGui::SameLine();
 
-			ImGuiSelectableFlags selectableFlags =
+			constexpr ImGuiSelectableFlags selectableFlags =
 				ImGuiSelectableFlags_SpanAllColumns |
 				ImGuiSelectableFlags_AllowDoubleClick;
 
@@ -855,8 +866,86 @@ void FileSelector::renderListView(ImVec2 size) {
 //
 
 void FileSelector::renderColumnsView(ImVec2 size) {
-	ImGui::BeginChild("icons", size, ImGuiChildFlags_Borders);
-	ImGui::TextUnformatted("Not yet implemented");
+	ImGui::BeginChild(
+		"columns",
+		size,
+		ImGuiChildFlags_AlwaysUseWindowPadding,
+		ImGuiWindowFlags_AlwaysHorizontalScrollbar);
+
+	const auto availableSpace = ImGui::GetContentRegionAvail();
+	const auto columnSize = ImVec2(state.columnWidthInGlyphs * glyphSize.x, availableSpace.y);
+	const auto iconSize = ImVec2(glyphSize.y, glyphSize.y);
+	auto first = true;
+
+	// render the "parent" columns
+	for (auto& column : columns) {
+		if (first) {
+			first = false;
+
+		} else {
+			ImGui::SameLine();
+		}
+
+		ImGui::BeginChild(pathToString(column.getPath()).c_str(), columnSize, ImGuiChildFlags_Borders);
+
+		column.forEach(state, [&](NamedPath& entry) {
+			// render the icon
+			IconData iconData{
+				ImGui::GetCursorScreenPos(),
+				1.0f,
+				iconSize,
+				ImGui::GetWindowDrawList(),
+				entry.isDirectory,
+				entry.extension
+			};
+
+			renderIcon(iconData);
+			ImGui::Dummy(iconSize);
+			ImGui::SameLine();
+
+			// render the name
+			if (ImGui::Selectable(entry.name.c_str(), column.getSelectedChild() == entry.name)) {
+				if (entry.isDirectory) {
+					nextPath = entry.path;
+				}
+			}
+		});
+
+		ImGui::EndChild();
+	}
+
+	// render the current path column
+	ImGui::SameLine();
+	ImGui::BeginChild("current", columnSize, ImGuiChildFlags_Borders);
+
+	listing.forEach(state, [&](Entry& entry) {
+			// render the icon
+			IconData iconData{
+				ImGui::GetCursorScreenPos(),
+				1.0f,
+				iconSize,
+				ImGui::GetWindowDrawList(),
+				entry.isDirectory,
+				entry.extension
+			};
+
+			renderIcon(iconData);
+			ImGui::Dummy(iconSize);
+			ImGui::SameLine();
+
+			// render the name
+			if (ImGui::Selectable(entry.nameString.c_str(), entry.isSelected, ImGuiSelectableFlags_AllowDoubleClick)) {
+				handleEntrySelection(entry);
+			}
+	});
+
+	ImGui::EndChild();
+
+	if (scrollToRight) {
+		ImGui::SetScrollHereX(1.0f);
+		scrollToRight = false;
+	}
+
 	ImGui::EndChild();
 }
 
@@ -901,7 +990,7 @@ void FileSelector::renderEntryContextMenu(Entry& entry) {
 				unSelectEntry(entry);
 			}
 
-			refreshListing = true;
+			refreshListings = true;
 
 		} else {
 			openError = true;
@@ -1093,7 +1182,7 @@ void FileSelector::renderNewFolderPopup() {
 				newFolderError = ec.message();
 
 			} else {
-				refreshListing = true;
+				refreshListings = true;
 				ImGui::CloseCurrentPopup();
 			}
 		}
@@ -1164,7 +1253,7 @@ void FileSelector::renderRenamePopup() {
 				moveError = ec.message();
 
 			} else {
-				refreshListing = true;
+				refreshListings = true;
 				ImGui::CloseCurrentPopup();
 			}
 		}
@@ -1262,7 +1351,7 @@ void FileSelector::renderPermissionsPopup() {
 				permissionsError = ec.message();
 
 			} else {
-				refreshListing = true;
+				refreshListings = true;
 				ImGui::CloseCurrentPopup();
 			}
 		}
@@ -1358,6 +1447,26 @@ void FileSelector::addDefaultMedia() {
 		media.add(KnownDirectory::music);
 		media.add(KnownDirectory::pictures);
 	}
+}
+
+
+//
+//	FileSelector::updateListings
+//
+
+void FileSelector::updateListings() {
+	columns.clear();
+
+	if (state.view == View::columns) {
+		for (size_t i = pathStack.size() - 1; i > 0; i--) {
+			auto& column = columns.emplace_back(Column());
+			column.load(pathStack[i].path, pathStack[i - 1].name);
+		}
+
+		scrollToRight = true;
+	}
+
+	listing.load(state.currentPath, state, labels);
 }
 
 
@@ -1674,7 +1783,7 @@ void FileSelector::permissionCheckBox(const std::string& label, std::filesystem:
 //	FileSelector::Listing::load
 //
 
-bool FileSelector::Listing::load(const std::filesystem::path& path, const State& state, const Labels& labels) {
+bool FileSelector::Listing::load(const std::filesystem::path& targetPath, const State& state, const Labels& labels) {
 	// we load to a temporary list first so we can detect errors
 	std::vector<Entry> entries;
 	bool success = true;
@@ -1687,7 +1796,7 @@ bool FileSelector::Listing::load(const std::filesystem::path& path, const State&
 	auto& collateFacet = std::use_facet<std::collate<wchar_t>>(locale);
 
 	try {
-		for (const auto& node : std::filesystem::directory_iterator(path)) {
+		for (const auto& node : std::filesystem::directory_iterator(targetPath)) {
 			if (node.is_regular_file() || (node.is_directory() && isAccessible(node.path()))) {
 				// create a new entry
 				auto& entry = entries.emplace_back();
@@ -1698,7 +1807,7 @@ bool FileSelector::Listing::load(const std::filesystem::path& path, const State&
 				entry.size = entry.isDirectory ? 0 : node.file_size();
 				entry.extension = entry.isDirectory ? "" : pathToString(entry.path.extension());
 				entry.lastUpdate = node.last_write_time();
-				entry.isHidden = isHidden(entry.path);
+				entry.isHidden = isPathHidden(entry.path);
 				entry.isSelected = false;
 
 				// precalculate strings for faster rendering
@@ -1721,7 +1830,7 @@ bool FileSelector::Listing::load(const std::filesystem::path& path, const State&
 		}
 
 		sort(state);
-		currentPath = path;
+		path = targetPath;
 		lastWriteTime = std::filesystem::last_write_time(path);
 
 	} catch (const std::filesystem::filesystem_error&) {
@@ -1978,4 +2087,84 @@ std::filesystem::path FileSelector::getDuplicatePathName(const std::filesystem::
 
 	// return path name for duplicate
 	return candidate;
+}
+
+
+//
+//	FileSelector::Column::load
+//
+
+bool FileSelector::Column::load(const std::filesystem::path& targetPath, const std::string& child) {
+	// we load to a temporary structure first so we can detect errors
+	std::vector<NamedPath> entries;
+	bool success = true;
+
+	try {
+		for (const auto& node : std::filesystem::directory_iterator(targetPath)) {
+			if (node.is_regular_file() || (node.is_directory() && isAccessible(node.path()))) {
+				// create a new entry
+				entries.emplace_back(NamedPath(pathToString(node.path().filename()), node.path()));
+			}
+		}
+
+		clear();
+
+		for (auto& entry : entries) {
+			emplace_back(entry);
+		}
+
+		std::sort(begin(), end(), [](const NamedPath& p1, const NamedPath& p2) { return p1.name < p2.name; });
+		path = targetPath;
+		selectedChild = child;
+		lastWriteTime = std::filesystem::last_write_time(path);
+
+	} catch (const std::filesystem::filesystem_error&) {
+		success = false;
+	}
+
+	return success;
+}
+
+
+//
+//	FileSelector::Column::forEach
+//
+
+void FileSelector::Column::forEach(const State& state, std::function<void(NamedPath&)> callback) {
+	// iterate through all entries in listing by calling function for each
+	for (auto& entry : *this) {
+		if (filter(state, entry)) {
+			callback(entry);
+		}
+	}
+}
+
+
+//
+//	FileSelector::Column::filter
+//
+
+bool FileSelector::Column::filter(const State& state, const NamedPath& entry) {
+	// filter entry by visibility
+	if (!state.showHidden && entry.isHidden) {
+		return false;
+	}
+
+	if (!entry.isDirectory) {
+		// filter entry by extension
+		if (state.extensionFilter.size()) {
+			if (std::find(state.extensionFilter.begin(), state.extensionFilter.end(), entry.extension) == state.extensionFilter.end()) {
+				return false;
+			}
+		}
+
+		// filter entry by user request
+		if (state.userFilter.IsActive()) {
+			if (!state.userFilter.PassFilter(entry.name.c_str())) {
+				return false;
+			}
+		}
+	}
+
+	return true;
 }

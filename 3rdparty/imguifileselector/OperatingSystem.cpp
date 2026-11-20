@@ -9,6 +9,10 @@
 //	Include files
 //
 
+#if _WIN32
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include <sstream>
 
 #include "FileSelector.h"
@@ -19,9 +23,6 @@
 //
 
 #ifdef _WIN32
-#ifndef _CRT_SECURE_NO_WARNINGS
-#define _CRT_SECURE_NO_WARNINGS
-#endif
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
@@ -115,10 +116,10 @@ std::filesystem::path FileSelector::getHome() {
 
 
 //
-//	FileSelector::isHidden
+//	FileSelector::isPathHidden
 //
 
-bool FileSelector::isHidden(const std::filesystem::path& path) {
+bool FileSelector::isPathHidden(const std::filesystem::path& path) {
 	// empty path are treated as hidden
 	if (path.empty()) {
 		return true;

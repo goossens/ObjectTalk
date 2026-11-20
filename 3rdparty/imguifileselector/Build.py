@@ -56,5 +56,5 @@ if __name__ == "__main__":
 	shutil.copyfile("FileSelector.h", destination + "FileSelector.h")
 	copyMain("FileSelector.cpp", destination + "FileSelector.cpp")
 
-	append("OperatingSystem.cpp", 14)
+	append("OperatingSystem.cpp", 18)
 	append("Icons.cpp", 15)
